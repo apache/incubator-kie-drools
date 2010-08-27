@@ -1,5 +1,5 @@
 /**
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.common;
+package org.drools.runtime.process;
 
-import java.util.List;
+import org.drools.Service;
+import org.drools.common.AbstractWorkingMemory;
 
-import org.drools.event.AgendaEventSupport;
-import org.drools.event.WorkingMemoryEventSupport;
+/**
+ * ProcessRuntimeFactoryService is used by the AbstractWorkingMemory to "provide" it's concrete implementation.
+ * 
+ */
+public interface ProcessRuntimeFactoryService extends Service {
 
-public interface EventSupport {
-	
-    List getAgendaEventListeners();
-
-    List getWorkingMemoryEventListeners();
-
-    AgendaEventSupport getAgendaEventSupport();
+    public InternalProcessRuntime newProcessRuntime(AbstractWorkingMemory workingMemory);
     
-    WorkingMemoryEventSupport getWorkingMemoryEventSupport();
+    
 
 }

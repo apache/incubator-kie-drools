@@ -8,7 +8,9 @@ import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.DecisionTableProvider;
+import org.drools.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.osgi.api.Activator.BundleContextInstantiator;
+import org.drools.runtime.process.ProcessRuntimeFactoryService;
 import org.drools.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -25,6 +27,8 @@ public class Activator
 
     private ServiceTracker      dtableTracker;
     private ServiceTracker      bpmn2Tracker;
+    private ServiceTracker      processRuntimeTracker;
+    private ServiceTracker      processMarshallerTracker;
 
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering compiler services" );
@@ -48,6 +52,18 @@ public class Activator
 								                                          this ) );
         this.bpmn2Tracker.open();
         
+        this.processRuntimeTracker = new ServiceTracker( bc,
+                                                         ProcessRuntimeFactoryService.class.getName(),
+                                                         new DroolsServiceTracker( bc,
+                                                                                   this ) );
+        this.processRuntimeTracker.open();
+
+        this.processMarshallerTracker = new ServiceTracker( bc,
+                                                            ProcessMarshallerFactoryService.class.getName(),
+                                                            new DroolsServiceTracker( bc,
+                                                                                      this ) );
+        this.processRuntimeTracker.open();
+
         System.out.println( "compiler services registered" );
     }
 
@@ -55,6 +71,8 @@ public class Activator
         this.kbuilderReg.unregister();
         this.dtableTracker.close();
         this.bpmn2Tracker.close();
+        this.processRuntimeTracker.close();
+        this.processMarshallerTracker.close();
     }
 
     public static class DroolsServiceTracker

@@ -8,8 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.CascadeType;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,10 +23,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.marshalling.impl.ProcessMarshallerImpl;
 import org.drools.persistence.processinstance.variabletypes.VariableInstanceInfo;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
@@ -107,7 +106,7 @@ public class WorkItemInfo {
                                                                                null,
                                                                                null,
                                                                                null );
-                workItem = InputMarshaller.readWorkItem( context, !externalVariables );
+                workItem = ProcessMarshallerImpl.readWorkItem( context, !externalVariables );
                  if ( externalVariables ) {
                     restoreVariables();
                 }
@@ -165,8 +164,8 @@ public class WorkItemInfo {
                                                                          null,
                                                                          null );
             externalVariables = VariablePersistenceStrategyFactory.getVariablePersistenceStrategy().isEnabled();
-            OutputMarshaller.writeWorkItem( context,
-                                            workItem, !externalVariables );
+            ProcessMarshallerImpl.writeWorkItem( context,
+                                                 workItem, !externalVariables );
 
 
             if ( externalVariables ) {

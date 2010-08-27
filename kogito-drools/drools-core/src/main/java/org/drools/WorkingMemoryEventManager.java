@@ -35,7 +35,6 @@ package org.drools;
 import java.util.List;
 
 import org.drools.event.AgendaEventListener;
-import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 
 /**
@@ -91,26 +90,4 @@ public interface WorkingMemoryEventManager
      */
     public List getAgendaEventListeners();
 
-    /**
-     * Add an event listener.
-     * 
-     * @param listener
-     *            The listener to add.
-     */
-    public void addEventListener(RuleFlowEventListener listener);
-
-    /**
-     * Remove an event listener.
-     * 
-     * @param listener
-     *            The listener to remove.
-     */
-    public void removeEventListener(RuleFlowEventListener listener);
-
-    /**
-     * Returns all event listeners.
-     * 
-     * @return listeners The listeners.
-     */
-    public List getRuleFlowEventListeners();
 }

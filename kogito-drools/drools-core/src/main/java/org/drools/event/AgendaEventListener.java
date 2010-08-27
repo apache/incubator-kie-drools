@@ -40,4 +40,17 @@ public interface AgendaEventListener
 
     void agendaGroupPushed(AgendaGroupPushedEvent event,
                            WorkingMemory workingMemory);
+
+    void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+			                          WorkingMemory workingMemory);
+
+	void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+			                         WorkingMemory workingMemory);
+
+	void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+			                            WorkingMemory workingMemory);
+
+	void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+			                           WorkingMemory workingMemory);
+
 }

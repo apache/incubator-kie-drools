@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
-import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,12 +37,9 @@ import org.drools.concurrent.AssertObjects;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.FireAllRules;
-import org.drools.event.AbstractEventSupport;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
@@ -73,8 +69,6 @@ public class ReteooStatelessSession
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
 
     protected AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
-
-    protected RuleFlowEventSupport      ruleFlowEventSupport      = new RuleFlowEventSupport();
 
     public ReteooStatelessSession() {
     }
@@ -112,8 +106,7 @@ public class ReteooStatelessSession
                                                                 this.sessionConf,
                                                                 EnvironmentFactory.newEnvironment(),
                                                                 this.workingMemoryEventSupport,
-                                                                this.agendaEventSupport,
-                                                                this.ruleFlowEventSupport);
+                                                                this.agendaEventSupport);
 
             wm.setGlobalResolver( this.globalResolver );
 
@@ -156,18 +149,6 @@ public class ReteooStatelessSession
 
     public List getAgendaEventListeners() {
         return this.agendaEventSupport.getEventListeners();
-    }
-
-    public void addEventListener(final RuleFlowEventListener listener) {
-        this.ruleFlowEventSupport.addEventListener( listener );
-    }
-
-    public void removeEventListener(final RuleFlowEventListener listener) {
-        this.ruleFlowEventSupport.removeEventListener( listener );
-    }
-
-    public List getRuleFlowEventListeners() {
-        return this.ruleFlowEventSupport.getEventListeners();
     }
 
     public void addEventListener(RuleBaseEventListener listener) {

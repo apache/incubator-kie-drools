@@ -18,15 +18,11 @@ package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -47,12 +43,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.ProcessInstanceImpl;
-import org.drools.process.instance.timer.TimerInstance;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
@@ -65,7 +56,6 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.runtime.process.WorkItem;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -73,6 +63,17 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 
 public class OutputMarshaller {
+	
+	private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+	
+    private static ProcessMarshaller createProcessMarshaller() {
+		try {
+			return ProcessMarshallerFactory.newProcessMarshaller();
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+    }
+
     public static void writeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         
@@ -110,15 +111,17 @@ public class OutputMarshaller {
             context.writeBoolean( false );
         }
 
-        if ( context.marshalProcessInstances ) {
-            writeProcessInstances( context );
+        if ( context.marshalProcessInstances && processMarshaller != null ) {
+            processMarshaller.writeProcessInstances( context );
         }
 
-        if ( context.marshalWorkItems ) {
-            writeWorkItems( context );
+        if ( context.marshalWorkItems  && processMarshaller != null ) {
+        	processMarshaller.writeWorkItems( context );
         }
 
-        writeTimers( context );
+        if ( processMarshaller != null ) {
+        	processMarshaller.writeProcessTimers( context );
+        }
         
         if( multithread ) {
             wm.startPartitionManagers();
@@ -743,112 +746,6 @@ public class OutputMarshaller {
         stream.writeInt( pc.getDormantActivations() );
 
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
-    }
-
-    public static void writeProcessInstances(MarshallerWriteContext context) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        List<org.drools.runtime.process.ProcessInstance> processInstances = new ArrayList<org.drools.runtime.process.ProcessInstance>( context.wm.getProcessInstances() );
-        Collections.sort( processInstances,
-                          new Comparator<org.drools.runtime.process.ProcessInstance>() {
-                              public int compare(org.drools.runtime.process.ProcessInstance o1,
-                            		  org.drools.runtime.process.ProcessInstance o2) {
-                                  return (int) (o1.getId() - o2.getId());
-                              }
-                          } );
-        for ( org.drools.runtime.process.ProcessInstance processInstance : processInstances ) {
-            stream.writeShort(PersisterEnums.PROCESS_INSTANCE);
-            String processType = ((ProcessInstanceImpl) processInstance).getProcess().getType();
-            stream.writeUTF(processType);
-            ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType)
-            	.writeProcessInstance(context, processInstance);
-        }
-        stream.writeShort( PersisterEnums.END );
-    }
-
-    public static void writeWorkItems(MarshallerWriteContext context) throws IOException {
-        ObjectOutputStream stream = context.stream;
-
-        List<WorkItem> workItems = new ArrayList<WorkItem>(
-    		((WorkItemManager) context.wm.getWorkItemManager()).getWorkItems() );
-        Collections.sort( workItems,
-                          new Comparator<WorkItem>() {
-                              public int compare(WorkItem o1,
-                                                 WorkItem o2) {
-                                  return (int) (o2.getId() - o1.getId());
-                              }
-                          } );
-        for ( WorkItem workItem : workItems ) {
-            stream.writeShort( PersisterEnums.WORK_ITEM );
-            writeWorkItem( context,
-                           workItem );
-        }
-        stream.writeShort( PersisterEnums.END );
-    }
-    public static void writeWorkItem(MarshallerWriteContext context,
-                                     WorkItem workItem) throws IOException {
-         writeWorkItem(context, workItem, true);
-    }
-
-    public static void writeWorkItem(MarshallerWriteContext context,
-                                     WorkItem workItem, boolean includeVariables) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        stream.writeLong( workItem.getId() );
-        stream.writeLong( workItem.getProcessInstanceId() );
-        stream.writeUTF( workItem.getName() );
-        stream.writeInt( workItem.getState() );
-
-        if(includeVariables){
-        Map<String, Object> parameters = workItem.getParameters();
-        stream.writeInt( parameters.size() );
-        for ( Map.Entry<String, Object> entry : parameters.entrySet() ) {
-            stream.writeUTF( entry.getKey() );
-            stream.writeObject( entry.getValue() );
-        }
-    }
-    }
-
-    public static void writeTimers(MarshallerWriteContext context) throws IOException {
-        ObjectOutputStream stream = context.stream;
-
-        TimerManager timerManager = context.wm.getTimerManager();
-        long timerId = timerManager.internalGetTimerId();
-        stream.writeLong( timerId );
-        
-        // need to think on how to fix this
-        // stream.writeObject( timerManager.getTimerService() );
-        
-        List<TimerInstance> timers = new ArrayList<TimerInstance>( timerManager.getTimers() );
-        Collections.sort( timers,
-                          new Comparator<TimerInstance>() {
-                              public int compare(TimerInstance o1,
-                                                 TimerInstance o2) {
-                                  return (int) (o2.getId() - o1.getId());
-                              }
-                          } );
-        for ( TimerInstance timer : timers ) {
-            stream.writeShort( PersisterEnums.TIMER );
-            writeTimer( context,
-                        timer );
-        }
-        stream.writeShort( PersisterEnums.END );
-    }
-
-    public static void writeTimer(MarshallerWriteContext context,
-                                  TimerInstance timer) throws IOException {
-        ObjectOutputStream stream = context.stream;
-        stream.writeLong( timer.getId() );
-        stream.writeLong( timer.getTimerId() );
-        stream.writeLong( timer.getDelay() );
-        stream.writeLong( timer.getPeriod() );
-        stream.writeLong( timer.getProcessInstanceId() );
-        stream.writeLong( timer.getActivated().getTime() );
-        Date lastTriggered = timer.getLastTriggered();
-        if ( lastTriggered != null ) {
-            stream.writeBoolean( true );
-            stream.writeLong( timer.getLastTriggered().getTime() );
-        } else {
-            stream.writeBoolean( false );
-        }
     }
 
 }

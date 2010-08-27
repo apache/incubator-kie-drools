@@ -20,26 +20,24 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.TestCase;
+
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.event.ProcessEvent;
-import org.drools.event.RuleFlowCompletedEvent;
-import org.drools.event.RuleFlowEventListenerExtension;
-import org.drools.event.RuleFlowGroupActivatedEvent;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.RuleFlowNodeTriggeredEvent;
-import org.drools.event.RuleFlowStartedEvent;
-import org.drools.event.RuleFlowVariableChangeEvent;
-
-
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessEvent;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
+import org.drools.runtime.process.ProcessInstance;
 
 /**
  *
@@ -94,89 +92,51 @@ public class ProcessEventListenerTest extends TestCase{
 
         final List<ProcessEvent> processEventList = new ArrayList<ProcessEvent>();
 
-        final RuleFlowEventListenerExtension listener = new RuleFlowEventListenerExtension() {
+        final ProcessEventListener listener = new ProcessEventListener() {
 
-            public void beforeVariableChange(RuleFlowVariableChangeEvent event, WorkingMemory workingMemory) {
-            	System.out.println("beforeVariableChange " + event);
+			public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void afterVariableChange(RuleFlowVariableChangeEvent event, WorkingMemory workingMemory) {
-            	System.out.println("afterVariableChange " + event);
+			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
-            	System.out.println("beforeRuleFlowStarted " + event);
+			public void afterProcessCompleted(ProcessCompletedEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
-            	System.out.println("afterRuleFlowStarted " + event);
+			public void afterProcessStarted(ProcessStartedEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
-            	System.out.println("beforeRuleFlowCompleted " + event);
+			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
-            	System.out.println("afterRuleFlowCompleted " + event);
+			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-                //processEventList.add(event);
-            }
-
-            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-                //processEventList.add(event);
-            }
-
-            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-               // processEventList.add(event);
-            }
-
-            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-               // processEventList.add(event);
-            }
-
-            public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-            	System.out.println("beforeRuleFlowNodeTriggered " + event);
+			public void beforeProcessCompleted(ProcessCompletedEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-            	System.out.println("afterRuleFlowNodeTriggered " + event);
+			public void beforeProcessStarted(ProcessStartedEvent event) {
                 processEventList.add(event);
-            }
+			}
 
-            public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-            	System.out.println("beforeRuleFlowNodeLeft " + event);
-                processEventList.add(event);
-            }
-
-            public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-            	System.out.println("afterRuleFlowNodeLeft " + event);
-                processEventList.add(event);
-            }     
         };
 
-
-        ((WorkingMemory)session).addEventListener(listener);
+        ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);
         ProcessInstance processInstance =
-            session.startProcess("org.drools.event");
+        	((InternalWorkingMemory)session).getProcessRuntime().startProcess("org.drools.event");
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
-                                    ((ProcessInstance) processInstance)
+                                    ((org.drools.process.instance.ProcessInstance) processInstance)
                                         .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals( 26, processEventList.size() );
-        assertEquals( "org.drools.event", ((RuleFlowStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( 24, processEventList.size() );
+        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
 
-        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(4)).getVariableId());
-        assertEquals("SomeText",((RuleFlowVariableChangeEvent) processEventList.get(4)).getValue());
-        assertEquals("MyVar",((RuleFlowVariableChangeEvent) processEventList.get(5)).getVariableId());
-        assertEquals("MyValue",((RuleFlowVariableChangeEvent) processEventList.get(5)).getValue());
     }
 }

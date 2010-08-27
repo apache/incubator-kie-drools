@@ -42,6 +42,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
+import org.drools.KnowledgeBaseFactoryService;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -55,28 +56,14 @@ import org.drools.base.CalendarsImpl;
 import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
-import org.drools.definition.process.Process;
-import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.DefaultAgendaEventListener;
-import org.drools.event.DefaultRuleFlowEventListener;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowEventSupport;
-import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.ProcessEventManager;
 import org.drools.management.DroolsManagementAgent;
-import org.drools.process.core.event.EventFilter;
-import org.drools.process.core.event.EventTypeFilter;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.ProcessInstanceFactory;
-import org.drools.process.instance.ProcessInstanceFactoryRegistry;
-import org.drools.process.instance.ProcessInstanceManager;
-import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.event.SignalManager;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
@@ -89,7 +76,6 @@ import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.TimeMachine;
-import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
@@ -99,8 +85,12 @@ import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
-import org.drools.runtime.process.EventListener;
+import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.drools.runtime.process.ProcessRuntimeFactoryService;
 import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -112,9 +102,7 @@ import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
-import org.drools.workflow.core.node.EventTrigger;
-import org.drools.workflow.core.node.StartNode;
-import org.drools.workflow.core.node.Trigger;
+import org.drools.util.ServiceRegistryImpl;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -127,6 +115,7 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
+    ProcessEventManager,
     PropertyChangeListener {
     // ------------------------------------------------------------
     // Constants
@@ -157,8 +146,6 @@ public abstract class AbstractWorkingMemory
     protected WorkingMemoryEventSupport                          workingMemoryEventSupport;
 
     protected AgendaEventSupport                                 agendaEventSupport;
-
-    protected RuleFlowEventSupport                               workflowEventSupport;
 
     protected List                                               __ruleBaseEventListeners;
 
@@ -194,15 +181,11 @@ public abstract class AbstractWorkingMemory
     /** Flag to determine if a rule is currently being fired. */
     protected volatile AtomicBoolean                             firing;
 
-    private ProcessInstanceManager                               processInstanceManager;
-
     private WorkItemManager                                      workItemManager;
 
-    private TimerManager                                         timerManager;
-
-    private SignalManager                                        signalManager;
-
     private TimeMachine                                          timeMachine;
+    
+    private TimerService                                         timerService;
 
     protected transient ObjectTypeConfigurationRegistry          typeConfReg;
 
@@ -237,6 +220,8 @@ public abstract class AbstractWorkingMemory
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
     private AtomicLong                                           lastIdleTimestamp;
+    
+    private InternalProcessRuntime                               processRuntime;
 
     // ------------------------------------------------------------
     // Constructors
@@ -271,8 +256,7 @@ public abstract class AbstractWorkingMemory
                                  final SessionConfiguration config,
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport,
-                                 final RuleFlowEventSupport ruleFlowEventSupport) {
+                                 final AgendaEventSupport agendaEventSupport) {
         this( id,
               ruleBase,
               handleFactory,
@@ -281,8 +265,7 @@ public abstract class AbstractWorkingMemory
               config,
               environment,
               workingMemoryEventSupport,
-              agendaEventSupport,
-              ruleFlowEventSupport );
+              agendaEventSupport);
     }
 
     public AbstractWorkingMemory(final int id,
@@ -300,8 +283,7 @@ public abstract class AbstractWorkingMemory
               config,
               environment,
               new WorkingMemoryEventSupport(),
-              new AgendaEventSupport(),
-              new RuleFlowEventSupport() );
+              new AgendaEventSupport());
     }
 
     public AbstractWorkingMemory(final int id,
@@ -312,8 +294,7 @@ public abstract class AbstractWorkingMemory
                                  final SessionConfiguration config,
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport,
-                                 final RuleFlowEventSupport ruleFlowEventSupport) {
+                                 final AgendaEventSupport agendaEventSupport) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
@@ -360,17 +341,12 @@ public abstract class AbstractWorkingMemory
         this.addRemovePropertyChangeListenerArgs = new Object[]{this};
         this.workingMemoryEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
-        this.workflowEventSupport = ruleFlowEventSupport;
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
-        this.processInstanceManager = config.getProcessInstanceManagerFactory().createProcessInstanceManager( this );
         this.timeMachine = new TimeMachine();
 
-        TimerService timerService = TimerServiceFactory.getTimerService( this.config );
-        this.timerManager = new TimerManager( this,
-                                              timerService );
-        this.signalManager = config.getSignalManagerFactory().createSignalManager( this );
+        timerService = TimerServiceFactory.getTimerService( this.config );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -397,22 +373,29 @@ public abstract class AbstractWorkingMemory
         this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
         this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
         this.channels = new ConcurrentHashMap<String, Channel>();
-        initProcessEventListeners();
         initPartitionManagers();
         initTransient();
 
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
 
-        initManagementBeans();
+        this.processRuntime = createProcessRuntime();
 
-        initProcessActivationListener();
+        initManagementBeans();        
     }
 
     private void initManagementBeans() {
         if ( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
             DroolsManagementAgent.getInstance().registerKnowledgeSession( this );
         }
+    }
+    
+    private InternalProcessRuntime createProcessRuntime() {
+		try {
+			return ProcessRuntimeFactory.newProcessRuntime(this);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
     }
 
     public String getEntryPointId() {
@@ -578,10 +561,6 @@ public abstract class AbstractWorkingMemory
         this.agendaEventSupport = agendaEventSupport;
     }
 
-    public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport) {
-        this.workflowEventSupport = ruleFlowEventSupport;
-    }
-
     public boolean isSequential() {
         return this.sequential;
     }
@@ -617,18 +596,6 @@ public abstract class AbstractWorkingMemory
         return this.agendaEventSupport.getEventListeners();
     }
 
-    public void addEventListener(final RuleFlowEventListener listener) {
-        this.workflowEventSupport.addEventListener( listener );
-    }
-
-    public void removeEventListener(final RuleFlowEventListener listener) {
-        this.workflowEventSupport.removeEventListener( listener );
-    }
-
-    public List getRuleFlowEventListeners() {
-        return this.workflowEventSupport.getEventListeners();
-    }
-
     public void addEventListener(RuleBaseEventListener listener) {
         this.ruleBase.addEventListener( listener );
         this.__ruleBaseEventListeners.add( listener );
@@ -641,6 +608,18 @@ public abstract class AbstractWorkingMemory
     public void removeEventListener(RuleBaseEventListener listener) {
         this.ruleBase.removeEventListener( listener );
         this.__ruleBaseEventListeners.remove( listener );
+    }
+
+    public void addEventListener(ProcessEventListener listener) {
+        ((ProcessEventManager) this.processRuntime).addEventListener( listener );
+    }
+
+    public Collection<ProcessEventListener> getProcessEventListeners() {
+        return ((ProcessEventManager) this.processRuntime).getProcessEventListeners();
+    }
+
+    public void removeEventListener(ProcessEventListener listener) {
+    	((ProcessEventManager) this.processRuntime).removeEventListener(listener);
     }
 
     public FactHandleFactory getFactHandleFactory() {
@@ -1533,10 +1512,6 @@ public abstract class AbstractWorkingMemory
         return this.agendaEventSupport;
     }
 
-    public RuleFlowEventSupport getRuleFlowEventSupport() {
-        return this.workflowEventSupport;
-    }
-
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
@@ -1586,97 +1561,26 @@ public abstract class AbstractWorkingMemory
 
         }
     }
-
-    private void initProcessActivationListener() {
-        addEventListener( new DefaultAgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
-                String ruleFlowGroup = event.getActivation().getRule().getRuleFlowGroup();
-                if ( "DROOLS_SYSTEM".equals( ruleFlowGroup ) ) {
-                    // new activations of the rule associate with a state node
-                    // signal process instances of that state node
-                    String ruleName = event.getActivation().getRule().getName();
-                    if ( ruleName.startsWith( "RuleFlowStateNode-" ) ) {
-                        int index = ruleName.indexOf( "-",
-                                                      18 );
-                        index = ruleName.indexOf( "-",
-                                                  index + 1 );
-                        String eventType = ruleName.substring( 0,
-                                                               index );
-                        signalManager.signalEvent( eventType,
-                                                   event );
-                    }
-                }
-            }
-        } );
-        addEventListener( new DefaultRuleFlowEventListener() {
-            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
-                                                      final WorkingMemory workingMemory) {
-                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
-                                           null );
-            }
-        } );
+    
+    public InternalProcessRuntime getProcessRuntime() {
+    	return processRuntime;
     }
 
     public ProcessInstance startProcess(final String processId) {
-        return startProcess( processId,
-                             null );
+    	return processRuntime.startProcess(processId);
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        try {
-            startOperation();
-            if ( !this.actionQueue.isEmpty() ) {
-                executeQueuedActions();
-            }
-            final Process process = ((InternalRuleBase) getRuleBase()).getProcess( processId );
-            if ( process == null ) {
-                throw new IllegalArgumentException( "Unknown process ID: " + processId );
-            }
-            ProcessInstance processInstance = startProcess( process,
-                                                            parameters );
-
-            if ( processInstance != null ) {
-                // start process instance
-                getRuleFlowEventSupport().fireBeforeRuleFlowProcessStarted( processInstance,
-                                                                            this );
-                processInstance.start();
-                getRuleFlowEventSupport().fireAfterRuleFlowProcessStarted( processInstance,
-                                                                           this );
-            }
-            return processInstance;
-        } finally {
-            endOperation();
-        }
-    }
-
-    private ProcessInstance startProcess(final Process process,
-                                         Map<String, Object> parameters) {
-        ProcessInstanceFactoryRegistry processRegistry = ((InternalRuleBase) getRuleBase()).getConfiguration().getProcessInstanceFactoryRegistry();
-        ProcessInstanceFactory conf = processRegistry.getProcessInstanceFactory( process );
-        if ( conf == null ) {
-            throw new IllegalArgumentException( "Illegal process type: " + process.getClass() );
-        }
-        return conf.createProcessInstance( process,
-                                           this,
-                                           parameters );
-    }
-
-    public ProcessInstanceManager getProcessInstanceManager() {
-        return processInstanceManager;
+        return processRuntime.startProcess(processId, parameters);
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return (Collection<ProcessInstance>) processInstanceManager.getProcessInstances();
+        return processRuntime.getProcessInstances();
     }
 
-    public ProcessInstance getProcessInstance(long id) {
-        return processInstanceManager.getProcessInstance( id );
-    }
-
-    public void removeProcessInstance(ProcessInstance processInstance) {
-        processInstanceManager.removeProcessInstance( processInstance );
+    public ProcessInstance getProcessInstance(long processInstanceId) {
+        return processRuntime.getProcessInstance(processInstanceId);
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -1691,85 +1595,6 @@ public abstract class AbstractWorkingMemory
             }
         }
         return workItemManager;
-    }
-
-    public SignalManager getSignalManager() {
-        return signalManager;
-    }
-
-    private void initProcessEventListeners() {
-        for ( Process process : ruleBase.getProcesses() ) {
-            if ( process instanceof RuleFlowProcess ) {
-                StartNode startNode = ((RuleFlowProcess) process).getStart();
-                List<Trigger> triggers = startNode.getTriggers();
-                if ( triggers != null ) {
-                    for ( Trigger trigger : triggers ) {
-                        if ( trigger instanceof EventTrigger ) {
-                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
-                            String type = null;
-                            for ( EventFilter filter : filters ) {
-                                if ( filter instanceof EventTypeFilter ) {
-                                    type = ((EventTypeFilter) filter).getType();
-                                }
-                            }
-                            getSignalManager().addEventListener( type,
-                                                                 new StartProcessEventListener( process.getId(),
-                                                                                                filters,
-                                                                                                trigger.getInMappings() ) );
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private class StartProcessEventListener
-        implements
-        EventListener {
-        private String              processId;
-        private List<EventFilter>   eventFilters;
-        private Map<String, String> inMappings;
-
-        public StartProcessEventListener(String processId,
-                                         List<EventFilter> eventFilters,
-                                         Map<String, String> inMappings) {
-            this.processId = processId;
-            this.eventFilters = eventFilters;
-            this.inMappings = inMappings;
-        }
-
-        public String[] getEventTypes() {
-            return null;
-        }
-
-        public void signalEvent(String type,
-                                Object event) {
-            for ( EventFilter filter : eventFilters ) {
-                if ( !filter.acceptsEvent( type,
-                                           event ) ) {
-                    return;
-                }
-            }
-            Map<String, Object> params = null;
-            if ( inMappings != null && !inMappings.isEmpty() ) {
-                params = new HashMap<String, Object>();
-                for ( Map.Entry<String, String> entry : inMappings.entrySet() ) {
-                    if ( "event".equals( entry.getValue() ) ) {
-                        params.put( entry.getKey(),
-                                    event );
-                    } else {
-                        params.put( entry.getKey(),
-                                    entry.getValue() );
-                    }
-                }
-            }
-            startProcess( processId,
-                          params );
-        }
-    }
-
-    public TimerManager getTimerManager() {
-        return timerManager;
     }
 
     public List iterateObjectsToList() {
@@ -1879,11 +1704,11 @@ public abstract class AbstractWorkingMemory
     }
 
     public TimerService getTimerService() {
-        return this.getTimerManager().getTimerService();
+        return this.timerService;
     }
 
     public SessionClock getSessionClock() {
-        return (SessionClock) this.getTimerManager().getTimerService();
+        return (SessionClock) this.timerService;
     }
 
     public PartitionTaskManager getPartitionTaskManager(final RuleBasePartitionId partitionId) {
@@ -1941,12 +1766,13 @@ public abstract class AbstractWorkingMemory
         }
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();
-        this.workflowEventSupport.reset();
         for ( Iterator it = this.__ruleBaseEventListeners.iterator(); it.hasNext(); ) {
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
         this.stopPartitionManagers();
-        this.timerManager.dispose();
+        if (processRuntime != null) {
+        	this.processRuntime.dispose();
+        }
     }
 
     public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
@@ -2049,7 +1875,7 @@ public abstract class AbstractWorkingMemory
     public void endOperation() {
         if ( this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
-            this.lastIdleTimestamp.set( this.timerManager.getTimerService().getCurrentTime() );
+            this.lastIdleTimestamp.set( this.timerService.getCurrentTime() );
             if ( this.endOperationListener != null ) {
                 this.endOperationListener.endOperation( (ReteooWorkingMemory) this );
             }
@@ -2066,7 +1892,7 @@ public abstract class AbstractWorkingMemory
      */
     public long getIdleTime() {
         long lastIdle = this.lastIdleTimestamp.get();
-        return lastIdle > -1 ? timerManager.getTimerService().getCurrentTime() - lastIdle : -1;
+        return lastIdle > -1 ? timerService.getCurrentTime() - lastIdle : -1;
     }
 
     public long getLastIdleTimestamp() {
@@ -2081,7 +1907,7 @@ public abstract class AbstractWorkingMemory
      *         there is no job scheduled
      */
     public long getTimeToNextJob() {
-        return this.timerManager.getTimerService().getTimeToNextJob();
+        return this.timerService.getTimeToNextJob();
     }
 
     public void prepareToFireActivation() {

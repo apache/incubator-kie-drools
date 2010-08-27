@@ -19,14 +19,11 @@ import org.drools.WorkingMemoryEntryPoint;
 import org.drools.concurrent.Future;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleFlowEventListener;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.event.SignalManager;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.AsyncExceptionHandler;
@@ -120,10 +117,6 @@ public class ExternalSheetListenerTest extends TestCase {
 
 				}
 
-				public void addEventListener(RuleFlowEventListener arg0) {
-
-				}
-
 				public FactHandle insert(Object fact)
 						throws FactException {
 					if (fact instanceof Row) {
@@ -209,10 +202,6 @@ public class ExternalSheetListenerTest extends TestCase {
 				}
 
 				public void removeEventListener(AgendaEventListener arg0) {
-
-				}
-
-				public void removeEventListener(RuleFlowEventListener arg0) {
 
 				}
 
@@ -403,19 +392,9 @@ public class ExternalSheetListenerTest extends TestCase {
                     
                     return null;
                 }
-				public TimerManager getTimerManager() {
-					
-					return null;
-				}
-
                 public SessionClock getSessionClock() {
                     return null;
                 }
-
-				public SignalManager getSignalManager() {
-					// TODO Auto-generated method stub
-					return null;
-				}
 
 				public void fireUntilHalt() {
 					// TODO Auto-generated method stub

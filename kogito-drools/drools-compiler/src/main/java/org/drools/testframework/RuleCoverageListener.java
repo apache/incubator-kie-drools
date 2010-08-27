@@ -11,6 +11,8 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
 
 /**
  * Measure the rule coverage.
@@ -66,6 +68,30 @@ public class RuleCoverageListener implements AgendaEventListener {
 		float left = totalCount - rules.size();
 
 		return (int) ((left / totalCount) * 100);
+	}
+
+	public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+			WorkingMemory workingMemory) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void afterRuleFlowGroupDeactivated(
+			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+			WorkingMemory workingMemory) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void beforeRuleFlowGroupDeactivated(
+			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

@@ -25,10 +25,7 @@ import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
@@ -40,6 +37,7 @@ import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.FactHandleFactory;
@@ -62,8 +60,6 @@ public interface InternalWorkingMemory
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport);
-    
     public Object getNodeMemory(NodeMemory node);
 
     public void clearNodeMemory(NodeMemory node);
@@ -120,10 +116,6 @@ public interface InternalWorkingMemory
 
 	public void setTimeMachine(TimeMachine tm);
 	
-    public void removeProcessInstance(ProcessInstance processInstance);
-    
-    public ProcessInstanceManager getProcessInstanceManager();
-
     public ExecutorService getExecutorService();
 
     public void setExecutorService(ExecutorService executor);    
@@ -244,6 +236,8 @@ public interface InternalWorkingMemory
      */
     public long getTotalFactCount();
     
-    public DateFormats getDateFormats();  
+    public DateFormats getDateFormats();
+    
+    InternalProcessRuntime getProcessRuntime();
 
 }

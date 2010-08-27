@@ -127,6 +127,8 @@ import org.drools.event.DefaultWorkingMemoryEventListener;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
@@ -3753,6 +3755,34 @@ public class MiscTest extends TestCase {
                                               WorkingMemory workingMemory) {
                 agendaList.add( event );
             }
+
+			public void afterRuleFlowGroupActivated(
+					RuleFlowGroupActivatedEvent event,
+					WorkingMemory workingMemory) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void afterRuleFlowGroupDeactivated(
+					RuleFlowGroupDeactivatedEvent event,
+					WorkingMemory workingMemory) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void beforeRuleFlowGroupActivated(
+					RuleFlowGroupActivatedEvent event,
+					WorkingMemory workingMemory) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			public void beforeRuleFlowGroupDeactivated(
+					RuleFlowGroupDeactivatedEvent event,
+					WorkingMemory workingMemory) {
+				// TODO Auto-generated method stub
+				
+			}
 
         };
 

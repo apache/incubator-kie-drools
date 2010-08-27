@@ -16,18 +16,20 @@
 
 package org.drools.spi;
 
-import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
-import org.drools.process.instance.context.variable.VariableScopeInstance;
-import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 
 public class ProcessContext implements org.drools.runtime.process.ProcessContext {
     
+	private KnowledgeRuntime kruntime;
 	private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
+    
+    public ProcessContext(KnowledgeRuntime kruntime) {
+    	this.kruntime = kruntime;
+    }
 
     public ProcessInstance getProcessInstance() {
     	if (processInstance != null) {
@@ -52,42 +54,23 @@ public class ProcessContext implements org.drools.runtime.process.ProcessContext
     }
     
     public Object getVariable(String variableName) {
-    	VariableScopeInstance variableScope = null;
     	if (nodeInstance != null) {
-	    	variableScope = (VariableScopeInstance) ((org.drools.workflow.instance.NodeInstance)
-				nodeInstance).resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+	    	return nodeInstance.getVariable(variableName);
+    	} else {
+    		return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
     	}
-    	if (variableScope == null) {
-    		variableScope = (VariableScopeInstance) ((ProcessInstance) 
-    			getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
-    	}
-    	return variableScope.getVariable(variableName);
     }
     
     public void setVariable(String variableName, Object value) {
-    	VariableScopeInstance variableScope = null;
     	if (nodeInstance != null) {
-    		variableScope = (VariableScopeInstance) ((org.drools.workflow.instance.NodeInstance) 
-    			nodeInstance).resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+    		nodeInstance.setVariable(variableName, value);
+    	} else {
+    		((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
     	}
-    	if (variableScope == null) {
-    		variableScope = (VariableScopeInstance) getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
-    		if (variableScope.getVariableScope().findVariable(variableName) == null) {
-    			variableScope = null;
-    		}
-    	}
-    	if (variableScope == null) {
-    		System.err.println("Could not find variable " + variableName);
-    		System.err.println("Using process-level scope");
-    		variableScope = (VariableScopeInstance) ((ProcessInstance) 
-    			getProcessInstance()).getContextInstance(VariableScope.VARIABLE_SCOPE);
-    	}
-    	variableScope.setVariable(variableName, value);
     }
 
 	public KnowledgeRuntime getKnowledgeRuntime() {
-		return new StatefulKnowledgeSessionImpl(
-			(ReteooStatefulSession) getProcessInstance().getWorkingMemory() );
+		return kruntime;
 	}
     
 }

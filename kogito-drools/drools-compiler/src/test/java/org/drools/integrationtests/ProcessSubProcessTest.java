@@ -13,9 +13,9 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.process.core.context.variable.VariableScope;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.context.variable.VariableScopeInstance;
 import org.drools.rule.Package;
+import org.drools.runtime.process.ProcessInstance;
 
 public class ProcessSubProcessTest extends TestCase {
 
@@ -34,7 +34,7 @@ public class ProcessSubProcessTest extends TestCase {
     public void testSubProcessCancel() throws Exception {
         RuleBase ruleBase = readRule(true);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = ( ProcessInstance )
+        org.drools.process.instance.ProcessInstance processInstance = ( org.drools.process.instance.ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, workingMemory.getProcessInstances().size());
@@ -45,7 +45,7 @@ public class ProcessSubProcessTest extends TestCase {
     public void testIndependentSubProcessCancel() throws Exception {
         RuleBase ruleBase = readRule(false);
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        ProcessInstance processInstance = ( ProcessInstance )
+        org.drools.process.instance.ProcessInstance processInstance = ( org.drools.process.instance.ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, workingMemory.getProcessInstances().size());
@@ -58,13 +58,13 @@ public class ProcessSubProcessTest extends TestCase {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("x", "x-value");
-        ProcessInstance processInstance = ( ProcessInstance )
+        org.drools.process.instance.ProcessInstance processInstance = ( org.drools.process.instance.ProcessInstance )
     		workingMemory.startProcess("com.sample.ruleflow", map);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
         assertEquals(2, workingMemory.getProcessInstances().size());
         for (ProcessInstance p: workingMemory.getProcessInstances()) {
     		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-    			(( ProcessInstance )p).getContextInstance(VariableScope.VARIABLE_SCOPE);
+    			(( org.drools.process.instance.ProcessInstance )p).getContextInstance(VariableScope.VARIABLE_SCOPE);
         	if ("com.sample.ruleflow".equals(p.getProcessId())) {
         		assertEquals("x-value", variableScopeInstance.getVariable("x"));
         	} else if ("com.sample.subflow".equals(p.getProcessId())) {

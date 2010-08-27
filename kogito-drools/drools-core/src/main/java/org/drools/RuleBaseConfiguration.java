@@ -20,13 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.drools.builder.conf.ClassLoaderCacheOption;
 import org.drools.common.AgendaGroupFactory;
@@ -56,26 +54,12 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.process.Process;
-import org.drools.process.core.Context;
-import org.drools.process.core.ParameterDefinition;
-import org.drools.process.core.WorkDefinition;
-import org.drools.process.core.datatype.DataType;
-import org.drools.process.core.impl.ParameterDefinitionImpl;
-import org.drools.process.core.impl.WorkDefinitionExtensionImpl;
-import org.drools.process.instance.ProcessInstanceFactory;
-import org.drools.process.instance.ProcessInstanceFactoryRegistry;
-import org.drools.process.instance.impl.ContextInstanceFactory;
-import org.drools.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.instance.impl.NodeInstanceFactory;
-import org.drools.workflow.instance.impl.NodeInstanceFactoryRegistry;
 import org.mvel2.MVEL;
 
 /**
@@ -160,12 +144,8 @@ public class RuleBaseConfiguration
 
     private ConflictResolver               conflictResolver;
 
-    private ContextInstanceFactoryRegistry processContextInstanceFactoryRegistry;
-    private Map<String, WorkDefinition>    workDefinitions;
+    private List<Map<String, Object>>      workDefinitions;
     private boolean                        advancedProcessRuleIntegration;
-
-    private ProcessInstanceFactoryRegistry processInstanceFactoryRegistry;
-    private NodeInstanceFactoryRegistry    processNodeInstanceFactoryRegistry;
 
     private transient CompositeClassLoader classLoader;
 
@@ -188,7 +168,6 @@ public class RuleBaseConfiguration
         out.writeObject( consequenceExceptionHandler );
         out.writeObject( ruleBaseUpdateHandler );
         out.writeObject( conflictResolver );
-        out.writeObject( processNodeInstanceFactoryRegistry );
         out.writeBoolean( advancedProcessRuleIntegration );
         out.writeBoolean( multithread );
         out.writeInt( maxThreads );
@@ -216,7 +195,6 @@ public class RuleBaseConfiguration
         consequenceExceptionHandler = (String) in.readObject();
         ruleBaseUpdateHandler = (String) in.readObject();
         conflictResolver = (ConflictResolver) in.readObject();
-        processNodeInstanceFactoryRegistry = (NodeInstanceFactoryRegistry) in.readObject();
         advancedProcessRuleIntegration = in.readBoolean();
         multithread = in.readBoolean();
         maxThreads = in.readInt();
@@ -649,14 +627,6 @@ public class RuleBaseConfiguration
         this.sequentialAgenda = sequentialAgenda;
     }
 
-    public NodeInstanceFactoryRegistry getProcessNodeInstanceFactoryRegistry() {
-        if ( this.processNodeInstanceFactoryRegistry == null ) {
-            initProcessNodeInstanceFactoryRegistry();
-        }
-        return this.processNodeInstanceFactoryRegistry;
-
-    }
-
     /**
      * Defines if the RuleBase should be executed using a pool of
      * threads for evaluating the rules ("true"), or if the rulebase 
@@ -714,97 +684,7 @@ public class RuleBaseConfiguration
         this.classLoader.setCachingEnabled( this.classLoaderCacheEnabled );
     }
 
-    private void initProcessNodeInstanceFactoryRegistry() {
-        this.processNodeInstanceFactoryRegistry = new NodeInstanceFactoryRegistry();
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty( "processNodeInstanceFactoryRegistry",
-                                                                 "" ).split( "\\s" );
-
-        int i = 0;
-        // load each SemanticModule
-        for ( String factoryLocation : locations ) {
-            // trim leading/trailing spaces and quotes
-            factoryLocation = factoryLocation.trim();
-            if ( factoryLocation.startsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 1 );
-            }
-            if ( factoryLocation.endsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 0,
-                                                             factoryLocation.length() - 1 );
-            }
-            if ( !factoryLocation.equals( "" ) ) {
-                loadProcessNodeInstanceFactoryRegistry( factoryLocation );
-            }
-        }
-    }
-
-    private void loadProcessNodeInstanceFactoryRegistry(String factoryLocation) {
-        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
-                                                                                  null,
-                                                                                  RuleBaseConfiguration.class ) );
-
-        Map<Class< ? extends Node>, NodeInstanceFactory> map = (Map<Class< ? extends Node>, NodeInstanceFactory>) MVEL.eval( content,
-                                                                                                                             new HashMap() );
-
-        if ( map != null ) {
-            for ( Entry<Class< ? extends Node>, NodeInstanceFactory> entry : map.entrySet() ) {
-                this.processNodeInstanceFactoryRegistry.register( entry.getKey(),
-                                                                  entry.getValue() );
-            }
-        }
-    }
-
-    public ProcessInstanceFactoryRegistry getProcessInstanceFactoryRegistry() {
-        if ( this.processInstanceFactoryRegistry == null ) {
-            initProcessInstanceFactoryRegistry();
-        }
-        return this.processInstanceFactoryRegistry;
-
-    }
-
-    private void initProcessInstanceFactoryRegistry() {
-        this.processInstanceFactoryRegistry = new ProcessInstanceFactoryRegistry();
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty( "processInstanceFactoryRegistry",
-                                                                 "" ).split( "\\s" );
-
-        int i = 0;
-        // load each SemanticModule
-        for ( String factoryLocation : locations ) {
-            // trim leading/trailing spaces and quotes
-            factoryLocation = factoryLocation.trim();
-            if ( factoryLocation.startsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 1 );
-            }
-            if ( factoryLocation.endsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 0,
-                                                             factoryLocation.length() - 1 );
-            }
-            if ( !factoryLocation.equals( "" ) ) {
-                loadProcessInstanceFactoryRegistry( factoryLocation );
-            }
-        }
-    }
-
-    private void loadProcessInstanceFactoryRegistry(String factoryLocation) {
-        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
-                                                                                  null,
-                                                                                  RuleBaseConfiguration.class ) );
-
-        Map<Class< ? extends Process>, ProcessInstanceFactory> map = (Map<Class< ? extends Process>, ProcessInstanceFactory>) MVEL.eval( content,
-                                                                                                                                         new HashMap() );
-
-        if ( map != null ) {
-            for ( Entry<Class< ? extends Process>, ProcessInstanceFactory> entry : map.entrySet() ) {
-                this.processInstanceFactoryRegistry.register( entry.getKey(),
-                                                              entry.getValue() );
-            }
-        }
-    }
-
-    public Map<String, WorkDefinition> getProcessWorkDefinitions() {
+    public List<Map<String, Object>> getWorkDefinitions() {
         if ( this.workDefinitions == null ) {
             initWorkDefinitions();
         }
@@ -813,7 +693,7 @@ public class RuleBaseConfiguration
     }
 
     private void initWorkDefinitions() {
-        this.workDefinitions = new HashMap<String, WorkDefinition>();
+        this.workDefinitions = new ArrayList<Map<String, Object>>();
 
         // split on each space
         String locations[] = this.chainedProperties.getProperty( "drools.workDefinitions",
@@ -841,91 +721,13 @@ public class RuleBaseConfiguration
                                                                                   null,
                                                                                   RuleBaseConfiguration.class ) );
         try {
-            List<Map<String, Object>> workDefinitionsMap = (List<Map<String, Object>>) MVEL.eval( content,
-                                                                                                  new HashMap() );
-            for ( Map<String, Object> workDefinitionMap : workDefinitionsMap ) {
-                if ( workDefinitionMap != null ) {
-                    WorkDefinitionExtensionImpl workDefinition = new WorkDefinitionExtensionImpl();
-                    workDefinition.setName( (String) workDefinitionMap.get( "name" ) );
-                    workDefinition.setDisplayName( (String) workDefinitionMap.get( "displayName" ) );
-                    workDefinition.setIcon( (String) workDefinitionMap.get( "icon" ) );
-                    workDefinition.setCustomEditor( (String) workDefinitionMap.get( "customEditor" ) );
-                    Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
-                    Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get( "parameters" );
-                    if ( parameterMap != null ) {
-                        for ( Map.Entry<String, DataType> entry : parameterMap.entrySet() ) {
-                            parameters.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                         entry.getValue() ) );
-                        }
-                    }
-                    workDefinition.setParameters( parameters );
-                    Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
-                    Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get( "results" );
-                    if ( resultMap != null ) {
-                        for ( Map.Entry<String, DataType> entry : resultMap.entrySet() ) {
-                            results.add( new ParameterDefinitionImpl( entry.getKey(),
-                                                                      entry.getValue() ) );
-                        }
-                    }
-                    workDefinition.setResults( results );
-                    this.workDefinitions.put( workDefinition.getName(),
-                                              workDefinition );
-                }
-            }
+            this.workDefinitions.addAll(
+        		(List<Map<String, Object>>) MVEL.eval( content, new HashMap() ) );
         } catch ( Throwable t ) {
             System.err.println( "Error occured while loading work definitions " + location );
             System.err.println( "Continuing without reading these work definitions" );
             t.printStackTrace();
             throw new RuntimeException( "Could not parse work definitions " + location + ": " + t.getMessage() );
-        }
-    }
-
-    public ContextInstanceFactoryRegistry getProcessContextInstanceFactoryRegistry() {
-        if ( this.processContextInstanceFactoryRegistry == null ) {
-            initProcessContextInstanceFactoryRegistry();
-        }
-        return this.processContextInstanceFactoryRegistry;
-
-    }
-
-    private void initProcessContextInstanceFactoryRegistry() {
-        this.processContextInstanceFactoryRegistry = new ContextInstanceFactoryRegistry();
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty( "processContextInstanceFactoryRegistry",
-                                                                 "" ).split( "\\s" );
-
-        int i = 0;
-        // load each SemanticModule
-        for ( String factoryLocation : locations ) {
-            // trim leading/trailing spaces and quotes
-            factoryLocation = factoryLocation.trim();
-            if ( factoryLocation.startsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 1 );
-            }
-            if ( factoryLocation.endsWith( "\"" ) ) {
-                factoryLocation = factoryLocation.substring( 0,
-                                                             factoryLocation.length() - 1 );
-            }
-            if ( !factoryLocation.equals( "" ) ) {
-                loadProcessContextInstanceFactoryRegistry( factoryLocation );
-            }
-        }
-    }
-
-    private void loadProcessContextInstanceFactoryRegistry(String factoryLocation) {
-        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
-                                                                                  null,
-                                                                                  RuleBaseConfiguration.class ) );
-
-        Map<Class< ? extends Context>, ContextInstanceFactory> map = (Map<Class< ? extends Context>, ContextInstanceFactory>) MVEL.eval( content,
-                                                                                                                                         new HashMap() );
-
-        if ( map != null ) {
-            for ( Entry<Class< ? extends Context>, ContextInstanceFactory> entry : map.entrySet() ) {
-                this.processContextInstanceFactoryRegistry.register( entry.getKey(),
-                                                                     entry.getValue() );
-            }
         }
     }
 
