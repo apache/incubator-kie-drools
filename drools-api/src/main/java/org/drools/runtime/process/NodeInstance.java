@@ -16,6 +16,8 @@
 
 package org.drools.runtime.process;
 
+import org.drools.definition.process.Node;
+
 /**
  * A node instance represents the execution of one specific node
  * in a process instance.  Whenever a node is reached during the
@@ -50,6 +52,15 @@ public interface NodeInstance {
      * @return the id of the node this node instance refers to
      */
     long getNodeId();
+    
+    /**
+     * Return the node this node instance refers to.  The node
+     * represents the definition that this node instance was based
+     * on.
+     * 
+     * @return the node this node instance refers to
+     */
+    Node getNode();
 
     /**
      * The name of the node this node instance refers to.
@@ -72,5 +83,9 @@ public interface NodeInstance {
      * @return the process instance that this node instance is executing in
      */
     NodeInstanceContainer getNodeInstanceContainer();
+    
+    Object getVariable(String variableName);
+    
+    void setVariable(String variableName, Object value);
 
 }

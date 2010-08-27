@@ -39,5 +39,7 @@ public interface WorkflowProcessInstance
 	 * @return the value of the variable, or <code>null</code> if it cannot be found
 	 */
 	Object getVariable(String name);
+	
+	void setVariable(String name, Object value);
 
 }

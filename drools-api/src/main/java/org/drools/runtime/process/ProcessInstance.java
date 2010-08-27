@@ -16,6 +16,8 @@
 
 package org.drools.runtime.process;
 
+import org.drools.definition.process.Process;
+
 /**
  * A process instance represents one specific instance of a process
  * that is currently executing.  Whenever a process is started, a
@@ -52,6 +54,8 @@ public interface ProcessInstance
      * @return the id of the process definition that is related to this process instance
      */
     String getProcessId();
+    
+    Process getProcess();
 
     /**
      * The unique id of this process instance.
