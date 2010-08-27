@@ -56,6 +56,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.io.ResourcedObject;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
@@ -486,11 +487,11 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
             for (Process process : pkg.getRuleFlows().values()) {
                 if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for rule="
+                    this.listener.debug("KnowledgeAgent no resource mapped for process="
                             + process);
                 }
                 if (autoDiscoverResource) {
-                    resource = ((org.drools.process.core.Process) process).getResource();
+                    resource = ((ResourcedObject) process).getResource();
                 }
 
                 this.addDefinitionMapping(resource, process, true);
@@ -498,7 +499,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
             for (TypeDeclaration typeDeclaration : pkg.getTypeDeclarations().values()) {
                 if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for rule="
+                    this.listener.debug("KnowledgeAgent no resource mapped for type="
                             + typeDeclaration);
                 }
                 if (autoDiscoverResource) {
@@ -510,7 +511,7 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
 
             for (Function function : pkg.getFunctions().values()) {
                 if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for rule="
+                    this.listener.debug("KnowledgeAgent no resource mapped for function="
                             + function);
                 }
                 if (autoDiscoverResource) {

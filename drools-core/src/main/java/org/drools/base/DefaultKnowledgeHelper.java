@@ -31,6 +31,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.LogicalDependency;
+import org.drools.core.util.LinkedList;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -45,8 +47,6 @@ import org.drools.runtime.process.ProcessContext;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
-import org.drools.common.LogicalDependency;
-import org.drools.core.util.LinkedList;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
@@ -337,8 +337,8 @@ public class DefaultKnowledgeHelper
     				}
     				Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
     				ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
-    				org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext();
-    				context.setProcessInstance((org.drools.process.instance.ProcessInstance) processInstance);
+    				org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+    				context.setProcessInstance(processInstance);
     				String nodeInstance = entry.getValue();
     				String[] nodeInstanceIds = nodeInstance.split(":");
     				NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;

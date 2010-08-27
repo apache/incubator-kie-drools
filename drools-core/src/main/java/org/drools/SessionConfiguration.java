@@ -27,9 +27,7 @@ import java.util.Properties;
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
-import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.conf.ClockTypeOption;
@@ -77,14 +75,11 @@ public class SessionConfiguration
 
     private ClockType                     clockType;
 
-    private QueryListenerOption      queryListener;
+    private QueryListenerOption           queryListener;
 
     private Map<String, WorkItemHandler>  workItemHandlers;
-    private ProcessInstanceManagerFactory processInstanceManagerFactory;
-    private SignalManagerFactory          processSignalManagerFactory;
     private WorkItemManagerFactory        workItemManagerFactory;
     private CommandService                commandService;
-    private TimerService 				  timerService;
 
     private transient ClassLoader         classLoader;
 
@@ -286,76 +281,6 @@ public class SessionConfiguration
         this.workItemHandlers.putAll( workItemHandlers );
     }
 
-    public ProcessInstanceManagerFactory getProcessInstanceManagerFactory() {
-        if ( this.processInstanceManagerFactory == null ) {
-            initProcessInstanceManagerFactory();
-        }
-        return this.processInstanceManagerFactory;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initProcessInstanceManagerFactory() {
-        String className = this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
-                                                               "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
-        Class<ProcessInstanceManagerFactory> clazz = null;
-        try {
-            clazz = (Class<ProcessInstanceManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
-        } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = (Class<ProcessInstanceManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
-        if ( clazz != null ) {
-            try {
-                this.processInstanceManagerFactory = clazz.newInstance();
-            } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate process instance manager factory '" + className + "'" );
-            }
-        } else {
-            throw new IllegalArgumentException( "Process instance manager factory '" + className + "' not found" );
-        }
-    }
-
-    public SignalManagerFactory getSignalManagerFactory() {
-        if ( this.processSignalManagerFactory == null ) {
-            initSignalManagerFactory();
-        }
-        return this.processSignalManagerFactory;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initSignalManagerFactory() {
-        String className = this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
-                                                               "org.drools.process.instance.event.DefaultSignalManagerFactory" );
-        Class<SignalManagerFactory> clazz = null;
-        try {
-            clazz = (Class<SignalManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
-        } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = (Class<SignalManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
-        if ( clazz != null ) {
-            try {
-                this.processSignalManagerFactory = clazz.newInstance();
-            } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Unable to instantiate signal manager factory '" + className + "'" );
-            }
-        } else {
-            throw new IllegalArgumentException( "Signal manager factory '" + className + "' not found" );
-        }
-    }
-
     public WorkItemManagerFactory getWorkItemManagerFactory() {
         if ( this.workItemManagerFactory == null ) {
             initWorkItemManagerFactory();
@@ -391,6 +316,17 @@ public class SessionConfiguration
             throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
         }
     }
+    
+    public String getProcessInstanceManagerFactory() {
+        return this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
+                                                   "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
+    }
+
+    public String getSignalManagerFactory() {
+    	return this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
+                                                   "org.drools.process.instance.event.DefaultSignalManagerFactory" );
+    }
+
 
     public CommandService getCommandService(KnowledgeBase kbase,
                                             Environment environment) {

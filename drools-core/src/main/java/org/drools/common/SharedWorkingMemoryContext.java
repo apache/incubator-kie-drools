@@ -16,16 +16,12 @@
 
 package org.drools.common;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.base.MapGlobalResolver;
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstanceFactory;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.TimeMachine;
 import org.drools.spi.FactHandleFactory;
@@ -44,19 +40,11 @@ public class SharedWorkingMemoryContext {
 
     protected AgendaEventSupport                agendaEventSupport;
 
-    protected RuleFlowEventSupport              workflowEventSupport;
-
     protected List                              __ruleBaseEventListeners;
 
     protected long                              propagationIdCounter;
 
-    private Map                                 processInstances;
-
-    private int                                 processCounter;
-
     private WorkItemManager                     workItemManager;
-
-    private Map<String, ProcessInstanceFactory> processInstanceFactories;
 
     private TimeMachine                         timeMachine;
 
@@ -67,20 +55,9 @@ public class SharedWorkingMemoryContext {
 
         this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
         this.agendaEventSupport = new AgendaEventSupport();
-        this.workflowEventSupport = new RuleFlowEventSupport();
         this.__ruleBaseEventListeners = new LinkedList();
 
-        processInstanceFactories = new HashMap();
-
         timeMachine = new TimeMachine();
-    }
-
-    public Map getProcessInstances() {
-        return processInstances;
-    }
-
-    public void setProcessInstances(Map processInstances) {
-        this.processInstances = processInstances;
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -115,20 +92,8 @@ public class SharedWorkingMemoryContext {
         return agendaEventSupport;
     }
 
-    public RuleFlowEventSupport getWorkflowEventSupport() {
-        return workflowEventSupport;
-    }
-
     public List get__ruleBaseEventListeners() {
         return __ruleBaseEventListeners;
-    }
-
-    public int getProcessCounter() {
-        return processCounter;
-    }
-
-    public Map<String, ProcessInstanceFactory> getProcessInstanceFactories() {
-        return processInstanceFactories;
     }
 
 }

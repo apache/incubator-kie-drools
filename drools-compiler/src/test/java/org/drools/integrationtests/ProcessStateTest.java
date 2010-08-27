@@ -14,10 +14,10 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
 import org.drools.ruleflow.instance.RuleFlowProcessInstance;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.workflow.instance.node.StateNodeInstance;
 
 public class ProcessStateTest extends TestCase {

@@ -12,6 +12,7 @@ import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
@@ -158,7 +159,7 @@ public class ProcessStartTest extends TestCase {
 
 		assertEquals(0, myList.size());
         
-		session.getSignalManager().signalEvent("myEvent", "Jack");
+		((InternalWorkingMemory) session).getProcessRuntime().signalEvent("myEvent", "Jack");
         session.fireAllRules();
         assertEquals(2, myList.size());
         assertEquals("Jack", myList.get(0));

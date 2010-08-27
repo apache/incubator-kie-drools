@@ -49,16 +49,9 @@ import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.ObjectInsertedEvent;
 import org.drools.event.ObjectRetractedEvent;
 import org.drools.event.ObjectUpdatedEvent;
-import org.drools.event.RuleFlowCompletedEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.RuleFlowNodeTriggeredEvent;
-import org.drools.event.RuleFlowStartedEvent;
 import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.impl.ProcessCompletedEventImpl;
-import org.drools.event.process.impl.ProcessNodeLeftEventImpl;
-import org.drools.event.process.impl.ProcessNodeTriggeredEventImpl;
-import org.drools.event.process.impl.ProcessStartedEventImpl;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.event.rule.impl.ActivationCancelledEventImpl;
@@ -81,6 +74,7 @@ import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.Agenda;
@@ -181,30 +175,15 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        ProcessEventListenerWrapper wrapper = new ProcessEventListenerWrapper( listener );
-        this.session.addEventListener( wrapper );
+        ((InternalProcessRuntime) this.session.getProcessRuntime()).addEventListener( listener );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        List<ProcessEventListener> listeners = new ArrayList<ProcessEventListener>();
-        for ( ProcessEventListener listener : ((List<ProcessEventListener>) this.session.getRuleFlowEventListeners()) ) {
-            if ( listener instanceof ProcessEventListenerWrapper ) {
-                listeners.add( ((ProcessEventListenerWrapper) listener).unWrap() );
-            } else {
-                listeners.add( listener );
-            }
-        }
-        return Collections.unmodifiableCollection( listeners );
+    	return ((InternalProcessRuntime) this.session.getProcessRuntime()).getProcessEventListeners();
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        ProcessEventListenerWrapper wrapper = null;
-        if ( listener != null && !(listener instanceof ProcessEventListenerWrapper) ) {
-            wrapper = new ProcessEventListenerWrapper( listener );
-        } else {
-            wrapper = (ProcessEventListenerWrapper) listener;
-        }
-        this.session.removeEventListener( wrapper );
+        ((InternalProcessRuntime) this.session.getProcessRuntime()).removeEventListener( listener );
     }
 
     public KnowledgeBase getKnowledgeBase() {
@@ -280,11 +259,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void abortProcessInstance(long id) {
-        org.drools.process.instance.ProcessInstance processInstance = this.session.getProcessInstance( id );
-        if ( processInstance == null ) {
-            throw new IllegalArgumentException( "Could not find process instance for id " + id );
-        }
-        processInstance.setState( ProcessInstance.STATE_ABORTED );
+    	this.session.getProcessRuntime().abortProcessInstance(id);
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -309,15 +284,13 @@ public class StatefulKnowledgeSessionImpl
 
     public void signalEvent(String type,
                             Object event) {
-        this.session.getSignalManager().signalEvent( type,
-                                                     event );
+        this.session.getProcessRuntime().signalEvent( type, event );
     }
 
     public void signalEvent(String type,
                             Object event,
                             long processInstanceId) {
-        this.session.getProcessInstance( processInstanceId ).signalEvent( type,
-                                                                          event );
+        this.session.getProcessRuntime().signalEvent(type, event, processInstanceId);
     }
 
     public void setGlobal(String identifier,
@@ -672,115 +645,22 @@ public class StatefulKnowledgeSessionImpl
             }
             return this.listener.equals( obj );
         }
-    }
 
-    public static class ProcessEventListenerWrapper
-        implements
-        org.drools.event.RuleFlowEventListener {
-        private final ProcessEventListener listener;
+		public void afterRuleFlowGroupActivated(
+				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+		}
 
-        public ProcessEventListenerWrapper(ProcessEventListener listener) {
-            this.listener = listener;
-        }
+		public void afterRuleFlowGroupDeactivated(
+				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+		}
 
-        public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event,
-                                            WorkingMemory workingMemory) {
-            listener.beforeProcessCompleted( new ProcessCompletedEventImpl( event,
-                                                                            workingMemory ) );
-        }
+		public void beforeRuleFlowGroupActivated(
+				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+		}
 
-        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                                 WorkingMemory workingMemory) {
-        }
-
-        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                                   WorkingMemory workingMemory) {
-        }
-
-        public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
-                                           WorkingMemory workingMemory) {
-            listener.beforeNodeLeft( new ProcessNodeLeftEventImpl( event,
-                                                                   workingMemory ) );
-        }
-
-        public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
-                                                WorkingMemory workingMemory) {
-            listener.beforeNodeTriggered( new ProcessNodeTriggeredEventImpl( event,
-                                                                             workingMemory ) );
-        }
-
-        public void beforeRuleFlowStarted(RuleFlowStartedEvent event,
-                                          WorkingMemory workingMemory) {
-            listener.beforeProcessStarted( new ProcessStartedEventImpl( event,
-                                                                        workingMemory ) );
-        }
-
-        public void afterRuleFlowCompleted(RuleFlowCompletedEvent event,
-                                           WorkingMemory workingMemory) {
-            listener.afterProcessCompleted( new ProcessCompletedEventImpl( event,
-                                                                           workingMemory ) );
-        }
-
-        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-                                                WorkingMemory workingMemory) {
-        }
-
-        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-                                                  WorkingMemory workingMemory) {
-        }
-
-        public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,
-                                          WorkingMemory workingMemory) {
-            listener.afterNodeLeft( new ProcessNodeLeftEventImpl( event,
-                                                                  workingMemory ) );
-        }
-
-        public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event,
-                                               WorkingMemory workingMemory) {
-            listener.afterNodeTriggered( new ProcessNodeTriggeredEventImpl( event,
-                                                                            workingMemory ) );
-        }
-
-        public void afterRuleFlowStarted(RuleFlowStartedEvent event,
-                                         WorkingMemory workingMemory) {
-            listener.afterProcessStarted( new ProcessStartedEventImpl( event,
-                                                                       workingMemory ) );
-        }
-
-        public ProcessEventListener unWrap() {
-            return listener;
-        }
-
-        /**
-         * Since this is a class adapter for API compatibility, the 
-         * equals() and hashCode() methods simply delegate the calls 
-         * to the wrapped instance. That is implemented this way
-         * in order for them to be able to match corresponding instances
-         * in internal hash-based maps and sets.  
-         */
-        @Override
-        public int hashCode() {
-            return listener != null ? listener.hashCode() : 0;
-        }
-
-        /**
-         * Since this is a class adapter for API compatibility, the 
-         * equals() and hashCode() methods simply delegate the calls 
-         * to the wrapped instance. That is implemented this way
-         * in order for them to be able to match corresponding instances
-         * in internal hash-based maps and sets.  
-         */
-        @Override
-        public boolean equals(Object obj) {
-            if ( listener == null || obj == null ) {
-                return obj == listener;
-            }
-            if ( obj instanceof ProcessEventListenerWrapper ) {
-                return this.listener.equals( ((ProcessEventListenerWrapper) obj).unWrap() );
-            }
-            return this.listener.equals( obj );
-        }
-
+		public void beforeRuleFlowGroupDeactivated(
+				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+		}
     }
 
     public static class AgendaFilterWrapper

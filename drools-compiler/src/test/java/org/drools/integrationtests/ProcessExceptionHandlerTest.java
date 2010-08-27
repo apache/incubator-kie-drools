@@ -125,7 +125,7 @@ public class ProcessExceptionHandlerTest extends TestCase {
 			"    </globals>\n" +
 			"    <exceptionHandlers>\n" +
 			"      <exceptionHandler faultName=\"myFault\" type=\"action\"  >\n" +
-			"        <action type=\"expression\" name=\"Complete\" dialect=\"java\" >context.getProcessInstance().setState(org.drools.process.instance.ProcessInstance.STATE_COMPLETED);</action>\n" +
+			"        <action type=\"expression\" name=\"Complete\" dialect=\"java\" >((org.drools.process.instance.ProcessInstance) context.getProcessInstance()).setState(org.drools.process.instance.ProcessInstance.STATE_COMPLETED);</action>\n" +
 			"      </exceptionHandler>\n" +
 			"    </exceptionHandlers>\n" +
 			"  </header>\n" +

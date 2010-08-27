@@ -121,7 +121,7 @@ public class RuleFlowGroupImpl
         }
         this.active = active;
         if ( active ) {
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowGroupActivated( this,
+            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupActivated( this,
                                                                                                             this.workingMemory );
             if ( this.list.isEmpty() ) {
                 if ( this.autoDeactivate ) {
@@ -133,10 +133,10 @@ public class RuleFlowGroupImpl
             } else {
                 triggerActivations();
             }
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowGroupActivated( this,
+            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( this,
                                                                                                            this.workingMemory );
         } else {
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
+            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireBeforeRuleFlowGroupDeactivated( this,
                                                                                                               this.workingMemory );
             final Iterator it = this.list.iterator();
             for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
@@ -148,7 +148,7 @@ public class RuleFlowGroupImpl
             }
             nodeInstances.clear();
             notifyRuleFlowGroupListeners();
-            ((EventSupport) this.workingMemory).getRuleFlowEventSupport().fireAfterRuleFlowGroupDeactivated( this,
+            ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupDeactivated( this,
                                                                                                              this.workingMemory );
         }
     }

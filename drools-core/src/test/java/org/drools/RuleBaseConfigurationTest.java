@@ -25,8 +25,6 @@ import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
-import org.drools.process.instance.impl.demo.DoNothingWorkItemHandler;
-import org.drools.process.instance.impl.demo.SystemOutWorkItemHandler;
 
 public class RuleBaseConfigurationTest extends TestCase {
 
@@ -115,14 +113,4 @@ public class RuleBaseConfigurationTest extends TestCase {
         assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
     }
     
-    public void testWorkItemHandlers() {
-    	Properties properties = new Properties();
-        properties.setProperty( "drools.workItemHandlers", "WorkItemHandlers1.conf WorkItemHandlers2.conf" );
-        SessionConfiguration cfg = new SessionConfiguration(properties);
-        assertEquals(cfg.getWorkItemHandlers().size(), 3);
-        assertEquals(cfg.getWorkItemHandlers().get("MyWork").getClass(), SystemOutWorkItemHandler.class);
-        assertEquals(cfg.getWorkItemHandlers().get("UIWork").getClass(), SystemOutWorkItemHandler.class);
-        assertEquals(cfg.getWorkItemHandlers().get("Log").getClass(), DoNothingWorkItemHandler.class);
-    }
-
 }

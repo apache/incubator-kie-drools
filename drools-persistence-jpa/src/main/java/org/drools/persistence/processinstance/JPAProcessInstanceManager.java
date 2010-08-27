@@ -10,11 +10,11 @@ import javax.persistence.EntityManager;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.process.core.Process;
-import org.drools.process.instance.ProcessInstance;
+import org.drools.definition.process.Process;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.process.ProcessInstance;
 
 public class JPAProcessInstanceManager
     implements
@@ -34,7 +34,7 @@ public class JPAProcessInstanceManager
         //em.refresh( processInstanceInfo  );
 //        em.flush();
         //em.getTransaction().commit();
-        ((ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
+        ((org.drools.process.instance.ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
         internalAddProcessInstance(processInstance);
     }
@@ -47,9 +47,9 @@ public class JPAProcessInstanceManager
     }
 
     public ProcessInstance getProcessInstance(long id) {
-    	ProcessInstance processInstance = null;
+    	org.drools.process.instance.ProcessInstance processInstance = null;
     	if (this.processInstances != null) {
-	    	processInstance = this.processInstances.get(id);
+	    	processInstance = (org.drools.process.instance.ProcessInstance) this.processInstances.get(id);
 	    	if (processInstance != null) {
 	    		return processInstance;
 	    	}
@@ -62,7 +62,7 @@ public class JPAProcessInstanceManager
             return null;
         }
         processInstanceInfo.updateLastReadDate();
-        processInstance = (ProcessInstance)
+        processInstance = (org.drools.process.instance.ProcessInstance)
         	processInstanceInfo.getProcessInstance(workingMemory,this.workingMemory.getEnvironment());
         Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processInstance.getProcessId() );
         if ( process == null ) {

@@ -16,32 +16,23 @@
 
 package org.drools.event;
 
-import java.util.EventObject;
-
-import org.drools.common.InternalWorkingMemory;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ProcessEvent extends EventObject {
+public class ProcessStartedEventImpl extends ProcessEvent implements ProcessStartedEvent {
 
     private static final long serialVersionUID = 510l;
-    
-    private KnowledgeRuntime kruntime;
 
-    public ProcessEvent(final ProcessInstance instance, KnowledgeRuntime kruntime) {
-        super( instance );
-        this.kruntime = kruntime;
+    public ProcessStartedEventImpl(final ProcessInstance instance, KnowledgeRuntime kruntime) {
+        super( instance, kruntime );
     }
 
-    public ProcessInstance getProcessInstance() {
-        return (ProcessInstance) getSource();
+    public String toString() {
+        return "==>[ProcessStarted(name=" + getProcessInstance().getProcessName() + "; id=" + getProcessInstance().getProcessId() + ")]";
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {
-    	return kruntime;
-    }
-
 }

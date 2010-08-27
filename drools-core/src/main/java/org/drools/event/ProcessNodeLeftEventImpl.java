@@ -16,32 +16,30 @@
 
 package org.drools.event;
 
-import java.util.EventObject;
-
-import org.drools.common.InternalWorkingMemory;
+import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.NodeInstance;
 
 /**
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ProcessEvent extends EventObject {
+public class ProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNodeLeftEvent {
 
     private static final long serialVersionUID = 510l;
     
-    private KnowledgeRuntime kruntime;
+    private NodeInstance nodeInstance;
 
-    public ProcessEvent(final ProcessInstance instance, KnowledgeRuntime kruntime) {
-        super( instance );
-        this.kruntime = kruntime;
-    }
-
-    public ProcessInstance getProcessInstance() {
-        return (ProcessInstance) getSource();
+    public ProcessNodeLeftEventImpl(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+        super( nodeInstance.getProcessInstance(), kruntime );
+        this.nodeInstance = nodeInstance;
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {
-    	return kruntime;
+    public NodeInstance getNodeInstance() {
+        return nodeInstance;
     }
 
+    public String toString() {
+        return "==>[ProcessNodeLeft(nodeId=" + nodeInstance.getNodeId() + "; id=" + nodeInstance.getId() 
+            + "; processName=" + getProcessInstance().getProcessName() + "; processId=" + getProcessInstance().getProcessId() + ")]";
+    }
 }

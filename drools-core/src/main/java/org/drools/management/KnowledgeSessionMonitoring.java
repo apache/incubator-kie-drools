@@ -35,12 +35,13 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
-import org.drools.event.RuleFlowCompletedEvent;
-import org.drools.event.RuleFlowEventListener;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
-import org.drools.event.RuleFlowNodeTriggeredEvent;
-import org.drools.event.RuleFlowStartedEvent;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessEventListener;
+import org.drools.event.process.ProcessNodeLeftEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.management.KnowledgeSessionMonitoring.AgendaStats.AgendaStatsData;
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessInstanceStatsData;
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStatsData;
@@ -69,12 +70,12 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
-        this.ksession.addEventListener( processStats );
+        this.ksession.getProcessRuntime().addEventListener( processStats );
     }
     
     public void dispose() {
         this.ksession.removeEventListener( agendaStats );
-        this.ksession.removeEventListener( processStats );
+        this.ksession.getProcessRuntime().removeEventListener( processStats );
     }
     
     /* (non-Javadoc)
@@ -239,7 +240,27 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             // no stats gathered for now
         }
 
-        public void beforeActivationFired(BeforeActivationFiredEvent event,
+		public void afterRuleFlowGroupActivated(
+				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+            // no stats gathered for now
+		}
+
+		public void afterRuleFlowGroupDeactivated(
+				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            // no stats gathered for now
+		}
+
+		public void beforeRuleFlowGroupActivated(
+				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+            // no stats gathered for now
+		}
+
+		public void beforeRuleFlowGroupDeactivated(
+				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            // no stats gathered for now
+		}    
+
+		public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
             AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
             this.consolidated.startFireClock();
@@ -294,7 +315,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
                 return "activationsCreated="+activationsCreated.get()+" activationsCancelled="+activationsCancelled.get()+
                        " activationsFired="+this.activationsFired.get()+" firingTime="+(firingTime.get()/NANO_TO_MILLISEC)+"ms";
             }
-        }    
+        }
     }
     
     public long getTotalProcessInstancesStarted() {
@@ -333,7 +354,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         return result;
     }
     
-    public static class ProcessStats implements RuleFlowEventListener {
+    public static class ProcessStats implements ProcessEventListener {
         
         private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
         private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();
@@ -383,7 +404,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             return data;
         }
 
-        public void afterRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
+        public void afterProcessStarted(ProcessStartedEvent event) {
             this.consolidated.processInstancesStarted.incrementAndGet();
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processInstancesStarted.incrementAndGet();
@@ -391,7 +412,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             dataI.processStarted = new Date();
 		}
 
-		public void afterRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
+		public void afterProcessCompleted(ProcessCompletedEvent event) {
             this.consolidated.processInstancesCompleted.incrementAndGet();
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processInstancesCompleted.incrementAndGet();
@@ -399,48 +420,38 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             dataI.processCompleted = new Date();
 		}
 
-		public void afterRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
+		public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processNodesTriggered.incrementAndGet();
             ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
             dataI.processNodesTriggered++;
 		}
 
-		public void afterRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event,	WorkingMemory workingMemory) {
+		public void afterNodeLeft(ProcessNodeLeftEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
 
-		public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
+		public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
 
-		public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
+		public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
 
-		public void beforeRuleFlowCompleted(RuleFlowCompletedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
+		public void beforeProcessCompleted(ProcessCompletedEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
 
-		public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
+		public void beforeProcessStarted(ProcessStartedEvent event) {
+			// TODO Auto-generated method stub
+			
 		}
-
-		public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
-		}
-
-		public void beforeRuleFlowNodeLeft(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-			// Do nothing
-		}
-
-		public void beforeRuleFlowNodeTriggered(RuleFlowNodeTriggeredEvent event, WorkingMemory workingMemory) {
-			// Do nothing
-		}
-
-		public void beforeRuleFlowStarted(RuleFlowStartedEvent event, WorkingMemory workingMemory) {
-			// Do nothing
-		}    
-
+        
         public static class GlobalProcessStatsData {
         	
             public AtomicLong processInstancesStarted;
@@ -505,7 +516,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
 					"processNodesTriggered=" + processNodesTriggered;
             }
         }
-        
+
     }
     
 }

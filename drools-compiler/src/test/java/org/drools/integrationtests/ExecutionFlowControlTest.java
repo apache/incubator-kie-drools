@@ -3,18 +3,12 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.drools.Alarm;
 import org.drools.Cell;
 import org.drools.Cheese;
 import org.drools.FactHandle;
@@ -45,16 +39,12 @@ import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.rule.Package;
-import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
-import org.drools.time.Calendar;
-import org.drools.time.impl.PseudoClockScheduler;
 
 public class ExecutionFlowControlTest extends TestCase {
     protected RuleBase getRuleBase() throws Exception {

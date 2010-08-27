@@ -46,7 +46,7 @@ import org.drools.command.runtime.process.GetProcessEventListenersCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
-import org.drools.command.runtime.process.SetProcessInstanceStateCommand;
+import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -121,9 +121,8 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public void abortProcessInstance(long id) {
-        SetProcessInstanceStateCommand command = new SetProcessInstanceStateCommand();
+        AbortProcessInstanceCommand command = new AbortProcessInstanceCommand();
         command.setProcessInstanceId( id );
-        command.setState( ProcessInstance.STATE_ABORTED );
         commandService.execute( command );
     }
 

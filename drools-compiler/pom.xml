@@ -16,6 +16,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <groupId>org.drools</groupId>
          <artifactId>drools-core</artifactId>
       </dependency>
+      <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-flow-core</artifactId>
+      </dependency>
       <!-- External dependencies -->
       <dependency>
          <groupId>org.apache.felix</groupId>

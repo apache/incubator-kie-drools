@@ -13,8 +13,10 @@ import org.drools.Message;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
+import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.drools.rule.Package;
@@ -88,7 +90,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         session.halt();
         
         final StatefulSession session2 = getSerialisedStatefulSession( session );
@@ -100,7 +102,7 @@ public class ProcessTimerTest extends TestCase {
         }).start();
         processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
         
-        assertEquals(1, session2.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         // test that the delay works
         try {
@@ -207,7 +209,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         
         session.halt();
         
@@ -222,7 +224,7 @@ public class ProcessTimerTest extends TestCase {
 		
         processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
         
-        assertEquals(1, session2.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(400);
@@ -290,7 +292,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         
         session.halt();
         
@@ -305,7 +307,7 @@ public class ProcessTimerTest extends TestCase {
 		
         processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
         
-        assertEquals(1, session2.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(400);
@@ -413,7 +415,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         session.halt();
         
         final StatefulSession session2 = getSerialisedStatefulSession( session );
@@ -427,7 +429,7 @@ public class ProcessTimerTest extends TestCase {
 
         processInstance = ( ProcessInstance ) session2.getProcessInstance( processInstance.getId() );
         
-        assertEquals(1, session2.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(600);
@@ -496,7 +498,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(2, session.getTimerManager().getTimers().size());
+        assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         
         final StatefulSession session2 = getSerialisedStatefulSession( session );
         myList = (List<String>) session2.getGlobal( "myList" );
@@ -507,7 +509,7 @@ public class ProcessTimerTest extends TestCase {
 			}
         }).start();
 		
-        assertEquals(2, session2.getTimerManager().getTimers().size());
+        assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
         try {
             Thread.sleep(300);
@@ -591,7 +593,7 @@ public class ProcessTimerTest extends TestCase {
         	session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(1, session.getTimerManager().getTimers().size());
+        assertEquals(1, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
         session.halt();
         
         final StatefulSession session2 = getSerialisedStatefulSession( session );
@@ -605,7 +607,7 @@ public class ProcessTimerTest extends TestCase {
 		
         session2.insert(new Message());
         assertEquals(0, myList.size());
-        assertEquals(0, session2.getTimerManager().getTimers().size());
+        assertEquals(0, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
         
         session2.halt();
 	}

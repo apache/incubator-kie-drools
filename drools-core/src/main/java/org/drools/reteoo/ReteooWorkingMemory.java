@@ -39,7 +39,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventSupport;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -107,16 +106,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final SessionConfiguration config,
                                final Environment environment,
                                final WorkingMemoryEventSupport workingMemoryEventSupport,
-                               final AgendaEventSupport agendaEventSupport,
-                               final RuleFlowEventSupport ruleFlowEventSupport) {
+                               final AgendaEventSupport agendaEventSupport) {
         super( id,
                ruleBase,
                ruleBase.newFactHandleFactory(),
                config,
                environment,
                workingMemoryEventSupport,
-               agendaEventSupport,
-               ruleFlowEventSupport );
+               agendaEventSupport );
 
         this.agenda = new DefaultAgenda( ruleBase );
         this.agenda.setWorkingMemory( this );

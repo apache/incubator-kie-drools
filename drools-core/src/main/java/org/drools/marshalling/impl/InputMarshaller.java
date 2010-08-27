@@ -19,7 +19,6 @@ package org.drools.marshalling.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -32,7 +31,6 @@ import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
-import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
@@ -43,16 +41,12 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
-import org.drools.process.instance.WorkItem;
-import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.process.instance.timer.TimerInstance;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
@@ -83,7 +77,18 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 
 public class InputMarshaller {
-    /**
+
+	private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+	
+    private static ProcessMarshaller createProcessMarshaller() {
+		try {
+			return ProcessMarshallerFactory.newProcessMarshaller();
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
+    }
+	
+	/**
      * Stream the data into an existing session
      * 
      * @param session
@@ -126,15 +131,17 @@ public class InputMarshaller {
             readTruthMaintenanceSystem( context );
         }
 
-        if ( context.marshalProcessInstances ) {
-            readProcessInstances( context );
+        if ( context.marshalProcessInstances && processMarshaller != null) {
+            processMarshaller.readProcessInstances( context );
         }
 
         if ( context.marshalWorkItems ) {
-            readWorkItems( context );
+        	processMarshaller.readWorkItems( context );
         }
 
-        readTimers( context );
+        if (processMarshaller != null) {
+        	processMarshaller.readProcessTimers( context );
+        }
         
         if( multithread ) {
             session.startPartitionManagers();
@@ -210,15 +217,17 @@ public class InputMarshaller {
             readTruthMaintenanceSystem( context );
         }
 
-        if ( context.marshalProcessInstances ) {
-            readProcessInstances( context );
+        if ( context.marshalProcessInstances && processMarshaller != null ) {
+            processMarshaller.readProcessInstances( context );
         }
 
-        if ( context.marshalWorkItems ) {
-            readWorkItems( context );
+        if ( context.marshalWorkItems  && processMarshaller != null ) {
+        	processMarshaller.readWorkItems( context );
         }
 
-        readTimers( context );
+        if (  processMarshaller != null ) {
+        	processMarshaller.readProcessTimers( context );
+        }
 
         if( multithread ) {
             session.startPartitionManagers();
@@ -264,7 +273,7 @@ public class InputMarshaller {
 
     public static void readActionQueue(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
-        Queue actionQueue = wm.getActionQueue();
+        Queue<WorkingMemoryAction> actionQueue = wm.getActionQueue();
         while ( context.readShort() == PersisterEnums.WORKING_MEMORY_ACTION ) {
             actionQueue.offer( PersisterHelper.readWorkingMemoryAction( context ) );
         }
@@ -295,7 +304,6 @@ public class InputMarshaller {
                                                                        ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
-        ObjectMarshallingStrategyStore resolverStrategyFactory = context.resolverStrategyFactory;
         InternalWorkingMemory wm = context.wm;
 
         if ( stream.readBoolean() ) {
@@ -442,7 +450,6 @@ public class InputMarshaller {
                                      MarshallerReaderContext context) throws IOException,
                                                                      ClassNotFoundException {
         ObjectInputStream stream = context.stream;
-        InternalWorkingMemory wm = context.wm;
         Map<Integer, BaseNode> sinks = context.sinks;
 
         LeftTupleSink sink = parentLeftTuple.getLeftTupleSink();
@@ -781,87 +788,6 @@ public class InputMarshaller {
                                                             entryPoint );
         context.propagationContexts.put( propagationNumber,
                                          pc );
-    }
-
-    public static void readProcessInstances(MarshallerReaderContext context) throws IOException {
-        ObjectInputStream stream = context.stream;
-        while ( stream.readShort() == PersisterEnums.PROCESS_INSTANCE ) {
-        	String processType = stream.readUTF();
-        	ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType).readProcessInstance(context);
-        }
-    }
-
-    public static void readWorkItems(MarshallerReaderContext context) throws IOException {
-        InternalWorkingMemory wm = context.wm;
-        ObjectInputStream stream = context.stream;
-        while ( stream.readShort() == PersisterEnums.WORK_ITEM ) {
-            WorkItem workItem = readWorkItem( context );
-            ((WorkItemManager) wm.getWorkItemManager()).internalAddWorkItem( workItem );
-        }
-    }
-
-    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
-       return readWorkItem(context, true);
-    }
-
-    public static WorkItem readWorkItem(MarshallerReaderContext context, boolean includeVariables) throws IOException {
-        ObjectInputStream stream = context.stream;
-
-        WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setId( stream.readLong() );
-        workItem.setProcessInstanceId( stream.readLong() );
-        workItem.setName( stream.readUTF() );
-        workItem.setState( stream.readInt() );
-
-        if(includeVariables){
-        int nbParameters = stream.readInt();
-
-        for ( int i = 0; i < nbParameters; i++ ) {
-            String name = stream.readUTF();
-            try {
-                Object value = stream.readObject();
-                workItem.setParameter( name,
-                                       value );
-            } catch ( ClassNotFoundException e ) {
-                throw new IllegalArgumentException( "Could not reload parameter " + name );
-            }
-        }
-        }
-
-        return workItem;
-    }
-
-    public static void readTimers(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-        InternalWorkingMemory wm = context.wm;
-        ObjectInputStream stream = context.stream;
-
-        TimerManager timerManager = wm.getTimerManager();
-        timerManager.internalSetTimerId( stream.readLong() );
-        
-        // still need to think on how to fix this.
-//        TimerService service = (TimerService) stream.readObject();
-//        timerManager.setTimerService( service );
-
-        while ( stream.readShort() == PersisterEnums.TIMER ) {
-            TimerInstance timer = readTimer( context );
-            timerManager.internalAddTimer( timer );
-        }
-    }
-
-    public static TimerInstance readTimer(MarshallerReaderContext context) throws IOException {
-        ObjectInputStream stream = context.stream;
-
-        TimerInstance timer = new TimerInstance();
-        timer.setId( stream.readLong() );
-        timer.setTimerId( stream.readLong() );
-        timer.setDelay( stream.readLong() );
-        timer.setPeriod( stream.readLong() );
-        timer.setProcessInstanceId( stream.readLong() );
-        timer.setActivated( new Date( stream.readLong() ) );
-        if ( stream.readBoolean() ) {
-            timer.setLastTriggered( new Date( stream.readLong() ) );
-        }
-        return timer;
     }
 
 }

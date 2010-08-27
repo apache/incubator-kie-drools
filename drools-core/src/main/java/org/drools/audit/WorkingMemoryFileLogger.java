@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.WorkingMemoryEventManager;
+import org.drools.WorkingMemory;
 import org.drools.audit.event.LogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
 
@@ -62,8 +62,8 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      * Creates a new WorkingMemoryFileLogger for the given working memory.
      * @param workingMemoryEventManager
      */
-    public WorkingMemoryFileLogger(final WorkingMemoryEventManager workingMemoryEventManager) {
-        super( workingMemoryEventManager );
+    public WorkingMemoryFileLogger(final WorkingMemory workingMemory) {
+        super( workingMemory );
     }
 
     public WorkingMemoryFileLogger(final KnowledgeRuntimeEventManager session) {
