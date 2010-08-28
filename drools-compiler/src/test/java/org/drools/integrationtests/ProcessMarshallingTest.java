@@ -30,7 +30,7 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 
-public class ProcessMarchallingTest extends TestCase {
+public class ProcessMarshallingTest extends TestCase {
 
     @SuppressWarnings("unchecked")
 	public void test1() throws Exception {
