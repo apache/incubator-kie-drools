@@ -130,6 +130,7 @@ public class StatelessKnowledgeSessionImpl
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
             wm.setKnowledgeRuntime( ksession );
             wm.setAgendaEventSupport( this.agendaEventSupport );
+            wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             wm.getProcessRuntime().setProcessEventSupport( this.processEventSupport );
 
             final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
