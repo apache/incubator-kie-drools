@@ -58,6 +58,6 @@ public class CallFunction
                 appendable.append( ", " );
             }
         }        
-        appendable.append( ");" );        
+        appendable.append( ")" );        
     }
 }

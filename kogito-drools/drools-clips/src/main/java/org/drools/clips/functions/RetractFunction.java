@@ -33,6 +33,6 @@ public class RetractFunction implements Function {
         
         String var = ((LispAtom) form.getSExpressions()[0]).getValue();
         
-        appendable.append("retract( " + var + " );\n");
+        appendable.append("retract( " + var + " )");
     }
 }

@@ -49,7 +49,7 @@ public class SwitchFunction implements Function {
         FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
         appendable.append( ") {" );
         for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
-            FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
+            FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
         }        
         appendable.append( "}" );
         
@@ -61,7 +61,7 @@ public class SwitchFunction implements Function {
             appendable.append( ") {" );
             
             for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
             }
             appendable.append( "}" );
         }
@@ -72,16 +72,16 @@ public class SwitchFunction implements Function {
             FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
             appendable.append( ") {" );
             for ( int j = 3, length = caseForm.getSExpressions().length; j < length; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
             }        
             appendable.append( "}" );            
         } else {
             appendable.append( " else { " ); 
             for ( int j = 1, length = caseForm.getSExpressions().length; j < length; j++ ) {
-                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable );
+                FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
             }        
             appendable.append( "}" );            
-        }        
+        }  
     }
     
 }

@@ -59,7 +59,8 @@ public class ClipsEvalBuilder extends MVELEvalBuilder
         Appendable builder = new StringBuilderAppendable();
         EvalDescr edescr = (EvalDescr) descr;
             FunctionHandlers.dump( (LispForm) edescr.getContent(),
-                                   builder );
+                                   builder,
+                                   true );
             edescr.setContent( builder.toString() );
         return super.build(context, descr, prefixPattern);
     }

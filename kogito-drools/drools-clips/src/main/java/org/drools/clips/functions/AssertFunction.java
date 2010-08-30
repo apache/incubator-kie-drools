@@ -49,6 +49,6 @@ public class AssertFunction implements Function {
                 appendable.append( "," );
             }
         }
-        appendable.append("} );\n");
+        appendable.append("} )");
     }
 }

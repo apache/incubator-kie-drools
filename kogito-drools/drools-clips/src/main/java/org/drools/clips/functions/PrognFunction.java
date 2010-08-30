@@ -46,7 +46,7 @@ public class PrognFunction implements Function {
         appendable.append( " ) {" );
         
         for ( int i = 2, length = sExpressions.length; i < length; i++ ) {
-            FunctionHandlers.dump( sExpressions[i], appendable );
+            FunctionHandlers.dump( sExpressions[i], appendable, true );
         }          
         
         appendable.append( "}" );

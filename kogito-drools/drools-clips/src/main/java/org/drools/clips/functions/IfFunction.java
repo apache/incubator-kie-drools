@@ -45,7 +45,7 @@ public class IfFunction implements Function {
                 i++;
                 break;
             }
-            FunctionHandlers.dump( sExpressions[i], appendable );
+            FunctionHandlers.dump( sExpressions[i], appendable, true );
         }  
         appendable.append( "}" );
         
@@ -58,7 +58,7 @@ public class IfFunction implements Function {
                     i++;
                     break;
                 }
-                FunctionHandlers.dump( sExpressions[i], appendable );
+                FunctionHandlers.dump( sExpressions[i], appendable, true );
             }        
             appendable.append( "}" );  
         }             

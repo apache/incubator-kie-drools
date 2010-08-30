@@ -35,7 +35,8 @@ public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
         List list = (List) context.getRuleDescr().getConsequence();
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             FunctionHandlers.dump( (LispForm) it.next(),
-                                   builder );
+                                   builder,
+                                   true );
         }
         
         context.getRuleDescr().setConsequence( builder.toString() );      
