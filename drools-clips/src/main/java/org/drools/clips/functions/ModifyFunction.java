@@ -47,6 +47,6 @@ public class ModifyFunction implements Function {
                 appendable.append( "," );
             }
         }
-        appendable.append("};");
+        appendable.append("}");
     }
 }

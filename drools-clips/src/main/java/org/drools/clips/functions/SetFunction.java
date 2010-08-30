@@ -48,7 +48,5 @@ public class SetFunction
 
         FunctionHandlers.dump( sExpressions[3],
                                appendable );
-
-        appendable.append( ";\n" );
     }
 }

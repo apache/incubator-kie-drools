@@ -32,7 +32,7 @@ public class RunFunction implements Function {
         if ( lispForm.getSExpressions().length == 3 ) {
             appendable.append( "run(" + ((LispAtom)lispForm.getSExpressions()[2]).getValue() + ");\n " );
         } else {
-            appendable.append( "run();\n " );
+            appendable.append( "run()" );
         }
     }
 }

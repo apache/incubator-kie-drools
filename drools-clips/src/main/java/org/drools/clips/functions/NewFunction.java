@@ -46,6 +46,6 @@ public class NewFunction implements Function {
                 appendable.append( ", " );
             }
         }        
-        appendable.append( ");" );
+        appendable.append( ")" );
     }
 }

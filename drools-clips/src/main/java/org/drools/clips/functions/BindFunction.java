@@ -35,6 +35,5 @@ public class BindFunction implements Function {
         
         appendable.append(( (LispAtom) lispForm.getSExpressions()[1]).getValue() + " = " );
         FunctionHandlers.dump( lispForm.getSExpressions()[2], appendable);
-        appendable.append(";\n");
     }
 }

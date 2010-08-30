@@ -377,7 +377,8 @@ public class ClipsShell
         List list = (List) functionDescr.getContent();
         for ( Iterator it = list.iterator(); it.hasNext(); ) {
             FunctionHandlers.dump( (LispForm) it.next(),
-                                   builder );
+                                   builder, 
+                                   true );
         }
         builder.append( "}" );
 
@@ -393,7 +394,8 @@ public class ClipsShell
     public void lispFormHandler(LispForm lispForm) {
         StringBuilderAppendable appendable = new StringBuilderAppendable();
         FunctionHandlers.dump( lispForm,
-                               appendable );
+                               appendable,
+                               true );
 
         ParserContext context = new ParserContext();
         
@@ -435,6 +437,8 @@ public class ClipsShell
 
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );
+        
+        System.out.println( "mvel expr:" + appendable.toString() );
         
         ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
         Serializable executable = expr.compile( context );

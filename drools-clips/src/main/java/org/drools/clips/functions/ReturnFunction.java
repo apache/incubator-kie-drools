@@ -31,6 +31,5 @@ public class ReturnFunction implements Function {
     public void dump(LispForm lispForm, Appendable appendable) {
         appendable.append( "return " );
         FunctionHandlers.dump( lispForm.getSExpressions()[1], appendable );
-        appendable.append( ";\n" );
     }
 }

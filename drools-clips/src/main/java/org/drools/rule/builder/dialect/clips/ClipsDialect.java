@@ -163,7 +163,8 @@ public class ClipsDialect extends MVELDialect {
             PredicateDescr pdescr = (PredicateDescr) descr;
             if ( pdescr.getContent() instanceof LispForm ) {
                 FunctionHandlers.dump( (LispForm) pdescr.getContent(),
-                                       builder );
+                                       builder,
+                                       true);
 
                 content = builder.toString();
                 pdescr.setContent( content );
@@ -173,7 +174,8 @@ public class ClipsDialect extends MVELDialect {
             ReturnValueRestrictionDescr rdescr = (ReturnValueRestrictionDescr) descr;
             if ( rdescr.getContent() instanceof LispForm ) {
                 FunctionHandlers.dump( (LispForm) rdescr.getContent(),
-                                       builder );
+                                       builder,
+                                       true);
                 content = builder.toString();
                 rdescr.setContent( content );
             }

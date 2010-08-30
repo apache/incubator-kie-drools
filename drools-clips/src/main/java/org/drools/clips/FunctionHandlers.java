@@ -42,8 +42,12 @@ public class FunctionHandlers {
     public void registerFunction(Function function) {
         this.map.put( function.getName(), function );
     }
-    
-    public static void dump(SExpression sExpression, Appendable appendable) {              
+    public static void dump(SExpression sExpression, Appendable appendable) {
+        dump(sExpression,
+             appendable,
+             false);
+    }
+    public static void dump(SExpression sExpression, Appendable appendable, boolean root) {              
         if ( sExpression instanceof LispAtom ) {
             appendable.append( ( ( LispAtom ) sExpression).getValue() );
         } else {
@@ -60,14 +64,17 @@ public class FunctionHandlers {
                 // execute as user function
                 appendable.append( functionName + "(" );
                 for ( int i = 1, length = form.getSExpressions().length; i < length; i++ ) {
-                    dump( form.getSExpressions()[i], appendable );
+                    dump( form.getSExpressions()[i], appendable, false );
                     if ( i < length -1 ) {
                         appendable.append( ", " );
                     }
                 }
                 appendable.append( ")" );                
             }
-        }           
+        }    
+        if ( root ) {
+            appendable.append( ";\n" );
+        }
     }
     
     public static FunctionDescr createFunctionDescr(SExpression name, LispForm params, List<SExpression> content) {

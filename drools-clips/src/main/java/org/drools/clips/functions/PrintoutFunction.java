@@ -43,6 +43,6 @@ public class PrintoutFunction implements Function {
                 appendable.append( "+" );
             }
         }        
-        appendable.append( ");" );
+        appendable.append( ")" );
     }
 }
