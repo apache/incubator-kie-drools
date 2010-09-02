@@ -24,6 +24,7 @@ import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ProcessBuilder;
+import org.drools.compiler.ProcessBuilderImpl;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.process.core.Work;
@@ -426,7 +427,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                             Node.CONNECTION_DEFAULT_TYPE );
 
         PackageBuilder packageBuilder = new PackageBuilder();
-        ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
+        ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
@@ -559,7 +560,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                             Node.CONNECTION_DEFAULT_TYPE );
 
         PackageBuilder packageBuilder = new PackageBuilder();
-        ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
+        ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
 
@@ -706,7 +707,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                             Node.CONNECTION_DEFAULT_TYPE );
 
         PackageBuilder packageBuilder = new PackageBuilder();
-        ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
+        ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
@@ -802,7 +803,7 @@ public class SingleSessionCommandServiceTest extends TestCase {
                             Node.CONNECTION_DEFAULT_TYPE );
 
         PackageBuilder packageBuilder = new PackageBuilder();
-        ProcessBuilder processBuilder = new ProcessBuilder( packageBuilder );
+        ProcessBuilderImpl processBuilder = new ProcessBuilderImpl( packageBuilder );
         processBuilder.buildProcess( process,
                                      null );
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>();
