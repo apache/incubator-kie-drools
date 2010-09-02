@@ -10,7 +10,6 @@ import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.EngineElementBuilder;
@@ -19,11 +18,8 @@ import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
-import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
-import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -66,13 +62,7 @@ public interface Dialect {
 
     ConsequenceBuilder getConsequenceBuilder();
 
-    ActionBuilder getActionBuilder();
-
-    ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder();
-
     RuleClassBuilder getRuleClassBuilder();
-
-    ProcessClassBuilder getProcessClassBuilder();
 
     FromBuilder getFromBuilder();
 
@@ -93,8 +83,6 @@ public interface Dialect {
     void compileAll();
 
     void addRule(final RuleBuildContext context);
-
-    void addProcess(final ProcessBuildContext context);
 
     void addFunction(FunctionDescr functionDescr,
                      TypeResolver typeResolver,

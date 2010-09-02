@@ -33,10 +33,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.event.SignalManager;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
@@ -171,11 +168,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public ProcessInstanceManager getProcessInstanceManager() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -343,16 +335,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public SessionClock getSessionClock() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public SignalManager getSignalManager() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public TimerManager getTimerManager() {
         // TODO Auto-generated method stub
         return null;
     }

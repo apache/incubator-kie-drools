@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -39,25 +38,20 @@ import org.drools.builder.conf.KnowledgeBuilderOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
-import org.drools.compiler.xml.ProcessSemanticModule;
 import org.drools.compiler.xml.RulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.process.builder.ProcessNodeBuilder;
-import org.drools.process.builder.ProcessNodeBuilderRegistry;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
-import org.drools.workflow.core.Node;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
-import org.mvel2.MVEL;
 
 /**
  * This class configures the package compiler.
@@ -101,8 +95,6 @@ public class PackageBuilderConfiguration
     private EvaluatorRegistry                 evaluatorRegistry;
 
     private SemanticModules                   semanticModules;
-
-    private ProcessNodeBuilderRegistry        nodeBuilderRegistry;
 
     private File                              dumpDirectory;
 
@@ -352,7 +344,6 @@ public class PackageBuilderConfiguration
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
 
-        this.semanticModules.addSemanticModule( new ProcessSemanticModule() );
         this.semanticModules.addSemanticModule( new RulesSemanticModule() );
         this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
 
@@ -430,55 +421,6 @@ public class PackageBuilderConfiguration
             }
         }
         this.semanticModules.addSemanticModule( module );
-    }
-
-    public ProcessNodeBuilderRegistry getProcessNodeBuilderRegistry() {
-        if ( this.nodeBuilderRegistry == null ) {
-            initProcessNodeBuilderRegistry();
-        }
-        return this.nodeBuilderRegistry;
-
-    }
-
-    private void initProcessNodeBuilderRegistry() {
-        this.nodeBuilderRegistry = new ProcessNodeBuilderRegistry();
-
-        // split on each space
-        String locations[] = this.chainedProperties.getProperty( "processNodeBuilderRegistry",
-                                                                 "" ).split( "\\s" );
-
-        int i = 0;
-        // load each SemanticModule
-        for ( String builderLocation : locations ) {
-            // trim leading/trailing spaces and quotes
-            builderLocation = builderLocation.trim();
-            if ( builderLocation.startsWith( "\"" ) ) {
-                builderLocation = builderLocation.substring( 1 );
-            }
-            if ( builderLocation.endsWith( "\"" ) ) {
-                builderLocation = builderLocation.substring( 0,
-                                                             builderLocation.length() - 1 );
-            }
-            if ( !builderLocation.equals( "" ) ) {
-                loadProcessNodeBuilderRegistry( builderLocation );
-            }
-        }
-    }
-
-    private void loadProcessNodeBuilderRegistry(String factoryLocation) {
-        String content = ConfFileUtils.URLContentsToString( ConfFileUtils.getURL( factoryLocation,
-                                                                                  null,
-                                                                                  RuleBaseConfiguration.class ) );
-
-        Map<Class< ? extends Node>, ProcessNodeBuilder> map = (Map<Class< ? extends Node>, ProcessNodeBuilder>) MVEL.eval( content,
-                                                                                                                           new HashMap() );
-
-        if ( map != null ) {
-            for ( Entry<Class< ? extends Node>, ProcessNodeBuilder> entry : map.entrySet() ) {
-                this.nodeBuilderRegistry.register( entry.getKey(),
-                                                   entry.getValue() );
-            }
-        }
     }
 
     private void buildAccumulateFunctionsMap() {

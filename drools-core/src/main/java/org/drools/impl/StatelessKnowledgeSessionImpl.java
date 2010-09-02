@@ -51,6 +51,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.rule.AgendaFilter;
 
 public class StatelessKnowledgeSessionImpl
@@ -131,7 +132,10 @@ public class StatelessKnowledgeSessionImpl
             wm.setKnowledgeRuntime( ksession );
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
-            wm.getProcessRuntime().setProcessEventSupport( this.processEventSupport );
+            InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+            if (processRuntime != null) {
+            	processRuntime.setProcessEventSupport( this.processEventSupport );
+            }
 
             final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
                                                                                         wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,

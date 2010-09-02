@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.rule.Package;
-import org.drools.rule.builder.ProcessBuildContext;
 
 /**
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered
@@ -106,11 +105,4 @@ public class DialectCompiletimeRegistry {
         }
     }
     
-    public void addProcess(ProcessBuildContext contgext) {
-        for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {
-            Dialect dialect = (Dialect) it.next();
-            dialect.addProcess( contgext );
-        }   
-    }
-
 }

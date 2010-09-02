@@ -86,6 +86,8 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
+import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
@@ -135,6 +137,8 @@ public class PackageBuilder {
     private TimeIntervalParser                timeParser;
 
     protected DateFormats                     dateFormats;
+
+    private ProcessBuilder                    processBuilder;
 
     /**
      * Use this when package is starting from scratch.
@@ -202,6 +206,8 @@ public class PackageBuilder {
                                  pkgRegistry );
 
         globals = new HashMap<String, Class< ? >>();
+        
+        processBuilder = createProcessBuilder();
     }
 
     public PackageBuilder(RuleBase ruleBase,
@@ -235,6 +241,16 @@ public class PackageBuilder {
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
         globals = new HashMap<String, Class< ? >>();
+        
+        processBuilder = createProcessBuilder();
+    }
+    
+    private ProcessBuilder createProcessBuilder() {
+		try {
+			return ProcessBuilderFactory.newProcessBuilder(this);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
     }
 
     /**
@@ -409,44 +425,23 @@ public class PackageBuilder {
         addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml(Resource resource) throws IOException {
+    public void addProcessFromXml(Resource resource) {
         this.resource = resource;
 
-        ProcessBuilder processBuilder = new ProcessBuilder( this );
         try {
-            processBuilder.addProcessFromFile( resource.getReader(),
-                                               resource );
-            this.results.addAll( processBuilder.getErrors() );
+        	this.results.addAll(processBuilder.addProcessFromXml(resource));
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
-            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
-                                                     e ) );
+            this.results.add( new ProcessLoadError( "Unable to load process.", e ) );
         }
-
         this.results = getResults( this.results );
         this.resource = null;
     }
 
     public void addProcessFromXml(Reader processSource) {
-        this.resource = new ReaderResource( processSource );
-
-        ProcessBuilder processBuilder = new ProcessBuilder( this );
-        try {
-            processBuilder.addProcessFromFile( processSource,
-                                               this.resource );
-            this.results.addAll( processBuilder.getErrors() );
-        } catch ( Exception e ) {
-            if ( e instanceof RuntimeException ) {
-                throw (RuntimeException) e;
-            }
-            this.results.add( new RuleFlowLoadError( "Unable to load the rule flow.",
-                                                     e ) );
-        }
-
-        this.results = getResults( this.results );
-        this.resource = null;
+    	addProcessFromXml( new ReaderResource( processSource ) );
     }
 
     public void addKnowledgeResource(Resource resource,
@@ -1380,29 +1375,6 @@ public class PackageBuilder {
 
     }
 
-    public static class ProcessErrorHandler extends ErrorHandler {
-
-        private BaseDescr descr;
-
-        private Process   process;
-
-        public ProcessErrorHandler(final BaseDescr ruleDescr,
-                                   final Process process,
-                                   final String message) {
-            this.descr = ruleDescr;
-            this.process = process;
-            this.message = message;
-        }
-
-        public DroolsError getError() {
-            return new ProcessBuildError( this.process,
-                                          this.descr,
-                                          collectCompilerProblems(),
-                                          this.message );
-        }
-
-    }
-
     /**
      * There isn't much point in reporting invoker errors, as they are no help.
      */
@@ -1413,17 +1385,6 @@ public class PackageBuilder {
                                        final String message) {
             super( ruleDescr,
                    rule,
-                   message );
-        }
-    }
-
-    public static class ProcessInvokerErrorHandler extends ProcessErrorHandler {
-
-        public ProcessInvokerErrorHandler(final BaseDescr processDescr,
-                                          final Process process,
-                                          final String message) {
-            super( processDescr,
-                   process,
                    message );
         }
     }
