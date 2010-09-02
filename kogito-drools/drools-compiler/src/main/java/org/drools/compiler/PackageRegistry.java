@@ -7,7 +7,6 @@ import org.drools.base.TypeResolver;
 import org.drools.rule.DialectRuntimeRegistry;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.Package;
-import org.drools.rule.builder.ProcessBuildContext;
 
 public class PackageRegistry {
     private Package                    pkg;
@@ -50,10 +49,6 @@ public class PackageRegistry {
 
     public DialectCompiletimeRegistry getDialectCompiletimeRegistry() {
         return dialectCompiletimeRegistry;
-    }
-
-    public void addProcess(ProcessBuildContext context) {
-        this.dialectCompiletimeRegistry.addProcess( context );
     }
 
     public void addImport(String importEntry) {

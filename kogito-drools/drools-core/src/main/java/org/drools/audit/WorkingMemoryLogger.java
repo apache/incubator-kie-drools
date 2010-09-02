@@ -79,6 +79,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
+import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.spi.Activation;
@@ -118,7 +119,10 @@ public abstract class WorkingMemoryLogger
     public WorkingMemoryLogger(final WorkingMemory workingMemory) {
         workingMemory.addEventListener( (WorkingMemoryEventListener) this );
         workingMemory.addEventListener( (AgendaEventListener) this );
-        ((InternalWorkingMemory) workingMemory).getProcessRuntime().addEventListener( (ProcessEventListener) this );
+        InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
+        if (processRuntime != null) {
+        	processRuntime.addEventListener( (ProcessEventListener) this );
+        }
         workingMemory.addEventListener( (RuleBaseEventListener) this );
     }
     
@@ -126,9 +130,12 @@ public abstract class WorkingMemoryLogger
     	if (session instanceof StatefulKnowledgeSessionImpl) {
     		WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
     		eventManager.addEventListener( (WorkingMemoryEventListener) this );
-    		eventManager.addEventListener( (AgendaEventListener) this );
-    		((StatefulKnowledgeSessionImpl) session).session.addEventListener( (ProcessEventListener) this );
     		eventManager.addEventListener( (RuleBaseEventListener) this );
+    		eventManager.addEventListener( (RuleBaseEventListener) this );
+    		InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
+    		if (processRuntime != null) {
+    			processRuntime.addEventListener( (ProcessEventListener) this );
+    		}
     	} else if (session instanceof StatelessKnowledgeSessionImpl) {
     		((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
     		((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
@@ -139,8 +146,11 @@ public abstract class WorkingMemoryLogger
     			((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
     		eventManager.addEventListener( (WorkingMemoryEventListener) this );
     		eventManager.addEventListener( (AgendaEventListener) this );
-    		eventManager.addEventListener( (ProcessEventListener) this );
+    		InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
     		eventManager.addEventListener( (RuleBaseEventListener) this );
+    		if (processRuntime != null) {
+    			processRuntime.addEventListener( (ProcessEventListener) this );	
+    		}
     	} else {
     		throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
     	}

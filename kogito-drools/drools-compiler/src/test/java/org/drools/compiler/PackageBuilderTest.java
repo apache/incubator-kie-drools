@@ -16,7 +16,6 @@ package org.drools.compiler;
  * limitations under the License.
  */
 
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -41,11 +40,9 @@ import org.drools.common.LogicalDependency;
 import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.LinkedList;
 import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
-import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -67,8 +64,6 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.process.core.Context;
-import org.drools.process.core.Process;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
@@ -90,7 +85,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
-import org.drools.workflow.core.impl.WorkflowProcessImpl;
 
 public class PackageBuilderTest extends DroolsTestCase {
 
@@ -1189,107 +1183,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         return rule;
     }
 
-    public void testRuleFlow() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-
-        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow.rfm" );
-        assertNotNull( in );
-
-        builder.addPackage( new PackageDescr( "com.sample" ) );
-
-        builder.addRuleFlow( new InputStreamReader( in ) );
-        Package pkg = builder.getPackage();
-        assertNotNull( pkg );
-
-        Map flows = pkg.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-
-        assertTrue( flows.containsKey( "0" ) );
-
-        Process p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
-
-        //now serialization
-        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
-        assertNotNull( pkg2 );
-
-        flows = pkg2.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-        assertTrue( flows.containsKey( "0" ) );
-        p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
-    }
-
-    public void testRuleFlowUpgrade() throws Exception {
-        PackageBuilder builder = new PackageBuilder();
-        // Set the system property so that automatic conversion can happen
-        System.setProperty( "drools.ruleflow.port",
-                            "true" );
-
-        InputStream in = this.getClass().getResourceAsStream( "/org/drools/integrationtests/ruleflow40.rfm" );
-        assertNotNull( in );
-
-        builder.addPackage( new PackageDescr( "com.sample" ) );
-
-        builder.addRuleFlow( new InputStreamReader( in ) );
-        Package pkg = builder.getPackage();
-        assertNotNull( pkg );
-
-        Map flows = pkg.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-
-        assertTrue( flows.containsKey( "0" ) );
-
-        Process p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
-
-        //now serialization
-        Package pkg2 = (Package) DroolsStreamUtils.streamIn( DroolsStreamUtils.streamOut( pkg ) );
-        assertNotNull( pkg2 );
-
-        flows = pkg2.getRuleFlows();
-        assertNotNull( flows );
-        assertEquals( 1,
-                      flows.size() );
-        assertTrue( flows.containsKey( "0" ) );
-        p = (Process) flows.get( "0" );
-        assertTrue( p instanceof WorkflowProcessImpl );
-        // Reset the system property so that automatic conversion should not happen
-        System.setProperty( "drools.ruleflow.port",
-                            "false" );
-    }
-
-    public void testPackageRuleFlows() throws Exception {
-        Package pkg = new Package( "boo" );
-        Process rf = new MockRuleFlow( "1" );
-        pkg.addProcess( rf );
-        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
-        assertSame( rf,
-                    pkg.getRuleFlows().get( "1" ) );
-
-        Process rf2 = new MockRuleFlow( "2" );
-        pkg.addProcess( rf2 );
-        assertTrue( pkg.getRuleFlows().containsKey( "1" ) );
-        assertSame( rf,
-                    pkg.getRuleFlows().get( "1" ) );
-        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
-        assertSame( rf2,
-                    pkg.getRuleFlows().get( "2" ) );
-
-        pkg.removeRuleFlow( "1" );
-        assertTrue( pkg.getRuleFlows().containsKey( "2" ) );
-        assertSame( rf2,
-                    pkg.getRuleFlows().get( "2" ) );
-        assertFalse( pkg.getRuleFlows().containsKey( "1" ) );
-
-    }
-
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
@@ -1374,119 +1267,6 @@ public class PackageBuilderTest extends DroolsTestCase {
                       window.getType() );
         assertEquals( 60000,
                       ((SlidingTimeWindow) window).getSize() );
-    }
-
-    class MockRuleFlow
-        implements
-        Process {
-
-        private String id;
-
-        MockRuleFlow(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getName() {
-            return null;
-        }
-
-        public String getType() {
-            return null;
-        }
-
-        public String getVersion() {
-            return null;
-        }
-
-        public String getPackageName() {
-            return null;
-        }
-
-        public void setId(String id) {
-        }
-
-        public void setName(String name) {
-        }
-
-        public void setType(String type) {
-        }
-
-        public void setVersion(String version) {
-        }
-
-        public void setPackageName(String packageName) {
-        }
-
-        public void addContext(Context context) {
-        }
-
-        public List<Context> getContexts(String contextId) {
-            return null;
-        }
-
-        public Context getDefaultContext(String contextId) {
-            return null;
-        }
-
-        public void setDefaultContext(Context context) {
-        }
-
-        public Context getContext(String contextType,
-                                  long id) {
-            return null;
-        }
-        
-    	public Map<String, Object> getMetaData() {
-    		return null;
-    	}
-
-        public Object getMetaData(String name) {
-            return null;
-        }
-
-        public void setMetaData(String name,
-                                Object value) {
-        }
-
-        public Resource getResource() {
-            return null;
-        }
-
-        public void setResource(Resource resource) {
-        }
-
-        public String[] getGlobalNames() {
-            return null;
-        }
-
-        public Map<String, String> getGlobals() {
-            return null;
-        }
-
-        public List<String> getImports() {
-            return null;
-        }
-
-        public void setGlobals(Map<String, String> globals) {
-        }
-
-        public void setImports(List<String> imports) {
-        }
-
-        public List<String> getFunctionImports() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public void setFunctionImports(List<String> functionImports) {
-            // TODO Auto-generated method stub
-
-        }
-
     }
 
     class MockActivation

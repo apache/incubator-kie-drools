@@ -6,11 +6,11 @@ import junit.framework.TestCase;
 public class RuleFlowErrorTest extends TestCase {
 
     public void testError() {
-        RuleFlowLoadError err = new RuleFlowLoadError("XXX", null);
+        ProcessLoadError err = new ProcessLoadError("XXX", null);
         assertEquals("XXX", err.getMessage());
         
         Exception e = new RuntimeException("Q");
-        err = new RuleFlowLoadError("X", e);
+        err = new ProcessLoadError("X", e);
         
         assertNotNull(err.getMessage());
         
