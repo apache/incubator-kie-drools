@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
@@ -26,13 +25,10 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.compiler.PackageBuilder.ErrorHandler;
 import org.drools.compiler.PackageBuilder.FunctionErrorHandler;
-import org.drools.compiler.PackageBuilder.ProcessErrorHandler;
-import org.drools.compiler.PackageBuilder.ProcessInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleErrorHandler;
 import org.drools.compiler.PackageBuilder.RuleInvokerErrorHandler;
 import org.drools.compiler.PackageBuilder.SrcErrorHandler;
 import org.drools.core.util.StringUtils;
-import org.drools.definition.process.Process;
 import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 import org.drools.lang.descr.AccumulateDescr;
@@ -57,7 +53,6 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
@@ -69,11 +64,8 @@ import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
-import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
-import org.drools.rule.builder.ReturnValueEvaluatorBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
@@ -100,10 +92,7 @@ public class JavaDialect
     private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
     private static final JavaReturnValueBuilder      RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
     private static final JavaConsequenceBuilder      CONSESUENCE_BUILDER           = new JavaConsequenceBuilder();
-    private static final JavaActionBuilder           ACTION_BUILDER                = new JavaActionBuilder();
-    private static final ReturnValueEvaluatorBuilder RETURN_VALUE_EVALUATOR_BUIDER = new JavaReturnValueEvaluatorBuilder();
     private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
-    private static final JavaProcessClassBuilder     PROCESS_CLASS_BUILDER         = new JavaProcessClassBuilder();
     private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
     private static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
     private static final CollectBuilder              COLLECT_BUIDER                = new CollectBuilder();
@@ -340,20 +329,8 @@ public class JavaDialect
         return CONSESUENCE_BUILDER;
     }
 
-    public ActionBuilder getActionBuilder() {
-        return ACTION_BUILDER;
-    }
-
-    public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
-        return RETURN_VALUE_EVALUATOR_BUIDER;
-    }
-
     public RuleClassBuilder getRuleClassBuilder() {
         return RULE_CLASS_BUILDER;
-    }
-
-    public ProcessClassBuilder getProcessClassBuilder() {
-        return PROCESS_CLASS_BUILDER;
     }
 
     public FunctionBuilder getFunctionBuilder() {
@@ -509,68 +486,6 @@ public class JavaDialect
 
     }
 
-    /**
-     * This will add the rule for compiling later on.
-     * It will not actually call the compiler
-     */
-    public void addProcess(final ProcessBuildContext context) {
-        ProcessClassBuilder classBuilder = context.getDialect().getProcessClassBuilder();
-
-        String processClass = classBuilder.buildRule( context );
-        if ( processClass == null ) {
-            // nothing to compile.
-            return;
-        }
-
-        final Process process = context.getProcess();
-        final ProcessDescr processDescr = context.getProcessDescr();
-
-        // The compilation result is for the entire rule, so difficult to associate with any descr
-        addClassCompileTask( this.pkg.getName() + "." + processDescr.getClassName(),
-                             processDescr,
-                             processClass,
-                             this.src,
-                             new ProcessErrorHandler( processDescr,
-                                                      process,
-                                                      "Process Compilation error" ) );
-
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData) this.pkg.getDialectRuntimeRegistry().getDialectData( this.ID );
-
-        for ( final Iterator it = context.getInvokers().keySet().iterator(); it.hasNext(); ) {
-            final String className = (String) it.next();
-
-            // Check if an invoker - Action has been associated
-            // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            final Object invoker = context.getInvokerLookups().get( className );
-            if ( invoker != null ) {
-                data.putInvoker( className,
-                                 invoker );
-            }
-            final String text = (String) context.getInvokers().get( className );
-
-            final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
-            addClassCompileTask( className,
-                                 descr,
-                                 text,
-                                 this.src,
-                                 new ProcessInvokerErrorHandler( processDescr,
-                                                                 process,
-                                                                 "Unable to generate action invoker." ) );
-
-        }
-
-        // setup the line mappins for this rule
-        // @TODO must setup mappings
-        //        final String name = this.pkg.getName() + "." + StringUtils.ucFirst( ruleDescr.getClassName() );
-        //        final LineMappings mapping = new LineMappings( name );
-        //        mapping.setStartLine( ruleDescr.getConsequenceLine() );
-        //        mapping.setOffset( ruleDescr.getConsequenceOffset() );
-        //
-        //        context.getPkg().getPackageCompilationData().getLineMappings().put( name,
-        //                                                                           mapping );
-
-    }
-
     public void addFunction(final FunctionDescr functionDescr,
                             final TypeResolver typeResolver,
                             final Resource resource) {
@@ -641,17 +556,22 @@ public class JavaDialect
      * The ErrorHandler is required to map the errors back to the
      * element that caused it.
      */
-    private void addClassCompileTask(final String className,
+    public void addClassCompileTask(final String className,
                                      final BaseDescr descr,
                                      final String text,
                                      final MemoryResourceReader src,
                                      final ErrorHandler handler) {
-
+    	
         final String fileName = className.replace( '.',
                                                    '/' ) + ".java";
 
-        src.add( fileName,
-                 text.getBytes() );
+        if (src != null) {
+        	src.add( fileName,
+                     text.getBytes() );
+        } else {
+            this.src.add( fileName,
+                          text.getBytes() );
+        }
 
         this.errorHandlers.put( fileName,
                                 handler );
