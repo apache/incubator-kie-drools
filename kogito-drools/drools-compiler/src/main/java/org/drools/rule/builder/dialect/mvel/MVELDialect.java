@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,7 +48,6 @@ import org.drools.rule.LineMappings;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.AccumulateBuilder;
-import org.drools.rule.builder.ActionBuilder;
 import org.drools.rule.builder.CollectBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
@@ -61,8 +59,6 @@ import org.drools.rule.builder.GroupElementBuilder;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.PatternBuilder;
 import org.drools.rule.builder.PredicateBuilder;
-import org.drools.rule.builder.ProcessBuildContext;
-import org.drools.rule.builder.ProcessClassBuilder;
 import org.drools.rule.builder.QueryBuilder;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -97,8 +93,6 @@ public class MVELDialect
     protected static final MVELPredicateBuilder            PREDICATE_BUILDER              = new MVELPredicateBuilder();
     protected static final MVELReturnValueBuilder          RETURN_VALUE_BUILDER           = new MVELReturnValueBuilder();
     protected static final MVELConsequenceBuilder          CONSEQUENCE_BUILDER            = new MVELConsequenceBuilder();
-    protected static final MVELActionBuilder               ACTION_BUILDER                 = new MVELActionBuilder();
-    protected static final MVELReturnValueEvaluatorBuilder RETURN_VALUE_EVALUATOR_BUILDER = new MVELReturnValueEvaluatorBuilder();
     // private final JavaRuleClassBuilder rule = new JavaRuleClassBuilder();
     protected static final MVELFromBuilder                 FROM_BUILDER                   = new MVELFromBuilder();
     protected static final JavaFunctionBuilder             FUNCTION_BUILDER               = new JavaFunctionBuilder();
@@ -328,10 +322,6 @@ public class MVELDialect
         context.getPkg().getDialectRuntimeRegistry().getLineMappings().put( name,
                                                                             mapping );
 
-    }
-
-    public void addProcess(final ProcessBuildContext context) {
-        // @TODO setup line mappings
     }
 
     public void addFunction(FunctionDescr functionDescr,
@@ -780,14 +770,6 @@ public class MVELDialect
         return this.CONSEQUENCE_BUILDER;
     }
 
-    public ActionBuilder getActionBuilder() {
-        return this.ACTION_BUILDER;
-    }
-
-    public MVELReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
-        return this.RETURN_VALUE_EVALUATOR_BUILDER;
-    }
-
     public RuleConditionBuilder getEvalBuilder() {
         return this.EVAL_BUILDER;
     }
@@ -826,10 +808,6 @@ public class MVELDialect
 
     public RuleClassBuilder getRuleClassBuilder() {
         throw new UnsupportedOperationException( "MVELDialect.getRuleClassBuilder is not supported" );
-    }
-
-    public ProcessClassBuilder getProcessClassBuilder() {
-        throw new UnsupportedOperationException( "MVELDialect.getProcessClassBuilder is not supported" );
     }
 
     public TypeResolver getTypeResolver() {
