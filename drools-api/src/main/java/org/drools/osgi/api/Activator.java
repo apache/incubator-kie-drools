@@ -40,7 +40,7 @@ public class Activator
         System.out.println( "registering api services" );
 
         this.serviceRegistry = bc.registerService( ServiceRegistry.class.getName(),
-                                                   new ServiceRegistryImpl(),
+                                                   ServiceRegistryImpl.getInstance(),
                                                    new Hashtable() );
 
         this.registryTracker = new ServiceTracker( bc,
