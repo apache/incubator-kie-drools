@@ -1,5 +1,3 @@
-package org.drools.decisiontable.parser;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,8 @@ package org.drools.decisiontable.parser;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.decisiontable.parser;
 
 import java.io.IOException;
 import java.io.InputStream;

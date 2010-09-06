@@ -1,5 +1,3 @@
-package org.drools.decisiontable;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -15,6 +13,8 @@ package org.drools.decisiontable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.decisiontable;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
+
 /**
  * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a> Some basic unit tests for converter utility.
  *         Note that some of this may still use the drools 2.x syntax, as it is not compiled, only tested that it

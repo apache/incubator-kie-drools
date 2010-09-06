@@ -1,5 +1,3 @@
-package org.drools.decisiontable.parser;
-
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -16,10 +14,13 @@ package org.drools.decisiontable.parser;
  * limitations under the License.
  */
 
+package org.drools.decisiontable.parser;
+
 import java.util.Properties;
 
 import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
+
 /**
  * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams</a>
  * 
