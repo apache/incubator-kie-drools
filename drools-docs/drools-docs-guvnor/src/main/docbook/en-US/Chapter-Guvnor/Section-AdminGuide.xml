@@ -45,20 +45,20 @@
       supports Java SE5 (JEE 5 is not required) - this includes servlet
       containers like tomcat.</para>
 
-      <para>It is actively teste/developed on JBoss app server platforms, and
-      these are recommended if you are able to use them, or don't have any
+      <para>It is actively tested/developed on JBoss app server platforms,
+      which are recommended if you are able to use them, or don't have any
       existing infrastructure. However, it is possible to use any
       container/app server, in some cases with minor configuration tweaks
       (consult the wiki for specific tips - many in the community have been
       able to make it run on various platforms).</para>
 
-      <para>You can of course download these app servers from www.jboss.com
-      for every operating system.</para>
+      <para>You can download the JBoss app server from www.jboss.com
+      for any common operating system.</para>
 
-      <para>Deployment into JBoss platforms: If you are installing a new JBoss
-      platform, the WAR can be copied to [app server
-      directory]/server/default/deploy. You then start up the server by
-      running run.sh or run.bat in the [app server directory/bin]
+      <para>Deployment on a JBoss app server: If you are installing a new JBoss
+      application server, copy the WAR to [app server
+      directory]/server/default/deploy. Start up the server by
+      running run.sh or run.bat in the [app server directory]/bin
       directory.</para>
     </section>
   </section>
