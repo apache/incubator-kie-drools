@@ -1,5 +1,3 @@
-package org.drools.event.knowledgeagent;
-
 /*
  * Copyright 2010 JBoss Inc
  * 
@@ -15,6 +13,7 @@ package org.drools.event.knowledgeagent;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.event.knowledgeagent;
 
 import java.util.EventListener;
 
