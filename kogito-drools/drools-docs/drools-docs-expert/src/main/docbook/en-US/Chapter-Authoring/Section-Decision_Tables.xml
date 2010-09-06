@@ -202,7 +202,7 @@ end
 </screen>
 
     <note>
-      <para>The contraints <code>age=="42"</code> and <code>type=="stilton"</code> are interpreted as single
+      <para>The constraints <code>age=="42"</code> and <code>type=="stilton"</code> are interpreted as single
       constraints, to be added to the respective ObjectType in the cell above. If the cells above were spanned, then
       there could be multiple constraints on one "column".</para>
     </note>
