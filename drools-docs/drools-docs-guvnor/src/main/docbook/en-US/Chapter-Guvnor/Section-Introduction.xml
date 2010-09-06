@@ -58,7 +58,7 @@
         no new application is needed to manage the rules.</para>
 
         <para>In this case, the drools-template library is worth a look - you
-        can define templates for rules to be generated from any tablular data
+        can define templates for rules to be generated from any tabular data
         source.</para>
 
         <para>Otherwise, perhaps an existing rule management system and user
