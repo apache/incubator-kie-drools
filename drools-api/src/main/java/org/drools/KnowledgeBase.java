@@ -159,6 +159,8 @@ public interface KnowledgeBase
      */
     void removeProcess(String processId);
     
+    Collection<Process> getProcesses();
+    
     /**
      * Create a new StatefulKnowledgeSession using the given session configuration and/or environment.
      * Either one can be null and it will use a default.
