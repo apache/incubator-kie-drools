@@ -30,9 +30,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.impl.InternalKnowledgeBase;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.ProcessInstanceMarshaller;
@@ -138,18 +139,18 @@ public class ProcessInstanceInfo {
         return state;
     }
 
-    public ProcessInstance getProcessInstance(WorkingMemory workingMemory,
+    public ProcessInstance getProcessInstance(InternalKnowledgeRuntime kruntime,
                                               Environment env) {
         this.env = env;
         if ( processInstance == null ) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( processInstanceByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                               (InternalRuleBase) workingMemory.getRuleBase(),
+                                                                               (InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase(),
                                                                                null,
                                                                                null );
-                context.wm = (InternalWorkingMemory) workingMemory;
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext( context );
+                context.wm = ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory();
                 processInstance = marshaller.readProcessInstance( context,
                                                                   !externalVariables );
                 if ( externalVariables ) {

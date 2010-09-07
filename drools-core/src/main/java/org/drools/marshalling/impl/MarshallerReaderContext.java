@@ -33,12 +33,14 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext            stream;
     public final InternalRuleBase                   ruleBase;
     public InternalWorkingMemory                    wm;
+    public KnowledgeRuntime                         kruntime;
     public final Map<Integer, BaseNode>             sinks;
 
     public Map<Integer, InternalFactHandle>         handles;

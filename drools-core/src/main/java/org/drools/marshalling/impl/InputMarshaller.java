@@ -46,6 +46,7 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
@@ -201,6 +202,8 @@ public class InputMarshaller {
                                                                    config,  
                                                                    agenda,
                                                                    environment );
+        session.setKnowledgeRuntime(new StatefulKnowledgeSessionImpl(session));
+        
         initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
 
         // RuleFlowGroups need to reference the session

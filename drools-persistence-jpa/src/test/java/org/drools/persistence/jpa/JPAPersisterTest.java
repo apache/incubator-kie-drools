@@ -1,33 +1,10 @@
 package org.drools.persistence.jpa;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.persistence.session.JPASessionMarshallingHelper;
-import org.drools.process.core.Work;
-import org.drools.process.core.impl.WorkImpl;
-import org.drools.rule.Package;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
-import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
-import org.drools.spi.Action;
-import org.drools.spi.KnowledgeHelper;
-import org.drools.spi.ProcessContext;
-import org.drools.workflow.core.Node;
-import org.drools.workflow.core.impl.ConnectionImpl;
-import org.drools.workflow.core.impl.DroolsConsequenceAction;
-import org.drools.workflow.core.node.ActionNode;
-import org.drools.workflow.core.node.EndNode;
-import org.drools.workflow.core.node.StartNode;
-import org.drools.workflow.core.node.WorkItemNode;
 
 public class JPAPersisterTest extends TestCase {
 	

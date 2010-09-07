@@ -9,6 +9,7 @@ public class TestWorkItemHandler implements WorkItemHandler {
 	private static TestWorkItemHandler INSTANCE = new TestWorkItemHandler();
 	
 	private WorkItem workItem;
+	private WorkItem aborted;
 	
 	private TestWorkItemHandler() {
 	}
@@ -22,11 +23,18 @@ public class TestWorkItemHandler implements WorkItemHandler {
 	}
 
 	public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+		this.aborted = workItem;
 	}
 	
 	public WorkItem getWorkItem() {
 		WorkItem result = workItem;
 		workItem = null;
+		return result;
+	}
+
+	public WorkItem getAbortedWorkItem() {
+		WorkItem result = aborted;
+		aborted = null;
 		return result;
 	}
 

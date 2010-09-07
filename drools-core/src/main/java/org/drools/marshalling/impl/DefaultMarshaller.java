@@ -98,7 +98,7 @@ public class DefaultMarshaller
         if ( ((SessionConfiguration) config).isKeepReference() ) {
             ((ReteooRuleBase)((KnowledgeBaseImpl)this.kbase).ruleBase).addStatefulSession( session );
         }
-        return new StatefulKnowledgeSessionImpl( session );
+        return (StatefulKnowledgeSession) session.getKnowledgeRuntime();
 
     }
 

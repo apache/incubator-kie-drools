@@ -39,10 +39,10 @@ import org.drools.concurrent.Future;
 import org.drools.concurrent.RetractObject;
 import org.drools.concurrent.UpdateObject;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.runtime.Environment;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.RuleBaseUpdateListener;
@@ -108,11 +108,11 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     
     public void writeExternal(ObjectOutput out) throws IOException {
         // all we do is create marshall to a byte[] and write to the stream
-        StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( this );
+    	StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) getKnowledgeRuntime();
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
         
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        marshaller.marshall( stream, ksession );
+        marshaller.marshall( stream, (StatefulKnowledgeSession) getKnowledgeRuntime() );
         stream.close();
         
         byte[] bytes = stream.toByteArray();
