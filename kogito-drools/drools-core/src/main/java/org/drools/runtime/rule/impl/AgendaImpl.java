@@ -16,18 +16,17 @@
 
 package org.drools.runtime.rule.impl;
 
-import org.drools.common.InternalAgenda;
 import org.drools.runtime.rule.ActivationGroup;
-import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaGroup;
 import org.drools.runtime.rule.RuleFlowGroup;
 
 public class AgendaImpl
     implements
-    Agenda {
-    private InternalAgenda agenda;    
+    InternalAgenda {
+	
+    private org.drools.common.InternalAgenda agenda;    
     
-    public AgendaImpl(InternalAgenda agenda) {
+    public AgendaImpl(org.drools.common.InternalAgenda agenda) {
         super();
         this.agenda = agenda;
     }
@@ -61,5 +60,26 @@ public class AgendaImpl
         } else {
             return null;
         }
-    }       
+    }
+    
+    public org.drools.common.InternalAgenda getAgenda() {
+    	return this.agenda;
+    }
+
+	public void activateRuleFlowGroup(String name) {
+		this.agenda.activateRuleFlowGroup(name);
+	}
+
+	public void activateRuleFlowGroup(String name, long processInstanceId, String nodeInstanceId) {
+		this.agenda.activateRuleFlowGroup(name, processInstanceId, nodeInstanceId);
+	}
+
+	public void deactivateRuleFlowGroup(String name) {
+		this.agenda.deactivateRuleFlowGroup(name);
+	}
+
+	public boolean isRuleActiveInRuleFlowGroup(
+			String ruleflowGroupName, String ruleName, long processInstanceId) {
+		return this.agenda.isRuleActiveInRuleFlowGroup(ruleflowGroupName, ruleName, processInstanceId);
+	}
 }

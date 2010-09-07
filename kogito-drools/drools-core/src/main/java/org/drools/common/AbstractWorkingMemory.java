@@ -204,7 +204,7 @@ public abstract class AbstractWorkingMemory
 
     private Map<InternalFactHandle, PropagationContext>          modifyContexts;
 
-    private KnowledgeRuntime                                     kruntime;
+    private InternalKnowledgeRuntime                             kruntime;
 
     private Map<String, ExitPoint>                               exitPoints;
 
@@ -378,8 +378,6 @@ public abstract class AbstractWorkingMemory
 
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
-
-        this.processRuntime = createProcessRuntime();
 
         initManagementBeans();        
     }
@@ -1775,11 +1773,12 @@ public abstract class AbstractWorkingMemory
         }
     }
 
-    public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
+    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
+        this.processRuntime = createProcessRuntime();
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public InternalKnowledgeRuntime getKnowledgeRuntime() {
         return this.kruntime;
     }
 

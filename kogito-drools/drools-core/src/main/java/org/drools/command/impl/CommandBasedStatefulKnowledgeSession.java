@@ -40,13 +40,13 @@ import org.drools.command.runtime.RemoveEventListenerCommand;
 import org.drools.command.runtime.SetGlobalCommand;
 import org.drools.command.runtime.UnregisterChannelCommand;
 import org.drools.command.runtime.UnregisterExitPointCommand;
+import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.GetProcessEventListenersCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
-import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -72,15 +72,13 @@ import org.drools.command.runtime.rule.UpdateCommand;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
-import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
-import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
@@ -462,6 +460,11 @@ public class CommandBasedStatefulKnowledgeSession
                                    ViewChangedEventListener listener) {
         // TODO: implement thiss        
         return null;
+    }
+    
+    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    	// TODO: implement this
+    	return null;
     }
 
 }

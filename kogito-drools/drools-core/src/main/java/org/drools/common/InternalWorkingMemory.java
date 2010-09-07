@@ -144,9 +144,9 @@ public interface InternalWorkingMemory
      */
     public PartitionTaskManager getPartitionTaskManager( RuleBasePartitionId partitionId );
     
-    public void setKnowledgeRuntime(KnowledgeRuntime kruntime);
+    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime);
     
-    public KnowledgeRuntime getKnowledgeRuntime();
+    public InternalKnowledgeRuntime getKnowledgeRuntime();
     
     /**
      * @deprecated Use {@link #getChannels()} instead.

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import org.drools.FactException;
 import org.drools.KnowledgeBase;
@@ -36,10 +37,12 @@ import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.ObjectStore;
 import org.drools.common.ObjectTypeConfigurationRegistry;
+import org.drools.common.WorkingMemoryAction;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
@@ -72,6 +75,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
@@ -88,13 +92,16 @@ import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.runtime.rule.impl.NativeQueryResults;
 import org.drools.spi.Activation;
 import org.drools.time.SessionClock;
+import org.drools.time.TimerService;
 
 public class StatefulKnowledgeSessionImpl
     implements
     StatefulKnowledgeSession,
-    InternalWorkingMemoryEntryPoint {
+    InternalWorkingMemoryEntryPoint,
+    InternalKnowledgeRuntime {
+	
     public ReteooWorkingMemory session;
-    public KnowledgeBaseImpl   kbase;
+    public KnowledgeBase   kbase;
 
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session) {
         this( session,
@@ -105,7 +112,7 @@ public class StatefulKnowledgeSessionImpl
                                         KnowledgeBase kbase) {
         this.session = session;
         this.session.setKnowledgeRuntime( this );
-        this.kbase = (KnowledgeBaseImpl) kbase;
+        this.kbase = kbase;
     }
 
     public int getId() {
@@ -718,7 +725,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public RuleBase getRuleBase() {
-        return this.kbase.ruleBase;
+        return ((KnowledgeBaseImpl) this.kbase).ruleBase;
     }
 
     public QueryResults getQueryResults(String query) {
@@ -794,5 +801,37 @@ public class StatefulKnowledgeSessionImpl
                                            arguments,
                                            listener );
     }
+    
+    public KnowledgeSessionConfiguration getSessionConfiguration() {
+    	return this.session.getSessionConfiguration();
+    }
+
+	public TimerService getTimerService() {
+		return this.session.getTimerService();
+	}
+
+	public void startOperation() {
+		this.session.startOperation();
+	}
+
+	public void endOperation() {
+		this.session.endOperation();
+	}
+
+	public void executeQueuedActions() {
+		this.session.executeQueuedActions();
+	}
+
+	public Queue<WorkingMemoryAction> getActionQueue() {
+		return this.session.getActionQueue();
+	}
+
+	public InternalProcessRuntime getProcessRuntime() {
+		return this.session.getProcessRuntime();
+	}
+
+	public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+		this.session.queueWorkingMemoryAction(action);
+	}
 
 }

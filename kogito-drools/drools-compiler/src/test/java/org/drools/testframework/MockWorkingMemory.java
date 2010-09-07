@@ -19,6 +19,7 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -478,12 +479,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public InternalKnowledgeRuntime getKnowledgeRuntime() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
+    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
         // TODO Auto-generated method stub
         
     }

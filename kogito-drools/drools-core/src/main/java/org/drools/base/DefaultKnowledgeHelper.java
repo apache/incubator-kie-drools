@@ -227,7 +227,7 @@ public class DefaultKnowledgeHelper
     }
 
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
+        return ((ReteooWorkingMemory) this.workingMemory).getKnowledgeRuntime();
     }
 
     public Activation getActivation() {

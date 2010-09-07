@@ -70,12 +70,16 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
-        this.ksession.getProcessRuntime().addEventListener( processStats );
+        if (ksession.getProcessRuntime() != null) {
+        	this.ksession.getProcessRuntime().addEventListener( processStats );
+        }
     }
     
     public void dispose() {
         this.ksession.removeEventListener( agendaStats );
-        this.ksession.getProcessRuntime().removeEventListener( processStats );
+        if (ksession.getProcessRuntime() != null) {
+        	this.ksession.getProcessRuntime().removeEventListener( processStats );
+        }
     }
     
     /* (non-Javadoc)

@@ -28,6 +28,7 @@ import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 import org.mvel2.CompileException;
@@ -67,6 +68,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     private Map globals;
  
     private WorkingMemory workingMemory;
+    private KnowledgeRuntime kruntime;
  
     private Map localVariables;
     
@@ -111,6 +113,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         previousDeclarations = (Map<String, Declaration>) in.readObject();
         globals = (Map) in.readObject();
         workingMemory = (WorkingMemory) in.readObject();
+        kruntime = (KnowledgeRuntime) in.readObject();
         localVariables = (Map) in.readObject();
     }
  
@@ -122,6 +125,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         out.writeObject(previousDeclarations);
         out.writeObject(globals);
         out.writeObject(workingMemory);
+        out.writeObject(kruntime);
         out.writeObject(localVariables);
     }
  
@@ -194,6 +198,26 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         }
     }
  
+    public void setContext(final Tuple tuple,
+                           final Object object,
+                           final KnowledgeRuntime kruntime,
+                           final Map<String, Object> variables ) {
+		if (tuple != null) {
+			this.tupleObjects = ((LeftTuple) tuple).toFactHandles();
+		}
+		this.object = object;
+		this.kruntime = kruntime;
+		if (variables == null) {
+			if (this.localVariables == null) {
+				this.localVariables = new HashMap();
+			} else {
+				this.localVariables.clear();
+			}
+		} else {
+			this.localVariables = variables;
+		}
+	}
+
     private Object getTupleObjectFor(Declaration declaration) {
         int i = declaration.getPattern().getOffset();
         return ( i < this.tupleObjects.length ) ? this.tupleObjects[i].getObject() : null;
@@ -216,7 +240,13 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
  
     public Object getValue(final String identifier) {
-        return this.workingMemory.getGlobal(identifier);
+    	if (this.workingMemory != null) {
+    		return this.workingMemory.getGlobal(identifier);
+    	}
+    	if (this.kruntime != null) {
+    		return this.kruntime.getGlobal(identifier);
+    	}
+    	return null;
     }
  
     public Object getLocalValue(final String identifier) {

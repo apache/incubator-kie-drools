@@ -7,9 +7,7 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 
-import org.drools.WorkingMemory;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.impl.ProcessInstanceImpl;
@@ -20,16 +18,16 @@ public class JPAProcessInstanceManager
     implements
     ProcessInstanceManager {
 
-    private WorkingMemory workingMemory;
+    private InternalKnowledgeRuntime kruntime;
     private transient Map<Long, ProcessInstance> processInstances;
 
-    public void setWorkingMemory(WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;
+    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
+        this.kruntime = kruntime;
     }
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.workingMemory.getEnvironment() );
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.kruntime.getEnvironment() );
+        EntityManager em = (EntityManager) this.kruntime.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         em.persist( processInstanceInfo );
         //em.refresh( processInstanceInfo  );
 //        em.flush();
@@ -55,7 +53,7 @@ public class JPAProcessInstanceManager
 	    	}
     	}
     	
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        EntityManager em = (EntityManager) this.kruntime.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
                                                            id );
         if ( processInstanceInfo == null ) {
@@ -63,14 +61,14 @@ public class JPAProcessInstanceManager
         }
         processInstanceInfo.updateLastReadDate();
         processInstance = (org.drools.process.instance.ProcessInstance)
-        	processInstanceInfo.getProcessInstance(workingMemory,this.workingMemory.getEnvironment());
-        Process process = ((InternalRuleBase) workingMemory.getRuleBase()).getProcess( processInstance.getProcessId() );
+        	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment());
+        Process process = kruntime.getKnowledgeBase().getProcess( processInstance.getProcessId() );
         if ( process == null ) {
             throw new IllegalArgumentException( "Could not find process " + processInstance.getProcessId() );
         }
         processInstance.setProcess( process );
-        if ( processInstance.getWorkingMemory() == null ) {
-            processInstance.setWorkingMemory( (InternalWorkingMemory) workingMemory );
+        if ( processInstance.getKnowledgeRuntime() == null ) {
+            processInstance.setKnowledgeRuntime( kruntime );
             ((ProcessInstanceImpl) processInstance).reconnect();
         }
         return processInstance;
@@ -81,7 +79,7 @@ public class JPAProcessInstanceManager
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
-        EntityManager em = (EntityManager) this.workingMemory.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        EntityManager em = (EntityManager) this.kruntime.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
         ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
                                                            processInstance.getId() );
         if ( processInstanceInfo != null ) {

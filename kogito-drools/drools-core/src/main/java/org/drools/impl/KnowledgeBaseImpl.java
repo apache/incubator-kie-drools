@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,7 +81,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 
 public class KnowledgeBaseImpl
     implements
-    KnowledgeBase,
+    InternalKnowledgeBase,
     Externalizable {
     public RuleBase                                                          ruleBase;
     
@@ -238,12 +239,11 @@ public class KnowledgeBaseImpl
     }
 
     public Process getProcess(String processId) {
-        Process p = null;
-        for( Package pkg : this.ruleBase.getPackages() ) {
-            p = pkg.getRuleFlows().get( processId );
-            if( p != null ) break;
-        }
-        return p;
+        return ((InternalRuleBase) this.ruleBase).getProcess(processId);
+    }
+
+    public Collection<Process> getProcesses() {
+    	return Arrays.asList(((InternalRuleBase) this.ruleBase).getProcesses());
     }
 
     public Rule getRule(String packageName,
