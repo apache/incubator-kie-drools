@@ -78,5 +78,7 @@ public interface KnowledgeRuntime
     void unregisterChannel(String name);
 
     Map< String, Channel> getChannels();
+    
+    KnowledgeSessionConfiguration getSessionConfiguration();
 
 }
