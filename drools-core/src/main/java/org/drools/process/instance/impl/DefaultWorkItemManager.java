@@ -26,10 +26,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.drools.WorkingMemory;
-import org.drools.runtime.process.ProcessInstance;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemHandler;
 
 /**
@@ -42,25 +42,25 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private long workItemCounter;
 	private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
-	private WorkingMemory workingMemory;
+	private InternalKnowledgeRuntime kruntime;
 	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
-    public DefaultWorkItemManager(WorkingMemory workingMemory) {
-	    this.workingMemory = workingMemory;
+    public DefaultWorkItemManager(InternalKnowledgeRuntime kruntime) {
+	    this.kruntime = kruntime;
 	}
 
     @SuppressWarnings("unchecked")
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItemCounter = in.readLong();
-        workItems = (Map<Long, WorkItem>)in.readObject();
-        workingMemory = (WorkingMemory)in.readObject();
+        workItems = (Map<Long, WorkItem>) in.readObject();
+        kruntime = (InternalKnowledgeRuntime) in.readObject();
         workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong(workItemCounter);
         out.writeObject(workItems);
-        out.writeObject(workingMemory);
+        out.writeObject(kruntime);
         out.writeObject(workItemHandlers);
     }
 
@@ -110,14 +110,13 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         // work item may have been aborted
         if (workItem != null) {
             ((org.drools.process.instance.WorkItem) workItem).setResults(results);
-            ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             ((org.drools.process.instance.WorkItem) workItem).setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
             workItems.remove(new Long(id));
-            workingMemory.fireAllRules();
         }
     }
 
@@ -125,14 +124,13 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            ProcessInstance processInstance = ( ProcessInstance ) workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
             workItems.remove(new Long(id));
-            workingMemory.fireAllRules();
         }
     }
 

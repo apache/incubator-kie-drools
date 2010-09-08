@@ -16,10 +16,10 @@
 
 package org.drools.process.instance;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 
 public interface WorkItemManagerFactory {
 	
-	WorkItemManager createWorkItemManager(WorkingMemory workingMemory);
+	WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime);
 
 }

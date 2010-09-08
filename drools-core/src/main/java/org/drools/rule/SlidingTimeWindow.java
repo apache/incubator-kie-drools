@@ -25,9 +25,11 @@ import java.util.PriorityQueue;
 
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.reteoo.RightTuple;
 import org.drools.spi.PropagationContext;
@@ -330,6 +332,10 @@ public class SlidingTimeWindow
                                         workingMemory );
         }
 
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+        
         public void write(MarshallerWriteContext context) throws IOException {
             // TODO Auto-generated method stub
 

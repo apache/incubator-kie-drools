@@ -34,9 +34,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.spi.GlobalResolver;
 
@@ -169,6 +171,9 @@ public class ReteooWorkingMemoryTest extends TestCase {
             workingMemory.executeQueuedActions();
             assertEquals( 0, counter.get() );
         }
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
     }
     
     private static class FinalAction extends ReentrantAction {
@@ -182,7 +187,5 @@ public class ReteooWorkingMemoryTest extends TestCase {
             workingMemory.executeQueuedActions();
         }
     }
-    
-
 
 }
