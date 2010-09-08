@@ -29,6 +29,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
@@ -124,9 +125,9 @@ public class DefaultMarshaller
     public void marshall(final OutputStream stream,
                          final StatefulKnowledgeSession session) throws IOException {
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
-                                                                     (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
+                                                                     (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
                                                                      (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) session).session,
-                                                                     RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
+                                                                     RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
                                                                      this.strategyStore,
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
                                                                      this.marshallingConfig.isMarshallWorkItems() );

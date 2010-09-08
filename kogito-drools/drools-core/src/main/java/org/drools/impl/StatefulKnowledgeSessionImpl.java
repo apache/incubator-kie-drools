@@ -35,6 +35,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.common.AbstractWorkingMemory;
+import org.drools.common.EndOperationListener;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalKnowledgeRuntime;
@@ -832,6 +833,18 @@ public class StatefulKnowledgeSessionImpl
 
 	public void queueWorkingMemoryAction(WorkingMemoryAction action) {
 		this.session.queueWorkingMemoryAction(action);
+	}
+
+	public void setId(int id) {
+		this.session.setId(id);
+	}
+
+	public void setEndOperationListener(EndOperationListener listener) {
+		this.session.setEndOperationListener(listener);
+	}
+
+	public long getLastIdleTimestamp() {
+		return this.session.getLastIdleTimestamp();
 	}
 
 }

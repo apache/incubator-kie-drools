@@ -36,5 +36,7 @@ public interface WorkingMemoryAction extends Externalizable {
     
     public void execute(InternalWorkingMemory workingMemory);
     
+    public void execute(InternalKnowledgeRuntime kruntime);
+    
     public void write(MarshallerWriteContext context) throws IOException;
 }

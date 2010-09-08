@@ -42,7 +42,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.drools.Agenda;
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.KnowledgeBaseFactoryService;
 import org.drools.QueryResults;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -83,12 +82,10 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.ExitPoint;
 import org.drools.runtime.Globals;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.ProcessRuntimeFactory;
-import org.drools.runtime.process.ProcessRuntimeFactoryService;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.spi.Activation;
@@ -102,7 +99,6 @@ import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
-import org.drools.util.ServiceRegistryImpl;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
@@ -1583,7 +1579,7 @@ public abstract class AbstractWorkingMemory
 
     public WorkItemManager getWorkItemManager() {
         if ( workItemManager == null ) {
-            workItemManager = config.getWorkItemManagerFactory().createWorkItemManager( this );
+            workItemManager = config.getWorkItemManagerFactory().createWorkItemManager( this.getKnowledgeRuntime() );
             Map<String, WorkItemHandler> workItemHandlers = config.getWorkItemHandlers();
             if ( workItemHandlers != null ) {
                 for ( Map.Entry<String, WorkItemHandler> entry : workItemHandlers.entrySet() ) {
@@ -1859,10 +1855,6 @@ public abstract class AbstractWorkingMemory
         this.endOperationListener = listener;
     }
 
-    public static interface EndOperationListener {
-        void endOperation(ReteooWorkingMemory wm);
-    }
-
     /**
      * This method must be called after finishing any work in the engine,
      * like inserting a new fact or firing a new rule. It will reset the engine
@@ -1876,7 +1868,7 @@ public abstract class AbstractWorkingMemory
             // means the engine is idle, so, set the timestamp
             this.lastIdleTimestamp.set( this.timerService.getCurrentTime() );
             if ( this.endOperationListener != null ) {
-                this.endOperationListener.endOperation( (ReteooWorkingMemory) this );
+                this.endOperationListener.endOperation( this.getKnowledgeRuntime() );
             }
         }
     }

@@ -34,6 +34,7 @@ import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -41,6 +42,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.impl.EnvironmentFactory;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.rule.Declaration;
@@ -359,6 +361,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                    context,
                                    workingMemory );
         }
+        
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
     }
 
     public static class WorkingMemoryReteExpireAction
@@ -416,6 +422,10 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     ((EventFactHandle) factHandle).getEntryPoint().retract( factHandle );
                 }
             }
+        }
+        
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 
