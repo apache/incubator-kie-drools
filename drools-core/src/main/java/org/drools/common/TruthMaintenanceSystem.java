@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.rule.Rule;
@@ -281,6 +282,10 @@ public class TruthMaintenanceSystem {
                                        (Rule) context.getRuleOrigin(),
                                        this.activation );
             }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import org.drools.WorkingMemory;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
@@ -18,16 +18,16 @@ import org.drools.runtime.process.WorkItemHandler;
 
 public class JPAWorkItemManager implements WorkItemManager {
 
-    private WorkingMemory workingMemory;
+    private InternalKnowledgeRuntime kruntime;
 	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
     private transient Map<Long, WorkItemInfo> workItems;
     
-    public JPAWorkItemManager(WorkingMemory workingMemory) {
-    	this.workingMemory = workingMemory;
+    public JPAWorkItemManager(InternalKnowledgeRuntime kruntime) {
+    	this.kruntime = kruntime;
     }
     
 	public void internalExecuteWorkItem(WorkItem workItem) {
-        Environment env = this.workingMemory.getEnvironment();
+        Environment env = this.kruntime.getEnvironment();
         EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
@@ -49,7 +49,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
 	public void internalAbortWorkItem(long id) {
-        Environment env = this.workingMemory.getEnvironment();
+        Environment env = this.kruntime.getEnvironment();
         EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
@@ -73,7 +73,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        Environment env = this.workingMemory.getEnvironment();
+        Environment env = this.kruntime.getEnvironment();
         EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
@@ -92,7 +92,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         if (workItemInfo != null) {
             WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
             workItem.setResults(results);
-            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
@@ -102,12 +102,11 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (workItems != null) {
             	this.workItems.remove(workItem.getId());
             }
-            workingMemory.fireAllRules();
     	}
     }
 
     public void abortWorkItem(long id) {
-        Environment env = this.workingMemory.getEnvironment();
+        Environment env = this.kruntime.getEnvironment();
         EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         
         WorkItemInfo workItemInfo = null;
@@ -123,7 +122,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     	// work item may have been aborted
         if (workItemInfo != null) {
             WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
-            ProcessInstance processInstance = workingMemory.getProcessInstance(workItem.getProcessInstanceId());
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
             if (processInstance != null) {
@@ -133,12 +132,11 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (workItems != null) {
             	workItems.remove(workItem.getId());
             }
-            workingMemory.fireAllRules();
         }
     }
 
 	public WorkItem getWorkItem(long id) {
-        Environment env = this.workingMemory.getEnvironment();
+        Environment env = this.kruntime.getEnvironment();
         EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 
         WorkItemInfo workItemInfo = null;

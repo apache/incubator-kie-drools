@@ -26,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.spi.Activation;
@@ -303,6 +304,9 @@ public class RuleFlowGroupImpl
                 // deactivate ruleflow group
                 this.ruleFlowGroup.setActive( false );
             }
+        }
+        public void execute(InternalKnowledgeRuntime kruntime) {
+        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 

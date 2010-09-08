@@ -22,4 +22,10 @@ public interface InternalKnowledgeRuntime extends KnowledgeRuntime {
 	
 	InternalProcessRuntime getProcessRuntime();
 	
+	void setId(int id);
+	
+	void setEndOperationListener(EndOperationListener listener);
+	
+    long getLastIdleTimestamp();
+	
 }
