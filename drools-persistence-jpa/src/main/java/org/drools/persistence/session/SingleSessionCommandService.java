@@ -15,15 +15,12 @@ import org.drools.command.impl.ContextImpl;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.DisposeCommand;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.AbstractWorkingMemory.EndOperationListener;
+import org.drools.common.EndOperationListener;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
 import org.drools.process.instance.InternalProcessRuntime;
-import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -96,11 +93,9 @@ public class SingleSessionCommandService
 
         initTransactionManager( this.env );
         
-        ReteooStatefulSession session = (ReteooStatefulSession) ((KnowledgeBaseImpl) kbase).ruleBase.newStatefulSession( (SessionConfiguration) conf,
-                                                                                                                         this.env );
-        this.ksession = new StatefulKnowledgeSessionImpl( session,
-                                                          kbase );
-
+        // create session but bypass command service
+        this.ksession = kbase.newStatefulKnowledgeSession(conf, this.env);
+        
         this.kContext = new KnowledgeCommandContext( new ContextImpl( "ksession",
                                                                       null ),
                                                      null,
@@ -108,12 +103,12 @@ public class SingleSessionCommandService
                                                      this.ksession,
                                                      null );
 
-        ((JpaJDKTimerService) ((StatefulKnowledgeSessionImpl) ksession).session.getTimerService()).setCommandService( this );
+        ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
         
         this.marshallingHelper = new JPASessionMarshallingHelper( this.ksession,
                                                                   conf );
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );        
         
         // Use the App scoped EntityManager if the user has provided it, and it is open.
 
@@ -139,7 +134,7 @@ public class SingleSessionCommandService
         }
 
         // update the session id to be the same as the session info id
-        ((StatefulKnowledgeSessionImpl) ksession).session.setId( this.sessionInfo.getId() );
+        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
     }
 
@@ -199,11 +194,11 @@ public class SingleSessionCommandService
                                                              this.ksession );
 
         // update the session id to be the same as the session info id
-        ((StatefulKnowledgeSessionImpl) ksession).session.setId( this.sessionInfo.getId() );
+        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
-        ((StatefulKnowledgeSessionImpl) this.ksession).session.setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
 
-        ((JpaJDKTimerService) ((StatefulKnowledgeSessionImpl) ksession).session.getTimerService()).setCommandService( this );
+        ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
         
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
@@ -256,8 +251,8 @@ public class SingleSessionCommandService
             this.info = info;
         }
 
-        public void endOperation(ReteooWorkingMemory wm) {
-            this.info.setLastModificationDate( new Date( wm.getLastIdleTimestamp() ) );
+        public void endOperation(InternalKnowledgeRuntime kruntime) {
+            this.info.setLastModificationDate( new Date( kruntime.getLastIdleTimestamp() ) );
         }
     }
 
@@ -339,11 +334,11 @@ public class SingleSessionCommandService
             
             this.service.jpm.endCommandScopedEntityManager();
 
-            StatefulKnowledgeSessionImpl ksession = ((StatefulKnowledgeSessionImpl) this.service.ksession);
+            StatefulKnowledgeSession ksession = this.service.ksession;
             // clean up cached process and work item instances
             if ( ksession != null ) {
-                ((JPAProcessInstanceManager) ((InternalProcessRuntime) ((InternalWorkingMemory) ksession.session).getProcessRuntime()).getProcessInstanceManager()).clearProcessInstances();
-                ((JPAWorkItemManager) ksession.session.getWorkItemManager()).clearWorkItems();
+                ((JPAProcessInstanceManager) ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessInstanceManager()).clearProcessInstances();
+                ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
             }
 
         }
