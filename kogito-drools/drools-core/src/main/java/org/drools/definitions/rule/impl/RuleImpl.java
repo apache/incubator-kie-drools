@@ -55,6 +55,10 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
     public Map<String, Object> getMetaData() {
         return this.rule.getMetaData();
     }
+    
+    public Rule getRule() {
+    	return rule;
+    }
 
     public int hashCode() {
         return ((rule == null) ? 37 : rule.hashCode());
