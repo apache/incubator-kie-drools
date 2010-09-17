@@ -43,6 +43,7 @@ import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
@@ -747,5 +748,27 @@ public class OutputMarshaller {
 
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
     }
+
+    public static void writeWorkItem(MarshallerWriteContext context, WorkItem workItem) throws IOException {
+		writeWorkItem(context, workItem, true);
+	}
+
+	public static void writeWorkItem(MarshallerWriteContext context,
+			WorkItem workItem, boolean includeVariables) throws IOException {
+		ObjectOutputStream stream = context.stream;
+		stream.writeLong(workItem.getId());
+		stream.writeLong(workItem.getProcessInstanceId());
+		stream.writeUTF(workItem.getName());
+		stream.writeInt(workItem.getState());
+
+		if (includeVariables) {
+			Map<String, Object> parameters = workItem.getParameters();
+			stream.writeInt(parameters.size());
+			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+				stream.writeUTF(entry.getKey());
+				stream.writeObject(entry.getValue());
+			}
+		}
+	}
 
 }

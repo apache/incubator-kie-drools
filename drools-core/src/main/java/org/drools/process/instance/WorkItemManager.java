@@ -33,5 +33,7 @@ public interface WorkItemManager extends org.drools.runtime.process.WorkItemMana
 	Set<WorkItem> getWorkItems();
 	
 	WorkItem getWorkItem(long id);
+	
+	void clear();
 
 }

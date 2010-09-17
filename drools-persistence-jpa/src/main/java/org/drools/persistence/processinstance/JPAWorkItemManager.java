@@ -168,4 +168,8 @@ public class JPAWorkItemManager implements WorkItemManager {
     		workItems.clear();
     	}
     }
+
+	public void clear() {
+		clearWorkItems();
+	}
 }

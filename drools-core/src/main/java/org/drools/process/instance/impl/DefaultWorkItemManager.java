@@ -138,4 +138,8 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         this.workItemHandlers.put(workItemName, handler);
     }
 
+	public void clear() {
+		this.workItems.clear();
+	}
+
 }

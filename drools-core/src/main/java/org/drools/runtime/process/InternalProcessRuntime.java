@@ -8,5 +8,7 @@ public interface InternalProcessRuntime extends ProcessRuntime, ProcessEventMana
 	void dispose();
 	
 	void setProcessEventSupport(ProcessEventSupport processEventSupport);
+	
+	void clearProcessInstances();
 
 }
