@@ -18,9 +18,7 @@ import org.drools.command.runtime.DisposeCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.persistence.processinstance.JPAProcessInstanceManager;
 import org.drools.persistence.processinstance.JPAWorkItemManager;
-import org.drools.process.instance.InternalProcessRuntime;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -337,7 +335,7 @@ public class SingleSessionCommandService
             StatefulKnowledgeSession ksession = this.service.ksession;
             // clean up cached process and work item instances
             if ( ksession != null ) {
-                ((JPAProcessInstanceManager) ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessInstanceManager()).clearProcessInstances();
+                ((InternalKnowledgeRuntime) ksession).getProcessRuntime().clearProcessInstances();
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
             }
 

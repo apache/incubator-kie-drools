@@ -9,14 +9,10 @@ import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.jpa.KnowledgeStoreService;
-import org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory;
-import org.drools.persistence.processinstance.JPASignalManagerFactory;
 import org.drools.persistence.processinstance.JPAWorkItemManagerFactory;
 import org.drools.persistence.session.JpaJDKTimerService;
 import org.drools.persistence.session.SingleSessionCommandService;
-import org.drools.process.instance.ProcessInstanceManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
-import org.drools.process.instance.event.SignalManagerFactory;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -27,10 +23,8 @@ public class KnowledgeStoreServiceImpl
     implements
     KnowledgeStoreService {
 
-    private Class< ? extends CommandExecutor>                commandServiceClass;
-    private Class< ? extends ProcessInstanceManagerFactory> processInstanceManagerFactoryClass;
+    private Class< ? extends CommandExecutor>               commandServiceClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;
-    private Class< ? extends SignalManagerFactory>          processSignalManagerFactoryClass;
     private Class< ? extends TimerService>                  timerServiceClass;
 
     private Properties                                      configProps = new Properties();
@@ -41,9 +35,9 @@ public class KnowledgeStoreServiceImpl
 
     protected void setDefaultImplementations() {
         setCommandServiceClass( SingleSessionCommandService.class );
-        setProcessInstanceManagerFactoryClass( JPAProcessInstanceManagerFactory.class );
+        setProcessInstanceManagerFactoryClass( "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
         setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
-        setProcessSignalManagerFactoryClass( JPASignalManagerFactory.class );
+        setProcessSignalManagerFactoryClass( "org.drools.persistence.processinstance.JPASignalManagerFactory" );
         setTimerServiceClass( JpaJDKTimerService.class );
     }
 
@@ -175,16 +169,9 @@ public class KnowledgeStoreServiceImpl
         return timerServiceClass;
     }
 
-    public void setProcessInstanceManagerFactoryClass(Class< ? extends ProcessInstanceManagerFactory> processInstanceManagerFactoryClass) {
-        if ( processInstanceManagerFactoryClass != null ) {
-            this.processInstanceManagerFactoryClass = processInstanceManagerFactoryClass;
-            configProps.put( "drools.processInstanceManagerFactory",
-                             processInstanceManagerFactoryClass.getName() );
-        }
-    }
-
-    public Class< ? extends ProcessInstanceManagerFactory> getProcessInstanceManagerFactoryClass() {
-        return processInstanceManagerFactoryClass;
+    public void setProcessInstanceManagerFactoryClass(String processInstanceManagerFactoryClass) {
+        configProps.put( "drools.processInstanceManagerFactory",
+                         processInstanceManagerFactoryClass );
     }
 
     public void setWorkItemManagerFactoryClass(Class< ? extends WorkItemManagerFactory> workItemManagerFactoryClass) {
@@ -199,16 +186,8 @@ public class KnowledgeStoreServiceImpl
         return workItemManagerFactoryClass;
     }
 
-    public void setProcessSignalManagerFactoryClass(Class< ? extends SignalManagerFactory> processSignalManagerFactoryClass) {
-        if ( processSignalManagerFactoryClass != null ) {
-            this.processSignalManagerFactoryClass = processSignalManagerFactoryClass;
-            configProps.put( "drools.processSignalManagerFactory",
-                             processSignalManagerFactoryClass.getName() );
-        }
+    public void setProcessSignalManagerFactoryClass(String processSignalManagerFactoryClass) {
+        configProps.put( "drools.processSignalManagerFactory",
+                         processSignalManagerFactoryClass );
     }
-
-    public Class< ? extends SignalManagerFactory> getProcessSignalManagerFactoryClass() {
-        return processSignalManagerFactoryClass;
-    }
-
 }

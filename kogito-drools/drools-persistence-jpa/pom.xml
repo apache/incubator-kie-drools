@@ -63,17 +63,7 @@
        
     	<dependency>
     		<groupId>org.drools</groupId>
-    		<artifactId>drools-flow-core</artifactId>
-    	</dependency>         		  
-       
-    	<dependency>
-    		<groupId>org.drools</groupId>
     		<artifactId>drools-compiler</artifactId>
-    	</dependency>         		  
-
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-flow-compiler</artifactId>
     	</dependency>         		  
 
     	<dependency>

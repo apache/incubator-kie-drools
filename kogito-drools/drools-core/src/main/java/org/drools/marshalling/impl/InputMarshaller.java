@@ -48,6 +48,8 @@ import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
@@ -792,5 +794,36 @@ public class InputMarshaller {
         context.propagationContexts.put( propagationNumber,
                                          pc );
     }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context, boolean includeVariables) throws IOException {
+        ObjectInputStream stream = context.stream;
+
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setId( stream.readLong() );
+        workItem.setProcessInstanceId( stream.readLong() );
+        workItem.setName( stream.readUTF() );
+        workItem.setState( stream.readInt() );
+
+        if(includeVariables){
+        int nbParameters = stream.readInt();
+
+        for ( int i = 0; i < nbParameters; i++ ) {
+            String name = stream.readUTF();
+            try {
+                Object value = stream.readObject();
+                workItem.setParameter( name,
+                                       value );
+            } catch ( ClassNotFoundException e ) {
+                throw new IllegalArgumentException( "Could not reload parameter " + name );
+            }
+        }
+        }
+
+        return workItem;
+    }
+
+    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
+        return readWorkItem(context, true);
+     }
 
 }
