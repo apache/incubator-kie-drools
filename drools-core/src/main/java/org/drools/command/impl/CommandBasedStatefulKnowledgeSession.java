@@ -463,8 +463,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
     
     public KnowledgeSessionConfiguration getSessionConfiguration() {
-    	// TODO: implement this
-    	return null;
+    	return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
     }
 
 }
