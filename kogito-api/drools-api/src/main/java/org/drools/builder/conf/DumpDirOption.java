@@ -78,7 +78,7 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
 
     @Override
     public String toString() {
-        return "DumpDirOption( directory="+dir.toString()+" )";
+        return "DumpDirOption( directory="+((dir == null) ? "" : dir.toString())+" )";
     }
     
     @Override
