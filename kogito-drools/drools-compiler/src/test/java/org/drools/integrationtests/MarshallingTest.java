@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,6 +49,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.KeyStoreHelper;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -1057,6 +1059,170 @@ public class MarshallingTest extends TestCase {
         session.dispose();
 
     }
+
+    /*
+     *  Testing the signature framework 
+     */
+    public void testSignedSerialization1() throws Exception {
+        try {
+            setPrivateKeyProperties();
+            setPublicKeyProperties();
+
+            //Compile a package
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+
+            // Test package serialization/deserialization
+            Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
+
+            // Create a rulebase
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage( pkg );
+
+            // Test rulebase serialization/deserialization
+            byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
+            ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
+        } finally {
+            unsetPrivateKeyProperties();
+            unsetPublicKeyProperties();
+        }
+    }
+
+    /*
+     *  Deserializing a signed package without the proper public key 
+     *  should fail. 
+     */
+    public void testSignedSerialization2() throws Exception {
+        try {
+            // set only the serialisation properties, but not the deserialization
+            setPrivateKeyProperties();
+
+            //Compile a package
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+
+            try {
+                // Test package serialization/deserialization
+                Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
+                fail( "Deserialisation should have failed." );
+            } catch ( Exception e ) {
+                // success
+            }
+        } finally {
+            unsetPrivateKeyProperties();
+        }
+    }
+
+    /*
+     *  Deserializing a signed rulebase without the proper public key 
+     *  should fail. 
+     */
+    public void testSignedSerialization3() throws Exception {
+        try {
+            // set only the serialisation properties, but not the deserialization
+            setPrivateKeyProperties();
+
+            //Compile a package
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+
+            // Create a rulebase
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage( builder.getPackage() );
+
+            // Test rulebase serialization/deserialization
+            byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
+
+            try {
+                ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
+                fail( "Deserialisation should have failed." );
+            } catch ( Exception e ) {
+                // success
+            }
+        } finally {
+            unsetPrivateKeyProperties();
+        }
+    }
+
+    /*
+     *  A client environment configured to use signed serialization
+     *  should refuse any non-signed serialized rulebase 
+     */
+    public void testSignedSerialization4() throws Exception {
+
+        //Compile a package
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1_0.drl" ) ) );
+
+        // Create a rulebase
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( builder.getPackage() );
+
+        // Test rulebase serialization/deserialization
+        byte[] serializedRulebase = DroolsStreamUtils.streamOut( ruleBase );
+
+        try {
+            // set only the deserialisation properties, but not the serialization
+            setPublicKeyProperties();
+            ruleBase = (RuleBase) DroolsStreamUtils.streamIn( serializedRulebase );
+            fail( "Should not deserialize an unsigned rulebase on an environment configured to work with signed rulebases." );
+        } catch ( Exception e ) {
+            // success
+        } finally {
+            unsetPublicKeyProperties();
+        }
+    }
+
+    private void setPublicKeyProperties() {
+        // Set the client properties to de-serialise the signed packages
+        URL clientKeyStoreURL = getClass().getResource( "droolsClient.keystore" );
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                            "true" );
+        System.setProperty( KeyStoreHelper.PROP_PUB_KS_URL,
+                            clientKeyStoreURL.toExternalForm() );
+        System.setProperty( KeyStoreHelper.PROP_PUB_KS_PWD,
+                            "clientpwd" );
+    }
+
+    private void unsetPublicKeyProperties() {
+        // Un-set the client properties to de-serialise the signed packages
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PUB_KS_URL,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PUB_KS_PWD,
+                            "" );
+    }
+
+    private void setPrivateKeyProperties() {
+        // Set the server properties to serialise the signed packages 
+        URL serverKeyStoreURL = getClass().getResource( "droolsServer.keystore" );
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                            "true" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_KS_URL,
+                            serverKeyStoreURL.toExternalForm() );
+        System.setProperty( KeyStoreHelper.PROP_PVT_KS_PWD,
+                            "serverpwd" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_ALIAS,
+                            "droolsKey" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_PWD,
+                            "keypwd" );
+    }
+
+    private void unsetPrivateKeyProperties() {
+        // Un-set the server properties to serialise the signed packages 
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_KS_URL,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_KS_PWD,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_ALIAS,
+                            "" );
+        System.setProperty( KeyStoreHelper.PROP_PVT_PWD,
+                            "" );
+    }
+
 
     /**
      * In this case we are dealing with facts which are not on the systems classpath.

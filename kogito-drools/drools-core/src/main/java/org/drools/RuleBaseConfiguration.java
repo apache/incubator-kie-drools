@@ -108,6 +108,8 @@ public class RuleBaseConfiguration
     KnowledgeBaseConfiguration,
     Externalizable {
     private static final long              serialVersionUID = 510l;
+    
+    public static final String          DEFAULT_SIGN_ON_SERIALIZATION = "false";
 
     private ChainedProperties              chainedProperties;
 
