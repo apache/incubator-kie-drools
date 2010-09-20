@@ -74,6 +74,11 @@ public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
     }
 
     @Override
+    public String toString() {
+        return "DefaultDialectOption( name="+name+" )";
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
