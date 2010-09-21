@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
@@ -618,6 +619,16 @@ public class PackageBuilderConfiguration
         }
         return null;
     }
+    
+    public <T extends MultiValueKnowledgeBuilderOption> Set<String> getOptionKeys(
+            Class<T> option) {
+        if ( AccumulateFunctionOption.class.equals( option ) ) {
+            return this.accumulateFunctions.keySet();
+        } else if ( EvaluatorOption.class.equals( option ) ) {
+            return this.evaluatorRegistry.keySet();
+        }
+        return null;
+    }
 
     public <T extends KnowledgeBuilderOption> void setOption(T option) {
         if ( option instanceof DefaultDialectOption ) {
@@ -637,4 +648,5 @@ public class PackageBuilderConfiguration
             setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
         }
     }
+
 }

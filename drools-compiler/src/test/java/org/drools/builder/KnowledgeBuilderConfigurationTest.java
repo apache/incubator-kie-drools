@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -74,6 +76,8 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         // checking the type safe getOption() method
         assertEquals( DefaultDialectOption.get( "java" ),
                       config.getOption( DefaultDialectOption.class ) );
+        assertEquals( "DefaultDialectOption( name=java )",
+                      config.getOption( DefaultDialectOption.class ).toString() );
         // checking string conversion
         assertEquals( "java",
                       config.getOption( DefaultDialectOption.class ).getName() );
@@ -83,6 +87,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
     }
     
     public void testAccumulateFunctionConfiguration() {
+        Set<String> keySet = new HashSet<String>();
         // in this use case, the application already has the instance of the accumulate function
         AccumulateFunction function = new AverageAccumulateFunction();
         
@@ -103,6 +108,9 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         // checking the string based getProperty() method
         assertEquals( AverageAccumulateFunction.class.getName(),
                       config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"avg" ) );
+        // check the key set
+        keySet.add( "avg" );
+        assertTrue( config.getOptionKeys(AccumulateFunctionOption.class).contains( "avg" ) );
 
         // wiring the accumulate function using the string based setProperty() method
         config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum",
@@ -120,6 +128,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         // checking the string based getProperty() method
         assertEquals( MaxAccumulateFunction.class.getName(),
                       config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"maximum" ) );
+        keySet.add( "avg" );
         
         // wiring the inner class accumulate function using the string based setProperty() method
         config.setProperty( AccumulateFunctionOption.PROPERTY_NAME+"inner",
@@ -137,6 +146,12 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         // checking the string based getProperty() method
         assertEquals( InnerAccumulateFuncion.class.getName(),
                       config.getProperty( AccumulateFunctionOption.PROPERTY_NAME+"inner" ) );
+        keySet.add( "avg" );
+
+        assertTrue( config.getOptionKeys(AccumulateFunctionOption.class).containsAll( keySet ) );
+        for( String key: config.getOptionKeys(AccumulateFunctionOption.class ) ){
+            System.out.println( key + "->" + config.getOption(AccumulateFunctionOption.class, key).getClass().getName() );
+        }
     }
     
     public void testDumpDirectoryConfiguration() {
@@ -271,7 +286,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
     public static class InnerAccumulateFuncion implements AccumulateFunction {
 
         public void accumulate(Serializable context,
-                               Object value) {
+                               Object... values) {
         }
         public Serializable createContext() {
             return null;
@@ -282,7 +297,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         public void init(Serializable context) throws Exception {
         }
         public void reverse(Serializable context,
-                            Object value) throws Exception {
+                            Object... values) throws Exception {
         }
         public boolean supportsReverse() {
             return false;
