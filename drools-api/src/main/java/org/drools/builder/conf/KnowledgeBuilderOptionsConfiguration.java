@@ -16,6 +16,8 @@
 
 package org.drools.builder.conf;
 
+import java.util.Set;
+
 /**
  * A base interface for type safe configurations
  * 
@@ -56,5 +58,12 @@ public interface KnowledgeBuilderOptionsConfiguration {
      */
     public <T extends MultiValueKnowledgeBuilderOption> T getOption( Class<T> option, String key );
     
+    /**
+     * Retrieves the set of all keys for a MultiValueKnowledgeBuilderOption.
+     * 
+     * @param option the option class for the requested keys
+     * @return a Set of Strings
+     */
+    public <T extends MultiValueKnowledgeBuilderOption> Set<String> getOptionKeys( Class<T> option );
 
 }
