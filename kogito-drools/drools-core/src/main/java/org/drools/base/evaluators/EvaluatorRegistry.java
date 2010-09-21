@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
@@ -50,7 +51,7 @@ public class EvaluatorRegistry
     public EvaluatorRegistry() {
         this( null );
     }
-
+    
     /**
      * Creates a new EvaluatorRegistry using the given classloader to load
      * the evaluator definition classes.
@@ -88,6 +89,14 @@ public class EvaluatorRegistry
         this.addEvaluatorDefinition( new StartsEvaluatorDefinition() );
         this.addEvaluatorDefinition( new StartedByEvaluatorDefinition() );
         this.addEvaluatorDefinition( new CoincidesEvaluatorDefinition() );
+    }
+
+    /**
+     * Return the set of registered keys.
+     * @return a Set of Strings
+     */
+    public Set<String> keySet(){
+        return evaluators.keySet();
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
