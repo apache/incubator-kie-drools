@@ -34,6 +34,7 @@
 
   <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
   <xi:include href="Chapter-Quick_Start/Chapter-Quick_Start.xml" />
+  <xi:include href="Chapter-Theory/Chapter-Theory.xml" />
   <xi:include href="Chapter-User_Guide/Chapter-User_Guide.xml" />
   <xi:include href="Chapter-Language_Reference/Chapter-Language_Reference.xml" />
   <xi:include href="Chapter-Authoring/Chapter-Authoring.xml" />
