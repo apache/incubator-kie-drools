@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.example.org/MinimalExample">
+
+  <itemDefinition id="xType" structureRef="java.lang.String" />
+
+  <itemDefinition id="StringType" structureRef="java.lang.String" />
+  <message id="HelloMessage" itemRef="StringType"/>
+  
+  <process id="IntermediateCatchEvent" name="IntermediateCatchEvent Process">
+
+    <property id="x" itemSubjectRef="tns:xType" />
+
+    <startEvent id="_1" name="StartProcess"/>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <userTask id="_2" name="UserTask">
+    </userTask>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <endEvent id="_3" name="EndProcess"/>
+    <intermediateCatchEvent id="_4" name="event">
+      <dataOutput id="_4_Output" />
+      <dataOutputAssociation>
+        <sourceRef>_4_Output</sourceRef>
+        <targetRef>x</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_4_Output</dataOutputRefs>
+      </outputSet>
+      <messageEventDefinition messageRef="HelloMessage" />
+    </intermediateCatchEvent>
+    <sequenceFlow sourceRef="_4" targetRef="_5"/>
+    <scriptTask id="_5" name="Event">
+      <script>System.out.println(x);</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_5" targetRef="_6"/>
+    <endEvent id="_6" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
+    
+  </process>
+</definitions>

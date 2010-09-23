@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>.</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>jbpm-bam/**</include>	  
+        <include>jbpm-bpmn2/**</include>	
+        <include>jbpm-docs/**</include>
+        <include>jbpm-flow/**</include>
+        <include>jbpm-flow-builder/**</include>		
+        <include>jbpm-gwt/**</include>
+        <include>jbpm-human-task/**</include>
+        <include>jbpm-installer/**</include>
+        <include>jbpm-persistence-jpa/**</include>
+        <include>jbpm-workitems/**</include>
+        <include>*.xml</include>
+        <include>*.txt</include>
+      </includes>
+      <excludes>
+        <exclude>**/*.log/**</exclude>
+        <exclude>**/target/**</exclude>
+        <exclude>**/.svn/**</exclude>
+        <exclude>**/.metadata/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>

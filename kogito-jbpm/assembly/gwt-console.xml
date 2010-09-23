@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>gwt-console</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <files>
+    <file>
+      <source>jbpm-gwt/jbpm-gwt-server-war/target/jbpm-gwt-console-server-${project.version}.war</source>
+    </file>
+    <file>
+      <source>jbpm-gwt/jbpm-gwt-war/target/jbpm-gwt-console-${project.version}.war</source>
+    </file>
+  </files>
+</assembly>

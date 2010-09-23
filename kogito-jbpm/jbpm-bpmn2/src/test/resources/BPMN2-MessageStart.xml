@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="xType" structureRef="java.lang.String" />
+
+  <itemDefinition id="StringType" structureRef="java.lang.String" />
+  <message id="HelloMessage" itemRef="StringType"/>
+  
+  <process id="Minimal" name="Minimal Process" tns:packageName="com.sample">
+  
+    <property id="x" itemSubjectRef="tns:xType" />
+
+    <startEvent id="_1" name="StartProcess">
+      <dataOutput id="_1_Output" />
+      <dataOutputAssociation>
+        <sourceRef>_1_Output</sourceRef>
+        <targetRef>x</targetRef>
+      </dataOutputAssociation>
+      <outputSet>
+        <dataOutputRefs>_1_Output</dataOutputRefs>
+      </outputSet>
+      <messageEventDefinition messageRef="HelloMessage" />
+    </startEvent>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <scriptTask id="_2" name="Hello">
+      <script>System.out.println("x = " + x);</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
+  </process>
+</definitions>

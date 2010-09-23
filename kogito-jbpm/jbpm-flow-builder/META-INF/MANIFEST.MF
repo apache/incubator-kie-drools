@@ -1,0 +1,50 @@
+Manifest-Version: 1.0
+Export-Package: org.jbpm.compiler;version="5.2.0.SNAPSHOT";
+  uses:="org.drools.compiler.xml.processes,
+   javax.xml.parsers,
+   org.drools.compiler.xml,
+   org.drools.process.builder,
+   org.drools.process.builder.dialect",
+ org.jbpm.compiler.xml;version="5.2.0.SNAPSHOT";uses:="org.drools.compiler.xml.processes,javax.xml.parsers,org.xml.sax",
+ org.jbpm.compiler.xml.processes;version="5.2.0.SNAPSHOT";
+  uses:="org.drools.compiler.xml,
+   org.w3c.dom,
+   org.xml.sax,
+   javax.xml.transform,
+   javax.xml.transform.stream",
+ org.jbpm.osgi.flow.compiler;version="5.2.0.SNAPSHOT";uses:="org.osgi.framework,org.drools.compiler,org.drools.process.builder",
+ org.jbpm.process.builder;version="5.2.0.SNAPSHOT";uses:="org.drools.process.builder.dialect,org.drools.compiler",
+ org.jbpm.process.builder.dialect;version="5.2.0.SNAPSHOT";uses:="org.drools.process.builder,org.drools.process.builder.dialect.java,org.drools.process.builder.dialect.mvel",
+ org.jbpm.process.builder.dialect.java;version="5.2.0.SNAPSHOT";
+  uses:="org.mvel2.templates,
+   org.mvel2.integration,
+   org.drools.process.builder,
+   org.mvel2.integration.impl,
+   org.drools.compiler,
+   org.drools.process.builder.dialect,
+   org.mvel2",
+ org.jbpm.process.builder.dialect.mvel;version="5.2.0.SNAPSHOT";
+  uses:="org.mvel2,
+   org.drools.compiler,
+   org.drools.process.builder,
+   org.drools.process.builder.dialect"
+Tool: Bnd-0.0.357
+Bundle-Name: Drools :: Flow Compiler
+Created-By: 1.6.0_06 (Sun Microsystems Inc.)
+Require-Bundle: org.drools.flow.core;bundle-version="5.2.0.SNAPSHOT", 
+ org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"
+Bundle-Vendor: JBoss Inc.
+DynamicImport-Package: *
+Bundle-Version: 5.2.0.SNAPSHOT
+Bnd-LastModified: 1283906997854
+Bundle-Activator: org.jbpm.osgi.flow.compiler.Activator
+Bundle-ManifestVersion: 2
+Bundle-Description: A rule production system
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: javax.xml.parsers,javax.xml.transform,javax.xml.transf
+ orm.stream,org.mvel2;version="2.0",org.mvel2.integration;version="2.0
+ ",org.mvel2.integration.impl;version="2.0",org.mvel2.templates;versio
+ n="2.0",org.osgi.framework;version="1.5",org.w3c.dom,org.xml.sax
+Bundle-SymbolicName: org.drools.flow.compiler;singleton:=true
+Bundle-DocURL: http://www.jboss.org/
+

@@ -1,0 +1,57 @@
+@declare{"actionInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.Action, org.drools.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public void execute(org.drools.runtime.process.ProcessContext context) throws Exception {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) context.getKnowledgeRuntime().getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) context.getVariable( "@{identifier}" );
+        @end{}
+
+        @{processClassName}.@{methodName} (
+	        context@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
+	        @end{","} );
+    }
+    
+    public java.util.List getMethodBytecode() {
+        return null;
+    }    
+}
+@end{}
+
+@declare{"returnValueEvaluatorInvoker"}
+package @{package};
+
+public class @{invokerClassName} implements org.jbpm.process.instance.impl.ReturnValueEvaluator, org.drools.spi.CompiledInvoker
+{
+    private static final long serialVersionUID  = 510l;
+
+    public Object evaluate(org.drools.runtime.process.ProcessContext processContext) throws Exception {
+
+        @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) processContext.getKnowledgeRuntime().getGlobal( "@{identifier}" );
+        @end{}
+
+        @foreach{type : variableTypes, identifier : variables} @{type} @{identifier} = ( @{type} ) processContext.getVariable( "@{identifier}" );
+        @end{}
+
+        return @{processClassName}.@{methodName} (
+	        processContext@if{globals != empty},@end{}
+	        @foreach{identifier : globals} @{identifier}
+	        @end{","}@if{variables != empty},@end{}
+	        @foreach{identifier : variables} @{identifier}
+	        @end{","} );
+    }
+    
+    public java.util.List getMethodBytecode() {
+        return null;
+    }
+}
+@end{}

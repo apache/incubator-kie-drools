@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.example.org/MinimalExample">
+
+  <escalation id="MyEscalation" escalationCode="MyEscalation" />
+
+  <process id="EscalationEndEvent" name="Escalation End Event Process">
+    <startEvent id="_1" name="StartProcess"/>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <endEvent id="_2" name="EscalationEvent">
+      <escalationEventDefinition escalationRef="MyEscalation"/>
+    </endEvent>
+  </process>
+</definitions>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.example.org/MinimalExample">
+
+  <itemDefinition id="xType" structureRef="java.lang.String" />
+
+  <process id="CompensateEndEvent" name="Compensate End Event Process">
+  
+    <property id="x" itemSubjectRef="tns:xType" />
+
+    <startEvent id="_1" name="StartProcess"/>
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <scriptTask id="_2" name="Task">
+      <script>System.out.println("Executing task");</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <endEvent id="_3" name="CompensateEvent">
+      <compensateEventDefinition activityRef="_2"/>
+    </endEvent>
+    <boundaryEvent id="_5" name="CompensateEvent" attachedToRef="_2">
+      <compensateEventDefinition />
+    </boundaryEvent>
+    <sequenceFlow sourceRef="_5" targetRef="_6"/>
+    <scriptTask id="_6" name="Compensate">
+      <script>System.out.println("Compensating task");</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="_6" targetRef="_7"/>
+    <endEvent id="_7" name="EndEvent"/>
+    
+  </process>
+</definitions>
