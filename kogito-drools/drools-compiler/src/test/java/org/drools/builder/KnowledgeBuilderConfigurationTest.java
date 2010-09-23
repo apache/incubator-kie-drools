@@ -149,9 +149,9 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         keySet.add( "avg" );
 
         assertTrue( config.getOptionKeys(AccumulateFunctionOption.class).containsAll( keySet ) );
-        for( String key: config.getOptionKeys(AccumulateFunctionOption.class ) ){
-            System.out.println( key + "->" + config.getOption(AccumulateFunctionOption.class, key).getClass().getName() );
-        }
+//        for( String key: config.getOptionKeys(AccumulateFunctionOption.class ) ){
+//            System.out.println( key + "->" + config.getOption(AccumulateFunctionOption.class, key).getClass().getName() );
+//        }
     }
     
     public void testDumpDirectoryConfiguration() {
@@ -286,7 +286,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
     public static class InnerAccumulateFuncion implements AccumulateFunction {
 
         public void accumulate(Serializable context,
-                               Object... values) {
+                               Object value) {
         }
         public Serializable createContext() {
             return null;
@@ -297,7 +297,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
         public void init(Serializable context) throws Exception {
         }
         public void reverse(Serializable context,
-                            Object... values) throws Exception {
+                            Object value) throws Exception {
         }
         public boolean supportsReverse() {
             return false;
