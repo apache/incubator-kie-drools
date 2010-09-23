@@ -168,7 +168,7 @@ public class KeyStoreHelper {
                                                                  NoSuchAlgorithmException,
                                                                  InvalidKeyException,
                                                                  SignatureException {
-        if( pvtKeyStore == null ) {
+        if( pubKeyStore == null ) {
             throw new RuntimeDroolsException( "Key store with public key not configured. Please configure it properly before using signed serialization." );
         }
         Certificate cert = pubKeyStore.getCertificate( publicKeyAlias );
