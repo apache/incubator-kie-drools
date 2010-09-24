@@ -26,13 +26,13 @@ import org.drools.RuntimeDroolsException;
  * 
  * This class will read and use the following system properties:
  * 
- * drools.serialisation.sign = <false|true>
- * drools.serialisation.private.keyStoreURL = <URL>
- * drools.serialisation.private.keyStorePwd = <password>
- * drools.serialisation.private.keyAlias = <key>
- * drools.serialisation.private.keyPwd = <password>
- * drools.serialisation.public.keyStoreURL = <URL>
- * drools.serialisation.public.keyStorePwd = <password>
+ * drools.serialization.sign = <false|true>
+ * drools.serialization.private.keyStoreURL = <URL>
+ * drools.serialization.private.keyStorePwd = <password>
+ * drools.serialization.private.keyAlias = <key>
+ * drools.serialization.private.keyPwd = <password>
+ * drools.serialization.public.keyStoreURL = <URL>
+ * drools.serialization.public.keyStorePwd = <password>
  * 
  * @author etirelli
  *
@@ -40,19 +40,19 @@ import org.drools.RuntimeDroolsException;
 public class KeyStoreHelper {
 
     // true if packages should be signed during serialization
-    public static final String PROP_SIGN       = "drools.serialisation.sign";
+    public static final String PROP_SIGN       = "drools.serialization.sign";
     // the URL to the key store where the private key is stored
-    public static final String PROP_PVT_KS_URL = "drools.serialisation.private.keyStoreURL";
+    public static final String PROP_PVT_KS_URL = "drools.serialization.private.keyStoreURL";
     // the key store password
-    public static final String PROP_PVT_KS_PWD = "drools.serialisation.private.keyStorePwd";
+    public static final String PROP_PVT_KS_PWD = "drools.serialization.private.keyStorePwd";
     // the private key identifier
-    public static final String PROP_PVT_ALIAS  = "drools.serialisation.private.keyAlias";
+    public static final String PROP_PVT_ALIAS  = "drools.serialization.private.keyAlias";
     // the private key password
-    public static final String PROP_PVT_PWD    = "drools.serialisation.private.keyPwd";
+    public static final String PROP_PVT_PWD    = "drools.serialization.private.keyPwd";
     // the URL to the key store where the public key is stored
-    public static final String PROP_PUB_KS_URL = "drools.serialisation.public.keyStoreURL";
+    public static final String PROP_PUB_KS_URL = "drools.serialization.public.keyStoreURL";
     // the key store password
-    public static final String PROP_PUB_KS_PWD = "drools.serialisation.public.keyStorePwd";
+    public static final String PROP_PUB_KS_PWD = "drools.serialization.public.keyStorePwd";
 
     private boolean            signed;
     private URL                pvtKeyStoreURL;
