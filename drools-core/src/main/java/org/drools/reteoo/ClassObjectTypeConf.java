@@ -52,6 +52,9 @@ public class ClassObjectTypeConf
     private EntryPoint                 entryPoint;
 
     private TypeDeclaration            typeDecl;
+    
+    private boolean                   tmsEnabled;
+
 
     public ClassObjectTypeConf() {
 
@@ -104,6 +107,7 @@ public class ClassObjectTypeConf
         shadowEnabled = stream.readBoolean();
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPoint) stream.readObject();
+        tmsEnabled = stream.readBoolean();
         defineShadowProxyData( cls );
     }
 
@@ -114,6 +118,7 @@ public class ClassObjectTypeConf
         stream.writeBoolean( shadowEnabled );
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
+        stream.writeObject(tmsEnabled);
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -191,4 +196,13 @@ public class ClassObjectTypeConf
     public boolean isDynamic() {
         return (typeDecl != null) ? typeDecl.isDynamic() : false;
     }
+
+    public boolean isTMSEnabled() {
+        return this.tmsEnabled;
+    }
+
+    public void enableTMS() {
+        this.tmsEnabled = true;
+    }
+    
 }
