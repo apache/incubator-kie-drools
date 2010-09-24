@@ -52,9 +52,11 @@ import org.drools.WorkingMemoryEntryPoint;
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.CalendarsImpl;
+import org.drools.base.ClassObjectType;
 import org.drools.base.MapGlobalResolver;
 import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -68,9 +70,10 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.Rete;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -93,6 +96,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
@@ -169,7 +173,6 @@ public abstract class AbstractWorkingMemory
      */
     protected AtomicLong                                         propagationIdCounter;
 
-    private boolean                                              maintainTms;
     private boolean                                              sequential;
 
     private List                                                 liaPropagations;
@@ -319,8 +322,8 @@ public abstract class AbstractWorkingMemory
 
         final RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
 
-        this.maintainTms = conf.isMaintainTms();
         this.sequential = conf.isSequential();
+
 
         if ( initialFactHandle == null ) {
             this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
@@ -345,12 +348,8 @@ public abstract class AbstractWorkingMemory
         timerService = TimerServiceFactory.getTimerService( this.config );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
-
-        if ( this.maintainTms ) {
-            this.tms = new TruthMaintenanceSystem( this );
-        } else {
-            this.tms = null;
-        }
+        
+        this.tms = new TruthMaintenanceSystem(this);
 
         this.propagationIdCounter = new AtomicLong( propagationContext );
 
@@ -953,6 +952,9 @@ public abstract class AbstractWorkingMemory
 
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
+            if ( logical && !typeConf.isTMSEnabled()) {
+                enableTMS(object, typeConf);
+            }
 
             InternalFactHandle handle = null;
 
@@ -972,8 +974,8 @@ public abstract class AbstractWorkingMemory
                 // check if the object already exists in the WM
                 handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
 
-                if ( this.maintainTms ) {
-
+                if ( typeConf.isTMSEnabled() ) {
+                  
                     EqualityKey key = null;
 
                     if ( handle == null ) {
@@ -1006,12 +1008,14 @@ public abstract class AbstractWorkingMemory
 
                     // At this point we know the handle is null
                     if ( key == null ) {
+                      
                         handle = createHandle( object,
                                                typeConf );
 
-                        key = new EqualityKey( handle );
-                        handle.setEqualityKey( key );
+                        key = createEqualityKey(handle);
+                        
                         this.tms.put( key );
+                        
                         if ( !logical ) {
                             key.setStatus( EqualityKey.STATED );
                         } else {
@@ -1108,6 +1112,53 @@ public abstract class AbstractWorkingMemory
             endOperation();
         }
 
+    }
+
+    /** Side-effects, will add the created key to the handle. */
+    private EqualityKey createEqualityKey(InternalFactHandle handle) {
+      EqualityKey key = new EqualityKey( handle );
+      handle.setEqualityKey( key );
+      return key;
+    }
+
+    /**
+     * TMS will be automatically enabled when the first logical insert happens. 
+     * 
+     * We will take all the already asserted objects of the same type and initialize
+     * the equality map.
+     *  
+     * @param object the logically inserted object.
+     * @param conf the type's configuration.
+     */
+    private void enableTMS(Object object, ObjectTypeConf conf) {
+
+        
+        final Rete source = this.ruleBase.getRete();
+        final ClassObjectType cot = new ClassObjectType( object.getClass() );
+        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
+        final ObjectTypeNode node = map.get( cot );
+        final ObjectHashSet memory = (ObjectHashSet) this.getNodeMemory( node );
+      
+        // All objects of this type that are already there were certainly stated,
+        // since this method call happens at the first logical insert, for any given type.
+        org.drools.core.util.Iterator it = memory.iterator();
+
+        for ( Object obj = it.next(); obj != null; obj = it.next() ) {
+          
+            org.drools.core.util.ObjectHashSet.ObjectEntry holder = (org.drools.core.util.ObjectHashSet.ObjectEntry) obj; 
+    
+            InternalFactHandle handle = (InternalFactHandle) holder.getValue();
+            
+            if ( handle != null) {
+                EqualityKey key = createEqualityKey(handle);
+                key.setStatus(EqualityKey.STATED);
+                this.tms.put(key);
+            }
+        }
+      
+        // Enable TMS for this type.
+        conf.enableTMS();
+      
     }
 
     private InternalFactHandle createHandle(final Object object,
@@ -1257,14 +1308,17 @@ public abstract class AbstractWorkingMemory
                                                                                       this.entryPoint );
 
             final Object object = handle.getObject();
+            
+            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                object );
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
-                                               this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                                   object ),
+                                               typeConf,
                                                this );
 
-            if ( this.maintainTms ) {
+            if ( typeConf.isTMSEnabled() ) {
+
                 // Update the equality key, which maintains a list of stated
                 // FactHandles
                 final EqualityKey key = handle.getEqualityKey();
@@ -1284,6 +1338,7 @@ public abstract class AbstractWorkingMemory
                     this.tms.remove( key );
                 }
             }
+            
 
             this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
                                                                 handle,
@@ -1345,10 +1400,13 @@ public abstract class AbstractWorkingMemory
             if ( ((InternalFactHandle)factHandle).isDisconnected() ) {
                 factHandle = this.objectStore.reconnect( factHandle );
             }
+            
+            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                object );
 
             // only needed if we maintain tms, but either way we must get it before we do the retract
             int status = -1;
-            if ( this.maintainTms ) {
+            if ( typeConf.isTMSEnabled() ) {
                 status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
             }
             final InternalFactHandle handle = (InternalFactHandle) factHandle;
@@ -1373,18 +1431,19 @@ public abstract class AbstractWorkingMemory
                                             object );
             }
 
-            if ( this.maintainTms ) {
-
+            if ( typeConf.isTMSEnabled() ) {
+            
                 // the hashCode and equality has changed, so we must update the
                 // EqualityKey
                 EqualityKey key = handle.getEqualityKey();
                 key.removeFactHandle( handle );
+            
 
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
                     this.tms.remove( key );
                 }
-
+    
                 // now use an existing EqualityKey, if it exists, else create a new one
                 key = this.tms.get( object );
                 if ( key == null ) {
@@ -1394,8 +1453,9 @@ public abstract class AbstractWorkingMemory
                 } else {
                     key.addFactHandle( handle );
                 }
-
+    
                 handle.setEqualityKey( key );
+
             }
 
             this.handleFactory.increaseFactHandleRecency( handle );
@@ -1408,9 +1468,6 @@ public abstract class AbstractWorkingMemory
                                                                                       this.agenda.getActiveActivations(),
                                                                                       this.agenda.getDormantActivations(),
                                                                                       entryPoint );
-
-            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          object );
 
             this.entryPointNode.modifyObject( handle,
                                               propagationContext,
@@ -1474,11 +1531,11 @@ public abstract class AbstractWorkingMemory
     public void removeLogicalDependencies(final Activation activation,
                                           final PropagationContext context,
                                           final Rule rule) throws FactException {
-        if ( this.maintainTms ) {
-            this.tms.removeLogicalDependencies( activation,
-                                                context,
-                                                rule );
-        }
+      
+        this.tms.removeLogicalDependencies( activation,
+                                            context,
+                                            rule );
+
     }
 
     /**

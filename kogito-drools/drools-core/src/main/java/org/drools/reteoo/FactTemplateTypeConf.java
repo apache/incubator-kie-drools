@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.InternalRuleBase;
@@ -41,6 +42,9 @@ public class FactTemplateTypeConf
     private FactTemplate      factTemplate;
     private ObjectTypeNode    concreteObjectTypeNode;
     private ObjectTypeNode[]  cache;
+    
+    private boolean          tmsEnabled;
+
 
     public FactTemplateTypeConf() {
     }
@@ -126,6 +130,14 @@ public class FactTemplateTypeConf
 
     public boolean isDynamic() {
         return false;
+    }
+    
+    public boolean isTMSEnabled() {
+        return this.tmsEnabled;
+    }
+
+    public void enableTMS() {
+        this.tmsEnabled = true;
     }
 
 }

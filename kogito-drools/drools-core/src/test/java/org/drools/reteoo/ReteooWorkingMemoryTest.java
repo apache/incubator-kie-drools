@@ -50,10 +50,14 @@ public class ReteooWorkingMemoryTest extends TestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
         final TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
         final String string = "test";
-        FactHandle fd = workingMemory.insert( string );
+        
+        workingMemory.insert( string );
+        
+        FactHandle fd = workingMemory.insertLogical( string );
 
         assertEquals( 1,
                       tms.getAssertMap().size() );
+        
         EqualityKey key = tms.get( string );
         assertSame( fd,
                     key.getFactHandle() );

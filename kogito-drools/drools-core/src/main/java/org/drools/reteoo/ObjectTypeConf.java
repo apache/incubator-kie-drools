@@ -34,6 +34,15 @@ public interface ObjectTypeConf {
     public boolean isEvent();
     
     public boolean isDynamic();
+   
+    public TypeDeclaration getTypeDeclaration();
     
-    public TypeDeclaration getTypeDeclaration();    
+    /** Whether or not, TMS is active for this object type. */
+    public boolean isTMSEnabled();
+    
+    /**
+     * Enable TMS for this object type. 
+     * */
+    public void enableTMS();
+
 }
