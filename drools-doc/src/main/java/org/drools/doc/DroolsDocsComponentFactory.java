@@ -227,7 +227,7 @@ public class DroolsDocsComponentFactory {
         document.add( newRuleTable( drlData ) );
 
         // Meta data
-        document.add( newTable( "Meta Data",
+        document.add( newTable( "Metadata",
                                 drlData.getMetadata() ) );
 
         // Other
@@ -252,7 +252,7 @@ public class DroolsDocsComponentFactory {
 
         document.add( new Paragraph( "\n\n\n\n\n" + packageData.getDescription(),
                                      BODY_TEXT ) );
-        document.add( newTable( "Meta Data ",
+        document.add( newTable( "Metadata ",
                                 packageData.getMetadata() ) );
         document.add( newTable( "Globals ",
                                 packageData.getGlobals() ) );

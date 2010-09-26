@@ -209,20 +209,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     void setFocus(String focus);
 
     /**
-     * Retrieve the QueryResults of the specified query.
-     *
-     * @param query
-     *            The name of the query.
-     *
-     * @return The QueryResults of the specified query.
-     *         If no results match the query it is empty.
-     *
-     * @throws IllegalArgumentException
-     *         if no query named "query" is found in the rulebase
-     */
-    public QueryResults getQueryResults(String query);
-
-    /**
      * Retrieve the QueryResults of the specified query and arguments
      *
      * @param query
@@ -237,7 +223,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResults getQueryResults(String query, Object[] arguments);  
+    public QueryResults getQueryResults(String query, Object... arguments);  
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

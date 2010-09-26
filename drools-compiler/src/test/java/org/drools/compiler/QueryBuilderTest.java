@@ -48,7 +48,7 @@ public class QueryBuilderTest extends DroolsTestCase {
         literalDescr.addRestriction( new VariableRestrictionDescr( "==",
                                                                    "$likes" ) );
         pattern.addConstraint( literalDescr );        
-        
+          
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
         lhs = new AndDescr();
@@ -103,9 +103,18 @@ public class QueryBuilderTest extends DroolsTestCase {
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new VariableRestrictionDescr( "==",
                                                                    "$type" ) );
-
         pattern.addConstraint( literalDescr );
-
+        
+        // Another query, no parameters
+        QueryDescr queryDescr2 = new QueryDescr( "query2" );
+        queryDescr2.setParameters( new String[]{} );
+        queryDescr2.setParameterTypes( new String[]{} );
+        packageDescr.addRule( queryDescr2 );
+        AndDescr lhs2 = new AndDescr();
+        queryDescr2.setLhs( lhs2 );
+        PatternDescr pattern2 = new PatternDescr( Cheese.class.getName() );
+        lhs2.addDescr( pattern2 );
+     
         builder.addPackage( packageDescr );
 
         assertLength( 0,
@@ -116,19 +125,21 @@ public class QueryBuilderTest extends DroolsTestCase {
 
         StatefulSession session = ruleBase.newStatefulSession();
 
-        session.insert( new Cheese( "stilton",
-                                    15 ) );
+        session.insert( new Cheese( "stilton", 15 ) );
 
-        QueryResults results = session.getQueryResults( "query1",
-                                                        new Object[]{"stilton"} );
+        QueryResults results = session.getQueryResults( "query1", "stilton" );
         assertEquals( 1,
                       results.size() );
         Object object = results.get( 0 ).get( 0 );
-        assertEquals( new Cheese( "stilton",
-                                  15 ),
+        assertEquals( new Cheese( "stilton", 15 ),
                       object );
 
         results = session.getQueryResults( "query1",
                                            new Object[]{"cheddar"} );
+        assertEquals( 0, results.size() );
+        
+        session.insert( new Cheese( "dolcelatte", 20 ) );
+        results = session.getQueryResults( "query2", new Object[]{} );
+        assertEquals( 2, results.size() );
     }
 }

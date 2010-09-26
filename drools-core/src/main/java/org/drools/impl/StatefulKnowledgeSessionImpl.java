@@ -729,12 +729,8 @@ public class StatefulKnowledgeSessionImpl
         return ((KnowledgeBaseImpl) this.kbase).ruleBase;
     }
 
-    public QueryResults getQueryResults(String query) {
-        return new NativeQueryResults( this.session.getQueryResults( query ) );
-    }
-
     public QueryResults getQueryResults(String query,
-                                        Object[] arguments) {
+                                        Object... arguments) {
         return new NativeQueryResults( this.session.getQueryResults( query,
                                                                      arguments ) );
     }
