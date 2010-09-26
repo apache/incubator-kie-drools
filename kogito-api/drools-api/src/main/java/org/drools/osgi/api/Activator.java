@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import java.util.concurrent.Callable;
 
 import org.drools.Service;
+import org.drools.marshalling.MarshallerProvider;
 import org.drools.util.ServiceRegistry;
 import org.drools.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
@@ -35,6 +36,7 @@ public class Activator
     BundleActivator {
     private ServiceRegistration serviceRegistry;
     private ServiceTracker      registryTracker;
+    private ServiceTracker marshallerProviderTracker;
 
     public void start(BundleContext bc) throws Exception {
         System.out.println( "registering api services" );
@@ -47,13 +49,23 @@ public class Activator
                                                    Service.class.getName(),
                                                    new DroolsServiceTracker( bc,
                                                                              this ) );
+        
         registryTracker.open();
+        
+        this.marshallerProviderTracker = new ServiceTracker( bc,
+                MarshallerProvider.class.getName(),
+                new DroolsServiceTracker( bc,
+                                          this) );
+        
+        this.marshallerProviderTracker.open();
+        
         System.out.println( "api drools services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {
         this.serviceRegistry.unregister();
         this.registryTracker.close();
+        this.marshallerProviderTracker.close();
     }
 
     public static class DroolsServiceTracker
