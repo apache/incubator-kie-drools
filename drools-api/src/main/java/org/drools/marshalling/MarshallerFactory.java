@@ -18,7 +18,10 @@ package org.drools.marshalling;
 
 import java.io.ByteArrayOutputStream;
 
+import javax.imageio.spi.ServiceRegistry;
+
 import org.drools.KnowledgeBase;
+import org.drools.util.ServiceRegistryImpl;
 
 
 /**
@@ -124,12 +127,6 @@ public class MarshallerFactory {
     }
 
     private static void loadProvider() {
-        try {
-            Class<MarshallerProvider> cls = (Class<MarshallerProvider>) Class.forName( "org.drools.marshalling.impl.MarshallerProviderImpl" );
-            setMarshallerProvider( cls.newInstance() );
-        } catch ( Exception e2 ) {
-            throw new RuntimeException( "Provider org.drools.marshalling.impl.MarshallerProviderImpl could not be set.",
-                                                       e2 );
-        }
+        setMarshallerProvider( ServiceRegistryImpl.getInstance().get( MarshallerProvider.class ) );
     }
 }

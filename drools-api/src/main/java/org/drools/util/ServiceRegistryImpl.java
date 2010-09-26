@@ -39,6 +39,7 @@ import org.drools.Service;
 import org.drools.SystemEventListenerService;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.io.ResourceFactoryService;
+import org.drools.marshalling.MarshallerProvider;
 
 /**
  * This is an internal class, not for public consumption.
@@ -176,7 +177,8 @@ public class ServiceRegistryImpl
         
         addDefault(  SystemEventListenerService.class,
                      "org.drools.impl.SystemEventListenerServiceImpl" );
-        
+        addDefault(  MarshallerProvider.class,
+                     "org.drools.marshalling.impl.MarshallerProviderImpl");
 //        addDefault( SystemE.class,
 //        "org.drools.io.impl.ResourceFactoryServiceImpl" );        
     }
