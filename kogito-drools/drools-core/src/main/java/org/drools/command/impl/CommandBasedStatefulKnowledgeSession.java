@@ -431,16 +431,9 @@ public class CommandBasedStatefulKnowledgeSession
         return (T) this.commandService.execute( new ExecuteCommand( command ) );
     }
 
-    public QueryResults getQueryResults(String query) {
-        QueryCommand cmd = new QueryCommand( null,
-                                             query,
-                                             null );
-        return this.commandService.execute( cmd );
-    }
-
     public QueryResults getQueryResults(String query,
-                                        Object[] arguments) {
-        QueryCommand cmd = new QueryCommand( null,
+                                        Object... arguments) {
+        QueryCommand cmd = new QueryCommand( (String)null,
                                              query,
                                              arguments );
         return this.commandService.execute( cmd );

@@ -48,10 +48,10 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
     public QueryCommand() {
     }
     
-    public QueryCommand(String outIdentifier, String name, Object[] arguments) {
+    public QueryCommand(String outIdentifier, String name, Object... arguments) {
         this.outIdentifier = outIdentifier;
         this.name = name;
-        this.arguments = arguments != null ? Arrays.asList( arguments ) : Arrays.asList();
+        this.arguments = Arrays.asList( arguments );
     }
     
     public String getOutIdentifier() {
@@ -85,11 +85,7 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
 
         //TODO {bauna} remove this try
         try {
-			if ( arguments == null || arguments.size() == 0 ) {
-			    results = ksession.getQueryResults( name );
-			} else {
-			    results = ksession.getQueryResults( name, this.arguments.toArray() );
-			}
+			results = ksession.getQueryResults( name, this.arguments.toArray() );
 		} catch (Throwable e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
