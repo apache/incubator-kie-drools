@@ -277,19 +277,26 @@ public class SingleSessionCommandService
 
             return result;
 
+        }catch (RuntimeException re){
+            rollbackTransaction(re);
+            throw re;
         } catch ( Exception t1 ) {
-            try {
-                txm.rollback();
-            } catch ( Exception t2 ) {
-                throw new RuntimeException( "Could not commit session or rollback",
-                                            t2 );
-            }
-            throw new RuntimeException( "Could not commit session",
-                                        t1 );
+            rollbackTransaction(t1);
+            throw new RuntimeException("Wrapped exception see cause", t1);
         } finally {
             if ( command instanceof DisposeCommand ) {
                 this.jpm.dispose();
             }
+        }
+    }
+
+    private void rollbackTransaction(Exception t1) {
+        try {
+            logger.error( "Could not commit session", t1 );
+            txm.rollback();
+        } catch ( Exception t2 ) {
+            logger.error( "Could not rollback", t2 );
+            throw new RuntimeException( "Could not commit session or rollback", t2 );
         }
     }
 
