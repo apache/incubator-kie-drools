@@ -924,8 +924,7 @@ public class DefaultAgenda
                                                                             this.workingMemory,
                                                                             e );
                 } else if ( this.consequenceExceptionHandler != null ) {
-                    this.consequenceExceptionHandler.handleException( activation,
-                                                                      new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory ),
+                    this.consequenceExceptionHandler.handleException( activation, this.workingMemory.getKnowledgeRuntime(),
                                                                       e );
                 } else {
                     throw new RuntimeException( e );
