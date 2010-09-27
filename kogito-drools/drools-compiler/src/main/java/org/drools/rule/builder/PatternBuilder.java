@@ -1100,7 +1100,8 @@ public class PatternBuilder
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
-                                                          "Unable to determine the Evaluator for  ID '" + evaluatorString + "'" ) );
+                                                          "Unable to determine the Evaluator for ID '" + evaluatorString + "'" ) );
+            return null;
         }
 
         final Evaluator evaluator = def.getEvaluator( valueType,
