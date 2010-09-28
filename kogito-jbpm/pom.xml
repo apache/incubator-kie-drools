@@ -80,7 +80,6 @@
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-gwt</module>
-    <module>jbpm-installer</module>
   </modules>   
    
   <profiles>
@@ -143,8 +142,8 @@
               <descriptor>assembly/pre-bin.xml</descriptor>
               <descriptor>assembly/bin.xml</descriptor>
               <descriptor>assembly/src.xml</descriptor>
-              <!--descriptor>assembly/installer.xml</descriptor-->
               <descriptor>assembly/gwt-console.xml</descriptor>
+              <descriptor>assembly/installer.xml</descriptor>
             </descriptors>
           </configuration>
         </plugin>
