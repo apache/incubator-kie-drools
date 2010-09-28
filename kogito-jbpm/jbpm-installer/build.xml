@@ -158,6 +158,21 @@
     <get src="${drools.url}/drools-${drools.version}-guvnor.war" dest="${install.home}/lib/drools-${drools.version}-guvnor.war" />
   </target>
 
+  <!-- Download Designer -->
+  <target name="download.designer.check">
+    <echo message="Checking Designer download ..." />
+    <condition property="designer.not.available">
+      <not>
+        <available file="${install.home}/lib/designer-${designer.version}.war" />
+      </not>
+    </condition>
+  </target>  
+  <target name="download.designer" depends="download.designer.check" if="designer.not.available">
+    <echo message="Getting Designer ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war" />
+  </target>
+
   <!-- Download jBPM Eclipse plugins -->
   <target name="download.jBPM.eclipse.check">
     <echo message="Checking jBPM Eclipse download ..." />
@@ -201,6 +216,13 @@
   <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
     <copy file="${install.home}/lib/drools-${drools.version}-guvnor.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+          overwrite="true" />
+  </target>
+
+  <!-- Install designer -->
+  <target name="install.designer.into.jboss" depends="download.designer">
+    <copy file="${install.home}/lib/designer-${designer.version}.war"
+          tofile="${jboss.server.deploy.dir}/designer.war"
           overwrite="true" />
   </target>
 
@@ -301,7 +323,7 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
 
   <!-- ############ START/STOP ############ -->
 

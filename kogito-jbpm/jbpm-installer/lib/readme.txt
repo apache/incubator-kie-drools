@@ -16,9 +16,12 @@ Eclipse GEF:
   GEF-runtime-3.5.1.zip
 
 jBPM:
-  jbpm-#{drools.version}-bin.zip
-  jbpm-#{drools.version}-eclipse-all.zip
-  jbpm-#{drools.version}-gwt-console.zip
+  jbpm-#{jbpm.version}-bin.zip
+  jbpm-#{jbpm.version}-eclipse-all.zip
+  jbpm-#{jbpm.version}-gwt-console.zip
 
 Drools:
   drools-#{drools.version}-guvnor.war
+
+Designer:
+  designer-#{designer.version}.war
