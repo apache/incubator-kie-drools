@@ -1,0 +1,6 @@
+eclipse/
+jboss-*/
+repository/
+runtime/
+workspace/
+repository.xml

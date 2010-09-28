@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="jBPM.install">
+
+  <property file="build.properties" />
+
+  <property name="install.home" value="./" />
+
+  <property name="jboss.server.conf.dir" value="${jboss.home}/server/${jboss.server.configuration}/conf" />
+  <property name="jboss.server.data.dir" value="${jboss.home}/server/${jboss.server.configuration}/data" />
+  <property name="jboss.server.deploy.dir" value="${jboss.home}/server/${jboss.server.configuration}/deploy" />
+  <property name="jboss.server.lib.dir" value="${jboss.home}/server/${jboss.server.configuration}/lib" />
+  <property name="jboss.server.birt.dir" value="${jboss.server.data.dir}/birt"/>
+  <property name="jboss.bind.address" value="localhost" />
+
+  <property name="eclipse.workspace.dir" value="${install.home}/workspace"/>
+
+  <property name="jboss.download.url" value="http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA.zip"/>
+  <property name="h2.download.url" value="http://repository.jboss.org/maven2/com/h2database/h2/1.2.124/h2-1.2.124.jar"/>
+  <property name="birt.download.url" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;mirror_id=1"/>
+
+  <!-- ############ DOWNLOAD ############ -->
+
+  <!-- Download H2 -->
+  <target name="download.h2.check">
+    <echo message="Checking h2 download ..." />
+    <condition property="h2.not.available">
+      <not>
+        <available file="${install.home}/db/driver/h2.jar" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.h2" depends="download.h2.check" if="h2.not.available">
+    <echo message="Getting h2 ..." />
+    <mkdir dir="${install.home}/db/driver"/>
+    <get src="${h2.download.url}" dest="${install.home}/db/driver/h2.jar" />
+  </target>
+
+  <!-- Download BIRT engine (gwt-console) -->
+  <target name="download.birt.check">
+    <echo message="Checking birt reporting engine download ..." />
+    <condition property="birt.not.available">
+      <not>
+        <available file="${install.home}/lib/birt-runtime-2_3_2_2.zip" />
+      </not>
+    </condition>
+  </target> 
+  <target name="download.birt" depends="download.birt.check" if="birt.not.available">
+    <echo message="Getting birt reporting engine ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${birt.download.url}" dest="${install.home}/lib/birt-runtime-2_3_2_2.zip" />
+  </target>
+
+  <!-- Download JBoss AS -->
+  <target name="download.jboss.check">
+    <echo message="Checking JBoss AS download ..." />
+    <condition property="jboss.not.available">
+      <not>
+        <available file="${install.home}/lib/jboss-4.2.3.GA.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.jboss" depends="download.jboss.check" if="jboss.not.available">
+    <echo message="Getting JBoss AS ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-4.2.3.GA.zip" />
+  </target>
+
+  <!-- Download Eclipse -->
+  <condition property="download.type" value="win32">
+    <os family="windows" />
+  </condition>	
+  <condition property="download.type" value="macosx-carbon">
+    <and>
+      <os family="mac" />
+      <os family="unix" />
+    </and>
+  </condition>
+  <condition property="download.type" value="linux-gtk">
+    <and>
+      <not>
+        <os family="mac" />
+      </not>
+      <os family="unix" />
+    </and>
+  </condition>		
+  <condition property="download.extension" value="zip">
+    <os family="windows" />
+  </condition>		
+  <condition property="download.extension" value="tar.gz">
+    <or>
+      <os family="mac" />
+      <os family="unix" />
+    </or>
+  </condition>	
+  <condition property="expandTypeZip" value="true">
+    <equals arg1="${download.extension}" arg2="zip" />
+  </condition>   
+  <condition property="expandTypeTarGz" value="true">
+    <equals arg1="${download.extension}" arg2="tar.gz" />
+  </condition>   
+  <target name="download.eclipse.check">
+    <echo message="Checking Eclipse download ..." />
+    <condition property="eclipse.not.available">
+      <not>
+        <available file="${install.home}/lib/eclipse-SDK-3.5.1-${download.type}.${download.extension}" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
+    <echo message="Getting Eclipse ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="http://download.eclipse.org/eclipse/downloads/drops/R-3.5.1-200909170800/eclipse-SDK-3.5.1-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-SDK-3.5.1-${download.type}.${download.extension}" />
+  </target>
+  <target name="download.eclipse.gef.check">
+    <echo message="Checking Eclipse GEF download ..." />
+    <condition property="eclipse.gef.not.available">
+      <not>
+        <available file="${install.home}/lib/GEF-runtime-3.5.1.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
+    <echo message="Getting Eclipse GEF ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="http://archive.eclipse.org/tools/gef/downloads/drops/3.5.1/R200909151220/GEF-runtime-3.5.1.zip" 
+         dest="${install.home}/lib/GEF-runtime-3.5.1.zip" />
+  </target>
+
+  <!-- Download jBPM binaries -->
+  <target name="download.jBPM.bin.check">
+    <echo message="Checking jBPM binaries download ..." />
+    <condition property="jBPM.bin.not.available">
+      <not>
+        <available file="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.jBPM.bin" depends="download.jBPM.bin.check" if="jBPM.bin.not.available">
+    <echo message="Getting jBPM binaries ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jBPM.url}/jBPM-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" />
+  </target>
+
+  <!-- Download Drools Guvnor -->
+  <target name="download.drools.guvnor.check">
+    <echo message="Checking Drools Guvnor download ..." />
+    <condition property="drools.guvnor.not.available">
+      <not>
+        <available file="${install.home}/lib/drools-${drools.version}-guvnor.war" />
+      </not>
+    </condition>
+  </target>  
+  <target name="download.drools.guvnor" depends="download.drools.guvnor.check" if="drools.guvnor.not.available">
+    <echo message="Getting Drools Guvnor ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${drools.url}/drools-${drools.version}-guvnor.war" dest="${install.home}/lib/drools-${drools.version}-guvnor.war" />
+  </target>
+
+  <!-- Download jBPM Eclipse plugins -->
+  <target name="download.jBPM.eclipse.check">
+    <echo message="Checking jBPM Eclipse download ..." />
+    <condition property="jBPM.eclipse.not.available">
+      <not>
+        <available file="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
+    <echo message="Getting jBPM Eclipse ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jBPM.url}/jbpm-${jBPM.version}-eclipse-all.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
+  </target>
+
+  <!-- Download jBPM gwt-console -->
+  <target name="download.jBPM.gwt-console.check">
+    <echo message="Checking jBPM gwt-console download ..." />
+    <condition property="jBPM.gwt-console.not.available">
+      <not>
+        <available file="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.jBPM.gwt-console" depends="download.jBPM.gwt-console.check" if="jBPM.gwt-console.not.available">
+    <echo message="Getting jBPM gwt-console ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${jBPM.url}/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" />
+  </target>
+
+  <!-- ############ INSTALL ############ -->
+
+  <!-- Install JBoss AS -->
+  <target name="install.jboss" depends="download.jboss">
+    <unzip src="${install.home}/lib/jboss-4.2.3.GA.zip" dest="${install.home}" />
+    <chmod perm="a+x" file="${install.home}/jboss-4.2.3.GA/bin/run.sh" />
+    <chmod perm="a+x" file="${install.home}/jboss-4.2.3.GA/bin/shutdown.sh" />
+  </target>
+
+  <!-- Install guvnor -->
+  <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
+    <copy file="${install.home}/lib/drools-${drools.version}-guvnor.war"
+          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+          overwrite="true" />
+  </target>
+
+  <!-- Install gwt-console -->
+  <target name="install.jBPM-gwt-console.into.jboss" depends="download.h2,download.birt,download.jBPM.gwt-console">
+    <!-- gwt-console -->
+    <mkdir dir="${install.home}/target"/>
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/target" />
+    <mkdir dir="${install.home}/target/jbpm-gwt-console-server-war"/>
+    <unzip src="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+           dest="${install.home}/target/jbpm-gwt-console-server-war"/>
+    <copy file="${install.home}/db/hibernate.cfg.xml"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/hibernate.cfg.xml"
+          overwrite="true" />
+    <copy file="${install.home}/db/persistence.xml"
+          tofile="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes/META-INF/persistence.xml"
+          overwrite="true" />
+    <!-- Fix for conflicting javassist jar -->
+    <delete file="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/lib/javassist-3.6.0.GA.jar"/>
+    <!-- Other configuration like work item handlers -->
+    <copy todir="${install.home}/target/jbpm-gwt-console-server-war/WEB-INF/classes" overwrite="true">
+      <fileset dir="${install.home}/conf"/>
+    </copy>
+    <zip basedir="${install.home}/target/jbpm-gwt-console-server-war"
+         destfile="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"/>
+    <copy file="${install.home}/target/jbpm-gwt-console-server-${jBPM.version}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console-server.war"
+          overwrite="true" />
+    <copy file="${install.home}/target/jbpm-gwt-console-${jBPM.version}.war"
+          tofile="${jboss.server.deploy.dir}/jbpm-gwt-console.war"
+          overwrite="true" />
+    <delete dir="${install.home}/target"/>
+    <!-- db configuration -->
+    <copy file="${install.home}/db/testDS1-ds.xml"
+          tofile="${jboss.server.deploy.dir}/testDS1-ds.xml"
+          overwrite="true" />
+    <copy todir="${jboss.server.lib.dir}" overwrite="true">
+      <fileset dir="${install.home}/db/driver"/>
+    </copy>
+    <!-- authentication configuration -->
+    <copy file="${install.home}/auth/users.properties"
+          tofile="${jboss.server.conf.dir}/users.properties"
+          overwrite="true" />
+    <copy file="${install.home}/auth/roles.properties"
+          tofile="${jboss.server.conf.dir}/roles.properties"
+          overwrite="true" />
+    <!-- reporting -->
+    <mkdir dir="${install.home}/target"/>
+    <unzip src="${install.home}/lib/birt-runtime-2_3_2_2.zip"
+           dest="${install.home}/target"/>
+    <mkdir dir="${jboss.server.birt.dir}"/>
+    <mkdir dir="${jboss.server.birt.dir}/ReportEngine"/>
+    <copy todir="${jboss.server.birt.dir}/ReportEngine" overwrite="true">
+      <fileset dir="${install.home}/target/birt-runtime-2_3_2/ReportEngine"/>
+    </copy>
+    <delete dir="${install.home}/target"/>
+    <copy file="${install.home}/report/overall_activity.rptdesign"
+          tofile="${jboss.server.birt.dir}/overall_activity.rptdesign"
+          overwrite="true" />
+    <copy file="${install.home}/report/process_summary.rptdesign"
+          tofile="${jboss.server.birt.dir}/process_summary.rptdesign"
+          overwrite="true" />
+    <copy todir="${jboss.server.birt.dir}/ReportEngine/plugins/org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers" overwrite="true">
+      <fileset dir="${install.home}/db/driver"/>
+    </copy>
+  </target>
+
+  <!-- Install Eclipse -->
+  <target name="install.eclipse" depends="download.eclipse,download.eclipse.gef">   
+    <antcall target="unzipEclipse" />	
+    <antcall target="untarEclipse" />
+    <unzip dest="${install.home}" overwrite="true" 
+           src="${install.home}/lib/GEF-runtime-3.5.1.zip" />				         
+  </target>    
+  
+  <target name="unzipEclipse" if="expandTypeZip">
+    <unzip dest="${install.home}" overwrite="true" 
+           src="${install.home}/lib/eclipse-SDK-3.5.1-${download.type}.zip" />  
+  </target>
+
+  <target name="untarEclipse" if="expandTypeTarGz">
+    <gunzip src="${install.home}/lib/eclipse-SDK-3.5.1-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-SDK-3.5.1-${download.type}.tar" />
+    <chmod perm="a+x" file="${install.home}/eclipse/eclipse" />
+  </target>
+
+  <!-- Install Eclipse plugins -->
+  <target name="install.jBPM.runtime" depends="download.jBPM.bin">
+    <!-- create runtime -->
+    <mkdir dir="${install.home}/runtime"/>
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/runtime" />
+  </target>
+
+  <!-- Install Eclipse plugins -->
+  <target name="install.jBPM-eclipse.into.eclipse" depends="download.jBPM.eclipse">
+    <!-- install plugins -->
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" dest="${eclipse.home}" />
+  </target>
+
+  <!-- Install Demo -->
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
+
+  <!-- ############ START/STOP ############ -->
+
+  <!-- Start H2 server -->
+  <target name="start.h2" depends="download.h2">
+    <java classname="org.h2.tools.Server" fork="true" spawn="true">
+      <arg value="-tcp" />
+      <classpath location="${install.home}/db/driver/h2.jar" />
+    </java>
+  </target>
+  <!-- Stop H2 server -->
+  <target name="stop.h2" depends="download.h2">
+    <java classname="org.h2.tools.Server" fork="true">
+      <classpath location="${install.home}/db/driver/h2.jar" />
+      <arg value="-tcpShutdown" />
+      <arg value="tcp://localhost:9092" />
+    </java>
+  </target>
+
+  <!-- Start JBoss AS -->
+  <target name="start.jboss">
+    <property name="jboss.full.path.win" location="${jboss.home}/bin/run.bat" />
+    <exec executable="${jboss.full.path.win}" spawn="yes"
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
+    </exec>
+    <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
+    <exec executable="${jboss.full.path.linux}" spawn="yes" os="Linux,Mac OS X">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
+    </exec>
+    <waitfor maxwait="5" maxwaitunit="minute" checkevery="30"
+             checkeveryunit="second" timeoutproperty="jboss.timeout">
+      <socket server="${jboss.bind.address}" port="8080" />
+    </waitfor>
+    <fail if="jboss.timeout" message="jboss did not start within 5 minutes"/>
+  </target>
+  <!-- Stop JBoss AS -->
+  <target name="stop.jboss">
+    <exec executable="${jboss.home}/bin/shutdown.bat"
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
+      <arg value="-s" />
+      <arg value="jnp://${jboss.bind.address}:1099" />
+      <arg value="-S" />
+    </exec>
+    <exec executable="${jboss.home}/bin/shutdown.sh" os="Linux,Mac OS X">
+      <arg value="-s" />
+      <arg value="jnp://${jboss.bind.address}:1099" />
+      <arg value="-S" />
+    </exec>
+  </target>
+
+  <!-- Start Eclipse -->
+  <target name="start.eclipse">
+    <exec executable="${eclipse.home}/eclipse.exe"
+          spawn="yes"
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
+      <arg value="-data" />
+      <arg value="${eclipse.workspace.dir}" />
+      <arg value="-plugincustomization" />
+      <arg value="./eclipse.preferences.ini" />
+    </exec>
+    <exec executable="${eclipse.home}/eclipse" spawn="yes" os="Linux">
+      <arg value="-data" />
+      <arg value="${eclipse.workspace.dir}" />
+      <arg value="-plugincustomization" />
+      <arg value="./eclipse.preferences.ini" />
+    </exec>
+    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" os="Mac OS X">
+      <arg value="-data" />
+      <arg value="${eclipse.workspace.dir}" />
+      <arg value="-plugincustomization" />
+      <arg value="./eclipse.preferences.ini" />
+    </exec>
+  </target>
+
+  <!-- Start Human Task Service -->
+  <path id="classpath.human.task">
+    <fileset dir="${install.home}/runtime" includes="**/*.jar"/>
+    <fileset dir="${install.home}/db/driver" includes="**/*.jar"/>
+  </path>
+  <target name="start.human.task">
+    <mkdir dir="${install.home}/task-service/target"/>
+    <javac srcdir="${install.home}/task-service/src" destdir="${install.home}/task-service/target" classpathref="classpath.human.task">
+      <compilerarg value="-Xlint:unchecked"/>
+    </javac>
+    <copy todir="${install.home}/task-service/target">
+      <fileset dir="${install.home}/task-service/resources"/>
+    </copy>
+    <java classname="org.jbpm.DemoTaskService" fork="true">  
+      <classpath>
+        <pathelement path="${install.home}/task-service/target"/>
+        <path refid="classpath.human.task" />
+      </classpath>
+    </java>
+  </target>
+
+  <!-- Start Demo -->
+  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
+  <!-- Stop Demo -->
+  <target name="stop.demo" depends="stop.h2,stop.jboss" />
+
+  <!-- ############ CLEAN ############ -->
+	
+  <!-- Clean jboss -->
+  <target name="clean.jboss">
+    <delete dir="${install.home}/jboss-4.2.3.GA"/>
+    <delete dir="${install.home}/repository"/>
+    <delete file="${install.home}/repository.xml"/>
+  </target>
+
+  <!-- Clean eclipse -->
+  <target name="clean.eclipse">
+    <delete dir="${install.home}/eclipse"/>
+    <delete dir="${install.home}/runtime"/>
+    <delete dir="${eclipse.workspace.dir}"/>
+  </target>
+
+  <!-- Stop Demo -->
+  <target name="clean.demo" depends="clean.jboss,clean.eclipse" />
+	
+</project>

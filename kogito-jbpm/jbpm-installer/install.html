@@ -1,0 +1,162 @@
+<HTML>
+<BODY>
+
+<H1>Installation</H1>
+
+<H2>Prerequisites</H2>
+This script assumes you have Java JDK 1.5+ (set as JAVA_HOME), and Ant 1.7+ installed.<BR/>
+If you don't, use the following links to download and install them:<BR/>
+Java: <A href="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</A><BR/>
+Ant: <A href="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</A><BR/>
+
+<H2>Download the installer</H2>
+First of all, you need to download the installer:<BR/>
+<EM>jbpm-{version}-installer.zip</EM>
+<P>
+You can for example find the latest snapshot release <A href="http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/trunk/target">here</A>.
+
+<H2>Demo setup</H2>
+The easiest way to get started is to simply run the installation script to install the demo setup.
+Simply go into the install folder and run:<BR/>
+<BR/>
+<EM>ant install.demo</EM><BR/>
+<BR/>
+This will:<UL>
+  <LI>Download JBoss AS</LI>
+  <LI>Download Eclipse</LI>
+  <LI>Install Drools Guvnor into JBoss AS</LI>
+  <LI>Install the jBPM gwt-console into JBoss AS</LI>
+  <LI>Install the jBPM Eclipse plugins</LI>
+</UL>
+
+Once the demo setup has finished (this could take a while as it might have to download the various components),
+you can start playing with the various components by starting the demo setup:<BR/>
+<BR/>
+<EM>ant start.demo</EM><BR/>
+<BR/>
+This will:<UL>
+  <LI>Start the H2 database</LI>
+  <LI>Start the JBoss AS</LI>
+  <LI>Start Eclipse</LI>
+  <LI>Start the jBPM Human Task Service</LI>
+</UL>
+Once everything is started, you can start playing with the Eclipse tooling, Guvnor and jBPM console, as explained in the next three sections.
+<BR/>
+
+<H3>Using Eclipse Tooling</H3>
+
+The <A href="TODO">TODO following screencast</A> gives an overview of how to run a simple demo process in Eclipse.  It shows you:
+<UL>
+  <LI>How to import an existing example project into your workspace, containing
+    <UL>
+      <LI>a sample BPMN2 process for requesting a performance evaluation</LI>
+      <LI>a sample Java class to start the process</LI>
+    </UL>
+  </LI>
+  <LI>How to start the process</LI>
+  <LI>How to complete human tasks using the test human task client in Eclipse</LI>
+</UL>
+If you want to know more, we recommend you take a look at the jBPM documentation <A href="TODO">TODO_here</A>.
+
+<H3>Using Guvnor repository</H3>
+
+Open up Drools Guvnor:<BR/>
+<A href="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</A><BR/>
+<BR/>
+Log in, using any non-empty username / password (we disabled authentication for demo purposes).
+<P>
+The <A href="http://people.redhat.com/kverlaen/install-guvnor.swf">following screencast</A> gives an overview of how to manage your repository.  It shows you:
+<UL>
+  <LI>How to import an existing sample repository, containing the performance evaluation process as shown in the previous section</LI>
+  <LI>How to look up the processes that are part of a package</LI>
+  <LI>How to build a package so it can be used for creating a session (like for example in the gwt-console as shown in the next section)</LI>
+</UL>
+If you want to know more, we recommend you take a look at the Drools documentation <A href="http://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/docs/drools-guvnor/html/index.html">here</A>.
+
+<H3>Using web management consoles</H3>
+
+First make sure you have imported the sample repository and built the defaultPackage in Guvnor first (see previous section).
+<P>
+Open up the process management console:<BR/>
+<A href="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</A><BR/>
+<BR/>
+Log in, using krisv / krisv as username / password.
+<P>
+The <A href="TODO">TODO following screencast</A> gives an overview of how to manage your process instances.  It shows you:
+<UL>
+  <LI>How to start a new process</LI>
+  <LI>How to look up the current status of a running process instance</LI>
+  <LI>How to look up your tasks</LI>
+  <LI>How to complete a task</LI>
+  <LI>How to generate reports to monitor your process execution</LI>
+</UL>
+If you want to know more, we recommend you take a look at the jBPM documentation <A href="TODO">TODO_here</A>.
+<P>
+Once you're done playing:
+<EM>ant stop.demo</EM><P>
+and simply close all the rest.
+
+
+<H2>Manually installing the different components</H2>
+
+If you don't want to use the demo setup, you can also use the individual ant targets, as described below.
+
+<H3>Getting JBoss AS</H3>
+You need to download and install JBoss AS version 4.2.3.GA.
+If you don't have it installed yet, go into the install folder and run the installation script:<BR/>
+<EM>ant install.jboss</EM><BR/>
+<BR/>
+This will download and install the server in install/jboss-4.2.3.GA folder. If you don't
+want it to download the zip file, you can put the jboss-4.2.3.GA.zip in the install/lib folder.
+<P>
+If you already have it installed somewhere else, in install/build.properties, change the
+jboss.home property to the location of your JBoss AS installation.
+<P>
+
+<H3>Getting Eclipse</H3>
+You need to download and install Eclipse 3.5.2
+If you don't have it installed yet, run installation script:<BR/>
+<EM>ant install.eclipse</EM><BR/>
+<BR/>
+This will download and install eclipse in install/eclipse folder.
+If you don't want it to download the eclipse file, you can put the file in the install/lib folder:<BR/>
+    eclipse-SDK-3.5.2-linux-gtk.tar.gz (linux),<BR/>
+    eclipse-SDK-3.5.2-win32.zip (windows), or<BR/>
+    eclipse-SDK-3.5.2-macosx-carbon.tar.gz (mac).<BR/>
+If you don't want it to download the eclipse GEF file, you can put the GEF-runtime-3.5.2.zip file in the install/lib folder.
+<P>
+If you already have it installed somewhere else, in install/build.properties, change the
+eclipse.home property to the location of your Eclipse installation.
+
+<H3>Installing</H3>
+In the install dir, run installation script:<BR/>
+<EM>ant install.guvnor.into.jboss</EM><BR/>
+<EM>ant install.drools-gwt-console.into.jboss</EM><BR/>
+<EM>ant install.drools-eclipse.into.eclipse</EM><BR/>
+
+<H3>Starting</H3/>
+Startup database:<BR/>
+<EM>ant start.h2</EM>
+<P>
+Startup JBoss AS:<BR/>
+<EM>ant start.jboss</EM>
+<P>
+Startup task service:<BR/>
+<EM>ant start.human.task</EM>
+<P>
+Startup eclipse:<BR/>
+<EM>ant start.eclipse</EM>
+
+<H3>Stopping</H3>
+
+Once you're done playing<BR/>
+stop database:<BR/>
+<EM>ant stop.h2</EM>
+<P>
+stop JBoss AS:<BR/>
+<EM>ant stop.jboss</EM>
+<P>
+and simply close all the rest.
+
+</body>
+</html>

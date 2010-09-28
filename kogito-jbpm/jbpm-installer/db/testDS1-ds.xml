@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources>
+  <local-tx-datasource>
+    <jndi-name>jdbc/testDS1</jndi-name>
+    <connection-url>jdbc:h2:tcp://localhost/~/test</connection-url>
+    <!--connection-url>jdbc:h2:mem:mydb</connection-url-->
+    <driver-class>org.h2.jdbcx.JdbcDataSource</driver-class>
+    <user-name>sa</user-name>
+    <password></password>
+  </local-tx-datasource>
+</datasources>
