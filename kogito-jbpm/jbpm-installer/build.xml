@@ -17,6 +17,7 @@
 
   <property name="jboss.download.url" value="http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA.zip"/>
   <property name="h2.download.url" value="http://repository.jboss.org/maven2/com/h2database/h2/1.2.124/h2-1.2.124.jar"/>
+  <property name="slf4j.download.url" value="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.11/slf4j-jdk14-1.5.11.jar"/>
   <property name="birt.download.url" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;mirror_id=1"/>
 
   <!-- ############ DOWNLOAD ############ -->
@@ -172,6 +173,20 @@
     <mkdir dir="${install.home}/lib"/>
     <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war" />
   </target>
+  <target name="download.slf4j.check">
+    <echo message="Checking slf4j download ..." />
+    <condition property="slf4j.not.available">
+      <not>
+        <available file="${install.home}/lib/slf4j-jdk14-1.5.11.jar" />
+      </not>
+    </condition>
+  </target>
+  <target name="download.slf4j" depends="download.slf4j.check" if="slf4j.not.available">
+    <echo message="Getting slf4j ..." />
+    <mkdir dir="${install.home}/lib"/>
+    <get src="${slf4j.download.url}" dest="${install.home}/lib/slf4j-jdk14-1.5.11.jar" />
+  </target>
+
 
   <!-- Download jBPM Eclipse plugins -->
   <target name="download.jBPM.eclipse.check">
@@ -220,10 +235,12 @@
   </target>
 
   <!-- Install designer -->
-  <target name="install.designer.into.jboss" depends="download.designer">
-    <copy file="${install.home}/lib/designer-${designer.version}.war"
-          tofile="${jboss.server.deploy.dir}/designer.war"
-          overwrite="true" />
+  <target name="install.designer.into.jboss" depends="download.designer,download.slf4j">
+    <mkdir dir="${jboss.server.deploy.dir}/designer.war"/>
+    <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${jboss.server.deploy.dir}/designer.war" />
+    <delete file="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/servlet-api-2.5.jar"/>
+    <copy file="${install.home}/lib/slf4j-jdk14-1.5.11.jar"
+          tofile="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/slf4j-jdk14-1.5.11.jar"/>
   </target>
 
   <!-- Install gwt-console -->
