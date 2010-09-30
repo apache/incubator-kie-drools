@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.drools.SystemEventListenerFactory;
 import org.jboss.bpm.console.client.model.TaskRef;
-import org.jboss.bpm.console.server.integration.TaskManagement;
 import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
@@ -38,7 +37,7 @@ import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public class DroolsFlowTaskManagement implements TaskManagement {
+public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
 	// TODO: make this configurable
 	private String ipAddress = "127.0.0.1";
@@ -67,7 +66,7 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 		BlockingGetTaskResponseHandler responseHandler = new BlockingGetTaskResponseHandler();
 		client.getTask(taskId, responseHandler);
         Task task = responseHandler.getTask();
-        return DroolsFlowTransform.task(task);
+        return Transform.task(task);
 	}
 
 	public void assignTask(long taskId, String idRef, String userId) {
@@ -133,7 +132,7 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 	        List<TaskSummary> tasks = responseHandler.getResults();
 	        for (TaskSummary task: tasks) {
 	        	if (task.getStatus() == Status.Reserved) {
-	        		result.add(DroolsFlowTransform.task(task));
+	        		result.add(Transform.task(task));
 	        	}
 	        }
 		} catch (Throwable t) {
@@ -151,7 +150,7 @@ public class DroolsFlowTaskManagement implements TaskManagement {
 			client.getTasksAssignedAsPotentialOwner(idRef, "en-UK", responseHandler);
 	        List<TaskSummary> tasks = responseHandler.getResults();
 	        for (TaskSummary task: tasks) {
-	        	result.add(DroolsFlowTransform.task(task));
+	        	result.add(Transform.task(task));
 	        }
 		} catch (Throwable t) {
 			t.printStackTrace();

@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-flow</artifactId>
+      <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>

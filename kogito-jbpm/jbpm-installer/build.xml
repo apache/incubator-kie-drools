@@ -340,7 +340,7 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
+  <target name="install.demo" depends="install.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
 
   <!-- ############ START/STOP ############ -->
 
@@ -368,12 +368,14 @@
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
+      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" os="Linux,Mac OS X">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
+      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="30"
              checkeveryunit="second" timeoutproperty="jboss.timeout">

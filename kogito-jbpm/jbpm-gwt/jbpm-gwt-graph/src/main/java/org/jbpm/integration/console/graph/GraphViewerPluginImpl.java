@@ -17,6 +17,8 @@
 package org.jbpm.integration.console.graph;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,20 +29,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.Process;
 import org.drools.definition.process.WorkflowProcess;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.impl.ProcessMarshallerFactory;
+import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jboss.bpm.console.client.model.ActiveNodeInfo;
 import org.jboss.bpm.console.client.model.DiagramInfo;
 import org.jboss.bpm.console.client.model.DiagramNodeInfo;
 import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
+import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
+import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 
 /**
  * @author Kris Verlaenen
@@ -83,10 +94,30 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	}
 
 	public DiagramInfo getDiagramInfo(String processId) {
-		KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
-		kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
-		kagent.monitorResourceChangeEvents(false);
-		KnowledgeBase kbase = kagent.getKnowledgeBase();
+		String directory = System.getProperty("jbpm.console.directory");
+		if (directory == null) {
+			throw new IllegalArgumentException("jbpm.console.directory property not found, did you set it?");
+		}
+		File file = new File(directory);
+		if (!file.exists()) {
+			throw new IllegalArgumentException("Could not find " + directory);
+		}
+		if (!file.isDirectory()) {
+			throw new IllegalArgumentException(directory + " is not a directory");
+		}
+		ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
+		ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
+		ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+		BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		for (File subfile: file.listFiles(new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return name.endsWith(".bpmn");
+				}})) {
+			System.out.println("Loading process " + subfile.getName());
+			kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
+		}
+		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 		Process process = kbase.getProcess(processId);
 		if (process == null) {
 			return null;

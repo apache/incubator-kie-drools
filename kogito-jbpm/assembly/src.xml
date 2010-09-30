@@ -28,6 +28,13 @@
         <exclude>**/target/**</exclude>
         <exclude>**/.svn/**</exclude>
         <exclude>**/.metadata/**</exclude>
+        <exclude>jbpm-installer/eclipse/**</exclude>
+        <exclude>jbpm-installer/jboss*/**</exclude>
+        <exclude>jbpm-installer/lib/**</exclude>
+        <exclude>jbpm-installer/repository/**</exclude>
+        <exclude>jbpm-installer/repository.xml</exclude>
+        <exclude>jbpm-installer/runtime/**</exclude>
+        <exclude>jbpm-installer/workspace/**</exclude>
       </excludes>
     </fileSet>
   </fileSets>

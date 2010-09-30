@@ -16,23 +16,23 @@
 
 package org.jbpm.integration.console;
 
-import org.jboss.bpm.console.server.integration.ManagementFactory;
-import org.jboss.bpm.console.server.integration.ProcessManagement;
-import org.jboss.bpm.console.server.integration.TaskManagement;
-import org.jboss.bpm.console.server.integration.UserManagement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DroolsFlowManagementFactory extends ManagementFactory {
+public class UserManagement implements org.jboss.bpm.console.server.integration.UserManagement {
 
-	public ProcessManagement createProcessManagement() {
-		return new DroolsFlowProcessManagement();
+	public List<String> getActorsForGroup(String groupName) {
+		// TODO: fixme
+		List<String> result = new ArrayList<String>();
+		result.add("admin");
+		return result;
 	}
 
-	public TaskManagement createTaskManagement() {
-		return new DroolsFlowTaskManagement();
-	}
-
-	public UserManagement createUserManagement() {
-		return new DroolsFlowUserManagement();
+	public List<String> getGroupsForActor(String actorId) {
+		// TODO: fixme
+		List<String> result = new ArrayList<String>();
+		result.add("admins");
+		return result;
 	}
 
 }

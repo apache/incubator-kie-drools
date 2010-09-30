@@ -16,58 +16,95 @@
 
 package org.jbpm.integration.console;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.ProcessRuntimeFactory;
+import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.audit.ProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.WorkingMemoryDbLogger;
+import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
-public class DroolsFlowCommandDelegate {
+public class CommandDelegate {
 	
 	private static StatefulKnowledgeSession ksession;
 	
-	public DroolsFlowCommandDelegate() {
+	public CommandDelegate() {
 		getSession();
 	}
 	
 	private StatefulKnowledgeSession newStatefulKnowledgeSession() {
 		try {
-			KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
-			kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
-			kagent.monitorResourceChangeEvents(false);
-			KnowledgeBase kbase = kagent.getKnowledgeBase();
+			String directory = System.getProperty("jbpm.console.directory");
+			if (directory == null) {
+				throw new IllegalArgumentException("jbpm.console.directory property not found, did you set it?");
+			}
+			File file = new File(directory);
+			if (!file.exists()) {
+				throw new IllegalArgumentException("Could not find " + directory);
+			}
+			if (!file.isDirectory()) {
+				throw new IllegalArgumentException(directory + " is not a directory");
+			}
+			ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
+			ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
+			ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+			BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
+			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+			for (File subfile: file.listFiles(new FilenameFilter() {
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".bpmn");
+					}})) {
+				System.out.println("Loading process " + subfile.getName());
+				kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
+			}
+			KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 			StatefulKnowledgeSession ksession = null;
 			EntityManagerFactory emf = Persistence.createEntityManagerFactory(
 					"org.drools.persistence.jpa");
 	        Environment env = KnowledgeBaseFactory.newEnvironment();
 	        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+			Properties properties = new Properties();
+			properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
+			properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
+			KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 			try {
 				System.out.println("Loading session data ...");
                 ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
-					1, kbase, null, env);
+					1, kbase, config, env);
 			} catch (RuntimeException e) {
 				System.out.println("Error loading session data: " + e.getMessage());
 				if (e instanceof IllegalStateException) {
@@ -77,7 +114,7 @@ public class DroolsFlowCommandDelegate {
 	                    if (cause != null && "Could not find session data for id 1".equals(cause.getMessage())) {
 	                        System.out.println("Creating new session data ...");
 	                        ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
-	                            kbase, null, env);
+	                            kbase, config, env);
 	                    } else {
 	                        System.err.println("Error loading session data: " + cause);
 	                        throw e;
@@ -210,6 +247,10 @@ public class DroolsFlowCommandDelegate {
 	public void signalExecution(String executionId, String signal) {
 		ksession.getProcessInstance(new Long(executionId))
 			.signalEvent("signal", signal);
+	}
+	
+	public static void main(String[] args) {
+		new CommandDelegate();
 	}
 
 }

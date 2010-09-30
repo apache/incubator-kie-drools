@@ -8,6 +8,15 @@
   <fileSets>
     <fileSet>
       <directory>jbpm-installer</directory>
+      <excludes>
+        <exclude>eclipse/**</exclude>
+        <exclude>jboss*/**</exclude>
+        <exclude>lib/**</exclude>
+        <exclude>repository/**</exclude>
+        <exclude>repository.xml</exclude>
+        <exclude>runtime/**</exclude>
+        <exclude>workspace/**</exclude>
+      </excludes>
     </fileSet>
   </fileSets>   
 </assembly>

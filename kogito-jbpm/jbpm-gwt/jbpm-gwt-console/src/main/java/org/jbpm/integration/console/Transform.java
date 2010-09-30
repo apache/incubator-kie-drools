@@ -26,7 +26,7 @@ import org.jbpm.task.I18NText;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 
-public class DroolsFlowTransform {
+public class Transform {
 	
 	public static ProcessDefinitionRef processDefinition(Process process) {
 		long version = 0;
