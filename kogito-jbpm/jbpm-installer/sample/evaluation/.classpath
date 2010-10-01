@@ -3,6 +3,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="jBPM/jBPM"/>
+	<classpathentry kind="con" path="JBPM/jbpm"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
