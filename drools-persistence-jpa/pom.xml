@@ -50,31 +50,31 @@
       </plugins>
    </build>    
     
-      <dependencies> 	       
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-api</artifactId>
-    	</dependency>         		  
+      <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-api</artifactId>
+      </dependency>
        
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-core</artifactId>
-    	</dependency>         		  
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-core</artifactId>
+      </dependency>
        
-    	<dependency>
-    		<groupId>org.drools</groupId>
-    		<artifactId>drools-compiler</artifactId>
-    	</dependency>         		  
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.slf4j</groupId>
-    		<artifactId>slf4j-api</artifactId>
-    	</dependency>    
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+      </dependency>
 
-    	 <dependency>
-        	<groupId>org.slf4j</groupId>
-        	<artifactId>slf4j-log4j12</artifactId>
-        	<scope>test</scope>
+       <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <scope>test</scope>
         </dependency>
         
     <dependency>
@@ -87,7 +87,7 @@
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>        
-    	      	    
+
       <dependency>
          <groupId>org.apache.felix</groupId>
          <artifactId>org.osgi.core</artifactId>
@@ -98,66 +98,66 @@
          <artifactId>org.osgi.compendium</artifactId>
          <scope>provided</scope>
       </dependency>
-   	
-    	<!-- Hibernate -->
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-entitymanager</artifactId>
-    	</dependency>
 
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-annotations</artifactId>
-    	</dependency>
+      <!-- Hibernate -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-commons-annotations</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-annotations</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>org.hibernate</groupId>
-    		<artifactId>hibernate-core</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+      </dependency>
 
-    	<!-- HSQLDB -->
-    	<dependency>
-    		<groupId>com.h2database</groupId>
-    		<artifactId>h2</artifactId>
-			<scope>test</scope>
-    	</dependency>
-    	
-    	<dependency>
-    		<groupId>javax.persistence</groupId>
-    		<artifactId>persistence-api</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>dom4j</groupId>
-    		<artifactId>dom4j</artifactId>
-    	</dependency>
+      <!-- HSQLDB -->
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+      <scope>test</scope>
+      </dependency>
 
-    	<dependency>
-    		<groupId>javassist</groupId>
-    		<artifactId>javassist</artifactId>
-    	</dependency>
+      <dependency>
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+      </dependency>
 
-    	<dependency>
-    		<groupId>javax.transaction</groupId>
-    		<artifactId>jta</artifactId>
-    	</dependency>
-    	
-    	<dependency>
-		    <groupId>org.codehaus.btm</groupId>
-		    <artifactId>btm</artifactId>
-		    <scope>test</scope>
-    	</dependency>    	
-    	
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>javassist</groupId>
+        <artifactId>javassist</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.transaction</groupId>
+        <artifactId>jta</artifactId>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.btm</groupId>
+        <artifactId>btm</artifactId>
+        <scope>test</scope>
+      </dependency>
+
         <!--dependency>  
            <groupId>org.objectweb.jotm</groupId>  
            <artifactId>com.springsource.org.objectweb.jotm</artifactId>  
            <version>2.0.10</version>
-        </dependency>  	
+        </dependency>
         
         <dependency>  
            <groupId>com.experlog.xapool</groupId>  
