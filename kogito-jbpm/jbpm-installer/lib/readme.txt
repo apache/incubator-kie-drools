@@ -8,12 +8,16 @@ Birt runtime engine:
   birt-runtime-2_3_2_2.zip
 
 Eclipse: 
-  eclipse-SDK-3.5.1-linux-gtk.tar.gz (linux)
-  eclipse-SDK-3.5.1-win32.zip (windows)
-  eclipse-SDK-3.5.1-macosx-carbon.tar.gz (mac)
+  eclipse-SDK-3.6.1-linux-gtk.tar.gz (linux)
+  eclipse-SDK-3.6.1-win32.zip (windows)
+  eclipse-SDK-3.6.1-macosx-carbon.tar.gz (mac)
 
-Eclipse GEF:
-  GEF-runtime-3.5.1.zip
+Eclipse GMF + dependencies:
+  gmf-sdk-2.3.1
+  GEF-SDK-3.6.1.zip
+  emf-runtime-2.6.1.zip
+  emf-transaction-runtime-1.4.0.zip
+  emf-validation-runtime-1.4.0.zip
 
 jBPM:
   jbpm-#{jbpm.version}-bin.zip
@@ -25,3 +29,4 @@ Drools:
 
 Designer:
   designer-#{designer.version}.war
+  slf4j-jdk14-1.5.11.jar

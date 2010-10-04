@@ -256,7 +256,7 @@
   <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
     <echo message="Getting jBPM Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-2-18275/jBPM5-BPMN2-tools.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
+    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-3-18501/jBPM5-BPMN2-tools.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
   </target>
 
   <!-- Download jBPM gwt-console -->
