@@ -404,7 +404,7 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime" />
 
   <!-- ############ START/STOP ############ -->
 
