@@ -26,6 +26,7 @@ jBPM:
 
 Drools:
   drools-#{drools.version}-guvnor.war
+  drools-#{drools.version}-eclipse-all.zip
 
 Designer:
   designer-#{designer.version}.war
