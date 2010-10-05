@@ -136,16 +136,20 @@ public class VariablePersistenceStrategy {
                 }
             }
         }
-        // at last for interfaces
-        Class<?>[] interfaces = o.getClass().getInterfaces();
-        if (interfaces != null) {
-            for (Class<?> clazz : interfaces) {
-                persisterFQN = types.get(clazz.getName());
+
+        //finally look for interface to the root
+        Class<?> clazz = o.getClass();
+		do {
+			Class<?>[] interfaces = clazz.getInterfaces();
+			for(Class<?> interfaze : interfaces) {
+				persisterFQN = types.get(interfaze.getName());
                 if (persisterFQN != null && !persisterFQN.equals("")) {
+                	System.out.println("Persistence strategy returns: " + persisterFQN);
                     return persisterFQN;
                 }
             }
-        }
+		} while ( (clazz = clazz.getSuperclass() ) != null);
+		
         return null;
     }
 }
