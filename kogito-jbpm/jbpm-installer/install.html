@@ -25,8 +25,10 @@ This will:<UL>
   <LI>Download JBoss AS</LI>
   <LI>Download Eclipse</LI>
   <LI>Install Drools Guvnor into JBoss AS</LI>
+  <LI>Install Oryx Designer into JBoss AS</LI>
   <LI>Install the jBPM gwt-console into JBoss AS</LI>
-  <LI>Install the jBPM Eclipse plugins</LI>
+  <LI>Install the jBPM Eclipse plugin</LI>
+  <LI>Install the Drools Eclipse plugin</LI>
 </UL>
 
 Once the demo setup has finished (this could take a while as it might have to download the various components),
@@ -56,7 +58,6 @@ The <A href="TODO">TODO following screencast</A> gives an overview of how to run
   <LI>How to start the process</LI>
   <LI>How to complete human tasks using the test human task client in Eclipse</LI>
 </UL>
-If you want to know more, we recommend you take a look at the jBPM documentation <A href="TODO">TODO_here</A>.
 
 <H3>Using Guvnor repository</H3>
 
@@ -65,18 +66,15 @@ Open up Drools Guvnor:<BR/>
 <BR/>
 Log in, using any non-empty username / password (we disabled authentication for demo purposes).
 <P>
-The <A href="http://people.redhat.com/kverlaen/install-guvnor.swf">following screencast</A> gives an overview of how to manage your repository.  It shows you:
+The <A href="TODO">TODO following screencast</A> gives an overview of how to manage your repository.  It shows you:
 <UL>
   <LI>How to import an existing sample repository, containing the performance evaluation process as shown in the previous section</LI>
-  <LI>How to look up the processes that are part of a package</LI>
-  <LI>How to build a package so it can be used for creating a session (like for example in the gwt-console as shown in the next section)</LI>
+  <LI>How to open up the evaluation process in the web editor</LI>
+  <LI>How to build a package so it can be used for creating a session</LI>
 </UL>
-If you want to know more, we recommend you take a look at the Drools documentation <A href="http://hudson.jboss.org/hudson/job/drools/lastSuccessfulBuild/artifact/trunk/target/docs/drools-guvnor/html/index.html">here</A>.
 
 <H3>Using web management consoles</H3>
 
-First make sure you have imported the sample repository and built the defaultPackage in Guvnor first (see previous section).
-<P>
 Open up the process management console:<BR/>
 <A href="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</A><BR/>
 <BR/>
@@ -90,7 +88,6 @@ The <A href="TODO">TODO following screencast</A> gives an overview of how to man
   <LI>How to complete a task</LI>
   <LI>How to generate reports to monitor your process execution</LI>
 </UL>
-If you want to know more, we recommend you take a look at the jBPM documentation <A href="TODO">TODO_here</A>.
 <P>
 Once you're done playing:
 <EM>ant stop.demo</EM><P>
@@ -114,16 +111,16 @@ jboss.home property to the location of your JBoss AS installation.
 <P>
 
 <H3>Getting Eclipse</H3>
-You need to download and install Eclipse 3.5.2
+You need to download and install Eclipse 3.6.1
 If you don't have it installed yet, run installation script:<BR/>
 <EM>ant install.eclipse</EM><BR/>
 <BR/>
 This will download and install eclipse in install/eclipse folder.
 If you don't want it to download the eclipse file, you can put the file in the install/lib folder:<BR/>
-    eclipse-SDK-3.5.2-linux-gtk.tar.gz (linux),<BR/>
-    eclipse-SDK-3.5.2-win32.zip (windows), or<BR/>
-    eclipse-SDK-3.5.2-macosx-carbon.tar.gz (mac).<BR/>
-If you don't want it to download the eclipse GEF file, you can put the GEF-runtime-3.5.2.zip file in the install/lib folder.
+    eclipse-SDK-3.6.1-linux-gtk.tar.gz (linux),<BR/>
+    eclipse-SDK-3.6.1-win32.zip (windows), or<BR/>
+    eclipse-SDK-3.6.1-macosx-carbon.tar.gz (mac).<BR/>
+If you don't want it to download the eclipse GEF file, you can put the GEF-runtime-3.6.1.zip file in the install/lib folder.
 <P>
 If you already have it installed somewhere else, in install/build.properties, change the
 eclipse.home property to the location of your Eclipse installation.
@@ -131,7 +128,9 @@ eclipse.home property to the location of your Eclipse installation.
 <H3>Installing</H3>
 In the install dir, run installation script:<BR/>
 <EM>ant install.guvnor.into.jboss</EM><BR/>
-<EM>ant install.drools-gwt-console.into.jboss</EM><BR/>
+<EM>ant install.designer.into.jboss</EM><BR/>
+<EM>ant install.jBPM-gwt-console.into.jboss</EM><BR/>
+<EM>ant install.jBPM-eclipse.into.eclipse</EM><BR/>
 <EM>ant install.drools-eclipse.into.eclipse</EM><BR/>
 
 <H3>Starting</H3/>
@@ -157,6 +156,10 @@ stop JBoss AS:<BR/>
 <EM>ant stop.jboss</EM>
 <P>
 and simply close all the rest.
+
+You can also clean up your installation using:<BR/>
+<EM>ant clean.jboss</EM>
+<EM>ant clean.eclipse</EM>
 
 </body>
 </html>

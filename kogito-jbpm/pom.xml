@@ -144,6 +144,8 @@
               <descriptor>assembly/src.xml</descriptor>
               <descriptor>assembly/gwt-console.xml</descriptor>
               <descriptor>assembly/installer.xml</descriptor>
+              <descriptor>assembly/docs-build.xml</descriptor>
+              <descriptor>assembly/docs.xml</descriptor>
             </descriptors>
           </configuration>
         </plugin>
