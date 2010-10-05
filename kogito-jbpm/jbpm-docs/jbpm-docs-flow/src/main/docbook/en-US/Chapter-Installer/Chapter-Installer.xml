@@ -28,4 +28,106 @@
 
   </section>
 
+  <section>
+    <title>Demo setup</title>
+
+  <para>The easiest way to get started is to simply run the installation script to install the demo setup.
+  Simply go into the install folder and run:</para>
+
+  <programlisting>ant install.demo</programlisting>
+
+    <para>This will:
+      <itemizedlist>
+        <listitem>Download JBoss AS</listitem>
+        <listitem>Download Eclipse</listitem>
+        <listitem>Install Drools Guvnor into JBoss AS</listitem>
+        <listitem>Install Oryx Designer into JBoss AS</listitem>
+        <listitem>Install the jBPM gwt-console into JBoss AS</listitem>
+        <listitem>Install the jBPM Eclipse plugin</listitem>
+        <listitem>Install the Drools Eclipse plugin</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Once the demo setup has finished (this could take a while as it might have to download the various components),
+    you can start playing with the various components by starting the demo setup:</para>
+
+    <programlisting>ant start.demo</programlisting>
+
+    <para>This will:
+      <itemizedlist>
+        <listitem>Start the H2 database</listitem>
+        <listitem>Start the JBoss AS</listitem>
+        <listitem>Start Eclipse</listitem>
+        <listitem>Start the Human Task Service</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Once everything is started, you can start playing with the Eclipse tooling, Guvnor and gwt-console, as explained in the next three sections.</para>
+
+  </section>
+
+  <section>
+    <title>Using Eclipse Tooling</title>
+
+    <para>The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to run a simple demo process in Eclipse. It shows you: 
+      <itemizedlist>
+        <listitem>How to import an existing example project into your workspace, containing
+          <itemizedlist>
+            <listitem>a sample BPMN2 process for requesting a performance evaluation</listitem>
+            <listitem>a sample Java class to start the process</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>How to start the process</listitem>
+        <listitem>How to complete human tasks using the test human task client in Eclipse</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>If you want to know more, we recommend you take a look at the rest of the jBPM documentation.</para>
+ 
+  </section>
+
+  <section>
+    <title>Using Guvnor repository</title>
+
+    <para>Open up Drools Guvnor:</para>
+    <para><ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
+
+    <para>Log in, using any non-empty username / password (we disabled authentication for demo purposes). 
+    The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to manage your repository. It shows you:
+      <itemizedlist>
+        <listitem>How to import an existing sample repository, containing the performance evaluation process as shown in the previous section</listitem>
+        <listitem>How to open up the evaluation process in the web editor</listitem>
+        <listitem>How to build a package so it can be used for creating a session</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>If you want to know more, we recommend you take a look at the rest of the Drools Guvnor documentation.</para>
+ 
+  </section>
+
+  <section>
+    <title>Using web management consoles</title>
+
+    <para>Open up the process management console:</para>
+    <para><ulink url="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</ulink></para>
+
+    <para>Log in, using krisv / krisv as username / password. The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to manage your
+    process instances. It shows you: 
+      <itemizedlist>
+        <listitem>How to start a new process</listitem>
+        <listitem>How to look up the current status of a running process instance</listitem>
+        <listitem>How to look up your tasks</listitem>
+        <listitem>How to complete a task</listitem>
+        <listitem>How to generate reports to monitor your process execution</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>If you want to know more, we recommend you take a look at the rest of the jBPM documentation.</para>
+
+    <para>Once you're done playing:</para>
+    <programlisting>ant stop.demo</programlisting>
+    <para>and simply close all the rest.</para>
+
+  </section>
+
 </chapter>
