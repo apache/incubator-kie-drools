@@ -230,7 +230,7 @@ public class RuleBuilder {
     
     private void buildTimer(Rule rule, String timerString, RuleBuildContext context) {
         if( timerString.indexOf( '(' ) >=0 ) {
-            timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) );
+            timerString = timerString.substring( timerString.indexOf( '(' )+1, timerString.lastIndexOf( ')' ) ).trim();
         }
         
         int colonPos = timerString.indexOf( ":" );
