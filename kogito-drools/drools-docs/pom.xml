@@ -103,7 +103,7 @@
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jdocbook-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>2.2.3</version><!-- Upgrade to 2.3.0 failed because of https://jira.jboss.org/browse/MPJDOCBOOK-67 -->
         <extensions>true</extensions>
 
         <dependencies>
