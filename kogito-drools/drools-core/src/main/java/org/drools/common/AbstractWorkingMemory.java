@@ -922,21 +922,6 @@ public abstract class AbstractWorkingMemory
                        null );
     }
 
-    // protected FactHandle insert(final EntryPoint entryPoint,
-    // final Object object,
-    // final boolean dynamic,
-    // boolean logical,
-    // final Rule rule,
-    // final Activation activation) throws FactException {
-    // return this.insert( entryPoint,
-    // object,
-    // 0,
-    // dynamic,
-    // logical,
-    // rule,
-    // activation );
-    // }
-
     public FactHandle insert(final Object object,
                              final boolean dynamic,
                              boolean logical,

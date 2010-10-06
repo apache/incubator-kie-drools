@@ -18,6 +18,7 @@ package org.drools.command.runtime.rule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -51,7 +52,11 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
     public QueryCommand(String outIdentifier, String name, Object... arguments) {
         this.outIdentifier = outIdentifier;
         this.name = name;
+        if ( arguments != null ) {
         this.arguments = Arrays.asList( arguments );
+        } else {
+            this.arguments = Collections.EMPTY_LIST;
+        }
     }
     
     public String getOutIdentifier() {
