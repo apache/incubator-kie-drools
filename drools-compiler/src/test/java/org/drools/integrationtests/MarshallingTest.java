@@ -1223,7 +1223,6 @@ public class MarshallingTest extends TestCase {
                             "" );
     }
 
-
     /**
      * In this case we are dealing with facts which are not on the systems classpath.
      *
@@ -1234,7 +1233,7 @@ public class MarshallingTest extends TestCase {
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
 
         JarEntry entry = null;
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[ 1024 ];
         int len = 0;
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
@@ -1930,8 +1929,10 @@ public class MarshallingTest extends TestCase {
         rule1 += "then \n";
         rule1 += "    if (list.size() < 3) { \n";
         rule1 += "        list.add(new Integer(0)); \n";
-        rule1 += "        insertLogical( cheese ); \n" + "    }\n";
-        rule1 += "    drools.halt();\n" + "end\n";
+        rule1 += "        insertLogical( cheese ); \n" + 
+                 "    }\n";
+        rule1 += "    drools.halt();\n" +
+                 "end\n";
 
         String rule2 = "rule \"if cheese then person\"\n";
         rule2 += "when\n";
@@ -1940,7 +1941,8 @@ public class MarshallingTest extends TestCase {
         rule2 += "    if (list.size() < 3) {\n";
         rule2 += "        list.add(new Integer(0));\n";
         rule2 += "        insertLogical( person );\n";
-        rule2 += "    }\n" + "    drools.halt();\n";
+        rule2 += "    }\n" +
+                 "    drools.halt();\n";
         rule2 += "end\n";
 
         final PackageBuilder builder = new PackageBuilder();
@@ -2606,16 +2608,16 @@ public class MarshallingTest extends TestCase {
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
-        
+
         assertNotNull( ksession );
         ksession.dispose();
     }
 
     private Marshaller createSerializableMarshaller(KnowledgeBase knowledgeBase) {
-        ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor( new String[]{"*.*"} );
+        ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor( new String[]{ "*.*" } );
         ObjectMarshallingStrategy strategy = MarshallerFactory.newSerializeMarshallingStrategy( acceptor );
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase,
-                                                                 new ObjectMarshallingStrategy[]{strategy} );
+                                                                 new ObjectMarshallingStrategy[]{ strategy } );
         return marshaller;
     }
 

@@ -57,6 +57,7 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -218,10 +219,8 @@ public class InputMarshaller {
 
         readActionQueue( context );
 
-        if ( context.readBoolean() ) {
-            readTruthMaintenanceSystem( context );
-        }
-
+        readTruthMaintenanceSystem( context );
+                
         if ( context.marshalProcessInstances && processMarshaller != null ) {
             processMarshaller.readProcessInstances( context );
         }
@@ -292,6 +291,13 @@ public class InputMarshaller {
             int status = stream.readInt();
             int factHandleId = stream.readInt();
             InternalFactHandle handle = (InternalFactHandle) context.handles.get( factHandleId );
+            
+            // ObjectTypeConf state is not marshalled, so it needs to be re-determined
+            ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.wm.getEntryPoint(), handle.getObject() );
+            if ( !typeConf.isTMSEnabled() ) {
+                typeConf.enableTMS();
+            }
+            
             EqualityKey key = new EqualityKey( handle,
                                                status );
             handle.setEqualityKey( key );

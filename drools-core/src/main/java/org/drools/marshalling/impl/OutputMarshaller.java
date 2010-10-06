@@ -104,13 +104,8 @@ public class OutputMarshaller {
         writeFactHandles( context );
 
         writeActionQueue( context );
-
-        if ( wm.getTruthMaintenanceSystem() != null ) {
-            context.writeBoolean( true );
-            writeTruthMaintenanceSystem( context );
-        } else {
-            context.writeBoolean( false );
-        }
+        
+        writeTruthMaintenanceSystem( context );
 
         if ( context.marshalProcessInstances && processMarshaller != null ) {
             processMarshaller.writeProcessInstances( context );
