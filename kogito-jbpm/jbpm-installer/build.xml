@@ -402,7 +402,8 @@
   <target name="untarEclipse" if="expandTypeTarGz">
     <gunzip src="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.tar.gz"/>
     <untar dest="${install.home}" src="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.tar" />
-    <chmod perm="a+x" file="${install.home}/eclipse/eclipse" />
+    <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
+    <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
 
   <!-- Install Eclipse plugins -->
