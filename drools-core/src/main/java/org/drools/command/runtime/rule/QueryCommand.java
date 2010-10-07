@@ -53,7 +53,7 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
         this.outIdentifier = outIdentifier;
         this.name = name;
         if ( arguments != null ) {
-        this.arguments = Arrays.asList( arguments );
+            this.arguments = Arrays.asList( arguments );
         } else {
             this.arguments = Collections.EMPTY_LIST;
         }
@@ -75,11 +75,14 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
     }
     public List<Object> getArguments() {
         if (this.arguments == null) {
-            this.arguments = new ArrayList<Object>();
+            this.arguments = Collections.emptyList();
         }
         return this.arguments;
     }
     public void setArguments(List<Object> arguments) {
+        if ( arguments == null || arguments.isEmpty() ) {
+            this.arguments = Collections.emptyList();
+        }
         this.arguments = arguments;
     }
 
@@ -87,14 +90,11 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
         QueryResults results = null;
-
-        //TODO {bauna} remove this try
-        try {
-			results = ksession.getQueryResults( name, this.arguments.toArray() );
-		} catch (Throwable e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+        if ( this.arguments == null || this.arguments.isEmpty() ) {
+            this.arguments = Collections.emptyList();
+        }
+        
+        results = ksession.getQueryResults( name, this.arguments.toArray() );        
         
         if ( this.outIdentifier != null ) {
             ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );
