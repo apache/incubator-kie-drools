@@ -197,7 +197,7 @@
   <target name="download.jBPM.bin" depends="download.jBPM.bin.check" if="jBPM.bin.not.available">
     <echo message="Getting jBPM binaries ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jBPM.url}/jBPM-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" />
+    <get src="${jBPM.url}/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" />
   </target>
 
   <!-- Download Drools Guvnor -->
