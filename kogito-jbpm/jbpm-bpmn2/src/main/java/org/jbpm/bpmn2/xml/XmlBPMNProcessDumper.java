@@ -110,8 +110,7 @@ public class XmlBPMNProcessDumper {
             "             xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"" + EOL +
             "             xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"" + EOL +
             "             xs:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\"" + EOL +
-            (metaDataType == META_DATA_AS_NODE_PROPERTY ? 
-                "             xmlns:g=\"http://www.jboss.org/drools/flow/gpd\"" + EOL : "") +
+            "             xmlns:g=\"http://www.jboss.org/drools/flow/gpd\"" + EOL +
             (metaDataType == META_DATA_USING_DI ? 
                 "             xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"" + EOL +
             	"             xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"" + EOL +
