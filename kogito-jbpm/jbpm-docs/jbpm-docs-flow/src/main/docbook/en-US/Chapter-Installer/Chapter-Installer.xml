@@ -6,7 +6,7 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Installer</title>
 
-  <para>The jBPM installer allows you to install (a demo setup) of the various components.</para>
+  <para>This guide will assist you in installing and running a demo setup of the various components of the jBPM project.  If you have any feedback on how to improve this guide, if you encounter problems, or if you want to help out, do not hesitate to contact the jBPM community as described in the "What to do if I encounter problems or have questions?" section.</para>
 
   <section>
     <title>Prerequisites</title>
@@ -24,7 +24,7 @@
     <para>First of all, you need to download the installer: jBPM-{version}-install.zip</para>
     
     <para>You can for example find the latest snapshot release here.</para>
-    <para><ulink url="http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/trunk/target/">http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/trunk/target/</ulink></para>
+    <para><ulink url="http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/target/">http://hudson.jboss.org/hudson/job/jBPM5/lastSuccessfulBuild/artifact/target/</ulink></para>
 
   </section>
 
@@ -48,8 +48,9 @@
       </itemizedlist>
     </para>
 
-    <para>Once the demo setup has finished (this could take a while as it might have to download the various components),
-    you can start playing with the various components by starting the demo setup:</para>
+    <para>This could take a while (REALLY, not kidding, we are downloading an application server and Eclipse installation).  The script however always shows which file it is downloading (you could for example check whether it is still downloading by checking the whether the size of the file in question in the jbpm-installer/lib folder is still increasing). If you want to avoid downloading specific components (because you will not be using them or you already have them installed somewhere else), check below for running only specific parts of the demo or directing the installer to an already installed component.</para>
+
+    <para>Once the demo setup has finished, you can start playing with the various components by starting the demo setup:</para>
 
     <programlisting>ant start.demo</programlisting>
 
@@ -69,7 +70,7 @@
   <section>
     <title>Using Eclipse Tooling</title>
 
-    <para>The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to run a simple demo process in Eclipse. It shows you: 
+    <para>The <ulink url="http://people.redhat.com/kverlaen/install-eclipse-jbpm.swf">following screencast</ulink> gives an overview of how to run a simple demo process in Eclipse. It shows you: 
       <itemizedlist>
         <listitem>How to import an existing example project into your workspace, containing
           <itemizedlist>
@@ -78,16 +79,50 @@
           </itemizedlist>
         </listitem>
         <listitem>How to start the process</listitem>
-        <listitem>How to complete human tasks using the test human task client in Eclipse</listitem>
       </itemizedlist>
     </para>
 
-    <para>If you want to know more, we recommend you take a look at the rest of the jBPM documentation.</para>
+    <para>Once Eclipse has opened, simple import (using "File -> Import ..." and then under the General category, select "Existing Projects into Workspace") the existing sample project (in the jbpm-installer/sample/evaluation directory).  This should add the sample project, including a simple BPMN2 process and a Java file to start the process.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java in the com.sample package (under "src/main/java") and select "Run As - Java Application".  In this case, it will simply start the process, which will result in the creation of a new user task for the user "krisv" in the human task service, after which the process will wait for its execution.  We will show you later how you could complete human tasks like this using a human task client like the jbpm-console.</para>
+
+    <para>You could also create a new project using the jBPM project wizard.  This sample project contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.  Simple select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project" and click "Next".  Give the project a name and click "Finish".  You should see a new project containing a "sample.bpmn" process and a "com.sample.ProcessTest" Java class.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java and select "Run As - Java Application".  You should see a "Hello World" statement in the output console.</para>
  
   </section>
 
   <section>
+    <title>Using web management consoles</title>
+
+    <para>Open up the process management console:</para>
+    <para><ulink url="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</ulink></para>
+
+    <para>Log in, using krisv / krisv as username / password. The <ulink url="http://people.redhat.com/kverlaen/install-gwt-console-jbpm.swf">following screencast</ulink> gives an overview of how to manage your
+    process instances. It shows you: 
+      <itemizedlist>
+        <listitem>How to start a new process</listitem>
+        <listitem>How to look up the current status of a running process instance</listitem>
+        <listitem>How to look up your tasks</listitem>
+        <listitem>How to complete a task</listitem>
+        <listitem>How to generate reports to monitor your process execution</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Once Eclipse has opened, simple import (using "File -> Import ..." and then under the General category, select "Existing Projects into Workspace") the existing sample project (in the jbpm-installer/sample/evaluation directory).  This should add the sample project, including a simple BPMN2 process and a Java file to start the process.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java in the com.sample package (under "src/main/java") and select "Run As - Java Application".  In this case, it will simply start the process, which will result in the creation of a new user task for the user "krisv" in the human task service, after which the process will wait for its execution.  We will show you later how you could complete human tasks like this using a human task client like the jbpm-console.</para>
+
+    <para>You could also create a new project using the jBPM project wizard.  This sample project contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.  Simple select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project" and click "Next".  Give the project a name and click "Finish".  You should see a new project containing a "sample.bpmn" process and a "com.sample.ProcessTest" Java class.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java and select "Run As - Java Application".  You should see a "Hello World" statement in the output console.</para>
+
+  </section>
+
+  <section>
     <title>Using Guvnor repository</title>
+    
+    <para>We're still working on the integration with the Guvnor repository.  This will be improved in the next releases but feel free to already try it out.  Current limitations:
+      <itemizedlist>
+        <listitem>If you want to create a new BPMN2 process definition on Guvnor, you should select "Create New - New File" and specify bpmn as the extension.</listitem>
+        <listitem>The designer currently only works in Google Chrome.</listitem>
+        <listitem>
+It is currently not yet possible to use a package built on Guvnor as a jBPM5 knowledge base.</listitem>
+        <listitem>It is possible that the designer is still unable to save or load specific BPMN2 processes.  Please contact the jBPM community with details on how to reproduce the issue so we can improve it.</listitem>
+      </itemizedlist>
+    </para>
 
     <para>Open up Drools Guvnor:</para>
     <para><ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
@@ -102,32 +137,21 @@
     </para>
 
     <para>If you want to know more, we recommend you take a look at the rest of the Drools Guvnor documentation.</para>
- 
-  </section>
-
-  <section>
-    <title>Using web management consoles</title>
-
-    <para>Open up the process management console:</para>
-    <para><ulink url="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</ulink></para>
-
-    <para>Log in, using krisv / krisv as username / password. The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to manage your
-    process instances. It shows you: 
-      <itemizedlist>
-        <listitem>How to start a new process</listitem>
-        <listitem>How to look up the current status of a running process instance</listitem>
-        <listitem>How to look up your tasks</listitem>
-        <listitem>How to complete a task</listitem>
-        <listitem>How to generate reports to monitor your process execution</listitem>
-      </itemizedlist>
-    </para>
-
-    <para>If you want to know more, we recommend you take a look at the rest of the jBPM documentation.</para>
 
     <para>Once you're done playing:</para>
     <programlisting>ant stop.demo</programlisting>
     <para>and simply close all the rest.</para>
 
   </section>
+
+  <section>
+    <title>What to do if I encounter problems or have questions?</title>
+
+    <para>You can always contact the jBPM community for assistance.</para>
+    <para>Email: jbpm-dev@jboss.org</para>
+    <para>IRC: #jbpm at irc.codehaus.org</para>
+    <para><ulink url="http://community.jboss.org/en/jbpm?view=discussions">jBPM User Forum</ulink></para>
+  
+   </section>
 
 </chapter>
