@@ -476,7 +476,7 @@ public class OutputMarshaller {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
 
-                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
                         stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                         writeLeftTuple( childLeftTuple,
@@ -499,7 +499,7 @@ public class OutputMarshaller {
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_BLOCKED );
                     stream.writeInt( leftTuple.getBlocker().getFactHandle().getId() );
 
-                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                    for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
                         stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
                         writeLeftTuple( childLeftTuple,
