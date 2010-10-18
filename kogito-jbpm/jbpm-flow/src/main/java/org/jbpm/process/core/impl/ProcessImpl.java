@@ -115,13 +115,16 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
 
     public boolean equals(final Object o) {
         if ( o instanceof ProcessImpl ) {
-            return ((ProcessImpl) o).getName().equals( this.name ) && ((ProcessImpl) o).getVersion().equals( this.version );
+        	if (this.id != null) {
+        		return ((ProcessImpl) o).getId() == null;
+        	}
+        	return this.id.equals(((ProcessImpl) o).getId());
         }
         return false;
     }
 
     public int hashCode() {
-        return this.name.hashCode() + (this.version == null ? 0 : 3 * this.version.hashCode());
+        return this.id == null ? 0 : 3 * this.id.hashCode();
     }
 
     public Context resolveContext(String contextId, Object param) {
