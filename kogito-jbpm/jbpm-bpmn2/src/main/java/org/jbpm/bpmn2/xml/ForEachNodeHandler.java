@@ -66,7 +66,7 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
     		"      <multiInstanceLoopCharacteristics>" + EOL +
             "        <loopDataInputRef>" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_input</loopDataInputRef>" + EOL);
         if (parameterName != null) {
-        	xmlDump.append("        <inputDataItem id=\"" + XmlDumper.replaceIllegalChars(parameterName) + "\" itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\"/>" + EOL);
+        	xmlDump.append("        <inputDataItem id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(parameterName) + "\" itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\"/>" + EOL);
         }
         xmlDump.append("      </multiInstanceLoopCharacteristics>" + EOL);
 		// nodes

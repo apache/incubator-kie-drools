@@ -54,9 +54,9 @@ public class EventNodeHandler extends AbstractNodeHandler {
     			String type = ((EventTypeFilter) eventNode.getEventFilters().get(0)).getType();
     			if (type.startsWith("Message-")) {
     			    type = type.substring(8);
-    			    xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+    			    xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 } else {
-                    xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+                    xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 }
     		}
     		endNode("intermediateCatchEvent", xmlDump);
@@ -71,14 +71,14 @@ public class EventNodeHandler extends AbstractNodeHandler {
     		        xmlDump.append("cancelActivity=\"false\" ");
     		    }
     		    xmlDump.append(">" + EOL);
-    		    xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+    		    xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
     		    endNode("boundaryEvent", xmlDump);
 		    } else if (type.startsWith("Error-")) {
                 type = type.substring(attachedTo.length() + 7);
                 writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
-                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+                xmlDump.append("      <errorEventDefinition errorRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Timer-")) {
                 type = type.substring(attachedTo.length() + 7);

@@ -53,9 +53,9 @@ public class CompositeContextNodeHandler extends AbstractNodeHandler {
 		if (variableScope != null && !variableScope.getVariables().isEmpty()) {
             xmlDump.append("    <!-- variables -->" + EOL);
             for (Variable variable: variableScope.getVariables()) {
-                xmlDump.append("    <property id=\"" + XmlDumper.replaceIllegalChars(variable.getName()) + "\" ");
+                xmlDump.append("    <property id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "\" ");
                 if (variable.getType() != null) {
-                    xmlDump.append("itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(compositeNode) + "-" + XmlDumper.replaceIllegalChars(variable.getName()) + "Item\"" );
+                    xmlDump.append("itemSubjectRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(compositeNode) + "-" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "Item\"" );
                 }
                 // TODO: value
                 xmlDump.append("/>" + EOL);

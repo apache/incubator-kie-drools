@@ -84,16 +84,16 @@ public class EndNodeHandler extends AbstractNodeHandler {
                                 "      </inputSet>" + EOL);
 	                    }
 		                if (type.startsWith("Compensate-")) {
-			                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
+			                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
 		                } else {
-		                	xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+		                	xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
 		                }
 		                endNode("endEvent", xmlDump);
 		            } else if (s.startsWith("kcontext.getProcessInstance().signalEvent(\"")) {
 		            	xmlDump.append(">" + EOL);
 		            	s = s.substring(43);
 		                String type = s.substring(0, s.indexOf("\""));
-		                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
+		                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
 		                endNode("endEvent", xmlDump);
 		            } else {
 		                throw new IllegalArgumentException("Unknown action " + s);

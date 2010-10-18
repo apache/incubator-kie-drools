@@ -131,14 +131,14 @@ public class XmlBPMNProcessDumper {
 	    // the process itself
 		xmlDump.append("  <process processType=\"Private\" isExecutable=\"true\" ");
         if (process.getId() != null) {
-            xmlDump.append("id=\"" + XmlDumper.replaceIllegalChars(process.getId()) + "\" ");
+            xmlDump.append("id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getId()) + "\" ");
         }
         if (process.getName() != null) {
-            xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(process.getName()) + "\" ");
+            xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getName()) + "\" ");
         }
         String packageName = process.getPackageName();
         if (packageName != null && !"org.drools.bpmn2".equals(packageName)) {
-            xmlDump.append("tns:packageName=\"" + XmlDumper.replaceIllegalChars(packageName) + "\" ");
+            xmlDump.append("tns:packageName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(packageName) + "\" ");
         }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
@@ -150,7 +150,7 @@ public class XmlBPMNProcessDumper {
         if (metaDataType == META_DATA_USING_DI) {
         	xmlDump.append(
     			"  <bpmndi:BPMNDiagram>" + EOL +
-    			"    <bpmndi:BPMNPlane bpmnElement=\"" + XmlDumper.replaceIllegalChars(process.getId()) + "\" >" + EOL);
+    			"    <bpmndi:BPMNPlane bpmnElement=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getId()) + "\" >" + EOL);
         	visitNodesDi(process.getNodes(), xmlDump);
         	visitConnectionsDi(process.getNodes(), xmlDump);
         	xmlDump.append(
@@ -164,9 +164,9 @@ public class XmlBPMNProcessDumper {
         if (variableScope != null && !variableScope.getVariables().isEmpty()) {
             for (Variable variable: variableScope.getVariables()) {
                 xmlDump.append(
-                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(prefix + variable.getName()) + "Item\" ");
+                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(prefix + variable.getName()) + "Item\" ");
                 if (variable.getType() != null) {
-                    xmlDump.append("structureRef=\"" + XmlDumper.replaceIllegalChars(variable.getType().getStringType()) + "\" ");
+                    xmlDump.append("structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getType().getStringType()) + "\" ");
                 }
                 xmlDump.append("/>" + EOL);
             }
@@ -197,7 +197,7 @@ public class XmlBPMNProcessDumper {
         if (!swimlanes.isEmpty()) {
             xmlDump.append("    <laneSet>" + EOL);
             for (Swimlane swimlane: swimlanes) {
-                xmlDump.append("      <lane name=\"" + XmlDumper.replaceIllegalChars(swimlane.getName()) + "\" >" + EOL);
+                xmlDump.append("      <lane name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(swimlane.getName()) + "\" >" + EOL);
                 visitLane(process, swimlane.getName(), xmlDump);
                 xmlDump.append("      </lane>" + EOL);
             }
@@ -241,9 +241,9 @@ public class XmlBPMNProcessDumper {
             xmlDump.append("    <!-- process variables -->" + EOL);
             for (Variable variable: variables) {
                 if (variable.getMetaData("DataObject") == null) {
-                    xmlDump.append("    <property id=\"" + XmlDumper.replaceIllegalChars(variable.getName()) + "\" ");
+                    xmlDump.append("    <property id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "\" ");
                     if (variable.getType() != null) {
-                    	xmlDump.append("itemSubjectRef=\"_" + XmlDumper.replaceIllegalChars(variable.getName()) + "Item\"" );
+                    	xmlDump.append("itemSubjectRef=\"_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "Item\"" );
                     }
                     // TODO: value?
                     xmlDump.append("/>" + EOL);
@@ -251,9 +251,9 @@ public class XmlBPMNProcessDumper {
             }
             for (Variable variable: variables) {
                 if (variable.getMetaData("DataObject") != null) {
-                    xmlDump.append("    <dataObject id=\"" + XmlDumper.replaceIllegalChars(variable.getName()) + "\" ");
+                    xmlDump.append("    <dataObject id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "\" ");
                     if (variable.getType() != null) {
-                        xmlDump.append("itemSubjectRef=\"_" + XmlDumper.replaceIllegalChars(variable.getName()) + "Item\"" );
+                        xmlDump.append("itemSubjectRef=\"_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(variable.getName()) + "Item\"" );
                     }
                     // TODO: value?
                     xmlDump.append("/>" + EOL);
@@ -295,7 +295,7 @@ public class XmlBPMNProcessDumper {
                             messageType = "";
                         }
                         xmlDump.append(
-                            "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+                            "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
                             "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                     } else if ("Receive Task".equals(work.getName())) {
                     	String messageId = (String) work.getParameter("MessageId");
@@ -304,7 +304,7 @@ public class XmlBPMNProcessDumper {
                             messageType = "";
                         }
                         xmlDump.append(
-                            "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+                            "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
                             "  <message id=\"" + messageId + "\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                     }
                 }
@@ -312,14 +312,14 @@ public class XmlBPMNProcessDumper {
                 String messageType = (String) node.getMetaData().get("MessageType");
                 if (messageType != null) {
                     xmlDump.append(
-                        "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+                        "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
                         "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof ActionNode) {
                 String messageType = (String) node.getMetaData().get("MessageType");
                 if (messageType != null) {
                     xmlDump.append(
-                        "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
+                        "  <itemDefinition id=\"" + getUniqueNodeId(node) + "_MessageType\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
                         "  <message id=\"" + getUniqueNodeId(node) + "_Message\" itemRef=\"" + getUniqueNodeId(node) + "_MessageType\" />" + EOL + EOL);
                 }
             } else if (node instanceof EventNode) {
@@ -329,8 +329,8 @@ public class XmlBPMNProcessDumper {
 		                messageRef = messageRef.substring(8);
 		                String messageType = (String) node.getMetaData().get("MessageType");
 		                xmlDump.append(
-		                    "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-		                    "  <message id=\"" + XmlDumper.replaceIllegalChars(messageRef) + "\" itemRef=\"" + XmlDumper.replaceIllegalChars(messageRef) + "Type\" />" + EOL + EOL);
+		                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
+		                    "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" />" + EOL + EOL);
 	                }
             	}
             } else if (node instanceof StartNode) {
@@ -343,8 +343,8 @@ public class XmlBPMNProcessDumper {
                             eventType = eventType.substring(8);
                             String messageType = (String) node.getMetaData().get("MessageType");
                             xmlDump.append(
-                                "  <itemDefinition id=\"" + XmlDumper.replaceIllegalChars(eventType) + "Type\" structureRef=\"" + XmlDumper.replaceIllegalChars(messageType) + "\"/>" + EOL +
-                                "  <message id=\"" + XmlDumper.replaceIllegalChars(eventType) + "\" itemRef=\"" + XmlDumper.replaceIllegalChars(eventType) + "Type\" />" + EOL + EOL);
+                                "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(eventType) + "Type\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
+                                "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(eventType) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(eventType) + "Type\" />" + EOL + EOL);
                         }
                     }
                 }
@@ -355,7 +355,7 @@ public class XmlBPMNProcessDumper {
             		type = ((ObjectDataType) forEachNode.getVariableType()).getClassName(); 
             	}
                 xmlDump.append(
-                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" " + (type == null ? "" : "structureRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"") + "/>" + EOL + EOL);
+                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(forEachNode) + "_multiInstanceItemType\" " + (type == null ? "" : "structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"") + "/>" + EOL + EOL);
             }
             if (node instanceof CompositeNode) {
             	visitInterfaces(((CompositeNode) node).getNodes(), xmlDump);
@@ -372,7 +372,7 @@ public class XmlBPMNProcessDumper {
             		if (!escalations.contains(escalationCode)) {
             			escalations.add(escalationCode);
 	                    xmlDump.append(
-	                        "  <escalation id=\"" + XmlDumper.replaceIllegalChars(escalationCode) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(escalationCode) + "\" />" + EOL);
+	                        "  <escalation id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(escalationCode) + "\" escalationCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(escalationCode) + "\" />" + EOL);
             		}
                 }
             } else if (node instanceof ActionNode) {
@@ -386,7 +386,7 @@ public class XmlBPMNProcessDumper {
 	            		if (!escalations.contains(type)) {
 	            			escalations.add(type);
 		                    xmlDump.append(
-	                            "  <escalation id=\"" + XmlDumper.replaceIllegalChars(type) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+	                            "  <escalation id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" escalationCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
 	            		}
 	            	}
         		}
@@ -397,7 +397,7 @@ public class XmlBPMNProcessDumper {
             		if (!escalations.contains(type)) {
             			escalations.add(type);
 		                xmlDump.append(
-		                    "  <escalation id=\"" + XmlDumper.replaceIllegalChars(type) + "\" escalationCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+		                    "  <escalation id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" escalationCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
             		}
             	}
             }
@@ -416,7 +416,7 @@ public class XmlBPMNProcessDumper {
             		if (!errors.contains(errorCode)) {
             			errors.add(errorCode);
 	                    xmlDump.append(
-	                        "  <error id=\"" + XmlDumper.replaceIllegalChars(errorCode) + "\" errorCode=\"" + XmlDumper.replaceIllegalChars(errorCode) + "\" />" + EOL);
+	                        "  <error id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorCode) + "\" errorCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(errorCode) + "\" />" + EOL);
             		}
                 }
             } else if (node instanceof EventNode) {
@@ -426,7 +426,7 @@ public class XmlBPMNProcessDumper {
             		if (!errors.contains(type)) {
             			errors.add(type);
 		                xmlDump.append(
-		                    "  <error id=\"" + XmlDumper.replaceIllegalChars(type) + "\" errorCode=\"" + XmlDumper.replaceIllegalChars(type) + "\" />" + EOL);
+		                    "  <error id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" errorCode=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" />" + EOL);
             		}
             	}
             }
@@ -487,6 +487,23 @@ public class XmlBPMNProcessDumper {
     	        y = y + offsetY;
     	        height = 48;
     		}
+    		int parentOffsetX = 0;
+    		int parentOffsetY = 0;
+    		NodeContainer nodeContainer = node.getNodeContainer();
+    		while (nodeContainer instanceof CompositeNode) {
+    			CompositeNode parent = (CompositeNode) nodeContainer;
+    			Integer parentX = (Integer) parent.getMetaData().get("x");
+    			if (parentX != null) {
+    				parentOffsetX += parentX;
+    			}
+    			Integer parentY = (Integer) parent.getMetaData().get("y");
+    			if (parentY != null) {
+    				parentOffsetY += (Integer) parent.getMetaData().get("y");
+    			}
+    			nodeContainer = parent.getNodeContainer();
+    		}
+    		x += parentOffsetX;
+    		y += parentOffsetY;
 			xmlDump.append(
 				"      <bpmndi:BPMNShape bpmnElement=\"" + getUniqueNodeId(node) + "\" >" + EOL +
 				"        <dc:Bounds x=\"" + x + "\" " + "y=\"" + y + "\" " + 
@@ -535,7 +552,7 @@ public class XmlBPMNProcessDumper {
     					"      <conditionExpression xs:type=\"tFormalExpression\" />");
         		} else {
                     if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
-            			xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(constraint.getName()) + "\" ");
+            			xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(constraint.getName()) + "\" ");
             		}
             		xmlDump.append(">" + EOL +
     				"      <conditionExpression xs:type=\"tFormalExpression\" ");
@@ -644,6 +661,36 @@ public class XmlBPMNProcessDumper {
     		nodeContainer = composite.getNodeContainer();
     	}
     	return "_" + result;
+    }
+    
+    public static String replaceIllegalCharsAttribute(final String code) {
+        final StringBuilder sb = new StringBuilder();
+        if ( code != null ) {
+            final int n = code.length();
+            for ( int i = 0; i < n; i++ ) {
+                final char c = code.charAt( i );
+                switch ( c ) {
+	                case '<' :
+	                    sb.append( "&lt;" );
+	                    break;
+	                case '>' :
+	                    sb.append( "&gt;" );
+	                    break;
+	                case '&' :
+	                    sb.append( "&amp;" );
+	                    break;
+                    case '"' :
+                        sb.append( "&quot;" );
+                        break;
+                    default :
+                        sb.append( c );
+                        break;
+                }
+            }
+        } else {
+            sb.append( "null" );
+        }
+        return sb.toString();
     }
     
 }

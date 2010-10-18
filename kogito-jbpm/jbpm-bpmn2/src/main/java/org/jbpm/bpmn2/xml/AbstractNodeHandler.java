@@ -141,7 +141,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	xmlDump.append("    <" + name + " "); 
         xmlDump.append("id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(node) + "\" ");
         if (node.getName() != null) {
-            xmlDump.append("name=\"" + XmlDumper.replaceIllegalChars(node.getName()) + "\" ");
+            xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(node.getName()) + "\" ");
         }
         if (metaDataType == XmlBPMNProcessDumper.META_DATA_AS_NODE_PROPERTY) {
             Integer x = (Integer) node.getMetaData().get("x");

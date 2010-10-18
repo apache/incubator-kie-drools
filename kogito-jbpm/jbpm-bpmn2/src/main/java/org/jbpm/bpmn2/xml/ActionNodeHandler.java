@@ -76,9 +76,9 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                         "      </inputSet>" + EOL);
                 }
                 if (type.startsWith("Compensate-")) {
-	                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
+	                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
                 } else {
-	                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+	                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 }
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("kcontext.getProcessInstance().signalEvent(\"")) {
@@ -86,14 +86,14 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(">" + EOL);
                 s = s.substring(43);
                 String type = s.substring(0, s.indexOf("\""));
-                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlDumper.replaceIllegalChars(type.substring(11)) + "\"/>" + EOL);
+                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("org.drools.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(327);
                 String type = s.substring(0, s.indexOf("\""));
-                xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlDumper.replaceIllegalChars(type) + "\"/>" + EOL);
+                xmlDump.append("      <escalationEventDefinition escalationRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if ("IntermediateThrowEvent-None".equals(actionNode.getMetaData("NodeType"))) {
             	writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);

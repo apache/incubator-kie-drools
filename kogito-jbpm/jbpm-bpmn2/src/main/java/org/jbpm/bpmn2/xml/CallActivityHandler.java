@@ -111,7 +111,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 		SubProcessNode subProcessNode = (SubProcessNode) node;
 		writeNode("callActivity", subProcessNode, xmlDump, metaDataType);
 		if (subProcessNode.getProcessId() != null) {
-			xmlDump.append("calledElement=\"" + XmlDumper.replaceIllegalChars(subProcessNode.getProcessId()) + "\" ");
+			xmlDump.append("calledElement=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(subProcessNode.getProcessId()) + "\" ");
 		}
 		if (!subProcessNode.isWaitForCompletion()) {
 			xmlDump.append("tns:waitForCompletion=\"false\" ");
@@ -127,10 +127,10 @@ public class CallActivityHandler extends AbstractNodeHandler {
 	protected void writeIO(SubProcessNode subProcessNode, StringBuilder xmlDump) {
 		xmlDump.append("      <ioSpecification>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getInMappings().entrySet()) {
-			xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
+			xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
 		}
 		for (Map.Entry<String, String> entry: subProcessNode.getOutMappings().entrySet()) {
-			xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
+			xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(subProcessNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Output\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
 		}
 		xmlDump.append("        <inputSet>" + EOL);
 		for (Map.Entry<String, String> entry: subProcessNode.getInMappings().entrySet()) {

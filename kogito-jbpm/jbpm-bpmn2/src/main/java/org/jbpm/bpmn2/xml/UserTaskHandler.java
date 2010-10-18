@@ -103,15 +103,15 @@ public class UserTaskHandler extends TaskHandler {
 	protected void writeIO(WorkItemNode workItemNode, StringBuilder xmlDump) {
 		xmlDump.append("      <ioSpecification>" + EOL);
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
-			xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
+			xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
 		}
 		for (Map.Entry<String, Object> entry: workItemNode.getWork().getParameters().entrySet()) {
 			if (!"ActorId".equals(entry.getKey()) && entry.getValue() != null) {
-				xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Input\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
+				xmlDump.append("        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Input\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
 			}
 		}
 		for (Map.Entry<String, String> entry: workItemNode.getOutMappings().entrySet()) {
-			xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlDumper.replaceIllegalChars(entry.getKey()) + "Output\" name=\"" + XmlDumper.replaceIllegalChars(entry.getKey()) + "\" />" + EOL);
+			xmlDump.append("        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "Output\" name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(entry.getKey()) + "\" />" + EOL);
 		}
 		xmlDump.append("        <inputSet>" + EOL);
 		for (Map.Entry<String, String> entry: workItemNode.getInMappings().entrySet()) {
