@@ -22,6 +22,7 @@ import java.io.InputStream;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.drools.xml.SemanticModules;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -31,7 +32,7 @@ import org.xml.sax.SAXException;
 public class BPMN2XMLTest extends XMLTestCase {
 	
 	private static final String[] processes = {
-		"BPMN2-SimpleXMLProcess.xml",
+		"BPMN2-SimpleXMLProcess.bpmn2",
 //		"BPMN2-MinimalProcess.xml",
 	};
 	
@@ -44,12 +45,13 @@ public class BPMN2XMLTest extends XMLTestCase {
 	public void testXML() throws IOException, SAXException {
 		SemanticModules modules = new SemanticModules();
 		modules.addSemanticModule(new BPMNSemanticModule());
+		modules.addSemanticModule(new BPMNDISemanticModule());
         XmlProcessReader processReader = new XmlProcessReader(modules);
         for (String processName: processes) {
 			String original = slurp(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
 			RuleFlowProcess p = (RuleFlowProcess)
 		    	processReader.read(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
-			String result = XmlBPMNProcessDumper.INSTANCE.dump(p, XmlBPMNProcessDumper.META_DATA_AS_NODE_PROPERTY);
+			String result = XmlBPMNProcessDumper.INSTANCE.dump(p, XmlBPMNProcessDumper.META_DATA_USING_DI);
 			System.out.println(original);
 			System.out.println("---------------------------------------------------------------");
 			System.out.println(result);

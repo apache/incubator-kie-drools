@@ -33,7 +33,7 @@ public class BPMN2Test extends JbpmTestCase {
 	
 	public void testResourceType() {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MinimalProcess.xml"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MinimalProcess.bpmn2"), ResourceType.BPMN2);
 		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 		Properties properties = new Properties();
 		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");

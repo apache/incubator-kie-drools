@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/UserTaskExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <process processType="Private" isExecutable="true" id="Buyer" name="Buyer Process" >
+
+    <!-- nodes -->
+    <startEvent id="StartProcess" />
+    <task id="QuotationHandling" name="Quotation Handling" tns:taskName="" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <userTask id="ApproveOrder" name="ApproveOrder" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>getDataInput('order')/address/name</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <exclusiveGateway id="OrderApprovedDecision" gatewayDirection="Diverging" />
+    <endEvent id="TerminateProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <parallelGateway id="OrderAndShipment" gatewayDirection="Diverging" />
+    <task id="OrderHandling" name="Order Handling" tns:taskName="" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <task id="ShipmentHandling" name="Shipment Handling" tns:taskName="" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <parallelGateway id="OrderAndShipmentMerge" gatewayDirection="Converging" />
+    <userTask id="ReviewOrder" name="Review Order" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>getDataInput('order')/address/name</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="EndProcess" />
+
+    <!-- connections -->
+    <sequenceFlow id="StartProcess-QuotationHandling" sourceRef="StartProcess" targetRef="QuotationHandling" />
+    <sequenceFlow id="QuotationHandling-ApproveOrder" sourceRef="QuotationHandling" targetRef="ApproveOrder" />
+    <sequenceFlow id="ApproveOrder-OrderApprovedDecision" sourceRef="ApproveOrder" targetRef="OrderApprovedDecision" />
+    <sequenceFlow id="OrderApprovedDecision-TerminateProcess" sourceRef="OrderApprovedDecision" targetRef="TerminateProcess" >
+      <conditionExpression xs:type="tFormalExpression" >Was the Order NOT Approved?</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="OrderApprovedDecision-OrderAndShipment" sourceRef="OrderApprovedDecision" targetRef="OrderAndShipment" >
+      <conditionExpression xs:type="tFormalExpression" >Was the Order Approved?</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="OrderAndShipment-OrderHandling" sourceRef="OrderAndShipment" targetRef="OrderHandling" />
+    <sequenceFlow id="OrderAndShipment-ShipmentHandling" sourceRef="OrderAndShipment" targetRef="ShipmentHandling" />
+    <sequenceFlow id="OrderHandling-OrderAndShipmentMerge" sourceRef="OrderHandling" targetRef="OrderAndShipmentMerge" />
+    <sequenceFlow id="ShipmentHandling-OrderAndShipmentMerge" sourceRef="ShipmentHandling" targetRef="OrderAndShipmentMerge" />
+    <sequenceFlow id="OrderAndShipmentMerge-ReviewOrder" sourceRef="OrderAndShipmentMerge" targetRef="ReviewOrder" />
+    <sequenceFlow id="ReviewOrder-EndProcess" sourceRef="ReviewOrder" targetRef="EndProcess" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="Buyer" >
+      <bpmndi:BPMNShape bpmnElement="StartProcess" >
+        <dc:Bounds x="20" y="83" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="QuotationHandling" >
+        <dc:Bounds x="88" y="82" width="156" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ApproveOrder" >
+        <dc:Bounds x="270" y="82" width="131" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderApprovedDecision" >
+        <dc:Bounds x="427" y="82" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="TerminateProcess" >
+        <dc:Bounds x="428" y="11" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderAndShipment" >
+        <dc:Bounds x="496" y="82" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderHandling" >
+        <dc:Bounds x="576" y="37" width="128" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ShipmentHandling" >
+        <dc:Bounds x="564" y="136" width="157" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="OrderAndShipmentMerge" >
+        <dc:Bounds x="748" y="85" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ReviewOrder" >
+        <dc:Bounds x="818" y="85" width="124" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="EndProcess" >
+        <dc:Bounds x="969" y="84" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="StartProcess-QuotationHandling" >
+        <di:waypoint x="44" y="107" />
+        <di:waypoint x="166" y="106" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="QuotationHandling-ApproveOrder" >
+        <di:waypoint x="166" y="106" />
+        <di:waypoint x="335" y="106" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ApproveOrder-OrderApprovedDecision" >
+        <di:waypoint x="335" y="106" />
+        <di:waypoint x="451" y="106" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderApprovedDecision-TerminateProcess" >
+        <di:waypoint x="451" y="106" />
+        <di:waypoint x="452" y="35" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderApprovedDecision-OrderAndShipment" >
+        <di:waypoint x="451" y="106" />
+        <di:waypoint x="520" y="106" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderAndShipment-OrderHandling" >
+        <di:waypoint x="520" y="106" />
+        <di:waypoint x="520" y="60" />
+        <di:waypoint x="640" y="61" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderAndShipment-ShipmentHandling" >
+        <di:waypoint x="520" y="106" />
+        <di:waypoint x="520" y="160" />
+        <di:waypoint x="642" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderHandling-OrderAndShipmentMerge" >
+        <di:waypoint x="640" y="61" />
+        <di:waypoint x="772" y="61" />
+        <di:waypoint x="772" y="109" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ShipmentHandling-OrderAndShipmentMerge" >
+        <di:waypoint x="642" y="160" />
+        <di:waypoint x="772" y="159" />
+        <di:waypoint x="772" y="109" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="OrderAndShipmentMerge-ReviewOrder" >
+        <di:waypoint x="772" y="109" />
+        <di:waypoint x="880" y="109" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="ReviewOrder-EndProcess" >
+        <di:waypoint x="880" y="109" />
+        <di:waypoint x="993" y="108" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

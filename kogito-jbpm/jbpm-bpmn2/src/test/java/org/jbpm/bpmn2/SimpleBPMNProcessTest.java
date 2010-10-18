@@ -104,42 +104,42 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testMinimalProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
 	public void testMinimalProcessWithGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithGraphical.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
 	public void testMinimalProcessWithDIGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcessWithDIGraphical.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Minimal");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
 	public void testCompositeProcessWithDIGraphical() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompositeProcessWithDIGraphical.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("Composite");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
     public void testScriptTask() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ScriptTask.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ScriptTask.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("ScriptTask");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
     public void testDataObject() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("employee", "UserId-12345");
@@ -148,7 +148,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
 	public void testEvaluationProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
@@ -159,7 +159,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 
 	public void testEvaluationProcess2() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess2.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess2.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -169,7 +169,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 
 	public void testEvaluationProcess3() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("RegisterRequest", new SystemOutWorkItemHandler());
@@ -180,7 +180,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
     public void testUserTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
@@ -195,7 +195,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testLane() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-Lane.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-Lane.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
@@ -219,7 +219,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
 	public void testExclusiveSplit() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -230,7 +230,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
 	public void testExclusiveSplitDefault() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -241,7 +241,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
     public void testInclusiveSplit() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplit.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", 15);
@@ -250,7 +250,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testInclusiveSplitDefault() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-InclusiveSplitDefault.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", -5);
@@ -259,7 +259,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
 //	public void testExclusiveSplitXPath() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.xml");
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath.bpmn2");
 //        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 //        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
 //        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
@@ -273,7 +273,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 //    }
 
 	public void testEventBasedSplit() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -297,7 +297,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	
 	public void testEventBasedSplitBefore() throws Exception {
 		// signaling before the split is reached should have no effect
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
@@ -321,7 +321,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	
 	public void testEventBasedSplitAfter() throws Exception {
 		// signaling the other alternative after one has been selected should have no effect
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
@@ -341,7 +341,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
 	public void testEventBasedSplit2() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -373,7 +373,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
 	public void testEventBasedSplit3() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -398,7 +398,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
 	public void testEventBasedSplit4() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit4.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit4.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -420,7 +420,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 	
 	public void testEventBasedSplit5() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit5.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit5.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
@@ -451,8 +451,8 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	
 	public void testCallActivity() throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivity.xml"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.xml"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
 				System.err.println(error);
@@ -470,14 +470,14 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 
 	public void testSubProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
 	public void testMultiInstanceLoopCharacteristicsProcess() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoopCharacteristicsProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		Map<String, Object> params = new HashMap<String, Object>();
 		List<String> myList = new ArrayList<String>();
@@ -489,14 +489,14 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 
     public void testEscalationBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
     public void testEscalationBoundaryEventInterrupting() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventInterrupting.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
@@ -505,7 +505,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testErrorBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("ErrorBoundaryEvent");
@@ -513,7 +513,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testTimerBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
@@ -526,7 +526,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testTimerBoundaryEventInterrupting() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
@@ -547,7 +547,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		XmlProcessReader processReader = new XmlProcessReader(
 	        ((PackageBuilderConfiguration) conf).getSemanticModules());
 		RuleFlowProcess p = (RuleFlowProcess)
-		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.xml"));
+		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.bpmn2"));
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 //		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(
@@ -589,7 +589,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		XmlProcessReader processReader = new XmlProcessReader(
 	        ((PackageBuilderConfiguration) conf).getSemanticModules());
 		RuleFlowProcess p = (RuleFlowProcess)
-		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.xml"));
+		    processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 //		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(
@@ -622,7 +622,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testIntermediateCatchEventSignal() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.xml");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
 		ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
@@ -634,7 +634,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	}
 
     public void testIntermediateCatchEventMessage() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventMessage.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventMessage.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
@@ -646,7 +646,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testIntermediateCatchEventTimer() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimer.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimer.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
@@ -660,7 +660,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testIntermediateCatchEventCondition() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
@@ -673,50 +673,42 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testErrorEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("ErrorEndEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
     public void testEscalationEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationEndEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
     public void testEscalationIntermediateThrowEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("EscalationIntermediateThrowEvent");
 		assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 
     public void testCompensateIntermediateThrowEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
     public void testCompensateEndEventProcess() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("CompensateEndEvent");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-//    public void testGraphicalInformation() throws Exception {
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-OryxExportedExample.xml");
-//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
-//        ProcessInstance processInstance = ksession.startProcess("testProzess");
-//        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-//    }
-
     public void testServiceTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -728,7 +720,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testSendTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SendTask.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SendTask.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -739,7 +731,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testReceiveTask() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ReceiveTask.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ReceiveTask.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ReceiveTaskHandler receiveTaskHandler = new ReceiveTaskHandler(ksession);
         ksession.getWorkItemManager().registerWorkItemHandler("Receive Task", receiveTaskHandler);
@@ -752,7 +744,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
     public void testConditionalStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Person person = new Person();
         person.setName("jack");
@@ -765,7 +757,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testTimerStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
 		ksession.addEventListener(new ProcessEventListener() {
@@ -797,7 +789,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testSignalStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
 		ksession.addEventListener(new ProcessEventListener() {
@@ -824,7 +816,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testSignalEnd() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
@@ -832,13 +824,13 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testMessageStart() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.signalEvent("Message-HelloMessage", "NewValue");
     }
     
     public void testMessageEnd() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageEndEvent.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-MessageEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -848,7 +840,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testMessageIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Send Task", new SendTaskHandler());
         Map<String, Object> params = new HashMap<String, Object>();
@@ -858,7 +850,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testSignalIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventSignal.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventSignal.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "MyValue");
@@ -867,39 +859,12 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
     
     public void testNoneIntermediateThrow() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.xml");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventNone.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("NoneIntermediateEvent", null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-//    public void testPersistence() throws Exception {
-//        setupDataSource();
-//        EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-//            "org.drools.persistence.jpa");
-//        Environment env = KnowledgeBaseFactory.newEnvironment();
-//        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-//        env.set(EnvironmentName.TRANSACTION_MANAGER,
-//             TransactionManagerServices.getTransactionManager());
-//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTask.xml");
-//        StatefulKnowledgeSession ksession =
-//            JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-//        int sessionId = ksession.getId();
-//        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-//        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-//        ProcessInstance processInstance = ksession.startProcess("UserTask");
-//        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-//        WorkItem workItem = workItemHandler.getWorkItem();
-//        assertNotNull(workItem);
-//        assertEquals("john", workItem.getParameter("ActorId"));
-//        ksession.dispose();
-//        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
-//            sessionId, kbase, null, env);
-//        assertNotNull(ksession.getProcessInstance(processInstance.getId()));
-//        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
-//        assertNull(ksession.getProcessInstance(processInstance.getId()));
-//    }
-
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
