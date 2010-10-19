@@ -19,12 +19,12 @@ package org.drools.runtime.conf;
 /**
  * An enum to configure the session query listener configuration.
  * 
- * Queries results are collected by a listener class. The "STANDARD"
+ * Query results are collected by a listener class. The "STANDARD"
  * query listener class copies and disconnects fact handles and objects
- * for the query results making them somewhat resilient to some working
- * memory actions. Although, this copy is costly. For the cases where
+ * for query results, making them somewhat resilient to some working
+ * memory actions. But this copying is costly. For the cases where
  * no concurrency exists between query execution and other working memory
- * action, a light weight listener implementation can be used, preventing
+ * actions, a lightweight listener implementation can be used, preventing
  * the copy and improving query performance significantly.
  *  
  * 
