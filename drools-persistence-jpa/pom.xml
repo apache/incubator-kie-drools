@@ -10,73 +10,73 @@
 
   <artifactId>drools-persistence-jpa</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Persistence :: JPA</name> 
-    
-   <build>
-      <plugins>
-         <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-               <archive>
-                  <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-               </archive>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <extensions>true</extensions>
-            <executions>
-               <execution>
-                  <id>manifest</id>
-                  <phase>process-classes</phase>
-                  <goals>
-                     <goal>manifest</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <manifestLocation>META-INF</manifestLocation>
-               <instructions>
-                  <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.drools.core;bundle-version="${pom.version}", org.drools.compiler;bundle-version="${pom.version}"</Require-Bundle>
-                  <Import-Package>!org.drools.*, *</Import-Package>
-                  <Export-Package> org.drools.*</Export-Package>
-                  <DynamicImport-Package>*</DynamicImport-Package>
-                  <!--Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator-->
-               </instructions>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>    
-    
-      <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-api</artifactId>
-      </dependency>
-       
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-core</artifactId>
-      </dependency>
-       
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-      </dependency>
+  <name>Drools :: Persistence :: JPA</name>
 
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-      </dependency>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Require-Bundle>org.drools.core;bundle-version="${pom.version}", org.drools.compiler;bundle-version="${pom.version}"</Require-Bundle>
+            <Import-Package>!org.drools.*, *</Import-Package>
+            <Export-Package>org.drools.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <!--Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator-->
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-       <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-          <scope>test</scope>
-        </dependency>
-        
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
@@ -86,97 +86,97 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
-    </dependency>        
+    </dependency>
 
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.osgi.core</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>org.osgi.compendium</artifactId>
-         <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-      <!-- Hibernate -->
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-      </dependency>
+    <!-- Hibernate -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>
 
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-annotations</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-annotations</artifactId>
+    </dependency>
 
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-commons-annotations</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+    </dependency>
 
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
 
-      <!-- HSQLDB -->
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
+    <!-- HSQLDB -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javassist</groupId>
+      <artifactId>javassist</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!--dependency>
+         <groupId>org.objectweb.jotm</groupId>
+         <artifactId>com.springsource.org.objectweb.jotm</artifactId>
+         <version>2.0.10</version>
       </dependency>
 
       <dependency>
-        <groupId>javax.persistence</groupId>
-        <artifactId>persistence-api</artifactId>
-      </dependency>
+         <groupId>com.experlog.xapool</groupId>
+         <artifactId>com.springsource.org.enhydra.jdbc</artifactId>
+         <version>1.5.0</version>
+     </dependency>
 
-      <dependency>
-        <groupId>dom4j</groupId>
-        <artifactId>dom4j</artifactId>
-      </dependency>
+    <dependency>
+       <groupId>org.apache.directory</groupId>
+       <artifactId>com.springsource.org.apache.directory.server.jndi</artifactId>
+       <version>1.0.2</version>
+    </dependency>
 
-      <dependency>
-        <groupId>javassist</groupId>
-        <artifactId>javassist</artifactId>
-      </dependency>
+    <dependency>
+        <groupId>javax.resource</groupId>
+        <artifactId>com.springsource.javax.resource</artifactId>
+        <version>1.5.0</version>
+    </dependency-->
 
-      <dependency>
-        <groupId>javax.transaction</groupId>
-        <artifactId>jta</artifactId>
-      </dependency>
+  </dependencies>
 
-      <dependency>
-        <groupId>org.codehaus.btm</groupId>
-        <artifactId>btm</artifactId>
-        <scope>test</scope>
-      </dependency>
-
-        <!--dependency>  
-           <groupId>org.objectweb.jotm</groupId>  
-           <artifactId>com.springsource.org.objectweb.jotm</artifactId>  
-           <version>2.0.10</version>
-        </dependency>
-        
-        <dependency>  
-           <groupId>com.experlog.xapool</groupId>  
-           <artifactId>com.springsource.org.enhydra.jdbc</artifactId>  
-           <version>1.5.0</version> 
-       </dependency>        
-       
-      <dependency>  
-         <groupId>org.apache.directory</groupId>  
-         <artifactId>com.springsource.org.apache.directory.server.jndi</artifactId>  
-         <version>1.0.2</version> 
-      </dependency>       
-
-      <dependency>  
-          <groupId>javax.resource</groupId>  
-          <artifactId>com.springsource.javax.resource</artifactId>  
-          <version>1.5.0</version> 
-      </dependency-->
-
-      </dependencies>              
-                  
 </project>
