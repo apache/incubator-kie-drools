@@ -49,31 +49,31 @@
       <scope>test</scope>
     </dependency>
 
-      <dependency>
-         <groupId>com.sun.xml.bind</groupId>
-         <artifactId>jaxb-xjc</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>com.sun.xml.bind</groupId>
-         <artifactId>jaxb-impl</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>javax.xml.bind</groupId>
-         <artifactId>jaxb-api</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>javax.xml.stream</groupId>
-         <artifactId>stax-api</artifactId>
-         <scope>provided</scope>
-      </dependency>
-      <dependency>
-         <groupId>javax.activation</groupId>
-         <artifactId>activation</artifactId>
-         <scope>provided</scope>
-      </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
   </dependencies>
 
@@ -97,31 +97,31 @@
                   <tasks if="generategrammars">
                     <path id="base.classpath">
                       <pathelement
-                        path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
+                          path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
                       <pathelement
-                        path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar" />
+                          path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
                       <pathelement
-                        path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar" />
+                          path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
                     </path>
-                    <property name="antlr_classpath" refid="maven.compile.classpath" />
-                    <echo message="Generating Antlr Grammars" />
+                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
+                    <echo message="Generating Antlr Grammars"/>
                     <java classname="org.antlr.Tool" fork="true">
                       <arg
-                        line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g" />
-                      <classpath refid="base.classpath" />
+                          line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
+                      <classpath refid="base.classpath"/>
                     </java>
                     <move todir="src/test/java/org/drools/reteoo/test/parser">
                       <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.java" />
-                        <exclude name="**/__*" />
+                        <include name="**/*.java"/>
+                        <exclude name="**/__*"/>
                       </fileset>
                     </move>
                     <delete>
                       <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.tokens" />
-                        <include name="**/classes" />
-                        <include name="**/__*" />
-                        <include name="NodeTestDSL__.g" />
+                        <include name="**/*.tokens"/>
+                        <include name="**/classes"/>
+                        <include name="**/__*"/>
+                        <include name="NodeTestDSL__.g"/>
                       </fileset>
                     </delete>
                   </tasks>
@@ -165,8 +165,8 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Require-Bundle>org.drools.api;visibility:=reexport;bundle-version="${pom.version}"</Require-Bundle>
-                      <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
-                        <Export-Package>!org.drools.visualize,org.drools.reteoo.*, org.drools.*</Export-Package>
+            <Import-Package>!org.drools.*, *,org.osgi.util.tracker</Import-Package>
+            <Export-Package>!org.drools.visualize,org.drools.reteoo.*, org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
             <Bundle-Activator>org.drools.osgi.core.Activator</Bundle-Activator>
           </instructions>
