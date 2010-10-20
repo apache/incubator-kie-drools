@@ -35,14 +35,14 @@ public class ClassLoaderUtil {
             }
         }
 
-        if ( currentClassLoader != null ) {
-            // the current classloader, typically from a drools-core or drools-compiler class
-            cl.addClassLoader( currentClassLoader );
-        }
-
         if ( contextClassLoader != null ) {
             // context classloader
             cl.addClassLoader( contextClassLoader );
+        }
+        
+        if ( currentClassLoader != null ) {
+            // the current classloader, typically from a drools-core or drools-compiler class
+            cl.addClassLoader( currentClassLoader );
         }
 
         if ( systemClassLoader != null ) {
