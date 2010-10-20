@@ -110,7 +110,7 @@
 
       <para>How to launch from Eclipse: unit tests can be launched, as normal
       (in which case only M2_REPO setup is needed, GWT does not need to be
-      downloaded seperately), or it can be launched it in <emphasis>hosted
+      downloaded separately), or it can be launched it in <emphasis>hosted
       mode</emphasis> using the GWT browser, which is great for debugging
       (from GUI to back end, the code can be stepped through, and changes made
       on the fly and simply hit refresh). There is a
