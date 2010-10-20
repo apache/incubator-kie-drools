@@ -87,7 +87,7 @@
       </activation>
       <build>
         <plugins>
-          <plugin>
+          <plugin><!-- TODO use mojo's antlr-maven-plugin or antlr3-maven-plugin so the jar versions are always up te date -->
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
