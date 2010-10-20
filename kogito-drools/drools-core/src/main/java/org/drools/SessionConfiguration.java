@@ -294,15 +294,8 @@ public class SessionConfiguration
                                                                "org.drools.process.instance.impl.DefaultWorkItemManagerFactory" );
         Class<WorkItemManagerFactory> clazz = null;
         try {
-            clazz = (Class<WorkItemManagerFactory>) Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
-        }
-
-        if ( clazz == null ) {
-            try {
-                clazz = (Class<WorkItemManagerFactory>) SessionConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
         }
 
         if ( clazz != null ) {
@@ -348,17 +341,11 @@ public class SessionConfiguration
 
         Class<CommandService> clazz = null;
         try {
-            clazz = (Class<CommandService>) Thread.currentThread().getContextClassLoader().loadClass( className );
+            clazz = (Class<CommandService>) this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
-        if ( clazz == null ) {
-            try {
-                clazz = (Class<CommandService>) SessionConfiguration.class.getClassLoader().loadClass( className );
-            } catch ( ClassNotFoundException e ) {
-            }
-        }
-
+        
         if ( clazz != null ) {
             try {
                 this.commandService = clazz.getConstructor( KnowledgeBase.class,
@@ -385,17 +372,8 @@ public class SessionConfiguration
 
 		Class<TimerService> clazz = null;
 		try {
-			clazz = (Class<TimerService>) Thread.currentThread()
-					.getContextClassLoader().loadClass(className);
+			clazz = (Class<TimerService>) this.classLoader.loadClass(className);
 		} catch (ClassNotFoundException e) {
-		}
-
-		if (clazz == null) {
-			try {
-				clazz = (Class<TimerService>) SessionConfiguration.class
-					.getClassLoader().loadClass(className);
-			} catch (ClassNotFoundException e) {
-			}
 		}
 
 		if (clazz != null) {
