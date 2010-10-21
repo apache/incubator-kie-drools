@@ -64,6 +64,6 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     }
 
 	public Environment newEnvironment() {
-		return new EnvironmentImpl(); //EnvironmentFactory.newEnvironment();
+		return EnvironmentFactory.newEnvironment();//new EnvironmentImpl(); //
 	}
 }

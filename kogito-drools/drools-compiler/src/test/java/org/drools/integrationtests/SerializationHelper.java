@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -16,6 +15,8 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -94,31 +95,24 @@ public class SerializationHelper {
         return session2;
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 boolean dispose) throws Exception {
-
-        return getSerialisedStatefulKnowledgeSession( ksession,
-                                                      MarshallerFactory.newSerializeMarshallingStrategy(),
-                                                      dispose );
-    }
+   
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
-                                                                                 ObjectMarshallingStrategy strategy,
                                                                                  boolean dispose) throws Exception {
 
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
-                                                                 new ObjectMarshallingStrategy[]{strategy} );
+                                                                 (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         marshaller.marshall( bos,
                              ksession );
         final byte[] b1 = bos.toByteArray();
         bos.close();
-
+       
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
         StatefulKnowledgeSession ksession2 = marshaller.unmarshall( bais,
                                                                     new SessionConfiguration(),
-                                                                    EnvironmentFactory.newEnvironment() );
+                                                                     ksession.getEnvironment());
         bais.close();
 
         bos = new ByteArrayOutputStream();

@@ -24,7 +24,7 @@ import org.drools.marshalling.ObjectMarshallingStrategy;
 public class ObjectMarshallingStrategyStore {
     private ObjectMarshallingStrategy[] strategiesList;
     
-    ObjectMarshallingStrategyStore(ObjectMarshallingStrategy[] strategiesList) {
+    public ObjectMarshallingStrategyStore(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
     } 
     

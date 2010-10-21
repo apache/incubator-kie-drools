@@ -30,9 +30,12 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
 
@@ -55,17 +58,18 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     public final boolean                            marshalProcessInstances;
     public final boolean                            marshalWorkItems;
-
+    public final Environment                        env;
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,
-                                   ObjectMarshallingStrategyStore resolverStrategyFactory) throws IOException {
+                                   ObjectMarshallingStrategyStore resolverStrategyFactory, Environment env) throws IOException {
         this( stream,
               ruleBase,
               sinks,
               resolverStrategyFactory,
               true,
-              true );
+              true, 
+              env    );
     }
 
     public MarshallerReaderContext(InputStream stream,
@@ -73,7 +77,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
                                    Map<Integer, BaseNode> sinks,
                                    ObjectMarshallingStrategyStore resolverStrategyFactory,
                                    boolean marshalProcessInstances,
-                                   boolean marshalWorkItems) throws IOException {
+                                   boolean marshalWorkItems, Environment env) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
@@ -83,9 +87,15 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.entryPoints = new HashMap<String, EntryPoint>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
-        this.resolverStrategyFactory = resolverStrategyFactory;
+        if(resolverStrategyFactory == null){
+            this.resolverStrategyFactory = new ObjectMarshallingStrategyStore((ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+        }
+        else{
+            this.resolverStrategyFactory = resolverStrategyFactory;
+        }
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
+        this.env = env;
     }
     
     @Override

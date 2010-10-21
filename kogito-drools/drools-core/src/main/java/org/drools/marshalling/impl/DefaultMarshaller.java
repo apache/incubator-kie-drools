@@ -24,7 +24,6 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
-import org.drools.StatefulSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.concurrent.CommandExecutor;
@@ -81,9 +80,10 @@ public class DefaultMarshaller
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
-                                                                       this.strategyStore,
+                                                                       null,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
-                                                                       this.marshallingConfig.isMarshallWorkItems() );
+                                                                       this.marshallingConfig.isMarshallWorkItems() ,
+                                                                       environment);
 
         int id = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).nextWorkingMemoryCounter();
         RuleBaseConfiguration conf = ((ReteooRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration();
@@ -109,9 +109,10 @@ public class DefaultMarshaller
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
-                                                                       this.strategyStore,
+                                                                       null,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
-                                                                       marshallingConfig.isMarshallWorkItems() );
+                                                                       marshallingConfig.isMarshallWorkItems() , 
+                                                                       ksession.getEnvironment());
 
         InputMarshaller.readSession( (ReteooStatefulSession) ((StatefulKnowledgeSessionImpl)ksession).session,
                                      context );
@@ -128,9 +129,9 @@ public class DefaultMarshaller
                                                                      (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
                                                                      (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) session).session,
                                                                      RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
-                                                                     this.strategyStore,
+                                                                     ((StatefulKnowledgeSessionImpl)session).session.getObjectMarshallingStrategyStore(),
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
-                                                                     this.marshallingConfig.isMarshallWorkItems() );
+                                                                     this.marshallingConfig.isMarshallWorkItems(), session.getEnvironment());
         OutputMarshaller.writeSession( context );
         context.close();
     }

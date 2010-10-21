@@ -58,6 +58,8 @@ import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.marshalling.impl.RuleBaseNodes;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooStatefulSession;
@@ -65,6 +67,8 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.GlobalResolver;
 
@@ -1670,24 +1674,25 @@ public class MarshallingTest extends TestCase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-
+        Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
 
         // add a person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Person bobba = new Person( "bobba fet",
                                    50 );
         ksession.insert( bobba );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 1,
@@ -1695,13 +1700,13 @@ public class MarshallingTest extends TestCase {
 
         // add another person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Person darth = new Person( "darth vadar",
                                    200 );
         ksession.insert( darth );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 2,
@@ -1709,13 +1714,13 @@ public class MarshallingTest extends TestCase {
 
         // add cheese 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Cheese stilton = new Cheese( "stilton",
                                      5 );
         ksession.insert( stilton );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 2,
@@ -1723,11 +1728,11 @@ public class MarshallingTest extends TestCase {
 
         // remove cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.retract( ksession.getFactHandle( stilton ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 4,
@@ -1735,11 +1740,11 @@ public class MarshallingTest extends TestCase {
 
         // put 2 cheeses back in
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.insert( stilton );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Cheese brie = new Cheese( "brie",
                                   18 );
@@ -1760,7 +1765,7 @@ public class MarshallingTest extends TestCase {
         // now remove a person, should be no change
         ksession.retract( ksession.getFactHandle( bobba ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 4,
@@ -1769,7 +1774,7 @@ public class MarshallingTest extends TestCase {
         //removal remaining cheese, should increase by one, as one person left
         ksession.retract( ksession.getFactHandle( brie ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 5,
@@ -1799,24 +1804,27 @@ public class MarshallingTest extends TestCase {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-
+         Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
 
         // add a person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Person bobba = new Person( "bobba fet",
                                    50 );
         ksession.insert( bobba );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 0,
@@ -1824,13 +1832,13 @@ public class MarshallingTest extends TestCase {
 
         // add another person, no cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Person darth = new Person( "darth vadar",
                                    200 );
         ksession.insert( darth );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 0,
@@ -1838,13 +1846,13 @@ public class MarshallingTest extends TestCase {
 
         // add cheese 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Cheese stilton = new Cheese( "stilton",
                                      5 );
         ksession.insert( stilton );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 2,
@@ -1852,11 +1860,11 @@ public class MarshallingTest extends TestCase {
 
         // remove cheese
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.retract( ksession.getFactHandle( stilton ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 2,
@@ -1864,11 +1872,11 @@ public class MarshallingTest extends TestCase {
 
         // put 2 cheeses back in
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.insert( stilton );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         Cheese brie = new Cheese( "brie",
                                   18 );
@@ -1880,7 +1888,7 @@ public class MarshallingTest extends TestCase {
         // now remove a cheese, should be no change
         ksession.retract( ksession.getFactHandle( stilton ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 4,
@@ -1889,7 +1897,7 @@ public class MarshallingTest extends TestCase {
         // now remove a person, should be no change
         ksession.retract( ksession.getFactHandle( bobba ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 4,
@@ -1898,7 +1906,7 @@ public class MarshallingTest extends TestCase {
         //removal remaining cheese, no
         ksession.retract( ksession.getFactHandle( brie ) );
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.fireAllRules();
         assertEquals( 4,
@@ -1906,7 +1914,7 @@ public class MarshallingTest extends TestCase {
 
         // put one cheese back in, with one person should increase by one
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
-                                                          MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                  MarshallerFactory.newIdentityMarshallingStrategy(),
                                                           true );
         ksession.insert( stilton );
         ksession.fireAllRules();

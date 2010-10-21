@@ -26,6 +26,7 @@ import java.util.Queue;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassObjectType;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
@@ -801,7 +802,7 @@ public class InputMarshaller {
                                          pc );
     }
 
-    public static WorkItem readWorkItem(MarshallerReaderContext context, boolean includeVariables) throws IOException {
+    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
 
         WorkItemImpl workItem = new WorkItemImpl();
@@ -810,26 +811,31 @@ public class InputMarshaller {
         workItem.setName( stream.readUTF() );
         workItem.setState( stream.readInt() );
 
-        if(includeVariables){
-        int nbParameters = stream.readInt();
-
-        for ( int i = 0; i < nbParameters; i++ ) {
-            String name = stream.readUTF();
-            try {
-                Object value = stream.readObject();
-                workItem.setParameter( name,
-                                       value );
-            } catch ( ClassNotFoundException e ) {
-                throw new IllegalArgumentException( "Could not reload parameter " + name );
+        //WorkItem Paramaters
+        int nbVariables = stream.readInt();
+            if (nbVariables > 0) {
+                
+                for (int i = 0; i < nbVariables; i++) {
+                    String name = stream.readUTF();
+                    try {
+                        int index = stream.readInt();
+                        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy(index);
+                        
+                        Object value = strategy.read(stream);
+                        workItem.setParameter(name, value);
+                    } catch (ClassNotFoundException e) {
+                        throw new IllegalArgumentException(
+                                "Could not reload variable " + name);
+                    }
+                }
             }
-        }
-        }
+        
+      
+        
 
         return workItem;
     }
 
-    public static WorkItem readWorkItem(MarshallerReaderContext context) throws IOException {
-        return readWorkItem(context, true);
-     }
+   
 
 }

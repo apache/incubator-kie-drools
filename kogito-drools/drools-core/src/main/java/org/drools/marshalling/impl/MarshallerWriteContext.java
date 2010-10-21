@@ -29,7 +29,10 @@ import java.util.Map;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 
 public class MarshallerWriteContext extends ObjectOutputStream {
     public final MarshallerWriteContext         stream;
@@ -45,19 +48,22 @@ public class MarshallerWriteContext extends ObjectOutputStream {
 
     public final boolean                        marshalProcessInstances;
     public final boolean                        marshalWorkItems;
+    public final Environment                    env;
+    
 
     public MarshallerWriteContext(OutputStream stream,
                                   InternalRuleBase ruleBase,
                                   InternalWorkingMemory wm,
                                   Map<Integer, BaseNode> sinks,
-                                  ObjectMarshallingStrategyStore resolverStrategyFactory) throws IOException {
+                                  ObjectMarshallingStrategyStore resolverStrategyFactory, Environment env) throws IOException {
         this( stream,
               ruleBase,
               wm,
               sinks,
               resolverStrategyFactory,
               true,
-              true );
+              true , 
+              env);
     }
 
     public MarshallerWriteContext(OutputStream stream,
@@ -66,18 +72,29 @@ public class MarshallerWriteContext extends ObjectOutputStream {
                                   Map<Integer, BaseNode> sinks,
                                   ObjectMarshallingStrategyStore resolverStrategyFactory,
                                   boolean marshalProcessInstances,
-                                  boolean marshalWorkItems) throws IOException {
+                                  boolean marshalWorkItems, 
+                                  Environment env) throws IOException {
         super( stream );
         this.stream = this;
         this.ruleBase = ruleBase;
         this.wm = wm;
         this.sinks = sinks;
-
-        this.objectMarshallingStrategyStore = resolverStrategyFactory;
+        if(this.objectMarshallingStrategyStore == null){
+            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore((ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+        }
+        else{
+            this.objectMarshallingStrategyStore = resolverStrategyFactory;
+        }
 
         this.terminalTupleMap = new IdentityHashMap<LeftTuple, Integer>();
 
         this.marshalProcessInstances = marshalProcessInstances;
         this.marshalWorkItems = marshalWorkItems;
+        this.env = env;
+        
     }
+    
+     
+    
+    
 }
