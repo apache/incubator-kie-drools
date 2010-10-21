@@ -16,14 +16,20 @@
 
 package org.drools.impl;
 
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 
 public class EnvironmentFactory {
 	
 	private static ThreadLocal<Environment> environment = new ThreadLocal<Environment>();
 	
 	public static Environment newEnvironment() {
-	    return new EnvironmentImpl();
+            Environment env = new EnvironmentImpl();
+            env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+	    return env;
 //		Environment environment = EnvironmentFactory.environment.get();
 //		if (environment == null) {
 //			environment = new EnvironmentImpl();

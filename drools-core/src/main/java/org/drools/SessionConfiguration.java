@@ -27,6 +27,9 @@ import java.util.Properties;
 import org.drools.command.CommandService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -82,13 +85,13 @@ public class SessionConfiguration
     private CommandService                commandService;
 
     private transient ClassLoader         classLoader;
-
+    
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
         out.writeBoolean( immutable );
         out.writeBoolean( keepReference );
         out.writeObject( clockType );
-        out.writeObject( queryListener );
+        out.writeObject( queryListener );  
     }
 
     @SuppressWarnings("unchecked")
@@ -98,7 +101,7 @@ public class SessionConfiguration
         immutable = in.readBoolean();
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
-        queryListener = (QueryListenerOption) in.readObject();
+        queryListener = (QueryListenerOption) in.readObject();  
     }
 
     /**
@@ -436,5 +439,5 @@ public class SessionConfiguration
     public QueryListenerOption getQueryListenerOption() {
         return this.queryListener;
     }
-
+    
 }

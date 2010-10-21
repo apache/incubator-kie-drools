@@ -16,7 +16,6 @@
 
 package org.drools.integrationtests;
 
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -63,10 +62,15 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
-import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Package;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
@@ -614,8 +618,10 @@ public class DynamicRulesTest extends TestCase {
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( kbuilder.getKnowledgePackages() );
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+         Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(null, env);
         List results = new ArrayList();
         ksession.setGlobal( "results",
                             results );
@@ -642,7 +648,7 @@ public class DynamicRulesTest extends TestCase {
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
         results = (List) ksession.getGlobal( "results" );
@@ -668,7 +674,7 @@ public class DynamicRulesTest extends TestCase {
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                               false );
 
         results = (List) ksession.getGlobal( "results" );

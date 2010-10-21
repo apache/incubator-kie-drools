@@ -18,7 +18,9 @@ package org.drools.marshalling.impl;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -744,26 +746,39 @@ public class OutputMarshaller {
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
     }
 
-    public static void writeWorkItem(MarshallerWriteContext context, WorkItem workItem) throws IOException {
-		writeWorkItem(context, workItem, true);
-	}
-
+    
 	public static void writeWorkItem(MarshallerWriteContext context,
-			WorkItem workItem, boolean includeVariables) throws IOException {
+			WorkItem workItem) throws IOException {
 		ObjectOutputStream stream = context.stream;
 		stream.writeLong(workItem.getId());
 		stream.writeLong(workItem.getProcessInstanceId());
 		stream.writeUTF(workItem.getName());
 		stream.writeInt(workItem.getState());
 
-		if (includeVariables) {
-			Map<String, Object> parameters = workItem.getParameters();
-			stream.writeInt(parameters.size());
-			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-				stream.writeUTF(entry.getKey());
-				stream.writeObject(entry.getValue());
-			}
-		}
+		//Work Item Parameters
+                Map<String, Object> parameters = workItem.getParameters();
+                 Collection<Object> notNullValues = new ArrayList<Object>();
+                for(Object value: parameters.values()){
+                    if(value != null){
+                        notNullValues.add(value);
+                    }
+                }
+                
+                stream.writeInt(notNullValues.size());
+                for (String key : parameters.keySet()) {
+                    Object object = parameters.get(key); 
+                    if(object != null){
+                        stream.writeUTF(key);
+                        int index = context.objectMarshallingStrategyStore.getStrategy(object);
+                        stream.writeInt(index);
+                        ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy(index);
+                        if(strategy.accept(object)){
+                            strategy.write(stream, object);
+                        }
+                    }
+
+                }
+             
 	}
 
 }

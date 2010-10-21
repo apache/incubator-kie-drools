@@ -93,7 +93,6 @@ import org.drools.TestParam;
 import org.drools.Win;
 import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
-import org.drools.Order.OrderStatus;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -132,18 +131,23 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.facttemplates.Fact;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
+import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
@@ -1703,7 +1707,10 @@ public class MiscTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
+         Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+        StatefulSession session = ruleBase.newStatefulSession(null, env);
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -1728,7 +1735,7 @@ public class MiscTest extends TestCase {
         state.setState( "finished" );
 
         StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
-                                                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                                                       false );
 
         ksesion.fireAllRules();
@@ -1929,13 +1936,15 @@ public class MiscTest extends TestCase {
         Package pkg = builder.getPackage();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        StatefulSession session = ruleBase.newStatefulSession();
+         Environment env = EnvironmentFactory.newEnvironment();
+        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{
+                    new IdentityPlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
+        StatefulSession session = ruleBase.newStatefulSession(null, env);
         session.insert( cell1 );
         FactHandle cellHandle = session.insert( cell );
 
         StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
-                                                                                                      MarshallerFactory.newIdentityMarshallingStrategy(),
+        //                                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                                                       false );
 
         ksesion.fireAllRules();

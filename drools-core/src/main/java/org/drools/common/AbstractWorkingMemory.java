@@ -65,6 +65,8 @@ import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessEventManager;
 import org.drools.management.DroolsManagementAgent;
+import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.marshalling.impl.ObjectMarshallingStrategyStore;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
@@ -221,6 +223,8 @@ public abstract class AbstractWorkingMemory
     private AtomicLong                                           lastIdleTimestamp;
     
     private InternalProcessRuntime                               processRuntime;
+    
+    private transient ObjectMarshallingStrategyStore           marshallingStore;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1954,6 +1958,14 @@ public abstract class AbstractWorkingMemory
         if ( this.partitionManager != null ) {
             this.partitionManager.releaseTasks();
         }
+    }
+    
+    public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore(){
+        if(this.marshallingStore == null){
+            this.marshallingStore = new ObjectMarshallingStrategyStore(
+                                (ObjectMarshallingStrategy[])this.environment.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+        }
+        return this.marshallingStore;
     }
 
 }
