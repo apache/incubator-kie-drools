@@ -19,7 +19,9 @@ package org.drools.lang;
 import java.util.Iterator;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
@@ -28,6 +30,7 @@ import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.rule.builder.RuleBuildContext;
 
 /**
  * 
@@ -41,6 +44,15 @@ public class MVELDumper extends ReflectiveVisitor {
     private static final String eol = System.getProperty( "line.separator" );
     private String              template;
     private String              fieldName;
+    private RuleBuildContext context;
+    
+    public MVELDumper(RuleBuildContext context) {
+    	this.context = context;
+    }
+    
+    public MVELDumper() {
+    	
+    }
 
     public String dump(FieldConstraintDescr fieldConstr) {
         return this.dump( fieldConstr, false );
@@ -146,17 +158,33 @@ public class MVELDumper extends ReflectiveVisitor {
                    evaluator( evaluator ) + " " + 
                    value + evaluatorSufix( evaluator );
         } else if(op == Operator.determineOperator( "matches", false )) {
-            evaluator = "~=";
-            return evaluatorPrefix( evaluator ) + 
-                   this.fieldName + " " + 
-                   evaluator( evaluator ) + " " + 
-                   value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
+        	evaluator = "~=";
+        	if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
+        		return evaluatorPrefix( evaluator ) + 
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
+        	} else {
+        		return evaluatorPrefix( evaluator ) + 
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value +
+                evaluatorSufix( evaluator );
+        	}
         } else if(op == Operator.determineOperator( "matches", true )) {
             evaluator = "not ~=";
-            return evaluatorPrefix( evaluator ) + 
-                   this.fieldName + " " + 
-                   evaluator( evaluator ) + " " + 
-                   value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
+            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
+            	return evaluatorPrefix( evaluator ) + 
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
+            } else {
+            	return evaluatorPrefix( evaluator ) + 
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value + 
+                evaluatorSufix( evaluator );
+            }
         }
         return evaluatorPrefix( evaluator ) + 
                this.fieldName + " " + 

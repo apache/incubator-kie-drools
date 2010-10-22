@@ -1,0 +1,14 @@
+package org.drools.integrationtests
+
+import org.drools.BinTask;
+import org.drools.Bin;
+
+global java.util.List list;
+
+rule "escapeon"
+	when
+		$task : BinTask( $bn : bin.name matches "\\w\\w\\d{3}\\w\\w" )
+		$bin : Bin( $nm : name  matches "\\w\\w\\d{3}\\w\\w" ) 
+	then 
+		list.add( $task );		
+end

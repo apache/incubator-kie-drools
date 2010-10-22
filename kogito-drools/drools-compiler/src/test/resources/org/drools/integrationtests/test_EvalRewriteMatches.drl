@@ -5,7 +5,7 @@ global java.util.List results;
 rule "eval rewrite with 'matches'"
     salience 20
 	when
-	    $oi : OrderItem( order.number == 14, seq == 1, order.customer matches "M\w*" )
+	    $oi : OrderItem( order.number == 14, seq == 1, order.customer matches "M\\w*" )
 	then
 	    results.add( $oi );
 end
@@ -13,7 +13,7 @@ end
 rule "eval rewrite with 'not matches'"
     salience 10
 	when
-	    $oi : OrderItem( order.number == 14, seq == 2, order.customer not matches "B\w*" )
+	    $oi : OrderItem( order.number == 14, seq == 2, order.customer not matches "B\\w*" )
 	then
 	    results.add( $oi );
 end

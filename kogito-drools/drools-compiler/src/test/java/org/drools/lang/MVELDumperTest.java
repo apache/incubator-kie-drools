@@ -46,7 +46,7 @@ public class MVELDumperTest extends TestCase {
     
     public void testDumpMatches() throws Exception {
         String input = "Cheese( type.toString matches \"something\\swith\\tsingle escapes\" )";
-        String expected = "type.toString ~= \"something\\\\swith\\\\tsingle escapes\"" ;
+        String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"" ;
         PatternDescr pattern = (PatternDescr) parse("lhs_pattern", "lhs_pattern", input);
         
         FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
@@ -57,7 +57,7 @@ public class MVELDumperTest extends TestCase {
 
     public void testDumpMatches2() throws Exception {
         String input = "Cheese( type.toString matches 'something\\swith\\tsingle escapes' )";
-        String expected = "type.toString ~= \"something\\\\swith\\\\tsingle escapes\"" ;
+        String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"" ;
         PatternDescr pattern = (PatternDescr) parse("lhs_pattern", "lhs_pattern", input);
 
         FieldConstraintDescr fieldDescr = (FieldConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );

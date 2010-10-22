@@ -475,7 +475,7 @@ public class PatternBuilder
                                                fieldConstraintDescr );
 
         PredicateDescr predicateDescr = new PredicateDescr();
-        MVELDumper dumper = new MVELDumper();
+        MVELDumper dumper = new MVELDumper(context);
         predicateDescr.setContent( dumper.dump( fieldConstraintDescr,
                                                 Date.class.isAssignableFrom( resultType ) ) );
 
