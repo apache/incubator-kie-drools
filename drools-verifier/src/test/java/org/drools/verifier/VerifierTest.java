@@ -87,7 +87,7 @@ public class VerifierTest extends TestCase {
 
         assertTrue( verifier.hasErrors() );
 
-        assertEquals( 4,
+        assertEquals( 2,
                       verifier.getErrors().size() );
 
     }
