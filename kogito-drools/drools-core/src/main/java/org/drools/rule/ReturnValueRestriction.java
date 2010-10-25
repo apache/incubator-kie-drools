@@ -32,6 +32,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Evaluator;
+import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ReadAccessor;
 import org.drools.spi.Restriction;
@@ -126,6 +127,7 @@ public class ReturnValueRestriction
                           this.localDeclarations.length );
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         expression = (ReturnValueExpression) in.readObject();
@@ -246,12 +248,40 @@ public class ReturnValueRestriction
 
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final InternalFactHandle handle) {
-        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+        try {
+            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            FieldValue value = this.expression.evaluate( handle.getObject(),
+                                                         ctx.leftTuple,
+                                                         this.previousDeclarations,
+                                                         this.localDeclarations,
+                                                         ctx.workingMemory,
+                                                         ctx.dialectContext );
+            return this.evaluator.evaluate( ctx.workingMemory,
+                                            this.readAccessor,
+                                            handle.getObject(),
+                                            value );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
     }
 
     public boolean isAllowedCachedRight(final LeftTuple tuple,
                                         final ContextEntry context) {
-        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+        try {
+            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
+            FieldValue value = this.expression.evaluate( ctx.handle.getObject(),
+                                                         tuple,
+                                                         this.previousDeclarations,
+                                                         this.localDeclarations,
+                                                         ctx.workingMemory,
+                                                         ctx.dialectContext );
+            return this.evaluator.evaluate( ctx.workingMemory,
+                                            this.readAccessor,
+                                            ctx.handle.getObject(),
+                                            value );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }
     }
 
     public int hashCode() {
