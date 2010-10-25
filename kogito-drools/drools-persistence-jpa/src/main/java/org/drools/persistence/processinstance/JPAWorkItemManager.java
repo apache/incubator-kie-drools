@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
+import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
@@ -44,8 +45,13 @@ public class JPAWorkItemManager implements WorkItemManager {
 	    if (handler != null) {
 	        handler.executeWorkItem(workItem, this);
 	    } else {
-	        System.err.println("Could not find work item handler for " + workItem.getName());
+	        throwWorkItemNotFoundException( workItem );
 	    }
+	}
+
+    private void throwWorkItemNotFoundException(WorkItem workItem) {
+        throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                    workItem.getName() );
 	}
 
 	public void internalAbortWorkItem(long id) {
@@ -60,7 +66,10 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
             } else {
-                System.err.println("Could not find work item handler for " + workItem.getName());
+                if ( workItems != null ) {
+                    workItems.remove( id );
+                }
+                throwWorkItemNotFoundException( workItem );
             }
             if (workItems != null) {
             	workItems.remove(id);
