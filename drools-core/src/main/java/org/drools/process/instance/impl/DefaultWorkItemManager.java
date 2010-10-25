@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
@@ -67,14 +68,13 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 	public void internalExecuteWorkItem(WorkItem workItem) {
 	    ((WorkItemImpl) workItem).setId(++workItemCounter);
 	    internalAddWorkItem(workItem);
-	    WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+	    WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
 	    if (handler != null) {
 	        handler.executeWorkItem(workItem, this);
-	    } else {
-	        System.err.println("Could not find work item handler for " + workItem.getName());
-	    }
+	    } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                    workItem.getName() );
 	}
-	
+
 	public void internalAddWorkItem(WorkItem workItem) {
 	    workItems.put(new Long(workItem.getId()), workItem);
 	    // fix to reset workItemCounter after deserialization
@@ -87,31 +87,33 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
+            WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
             } else {
-                System.err.println("Could not find work item handler for " + workItem.getName());
+                workItems.remove( workItem.getId() );
+                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+                                                                 workItem.getName() );
             }
             workItems.remove(workItem.getId());
         }
     }
-    
+
 	public Set<WorkItem> getWorkItems() {
 	    return new HashSet<WorkItem>(workItems.values());
 	}
-	
+
 	public WorkItem getWorkItem(long id) {
 		return workItems.get(id);
 	}
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        WorkItem workItem = (WorkItem) workItems.get(new Long(id));
+        WorkItem workItem = workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            ((org.drools.process.instance.WorkItem) workItem).setResults(results);
+            (workItem).setResults(results);
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            ((org.drools.process.instance.WorkItem) workItem).setState(WorkItem.COMPLETED);
+            (workItem).setState(WorkItem.COMPLETED);
             // process instance may have finished already
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
