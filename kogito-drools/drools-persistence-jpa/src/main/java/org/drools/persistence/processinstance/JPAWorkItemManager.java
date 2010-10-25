@@ -68,8 +68,8 @@ public class JPAWorkItemManager implements WorkItemManager {
             } else {
                 if ( workItems != null ) {
                     workItems.remove( id );
+                    throwWorkItemNotFoundException( workItem );
                 }
-                throwWorkItemNotFoundException( workItem );
             }
             if (workItems != null) {
             	workItems.remove(id);
