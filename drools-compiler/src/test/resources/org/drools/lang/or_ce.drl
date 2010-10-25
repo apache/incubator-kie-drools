@@ -3,7 +3,7 @@ package org.drools;
 rule "testing OR CE"
 when
     $p : Person( name == "bob" )
-    $c : Cheese( type == $p.likes ) || Cheese( price == 10 )
+    $c : Cheese( type == $p.likes ) or Cheese( price == 10 )
 then
     // do something
 end 

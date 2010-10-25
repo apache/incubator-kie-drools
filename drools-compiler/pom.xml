@@ -125,63 +125,94 @@
               <execution>
                 <phase>generate-sources</phase>
                 <configuration>
-                  <tasks if="generategrammars">
-                    <path id="base.classpath">
-                      <pathelement path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-                      <pathelement path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
-                      <pathelement path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
-                    </path>
-                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
-                    <echo message="Generating Antlr Grammars"/>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL.g src/main/resources/org/drools/lang/DescrBuilderTree.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/main/java/org/drools/lang/">
-                      <fileset dir="src/main/resources/org/drools/lang">
-                        <include name="**/*.java"/>
-                      </fileset>
-                    </move>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg line="-lib src/main/resources/org/drools/lang src/main/resources/org/drools/lang/Tree2TestDRL.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/test/java/org/drools/lang/">
-                      <fileset dir="src/main/resources/org/drools/lang">
-                        <include name="**/*.java"/>
-                      </fileset>
-                    </move>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg line="-lib src/main/resources/org/drools/lang/dsl src/main/resources/org/drools/lang/dsl/DSLMap.g src/main/resources/org/drools/lang/dsl/DSLMapWalker.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/main/java/org/drools/lang/dsl/">
-                      <fileset dir="src/main/resources/org/drools/lang/dsl">
-                        <include name="**/*.java"/>
-                      </fileset>
-                    </move>
-                    <java classname="org.antlr.Tool" fork="true">
-                      <arg line="-lib src/main/resources/org/drools/semantics/java/parser src/main/resources/org/drools/semantics/java/parser/Java.g"/>
-                      <classpath refid="base.classpath"/>
-                    </java>
-                    <move todir="src/main/java/org/drools/rule/builder/dialect/java/parser">
-                      <fileset dir="src/main/resources/org/drools/semantics/java/parser">
-                        <include name="**/*.java"/>
-                      </fileset>
-                    </move>
-                    <delete>
-                      <fileset dir="src/main/resources/org/drools/lang">
-                        <include name="**/*.tokens"/>
-                        <include name="DRL__.g"/>
-                        <include name="dsl/DSLMap__.g"/>
-                      </fileset>
-                      <fileset dir="src/main/resources/org/drools/semantics/java/parser">
-                        <include name="**/*.tokens"/>
-                        <include name="Java__.g"/>
-                      </fileset>
-                    </delete>
-                  </tasks>
-                </configuration>
+                   <tasks>
+	                  <path id="base.classpath">
+	                     <pathelement path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
+	                     <pathelement path="${user.home}/.m2/repository/org/antlr/antlr/3.2/antlr-3.2.jar" />
+	                     <pathelement path="${user.home}/.m2/repository/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar" />
+	                     <pathelement path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar" />
+	                  </path>
+	                  <property name="antlr_classpath" refid="maven.compile.classpath" />
+	                  <property name="antlr_classpath" refid="maven.compile.classpath" />
+	                  <condition property="antlr.debugParser" value="-Xconversiontimeout 32000 -debug" else="">
+	                     <isset property="debugParser"/>
+	                  </condition>
+	                  <condition property="antlr.debugWalker" value="-Xconversiontimeout 32000 -debug" else="">
+	                     <isset property="debugWalker"/>
+	                  </condition>
+	                  <echo message="Generating Antlr Parser (${antlr.debugParser})" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <jvmarg line="-Xmx750M -Xincgc"/>
+	                     <arg line="${antlr.debugParser} -lib src/main/resources/org/drools/lang -o src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <echo message="Generating Antlr Walker (${antlr.debugWalker})" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <jvmarg line="-Xmx750M -Xincgc"/>
+	                     <arg line="${antlr.debugWalker} -lib src/main/resources/org/drools/lang -o src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DescrBuilderTree.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <echo message="Generating Antlr Legacy Parser/Walker for DRL 5.x" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <jvmarg line="-Xmx750M -Xincgc"/>
+	                     <arg line="-lib src/main/resources/org/drools/lang -o src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DRL5x.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <jvmarg line="-Xmx750M -Xincgc"/>
+	                     <arg line="-lib src/main/resources/org/drools/lang -o src/main/resources/org/drools/lang src/main/resources/org/drools/lang/DescrBuilderTree5x.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <move todir="src/main/java/org/drools/lang/">
+	                     <fileset dir="src/main/resources/org/drools/lang">
+	                        <include name="**/*.java" />
+	                     </fileset>
+	                  </move>
+	                  <echo message="Generating Antlr Tree2TestDRL.g" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <arg line="-lib src/main/resources/org/drools/lang -o src/main/resources/org/drools/lang src/main/resources/org/drools/lang/Tree2TestDRL.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <move todir="src/test/java/org/drools/lang/">
+	                     <fileset dir="src/main/resources/org/drools/lang">
+	                        <include name="**/*.java" />
+	                     </fileset>
+	                  </move>
+	                  <echo message="Generating Antlr DSLMap.g and DSLMapWalker.g" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <arg line="-lib src/main/resources/org/drools/lang/dsl -o src/main/resources/org/drools/lang/dsl src/main/resources/org/drools/lang/dsl/DSLMap.g src/main/resources/org/drools/lang/dsl/DSLMapWalker.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <move todir="src/main/java/org/drools/lang/dsl/">
+	                     <fileset dir="src/main/resources/org/drools/lang/dsl">
+	                        <include name="**/*.java" />
+	                     </fileset>
+	                  </move>
+	                  <echo message="Generating Antlr Java.g" />
+	                  <java classname="org.antlr.Tool" fork="true">
+	                     <arg line="-lib src/main/resources/org/drools/semantics/java/parser -o src/main/resources/org/drools/semantics/java/parser src/main/resources/org/drools/semantics/java/parser/Java.g" />
+	                     <classpath refid="base.classpath" />
+	                  </java>
+	                  <move todir="src/main/java/org/drools/rule/builder/dialect/java/parser">
+	                     <fileset dir="src/main/resources/org/drools/semantics/java/parser">
+	                        <include name="**/*.java" />
+	                     </fileset>
+	                  </move>
+	                  <delete>
+	                     <fileset dir="src/main/resources/org/drools/lang">
+	                        <include name="**/*.tokens" />
+	                        <include name="DRL__.g" />
+	                        <include name="dsl/DSLMap__.g" />
+	                        <include name="__Test__.java" />
+	                        <include name="classes" />
+	                     </fileset>
+	                     <fileset dir="src/main/resources/org/drools/semantics/java/parser">
+	                        <include name="**/*.tokens" />
+	                        <include name="Java__.g" />
+	                     </fileset>
+	                  </delete>
+	               </tasks>
+	            </configuration>
                 <goals>
                   <goal>run</goal>
                 </goals>

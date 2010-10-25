@@ -67,11 +67,10 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VK_REVERSE
 					|| token.getType() == DRLLexer.VK_RULE
 					|| token.getType() == DRLLexer.VK_RULEFLOW_GROUP
-					|| token.getType() == DRLLexer.VK_SALIENCE
-					|| token.getType() == DRLLexer.VK_TEMPLATE) {
+					|| token.getType() == DRLLexer.VK_SALIENCE) {
 				tree.setEditorElementType(DroolsEditorType.KEYWORD);
 			} else if (token.getType() == DRLLexer.FLOAT
-					|| token.getType() == DRLLexer.INT) {
+					|| token.getType() == DRLLexer.DECIMAL) {
 				tree.setEditorElementType(DroolsEditorType.NUMERIC_CONST);
 			} else if (token.getType() == DRLLexer.STRING) {
 				tree.setEditorElementType(DroolsEditorType.STRING_CONST);
@@ -96,12 +95,12 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.RIGHT_PAREN
 					|| token.getType() == DRLLexer.LEFT_PAREN
 					|| token.getType() == DRLLexer.ARROW
-					|| token.getType() == DRLLexer.LESS_EQUAL
+					|| token.getType() == DRLLexer.LESS_EQUALS
 					|| token.getType() == DRLLexer.LESS
-					|| token.getType() == DRLLexer.GREATER_EQUAL
+					|| token.getType() == DRLLexer.GREATER_EQUALS
 					|| token.getType() == DRLLexer.GREATER
-					|| token.getType() == DRLLexer.NOT_EQUAL
-					|| token.getType() == DRLLexer.EQUAL
+					|| token.getType() == DRLLexer.NOT_EQUALS
+					|| token.getType() == DRLLexer.EQUALS
 					|| token.getType() == DRLLexer.COLON
 					|| token.getType() == DRLLexer.SEMICOLON) {
 				tree.setEditorElementType(DroolsEditorType.SYMBOL);
@@ -110,8 +109,6 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 					|| token.getType() == DRLLexer.VT_GLOBAL_ID
 					|| token.getType() == DRLLexer.VT_FUNCTION_ID
 					|| token.getType() == DRLLexer.VT_QUERY_ID
-					|| token.getType() == DRLLexer.VT_TEMPLATE_ID
-					|| token.getType() == DRLLexer.VT_SLOT_ID
 					|| token.getType() == DRLLexer.VT_RULE_ID
 					|| token.getType() == DRLLexer.VT_ENTRYPOINT_ID) {
 				tree.setEditorElementType(DroolsEditorType.IDENTIFIER);

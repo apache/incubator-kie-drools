@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Map.Entry;
 
+import org.antlr.runtime.BitSet;
 import org.antlr.runtime.EarlyExitException;
 import org.antlr.runtime.FailedPredicateException;
 import org.antlr.runtime.MismatchedNotSetException;
@@ -31,8 +32,8 @@ public class DroolsParserExceptionFactory {
 	public final static String MISMATCHED_TREE_NODE_MESSAGE_PART = "Line %1$d:%2$d mismatched tree node '%3$s'%4$s";
 	public final static String NO_VIABLE_ALT_MESSAGE = "Line %1$d:%2$d no viable alternative at input '%3$s'%4$s";
 	public final static String EARLY_EXIT_MESSAGE = "Line %1$d:%2$d required (...)+ loop did not match anything at input '%3$s'%4$s";
-	public final static String MISMATCHED_SET_MESSAGE = "Line %1$d:%2$d mismatched input '%3$' expecting set '%4$s'%5$s.";
-	public final static String MISMATCHED_NOT_SET_MESSAGE = "Line %1$d:%2$d mismatched input '%3$' expecting set '%4$s'%5$s";
+	public final static String MISMATCHED_SET_MESSAGE = "Line %1$d:%2$d mismatched input '%3$s' expecting one of the following tokens: '%4$s'%5$s.";
+	public final static String MISMATCHED_NOT_SET_MESSAGE = "Line %1$d:%2$d mismatched input '%3$s' not expecting any of the following tokens: '%4$s'%5$s";
 	public final static String FAILED_PREDICATE_MESSAGE = "Line %1$d:%2$d rule '%3$s' failed predicate: {%4$s}?%5$s";
 	public final static String TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE = "Line %1$d:%2$d trailing semi-colon not allowed%3$s";
 	public final static String PARSER_LOCATION_MESSAGE_COMPLETE = " in %1$s %2$s";
@@ -158,18 +159,20 @@ public class DroolsParserExceptionFactory {
 			codeAndMessage.add("ERR 105");
 		} else if (e instanceof MismatchedSetException) {
 			MismatchedSetException mse = (MismatchedSetException) e;
+			String expected = expectedTokensAsString( mse.expecting );
 			message = String.format(
 					DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
 					e.line, e.charPositionInLine, getBetterToken(e.token),
-					mse.expecting, formatParserLocation());
+					expected, formatParserLocation());
 			codeAndMessage.add(message);
 			codeAndMessage.add("ERR 107");
 		} else if (e instanceof MismatchedNotSetException) {
 			MismatchedNotSetException mse = (MismatchedNotSetException) e;
+            String expected = expectedTokensAsString( mse.expecting );
 			message = String.format(
 					DroolsParserExceptionFactory.MISMATCHED_NOT_SET_MESSAGE,
 					e.line, e.charPositionInLine, getBetterToken(e.token),
-					mse.expecting, formatParserLocation());
+					expected, formatParserLocation());
 			codeAndMessage.add(message);
 			codeAndMessage.add("ERR 108");
 		} else if (e instanceof FailedPredicateException) {
@@ -186,6 +189,19 @@ public class DroolsParserExceptionFactory {
 		}
 		return codeAndMessage;
 	}
+
+    private String expectedTokensAsString(BitSet set) {
+        StringBuilder buf = new StringBuilder();
+        buf.append( "{ " ); int i = 0;
+        for( int token : set.toArray() ) {
+            if( i > 0 ) buf.append( ", " );
+            buf.append( getBetterToken( token ) );
+            i++;
+        }
+        buf.append( " }" );
+        String expected = buf.toString();
+        return expected;
+    }
 
 	/**
 	 * This will take Paraphrases stack, and create a sensible location
@@ -280,7 +296,7 @@ public class DroolsParserExceptionFactory {
 	 */
 	private String getBetterToken(int tokenType, String defaultValue) {
 		switch (tokenType) {
-		case DRLLexer.INT:
+		case DRLLexer.DECIMAL:
 			return defaultValue == null ? "int" : defaultValue;
 		case DRLLexer.FLOAT:
 			return defaultValue == null ? "float" : defaultValue;
@@ -298,17 +314,17 @@ public class DroolsParserExceptionFactory {
 			return ".*";
 		case DRLLexer.COLON:
 			return ":";
-		case DRLLexer.EQUAL:
+		case DRLLexer.EQUALS:
 			return "==";
-		case DRLLexer.NOT_EQUAL:
+		case DRLLexer.NOT_EQUALS:
 			return "!=";
 		case DRLLexer.GREATER:
 			return ">";
-		case DRLLexer.GREATER_EQUAL:
+		case DRLLexer.GREATER_EQUALS:
 			return ">=";
 		case DRLLexer.LESS:
 			return "<";
-		case DRLLexer.LESS_EQUAL:
+		case DRLLexer.LESS_EQUALS:
 			return "<=";
 		case DRLLexer.ARROW:
 			return "->";

@@ -74,8 +74,6 @@ statement
 	{	this.packageDescr.addGlobal($gl.globalDescr);	}
 	|	fn=function
 	{	this.packageDescr.addFunction($fn.functionDescr);	}
-	|	tp=template
-	{	this.packageDescr.addFactTemplate($tp.factTemplateDescr);	}
 	|	rl=rule
 	{	this.packageDescr.addRule($rl.ruleDescr);	}
 	|	qr=query
@@ -108,19 +106,6 @@ global returns [GlobalDescr globalDescr]
 function returns [FunctionDescr functionDescr]
 	:	^(start=VK_FUNCTION dt=data_type? functionId=VT_FUNCTION_ID params=parameters content=VT_CURLY_CHUNK)
 	{	$functionDescr = factory.createFunction($start, $dt.dataType, $functionId, $params.paramList, $content);	}
-	;
-
-template returns [FactTemplateDescr factTemplateDescr]
-@init{
-	List slotList = new LinkedList<FieldTemplateDescr>();
-}	:	^(start=VK_TEMPLATE id=VT_TEMPLATE_ID
-			( ts=template_slot {slotList.add($ts.fieldTemplateDescr);})+ end=VK_END)
-	{	$factTemplateDescr = factory.createFactTemplate($start, $id, slotList, $end);	}
-	;
-
-template_slot returns [FieldTemplateDescr fieldTemplateDescr]
-	:	^(VT_SLOT dt=data_type id=VT_SLOT_ID)
-	{	$fieldTemplateDescr = factory.createFieldTemplate($dt.dataType, $id);	}
 	;
 
 query returns [QueryDescr queryDescr]
@@ -187,15 +172,15 @@ decl_field returns [TypeFieldDescr fieldDescr]
 	;
 
 decl_field_initialization returns [String expr]
-	:	^(EQUALS pc=VT_PAREN_CHUNK)
+	:	^(EQUALS_ASSIGN pc=VT_PAREN_CHUNK)
 	{	$expr = $pc.text.substring(1, $pc.text.length() -1 ).trim();	}
 	;
 
 rule_attribute returns [AttributeDescr attributeDescr]
-	:	(^(attrName=VK_SALIENCE (value=INT|value=VT_PAREN_CHUNK)) 
+	:	(^(attrName=VK_SALIENCE (value=SIGNED_DECIMAL|value=VT_PAREN_CHUNK)) 
 	|	^(attrName=VK_NO_LOOP value=BOOL?)  
 	|	^(attrName=VK_AGENDA_GROUP value=STRING)  
-	|	^(attrName=VK_TIMER (value=INT|value=VT_PAREN_CHUNK))   
+	|	^(attrName=VK_TIMER (value=SIGNED_DECIMAL|value=VT_PAREN_CHUNK))   
 	|	^(attrName=VK_ACTIVATION_GROUP value=STRING) 
 	|	^(attrName=VK_AUTO_FOCUS value=BOOL?) 
 	|	^(attrName=VK_DATE_EFFECTIVE value=STRING) 
@@ -290,13 +275,26 @@ accumulate_id_clause [PatternSourceDescr accumulateParam] returns [AccumulateDes
 from_source_clause returns [FromDescr fromDescr, AccessorDescr retAccessorDescr]
 scope{
 	AccessorDescr accessorDescr;
-}	:	^(VT_FROM_SOURCE id=ID pc=VT_PAREN_CHUNK? 
+}	:	^(fs=VT_FROM_SOURCE
+			{  $from_source_clause::accessorDescr = factory.createAccessor($fs.text);	
+			   $retAccessorDescr = $from_source_clause::accessorDescr;	
+			}
+		)
+		{	$fromDescr = factory.createFromSource(factory.setupAccessorOffset($from_source_clause::accessorDescr)); }
+	;	
+
+/*	:	^(VT_FROM_SOURCE id=ID pc=VT_PAREN_CHUNK? 
 	{	$from_source_clause::accessorDescr = factory.createAccessor($id, $pc);	
 		$retAccessorDescr = $from_source_clause::accessorDescr;	}
-		expression_chain?)
+		expression_chain? )
+	        |
+	        ^(VT_FROM_SOURCE sc=VT_SQUARE_CHUNK
+	{	$from_source_clause::accessorDescr = factory.createAccessor($sc);	
+		$retAccessorDescr = $from_source_clause::accessorDescr;	}
+	        expression_chain? )
 	{	$fromDescr = factory.createFromSource(factory.setupAccessorOffset($from_source_clause::accessorDescr)); }
 	;
-
+*/
 expression_chain
 	:	^(start=VT_EXPRESSION_CHAIN id=ID sc=VT_SQUARE_CHUNK? pc=VT_PAREN_CHUNK?
 	{	DeclarativeInvokerDescr declarativeInvokerResult = factory.createExpressionChain($start, $id, $sc, $pc);	
@@ -341,17 +339,17 @@ fact_expression returns [BaseDescr descr]
 	|	^(VK_EVAL pc=VT_PAREN_CHUNK)
 	{	$descr = factory.createPredicate($pc);	}
 
-	|	^(op=EQUAL fe=fact_expression)
+	|	^(op=EQUALS fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
-	|	^(op=NOT_EQUAL fe=fact_expression)
+	|	^(op=NOT_EQUALS fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
 	|	^(op=GREATER fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
-	|	^(op=GREATER_EQUAL fe=fact_expression)
+	|	^(op=GREATER_EQUALS fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
 	|	^(op=LESS fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
-	|	^(op=LESS_EQUAL fe=fact_expression)
+	|	^(op=LESS_EQUALS fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, null, $fe.descr);	}
 	|	^(op=VK_OPERATOR not=VK_NOT? param=VT_SQUARE_CHUNK? fe=fact_expression)
 	{	$descr = factory.setupRestriction($op, $not, $fe.descr, $param);	}
@@ -368,10 +366,11 @@ fact_expression returns [BaseDescr descr]
 	{	$descr = factory.createAccessorPath(exprList);	}
 	|	s=STRING
 	{	$descr = factory.createStringLiteralRestriction($s);	}
-	|	i=INT
-	{	$descr = factory.createIntLiteralRestriction($i);	}
-	|	f=FLOAT
-	{	$descr = factory.createFloatLiteralRestriction($f);	}
+	|	(PLUS|m=MINUS)? 
+	        (	(i=DECIMAL|i=SIGNED_DECIMAL) { $descr = factory.createIntLiteralRestriction($i, $m != null); 	}
+		|	(h=HEX|h=SIGNED_HEX)	  { $descr = factory.createIntLiteralRestriction($h, $m != null); 	}
+		|	(f=FLOAT|f=SIGNED_FLOAT)   { $descr = factory.createFloatLiteralRestriction($f, $m != null);	}
+		)
 	|	b=BOOL
 	{	$descr = factory.createBoolLiteralRestriction($b);	}
 	|	n=NULL

@@ -889,9 +889,9 @@ public class DRLContextTest extends TestCase {
 		}
 
 		LinkedList list = parser.getEditorInterface().get(0).getContent();
-		for (Object o: list) {
-			System.out.println(o);
-		}
+//		for (Object o: list) {
+//			System.out.println(o);
+//		}
 		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
 				getLastIntegerValue(parser.getEditorInterface().get(0)
 						.getContent()));
@@ -1159,7 +1159,7 @@ public class DRLContextTest extends TestCase {
 	}
 
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR2() {
-		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) &&  ";
+		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) and  ";
 
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
@@ -1258,7 +1258,7 @@ public class DRLContextTest extends TestCase {
 
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR8() {
 		String input = "rule MyRule \n" + "	when \n"
-				+ "		Class ( ) && name : Cl";
+				+ "		Class ( ) and name : Cl";
 
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
@@ -1433,7 +1433,7 @@ public class DRLContextTest extends TestCase {
 	}
 
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR22() {
-		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) || ";
+		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) or ";
 
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
@@ -1527,7 +1527,7 @@ public class DRLContextTest extends TestCase {
 
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR28() {
 		String input = "rule MyRule \n" + "	when \n"
-				+ "		Class ( ) || name : Cl";
+				+ "		Class ( ) or name : Cl";
 
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
@@ -2997,7 +2997,7 @@ public class DRLContextTest extends TestCase {
 
 	@SuppressWarnings("unchecked")
 	private int getLastIntegerValue(LinkedList list) {
-		System.out.println(list.toString());
+		//System.out.println(list.toString());
 		int lastIntergerValue = -1;
 		for (Object object : list) {
 			if (object instanceof Integer) {

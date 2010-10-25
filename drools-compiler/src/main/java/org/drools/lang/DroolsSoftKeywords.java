@@ -59,6 +59,21 @@ public class DroolsSoftKeywords {
 	public static final String RESULT = "result";
     public static final String END = "end";
     public static final String INIT = "init";
+    public static final String INSTANCEOF = "instanceof";
+    public static final String EXTENDS = "extends";
+    public static final String SUPER = "super";
+    public static final String BOOLEAN = "boolean";
+    public static final String CHAR = "char";
+    public static final String BYTE = "byte";
+    public static final String SHORT = "short";
+    public static final String INT = "int";
+    public static final String LONG = "long";
+    public static final String FLOAT = "float";
+    public static final String DOUBLE = "double";
+    public static final String THIS = "this";
+    public static final String VOID = "void";
+    public static final String CLASS = "class";
+    public static final String NEW = "new";
 	
 	public static boolean isOperator( final String operator, final boolean negated ) {
 	    try {
@@ -68,4 +83,5 @@ public class DroolsSoftKeywords {
 	        return false;
 	    }
 	}
+	
 }

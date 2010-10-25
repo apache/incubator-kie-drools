@@ -1,4 +1,4 @@
-// $ANTLR 3.1.1 src/main/resources/org/drools/lang/dsl/DSLMap.g 2010-05-27 17:19:52
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/lang/dsl/DSLMap.g 2010-10-25 14:22:45
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -178,9 +178,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 88:2: -> ^( VT_DSL_GRAMMAR ( statement )* )
@@ -366,9 +367,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 100:2: -> ^( VT_COMMENT[$LINE_COMMENT, \"COMMENT\"] LINE_COMMENT )
@@ -552,14 +554,15 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: meta_section, scope_section, value_section, key_section
+            // elements: scope_section, meta_section, value_section, key_section
             // token labels: 
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 105:2: -> ^( VT_ENTRY scope_section ( meta_section )? key_section value_section )
@@ -741,18 +744,19 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: value4, value3, value2, value1
+            // elements: value2, value4, value3, value1
             // token labels: 
             // rule labels: value1, value4, value2, retval, value3
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_value1=new RewriteRuleSubtreeStream(adaptor,"token value1",value1!=null?value1.tree:null);
-            RewriteRuleSubtreeStream stream_value4=new RewriteRuleSubtreeStream(adaptor,"token value4",value4!=null?value4.tree:null);
-            RewriteRuleSubtreeStream stream_value2=new RewriteRuleSubtreeStream(adaptor,"token value2",value2!=null?value2.tree:null);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
-            RewriteRuleSubtreeStream stream_value3=new RewriteRuleSubtreeStream(adaptor,"token value3",value3!=null?value3.tree:null);
+            RewriteRuleSubtreeStream stream_value1=new RewriteRuleSubtreeStream(adaptor,"rule value1",value1!=null?value1.tree:null);
+            RewriteRuleSubtreeStream stream_value4=new RewriteRuleSubtreeStream(adaptor,"rule value4",value4!=null?value4.tree:null);
+            RewriteRuleSubtreeStream stream_value2=new RewriteRuleSubtreeStream(adaptor,"rule value2",value2!=null?value2.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_value3=new RewriteRuleSubtreeStream(adaptor,"rule value3",value3!=null?value3.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 123:2: -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
@@ -877,9 +881,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 131:2: -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? )
@@ -989,9 +994,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 136:2: -> ^( VT_ENTRY_KEY ( key_sentence )+ )
@@ -1113,9 +1119,10 @@ public class DSLMapParser extends Parser {
                     // rule labels: retval
                     // token list labels: 
                     // rule list labels: 
+                    // wildcard labels: 
                     if ( state.backtracking==0 ) {
                     retval.tree = root_0;
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
                     // 145:2: -> VT_LITERAL[$cb.start, text]
@@ -1302,9 +1309,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 154:2: -> ^( VT_ENTRY_VAL ( value_sentence )+ )
@@ -1426,9 +1434,10 @@ public class DSLMapParser extends Parser {
                     // rule labels: retval
                     // token list labels: 
                     // rule list labels: 
+                    // wildcard labels: 
                     if ( state.backtracking==0 ) {
                     retval.tree = root_0;
-                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+                    RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
                     // 163:2: -> VT_LITERAL[$vc.start, text]
@@ -1791,16 +1800,17 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: q, name, q, q, name, q, name, q, q, name, name, name, name, name, q, q, q, name
+            // elements: q, q, q, q, q, name, name, name, q, name, name, name, q, name, name, q, q, name
             // token labels: name, q
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
             RewriteRuleTokenStream stream_name=new RewriteRuleTokenStream(adaptor,"token name",name);
             RewriteRuleTokenStream stream_q=new RewriteRuleTokenStream(adaptor,"token q",q);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 191:2: -> {hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
@@ -2164,10 +2174,11 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
             RewriteRuleTokenStream stream_name=new RewriteRuleTokenStream(adaptor,"token name",name);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 208:2: -> {!\"\".equals(text)}? ^( VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
@@ -2450,10 +2461,11 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
             RewriteRuleTokenStream stream_name=new RewriteRuleTokenStream(adaptor,"token name",name);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 233:2: -> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE
@@ -2581,10 +2593,11 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
             RewriteRuleTokenStream stream_name=new RewriteRuleTokenStream(adaptor,"token name",name);
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 242:2: -> ^( VT_VAR_REF $name)
@@ -2661,9 +2674,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 248:2: -> VT_CONDITION[$value]
@@ -2732,9 +2746,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 253:2: -> VT_CONSEQUENCE[$value]
@@ -2803,9 +2818,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 258:2: -> VT_KEYWORD[$value]
@@ -2874,9 +2890,10 @@ public class DSLMapParser extends Parser {
             // rule labels: retval
             // token list labels: 
             // rule list labels: 
+            // wildcard labels: 
             if ( state.backtracking==0 ) {
             retval.tree = root_0;
-            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"token retval",retval!=null?retval.tree:null);
+            RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
             // 263:2: -> VT_ANY[$value]
