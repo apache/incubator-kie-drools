@@ -174,6 +174,25 @@ public class MiscTest extends TestCase {
                                             config );
     }
 
+    private KnowledgeBase loadKnowledgeBase(String fileName) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( fileName,
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
+
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -7201,4 +7220,20 @@ public class MiscTest extends TestCase {
         verify( wml, times(2) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
         verify( wml, never() ).objectRetracted( any( org.drools.event.rule.ObjectRetractedEvent.class ) );
     }
+    
+    public void testOrWithReturnValueRestriction() throws Exception {
+        String fileName = "test_OrWithReturnValue.drl";
+        KnowledgeBase kbase = loadKnowledgeBase( fileName );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Cheese("brie", 18) );
+        ksession.insert( new Cheese("stilton", 8) );
+        ksession.insert( new Cheese("brie", 28) );
+
+        int fired = ksession.fireAllRules();
+        assertEquals( 2,
+                      fired );
+    }
+
+    
 }

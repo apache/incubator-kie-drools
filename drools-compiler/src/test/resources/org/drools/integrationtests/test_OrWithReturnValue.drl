@@ -1,0 +1,9 @@
+package org.drools
+ 
+rule "r1"
+when
+	Cheese( type == "brie", $price : price )
+	Cheese( type == "stilton", price == 10 || == ( $price % 10 ) )
+then
+	// noop		
+end
