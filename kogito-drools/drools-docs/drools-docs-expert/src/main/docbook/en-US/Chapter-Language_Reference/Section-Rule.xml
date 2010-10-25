@@ -902,6 +902,24 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
 Cheese( name soundslike 'foobar' )</programlisting>
               </example>
             </simplesect>
+          
+          <simplesect>
+              <title>The Operator <literal>str</literal></title>
+
+              <para>This operator <literal>str</literal> is used to
+              check whether a field that is a <indexterm>
+                  <primary>String</primary>
+                </indexterm>String starts with or ends with with a certain value. It can also be used to check
+                the length of the String.
+              <example>
+                <title>Test with str</title>
+
+                <programlisting>$m : Message( routingValue str[startsWith] "R1" )
+                				$m : Message( routingValue str[endsWith] "R2" )
+                				$m : Message( routingValue str[length] 17 )
+                </programlisting>
+              </example>
+            </simplesect>
           </section>
 
           <section>
