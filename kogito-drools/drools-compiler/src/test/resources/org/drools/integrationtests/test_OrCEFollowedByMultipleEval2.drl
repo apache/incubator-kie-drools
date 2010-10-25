@@ -6,8 +6,8 @@ when
     $aFact : FactA( $a : field1 == "a" )
     $bFact : FactB( $b : f1 == "b" )
     $cFact : FactC( $c : f1 == "c" )
-	( eval($aFact != null) || eval($bFact != null) ) 
-    ( eval($bFact != null) || eval($cFact != null) )
+	( eval($aFact != null) or eval($bFact != null) ) 
+    ( eval($bFact != null) or eval($cFact != null) )
 then
     // do something thrice
 end
@@ -18,8 +18,8 @@ when
     $aFact : FactA( $a : field1 == "a" )
     $bFact : FactB( $b : f1 == "b" )
     $cFact : FactC( $c : f1 == "c" )
-	( eval($aFact != null) || eval($bFact != null) ) 
-    ( eval($bFact != null) || eval($cFact != null) )
+	( eval($aFact != null) or eval($bFact != null) ) 
+    ( eval($bFact != null) or eval($cFact != null) )
 then
     // do something thrice
 end

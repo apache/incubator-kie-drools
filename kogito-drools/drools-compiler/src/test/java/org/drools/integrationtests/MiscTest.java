@@ -251,9 +251,7 @@ public class MiscTest extends TestCase {
     }
 
     public void testMetaConsequence() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MetaConsequence.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final Package pkg = loadPackage( "test_MetaConsequence.drl" );
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -277,6 +275,22 @@ public class MiscTest extends TestCase {
         assertEquals( "bar2",
                       (results.get( 1 )) );
 
+    }
+
+    private Package loadPackage(final String fileName) throws DroolsParserException,
+                                                      IOException {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( fileName ) ) );
+        
+        if( builder.hasErrors() ) {
+            for( DroolsError error : builder.getErrors().getErrors() ) {
+                System.err.println( error );
+            }
+        }
+        assertFalse( builder.getErrors().toString(), builder.hasErrors() );
+        
+        final Package pkg = builder.getPackage();
+        return pkg;
     }
 
     public void testEnabledExpression() throws Exception {
@@ -630,9 +644,7 @@ public class MiscTest extends TestCase {
     }
 
     public void testCustomGlobalResolver() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        final Package pkg = loadPackage( "test_globalCustomResolver.drl" );
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -1621,84 +1633,6 @@ public class MiscTest extends TestCase {
                     event.getObject() );
     }
 
-    public void testFactTemplate() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactTemplate.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
-
-        final FactTemplate cheese = pkg.getFactTemplate( "Cheese" );
-        final Fact stilton = cheese.createFact( 0 );
-        stilton.setFieldValue( "name",
-                               "stilton" );
-        stilton.setFieldValue( "price",
-                               new Integer( 100 ) );
-        InternalFactHandle stiltonHandle = (InternalFactHandle) workingMemory.insert( stilton );
-        // TODO does not work for facts now. adding equals(object) to it.
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 1,
-                      ((List) workingMemory.getGlobal( "list" )).size() );
-        assertEquals( stilton,
-                      ((List) workingMemory.getGlobal( "list" )).get( 0 ) );
-        final Fact fact = (Fact) ((List) workingMemory.getGlobal( "list" )).get( 0 );
-        assertEquals( stilton,
-                      fact );
-        assertEquals( new Integer( 200 ),
-                      fact.getFieldValue( "price" ) );
-        assertEquals( -1,
-                      stiltonHandle.getId() );
-    }
-
-    public void testFactTemplateFieldBinding() throws Exception {
-        // from JBRULES-1512
-        String rule1 = "package org.drools.entity\n";
-        rule1 += " global java.util.List list\n";
-        rule1 += "template Settlement\n";
-        rule1 += "    String InstrumentType\n";
-        rule1 += "    String InstrumentName\n";
-        rule1 += "end\n" + "rule TestEntity\n";
-        rule1 += "    when\n";
-        rule1 += "        Settlement(InstrumentType == \"guitar\", name : InstrumentName)\n";
-        rule1 += "    then \n";
-        rule1 += "        list.add( name ) ;\n";
-        rule1 += "end\n";
-
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule1 ) );
-        Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( pkg );
-
-        WorkingMemory wm = ruleBase.newStatefulSession();
-        List list = new ArrayList();
-        wm.setGlobal( "list",
-                      list );
-
-        final FactTemplate cheese = pkg.getFactTemplate( "Settlement" );
-        final Fact guitar = cheese.createFact( 0 );
-        guitar.setFieldValue( "InstrumentType",
-                              "guitar" );
-        guitar.setFieldValue( "InstrumentName",
-                              "gibson" );
-        wm.insert( guitar );
-
-        wm.fireAllRules();
-        assertEquals( "gibson",
-                      list.get( 0 ) );
-    }
-
     public void testPropertyChangeSupportOldAPI() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
@@ -2230,6 +2164,14 @@ public class MiscTest extends TestCase {
     public void testNullConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
+
+        if( builder.hasErrors() ) {
+            for( DroolsError error : builder.getErrors().getErrors() ) {
+                System.err.println( error );
+            }
+        }
+        assertFalse( builder.getErrors().toString(), builder.hasErrors() );
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -2860,6 +2802,13 @@ public class MiscTest extends TestCase {
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
+        
+        if( parser.hasErrors() ) {
+            for( DroolsError error : parser.getErrors() ) {
+                System.err.println( error );
+            }
+            fail( parser.getErrors().toString() );
+        }
 
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage( pkg );
@@ -2893,6 +2842,13 @@ public class MiscTest extends TestCase {
         builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( drlResult ) );
 
+        if( builder.hasErrors() ) {
+            for( DroolsError error : builder.getErrors().getErrors() ) {
+                System.err.println( error );
+            }
+            fail( parser.getErrors().toString() );
+        }
+
         ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         workingMemory = ruleBase.newStatefulSession();
@@ -2921,6 +2877,13 @@ public class MiscTest extends TestCase {
 
         builder = new PackageBuilder();
         builder.addPackageFromXml( new StringReader( xmlResult ) );
+
+        if( builder.hasErrors() ) {
+            for( DroolsError error : builder.getErrors().getErrors() ) {
+                System.err.println( error );
+            }
+            fail( parser.getErrors().toString() );
+        }
 
         ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );

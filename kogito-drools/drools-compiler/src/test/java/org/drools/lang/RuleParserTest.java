@@ -35,6 +35,7 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.drools.Person;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.io.Resource;
@@ -94,18 +95,95 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testFromComplexAcessor() throws Exception {
-        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" + " when \n" + " o: Order( ) \n" + " not( Customer( ) from customerService.getCustomer(o.getCustomerId()) ) \n" + " then \n"
-                        + " System.err.println(\"Invalid customer id found!\"); \n" + " o.addError(\"Invalid customer id\"); \n" + "end \n";
+        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
+                        " when \n" +
+                        "     o: Order( ) \n" +
+                        "     not( Customer( ) from customerService.getCustomer(o.getCustomerId()) ) \n" +
+                        " then \n" +
+                        "     System.err.println(\"Invalid customer id found!\"); \n" +
+                        "     o.addError(\"Invalid customer id\"); \n" +
+                        "end \n";
         parse( "compilation_unit",
                "compilation_unit",
                source );
+
+        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
 
         RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
         assertEquals( "Invalid customer id",
                       rule.getName() );
 
-        assertFalse( parser.hasErrors() );
+    }
 
+    public void testFromWithInlineList() throws Exception {
+        String source = "rule XYZ \n" +
+                        " when \n" +
+                        " o: Order( ) \n" +
+                        " not( Number( ) from [1, 2, 3] ) \n" +
+                        " then \n" +
+                        " System.err.println(\"Invalid customer id found!\"); \n" +
+                        " o.addError(\"Invalid customer id\"); \n" +
+                        "end \n";
+        parse( "compilation_unit",
+               "compilation_unit",
+               source );
+
+        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+        assertEquals( "XYZ",
+                      rule.getName() );
+
+        assertFalse( parser.hasErrors() );
+        PatternDescr number = (PatternDescr) ((NotDescr) rule.getLhs().getDescrs().get( 1 )).getDescrs().get( 0 );
+        assertEquals( "[1, 2, 3]",
+                      ((FromDescr) number.getSource()).getDataSource().toString() );
+
+    }
+
+    public void testFromWithInlineListMethod() throws Exception {
+        String source = "rule XYZ \n" +
+                        " when \n" +
+                        " o: Order( ) \n" +
+                        " Number( ) from [1, 2, 3].sublist(1, 2) \n" +
+                        " then \n" +
+                        " System.err.println(\"Invalid customer id found!\"); \n" +
+                        " o.addError(\"Invalid customer id\"); \n" +
+                        "end \n";
+        parse( "compilation_unit",
+               "compilation_unit",
+               source );
+
+        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+        assertEquals( "XYZ",
+                      rule.getName() );
+
+        assertFalse( parser.hasErrors() );
+        PatternDescr number = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "[1, 2, 3].sublist(1, 2)",
+                      ((FromDescr) number.getSource()).getDataSource().toString() );
+
+    }
+
+    public void testFromWithInlineListIndex() throws Exception {
+        String source = "rule XYZ \n" +
+                        " when \n" +
+                        " o: Order( ) \n" +
+                        " Number( ) from [1, 2, 3][1] \n" +
+                        " then \n" +
+                        " System.err.println(\"Invalid customer id found!\"); \n" +
+                        " o.addError(\"Invalid customer id\"); \n" +
+                        "end \n";
+        parse( "compilation_unit",
+               "compilation_unit",
+               source );
+
+        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+        assertEquals( "XYZ",
+                      rule.getName() );
+
+        assertFalse( parser.hasErrors() );
+        PatternDescr number = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "[1, 2, 3][1]",
+                      ((FromDescr) number.getSource()).getDataSource().toString() );
     }
 
     public void testRuleWithoutEnd() throws Exception {
@@ -260,59 +338,6 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 1,
                       pkg.getRules().size() );
-    }
-
-    public void testTemplates() throws Exception {
-
-        parseResource( "compilation_unit",
-                       "compilation_unit",
-                       "test_Templates.drl" );
-
-        final PackageDescr pkg = walker.getPackageDescr();
-
-        assertEquals( 1,
-                      pkg.getRules().size() );
-        assertEquals( 2,
-                      pkg.getFactTemplates().size() );
-
-        FactTemplateDescr fact1 = (FactTemplateDescr) pkg.getFactTemplates().get( 0 );
-        assertEquals( "Cheese",
-                      fact1.getName() );
-        assertEquals( 2,
-                      fact1.getFields().size() );
-
-        assertEquals( "name",
-                      ((FieldTemplateDescr) fact1.getFields().get( 0 )).getName() );
-        assertEquals( "String",
-                      ((FieldTemplateDescr) fact1.getFields().get( 0 )).getClassType() );
-
-        assertEquals( "age",
-                      ((FieldTemplateDescr) fact1.getFields().get( 1 )).getName() );
-        assertEquals( "Integer",
-                      ((FieldTemplateDescr) fact1.getFields().get( 1 )).getClassType() );
-
-        fact1 = null;
-
-        final FactTemplateDescr fact2 = (FactTemplateDescr) pkg.getFactTemplates().get( 1 );
-        assertEquals( "Wine",
-                      fact2.getName() );
-        assertEquals( 3,
-                      fact2.getFields().size() );
-
-        assertEquals( "name",
-                      ((FieldTemplateDescr) fact2.getFields().get( 0 )).getName() );
-        assertEquals( "String",
-                      ((FieldTemplateDescr) fact2.getFields().get( 0 )).getClassType() );
-
-        assertEquals( "year",
-                      ((FieldTemplateDescr) fact2.getFields().get( 1 )).getName() );
-        assertEquals( "String",
-                      ((FieldTemplateDescr) fact2.getFields().get( 1 )).getClassType() );
-
-        assertEquals( "accolades",
-                      ((FieldTemplateDescr) fact2.getFields().get( 2 )).getName() );
-        assertEquals( "String[]",
-                      ((FieldTemplateDescr) fact2.getFields().get( 2 )).getClassType() );
     }
 
     public void testTernaryExpression() throws Exception {
@@ -651,7 +676,7 @@ public class RuleParserTest extends TestCase {
         final FromDescr from = (FromDescr) pattern.getSource();
         final AccessorDescr method = (AccessorDescr) from.getDataSource();
 
-        assertEquals( "something.doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )",
+        assertEquals( "something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
                       method.toString() );
     }
 
@@ -664,7 +689,7 @@ public class RuleParserTest extends TestCase {
         final FromDescr from = (FromDescr) pattern.getSource();
         final AccessorDescr func = (AccessorDescr) from.getDataSource();
 
-        assertEquals( "doIt( foo,bar,42,\"hello\",{ a => \"b\", \"something\" => 42, \"a\" => foo, x => {x=>y}},\"end\", [a, \"b\", 42] )",
+        assertEquals( "doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
                       func.toString() );
     }
 
@@ -676,8 +701,6 @@ public class RuleParserTest extends TestCase {
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final FromDescr from = (FromDescr) pattern.getSource();
         final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
-
-        assertNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
 
         assertEquals( "something.doIt",
                       accessor.toString() );
@@ -692,8 +715,6 @@ public class RuleParserTest extends TestCase {
         final FromDescr from = (FromDescr) pattern.getSource();
         final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
 
-        assertNotNull( ((FieldAccessDescr) accessor.getInvokers().get( 0 )).getArgument() );
-
         assertEquals( "something.doIt[\"key\"]",
                       accessor.toString() );
     }
@@ -706,7 +727,7 @@ public class RuleParserTest extends TestCase {
         final FromDescr from = (FromDescr) pattern.getSource();
         final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
 
-        assertEquals( "doIt1( foo,bar,42,\"hello\",{ a => \"b\"}, [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]",
+        assertEquals( "doIt1( foo,bar,42,\"hello\",[ a : \"b\"], [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]",
                       accessor.toString() );
     }
 
@@ -3987,10 +4008,10 @@ public class RuleParserTest extends TestCase {
         // forcing ANTLR to use an input stream as a source
         final URL url = getClass().getResource( fileName );
         final Resource resource = ResourceFactory.newUrlResource( url );
-        
+
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( resource.getInputStream() );
-        
+
         assertFalse( parser.hasErrors() );
         assertNotNull( pkg );
     }
@@ -4080,8 +4101,10 @@ public class RuleParserTest extends TestCase {
         assertEquals( 4,
                       patternDescr.getDescrs().size() );
         FieldBindingDescr nameBind = (FieldBindingDescr) patternDescr.getDescrs().get( 0 );
-        assertEquals( "$n", nameBind.getIdentifier() );
-        assertEquals( "name", nameBind.getFieldName() );
+        assertEquals( "$n",
+                      nameBind.getIdentifier() );
+        assertEquals( "name",
+                      nameBind.getFieldName() );
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) patternDescr.getDescrs().get( 1 );
         assertEquals( "name",
                       fieldConstraintDescr.getFieldName() );
@@ -4092,10 +4115,12 @@ public class RuleParserTest extends TestCase {
                       literalRestrictionDescr.getEvaluator() );
         assertEquals( "Bob",
                       literalRestrictionDescr.getText() );
-        
+
         FieldBindingDescr ageBind = (FieldBindingDescr) patternDescr.getDescrs().get( 2 );
-        assertEquals( "$a", ageBind.getIdentifier() );
-        assertEquals( "age", ageBind.getFieldName() );
+        assertEquals( "$a",
+                      ageBind.getIdentifier() );
+        assertEquals( "age",
+                      ageBind.getFieldName() );
         fieldConstraintDescr = (FieldConstraintDescr) patternDescr.getDescrs().get( 3 );
         assertEquals( "age",
                       fieldConstraintDescr.getFieldName() );

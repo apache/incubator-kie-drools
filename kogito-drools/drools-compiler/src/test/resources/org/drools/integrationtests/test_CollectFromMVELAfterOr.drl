@@ -13,7 +13,7 @@ salience 70
 	when
 		$jill        : Person( name == "jill" )
         $bob         : Person( name == "bob" )
-		( eval( $jill != null ) || eval( $bob != null ) )
+		( eval( $jill != null ) or eval( $bob != null ) )
         $addressList : ArrayList(size > 2) from collect( Address() from $bob.addresses )
     then
         results.add($addressList);

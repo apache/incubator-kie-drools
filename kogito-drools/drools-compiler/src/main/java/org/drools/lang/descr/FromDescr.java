@@ -51,5 +51,8 @@ public class FromDescr extends PatternSourceDescr
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());        
     }
 
+    public String toString() {
+        return "from "+this.dataSource.toString();
+    }
 
 }

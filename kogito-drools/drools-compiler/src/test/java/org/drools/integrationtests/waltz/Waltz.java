@@ -31,8 +31,10 @@ import org.drools.RuleIntegrationException;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.ParserError;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
@@ -94,6 +96,13 @@ public abstract class Waltz extends TestCase {
         final Reader reader = new InputStreamReader( Waltz.class.getResourceAsStream( "waltz.drl" ) );
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
+        
+        if( parser.hasErrors() ) {
+            for( DroolsError error : parser.getErrors() ) {
+                System.out.println( error );
+            }
+            assertFalse( parser.getErrors().toString(), parser.hasErrors() );
+        }
 
         //pre build the package
         final PackageBuilder builder = new PackageBuilder();

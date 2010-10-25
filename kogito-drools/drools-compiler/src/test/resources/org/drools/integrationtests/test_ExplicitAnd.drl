@@ -7,7 +7,7 @@ global java.util.List list;
 
 rule "Hello World"
 	when
-		Message() && Cheese()
+		Message() and Cheese()
 	then
 		list.add("hola");
 end

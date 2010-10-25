@@ -222,13 +222,13 @@ public class ErrorsParserTest extends TestCase {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
             parser.compilation_unit();
-            System.out.println( this.getName() );
-            for ( String message : this.parser.getErrorMessages() ) {
-                System.out.println( message );
-            }
+//            System.out.println( this.getName() );
+//            for ( String message : this.parser.getErrorMessages() ) {
+//                System.out.println( message );
+//            }
             assertTrue( "Parser should have raised errors",
                         parser.hasErrors() );
-            assertEquals( 3,
+            assertEquals( 4,
                           parser.getErrors().size() );
 
         } catch ( NullPointerException npe ) {

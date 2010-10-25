@@ -807,6 +807,26 @@ public class DescrFactory {
 		return accessor;
 	}
 
+    /**
+     * Factory method that creates an AccessorDescr.
+     * 
+     * @param id
+     *            accessor identifier
+     * @param chunk
+     *            chunk data, may be null
+     * @return AccessorDescr filled
+     * @see AccessorDescr
+     */
+    public AccessorDescr createAccessor(String text) {
+        AccessorDescr accessor = new AccessorDescr( null );
+//        accessor.setLocation(getLineLocation(start), getColumnLocation(start));
+//        accessor.setStartCharacter(getStartOffsetLocation(start));
+//        accessor.setEndCharacter(getEndOffsetLocation(stop));
+        MVELExprDescr expr = new MVELExprDescr( text );
+        accessor.addInvoker( expr );
+        return accessor;
+    }
+
 	/**
 	 * Setup the char offset for AccessorDescr.
 	 * 
@@ -938,13 +958,16 @@ public class DescrFactory {
                 pattern.getConstraint().addOrMerge(exprList.get(0));
 			} else {
 				for (BaseDescr constraint : exprList) {
-					pattern.getConstraint().addDescr(constraint);
+				    if( constraint != null ) {
+	                    pattern.getConstraint().addDescr(constraint);
+				    }
 				}
 			}
-			pattern.setEndCharacter(exprList.get(exprList.size() - 1)
-					.getEndCharacter());
+			BaseDescr last = exprList.get(exprList.size() - 1 );
+			if( last != null ) {
+	            pattern.setEndCharacter(last.getEndCharacter());
+			}
 		}
-
 		return pattern;
 	}
 
@@ -1278,10 +1301,10 @@ public class DescrFactory {
 	 * @return LiteralRestrictionDescr filled
 	 * @see LiteralRestrictionDescr
 	 */
-	public LiteralRestrictionDescr createIntLiteralRestriction(DroolsTree i) {
+	public LiteralRestrictionDescr createIntLiteralRestriction(DroolsTree i, boolean negative) {
 		LiteralRestrictionDescr intLit = new LiteralRestrictionDescr();
 		intLit.setType(LiteralRestrictionDescr.TYPE_NUMBER);
-		intLit.setText(i.getText());
+		intLit.setText((negative?"-":"")+i.getText());
 		return intLit;
 	}
 
@@ -1293,10 +1316,10 @@ public class DescrFactory {
 	 * @return LiteralRestrictionDescr filled
 	 * @see LiteralRestrictionDescr
 	 */
-	public LiteralRestrictionDescr createFloatLiteralRestriction(DroolsTree f) {
+	public LiteralRestrictionDescr createFloatLiteralRestriction(DroolsTree f, boolean negative) {
 		LiteralRestrictionDescr floatLit = new LiteralRestrictionDescr();
 		floatLit.setType(LiteralRestrictionDescr.TYPE_NUMBER);
-		floatLit.setText(f.getText());
+		floatLit.setText((negative?"-":"")+f.getText());
 		return floatLit;
 	}
 

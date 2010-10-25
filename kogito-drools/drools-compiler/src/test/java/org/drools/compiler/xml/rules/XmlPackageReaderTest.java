@@ -61,7 +61,7 @@ public class XmlPackageReaderTest extends TestCase {
         FromDescr from = (FromDescr) patterndescr.getSource();
         
         AccessorDescr accessordescriptor =  (AccessorDescr) from.getDataSource();
-        assertEquals( accessordescriptor.getVariableName(), "cheesery" );
+        assertEquals( accessordescriptor.toString().trim(), "cheesery.getCheeses(i+4)" );
 
         assertEquals( patterndescr.getObjectType(), "Cheese" );
         assertEquals( patterndescr.getIdentifier(), "cheese" );

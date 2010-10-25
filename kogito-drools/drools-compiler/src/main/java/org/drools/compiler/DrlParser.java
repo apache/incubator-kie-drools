@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.antlr.runtime.ANTLRInputStream;
@@ -48,7 +49,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
  */
 public class DrlParser {
 
-    private static final String     GENERIC_ERROR_MESSAGE = "Unknown error while parsing. This is a bug. Please contact the Development team.";
+    private static final String     GENERIC_ERROR_MESSAGE = "Unexpected exception raised while parsing. This is a bug. Please contact the Development team :\n";
     private final List<DroolsError> results               = new ArrayList<DroolsError>();
     private List<DroolsSentence>    editorSentences       = null;
     private Location                location              = new Location( Location.LOCATION_UNKNOWN );
@@ -237,7 +238,7 @@ public class DrlParser {
                 return null;
             }
         } catch ( Exception e ) {
-            final ParserError err = new ParserError( GENERIC_ERROR_MESSAGE,
+            final ParserError err = new ParserError( GENERIC_ERROR_MESSAGE + e.toString()+"\n"+ Arrays.toString( e.getStackTrace() ),
                                                      -1,
                                                      0 );
             this.results.add( err );
@@ -247,7 +248,7 @@ public class DrlParser {
                 }
                 return walker.getPackageDescr();
             } else {
-                throw new DroolsParserException( GENERIC_ERROR_MESSAGE,
+                throw new DroolsParserException( GENERIC_ERROR_MESSAGE + e.getMessage(),
                                                  e );
             }
         }
@@ -286,7 +287,7 @@ public class DrlParser {
      */
     private DRLParser getParser(final String text) {
         lexer = new DRLLexer( new ANTLRStringStream( text ) );
-        DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
+        DRLParser parser = new DRLParser( new CommonTokenStream( lexer ));
         parser.setTreeAdaptor( new DroolsTreeAdaptor() );
         return parser;
     }
@@ -294,7 +295,7 @@ public class DrlParser {
     private DRLParser getParser(final Reader reader) {
         try {
             lexer = new DRLLexer( new ANTLRReaderStream( reader ) );
-            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
+            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ));
             parser.setTreeAdaptor( new DroolsTreeAdaptor() );
             return parser;
         } catch ( final Exception e ) {
@@ -306,7 +307,7 @@ public class DrlParser {
     private DRLParser getParser(final InputStream is) {
         try {
             lexer = new DRLLexer( new ANTLRInputStream( is ) );
-            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
+            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ));
             parser.setTreeAdaptor( new DroolsTreeAdaptor() );
             return parser;
         } catch ( final Exception e ) {

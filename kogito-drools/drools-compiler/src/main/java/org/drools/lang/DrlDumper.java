@@ -434,7 +434,12 @@ public class DrlDumper extends ReflectiveVisitor
             visit( obj );
             descrString += this.template;
 
-            if ( obj.getClass().equals( PatternDescr.class ) || obj.getClass().equals( CollectDescr.class ) ) {
+            // this is absolutely dumb... we need to redo this dumper...
+            if ( obj.getClass().equals( PatternDescr.class ) || 
+                 obj.getClass().equals( CollectDescr.class ) ||
+                 obj.getClass().equals( EvalDescr.class ) ||
+                 obj.getClass().equals( AccumulateDescr.class ) ||
+                 obj.getClass().equals( FromDescr.class )) {
                 descrString += DrlDumper.eol;
             } else if ( ite.hasNext() ) {
                 descrString += " && ";
