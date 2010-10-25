@@ -112,7 +112,7 @@ public class CommandFactory {
      *    Optional EntryPoint for the insertions
      * @return
      */
-    public Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
+    public static Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
         return getCommandFactoryProvider().newInsertElements( objects, outIdentifier, returnObject, entryPoint );
     }    
 
