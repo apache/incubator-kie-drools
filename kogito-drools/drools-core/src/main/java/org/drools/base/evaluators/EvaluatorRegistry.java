@@ -89,6 +89,7 @@ public class EvaluatorRegistry
         this.addEvaluatorDefinition( new StartsEvaluatorDefinition() );
         this.addEvaluatorDefinition( new StartedByEvaluatorDefinition() );
         this.addEvaluatorDefinition( new CoincidesEvaluatorDefinition() );
+        this.addEvaluatorDefinition( new StrEvaluatorDefinition() );
     }
 
     /**
