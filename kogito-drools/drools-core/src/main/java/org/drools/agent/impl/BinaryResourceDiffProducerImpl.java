@@ -157,7 +157,7 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
             newPkg.removeFunction(newFunction.getName());
             this.unmodifiedDefinitions.add(oldFunction);
         }else{
-            //it seams that the kbase doesn't overrides function's definitions.
+            //it seems that the kbase doesn't overrides function's definitions.
             //that's why we need to mark this function as removed, but don't
             //remove it from the new pkg.
             listener.debug("BinaryResourceDiffProducerImpl: "+oldFunction+" did change. Marking as removed so it new version could be added later.");
