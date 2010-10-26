@@ -18,7 +18,9 @@ package org.drools.doc;
 
 import java.awt.Color;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
@@ -198,6 +200,27 @@ public class DroolsDocsComponentFactory {
 
         return footer;
     }
+    
+    private static String[] splitFirst(String source, String splitter) {
+        Vector rv = new Vector();
+        int last = 0;
+        int next = 0;
+
+        next = source.indexOf(splitter, last);
+        if (next != -1)
+        {
+          rv.add(source.substring(last, next));
+          last = next + splitter.length();
+        }
+
+        if (last < source.length())
+        {
+          rv.add(source.substring(last, source.length()));
+        }
+
+        return (String[]) rv.toArray(new String[rv.size()]);
+      }
+
 
     public static void newRulePage(Document document,
                                    String packageName,
@@ -220,9 +243,27 @@ public class DroolsDocsComponentFactory {
             document.add( ext );
         }
 
-        // Description
-        document.add( newDescription( drlData.getDescription() ) );
-
+        // if the data came from guvnor, this will be empty
+        if(drlData.getDescription() != null && drlData.getDescription().trim().equals("")) {
+        	Iterator<String> iter = drlData.getMetadata().iterator();
+        	while(iter.hasNext()) {
+        		String nextDesc = iter.next();
+        		if(nextDesc.startsWith("Description")) {
+        			String[] parts = splitFirst(nextDesc, ":");
+        			// no description
+        			if(parts.length == 1) {
+        				// guvnor did not have it
+        				document.add( newDescription( drlData.getDescription() ) );
+        			} else {
+        				document.add(newDescription(parts[1]));
+        			}
+        		}
+        	}
+        	
+        } else {
+        	document.add( newDescription( drlData.getDescription() ) );
+        }
+        
         // DRL
         document.add( newRuleTable( drlData ) );
 
