@@ -6842,7 +6842,12 @@ public class MiscTest extends TestCase {
         ep.insert( new Person( "darth" ) );
         Thread.currentThread().sleep( 500 );
         ksession.halt();
-        t1.stop();
+        t1.join(5000);
+        boolean alive = t1.isAlive();
+        if( alive ) {
+            t1.interrupt();
+        }
+        assertFalse( "Thread should have died!", alive );
         assertEquals( 1,
                       list.size() );
     }

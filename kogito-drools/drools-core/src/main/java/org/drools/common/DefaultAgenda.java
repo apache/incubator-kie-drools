@@ -36,9 +36,7 @@ import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -372,9 +370,7 @@ public class DefaultAgenda
         }
 
         // making sure we re-evaluate agenda in case we are waiting for activations
-        synchronized ( this.halt ) {
-            this.halt.notifyAll();
-        }
+        notifyHalt();
         return true;
 
     }
@@ -1040,23 +1036,20 @@ public class DefaultAgenda
         fireUntilHalt( null );
     }
 
-    private AtomicBoolean missedNotifyAll = new AtomicBoolean(false);
-    
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter );
             fired = fired || !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
             this.workingMemory.executeQueuedActions();
-            if ( !fired && !missedNotifyAll.get()) {
+            if ( !fired ) {
                 try {
                     synchronized ( this.halt ) {
-                        this.halt.wait();
+                        if( !this.halt.get() ) this.halt.wait();
                     }
                 } catch ( InterruptedException e ) {
                     this.halt.set( true );
                 }
-                this.missedNotifyAll.set( false );
             } else {
                 this.workingMemory.executeQueuedActions();
             }
@@ -1089,7 +1082,6 @@ public class DefaultAgenda
 
     public void notifyHalt() {
         synchronized ( this.halt ) {
-            this.missedNotifyAll.set( true );
             this.halt.notifyAll();
         }
     }
