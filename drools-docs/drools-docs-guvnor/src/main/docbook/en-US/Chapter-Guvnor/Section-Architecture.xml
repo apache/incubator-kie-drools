@@ -70,8 +70,7 @@
 
       <para>When wishing to build Guvnor, go into the drools-guvnor
       directory, and run <command>mvn package</command>. This will run the tests,
-      and then build a deployable war. The only thing this will not do is
-      rebuild the GWT front end (see the next section for details on that).
+      and then build a deployable war.
       Once the war file is in the target directory, the BRMS is ready to
       go.</para>
     </section>
@@ -80,15 +79,7 @@
       <title>Working with GWT</title>
 
       <para>The GUI widgets for the web front end are developed with GWT
-      (Google Web Toolkit). If there is a need to make changes to or build the
-      GUI, GWT will need to be downloaded separately. Once GWT is downloaded,
-      the <filename>build.properties</filename> file in the drools-guvnor
-      directory to point to where GWT is installed. Once this is completed,
-      the ant tasks can be used to build the GWT components, as well as launch
-      GWT in debug/hosted mode if it is desired. If running the build, it will
-      update the webapp directory in the project with the new
-      <emphasis>compiled</emphasis> artifacts (GWT does not use JSP, only html
-      and javascript at runtime).</para>
+      (Google Web Toolkit).
     </section>
 
     <section>
