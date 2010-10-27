@@ -247,11 +247,7 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
-	public QueryResults getQueryResults(String query) {
-		throw new UnsupportedOperationException();
-	}
-
-	public QueryResults getQueryResults(String query, Object[] arguments) {
+	public QueryResults getQueryResults(String query, Object... arguments) {
 		throw new UnsupportedOperationException();
 	}
 
