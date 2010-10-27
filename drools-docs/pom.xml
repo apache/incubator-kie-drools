@@ -24,7 +24,7 @@
   </modules>
 
   <dependencyManagement>
-    <dependencies>      
+    <dependencies>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-docs-introduction</artifactId>
