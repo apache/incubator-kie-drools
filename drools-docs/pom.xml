@@ -63,20 +63,6 @@
     </dependencies>
   </dependencyManagement>
 
-  <contributors>
-    <contributor>
-      <name>Ellen N. Zhao</name>
-      <email>enzhao@gmail.com</email>
-      <url>http://ningning.org</url>
-      <organization>HaCon Ingenieurgesellschaft mbH</organization>
-      <organizationUrl>http://hacon.de</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-      </roles>
-    </contributor>
-  </contributors>
-
-
   <profiles>
     <profile>
       <id>soa</id>
