@@ -153,23 +153,25 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         for ( Process process : kruntime.getKnowledgeBase().getProcesses() ) {
             if ( process instanceof RuleFlowProcess ) {
                 StartNode startNode = ((RuleFlowProcess) process).getStart();
-                List<Trigger> triggers = startNode.getTriggers();
-                if ( triggers != null ) {
-                    for ( Trigger trigger : triggers ) {
-                        if ( trigger instanceof EventTrigger ) {
-                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
-                            String type = null;
-                            for ( EventFilter filter : filters ) {
-                                if ( filter instanceof EventTypeFilter ) {
-                                    type = ((EventTypeFilter) filter).getType();
-                                }
-                            }
-                            signalManager.addEventListener( type,
-                                                            new StartProcessEventListener( process.getId(),
-                                                                                           filters,
-                                                                                           trigger.getInMappings() ) );
-                        }
-                    }
+                if (startNode != null) {
+	                List<Trigger> triggers = startNode.getTriggers();
+	                if ( triggers != null ) {
+	                    for ( Trigger trigger : triggers ) {
+	                        if ( trigger instanceof EventTrigger ) {
+	                            final List<EventFilter> filters = ((EventTrigger) trigger).getEventFilters();
+	                            String type = null;
+	                            for ( EventFilter filter : filters ) {
+	                                if ( filter instanceof EventTypeFilter ) {
+	                                    type = ((EventTypeFilter) filter).getType();
+	                                }
+	                            }
+	                            signalManager.addEventListener( type,
+	                                                            new StartProcessEventListener( process.getId(),
+	                                                                                           filters,
+	                                                                                           trigger.getInMappings() ) );
+	                        }
+	                    }
+	                }
                 }
             }
         }

@@ -20,6 +20,7 @@ import org.drools.definition.process.Node;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.drools.runtime.rule.impl.InternalAgenda;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
 
@@ -36,6 +37,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	}
 	
     public void internalTrigger(NodeInstance from, String type) {
+    	triggerEvent(ExtendedNodeImpl.EVENT_NODE_ENTER);
     	InternalAgenda agenda =  (InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda();
     	((AgendaImpl) agenda).getAgenda().getRuleFlowGroup(getRuleFlowGroupName()).setAutoDeactivate(false);
     	agenda.activateRuleFlowGroup(

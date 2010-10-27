@@ -47,6 +47,7 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
     private transient InternalKnowledgeRuntime kruntime;
+    private Map<String, Object> metaData = new HashMap<String, Object>();
 
     public void setId(final long id) {
         this.id = id;
@@ -214,4 +215,13 @@ public abstract class ProcessInstanceImpl implements ProcessInstance, Serializab
         b.append( "]" );
         return b.toString();
     }
+
+	public Map<String, Object> getMetaData() {
+		return this.metaData;
+	}
+
+    public void setMetaData(String name, Object data) {
+        this.metaData.put(name, data);
+    }
+    
 }

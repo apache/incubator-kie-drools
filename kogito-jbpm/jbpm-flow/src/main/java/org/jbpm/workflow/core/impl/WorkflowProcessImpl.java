@@ -31,8 +31,9 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     private static final long serialVersionUID = 510l;
     
     private boolean autoComplete = false;
-
+    private boolean dynamic = false;
     private org.jbpm.workflow.core.NodeContainer nodeContainer;
+    
     public WorkflowProcessImpl() {
         nodeContainer = (org.jbpm.workflow.core.NodeContainer) createNodeContainer();
     }
@@ -70,5 +71,13 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     public void setAutoComplete(boolean autoComplete) {
         this.autoComplete = autoComplete;
     }
+
+	public boolean isDynamic() {
+		return dynamic;
+	}
+
+	public void setDynamic(boolean dynamic) {
+		this.dynamic = dynamic;
+	}
 
 }

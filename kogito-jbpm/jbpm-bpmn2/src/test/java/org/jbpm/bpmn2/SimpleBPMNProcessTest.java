@@ -621,6 +621,22 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
     
+    public void testAdHocProcess() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-AdHocProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession = restoreSession(ksession);
+        System.out.println("Triggering node");
+        ksession.signalEvent("Task1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+        ksession.signalEvent("User1", null, processInstance.getId());
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.insert(new Person());
+		ksession.signalEvent("Task3", null, processInstance.getId());
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
     public void testIntermediateCatchEventSignal() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -918,6 +934,10 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	
 	private void assertProcessInstanceAborted(long processInstanceId, StatefulKnowledgeSession ksession) {
 		assertNull(ksession.getProcessInstance(processInstanceId));
+	}
+	
+	private void assertProcessInstanceActive(long processInstanceId, StatefulKnowledgeSession ksession) {
+		assertNotNull(ksession.getProcessInstance(processInstanceId));
 	}
 	
 	private static class TestWorkItemHandler implements WorkItemHandler {

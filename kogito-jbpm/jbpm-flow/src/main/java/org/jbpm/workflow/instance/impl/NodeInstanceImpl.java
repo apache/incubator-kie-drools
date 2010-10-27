@@ -18,7 +18,9 @@ package org.jbpm.workflow.instance.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Connection;
@@ -52,6 +54,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     private long nodeId;
     private WorkflowProcessInstance processInstance;
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
+    private Map<String, Object> metaData = new HashMap<String, Object>();
 
     public void setId(final long id) {
         this.id = id;
@@ -273,6 +276,14 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     		parent = nodeInstance.getNodeInstanceContainer();
     	}
     	return result;
+    }
+    
+	public Map<String, Object> getMetaData() {
+		return this.metaData;
+	}
+
+    public void setMetaData(String name, Object data) {
+        this.metaData.put(name, data);
     }
     
 }

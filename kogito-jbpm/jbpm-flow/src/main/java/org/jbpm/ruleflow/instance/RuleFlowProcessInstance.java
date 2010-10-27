@@ -17,6 +17,7 @@
 package org.jbpm.ruleflow.instance;
 
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
@@ -29,7 +30,10 @@ public class RuleFlowProcessInstance extends WorkflowProcessInstanceImpl {
     }
 
     public void internalStart() {
-        ((NodeInstance) getNodeInstance(getRuleFlowProcess().getStart())).trigger(null, null);
+    	StartNode startNode = getRuleFlowProcess().getStart();
+    	if (startNode != null) {
+    		((NodeInstance) getNodeInstance(startNode)).trigger(null, null);
+    	}
     }
 
 }

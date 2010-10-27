@@ -88,4 +88,6 @@ public interface WorkflowProcess extends org.drools.definition.process.WorkflowP
      */
     boolean isAutoComplete();
     
+    boolean isDynamic();
+    
 }

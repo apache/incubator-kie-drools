@@ -140,6 +140,9 @@ public class XmlBPMNProcessDumper {
         if (packageName != null && !"org.drools.bpmn2".equals(packageName)) {
             xmlDump.append("tns:packageName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(packageName) + "\" ");
         }
+        if (((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()) {
+        	xmlDump.append("tns:adHoc=\"true\" ");
+        }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
         visitLanes(process, xmlDump);

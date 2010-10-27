@@ -28,6 +28,7 @@ import org.drools.runtime.process.NodeInstance;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
@@ -115,14 +116,15 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	ProcessInstance processInstance = ( ProcessInstance )
 	    		((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
 	    			.startProcess(processId, parameters);
+	    	this.processInstanceId = processInstance.getId();
+	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", processInstance.getId());
 	    	if (!getSubProcessNode().isWaitForCompletion()) {
 	    		triggerCompleted();
 	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
 	    		handleOutMappings(processInstance);
 	    		triggerCompleted();
 	    	} else {
-	    		this.processInstanceId = processInstance.getId();
-	    	    addProcessListener();
+	    		addProcessListener();
 	    	}
         }
     }

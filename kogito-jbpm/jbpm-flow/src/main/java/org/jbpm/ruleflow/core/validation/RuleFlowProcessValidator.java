@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.RuntimeDroolsException;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
+import org.drools.definition.process.NodeContainer;
 import org.drools.definition.process.Process;
 import org.drools.time.TimeUtils;
 import org.jbpm.process.core.Work;
@@ -34,9 +35,13 @@ import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
@@ -51,7 +56,6 @@ import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.mvel2.ErrorDetail;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -100,7 +104,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         }
 
         // check start node of process
-        if ( process.getStart() == null ) {
+        if ( process.getStart() == null && !process.isDynamic()) {
             errors.add(new ProcessValidationErrorImpl(process,
                 "Process has no start node."));
         }
@@ -109,7 +113,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         endNodeFound = false;
         final Node[] nodes = process.getNodes();
         validateNodes(nodes, errors, process);
-        if (!startNodeFound) {
+        if (!startNodeFound && !process.isDynamic()) {
             errors.add(new ProcessValidationErrorImpl(process,
                 "Process has no start node."));
         }
@@ -449,9 +453,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             	eventNodes.add(node);
             }
         }
-        final Node start = process.getStart();
-        if (start != null) {
-            processNode(start, processNodes);
+        if (process.isDynamic()) {
+        	for (Node node: process.getNodes()) {
+        		if (node.getIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE).isEmpty()) {
+        			processNode(node, processNodes);
+        		}
+        	}
+        } else {
+	        final Node start = process.getStart();
+	        if (start != null) {
+	            processNode(start, processNodes);
+	        }
         }
         for (Node eventNode: eventNodes) {
             processNode(eventNode, processNodes);
@@ -481,11 +493,15 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     }
     
     private boolean acceptsNoIncomingConnections(Node node) {
-    	return node.getNodeContainer() instanceof DynamicNode;
+    	NodeContainer nodeContainer = node.getNodeContainer();
+    	return nodeContainer instanceof DynamicNode || 
+    		(nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
     }
 
     private boolean acceptsNoOutgoingConnections(Node node) {
-    	return node.getNodeContainer() instanceof DynamicNode;
+    	NodeContainer nodeContainer = node.getNodeContainer();
+    	return nodeContainer instanceof DynamicNode || 
+    		(nodeContainer instanceof WorkflowProcess && ((WorkflowProcess) nodeContainer).isDynamic());
     }
     
     private void validateTimer(final Timer timer, final Node node,

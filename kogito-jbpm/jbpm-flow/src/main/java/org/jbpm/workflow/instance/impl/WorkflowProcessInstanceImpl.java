@@ -355,6 +355,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 					}
 				}
 			}
+			if (((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
+				for (Node node : getWorkflowProcess().getNodes()) {
+					if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
+		    			NodeInstance nodeInstance = getNodeInstance(node);
+		                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
+		                	.trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+		    		}
+				}
+			}
 		}
 	}
 
@@ -407,7 +416,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 	
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
-        if (nodeInstance instanceof EndNodeInstance) {
+        if (nodeInstance instanceof EndNodeInstance || 
+        		((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
             if (((org.jbpm.workflow.core.WorkflowProcess) getProcess()).isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     setState(ProcessInstance.STATE_COMPLETED);
