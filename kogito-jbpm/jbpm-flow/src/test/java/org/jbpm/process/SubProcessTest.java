@@ -196,4 +196,44 @@ public class SubProcessTest extends JbpmTestCase {
         assertEquals(0, ksession.getProcessInstances().size());
     }
     
+    public void testNonExistentSubProcess() {
+	    String nonExistentSubProcessName = "nonexistent.process";
+        RuleFlowProcess process = new RuleFlowProcess();
+        process.setId("org.drools.process.process");
+        process.setName("Process");
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        SubProcessNode subProcessNode = new SubProcessNode();
+        subProcessNode.setName("SubProcessNode");
+        subProcessNode.setId(2);
+        subProcessNode.setProcessId(nonExistentSubProcessName);
+        EndNode endNode = new EndNode();
+        endNode.setName("End");
+        endNode.setId(3);
+        
+        connect(startNode, subProcessNode);
+        connect(subProcessNode, endNode);
+        
+        process.addNode( startNode );
+        process.addNode( subProcessNode );
+        process.addNode( endNode );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase()).addProcess(process);
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try{
+            ksession.startProcess("org.drools.process.process");
+            fail("should throw exception");
+        } catch (RuntimeException re){
+            assertTrue(re.getMessage().contains( nonExistentSubProcessName ));
+        }
+    }
+    
+	private void connect(Node sourceNode, Node targetNode) {
+		new ConnectionImpl(sourceNode, Node.CONNECTION_DEFAULT_TYPE,
+				           targetNode, Node.CONNECTION_DEFAULT_TYPE);
+	}
+
 }

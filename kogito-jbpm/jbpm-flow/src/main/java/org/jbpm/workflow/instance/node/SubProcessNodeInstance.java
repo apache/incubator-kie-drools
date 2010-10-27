@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.Process;
 import org.drools.runtime.process.EventListener;
@@ -112,6 +113,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	System.err.println("Could not find process " + processId);
         	System.err.println("Aborting process");
         	((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED);
+        	throw new RuntimeDroolsException("Could not find process " + processId);
         } else {
 	    	ProcessInstance processInstance = ( ProcessInstance )
 	    		((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
