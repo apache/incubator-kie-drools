@@ -13,8 +13,8 @@
   <name>Drools :: Examples</name>
 
   <modules>
-      <module>drools-examples-drl</module>
-      <module>drools-examples-fusion</module>
+    <module>drools-examples-drl</module>
+    <module>drools-examples-fusion</module>
   </modules>
-  
+
 </project>
