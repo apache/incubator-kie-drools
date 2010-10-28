@@ -16,6 +16,7 @@
 
 package org.drools.time.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
@@ -161,7 +162,7 @@ public class JDKTimerService
 
     public static class JDKJobHandle
         implements
-        JobHandle {
+        JobHandle{
 
         private static final long serialVersionUID = 510l;
         
