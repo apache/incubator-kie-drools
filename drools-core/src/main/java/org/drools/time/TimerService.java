@@ -20,7 +20,7 @@ package org.drools.time;
  * An interface for all timer service implementations used in a drools session.
  * 
  */
-public interface TimerService {
+public interface TimerService extends SchedulerService {
     
     /**
      * Returns the current time from the scheduler clock
@@ -30,26 +30,7 @@ public interface TimerService {
      */
     public long getCurrentTime();
     
-    /**
-     * Schedule a job for later execution
-     * 
-     * @param job
-     * @param ctx
-     * @param trigger
-     * 
-     * @return
-     */
-	public JobHandle scheduleJob(Job job, JobContext ctx, Trigger trigger);
-	
-	/**
-	 * Remove the job identified by the given job handle from the 
-	 * scheduled queue
-	 * 
-	 * @param jobHandle the job identity handle
-	 * 
-	 * @return
-	 */
-	public boolean removeJob(JobHandle jobHandle);
+   
 	
 	/**
 	 * Shuts the service down
