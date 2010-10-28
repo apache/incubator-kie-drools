@@ -5,17 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,8 +18,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -36,29 +28,15 @@ import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
-import org.drools.persistence.processinstance.VariablePersistenceStrategy;
-import org.drools.persistence.processinstance.VariablePersistenceStrategyFactory;
-import org.drools.persistence.processinstance.variabletypes.VariableInstanceInfo;
 import org.drools.runtime.Environment;
-import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.NodeInstanceContainer;
 import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkflowProcessInstance;
 import org.hibernate.annotations.CollectionOfElements;
 import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
-import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.instance.ContextInstance;
-import org.jbpm.process.instance.ContextInstanceContainer;
-import org.jbpm.process.instance.ContextableInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 @Entity
 public class ProcessInstanceInfo {
-
-    private static final String               VARIABLE_SEPARATOR = ":";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -90,12 +68,7 @@ public class ProcessInstanceInfo {
     ProcessInstance                           processInstance;
     private @Transient
     Environment                               env;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "processInstanceId")
-    @MapKey(name = "name")
-    private Map<String, VariableInstanceInfo> variables          = new HashMap<String, VariableInstanceInfo>();
-    private boolean                           externalVariables  = false;
-
+    
     protected ProcessInstanceInfo() {
     }
 
@@ -150,14 +123,12 @@ public class ProcessInstanceInfo {
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
                                                                                (InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase(),
                                                                                null,
-                                                                               null );
+                                                                               null,
+                                                                               this.env
+                                                                              );
                 ProcessInstanceMarshaller marshaller = getMarshallerFromContext( context );
                 context.wm = ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory();
-                processInstance = marshaller.readProcessInstance( context,
-                                                                  !externalVariables );
-                if ( externalVariables ) {
-                    restoreVariables();
-                }
+                processInstance = marshaller.readProcessInstance(context);
                 context.close();
             } catch ( IOException e ) {
                 e.printStackTrace();
@@ -168,60 +139,9 @@ public class ProcessInstanceInfo {
         return processInstance;
     }
 
-    private void restoreVariables() {
-        for ( Map.Entry<String, VariableInstanceInfo> entry : variables.entrySet() ) {
-            String[] variableHierarchy = entry.getKey().split( VARIABLE_SEPARATOR );
-            // last one is variable name
-            String variableName = variableHierarchy[variableHierarchy.length - 1];
-            // other ones are parent ids
-            List<Long> parentIds = new ArrayList<Long>();
-            for ( int i = 0; i < variableHierarchy.length - 1; i++ ) {
-                parentIds.add( Long.valueOf( variableHierarchy[i] ) );
-            }
-            restoreVariable( entry.getValue(),
-                             parentIds,
-                             variableName,
-                             (WorkflowProcessInstance) processInstance );
-        }
-    }
+   
 
-    private void restoreVariable(VariableInstanceInfo variableInfo,
-                                 List<Long> parentIds,
-                                 String variableName,
-                                 NodeInstanceContainer nodeInstanceContainer) throws NumberFormatException {
-        if ( parentIds.size() == 0 ) {
-            if ( !(nodeInstanceContainer instanceof ContextableInstance) ) {
-                throw new IllegalArgumentException( "Parent node instance is not a contextable instance: " + nodeInstanceContainer );
-            }
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance) ((ContextableInstance) nodeInstanceContainer).getContextInstance( VariableScope.VARIABLE_SCOPE );
-            VariablePersistenceStrategy persistenceStrategy = VariablePersistenceStrategyFactory.getVariablePersistenceStrategy();
-            Object value = persistenceStrategy.getVariable( variableInfo,
-                                                            this.env );
-            System.out.println( ">>>>> Restoring variable " + variableName + " = " + value );
-            variableScopeInstance.setVariable( variableName,
-                                               value );
-        } else {
-            Long nodeInstanceId = parentIds.get( 0 );
-            // find the node and get the variableScopeInstance and insert the
-            // variable..
-            Collection<NodeInstance> nodeInstances = nodeInstanceContainer.getNodeInstances();
-            for ( NodeInstance nodeInstance : nodeInstances ) {
-                if ( nodeInstance.getId() == nodeInstanceId ) {
-                    parentIds.remove( 0 );
-                    if ( !(nodeInstance instanceof NodeInstanceContainer) ) {
-                        throw new IllegalArgumentException( "Restoring variable " + variableName + " but node found is not a node instance container:" + nodeInstance );
-                    }
-                    restoreVariable( variableInfo,
-                                     parentIds,
-                                     variableName,
-                                     (NodeInstanceContainer) nodeInstance );
-                }
-                return;
-            }
-            throw new IllegalArgumentException( "Could not find node instance " + nodeInstanceId + " in " + nodeInstanceContainer );
-        }
-    }
-
+   
     private ProcessInstanceMarshaller getMarshallerFromContext(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
         String processInstanceType = stream.readUTF();
@@ -245,19 +165,16 @@ public class ProcessInstanceInfo {
                                                                          null,
                                                                          null,
                                                                          null,
-                                                                         null );
+                                                                         null,
+                                                                         this.env );
             String processType = ((ProcessInstanceImpl) processInstance).getProcess().getType();
             saveProcessInstanceType( context,
                                      processInstance,
                                      processType );
             ProcessInstanceMarshaller marshaller = ProcessMarshallerRegistry.INSTANCE.getMarshaller( processType );
-            externalVariables = VariablePersistenceStrategyFactory.getVariablePersistenceStrategy().isEnabled();
-            marshaller.writeProcessInstance( context,
-                                             processInstance,
-                                             !externalVariables );
-            if ( externalVariables ) {
-                variablesChanged = persistVariables();
-            }
+            
+                        marshaller.writeProcessInstance( context,
+                                                processInstance);
             context.close();
         } catch ( IOException e ) {
             throw new IllegalArgumentException( "IOException while storing process instance " + processInstance.getId() + ": " + e.getMessage() );
@@ -275,88 +192,6 @@ public class ProcessInstanceInfo {
         }
     }
 
-    private boolean persistVariables() {
-        // Get Process Variables
-        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) ((WorkflowProcessInstanceImpl) this.processInstance).getContextInstance( VariableScope.VARIABLE_SCOPE );
-        Map<String, Object> processVariables = variableScopeInstance.getVariables();
-        Map<String, VariableInstanceInfo> newVariables = new HashMap<String, VariableInstanceInfo>();
-        // persist process variables
-        persist( processVariables,
-                 "",
-                 newVariables );
-        // persist variables in nested variable scopes
-        Collection<NodeInstance> nodeInstances = ((WorkflowProcessInstanceImpl) this.processInstance).getNodeInstances();
-        if ( nodeInstances.size() > 0 ) {
-            persistNodeVariables( nodeInstances,
-                                  "",
-                                  newVariables );
-        }
-        if ( newVariables.size() > 0 || this.variables.size() > 0 ) {
-            // clear variables so unnecessary values are removed
-            this.variables.clear();
-            this.variables.putAll( newVariables );
-            // TODO: how can I know that no variables were changed?
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void persist(Map<String, Object> variables,
-                         String prefix,
-                         Map<String, VariableInstanceInfo> newVariables) {
-        VariablePersistenceStrategy persistenceStrategy = VariablePersistenceStrategyFactory.getVariablePersistenceStrategy();
-        for ( Map.Entry<String, Object> entries : variables.entrySet() ) {
-            String variableName = prefix + entries.getKey();
-            Object value = entries.getValue();
-            VariableInstanceInfo oldValue = this.variables.get( variableName );
-            VariableInstanceInfo variable = persistenceStrategy.persistVariable( variableName,
-                                                                                 value,
-                                                                                 oldValue,
-                                                                                 this.env );
-
-            if ( variable != null ) {
-                System.out.println( "<<<<< Persisting variable " + variableName + " = " + value );
-                newVariables.put( variableName,
-                                  variable );
-            } else {
-                System.out.println( "<<<<< Variable " + variableName + " not persisted (value null)" );
-            }
-        }
-    }
-
-    private void persistNodeVariables(Collection<NodeInstance> nodeInstances,
-                                      String parentPrefix,
-                                      Map<String, VariableInstanceInfo> newVariables) {
-        for ( NodeInstance nodeInstance : nodeInstances ) {
-            String prefix = parentPrefix + nodeInstance.getId() + VARIABLE_SEPARATOR;
-            if ( nodeInstance instanceof ContextInstanceContainer ) {
-                List<ContextInstance> variableScopeInstances = ((ContextInstanceContainer) nodeInstance).getContextInstances( VariableScope.VARIABLE_SCOPE );
-                if ( variableScopeInstances != null ) {
-                    for ( ContextInstance contextInstance : variableScopeInstances ) {
-                        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) contextInstance;
-                        persist( variableScopeInstance.getVariables(),
-                                 prefix,
-                                 newVariables );
-                    }
-                }
-            }
-            if ( nodeInstance instanceof NodeInstanceContainer ) {
-                Collection<NodeInstance> nodeInstancesInsideTheContainer = ((NodeInstanceContainer) nodeInstance).getNodeInstances();
-                persistNodeVariables( nodeInstancesInsideTheContainer,
-                                      prefix,
-                                      newVariables );
-            }
-        }
-    }
-
-    public Map<String, VariableInstanceInfo> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(Map<String, VariableInstanceInfo> variables) {
-        this.variables = variables;
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -401,9 +236,7 @@ public class ProcessInstanceInfo {
         if ( this.env != other.env && (this.env == null || !this.env.equals( other.env )) ) {
             return false;
         }
-        if ( this.variables != other.variables && (this.variables == null || !this.variables.equals( other.variables )) ) {
-            return false;
-        }
+        
         return true;
     }
 
@@ -421,7 +254,6 @@ public class ProcessInstanceInfo {
         hash = 61 * hash + (this.eventTypes != null ? this.eventTypes.hashCode() : 0);
         hash = 61 * hash + (this.processInstance != null ? this.processInstance.hashCode() : 0);
         hash = 61 * hash + (this.env != null ? this.env.hashCode() : 0);
-        hash = 61 * hash + (this.variables != null ? this.variables.hashCode() : 0);
         return hash;
     }
 

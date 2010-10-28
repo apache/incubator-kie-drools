@@ -24,7 +24,7 @@ import org.drools.KnowledgeBaseFactoryService;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
-import org.drools.impl.EnvironmentImpl;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
@@ -65,6 +65,6 @@ public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
     }
 
 	public Environment newEnvironment() {
-		return new EnvironmentImpl(); //EnvironmentFactory.newEnvironment();
+		return EnvironmentFactory.newEnvironment();
 	}
 }
