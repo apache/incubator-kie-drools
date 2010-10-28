@@ -50,7 +50,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class DroolsDocsComponentFactory {
 
-    private static final int    INTENTATION_LEFT   = 20;
+    private static final int INDENTATION_LEFT = 20;
 
     private static final String INDENT             = "    ";
 
@@ -239,7 +239,7 @@ public class DroolsDocsComponentFactory {
 
             Paragraph ext = new Paragraph( drlData.getName().substring( "extends".length() + index ),
                                            BODY_TEXT );
-            ext.setIndentationLeft( INTENTATION_LEFT );
+            ext.setIndentationLeft(INDENTATION_LEFT);
             document.add( ext );
         }
 
