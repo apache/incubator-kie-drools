@@ -14,9 +14,6 @@
         <class>org.jbpm.process.audit.ProcessInstanceLog</class>
         <class>org.jbpm.process.audit.NodeInstanceLog</class>
         <class>org.jbpm.process.audit.VariableInstanceLog</class>
-        <class>org.drools.persistence.processinstance.variabletypes.JPAPersistedVariable</class>
-        <class>org.drools.persistence.processinstance.variabletypes.VariableInstanceInfo</class>
-        <class>org.drools.persistence.processinstance.variabletypes.SerializablePersistedVariable</class>
         <class>org.drools.persistence.processinstance.WorkItemInfo</class>
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
