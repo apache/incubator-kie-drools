@@ -23,7 +23,7 @@ public class WorkingMemoryLoggerTest extends TestCase {
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage(builder.getPackage());
 		for (int i = 0; i < 10000; i++) {
-			System.out.println(i);
+			//System.out.println(i);
 			StatefulSession session = ruleBase.newStatefulSession();
 			WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
 			session.fireAllRules();
