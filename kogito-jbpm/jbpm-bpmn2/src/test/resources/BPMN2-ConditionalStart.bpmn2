@@ -13,10 +13,14 @@
 
   <process processType="Private" isExecutable="true" id="Minimal" name="Minimal Process" tns:packageName="com.sample" >
 
+    <extensionElements>
+      <tns:import name="org.jbpm.bpmn2.Person" />
+    </extensionElements>
+
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" >
       <conditionalEventDefinition>
-        <condition xs:type="tFormalExpression" language="http://www.jboss.org/drools/rule">org.jbpm.bpmn2.Person(name == "john")</condition>
+        <condition xs:type="tFormalExpression" language="http://www.jboss.org/drools/rule">Person(name == "john")</condition>
       </conditionalEventDefinition>
     </startEvent>
     <scriptTask id="_2" name="Hello" >

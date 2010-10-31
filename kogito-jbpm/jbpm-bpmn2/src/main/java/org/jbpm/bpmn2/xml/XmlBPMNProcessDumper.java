@@ -19,6 +19,7 @@ package org.jbpm.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
@@ -36,6 +37,7 @@ import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
@@ -228,8 +230,23 @@ public class XmlBPMNProcessDumper {
     }
     
     protected void visitHeader(WorkflowProcess process, StringBuilder xmlDump, int metaDataType) {
-    	// TODO: imports, function imports
-    	// TODO: globals
+    	List<String> imports = ((org.jbpm.process.core.Process) process).getImports();
+    	Map<String, String> globals = ((org.jbpm.process.core.Process) process).getGlobals();
+    	if ((imports != null && !imports.isEmpty()) || (globals != null && globals.size() > 0)) {
+    		xmlDump.append("    <extensionElements>" + EOL);
+    		if (imports != null) {
+	    		for (String s: imports) {
+	    			xmlDump.append("     <tns:import name=\"" + s + "\" />" + EOL);
+	    		}
+    		}
+    		if (globals != null) {
+	    		for (Map.Entry<String, String> global: globals.entrySet()) {
+	    			xmlDump.append("     <tns:global identifier=\"" + global.getKey() + "\" type=\"" + global.getValue() + "\" />" + EOL);
+	    		}
+    		}
+    		xmlDump.append("    </extensionElements>" + EOL);
+    	}
+    	// TODO: function imports
         // TODO: swimlanes
     	// TODO: exception handlers
         VariableScope variableScope = (VariableScope)
@@ -327,14 +344,17 @@ public class XmlBPMNProcessDumper {
                 }
             } else if (node instanceof EventNode) {
             	if (node.getMetaData().get("AttachedTo") == null) {
-	                String messageRef = ((EventTypeFilter) ((EventNode) node).getEventFilters().get(0)).getType();
-	                if (messageRef.startsWith("Message-")) {
-		                messageRef = messageRef.substring(8);
-		                String messageType = (String) node.getMetaData().get("MessageType");
-		                xmlDump.append(
-		                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
-		                    "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" />" + EOL + EOL);
-	                }
+                	List<EventFilter> filters = ((EventNode) node).getEventFilters();
+                	if (filters.size() > 0) {
+    	                String messageRef = ((EventTypeFilter) filters.get(0)).getType();
+		                if (messageRef.startsWith("Message-")) {
+			                messageRef = messageRef.substring(8);
+			                String messageType = (String) node.getMetaData().get("MessageType");
+			                xmlDump.append(
+			                    "  <itemDefinition id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" structureRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageType) + "\"/>" + EOL +
+			                    "  <message id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "\" itemRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(messageRef) + "Type\" />" + EOL + EOL);
+		                }
+                	}
             	}
             } else if (node instanceof StartNode) {
                 StartNode startNode = (StartNode) node;

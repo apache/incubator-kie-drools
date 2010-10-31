@@ -58,6 +58,7 @@ import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -627,6 +628,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         System.out.println("Triggering node");
         ksession.signalEvent("Task1", null, processInstance.getId());
 		assertProcessInstanceActive(processInstance.getId(), ksession);
@@ -886,6 +888,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		((PackageBuilderConfiguration) conf).initSemanticModules();
 		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
 		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNExtensionsSemanticModule());
 //		ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
 		XmlProcessReader processReader = new XmlProcessReader(
 	        ((PackageBuilderConfiguration) conf).getSemanticModules());

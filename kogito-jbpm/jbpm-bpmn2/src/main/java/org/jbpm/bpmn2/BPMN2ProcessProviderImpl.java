@@ -20,6 +20,7 @@ import org.drools.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 public class BPMN2ProcessProviderImpl implements BPMN2ProcessProvider {
@@ -29,6 +30,7 @@ public class BPMN2ProcessProviderImpl implements BPMN2ProcessProvider {
         if (conf.getSemanticModules().getSemanticModule(BPMNSemanticModule.BPMN2_URI) == null) {
         	conf.addSemanticModule(new BPMNSemanticModule());
         	conf.addSemanticModule(new BPMNDISemanticModule());
+        	conf.addSemanticModule(new BPMNExtensionsSemanticModule());
         }
     }
 
