@@ -43,10 +43,11 @@ import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessContext;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.drools.runtime.process.ProcessContext;
+import org.jbpm.JbpmTestCase;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
@@ -70,7 +71,7 @@ import org.slf4j.LoggerFactory;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class VariablePersistenceStrategyTest {
+public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
     private static Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
     
