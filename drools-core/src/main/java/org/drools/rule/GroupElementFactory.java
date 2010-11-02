@@ -38,10 +38,6 @@ public class GroupElementFactory {
         return new GroupElement( GroupElement.NOT );
     }
 
-    public static GroupElement newForallNotInstance() {
-        return new GroupElement( GroupElement.FORALL_NOT );
-    }
-
     public static GroupElement newExistsInstance() {
         return new GroupElement( GroupElement.EXISTS );
     }

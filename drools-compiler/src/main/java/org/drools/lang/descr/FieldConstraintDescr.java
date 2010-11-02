@@ -48,5 +48,10 @@ public class FieldConstraintDescr extends BaseDescr {
     public RestrictionConnectiveDescr getRestriction() {
         return this.restriction;
     }
+    
+    @Override
+    public String toString() {
+        return fieldName + " " + restriction;
+    }
 
 }

@@ -58,7 +58,7 @@ public class ForallBuilder
         final GroupElement and = GroupElementFactory.newAndInstance();
         and.addChild( forall.getBasePattern() );
 
-        final GroupElement not2 = GroupElementFactory.newForallNotInstance();
+        final GroupElement not2 = GroupElementFactory.newNotInstance();
         not2.setForallBaseObjectType( forall.getBasePattern().getObjectType() );
         if ( forall.getRemainingPatterns().size() == 1 ) {
             not2.addChild( (Pattern) forall.getRemainingPatterns().get( 0 ) );

@@ -325,7 +325,7 @@ public class Declaration
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        return "[Declaration: type=" + this.readAccessor.getValueType() + " identifier=" + this.identifier + "]";
+        return "(" + this.readAccessor.getValueType() + ") " + this.identifier;
     }
 
     public int hashCode() {

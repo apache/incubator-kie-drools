@@ -27,7 +27,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.common.BetaConstraints;
 import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.ExistsNode;
-import org.drools.reteoo.ForallNotNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
@@ -55,8 +54,6 @@ public class GroupElementBuilder
         this.geBuilders.put( GroupElement.OR,
                              new OrBuilder() );
         this.geBuilders.put( GroupElement.NOT,
-                             new NotBuilder() );
-        this.geBuilders.put( GroupElement.FORALL_NOT,
                              new NotBuilder() );
         this.geBuilders.put( GroupElement.EXISTS,
                              new ExistsBuilder() );
@@ -264,22 +261,12 @@ public class GroupElementBuilder
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
             NotNode node = null;
-            if( GroupElement.FORALL_NOT.equals( not.getType() ) ) {
-                node = new ForallNotNode( context.getNextId(),
-                             context.getTupleSource(),
-                             context.getObjectSource(),
-                             betaConstraints,
-                             behaviors,
-                             context,
-                             not.getForallBaseObjectType() );
-            } else {
-                node = new NotNode( context.getNextId(),
-                                    context.getTupleSource(),
-                                    context.getObjectSource(),
-                                    betaConstraints,
-                                    behaviors,
-                                    context );
-            }
+            node = new NotNode( context.getNextId(),
+                                context.getTupleSource(),
+                                context.getObjectSource(),
+                                betaConstraints,
+                                behaviors,
+                                context );
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                         node ) );
             context.setBetaconstraints( null );

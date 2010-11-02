@@ -86,4 +86,9 @@ public class AndDescr extends BaseDescr
             addDescr( baseDescr );
         }
     }
+    
+    @Override
+    public String toString() {
+        return "[AND "+descrs+" ]";
+    }
 }
