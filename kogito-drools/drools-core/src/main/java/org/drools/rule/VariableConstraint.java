@@ -135,7 +135,7 @@ public class VariableConstraint extends MutableTypeConstraint
     }
 
     public String toString() {
-        return "[VariableConstraint fieldExtractor=" + this.fieldExtractor + " declaration=" + getRequiredDeclarations() + "]";
+        return this.fieldExtractor + " " + this.restriction;
     } 
 
     public ContextEntry createContextEntry() {

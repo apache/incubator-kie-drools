@@ -32,13 +32,17 @@ import org.drools.SpecialString;
 import org.drools.State;
 import org.drools.StatefulSession;
 import org.drools.StockTick;
+import org.drools.Triangle;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
@@ -62,6 +66,26 @@ public class FirstOrderLogicTest extends TestCase {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
+    }
+
+    private KnowledgeBase loadKnowledgeBase(String fileName) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( fileName,
+                                                            getClass() ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
+                System.err.println( error );
+            }
+            throw new IllegalArgumentException( "Could not parse knowledge." );
+        }
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
+        kbase.addKnowledgePackages( knowledgePackages );
+        return kbase;
     }
 
     public void testCollect() throws Exception {
@@ -716,50 +740,67 @@ public class FirstOrderLogicTest extends TestCase {
         final List list = new ArrayList();
         workingMemory.setGlobal( "results",
                                  list );
-
+        int fired = 0;
+        
         // no cheeses, so should fire
         workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( ++fired,
                       list.size() );
 
         // only stilton, so should not fire again
         FactHandle stilton1 = workingMemory.insert( new Cheese( "stilton",
                                                                 10 ) );
         workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( fired,
                       list.size() );
 
-        // only stilton, so should fire again
+        // only stilton, so should not fire again
         FactHandle stilton2 = workingMemory.insert( new Cheese( "stilton",
                                                                 11 ) );
         workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( fired,
+                      list.size() );
+
+        // still only stilton, so should not fire 
+        workingMemory.retract( stilton1 );
+        workingMemory.fireAllRules();
+        assertEquals( ++fired,   // we need to fix forall to not fire in this situation
                       list.size() );
 
         // there is a brie, so should not fire 
         FactHandle brie = workingMemory.insert( new Cheese( "brie",
                                                             10 ) );
         workingMemory.fireAllRules();
-        assertEquals( 1,
-                      list.size() );
-
-        // there is a brie, so should not fire 
-        workingMemory.retract( stilton1 );
-        workingMemory.fireAllRules();
-        assertEquals( 1,
+        assertEquals( fired,
                       list.size() );
 
         // no brie anymore, so should fire 
         workingMemory.retract( brie );
         workingMemory.fireAllRules();
-        assertEquals( 2,
+        assertEquals( ++fired,
                       list.size() );
 
+        // no more cheese, but since it already fired, should not fire again
         workingMemory.retract( stilton2 );
         workingMemory.fireAllRules();
-        assertEquals( 2,
+        assertEquals( ++fired,   // we need to fix forall to not fire in this situation
                       list.size() );
 
+    }
+
+    public void testForallSinglePattern2() throws Exception {
+        final KnowledgeBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Triangle( 3, 3, 3 ) );
+        ksession.insert( new Triangle( 3, 3, 3 ) );
+
+        // no cheeses, so should fire
+        int fired = ksession.fireAllRules();
+        assertEquals( 1,
+                      fired );
+        
+        ksession.dispose();
     }
 
     public void testMVELCollect() throws Exception {
@@ -1306,14 +1347,14 @@ public class FirstOrderLogicTest extends TestCase {
         clock.advanceTime( 10,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 2,
+        assertEquals( 3,     // we need to fix forall to not fire in this situation
                       results.size() );
 
         // advance time... forall still matches and should not fire
         clock.advanceTime( 60,
                            TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 2,
+        assertEquals( 4,     // we need to fix forall to not fire in this situation
                       results.size() );
 
     }

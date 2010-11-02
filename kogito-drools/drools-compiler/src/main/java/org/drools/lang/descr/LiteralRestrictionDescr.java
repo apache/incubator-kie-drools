@@ -69,7 +69,7 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
     }
 
     public String toString() {
-        return "[LiteralRestriction: " + super.toString() + " " + this.getText() + "]";
+        return super.toString() + " " + this.getText();
     }
 
     public int getType() {

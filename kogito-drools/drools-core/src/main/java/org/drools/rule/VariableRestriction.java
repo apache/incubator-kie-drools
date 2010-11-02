@@ -128,7 +128,7 @@ public class VariableRestriction
     }
 
     public String toString() {
-        return "[VariableRestriction declaration=" + this.declaration + "]";
+        return this.evaluator + " " + this.declaration;
     }
 
     /* (non-Javadoc)

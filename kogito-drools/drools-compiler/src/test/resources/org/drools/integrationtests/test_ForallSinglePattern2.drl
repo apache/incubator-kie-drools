@@ -1,0 +1,8 @@
+package org.drools
+
+rule "forall single pattern"	
+	when
+	    forall( Triangle( a > 0, b > 0, c > 0 ) )
+	then 
+		// NOOP		
+end

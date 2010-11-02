@@ -40,7 +40,6 @@ public class GroupElement extends ConditionalElement
     public static final Type  OR                   = Type.OR;
     public static final Type  NOT                  = Type.NOT;
     public static final Type  EXISTS               = Type.EXISTS;
-    public static final Type  FORALL_NOT           = Type.FORALL_NOT;
 
     private Type              type                 = null;
     private List              children             = new ArrayList();
@@ -331,7 +330,7 @@ public class GroupElement extends ConditionalElement
     }
 
     public boolean isNot() {
-        return NOT.equals( this.type ) || FORALL_NOT.equals( this.type );
+        return NOT.equals( this.type );
     }
 
     public boolean isExists() {
@@ -358,8 +357,7 @@ public class GroupElement extends ConditionalElement
         AND(false), 
         OR(false), 
         NOT(true), 
-        EXISTS(true), 
-        FORALL_NOT(true);
+        EXISTS(true);
 
         private final boolean scopeDelimiter;
 

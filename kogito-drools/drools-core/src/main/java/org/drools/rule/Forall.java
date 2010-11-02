@@ -145,5 +145,10 @@ public class Forall extends ConditionalElement {
     public boolean isPatternScopeDelimiter() {
         return true;
     }
+    
+    @Override
+    public String toString() {
+        return "forall( "+basePattern+" "+remainingPatterns+" )";
+    }
 
 }
