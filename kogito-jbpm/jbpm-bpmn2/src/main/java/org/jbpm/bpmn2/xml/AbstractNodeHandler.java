@@ -18,10 +18,10 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
 
-import org.drools.compiler.xml.XmlDumper;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
@@ -54,6 +54,8 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         this.validPeers.add(Variable.class);
         this.validPeers.add(Node.class);
         this.validPeers.add(SequenceFlow.class);
+        this.validPeers.add(Lane.class);
+        this.validPeers.add(Association.class);
     }
 
     public Object start(final String uri, final String localName, final Attributes attrs,

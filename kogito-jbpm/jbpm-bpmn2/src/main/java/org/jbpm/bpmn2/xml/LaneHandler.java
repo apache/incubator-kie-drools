@@ -24,8 +24,12 @@ import org.drools.definition.process.WorkflowProcess;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Lane;
+import org.jbpm.bpmn2.core.SequenceFlow;
+import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Node;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -41,7 +45,13 @@ public class LaneHandler extends BaseAbstractHandler implements Handler {
 			this.validParents.add(RuleFlowProcess.class);
 
 			this.validPeers = new HashSet();
-			this.validPeers.add(null);
+	        this.validPeers.add(null);
+	        this.validPeers.add(Lane.class);
+	        this.validPeers.add(Variable.class);
+	        this.validPeers.add(Node.class);
+	        this.validPeers.add(SequenceFlow.class);
+	        this.validPeers.add(Lane.class);
+	        this.validPeers.add(Association.class);
 
 			this.allowNesting = false;
 		}

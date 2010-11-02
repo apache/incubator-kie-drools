@@ -54,6 +54,9 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.JbpmTestCase;
+import org.jbpm.bpmn2.core.Association;
+import org.jbpm.bpmn2.core.DataStore;
+import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -62,6 +65,7 @@ import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -148,7 +152,41 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 
-	public void testEvaluationProcess() throws Exception {
+    public void testDataStore() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataStore.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        Definitions def = (Definitions) processInstance.getProcess().getMetaData().get("Definitions");
+        assertNotNull(def.getDataStores());
+        assertTrue(def.getDataStores().size() == 1);
+        DataStore dataStore = def.getDataStores().get(0);
+        assertEquals("employee", dataStore.getId());
+        assertEquals("employeeStore", dataStore.getName());
+        assertEquals(String.class.getCanonicalName(), ((ObjectDataType) dataStore.getType()).getClassName());
+    }
+
+    public void testAssociation() throws Exception {
+    	KnowledgeBase kbase = createKnowledgeBase("BPMN2-Association.xml");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("Evaluation");
+        Definitions def = (Definitions) processInstance.getProcess().getMetaData().get("Definitions");
+        assertNotNull(def.getAssociations());
+        assertTrue(def.getAssociations().size() == 1);
+        Association assoc = def.getAssociations().get(0);
+        assertEquals("_1234", assoc.getId());
+        assertEquals("_1", assoc.getSourceRef());
+        assertEquals("_2", assoc.getTargetRef());
+    }
+    
+    public void testUserTaskWithDataStoreScenario() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-UserTaskWithDataStore.xml");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ksession.startProcess("UserProcess");
+        // we can't test further as user tasks are asynchronous.
+    }
+
+    public void testEvaluationProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());

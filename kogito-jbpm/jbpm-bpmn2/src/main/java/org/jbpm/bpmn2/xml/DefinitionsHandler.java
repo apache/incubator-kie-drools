@@ -61,11 +61,12 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 		String namespace = element.getAttribute("targetNamespace");
 		process.setMetaData("TargetNamespace", namespace);
 		definitions.setTargetNamespace(namespace);
+		process.setMetaData("Definitions", definitions);
 		return definitions;
 	}
 
 	public Class<?> generateNodeFor() {
-		return null;
+		return Definitions.class;
 	}
 	
 }

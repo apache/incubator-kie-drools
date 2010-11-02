@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.DroolsError;
@@ -139,34 +140,40 @@ public class ProcessBuilderImpl implements ProcessBuilder {
             }
             
             PackageRegistry pkgRegistry = this.packageBuilder.getPackageRegistry(process.getPackageName());
-            org.drools.rule.Package p = pkgRegistry.getPackage();
+			if (pkgRegistry != null) {
+				org.drools.rule.Package p = pkgRegistry.getPackage();
             
-            if (p != null) {
-            
-	            ProcessDescr processDescr = new ProcessDescr();
-	            processDescr.setName(process.getPackageName());
-	            processDescr.setResource( resource );
-	            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
-	            Dialect dialect = dialectRegistry.getDialect( "java" );
-	            dialect.init(processDescr);
-	
-	            ProcessBuildContext buildContext = new ProcessBuildContext(
-	        		this.packageBuilder,
-	                p,
-	                process,
-	                processDescr,
-	                dialectRegistry,
-	                dialect);
-	
-	            buildContexts( ( ContextContainer ) process, buildContext );
-	            if (process instanceof WorkflowProcess) {
-	            	buildNodes( (WorkflowProcess) process, buildContext );
+	            if (p != null) {
+	            
+		            ProcessDescr processDescr = new ProcessDescr();
+		            processDescr.setName(process.getPackageName());
+		            processDescr.setResource( resource );
+		            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
+		            Dialect dialect = dialectRegistry.getDialect( "java" );
+		            dialect.init(processDescr);
+		
+		            ProcessBuildContext buildContext = new ProcessBuildContext(
+		        		this.packageBuilder,
+		                p,
+		                process,
+		                processDescr,
+		                dialectRegistry,
+		                dialect);
+		
+		            buildContexts( ( ContextContainer ) process, buildContext );
+		            if (process instanceof WorkflowProcess) {
+		            	buildNodes( (WorkflowProcess) process, buildContext );
+		            }
+		            p.addProcess( process );
+		
+		            pkgRegistry.compileAll();                
+		            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
 	            }
-	            p.addProcess( process );
-	
-	            pkgRegistry.compileAll();                
-	            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
-            }
+	        } else {
+				// invalid package registry..there is an issue with the package
+				// name of the process
+				throw new RuntimeDroolsException("invalid package name");
+			}
         }
     }
 

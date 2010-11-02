@@ -23,6 +23,8 @@ import java.util.List;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.jbpm.bpmn2.core.Association;
+import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -49,9 +51,12 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
+        this.validPeers.add(Lane.class);
         this.validPeers.add(Variable.class);
         this.validPeers.add(Node.class);
         this.validPeers.add(SequenceFlow.class);
+        this.validPeers.add(Lane.class);
+        this.validPeers.add(Association.class);
     }
     
 	@SuppressWarnings("unchecked")

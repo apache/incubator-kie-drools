@@ -27,6 +27,7 @@ import org.drools.definition.process.NodeContainer;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
@@ -74,6 +75,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             this.validPeers.add(Interface.class);
             this.validPeers.add(Escalation.class);
             this.validPeers.add(Error.class);
+            this.validPeers.add(DataStore.class);
 
 			this.allowNesting = false;
 		}
@@ -107,6 +109,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		}
 
 		((ProcessBuildData) parser.getData()).setProcess(process);
+		// register the definitions object as metadata of process.
+		process.setMetaData("Definitions", parser.getParent());
 		return process;
 	}
 

@@ -16,9 +16,16 @@
 
 package org.jbpm.bpmn2.core;
 
-public class Definitions {
+import java.io.Serializable;
+import java.util.List;
+
+public class Definitions implements Serializable {
+	
+	private static final long serialVersionUID = 4L;
 	
 	private String targetNamespace;
+	private List<DataStore> dataStores;
+	private List<Association> associations;
 
 	public String getTargetNamespace() {
 		return targetNamespace;
@@ -28,4 +35,19 @@ public class Definitions {
 		this.targetNamespace = targetNamespace;
 	}
 
+	public void setDataStores(List<DataStore> dataStores) {
+		this.dataStores = dataStores;
+	}
+	
+	public List<DataStore> getDataStores() {
+		return this.dataStores;
+	}
+	
+	public void setAssociations(List<Association> associations) {
+		this.associations = associations;
+	}
+	
+	public List<Association> getAssociations() {
+		return this.associations;
+	}
 }
