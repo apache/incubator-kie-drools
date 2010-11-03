@@ -251,7 +251,7 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.compiler;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
+            <Require-Bundle>org.drools.core;visibility:=reexport;bundle-version="${pom.version}"</Require-Bundle>
             <Import-Package>!org.drools.*,
               <!-- java compilers are optional: only need one at most -->
               org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
