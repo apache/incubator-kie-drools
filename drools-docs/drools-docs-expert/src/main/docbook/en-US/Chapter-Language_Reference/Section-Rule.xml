@@ -919,6 +919,7 @@ Cheese( name soundslike 'foobar' )</programlisting>
                 				$m : Message( routingValue str[length] 17 )
                 </programlisting>
               </example>
+              </para>
             </simplesect>
           </section>
 
