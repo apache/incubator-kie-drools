@@ -2,8 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/drools-core-5.0.1.SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="lib/mvel2-2.0.10.jar"/>
-	<classpathentry kind="lib" path="lib/drools-api-5.0.1.SNAPSHOT.jar"/>
+	<classpathentry kind="con" path="DROOLS/Drools"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

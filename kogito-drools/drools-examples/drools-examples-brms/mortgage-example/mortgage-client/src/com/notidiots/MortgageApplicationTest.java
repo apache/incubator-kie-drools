@@ -16,40 +16,79 @@
 
 package com.notidiots;
 
-import org.drools.RuleBase;
-import org.drools.agent.RuleAgent;
+import org.drools.KnowledgeBase;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.definition.type.FactType;
+import org.drools.io.ResourceFactory;
 
 public class MortgageApplicationTest {
 
-    
-	/**
-	 * @param args
-	 * @throws IllegalAccessException
-	 * @throws InstantiationException
-	 */
-	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
-	    
-		RuleAgent agent = RuleAgent.newRuleAgent("/mortgageapproval.properties");
-		RuleBase rb = agent.getRuleBase();
+    /**
+     * Entry point demonstrating use of KnowledgeAgent and changesets retrieving
+     * a rule package from a running instance of Guvnor.
+     * 
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
 
-		FactType appType = rb.getFactType("mortgages.LoanApplication");
-		FactType incomeType = rb.getFactType("mortgages.IncomeSource");
+        try {
+            // load up the knowledge base
+            KnowledgeBase kbase = readKnowledgeBase();
 
-		Object application = appType.newInstance();
-		Object income = incomeType.newInstance();
+            //Dynamic fact creation as the model was declared in the DRL
+            FactType appType = kbase
+                    .getFactType( "mortgages",
+                                  "LoanApplication" );
+            Object application = appType.newInstance();
+            appType.set( application,
+                         "amount",
+                         25000 );
+            appType.set( application,
+                         "deposit",
+                         1500 );
+            appType.set( application,
+                         "lengthYears",
+                         20 );
 
-		appType.set(application, "amount", 25000);
-		appType.set(application, "deposit", 1500);
-		appType.set(application, "lengthYears", 20);
+            FactType incomeType = kbase
+                    .getFactType( "mortgages",
+                                  "IncomeSource" );
+            Object income = incomeType.newInstance();
+            incomeType.set( income,
+                            "type",
+                            "Job" );
+            incomeType.set( income,
+                            "amount",
+                            65000 );
 
-		incomeType.set(income, "type", "Job");
-		incomeType.set(income, "amount", 65000);
+            //Invoke the magic
+            kbase.newStatelessKnowledgeSession().execute(
+                                                          new Object[]{application, income} );
 
+            //Voila!
+            System.out.println( application );
 
-		rb.newStatelessSession().execute(new Object[] {application, income});
+        } catch ( Throwable t ) {
+            t.printStackTrace();
+        }
+    }
 
-		System.out.println(application);
-	}
+    /**
+     * Load KnowledgeBase using KnowledgeAgent configured with accompanying changeset.xml
+     * 
+     * @return A KnowledgeBase
+     * @throws Exception
+     */
+    private static KnowledgeBase readKnowledgeBase() throws Exception {
+        KnowledgeAgent kagent = KnowledgeAgentFactory
+                .newKnowledgeAgent( "MortgageAgent" );
+        kagent.applyChangeSet( ResourceFactory
+                .newClassPathResource( "changeset.xml" ) );
+        KnowledgeBase kbase = kagent.getKnowledgeBase();
+        kagent.dispose();
+        return kbase;
+    }
 
 }
