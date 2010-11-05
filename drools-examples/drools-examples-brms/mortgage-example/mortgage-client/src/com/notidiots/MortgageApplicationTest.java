@@ -21,6 +21,7 @@ import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
 
 public class MortgageApplicationTest {
 
@@ -33,6 +34,7 @@ public class MortgageApplicationTest {
      */
     public static void main(String[] args) throws Exception {
 
+    	StatefulKnowledgeSession ksession = null;
         try {
             // load up the knowledge base
             KnowledgeBase kbase = readKnowledgeBase();
@@ -64,14 +66,20 @@ public class MortgageApplicationTest {
                             65000 );
 
             //Invoke the magic
-            kbase.newStatelessKnowledgeSession().execute(
-                                                          new Object[]{application, income} );
+            ksession = kbase.newStatefulKnowledgeSession();
+            ksession.insert( application );
+            ksession.insert( income );
+            ksession.fireAllRules();
 
             //Voila!
             System.out.println( application );
 
         } catch ( Throwable t ) {
             t.printStackTrace();
+        } finally {
+        	if ( ksession != null ) {
+                ksession.dispose();
+            }
         }
     }
 
