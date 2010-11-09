@@ -16,12 +16,13 @@
 
 package org.drools.time;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * A trigger interface for scheduling jobs
  */
-public interface Trigger {
+public interface Trigger extends Serializable {
     
     /**
      * This method is used to query the trigger about the existence of a

@@ -16,9 +16,11 @@
 
 package org.drools.time;
 
-public interface JobContext {    
+import java.io.Serializable;
+
+public interface JobContext extends Serializable {    
     /**
-     * This method shoud only be called by the scheduler
+     * This method should only be called by the scheduler
      */    
     public void setJobHandle(JobHandle jobHandle);
     
