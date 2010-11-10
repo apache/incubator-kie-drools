@@ -27,9 +27,9 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.Tree;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.DRLParser;
-import org.drools.lang.DescrBuilderTree5x;
+import org.drools.lang.DescrBuilderTree;
 import org.drools.lang.DroolsTreeAdaptor;
-import org.drools.lang.DescrBuilderTree5x.from_source_clause_return;
+import org.drools.lang.DescrBuilderTree.from_source_clause_return;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.xml.BaseAbstractHandler;
@@ -97,7 +97,7 @@ public class ExpressionHandler extends BaseAbstractHandler
         	if (!drlParser.hasErrors()){
 				CommonTreeNodeStream nodes = new CommonTreeNodeStream(fromSourceTree);
 				nodes.setTokenStream(tokenStream);
-            	DescrBuilderTree5x walker = new DescrBuilderTree5x(nodes);
+            	DescrBuilderTree walker = new DescrBuilderTree(nodes);
             	from_source_clause_return fromReturn = walker.from_source_clause();
             	parent.setDataSource(fromReturn.retAccessorDescr);
             	parent = fromReturn.fromDescr;
