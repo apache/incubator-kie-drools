@@ -150,7 +150,7 @@ class VerifierDataMaps
             rulesByName.put( rule.getName(),
                              rule );
             if ( rule.getMetadata().containsKey( "category" ) ) {
-                rulesByCategory.put( rule.getMetadata().get( "category" ),
+                rulesByCategory.put( rule.getMetaAttribute("category"),
                                      rule );
             }
         } else if ( VerifierComponentType.VARIABLE.equals( object.getVerifierComponentType() ) ) {

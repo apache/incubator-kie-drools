@@ -51,7 +51,7 @@ public class VerifierRule extends PackageComponent
 
     private String                    description;
 
-    private Map<String, String>       metadata        = new HashMap<String, String>();
+    private Map<String, Map<String,String>>       metadata        = new HashMap<String, Map<String,String>>();
 
     private Collection<String>        commentMetadata = new ArrayList<String>();
 
@@ -144,8 +144,13 @@ public class VerifierRule extends PackageComponent
         return rhsRows;
     }
 
-    public Map<String, String> getMetadata() {
+    public Map<String, Map<String,String>> getMetadata() {
         return metadata;
+    }
+
+    public String getMetaAttribute(String key) {
+        Map<String,String> elementValues = metadata.get(key);
+        return elementValues != null ? elementValues.keySet().iterator().next() : null;
     }
 
     public Collection<String> getCommentMetadata() {
