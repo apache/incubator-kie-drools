@@ -11,6 +11,7 @@ options{
 
 	import java.util.HashMap;
 	import java.util.Map;
+	import java.util.Hashtable;
 	import java.util.LinkedList;
 	import org.drools.lang.descr.AccessorDescr;
 	import org.drools.lang.descr.AccumulateDescr;
@@ -149,20 +150,38 @@ argument returns [BaseDescr arg]
 	:	id=ID (LEFT_SQUARE rightList+=RIGHT_SQUARE)*
 	{	$arg = factory.createArgument($id, $rightList);	}
 	;
-
+ 
 type_declaration returns [TypeDeclarationDescr declaration]
 @init {	List<Map> declMetadaList = new LinkedList<Map>();
-		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); }
+		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); 
+		List<String> interfaces = new LinkedList<String>(); 
+		}
 	:	^(VK_DECLARE id=VT_TYPE_DECLARE_ID 
+			(     ^(VK_EXTENDS ext=VT_TYPE_NAME)    )?
+			(     ^(VK_IMPLEMENTS (intf=VT_TYPE_NAME {interfaces.add($intf.text);})+ )    )?
 			(dm=decl_metadata {declMetadaList.add($dm.attData);	})* 
-			(df=decl_field {declFieldList.add($df.fieldDescr);	})* VK_END)
-	{	$declaration = factory.createTypeDeclr($id, declMetadaList, declFieldList);	}
+			(df=decl_field {declFieldList.add($df.fieldDescr);	})* 
+			
+			VK_END)
+	{	$declaration = factory.createTypeDeclr($id, $ext.text, interfaces, declMetadaList, declFieldList);	}
 	;
 
+//decl_metadata returns [Map attData]
+//@init {attData = new HashMap();}
+//	:	^(AT att=ID pc=VT_PAREN_CHUNK?)
+//	{	$attData.put($att, $pc);	}
+//	;
+ 
 decl_metadata returns [Map attData]
 @init {attData = new HashMap();}
-	:	^(AT att=ID pc=VT_PAREN_CHUNK?)
-	{	$attData.put($att, $pc);	}
+	:	^(AT att=VT_TYPE_NAME (p=decl_metadata_properties)?)
+	{	$attData.put($att.text, $p.props);	}
+	;
+ 
+decl_metadata_properties returns [Hashtable props]
+@init {props = new Hashtable();}
+	: ^(key=VT_PROP_KEY (val=VT_PROP_VALUE)?)	
+	{ $props.put($key.text,$val == null ? $key.text : $val.text ); }
 	;
 
 decl_field returns [TypeFieldDescr fieldDescr]

@@ -6,7 +6,7 @@ Next node id      : @{session.nodeCount}
 User facts count  : @{session.externalFactCount}
 
 ============== Deployed Packages ===========
-@foreach{ pkg : session.packages }Package: @{pkg.name}    rules: @{pkg.rules.length} 
+@foreach{ pkg : session.packages }Package: @{pkg.name}    rules: @{pkg.rules.length}
 @end{}
 
 ============== Top Ten Left Memory Sizes ======
@@ -14,26 +14,26 @@ User facts count  : @{session.externalFactCount}
 topTuples = new java.util.TreeSet(new org.drools.core.util.debug.LeftMemorySizeComparator());
 topTuples.addAll( session.nodeInfos );
 buffer = new StringBuilder();
-it = topTuples.iterator(); 
+it = topTuples.iterator();
 for( int i = 0; i < 10 && it.hasNext() ; i++ ) {
     ni = (org.drools.core.util.debug.NodeInfo) it.next();
-    buffer.append( (i+1) + ". " + ni.node );
+    buffer.append( (i+1) + ". " + ni.node.toString() );
     buffer.append( "\n\t\tLeftTuples = ");
     buffer.append( ni.getTupleMemorySize());
     buffer.append( "\n");
 }
 }
-@{buffer.toString()} 
+@{buffer.toString()}
 
 ============== Top Ten Right Memory Sizes ======
 @code{
 topFacts = new java.util.TreeSet(new org.drools.core.util.debug.RightMemorySizeComparator());
 topFacts.addAll( session.nodeInfos );
 buffer = new StringBuilder();
-it = topFacts.iterator(); 
+it = topFacts.iterator();
 for( int j = 0; j < 10 && it.hasNext() ; j++ ) {
     ni = (org.drools.core.util.debug.NodeInfo) it.next();
-    buffer.append( (j+1) + ". " + ni.node );
+    buffer.append( (j+1) + ". " + ni.node.toString() );
     buffer.append( "\n\t\tFacts = ");
     buffer.append( ni.getFactMemorySize());
     buffer.append( "\n");
@@ -42,18 +42,17 @@ for( int j = 0; j < 10 && it.hasNext() ; j++ ) {
 @{buffer.toString()}
 
 ============== Nodes Info ==================
-    @foreach{node : session.nodeInfos}Node: @{node.node} 
+    @foreach{node : session.nodeInfos}Node: @{node.node}
             @if{node.memoryEnabled == "true"}Memory: @if{node.factMemorySize!="-1"}facts: @{node.factMemorySize}   @end{}@if{node.tupleMemorySize!="-1"}tuples: @{node.tupleMemorySize}   @end{}@if{node.createdFactHandles!="-1"}created handles: @{node.createdFactHandles}@end{}@if{node.actionQueueSize!="-1"}action queue: @{node.actionQueueSize}@end{}@else{}Node memory disabled@end{}
-@if{node.sinkList.empty == "false"}            Connects to nodes: 
+@if{node.sinkList.empty == "false"}            Connects to nodes:
                 @foreach{child : node.sinkList}@{child}
                 @end{}
 @end{}            Rules:
                 @foreach{ rule : node.rules }rule : @{rule.name}
                 @end{}
-    @end{}    
+    @end{}
 
 ============== Execution Log ==================
     @foreach{msg : session.log}@{msg}
-    @end{}                          
-@end{}    
-    
+    @end{}
+@end{}

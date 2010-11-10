@@ -1,9 +1,10 @@
 grammar DRL;
-
-options {
+              
+options { 
 	output=AST;
+	language = Java;
 }
-
+ 
 tokens {
 	VT_COMPILATION_UNIT; 
 	VT_FUNCTION_IMPORT;
@@ -14,6 +15,7 @@ tokens {
 
 	VT_QUERY_ID;
 	VT_TYPE_DECLARE_ID;
+	VT_TYPE_NAME;
 	VT_RULE_ID;
 	VT_ENTRYPOINT_ID;
 	
@@ -70,6 +72,7 @@ tokens {
 	VK_ATTRIBUTES;
 	VK_RULE;
 	VK_EXTEND;
+	VK_IMPLEMENTS; 
 	VK_IMPORT;
 	VK_PACKAGE;
 	VK_QUERY;
@@ -98,10 +101,46 @@ tokens {
 	VK_VOID;
 	VK_CLASS;
 	VK_NEW;
+	 
+  VK_FINAL;
+  VK_IF;
+  VK_ELSE;
+  VK_FOR;
+  VK_WHILE;
+  VK_DO;
+  VK_CASE;
+  VK_DEFAULT;
+  VK_TRY;
+  VK_CATCH;
+  VK_FINALLY;
+  VK_SWITCH;
+  VK_SYNCHRONIZED;
+  VK_RETURN;
+  VK_THROW;
+  VK_BREAK;
+  VK_CONTINUE;
+  VK_ASSERT;
+  VK_MODIFY;
+  VK_STATIC;
+  
+  VK_PUBLIC;
+  VK_PROTECTED;
+  VK_PRIVATE;
+  VK_ABSTRACT;
+  VK_NATIVE;
+  VK_TRANSIENT;
+  VK_VOLATILE;
+  VK_STRICTFP;
+  VK_THROWS;
+  VK_INTERFACE;
+  VK_ENUM;
 	
 	SIGNED_DECIMAL;
 	SIGNED_HEX;
 	SIGNED_FLOAT;
+	
+	VT_PROP_KEY;
+	VT_PROP_VALUE;
 }
 
 @lexer::header {
@@ -360,11 +399,12 @@ query_id
 type_declaration
 @init  { helper.pushParaphrases(DroolsParaphraseTypes.TYPE_DECLARE); if ( state.backtracking==0 ) helper.beginSentence(DroolsSentenceType.TYPE_DECLARATION); }
 @after { helper.popParaphrases(); }
-	:	declare_key  type_declare_id
+	:	declare_key  type_declare_id type_decl_extends? type_decl_implements?
 		decl_metadata*
 		decl_field*
+		decl_method*
 		end_key
-		-> ^(declare_key type_declare_id decl_metadata* decl_field* end_key)
+		-> ^(declare_key type_declare_id type_decl_extends? type_decl_implements? decl_metadata* decl_field* end_key)
 	;
 
 type_declare_id
@@ -372,15 +412,33 @@ type_declare_id
 	{	helper.emit($id, DroolsEditorType.IDENTIFIER);
 		helper.setParaphrasesValue(DroolsParaphraseTypes.TYPE_DECLARE, $id.text);	} -> VT_TYPE_DECLARE_ID[$id]
 	;
+	
 
-decl_metadata
-	:	AT 
-	{	helper.emit($AT, DroolsEditorType.SYMBOL);	}
-		ID
-	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
-		paren_chunk?
-		-> ^(AT ID paren_chunk?)
+	
+type_decl_extends
+	: extends_key^ typeName
 	;
+	
+type_decl_implements
+	:	implements_key^ typeNameList
+	;
+
+
+
+
+//sotty: TODO: replace with annotation
+decl_metadata
+	: annotation
+	;
+
+//decl_metadata
+//	:	AT 
+//	{	helper.emit($AT, DroolsEditorType.SYMBOL);	}
+//		ID
+//	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
+//		paren_chunk?
+//		-> ^(AT ID paren_chunk?)
+//	;
 
 decl_field
 	:	ID	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
@@ -395,6 +453,13 @@ decl_field_initialization
 	:	EQUALS_ASSIGN	{	helper.emit($EQUALS_ASSIGN, DroolsEditorType.SYMBOL);	}
 		paren_chunk
 	-> ^(EQUALS_ASSIGN paren_chunk)
+	;
+
+decl_method
+options{ backtrack=true; memoize=true; }
+	:	methodDeclaration
+	|	void_key ID voidMethodDeclaratorRest
+	|	ID constructorDeclaratorRest
 	;
 
 // --------------------------------------------------------
@@ -718,8 +783,12 @@ over_elements
 	:	id1=ID {	helper.emit($id1, DroolsEditorType.IDENTIFIER);	} 
 		COLON {	helper.emit($COLON, DroolsEditorType.SYMBOL);	} 
 		id2=ID {	helper.emit($id2, DroolsEditorType.IDENTIFIER);	} 
-		paren_chunk
-	-> ^(VT_BEHAVIOR $id1 $id2 paren_chunk)
+		LEFT_PAREN 
+			( 
+				t=TimePeriod | t=DECIMAL
+			) 
+		RIGHT_PAREN
+	-> ^(VT_BEHAVIOR $id1 $id2 VT_PAREN_CHUNK[$t])
 	;
 
 accumulate_statement
@@ -1024,11 +1093,25 @@ simple_operator
 	|	LESS_EQUALS^ {	helper.emit($LESS_EQUALS, DroolsEditorType.SYMBOL);	}
 	|	NOT_EQUALS^ {	helper.emit($NOT_EQUALS, DroolsEditorType.SYMBOL);	}
 	|	not_key?
-		(	operator_key^ square_chunk?	)
+		(	operator_key^ (operator_params)?	)
 	)
 	{	helper.emit(Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT);	}
 	expression_value
 	;
+
+operator_params
+	:	(operator_args) => ops=operator_args 
+	-> VT_SQUARE_CHUNK[$ops.start, $ops.text]
+	| square_chunk
+	;
+
+operator_args
+	: LEFT_SQUARE! operator_arg (COMMA! operator_arg)* RIGHT_SQUARE!
+	;
+	
+operator_arg
+	: TimePeriod
+	;	
 
 //Simple Syntax Sugar
 compound_operator 
@@ -1242,6 +1325,10 @@ typeList
 	:	type (COMMA type)*
 	;
 	
+typeNameList
+	:	typeName (COMMA! typeName)*
+	;	
+	
 	//  helper.validateLT(2, "-")
 type
 options { backtrack=true; memoize=true; }
@@ -1250,9 +1337,10 @@ options { backtrack=true; memoize=true; }
 	;
 
 typeName
-	:   ID
-    	|   packageOrTypeName DOT ID
+	:   ID (DOT ID)* -> VT_TYPE_NAME[$typeName.text]
+    	//|   packageOrTypeName DOT ID		//sotty: ??
 	;
+	
 
 packageOrTypeName
 	:	id+=ID ( id+=DOT id+=ID )*
@@ -1295,6 +1383,168 @@ string_list
 	-> STRING[$first,buf.toString()+" ]"]
 	;
 
+
+
+
+
+
+
+
+
+
+// --------------------------------------------------------
+//                      STATEMENTS
+// --------------------------------------------------------
+
+
+block   
+	:	LEFT_CURLY blockStatement* RIGHT_CURLY
+	;
+	
+blockStatement
+	:	(final_key)=> localVariableDeclaration
+		//|	classOrInterfaceDeclaration						//sotty: do not allow named classes. inline classes are primary expressions
+  	|	rhs_statement
+	;
+
+
+
+	
+localVariableDeclaration
+	:	
+	( variableModifier )* type variableDeclarators SEMICOLON
+	;
+	
+variableModifier
+	:	final_key
+//   |   annotation
+	;
+
+variableDeclaratorId
+	:	ID (LEFT_SQUARE RIGHT_SQUARE)*
+	;
+
+variableDeclarators
+	:	variableDeclarator (COMMA variableDeclarator)*
+	;
+
+variableDeclarator
+	:	id=ID rest=variableDeclaratorRest 
+	;
+	
+variableDeclaratorRest
+	:	(LEFT_SQUARE RIGHT_SQUARE)+ (EQUALS_ASSIGN variableInitializer)?
+	|	EQUALS_ASSIGN variableInitializer
+	|
+	;	
+	
+	
+	
+		
+	
+	
+rhs_statement 
+options{ backtrack=true; memoize=true; }
+	: block    
+    | if_key parExpression rhs_statement (options {k=1;}: else_key rhs_statement)?
+    | for_key LEFT_PAREN forControl RIGHT_PAREN rhs_statement
+    | while_key parExpression rhs_statement
+    | do_key rhs_statement while_key parExpression SEMICOLON
+    | try_key block
+      (	catches finally_key block
+      | catches
+      | finally_key block
+      )
+    | switch_key parExpression LEFT_CURLY switchBlockStatementGroups RIGHT_CURLY
+    | synchronized_key parExpression block
+    | return_key expression? SEMICOLON
+    | throw_key expression SEMICOLON
+    | break_key ID? SEMICOLON
+    | continue_key ID? SEMICOLON
+    | SEMICOLON
+//    | statementExpression SEMICOLON				// just an expression
+		| expression SEMICOLON				
+    | ID COLON rhs_statement
+    
+    // adding support to drools modify block        
+    | modifyStatement   
+    
+    | assert_key expression (COLON expression)? SEMICOLON    
+	;
+
+
+
+
+
+forControl 
+options { backtrack=true; memoize=true; }
+	:	forVarControl
+	|	forInit? SEMICOLON expression? SEMICOLON forUpdate?
+	;
+
+forInit    
+options { backtrack=true; memoize=true; }
+	:	variableModifier* type variableDeclarators
+	|	expressionList
+	;
+
+forVarControl
+	:	variableModifier* type ID COLON expression
+	;
+
+forUpdate
+	:	expressionList
+	;
+
+
+
+catches
+	:	catchClause (catchClause)*
+	;
+	
+catchClause
+	:	catch_key LEFT_PAREN formalParameter RIGHT_PAREN block
+	;
+
+formalParameter
+	:	variableModifier* type variableDeclaratorId
+	;
+
+
+
+switchBlockStatementGroups
+	:	(switchBlockStatementGroup)*
+	;
+	
+switchBlockStatementGroup
+	:	switchLabel blockStatement*
+	;
+	
+switchLabel
+//	:	'case' constantExpression ':'				//constantExpression is actually an expression
+	: case_key expression COLON
+//	|   'case' enumConstantName ':'			  //enumConstantName is actually an ID
+	| case_key ID COLON
+	| default_key COLON
+	;
+	
+	
+	
+	
+	
+modifyStatement
+	: s=modify_key parExpression 
+	LEFT_CURLY ( e = expression (COMMA e=expression  )* )? RIGHT_CURLY
+	;	
+
+
+
+
+
+
+
+
+
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
@@ -1335,8 +1585,11 @@ instanceOfExpression
 	;
 
 relationalExpression
-    :   shiftExpression ( relationalOp shiftExpression )*
+    :   shiftExpression ( (LESS)=> relationalOp shiftExpression )*
     ;
+    
+    
+    
 	
 relationalOp
 	:	(LESS_EQUALS| GREATER_EQUALS | LESS | GREATER)
@@ -1351,7 +1604,7 @@ shiftOp
 	;
 
 additiveExpression
-    :   multiplicativeExpression ( (PLUS | MINUS) multiplicativeExpression )*
+    :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
 	;
 
 multiplicativeExpression
@@ -1371,7 +1624,7 @@ options{ backtrack=true; memoize=true; }
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   castExpression
-    |   primary ((selector)=>selector)* (INCR|DECR)?
+    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
     ;
     
 castExpression
@@ -1472,7 +1725,7 @@ arrayInitializer
 	;
 
 classCreatorRest
-	:	arguments
+	:	arguments classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
 	;
 	
 explicitGenericInvocation
@@ -1527,6 +1780,343 @@ options { k=1; }
         |   SHIFT_RIGHT EQUALS_ASSIGN
         |   SHIFT_RIGHT_UNSIG EQUALS_ASSIGN
 	;
+
+
+
+
+
+
+// --------------------------------------------------------
+//                      (ANON) CLASS_BODY
+// --------------------------------------------------------
+
+
+	
+classDeclaration
+	:	normalClassDeclaration
+    |   enumDeclaration
+	;
+	
+normalClassDeclaration
+	:	class_key ID (typeParameters)?
+        (extends_key type)?
+        (implements_key typeList)?
+        classBody
+	;
+
+classBody
+	:	LEFT_CURLY classBodyDeclaration* RIGHT_CURLY
+	;
+
+classBodyDeclaration			//sotty: only for anon classes
+	:	SEMICOLON
+	|	//static_key? 				//static is not allowed, but an action block is
+		block		
+	|	modifiedClassMember
+	;
+
+
+modifiedClassMember
+options{ backtrack=true; }
+	: modifier modifiedClassMember
+	| memberDecl
+	;	
+
+
+modifier
+    :   annotation
+    |   public_key
+    |   protected_key
+    |   private_key
+    |   static_key
+    |   abstract_key
+    |   final_key
+    |   native_key
+    |   synchronized_key
+    |   transient_key
+    |   volatile_key
+    |   strictfp_key
+    ;
+
+memberDecl
+options{ backtrack=true; }
+	:	genericMethodOrConstructorDecl			//sotty: should we?
+	
+	|	methodDeclaration
+	|	void_key ID voidMethodDeclaratorRest
+	|	ID constructorDeclaratorRest
+	
+	|	fieldDeclaration
+		
+	|	interfaceDeclaration
+	|	classDeclaration
+	;
+	
+	
+genericMethodOrConstructorDecl
+	:	typeParameters genericMethodOrConstructorRest
+	;
+	
+genericMethodOrConstructorRest
+	:	(type | void_key) ID methodDeclaratorRest
+	|	ID constructorDeclaratorRest
+	;	
+	
+	
+methodDeclaration
+	:	type ID methodDeclaratorRest
+	;
+	
+methodDeclaratorRest
+	:	formalParameters (LEFT_SQUARE RIGHT_SQUARE)*
+        (throws_key typeNameList)?
+        (   block 
+        |   SEMICOLON
+        )
+	;	
+
+voidMethodDeclaratorRest
+	:	formalParameters (throws_key typeNameList)?
+        (   block
+        |   SEMICOLON
+        )
+	;
+
+constructorDeclaratorRest
+	:	formalParameters (throws_key typeNameList)? block
+	;
+
+
+fieldDeclaration
+	:	type variableDeclarators SEMICOLON
+	;
+	
+formalParameters
+	:	LEFT_PAREN formalParameterDecls? RIGHT_PAREN
+	;
+	
+formalParameterDecls
+	:	variableModifier* type formalParameterDeclsRest?
+	;
+	
+formalParameterDeclsRest
+	:	variableDeclaratorId (COMMA formalParameterDecls)?
+	|   DOT DOT DOT variableDeclaratorId
+	;
+
+typeParameters
+	:	LESS typeParameter (COMMA typeParameter)* GREATER
+	;
+
+typeParameter
+	:	ID (extends_key bound)?
+	;
+	
+bound
+	:	type (AMPER type)*
+	;
+
+
+
+
+
+
+	
+interfaceDeclaration
+	:	normalInterfaceDeclaration
+		| annotationTypeDeclaration		//sotty: not sure, would it allow to declare new metadata?
+	;
+	
+normalInterfaceDeclaration
+	:	interface_key ID typeParameters? (extends_key typeList)? interfaceBody
+	;
+
+interfaceBody
+	:	LEFT_CURLY interfaceBodyDeclaration* RIGHT_CURLY
+	;
+
+
+interfaceBodyDeclaration
+	:	modifiedInterfaceMember
+	|   SEMICOLON
+	;
+	
+modifiedInterfaceMember
+options{ backtrack=true; }
+	: modifier modifiedInterfaceMember
+	| interfaceMemberDecl
+	;	
+
+interfaceMemberDecl
+	:	interfaceMethodOrFieldDecl
+	|   interfaceGenericMethodDecl
+    |   void_key ID voidInterfaceMethodDeclaratorRest
+    |   interfaceDeclaration
+    |   classDeclaration
+	;
+	
+interfaceMethodOrFieldDecl
+	:	type ID interfaceMethodOrFieldRest
+	;
+	
+interfaceMethodOrFieldRest
+	:	constantDeclaratorsRest SEMICOLON
+	|	interfaceMethodDeclaratorRest
+	;
+
+
+interfaceMethodDeclaratorRest
+	:	formalParameters (LEFT_SQUARE RIGHT_SQUARE)* (throws_key typeNameList)? SEMICOLON
+	;
+	
+interfaceGenericMethodDecl
+	:	typeParameters (type | void_key) ID
+        interfaceMethodDeclaratorRest
+	;
+	
+voidInterfaceMethodDeclaratorRest
+	:	formalParameters (throws_key typeNameList)? SEMICOLON
+	;
+
+
+
+constantDeclarator
+	:	ID constantDeclaratorRest
+	;
+
+constantDeclaratorsRest
+    :   constantDeclaratorRest (COMMA constantDeclarator)*
+    ;
+
+constantDeclaratorRest
+	:	(LEFT_SQUARE RIGHT_SQUARE)* EQUALS variableInitializer
+	;
+
+
+
+
+
+
+
+
+enumDeclaration
+	:	enum_key ID (implements_key typeList)? enumBody
+	;
+	
+enumBody
+	:	LEFT_CURLY enumConstants? COMMA? enumBodyDeclarations? RIGHT_CURLY
+	;
+
+enumConstants
+	:	enumConstant (COMMA enumConstant)*
+	;
+	
+enumConstant
+	:	annotations? ID (arguments)? (classBody)?
+	;
+	
+enumBodyDeclarations
+	:	SEMICOLON (classBodyDeclaration)*
+	;
+
+
+// --------------------------------------------------------
+//                      (JAVA) ANNOTATIONS
+// --------------------------------------------------------
+
+
+
+annotations
+	:	annotation+
+	;
+
+annotation
+	:	AT {	helper.emit($AT, DroolsEditorType.SYMBOL);	}
+		ann=annotationName 
+			(
+				LEFT_PAREN RIGHT_PAREN
+				| LEFT_PAREN elementValuePairs RIGHT_PAREN
+				| 
+			)
+		-> ^(AT VT_TYPE_NAME[$ann.name] elementValuePairs?)
+	;
+
+	
+annotationName returns [String name]
+@init{ $name=""; }
+	: id=ID 	{	$name += $id.text; helper.emit($id, DroolsEditorType.IDENTIFIER);	}
+		(DOT mid=ID { $name += $mid.text; } )*
+	;
+	
+elementValuePairs
+	: elementValuePair (COMMA! elementValuePair)*
+	;
+	
+elementValuePair
+	: (ID EQUALS_ASSIGN)=> key=ID EQUALS_ASSIGN val=elementValue -> ^(VT_PROP_KEY[$key] VT_PROP_VALUE[$val.text])
+	| value=elementValue -> ^(VT_PROP_KEY[$value.text])
+	;
+	
+elementValue
+	:	TimePeriod
+	|	conditionalExpression
+	|   annotation
+	|   elementValueArrayInitializer
+	;
+
+elementValueArrayInitializer
+	:	LEFT_CURLY (elementValue (COMMA elementValue )*)? RIGHT_CURLY
+	;
+
+	
+annotationTypeDeclaration
+	:	AT interface_key ID annotationTypeBody
+	;
+	
+annotationTypeBody
+	:	LEFT_CURLY (annotationTypeElementDeclarations)? RIGHT_CURLY
+	;
+	
+annotationTypeElementDeclarations
+	:	(annotationTypeElementDeclaration) (annotationTypeElementDeclaration)*
+	;
+	
+annotationTypeElementDeclaration
+	:	(modifier)* annotationTypeElementRest
+	;
+	
+annotationTypeElementRest
+	:	type annotationMethodOrConstantRest SEMICOLON
+	|   classDeclaration SEMICOLON?
+	|   interfaceDeclaration SEMICOLON?
+//	|   enumDeclaration SEMICOLON?								//included in classDecl
+//	|   annotationTypeDeclaration SEMICOLON?			//included in interfDecl
+	;
+	
+annotationMethodOrConstantRest
+	:	annotationMethodRest
+	|   annotationConstantRest
+	;
+	
+annotationMethodRest
+ 	:	ID LEFT_PAREN RIGHT_PAREN (defaultValue)?
+ 	;
+ 	
+annotationConstantRest
+ 	:	variableDeclarators
+ 	;
+ 	
+defaultValue
+ 	:	default_key elementValue
+ 	;
+
+
+
+
+
+
+
+
 
 // --------------------------------------------------------
 //                      KEYWORDS
@@ -1814,6 +2404,12 @@ extends_key
 		->	VK_EXTENDS[$id]
 	;
 
+implements_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.IMPLEMENTS))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+		->	VK_IMPLEMENTS[$id]
+	;
+
 super_key
 	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=>  id=ID
 	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
@@ -1892,6 +2488,222 @@ new_key
 		->	VK_NEW[$id] 
 	;
 
+
+final_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.FINAL))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_FINAL[$id]
+;
+
+
+if_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.IF))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_IF[$id]
+;
+
+
+else_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.ELSE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_ELSE[$id]
+;
+
+
+for_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.FOR))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_FOR[$id]
+;
+
+
+while_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.WHILE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_WHILE[$id]
+;
+
+
+do_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.DO))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_DO[$id]
+;
+
+
+case_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.CASE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_CASE[$id]
+;
+
+
+default_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.DEFAULT))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_DEFAULT[$id]
+;
+
+
+try_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.TRY))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_TRY[$id]
+;
+
+
+catch_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.CATCH))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_CATCH[$id]
+;
+
+
+finally_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.FINALLY))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_FINALLY[$id]
+;
+
+
+switch_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.SWITCH))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_SWITCH[$id]
+;
+
+
+synchronized_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.SYNCHRONIZED))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_SYNCHRONIZED[$id]
+;
+
+
+return_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.RETURN))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_RETURN[$id]
+;
+
+
+throw_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.THROW))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_THROW[$id]
+;
+
+
+break_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.BREAK))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_BREAK[$id]
+;
+
+
+continue_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.CONTINUE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_CONTINUE[$id]
+;
+
+assert_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.ASSERT))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_ASSERT[$id]
+;
+
+static_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.STATIC))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_STATIC[$id]
+;
+
+modify_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.MODIFY))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_MODIFY[$id]
+;
+	
+public_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.PUBLIC))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_PUBLIC[$id]
+;
+
+
+protected_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.PROTECTED))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_PROTECTED[$id]
+;
+
+
+private_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.PRIVATE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_PRIVATE[$id]
+;
+
+
+abstract_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.ABSTRACT))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_ABSTRACT[$id]
+;
+
+
+native_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.NATIVE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_NATIVE[$id]
+;
+
+
+transient_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.TRANSIENT))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_TRANSIENT[$id]
+;
+
+
+volatile_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.VOLATILE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_VOLATILE[$id]
+;
+
+
+strictfp_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.STRICTFP))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_STRICTFP[$id]
+;
+
+
+throws_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.THROWS))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_THROWS[$id]
+;
+
+
+interface_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.INTERFACE))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_INTERFACE[$id]
+;
+
+
+enum_key
+	:	{(helper.validateIdentifierKey(DroolsSoftKeywords.ENUM))}?=>  id=ID
+	{	helper.emit($id, DroolsEditorType.KEYWORD);	}
+	-> VK_ENUM[$id]
+;
+	
+
+
+
 // --------------------------------------------------------
 //                      LEXER
 // --------------------------------------------------------
@@ -1935,6 +2747,18 @@ STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
      | ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'')
     ;
+
+
+TimePeriod
+	: (('0'..'9')+ 'd') (('0'..'9')+ 'h')?(('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+	| (('0'..'9')+ 'h') (('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+	| (('0'..'9')+ 'm') (('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+	| (('0'..'9')+ 's') (('0'..'9')+ 'ms'?)?
+	| (('0'..'9')+ 'ms'?)
+	;
+
+
+
 
 fragment
 HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;

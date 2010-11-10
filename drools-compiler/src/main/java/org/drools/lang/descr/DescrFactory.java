@@ -1,9 +1,8 @@
 package org.drools.lang.descr;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.lang.DroolsTree;
@@ -355,23 +354,35 @@ public class DescrFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public TypeDeclarationDescr createTypeDeclr(DroolsTree id,
+            String superType, Collection<String> interfaces,
 			List<Map> declMetadaList, List<TypeFieldDescr> declFieldList) {
 		TypeDeclarationDescr typeDeclr = new TypeDeclarationDescr();
 		typeDeclr.setTypeName(id.getText());
 
+        typeDeclr.setSuperTypeName(superType);
+        typeDeclr.setInterfaceNames(interfaces);
+
 		for (Map activeMetadata : declMetadaList) {
-			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
-					.next();
-			String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
-			typeDeclr.addMetaAttribute(((DroolsTree) activeEntry.getKey())
-					.getText(), chunkData.substring(1, chunkData.length() - 1)
-					.trim());
+			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator().next();
+
+            typeDeclr.addMetaAttribute((String) activeEntry.getKey(),(Map<String,String>) activeEntry.getValue());
+            //String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
+			//typeDeclr.addMetaAttribute(((DroolsTree) activeEntry.getKey())
+			//		.getText(), chunkData.substring(1, chunkData.length() - 1)
+			//		.trim());
 		}
 
 		for (TypeFieldDescr typeFieldDescr : declFieldList) {
 			typeDeclr.addField(typeFieldDescr);
 		}
 		return typeDeclr;
+	}
+
+
+    @SuppressWarnings("unchecked")
+	public TypeDeclarationDescr createTypeDeclr(DroolsTree id,
+			List<Map> declMetadaList, List<TypeFieldDescr> declFieldList) {
+		return createTypeDeclr(id, null, Collections.<String>emptyList(), declMetadaList, declFieldList);
 	}
 
 	/**
@@ -398,9 +409,11 @@ public class DescrFactory {
 		for (Map activeMetadata : declMetadaList) {
 			Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
 					.next();
-            String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
-			field.addMetaAttribute(((DroolsTree) activeEntry.getKey())
-					.getText(), chunkData.substring(1, chunkData.length() - 1));
+
+            field.addMetaAttribute((String) activeEntry.getKey(),(Map<String,String>) activeEntry.getValue());
+            //String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
+			//field.addMetaAttribute(((DroolsTree) activeEntry.getKey())
+			//		.getText(), chunkData.substring(1, chunkData.length() - 1));
 		}
 
 		return field;
@@ -441,13 +454,23 @@ public class DescrFactory {
 		}
 		
 		if ( null != metadata && metadata.size() > 0){
-			for (Map<DroolsTree,DroolsTree> map : metadata){
-				for (Map.Entry<DroolsTree,DroolsTree> entry : map.entrySet() ){ 
-					String chunkData = entry.getValue().getText();
-					ruleDescr.addMetaAttribute( entry.getKey().getText(),chunkData.substring(1, chunkData.length() - 1).trim()  );
-				}
-			}
+
+            for (Map activeMetadata : metadata) {
+			    Entry activeEntry = (Entry) activeMetadata.entrySet().iterator().next();
+
+                ruleDescr.addMetaAttribute(
+                        (String) activeEntry.getKey(),
+                        (Map<String,String>) activeEntry.getValue());
+            //for (Map<DroolsTree,DroolsTree> map : metadata){
+			//	for (Map.Entry<DroolsTree,DroolsTree> entry : map.entrySet() ){
+			//		String chunkData = entry.getValue().getText();
+			//		ruleDescr.addMetaAttribute( entry.getKey().getText(),chunkData.substring(1, chunkData.length() - 1).trim()  );
+			//	}
+            }
 		}
+
+
+
 
 		if (null == andDescr) {
 			ruleDescr.setLhs(new AndDescr());
@@ -809,10 +832,8 @@ public class DescrFactory {
 
     /**
      * Factory method that creates an AccessorDescr.
-     * 
-     * @param id
-     *            accessor identifier
-     * @param chunk
+     *
+     * @param text
      *            chunk data, may be null
      * @return AccessorDescr filled
      * @see AccessorDescr
@@ -915,8 +936,9 @@ public class DescrFactory {
 	 * @return BehaviorDescr filled
 	 */
 	public BehaviorDescr createBehavior(DroolsTree type, DroolsTree param) {
-		return new SlidingWindowDescr(type.getText(), param.getText()
-				.substring(1, param.getText().length() - 1));
+		//return new SlidingWindowDescr(type.getText(), param.getText()
+		//		.substring(1, param.getText().length() - 1));
+        return new SlidingWindowDescr(type.getText(), param.getText());
 	}
 
 	/**
@@ -1501,11 +1523,11 @@ public class DescrFactory {
 	}
 
 	/**
-	 * Helper method that returns a tree text without initial and final quotes
+	 * Helper method that returns an id text without initial and final quotes
 	 * (if it starts with).
 	 * 
-	 * @param tree
-	 *            tree
+	 * @param id
+	 *            id
 	 * @return text without quotes
 	 */
 	private String getCleanId(DroolsTree id) {

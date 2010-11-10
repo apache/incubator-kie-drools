@@ -7123,7 +7123,7 @@ public class MiscTest extends TestCase {
         String drl = "";
         drl += "package test\n";
         drl += "rule \"test meta attributes\"\n";
-        drl += "    @id(1234 ) @author(  john doe  ) @text(\"It's an escaped\\\" string\"  )\n";
+        drl += "    @id(1234 ) @author(  john_doe  ) @text(\"It's an escaped\\\" string\"  )\n";
         drl += "when\n";
         drl += "then\n";
         drl += "    // some comment\n";
@@ -7151,7 +7151,7 @@ public class MiscTest extends TestCase {
         assertThat( rule.getMetaAttribute( "id" ),
                     is( "1234" ));
         assertThat( rule.getMetaAttribute( "author" ),
-                    is( "john doe" ));
+                    is( "john_doe" ));
         assertThat( rule.getMetaAttribute( "text" ),
                     is( "It's an escaped\" string" ));
 

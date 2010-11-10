@@ -16,16 +16,18 @@
 
 package org.drools.lang.descr;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class TypeFieldDescr extends BaseDescr {
+
+
+public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDescr> {
 
     private static final long   serialVersionUID = 510l;
     private String              fieldName;
     private String              initExpr;
     private PatternDescr        pattern;
-    private Map<String, String> metaAttributes;
+    private Map<String, Map<String, String>> metaAttributes;
+    private int                 index = -1;
 
     public TypeFieldDescr() {
         this( null );
@@ -33,7 +35,7 @@ public class TypeFieldDescr extends BaseDescr {
 
     public TypeFieldDescr(final String fieldName) {
         this.fieldName = fieldName;
-        this.metaAttributes = new HashMap<String, String>();
+        this.metaAttributes = new HashMap<String, Map<String, String>>();
     }
 
     public TypeFieldDescr(final String fieldName, final PatternDescr pat) {
@@ -49,7 +51,7 @@ public class TypeFieldDescr extends BaseDescr {
     }
 
     /**
-     * @param identifier the identifier to set
+     * @param fieldName the identifier to set
      */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
@@ -61,28 +63,84 @@ public class TypeFieldDescr extends BaseDescr {
      * @param value
      */
     public void addMetaAttribute(String attr,
-                                 String value) {
+                                 Map<String, String> value) {
         this.metaAttributes.put( attr,
                                  value );
     }
 
+
+
     /**
-     * Returns an attribute value or null if it is not defined
+     * Adds a new attribute
      * @param attr
-     * @return
+     * @param value
      */
-    public String getMetaAttribute(String attr) {
-        return this.metaAttributes.get( attr );
+    public void addMetaAttribute( String attr, String value) {
+        if( this.metaAttributes == null ) {
+            this.metaAttributes = new HashMap<String, Map<String, String>>();
+        }
+        Hashtable<String, String> attrMap = new Hashtable<String, String>();
+            attrMap.put(value,value);
+        this.metaAttributes.put( attr, attrMap );
     }
+
+
+    /**
+     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
+     * Returns the first key, assuming that the annotation has structure @attr(key)
+     * @param attr
+     * @return key1
+     */
+    public String getMetaAttribute( String attr ) {
+        if (this.metaAttributes == null) return null;
+        Map<String, String> meta = this.metaAttributes.get(attr);
+        return meta == null ? null : meta.keySet().iterator().next();
+    }
+
+     /**
+     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
+     * Returns the set of keys, assuming that the annotation has structure @attr(key1,key2,...)
+     * @param attr
+     * @return set of attribute keys
+     */
+    public Set<String> getMetaAttributes(String attr) {
+        if (this.metaAttributes == null) return null;
+        Map<String, String> meta = this.metaAttributes.get(attr);
+        return meta == null ? null : meta.keySet();
+    }
+
+      /**
+     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
+     * Returns a mapped value, given the attribute and the key
+     * @param attr
+     * @param key
+     * @return value
+     */
+     public String getMetaAttributeValue( String attr, String key ) {
+        if (this.metaAttributes == null) return null;
+        Map<String, String> meta = this.metaAttributes.get(attr);
+        return meta == null ? null : meta.get(key);
+     }
+
+
+     /**
+     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
+     * Returns the map {key->value}
+     * @param attr
+     * @return key/value map
+     */
+     public Map<String, String> getMetaAttributeValues( String attr ) {
+        if (this.metaAttributes == null) return null;
+        return this.metaAttributes.get(attr);
+     }
 
     /**
      * Returns the attribute map
      * @return
      */
-    public Map<String, String> getMetaAttributes() {
-        return this.metaAttributes;
+    public Map<String, Map<String, String>> getMetaAttributes() {
+        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
     }
-
     /**
     * @return the initExpr
     */
@@ -114,5 +172,21 @@ public class TypeFieldDescr extends BaseDescr {
     public String toString() {
         return "TypeField[ " + this.getFieldName() + " = (" + this.initExpr + ") : " + this.pattern + " ]";
     }
+
+
+    public int compareTo(TypeFieldDescr other) {
+        return (this.index - other.index);
+    }
+
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+
 
 }
