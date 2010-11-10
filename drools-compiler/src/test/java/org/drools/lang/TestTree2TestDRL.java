@@ -1450,9 +1450,9 @@ public class TestTree2TestDRL extends TestCase {
 			input = new ANTLRStringStream(testInput);
 		}
 		try {
-			DRL5xLexer lexer = new DRL5xLexer(input);
+			DRLLexer lexer = new DRLLexer(input);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			DRL5xParser parser = new DRL5xParser(tokens);
+			DRLParser parser = new DRLParser(tokens);
 			parser.setTreeAdaptor(new DroolsTreeAdaptor());
 			/** Use Reflection to get rule method from parser */
 			Method ruleName = Class.forName("org.drools.lang.DRLParser").getMethod(testRuleName);
