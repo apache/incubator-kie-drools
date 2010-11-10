@@ -296,63 +296,63 @@ public class DroolsParserExceptionFactory {
 	 */
 	private String getBetterToken(int tokenType, String defaultValue) {
 		switch (tokenType) {
-		case DRLLexer.DECIMAL:
+		case DRL5xLexer.INT:
 			return defaultValue == null ? "int" : defaultValue;
-		case DRLLexer.FLOAT:
+		case DRL5xLexer.FLOAT:
 			return defaultValue == null ? "float" : defaultValue;
-		case DRLLexer.STRING:
+		case DRL5xLexer.STRING:
 			return defaultValue == null ? "string" : defaultValue;
-		case DRLLexer.BOOL:
+		case DRL5xLexer.BOOL:
 			return defaultValue == null ? "boolean" : defaultValue;
-		case DRLLexer.NULL:
+		case DRL5xLexer.NULL:
 			return "null";
-		case DRLLexer.THEN:
+		case DRL5xLexer.THEN:
 			return "then";
-		case DRLLexer.SEMICOLON:
+		case DRL5xLexer.SEMICOLON:
 			return ";";
-		case DRLLexer.DOT_STAR:
+		case DRL5xLexer.DOT_STAR:
 			return ".*";
-		case DRLLexer.COLON:
+		case DRL5xLexer.COLON:
 			return ":";
-		case DRLLexer.EQUALS:
+		case DRL5xLexer.EQUALS:
 			return "==";
-		case DRLLexer.NOT_EQUALS:
+		case DRL5xLexer.NOT_EQUAL:
 			return "!=";
-		case DRLLexer.GREATER:
+		case DRL5xLexer.GREATER:
 			return ">";
-		case DRLLexer.GREATER_EQUALS:
+		case DRL5xLexer.GREATER_EQUAL:
 			return ">=";
-		case DRLLexer.LESS:
+		case DRL5xLexer.LESS:
 			return "<";
-		case DRLLexer.LESS_EQUALS:
+		case DRL5xLexer.LESS_EQUAL:
 			return "<=";
-		case DRLLexer.ARROW:
+		case DRL5xLexer.ARROW:
 			return "->";
-		case DRLLexer.ID:
+		case DRL5xLexer.ID:
 			return defaultValue == null ? "identifier" : defaultValue;
-		case DRLLexer.LEFT_PAREN:
+		case DRL5xLexer.LEFT_PAREN:
 			return "(";
-		case DRLLexer.RIGHT_PAREN:
+		case DRL5xLexer.RIGHT_PAREN:
 			return ")";
-		case DRLLexer.LEFT_SQUARE:
+		case DRL5xLexer.LEFT_SQUARE:
 			return "[";
-		case DRLLexer.RIGHT_SQUARE:
+		case DRL5xLexer.RIGHT_SQUARE:
 			return "]";
-		case DRLLexer.LEFT_CURLY:
+		case DRL5xLexer.LEFT_CURLY:
 			return "{";
-		case DRLLexer.RIGHT_CURLY:
+		case DRL5xLexer.RIGHT_CURLY:
 			return "}";
-		case DRLLexer.COMMA:
+		case DRL5xLexer.COMMA:
 			return ",";
-		case DRLLexer.DOT:
+		case DRL5xLexer.DOT:
 			return ".";
-		case DRLLexer.DOUBLE_AMPER:
+		case DRL5xLexer.DOUBLE_AMPER:
 			return "&&";
-		case DRLLexer.DOUBLE_PIPE:
+		case DRL5xLexer.DOUBLE_PIPE:
 			return "||";
-		case DRLLexer.MISC:
+		case DRL5xLexer.MISC:
 			return defaultValue == null ? "misc" : defaultValue;
-		case DRLLexer.EOF:
+		case DRL5xLexer.EOF:
 			return "<eof>";
 		default:
 			return tokenType > tokenNames.length ? "unknown"

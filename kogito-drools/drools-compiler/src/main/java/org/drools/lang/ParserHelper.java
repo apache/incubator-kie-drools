@@ -16,7 +16,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
 
-import static org.drools.lang.DRLParser.*;
+import static org.drools.lang.DRL5xParser.*;
 
 /**
  * This is a class to hold all the helper functions/methods used
@@ -30,12 +30,12 @@ public class ParserHelper {
     private Stack<Map<DroolsParaphraseTypes, String>> paraphrases              = new Stack<Map<DroolsParaphraseTypes, String>>();
 
     // parameters from parser
-    private DRLParser                                 parser                   = null;
+    private DRL5xParser                                 parser                   = null;
     private DroolsParserExceptionFactory              errorMessageFactory      = null;
     private TokenStream                               input                    = null;
     private RecognizerSharedState                     state                    = null;
 
-    public ParserHelper(DRLParser parser,
+    public ParserHelper(DRL5xParser parser,
                         String[] tokenNames,
                         TokenStream input,
                         RecognizerSharedState state) {
@@ -408,7 +408,7 @@ public class ParserHelper {
 
     private boolean memberOfFollowSet(BitSet follow) {
         boolean isMember = follow.member(input.LA(1));
-        if( input.LA( 1 ) == DRLParser.ID ) {
+        if( input.LA( 1 ) == DRL5xParser.ID ) {
             String token = input.LT( 1 ).getText();
             isMember = ( DroolsSoftKeywords.IMPORT.equals( token ) ||
                          DroolsSoftKeywords.GLOBAL.equals( token ) ||

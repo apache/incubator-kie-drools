@@ -106,9 +106,9 @@ public class MVELDumperTest extends TestCase {
 			CharStream charStream) {
 		Object treeRuleReturn = null;
 		try {
-			DRLLexer lexer = new DRLLexer(charStream);
+			DRL5xLexer lexer = new DRL5xLexer(charStream);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			DRLParser parser = new DRLParser(tokens);
+			DRL5xParser parser = new DRL5xParser(tokens);
 			parser.setTreeAdaptor(new DroolsTreeAdaptor());
 			/** Use Reflection to get rule method from parser */
 			Method ruleName = Class.forName("org.drools.lang.DRLParser")
@@ -128,7 +128,7 @@ public class MVELDumperTest extends TestCase {
 				// AST nodes have payload that point into token stream
 				nodes.setTokenStream(tokens);
 				// Create a tree walker attached to the nodes stream
-				DescrBuilderTree walker = new DescrBuilderTree(nodes);
+				DescrBuilderTree5x walker = new DescrBuilderTree5x(nodes);
 				/** Invoke the tree rule, and store the return value if there is */
 				Method treeRuleName = Class.forName(
 						"org.drools.lang.DescrBuilderTree").getMethod(
