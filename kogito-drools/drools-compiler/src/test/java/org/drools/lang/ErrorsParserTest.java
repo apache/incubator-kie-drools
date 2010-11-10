@@ -34,7 +34,7 @@ import org.drools.lang.dsl.DefaultExpander;
 
 public class ErrorsParserTest extends TestCase {
 
-    private DRL5xParser parser;
+    private DRLParser parser;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -80,7 +80,7 @@ public class ErrorsParserTest extends TestCase {
     }
 
     public void testNotBindindShouldBarf() throws Exception {
-        final DRL5xParser parser = parseResource( "not_with_binding_error.drl" );
+        final DRLParser parser = parseResource( "not_with_binding_error.drl" );
         parser.compilation_unit();
         System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
@@ -96,7 +96,7 @@ public class ErrorsParserTest extends TestCase {
         final Expander expander = new DefaultExpander();
         final String expanded = expander.expand( this.getReader( name ) );
 
-        final DRL5xParser parser = parse( name,
+        final DRLParser parser = parse( name,
                                         expanded );
         parser.compilation_unit();
         assertTrue( parser.hasErrors() );
@@ -183,7 +183,7 @@ public class ErrorsParserTest extends TestCase {
     }
 
     public void testErrorMessageForMisplacedParenthesis() throws Exception {
-        final DRL5xParser parser = parseResource( "misplaced_parenthesis.drl" );
+        final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
         parser.compilation_unit();
 
         System.out.println( this.getName() );
@@ -203,7 +203,7 @@ public class ErrorsParserTest extends TestCase {
     }
 
     public void testNPEOnParser() throws Exception {
-        final DRL5xParser parser = parseResource( "npe_on_parser.drl" );
+        final DRLParser parser = parseResource( "npe_on_parser.drl" );
         parser.compilation_unit();
         System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
@@ -219,7 +219,7 @@ public class ErrorsParserTest extends TestCase {
     }
 
     public void testCommaMisuse() throws Exception {
-        final DRL5xParser parser = parseResource( "comma_misuse.drl" );
+        final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
             parser.compilation_unit();
 //            System.out.println( this.getName() );
@@ -236,12 +236,12 @@ public class ErrorsParserTest extends TestCase {
         }
     }
 
-    private DRL5xParser parse(final String text) throws Exception {
+    private DRLParser parse(final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         return this.parser;
     }
 
-    private DRL5xParser parse(final String source,
+    private DRLParser parse(final String source,
                             final String text) throws Exception {
         this.parser = newParser( newTokenStream( newLexer( newCharStream( text ) ) ) );
         // this.parser.setSource( source );
@@ -254,7 +254,7 @@ public class ErrorsParserTest extends TestCase {
         return new InputStreamReader( in );
     }
 
-    private DRL5xParser parseResource(final String name) throws Exception {
+    private DRLParser parseResource(final String name) throws Exception {
 
         final Reader reader = getReader( name );
 
@@ -277,16 +277,16 @@ public class ErrorsParserTest extends TestCase {
         return new ANTLRStringStream( text );
     }
 
-    private DRL5xLexer newLexer(final CharStream charStream) {
-        return new DRL5xLexer( charStream );
+    private DRLLexer newLexer(final CharStream charStream) {
+        return new DRLLexer( charStream );
     }
 
     private TokenStream newTokenStream(final Lexer lexer) {
         return new CommonTokenStream( lexer );
     }
 
-    private DRL5xParser newParser(final TokenStream tokenStream) {
-        final DRL5xParser p = new DRL5xParser( tokenStream );
+    private DRLParser newParser(final TokenStream tokenStream) {
+        final DRLParser p = new DRLParser( tokenStream );
         p.setTreeAdaptor( new DroolsTreeAdaptor() );
         return p;
     }

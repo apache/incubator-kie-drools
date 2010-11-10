@@ -40,12 +40,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.definition.type.FactField;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.FieldVisitor;
-import org.mvel2.asm.Label;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Opcodes;
-import org.mvel2.asm.Type;
+//import org.mvel2.asm.*;
+import org.objectweb.asm.*;
+import org.objectweb.asm.util.CheckClassAdapter;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes
@@ -81,6 +78,51 @@ public class ClassBuilder {
             }
         }
         this.debug = debug;
+    }
+
+
+
+
+
+    /**
+     * Loads a class once it has been created in serialized form
+     *
+     * @param classDef the class definition object structure
+     * @param serializedClazz the serialized class
+     *
+     * @return the Class instance for the given class definition
+     *
+     * @throws IOException
+     * @throws IntrospectionException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws ClassNotFoundException
+     * @throws IllegalArgumentException
+     * @throws SecurityException
+     * @throws NoSuchFieldException
+     * @throws InstantiationException
+     */
+    public Class< ? > loadBuiltClass(ClassDefinition classDef, byte[] serializedClazz) throws IOException,
+                                                                 IntrospectionException,
+                                                                 SecurityException,
+                                                                 IllegalArgumentException,
+                                                                 ClassNotFoundException,
+                                                                 NoSuchMethodException,
+                                                                 IllegalAccessException,
+                                                                 InvocationTargetException,
+                                                                 InstantiationException,
+                                                                 NoSuchFieldException {
+
+        try {
+            Class< ? > clazz = Class.forName( classDef.getClassName() );
+            return clazz;
+        } catch ( ClassNotFoundException e ) {
+            Class< ? > clazz = this.loadClass( classDef.getClassName(),serializedClazz );
+            classDef.setDefinedClass( clazz );
+            return clazz;
+        }
+
     }
 
     /**
@@ -122,10 +164,10 @@ public class ClassBuilder {
             // class not loaded, so create and load it
             byte[] serializedClazz = this.buildClass( classDef );
 
-            Class< ? > clazz = this.loadClass( classDef.getClassName(),
-                                               serializedClazz );
-            classDef.setDefinedClass( clazz );
-
+           // Class< ? > clazz = this.loadClass( classDef.getClassName(),
+           //                                    serializedClazz );
+           // classDef.setDefinedClass( clazz );
+            Class< ? >  clazz = Class.forName( classDef.getClassName() );
             return clazz;
         }
     }
@@ -160,6 +202,7 @@ public class ClassBuilder {
                                                       NoSuchFieldException {
 
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
+        //ClassVisitor cw = new CheckClassAdapter(cwr);
 
         this.buildClassHeader( cw,
                                classDef );
@@ -212,16 +255,19 @@ public class ClassBuilder {
 
         cw.visitEnd();
 
-        return cw.toByteArray();
+        byte[] serializedClass = cw.toByteArray();
+            loadBuiltClass(classDef, serializedClass);
+
+        return serializedClass;
     }
 
     /**
      * Defines the class header for the given class definition
      *
      * @param cw
-     * @param dimDef
+     * @param classDef
      */
-    private void buildClassHeader(ClassWriter cw,
+    private void buildClassHeader(ClassVisitor cw,
                                   ClassDefinition classDef) {
         String[] original = classDef.getInterfaces();
         String[] interfaces = new String[original.length];
@@ -229,7 +275,7 @@ public class ClassBuilder {
             interfaces[i] = getInternalType( original[i] );
         }
         // Building class header
-        cw.visit( Opcodes.V1_4,
+        cw.visit( Opcodes.V1_5,
                   Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
                   getInternalType( classDef.getClassName() ),
                   null,
@@ -246,7 +292,7 @@ public class ClassBuilder {
      * @param cw
      * @param fieldDef
      */
-    private void buildField(ClassWriter cw,
+    private void buildField(ClassVisitor cw,
                             FieldDefinition fieldDef) {
         FieldVisitor fv;
         fv = cw.visitField( Opcodes.ACC_PRIVATE,
@@ -262,7 +308,7 @@ public class ClassBuilder {
      *
      * @param cw
      */
-    private void buildDefaultConstructor(ClassWriter cw,
+    private void buildDefaultConstructor(ClassVisitor cw,
                                          ClassDefinition classDef) {
         MethodVisitor mv;
         // Building default constructor
@@ -281,12 +327,17 @@ public class ClassBuilder {
             }
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( Object.class ),
-                                "<init>",
-                                Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{} ) );
-            mv.visitInsn( Opcodes.RETURN );
+            try {
+                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                                    //Type.getInternalName( Object.class ),
+                                    Type.getInternalName(Class.forName(classDef.getSuperClass())),
+                                    "<init>",
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{} ) );
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            mv.visitInsn(Opcodes.RETURN);
             Label l1 = null;
             if ( this.debug ) {
                 l1 = new Label();
@@ -311,7 +362,7 @@ public class ClassBuilder {
      * @param cw
      * @param classDef
      */
-    private void buildConstructorWithFields(ClassWriter cw,
+    private void buildConstructorWithFields(ClassVisitor cw,
                                             ClassDefinition classDef,
                                             Collection<FieldDefinition> fieldDefs) {
         MethodVisitor mv;
@@ -337,11 +388,16 @@ public class ClassBuilder {
             }
             mv.visitVarInsn( Opcodes.ALOAD,
                              0 );
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( Object.class ),
-                                "<init>",
-                                Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{} ) );
+            try {
+                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                                    Type.getInternalName(Class.forName(classDef.getSuperClass())),
+                                    //Type.getInternalName( Object.class ),
+                                    "<init>",
+                                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                                                              new Type[]{} ) );
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
 
             index = 1; // local vars start at 1, as 0 is "this"
             for ( FieldDefinition field : fieldDefs ) {
@@ -399,7 +455,7 @@ public class ClassBuilder {
      * @param classDef
      * @param fieldDef
      */
-    private void buildSetMethod(ClassWriter cw,
+    private void buildSetMethod(ClassVisitor cw,
                                 ClassDefinition classDef,
                                 FieldDefinition fieldDef) {
         MethodVisitor mv;
@@ -451,7 +507,7 @@ public class ClassBuilder {
      * @param classDef
      * @param fieldDef
      */
-    private void buildGetMethod(ClassWriter cw,
+    private void buildGetMethod(ClassVisitor cw,
                                 ClassDefinition classDef,
                                 FieldDefinition fieldDef) {
         MethodVisitor mv;
@@ -493,7 +549,7 @@ public class ClassBuilder {
         }
     }
 
-    private void buildEquals(ClassWriter cw,
+    private void buildEquals(ClassVisitor cw,
                              ClassDefinition classDef) {
         MethodVisitor mv;
         // Building equals method
@@ -704,7 +760,7 @@ public class ClassBuilder {
         }
     }
 
-    private void buildHashCode(ClassWriter cw,
+    private void buildHashCode(ClassVisitor cw,
                                ClassDefinition classDef) {
 
         MethodVisitor mv;
@@ -848,7 +904,7 @@ public class ClassBuilder {
         }
     }
 
-    private void buildToString(ClassWriter cw,
+    private void buildToString(ClassVisitor cw,
                                ClassDefinition classDef) {
         MethodVisitor mv;
         {

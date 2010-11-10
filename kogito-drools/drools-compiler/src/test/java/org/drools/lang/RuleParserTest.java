@@ -78,8 +78,8 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class RuleParserTest extends TestCase {
 
-    private DescrBuilderTree5x walker;
-    DRL5xParser                parser;
+    private DescrBuilderTree walker;
+    DRLParser                parser;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -4211,9 +4211,9 @@ public class RuleParserTest extends TestCase {
                                  CharStream charStream) {
         Object treeRuleReturn = null;
         try {
-            DRL5xLexer lexer = new DRL5xLexer( charStream );
+            DRLLexer lexer = new DRLLexer( charStream );
             CommonTokenStream tokens = new CommonTokenStream( lexer );
-            parser = new DRL5xParser( tokens );
+            parser = new DRLParser( tokens );
             parser.setTreeAdaptor( new DroolsTreeAdaptor() );
             /** Use Reflection to get rule method from parser */
             Method ruleName = Class.forName( "org.drools.lang.DRLParser" ).getMethod( testRuleName );
@@ -4231,7 +4231,7 @@ public class RuleParserTest extends TestCase {
                 // AST nodes have payload that point into token stream
                 nodes.setTokenStream( tokens );
                 // Create a tree walker attached to the nodes stream
-                this.walker = new DescrBuilderTree5x( nodes );
+                this.walker = new DescrBuilderTree( nodes );
                 /** Invoke the tree rule, and store the return value if there is */
                 Method treeRuleName = Class.forName( "org.drools.lang.DescrBuilderTree" ).getMethod( testTreeRuleName );
                 treeRuleReturn = treeRuleName.invoke( walker );
