@@ -48,6 +48,7 @@ public class TypeDeclaration
     public static final String ATTR_DURATION            = "duration";
     public static final String ATTR_TIMESTAMP           = "timestamp";
     public static final String ATTR_EXPIRE              = "expires";
+    public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
 
     public static enum Role {
