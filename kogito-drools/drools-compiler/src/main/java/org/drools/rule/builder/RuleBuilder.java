@@ -54,9 +54,8 @@ public class RuleBuilder {
     }
 
     /**
-     * Build the give rule into the 
-     * @param pkg
-     * @param ruleDescr
+     * Build the give rule into the
+     * @param context
      * @return
      */
     public void build(final RuleBuildContext context) {
@@ -105,12 +104,14 @@ public class RuleBuilder {
 
     public void buildMetaAttributes(final RuleBuildContext context ) {
         Rule rule = context.getRule();
-        for( Entry<String, String> meta : context.getRuleDescr().getMetaAttributes().entrySet() ) {
-            String value = meta.getValue().trim();
+        //for( Entry<String, String> meta : context.getRuleDescr().getMetaAttributes().entrySet() ) {
+        for ( String metaAttr : context.getRuleDescr().getMetaAttributes().keySet() ) {
+            String value = context.getRuleDescr().getMetaAttribute(metaAttr);
             if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
                 value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) ); 
             }
-            rule.addMetaAttribute( meta.getKey(), value );
+            rule.addMetaAttribute( metaAttr, value );
+            //rule.addMetaAttribute( meta.getKey(), value );
         }
     }
 

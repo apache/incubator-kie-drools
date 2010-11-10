@@ -23,14 +23,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -51,6 +44,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.process.Process;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
+import org.drools.factmodel.Field;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
@@ -930,6 +924,30 @@ public class PackageBuilder {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
             }
 
+            //sotty: need to resolve supertype and interfaces, if imported
+
+            //Super Type, if defined by a simple name:
+            String sup = typeDescr.getSuperTypeName();
+            if (sup != null && ! sup.contains(".")) {
+                //may be a local name for an import
+                for (ImportDescr id : packageDescr.getImports()) {
+                    if (id.getTarget().endsWith("."+sup)) {
+                        //System.out.println("Replace supertype " + sup + " with full name " + id.getTarget());
+                        typeDescr.setSuperTypeName(id.getTarget());
+                        break;
+                    }
+                }
+            }
+            //refresh the name, may have been just set
+            if ((sup = typeDescr.getSuperTypeName()) != null && ! sup.contains(".")) {
+                //or a local declaration
+                for (TypeDeclarationDescr td : packageDescr.getTypeDeclarations()) {
+                    if (sup.equals(td.getTypeName()))
+                        //System.out.println("Replace supertype " + sup + " with full name " + (packageDescr.getNamespace()+"."+sup));
+                        typeDescr.setSuperTypeName(packageDescr.getNamespace()+"."+sup);
+                }
+            }
+
             // is it a POJO or a template?
             String templateName = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TEMPLATE );
             if ( templateName != null ) {
@@ -1055,22 +1073,57 @@ public class PackageBuilder {
         ClassBuilder cb = new ClassBuilder();
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
         // generated beans should be serializable
-        ClassDefinition def = new ClassDefinition( fullName,
-                                                   Object.class.getName(),
-                                                   new String[]{Serializable.class.getName()} );
+
+        String superType = typeDescr.getSuperTypeName() == null ? Object.class.getName() : typeDescr.getSuperTypeName();
+
+
+        String[] interfaces = new String[1 + typeDescr.getInterfaceNames().size()];
+        int j = 0;
+        Iterator<String> intfIter = typeDescr.getInterfaceNames().iterator();
+        while (intfIter.hasNext())
+           interfaces[j++] = intfIter.next();
+        interfaces[typeDescr.getInterfaceNames().size()] = Serializable.class.getName();
+
+        //ClassDefinition def = new ClassDefinition( fullName,
+        //                                           Object.class.getName(),
+        //                                           new String[]{Serializable.class.getName()} );
+        ClassDefinition def = new ClassDefinition( fullName, superType, interfaces);
+
         Map<String, TypeFieldDescr> flds = typeDescr.getFields();
         try {
+
+            PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
+                String idx = field.getMetaAttribute(TypeDeclaration.ATTR_FIELD_POSITION);
+                if (idx != null) {
+                    field.setIndex(Integer.valueOf(idx));
+                }
+
+                queue.add(field);
+            }
+
+            TypeFieldDescr field = queue.poll();
+            while ( field != null) {
                 String fullFieldType = pkgRegistry.getTypeResolver().resolveType( field.getPattern().getObjectType() ).getName();
                 FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
                                                                 fullFieldType );
                 // field is marked as PK
                 boolean isKey = field.getMetaAttributes().containsKey( "key" );
                 fieldDef.setKey( isKey );
+
                 def.addField( fieldDef );
+
+                field = queue.poll();
             }
 
-            byte[] d = cb.buildClass( def );
+
+
+
+
+
+
+            byte[] d = cb.buildClass(def);
+
 
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
 

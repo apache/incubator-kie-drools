@@ -10,7 +10,7 @@ rule "Test Consequence"
 	@dateActive(12/1/08)
 	@price(123.00)
 	@errorMSG(Stop)
-	@userMSG(Please Stop)
+	@userMSG("Please Stop")
   when
     Person(name == "Michael")
   then
