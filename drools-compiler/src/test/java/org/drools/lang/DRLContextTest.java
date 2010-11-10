@@ -21,7 +21,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT1()
 			throws DroolsParserException, RecognitionException {
 		String input = "rule MyRule when Class ( property memberOf collection ";
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -36,7 +36,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_OPERATORS_AND_COMPLEMENT2()
 			throws DroolsParserException, RecognitionException {
 		String input = "rule MyRule when Class ( property not memberOf collection";
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -51,7 +51,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_COMPOSITE_OPERATOR1()
 			throws DroolsParserException, RecognitionException {
 		String input = "rule MyRule when Class ( property in ( ";
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -66,7 +66,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION1()
 			throws DroolsParserException, RecognitionException {
 		String input = "rule MyRule \n" + "	when \n" + "		";
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -82,7 +82,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class( condition == true ) \n" + "		";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -99,7 +99,7 @@ public class DRLContextTest extends TestCase {
 				+ "		class: Class( condition == true, condition2 == null ) \n"
 				+ "		";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -114,7 +114,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION4() {
 		String input = "rule MyRule \n" + "	when \n" + "		Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -130,7 +130,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class( condition == true ) \n" + "		Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -145,7 +145,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION6() {
 		String input = "rule MyRule \n" + "	when \n" + "		class: Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -160,7 +160,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION7() {
 		String input = "rule MyRule \n" + "	when \n" + "		class:Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -176,7 +176,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START1() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -191,7 +191,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START2() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( na";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -207,7 +207,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name.subProperty['test'].subsu";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -223,7 +223,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( condition == true, ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -239,7 +239,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( condition == true, na";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -254,7 +254,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START6() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( \n" + "			";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -270,7 +270,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( condition == true, \n" + "			";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -286,7 +286,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( c: condition, \n" + "			";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -307,7 +307,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9a() {
 		String input = "rule MyRule \n" + "   when \n" + "       Class ( name:";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -322,7 +322,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START9b() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( name: ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -337,7 +337,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START10() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( name:";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -353,7 +353,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR1() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -368,7 +368,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_OPERATOR2() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class(property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -384,7 +384,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name : property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -400,7 +400,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class (name:property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -416,7 +416,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class (name:property   ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -432,7 +432,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name1 : property1, name : property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -448,7 +448,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name1 : property1 == \"value\", name : property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -464,7 +464,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name1 : property1 == \"value\",property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -480,7 +480,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name1 : property1, \n" + "			name : property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -496,7 +496,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT1() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( property == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -511,7 +511,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT2() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( property== ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -527,7 +527,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name : property <= ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -543,7 +543,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name:property != ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -559,7 +559,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name1 : property1, property2 == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -575,7 +575,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class (name:property== ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -591,7 +591,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property == otherPropertyN";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -607,7 +607,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property == otherPropertyN ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -623,7 +623,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property == \"someth";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -639,7 +639,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property contains ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -655,7 +655,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not contains ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -671,7 +671,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property excludes ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -687,7 +687,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property matches \"prop";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -702,7 +702,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_ARGUMENT12() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( property in ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -718,7 +718,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property in ('1', '2') ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -734,7 +734,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property in ('1', '2'), ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -750,7 +750,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not in ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -766,7 +766,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not in ('1', '2') ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -782,7 +782,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not in ('1', '2'), ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -798,7 +798,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property memberOf ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -817,7 +817,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property memberOf collection ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -833,7 +833,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property memberOf collection, ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -849,7 +849,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not memberOf ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -865,7 +865,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not memberOf collection ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -881,7 +881,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property not memberOf collection, ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -901,7 +901,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS1() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -916,7 +916,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS2() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -931,7 +931,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS3() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists(";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -946,7 +946,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS4() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -961,7 +961,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS5() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists ( Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -976,7 +976,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS6() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists ( name : Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -991,7 +991,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDeterminationINSIDE_CONDITION_START16() {
 		String input = "rule MyRule \n" + "	when \n" + "		exists Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1007,7 +1007,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		exists Class ( ) \n"
 				+ "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1023,7 +1023,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_NOT1() {
 		String input = "rule MyRule \n" + "	when \n" + "		not ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1038,7 +1038,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_NOT2() {
 		String input = "rule MyRule \n" + "	when \n" + "		not Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1053,7 +1053,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS7() {
 		String input = "rule MyRule \n" + "	when \n" + "		not exists ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1068,7 +1068,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_EXISTS8() {
 		String input = "rule MyRule \n" + "	when \n" + "		not exists Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1083,7 +1083,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START21() {
 		String input = "rule MyRule \n" + "	when \n" + "		not Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1098,7 +1098,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_START22() {
 		String input = "rule MyRule \n" + "	when \n" + "		not exists Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1114,7 +1114,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		not exists name : Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1130,7 +1130,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		not Class () \n"
 				+ "		";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1146,7 +1146,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR1() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) and ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1161,7 +1161,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR2() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) and  ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1176,7 +1176,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR3() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class () and   ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1192,7 +1192,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		name : Class ( name: property ) and ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1213,7 +1213,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name: property ) \n" + "       and ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1228,7 +1228,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR6() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) and Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1244,7 +1244,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and name : Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1260,7 +1260,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and name : Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1276,7 +1276,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and Class ( ) \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1292,7 +1292,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and not Class ( ) \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1308,7 +1308,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and exists Class ( ) \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1324,7 +1324,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and Class ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1340,7 +1340,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and Class ( name ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1356,7 +1356,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and Class ( name == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1372,7 +1372,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		exists Class ( ) and not ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1388,7 +1388,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		exists Class ( ) and exists ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1404,7 +1404,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) and not Class ( ) \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1420,7 +1420,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR21() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) or ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1435,7 +1435,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR22() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) or ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1450,7 +1450,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR23() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class () or   ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1466,7 +1466,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		name : Class ( name: property ) or ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1482,7 +1482,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name: property ) \n" + "       or ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1497,7 +1497,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION_AND_OR26() {
 		String input = "rule MyRule \n" + "	when \n" + "		Class ( ) or Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1513,7 +1513,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or name : Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1529,7 +1529,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or name : Cl";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1545,7 +1545,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or Class ( ) \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1561,7 +1561,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or Class ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1577,7 +1577,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or Class ( name ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1593,7 +1593,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( ) or Class ( name == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1609,7 +1609,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		exists Class ( ) or not ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1625,7 +1625,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		exists Class ( ) or exists ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1641,7 +1641,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_EVAL1() {
 		String input = "rule MyRule \n" + "	when \n" + "		eval ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1656,7 +1656,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_EVAL2() {
 		String input = "rule MyRule \n" + "	when \n" + "		eval(";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1671,7 +1671,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_EVAL3() {
 		String input = "rule MyRule \n" + "	when \n" + "		eval( myCla";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1686,7 +1686,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_EVAL4() {
 		String input = "rule MyRule \n" + "	when \n" + "		eval( param.getMetho";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1702,7 +1702,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getMethod(";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1718,7 +1718,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getMethod().get";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1734,7 +1734,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getMethod(\"someStringWith)))\").get";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1750,7 +1750,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getMethod(\"someStringWith(((\").get";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1765,7 +1765,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_INSIDE_EVAL9() {
 		String input = "rule MyRule \n" + "	when \n" + "		eval( true )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1781,7 +1781,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getProperty(name).isTrue() )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1797,7 +1797,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getProperty(\"someStringWith(((\").isTrue() )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1813,7 +1813,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getProperty((((String) s) )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1829,7 +1829,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		eval( param.getProperty((((String) s))))";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1845,7 +1845,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		eval( true ) \n"
 				+ "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1862,7 +1862,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1878,7 +1878,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name : property1, property2 > 0 && ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1894,7 +1894,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property1 < 20, property2 > 0 && ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1910,7 +1910,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && < ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1926,7 +1926,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && < 10 ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1942,7 +1942,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && < 10, ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1958,7 +1958,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 || ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1974,7 +1974,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -1990,7 +1990,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( name : property1, property2 > 0 || ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2006,7 +2006,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property1 < 20, property2 > 0 || ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2022,7 +2022,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2038,7 +2038,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 \n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2054,7 +2054,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 && < 10 ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2070,7 +2070,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 || < 10 ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2086,7 +2086,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property == \"test\" || == \"test2\" ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2103,7 +2103,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2119,7 +2119,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) fr";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2135,7 +2135,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2150,7 +2150,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from myGlob";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2165,7 +2165,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from myGlobal.get";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2181,7 +2181,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from myGlobal.getList() \n"
 				+ "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2198,7 +2198,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from getDroolsFunction() \n"
 				+ "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2215,7 +2215,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from accumulate ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2231,7 +2231,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from accumulate(";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2252,7 +2252,7 @@ public class DRLContextTest extends TestCase {
 				+ "           result( new Integer( total ) ) \n" + "		) \n"
 				+ "		";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2269,7 +2269,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from accumulate( \n"
 				+ "			$cheese : Cheese( type == $likes ), \n" + "			init( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2287,7 +2287,7 @@ public class DRLContextTest extends TestCase {
 				+ "			$cheese : Cheese( type == $likes ), \n"
 				+ "			init( int total = 0; ), \n" + "			action( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2305,7 +2305,7 @@ public class DRLContextTest extends TestCase {
 				+ "			$cheese : Cheese( type == $likes ), \n"
 				+ "			init( int total = 0; ), \n" + "			action( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2325,7 +2325,7 @@ public class DRLContextTest extends TestCase {
 				+ "			action( total += $cheese.getPrice(); ), \n"
 				+ "           result( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2343,7 +2343,7 @@ public class DRLContextTest extends TestCase {
 				+ "			$cheese : Cheese( type == $likes ), \n"
 				+ "			init( int total =";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2361,7 +2361,7 @@ public class DRLContextTest extends TestCase {
 				+ "			$cheese : Cheese( type == $likes ), \n"
 				+ "			init( int total = 0; ), \n" + "			action( total += $ch";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2381,7 +2381,7 @@ public class DRLContextTest extends TestCase {
 				+ "			action( total += $cheese.getPrice(); ), \n"
 				+ "           result( new Integer( tot";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2398,7 +2398,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from accumulate( \n"
 				+ "			$cheese : Cheese( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2415,7 +2415,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from accumulate( \n"
 				+ "			$cheese : Cheese( type ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2432,7 +2432,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from accumulate( \n"
 				+ "			$cheese : Cheese( type == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2449,7 +2449,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from collect ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2465,7 +2465,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from collect(";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2482,7 +2482,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from collect ( \n"
 				+ "			Cheese( type == $likes )" + "		) \n" + "		";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2498,7 +2498,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n"
 				+ "		Class ( property > 0 ) from collect ( \n" + "			Cheese( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2515,7 +2515,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from collect ( \n"
 				+ "			Cheese( type ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2532,7 +2532,7 @@ public class DRLContextTest extends TestCase {
 				+ "		Class ( property > 0 ) from collect ( \n"
 				+ "			Cheese( type == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2550,7 +2550,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from collect( Person( disabled == \"yes\", income > 100000 ) ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2567,7 +2567,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from collect( Person( disabled == \"yes\", income > 100000 ) from ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2583,7 +2583,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from collect( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2600,7 +2600,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2617,7 +2617,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2632,7 +2632,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckLHSLocationDetermination_BEGIN_OF_CONDITION81() {
 		String input = "rule MyRule \n" + "	when \n" + "		forall ( ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2648,7 +2648,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		forall ( "
 				+ "           Class ( pr";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2664,7 +2664,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		forall ( "
 				+ "           Class ( property ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2680,7 +2680,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		forall ( "
 				+ "           Class ( property == ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2696,7 +2696,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when \n" + "		forall ( "
 				+ "           Class ( property == \"test\")" + "           C";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2713,7 +2713,7 @@ public class DRLContextTest extends TestCase {
 				+ "	when \n"
 				+ "		ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() ) ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2730,7 +2730,7 @@ public class DRLContextTest extends TestCase {
 				+ "   when \n"
 				+ "       ArrayList(size > 50) from accumulate( Person( disabled == \"yes\", income > 100000 ) from town.getPersons() )";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2746,7 +2746,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "   when \n"
 				+ "       Class ( name :";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2762,7 +2762,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "   when \n"
 				+ "       Class ( name : ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2778,7 +2778,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when\n" + "		Class ( )\n"
 				+ "   then\n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2793,7 +2793,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when\n" + "		Class ( )\n"
 				+ "   then\n" + "       assert(null);\n" + "       ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2808,7 +2808,7 @@ public class DRLContextTest extends TestCase {
 		String input = "rule MyRule \n" + "	when\n" + "		Class ( )\n"
 				+ "   then\n" + "       meth";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2822,7 +2822,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination() {
 		String input = "rule MyRule ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2836,7 +2836,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination2() {
 		String input = "rule MyRule \n" + "	salience 12 activation-group \"my";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2856,7 +2856,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination3() {
 		String input = "rule \"Hello World\" ruleflow-group \"hello\" s";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2870,7 +2870,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination_dialect1() {
 		String input = "rule MyRule \n" + "	dialect \"java\"";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2884,7 +2884,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination_dialect2() {
 		String input = "rule MyRule \n" + "	dialect \"mvel\"";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2898,7 +2898,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination_dialect3() {
 		String input = "rule MyRule \n" + "	dialect ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2918,7 +2918,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckRuleHeaderLocationDetermination_dialect4() {
 		String input = "rule MyRule \n" + "	dialect \"";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2940,7 +2940,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckQueryLocationDetermination_RULE_HEADER1() {
 		String input = "query MyQuery ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2954,7 +2954,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckQueryLocationDetermination_RULE_HEADER2() {
 		String input = "query \"MyQuery\" ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2968,7 +2968,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckQueryLocationDetermination_LHS_BEGIN_OF_CONDITION() {
 		String input = "query MyQuery() ";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -2983,7 +2983,7 @@ public class DRLContextTest extends TestCase {
 	public void testCheckQueryLocationDetermination_LHS_INSIDE_CONDITION_START() {
 		String input = "query MyQuery \n" + "	Class (";
 
-		DRLParser parser = getParser(input);
+		DRL5xParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
 			parser.compilation_unit();
@@ -3022,8 +3022,8 @@ public class DRLContextTest extends TestCase {
 	 * @return An instance of a RuleParser should you need one (most folks will
 	 *         not).
 	 */
-	private DRLParser getParser(final String text) {
-		DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
+	private DRL5xParser getParser(final String text) {
+		DRL5xParser parser = new DRL5xParser(new CommonTokenStream(new DRL5xLexer(
 				new ANTLRStringStream(text))));
 		parser.setTreeAdaptor(new DroolsTreeAdaptor());
 		return parser;
