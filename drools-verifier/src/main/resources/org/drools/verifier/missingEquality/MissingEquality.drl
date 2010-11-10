@@ -47,7 +47,7 @@ global VerifierReport result;
 # Example: val != 10 when val == 10 is missing.
 #
 rule "Missing restriction in LiteralRestrictions"
-	@verifying_scopes(knowledge-package, decision-table)
+	@verifying_scopes("knowledge-package", "decision-table")
 	when
 		#
 		# == and !=
@@ -123,7 +123,7 @@ end
 # Example: val != $var when val == $var is missing.
 #
 rule "Missing restriction in VariableRestrictions"
-	@verifying_scopes(knowledge-package, decision-table)
+	@verifying_scopes("knowledge-package", "decision-table")
 	when
 		#
 		# == and !=

@@ -32,7 +32,7 @@ import java.util.HashMap;
 global VerifierReport result;
 
 rule "Single"
-	@verifying_scopes(single-rule)
+	@verifying_scopes("single-rule")
 	when
 		$a :VerifierRule()
 	then 
@@ -46,7 +46,7 @@ rule "Single"
 end
 
 rule "single or dtable"
-	@verifying_scopes(single-rule, decision-table)
+	@verifying_scopes("single-rule", "decision-table")
 	when
 		$a :VerifierRule()
 	then 

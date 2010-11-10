@@ -180,8 +180,10 @@ decl_metadata returns [Map attData]
  
 decl_metadata_properties returns [Hashtable props]
 @init {props = new Hashtable();}
-	: ^(key=VT_PROP_KEY (val=VT_PROP_VALUE)?)	
-	{ $props.put($key.text,$val == null ? $key.text : $val.text ); }
+	: (
+			^(key=VT_PROP_KEY (val=VT_PROP_VALUE)?)	
+			{ $props.put($key.text,$val == null ? $key.text : $val.text ); }
+		)+
 	;
 
 decl_field returns [TypeFieldDescr fieldDescr]
