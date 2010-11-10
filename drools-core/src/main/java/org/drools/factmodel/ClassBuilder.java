@@ -40,9 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.definition.type.FactField;
-//import org.mvel2.asm.*;
-import org.objectweb.asm.*;
-import org.objectweb.asm.util.CheckClassAdapter;
+import org.mvel2.asm.*;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes
