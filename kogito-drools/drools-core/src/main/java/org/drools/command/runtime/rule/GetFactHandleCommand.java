@@ -19,7 +19,7 @@ package org.drools.command.runtime.rule;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -28,14 +28,25 @@ public class GetFactHandleCommand
     GenericCommand<FactHandle> {
 
     private Object object;
+    private boolean disconnected;
 
     public GetFactHandleCommand(Object object) {
         this.object = object;
+        this.disconnected = false;
+    }
+    
+    public GetFactHandleCommand(Object object, boolean disconnected) {
+        this.object = object;
+        this.disconnected = disconnected;
     }
 
     public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getFactHandle( object );
+        FactHandle factHandle = ksession.getFactHandle( object );
+        if ( disconnected ){
+            ((DefaultFactHandle)factHandle).disconnect();
+        }
+        return factHandle;
     }
 
     public String toString() {
