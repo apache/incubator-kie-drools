@@ -72,7 +72,7 @@ public class VerifyingScopeTest extends TestCase {
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,
                       result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 6,
+        assertEquals( 4,
                       result.getBySeverity( Severity.NOTE ).size() );
 
     }
