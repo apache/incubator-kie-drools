@@ -417,16 +417,6 @@
     </section>
 
     <section>
-      <title>Asset list customization</title>
-
-      <para>In a few places in Guvnor there is an asset list: this list can be
-      customized by looking for the AssetListTable.properties file. You can
-      then set the header names and the "getter" methods that are used to
-      populate the columns. eg you could add in getCreator, or
-      getExternalSource as extra fields if you were using them.</para>
-    </section>
-
-    <section>
       <title>Selectors for package building</title>
       
       <para>When building packages (from the "Packages" feature) you have the
