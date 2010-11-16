@@ -49,126 +49,15 @@ import org.mvel2.asm.*;
  */
 public class ClassBuilder {
     private boolean     debug  = false;
-    private ClassLoader loader = null;
 
     public ClassBuilder() {
-        this( null,
-              "true".equalsIgnoreCase( System.getProperty( "org.drools.classbuilder.debug" ) ) );
+        this( "true".equalsIgnoreCase( System.getProperty( "org.drools.classbuilder.debug" ) ) );
     }
 
     public ClassBuilder(final boolean debug) {
-        this( null,
-              debug );
-    }
-
-    public ClassBuilder(final ClassLoader loader) {
-        this( loader,
-              false );
-    }
-
-    public ClassBuilder(final ClassLoader loader,
-                        final boolean debug) {
-        this.loader = loader;
-        if ( this.loader == null ) {
-            this.loader = Thread.currentThread().getContextClassLoader();
-            if ( this.loader == null ) {
-                this.loader = getClass().getClassLoader();
-            }
-        }
         this.debug = debug;
     }
 
-
-
-
-
-    /**
-     * Loads a class once it has been created in serialized form
-     *
-     * @param classDef the class definition object structure
-     * @param serializedClazz the serialized class
-     *
-     * @return the Class instance for the given class definition
-     *
-     * @throws IOException
-     * @throws IntrospectionException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     * @throws NoSuchFieldException
-     * @throws InstantiationException
-     */
-    public Class< ? > loadBuiltClass(ClassDefinition classDef, byte[] serializedClazz) throws IOException,
-                                                                 IntrospectionException,
-                                                                 SecurityException,
-                                                                 IllegalArgumentException,
-                                                                 ClassNotFoundException,
-                                                                 NoSuchMethodException,
-                                                                 IllegalAccessException,
-                                                                 InvocationTargetException,
-                                                                 InstantiationException,
-                                                                 NoSuchFieldException {
-
-        try {
-            Class< ? > clazz = Class.forName( classDef.getClassName() );
-            return clazz;
-        } catch ( ClassNotFoundException e ) {
-            Class< ? > clazz = this.loadClass( classDef.getClassName(),serializedClazz );
-            classDef.setDefinedClass( clazz );
-            return clazz;
-        }
-
-    }
-
-    /**
-     * Dynamically builds, defines and loads a class based on the given class definition
-     *
-     * @param classDef the class definition object structure
-     *
-     * @return the Class instance for the given class definition
-     *
-     * @throws IOException
-     * @throws IntrospectionException
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     * @throws NoSuchMethodException
-     * @throws ClassNotFoundException
-     * @throws IllegalArgumentException
-     * @throws SecurityException
-     * @throws NoSuchFieldException
-     * @throws InstantiationException
-     */
-    public Class< ? > buildAndLoadClass(ClassDefinition classDef) throws IOException,
-                                                                 IntrospectionException,
-                                                                 SecurityException,
-                                                                 IllegalArgumentException,
-                                                                 ClassNotFoundException,
-                                                                 NoSuchMethodException,
-                                                                 IllegalAccessException,
-                                                                 InvocationTargetException,
-                                                                 InstantiationException,
-                                                                 NoSuchFieldException {
-        try {
-            Class< ? > clazz = Class.forName( classDef.getClassName() );
-
-            classDef.setDefinedClass( clazz );
-
-            return clazz;
-
-        } catch ( ClassNotFoundException e ) {
-            // class not loaded, so create and load it
-            byte[] serializedClazz = this.buildClass( classDef );
-
-           // Class< ? > clazz = this.loadClass( classDef.getClassName(),
-           //                                    serializedClazz );
-           // classDef.setDefinedClass( clazz );
-            Class< ? >  clazz = Class.forName( classDef.getClassName() );
-            return clazz;
-        }
-    }
 
     /**
      * Dynamically builds, defines and loads a class based on the given class definition
@@ -254,7 +143,6 @@ public class ClassBuilder {
         cw.visitEnd();
 
         byte[] serializedClass = cw.toByteArray();
-            loadBuiltClass(classDef, serializedClass);
 
         return serializedClass;
     }
@@ -1036,32 +924,6 @@ public class ClassBuilder {
                           0 );
             mv.visitEnd();
         }
-    }
-
-    private Class< ? > loadClass(String classname,
-                                 byte[] b) throws ClassNotFoundException,
-                                          SecurityException,
-                                          NoSuchMethodException,
-                                          IllegalArgumentException,
-                                          IllegalAccessException,
-                                          InvocationTargetException {
-        //override classDefine (as it is protected) and define the class.
-        Class< ? > clazz = null;
-        ClassLoader loader = ClassBuilder.class.getClassLoader();
-        Class< ? > cls = Class.forName( "java.lang.ClassLoader" );
-        java.lang.reflect.Method method = cls.getDeclaredMethod( "defineClass",
-                                                                 new Class[]{String.class, byte[].class, int.class, int.class} );
-
-        // protected method invocaton
-        method.setAccessible( true );
-        try {
-            Object[] args = new Object[]{classname, b, new Integer( 0 ), new Integer( b.length )};
-            clazz = (Class< ? >) method.invoke( loader,
-                                                args );
-        } finally {
-            method.setAccessible( false );
-        }
-        return clazz;
     }
 
     /**

@@ -40,7 +40,8 @@ public class DroolsCompositeClassLoader extends ClassLoader
     }
 
     public synchronized void addClassLoader(final ClassLoader classLoader) {
-        if ( classLoader == null ) {
+        if ( classLoader == null || classLoader == this ) {
+            // do not add a null classloader or add itself
             return;
         }
         /* NB: we need synchronized here even though we use a COW list:
