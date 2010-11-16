@@ -3421,6 +3421,21 @@ public class MiscTest extends TestCase {
         }
     }
 
+    public void FIXME_testDeclareAndFrom() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_DeclareWithFrom.drl" );
+        FactType profileType = kbase.getFactType( "org.drools", "Profile" );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Object profile = profileType.newInstance();
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put( "internet", Integer.valueOf( 2 ) );
+        profileType.set( profile, "pageFreq", map );
+        
+        ksession.insert( profile );
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
+
     public void testDeclarationNonExistingField() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
