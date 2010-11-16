@@ -31,23 +31,43 @@ import junit.framework.TestCase;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.rule.DroolsCompositeClassLoader;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 public class ClassBuilderTest extends TestCase {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    private ClassLoader     classLoader;
-
+    ClassLoader classLoader;
+    JavaDialectRuntimeData data;
+    
     protected void setUp() throws Exception {
         super.setUp();
-        classLoader = this.getClass().getClassLoader();
-        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
-        store.setEagerWire( true );
+        data = new JavaDialectRuntimeData();        
     }
 
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
+    private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
+        byte[] d = builder.buildClass( classDef);
+                     
+        data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
+                       d );
+        classLoader = new PackageClassLoader(data, new DroolsCompositeClassLoader( getClass().getClassLoader(), false ));
+        
+        this.store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
+        store.setEagerWire( true );            
+        
+        Class clazz = classLoader.loadClass( classDef.getClassName() );
+        classDef.setDefinedClass( clazz );    
+        
+        return clazz;
+        
+    }
+    
     /*
      * Test method for 'org.drools.common.asm.ClassBuilder.buildClass(ClassDefinition)'
      */
@@ -65,8 +85,11 @@ public class ClassBuilderTest extends TestCase {
                                                              "java.lang.String" );//"java.lang.String" );
             classDef.addField( intDef );
             classDef.addField( stringDef );
+            
+            Class clazz = build(builder, classDef);
 
-            Class clazz = builder.buildAndLoadClass( classDef );
+            
+            
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
                                                             intDef.getName(),
                                                             classLoader ) );
@@ -74,7 +97,7 @@ public class ClassBuilderTest extends TestCase {
                                                                stringDef.getName(),
                                                                classLoader ) );
 
-            byte[] data = builder.buildClass( classDef );
+            byte[] d = builder.buildClass( classDef );
 
             Assert.assertSame( "Returned class should be the same",
                                clazz,
@@ -100,7 +123,7 @@ public class ClassBuilderTest extends TestCase {
                                  ((Integer) intDef.getValue( instance )).intValue() );
 
             // testing class rebuilding
-            clazz = builder.buildAndLoadClass( classDef );
+            clazz = build(builder, classDef);
 
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -160,7 +183,7 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( dateDef );
             classDef.addField( str2Def );
 
-            Class clazz = builder.buildAndLoadClass( classDef );
+            Class clazz = build(builder, classDef);
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
                                                               long1Def.getName(),
                                                               classLoader ) );
@@ -270,7 +293,7 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( intDef );
             classDef.addField( strDef );
 
-            Class clazz = builder.buildAndLoadClass( classDef );
+            Class clazz = build(builder, classDef);
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
                                                             intDef.getName(),
                                                             classLoader ) );
@@ -333,7 +356,7 @@ public class ClassBuilderTest extends TestCase {
             classDef.addField( dateDef );
             classDef.addField( str2Def );
 
-            Class clazz = builder.buildAndLoadClass( classDef );
+            Class clazz = build(builder, classDef);
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
                                                               long1Def.getName(),
                                                               classLoader ) );
@@ -410,7 +433,7 @@ public class ClassBuilderTest extends TestCase {
                 classDef.addField( fields[i] );
             }
 
-            Class< ? > clazz = builder.buildAndLoadClass( classDef );
+            Class clazz = build(builder, classDef);
 
             for ( FieldDefinition field : fields ) {
                 field.setReadWriteAccessor( store.getAccessor( clazz,

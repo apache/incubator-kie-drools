@@ -19,6 +19,12 @@ package org.drools.factmodel;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.drools.base.ClassFieldAccessorCache;
+import org.drools.base.ClassFieldAccessorStore;
+import org.drools.rule.DroolsCompositeClassLoader;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
+
 import junit.framework.TestCase;
 
 /**
@@ -40,6 +46,23 @@ public class InstancesHashcodedTest extends TestCase {
 		</dimension> 
  */	
 
+    private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
+        byte[] d = builder.buildClass( classDef);
+        JavaDialectRuntimeData data = new JavaDialectRuntimeData();  
+        data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
+                       d );
+        ClassLoader classLoader = new PackageClassLoader(data, new DroolsCompositeClassLoader( getClass().getClassLoader(), false ));
+        
+        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
+        store.setEagerWire( true );            
+        
+        Class clazz = classLoader.loadClass( classDef.getClassName() );
+        classDef.setDefinedClass( clazz );    
+        
+        return clazz;
+        
+    }    
 	
 	public void testInstanceHashcodes() {
 		
@@ -65,7 +88,7 @@ public class InstancesHashcodedTest extends TestCase {
 		Date d2 = cal.getTime();
 			
 		try {
-			Class klass = cb.buildAndLoadClass(cd);
+			Class klass = build(cb, cd);
 			Object o1 = klass.newInstance();
 			cd.getField("cutDate").getFieldAccessor().setValue(o1, cut);
 			cd.getField("dueDate").getFieldAccessor().setValue(o1, d1);

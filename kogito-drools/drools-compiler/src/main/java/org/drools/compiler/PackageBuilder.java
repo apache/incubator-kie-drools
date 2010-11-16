@@ -1070,7 +1070,7 @@ public class PackageBuilder {
                                       TypeDeclaration type,
                                       PackageRegistry pkgRegistry) {
         // need to fix classloader?
-        ClassBuilder cb = new ClassBuilder();
+        ClassBuilder cb = new ClassBuilder( );
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
         // generated beans should be serializable
 
@@ -1116,14 +1116,7 @@ public class PackageBuilder {
                 field = queue.poll();
             }
 
-
-
-
-
-
-
             byte[] d = cb.buildClass(def);
-
 
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
 
