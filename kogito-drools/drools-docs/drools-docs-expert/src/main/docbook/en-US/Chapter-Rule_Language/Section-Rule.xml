@@ -1407,12 +1407,12 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
       condition. Since only the existence matters, no bindings will be
       established.</para>
 
-      <para>An 'exist' statement must be followed by parentheses around the
+      <para>An 'exists' statement must be followed by parentheses around the
       CEs that it applies to. In the simplest case of a single pattern (like
-      below) you may optionally omit the parentheses.</para>
+      below) you may omit the parentheses.</para>
 
       <example>
-        <title>Atleast one Bus</title>
+        <title>At least one Bus</title>
 
         <programlisting>exists Bus()</programlisting>
       </example>
@@ -1421,8 +1421,8 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
         <title>At least one red Bus</title>
 
         <programlisting>exists Bus(color == "red")
-exists ( Bus(color == "red", number == 42) ) //brackets are optional
-exists ( Bus(color == "red") and Bus(color == "blue")) // exists with nested 'and' infix used here as ony two patterns</programlisting>
+exists ( Bus(color == "red", number == 42) ) // brackets are optional
+exists ( Bus(color == "red") and Bus(color == "blue")) // exists with nested 'and' infix used here as only two patterns</programlisting>
       </example>
     </section>
 
@@ -1455,14 +1455,14 @@ then
 end
 </programlisting>
 
-      <para>In the above rule, we "select" all Bus object whose type is
+      <para>In the above rule, we "select" all Bus objects whose type is
       "english". Then, for each fact that matches this pattern we evaluate the
       following patterns and if they match, the forall CE will evaluate to
       true.</para>
 
       <para>To state that all facts of a given type in the working memory must
       match a set of constraints, forall can be written with a single pattern
-      for simplicity. Example</para>
+      for simplicity. Example:</para>
 
       <example>
           <title>Single Pattern Forall</title>
@@ -1476,7 +1476,7 @@ end
 </programlisting>
         </example>
 
-      <para>Another example of multi-pattern forall:</para>
+      <para>Her is another example of a multi-pattern forall:</para>
       <example>
           <title>Multi-Pattern Forall</title>
 
@@ -1492,10 +1492,10 @@ end
 </programlisting>
         </example>
 
-      <para>Forall can be nested inside other CEs for complete expressiveness.
+      <para>Forall can be nested inside other CEs.
       For instance, <emphasis role="bold">forall</emphasis> can be used inside
-      a <emphasis role="bold">not</emphasis> CE, note that only single
-      patterns have optional parenthesis, so with a nested forall parenthesis
+      a <emphasis role="bold">not</emphasis> CE, but note that only single
+      patterns have optional parentheses; therefore, with a nested forall parentheses
       must be used:</para>
       <example>
           <title>Combining Forall with Not CE</title>
@@ -1512,14 +1512,14 @@ end
 </programlisting>
         </example>
 
-      <para>As a side note, <code>not( forall( p1 p2 p3...))</code> is
+      <para>As a side note, <code>forall( p1 p2 p3...)</code> is
 	equivalent to writing:</para>
 
       <programlisting>not(p1 and not(and p2 p3...))</programlisting>
 
       <para>Also, it is important to note that <emphasis role="bold">forall is
       a scope delimiter</emphasis>, so it can use any previously bound
-      variable, but no variable bound inside it will be available to use
+      variable, but no variable bound inside it will be available for use
       outside of it.</para>
     </section>
 
