@@ -1,0 +1,14 @@
+package org.drools
+
+declare Profile
+    pageFreq : java.util.Map
+end
+
+rule "Testing out UdayCompare Custom Operator"
+    ruleflow-group "udaytesting"
+when
+    $profile : Profile( $pg : pageFreq )
+    Integer( this > 1 ) from $profile.pageFreq["internet"]
+then
+    System.out.println("Yippie it works!!");
+end
