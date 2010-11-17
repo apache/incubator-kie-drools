@@ -79,7 +79,7 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.ruleBase = ruleBase;
         this.wm = wm;
         this.sinks = sinks;
-        if(this.objectMarshallingStrategyStore == null){
+        if(resolverStrategyFactory == null){
             this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore((ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
         }
         else{
