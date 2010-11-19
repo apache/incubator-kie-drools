@@ -14,42 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.command.runtime.rule;
+package org.drools.command.runtime;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
 
-public class GetFactHandleCommand
+public class GetFactCountCommand
     implements
-    GenericCommand<FactHandle> {
+    GenericCommand<Long> {
 
-    private Object object;
-    private boolean disconnected;
-
-    public GetFactHandleCommand(Object object) {
-        this.object = object;
-        this.disconnected = false;
-    }
-    
-    public GetFactHandleCommand(Object object, boolean disconnected) {
-        this.object = object;
-        this.disconnected = disconnected;
-    }
-
-    public FactHandle execute(Context context) {
+    public Long execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        FactHandle factHandle = ksession.getFactHandle( object );
-        if ( factHandle != null && disconnected ){
-            ((DefaultFactHandle)factHandle).disconnect();
-        }
-        return factHandle;
+        
+        return ksession.getFactCount();
     }
 
     public String toString() {
-        return "ksession.getFactHandle( " + object + " );";
+        return "ksession.getFactCount();";
     }
+
 }

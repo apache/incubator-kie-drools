@@ -21,9 +21,7 @@ import java.util.Collection;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
-import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -33,6 +31,7 @@ public class GetFactHandlesCommand
     GenericCommand<Collection<FactHandle>> {
 
     private ObjectFilter filter = null;
+    private boolean      disconnected = false;
 
     public GetFactHandlesCommand() {
     }
@@ -40,14 +39,30 @@ public class GetFactHandlesCommand
     public GetFactHandlesCommand(ObjectFilter filter) {
         this.filter = filter;
     }
+    public GetFactHandlesCommand(ObjectFilter filter, boolean disconnected) {
+        this.filter = filter;
+        this.disconnected = disconnected;
+    }
 
     public Collection<FactHandle> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();        
 
         if ( filter != null ) {
-            return ksession.getFactHandles( this.filter );
+            Collection<FactHandle> factHandles = ksession.getFactHandles( this.filter );
+            if(factHandles != null && disconnected){
+                for(FactHandle factHandle: factHandles){
+                    ((DefaultFactHandle)factHandle).disconnect();
+                }
+            }
+            return factHandles;
         } else {
-            return ksession.getFactHandles( this.filter );
+            Collection<FactHandle> factHandles = ksession.getFactHandles( );
+            if(factHandles != null && disconnected){
+                for(FactHandle factHandle: factHandles){
+                    ((DefaultFactHandle)factHandle).disconnect();
+                }
+            }
+            return factHandles;
         }
     }
 
