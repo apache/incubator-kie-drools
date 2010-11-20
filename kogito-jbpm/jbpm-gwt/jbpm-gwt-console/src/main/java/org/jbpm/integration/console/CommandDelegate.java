@@ -18,6 +18,7 @@ package org.jbpm.integration.console;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,6 +131,15 @@ public class CommandDelegate {
 			}
 			new WorkingMemoryDbLogger(ksession);
 			CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
+			properties = new Properties();
+			try {
+				properties.load(CommandDelegate.class.getResourceAsStream("/jbpm.console.properties"));
+			} catch (IOException e) {
+				throw new RuntimeException("Could not load jbpm.console.properties", e);
+			}
+			handler.setConnection(
+				properties.getProperty("jbpm.console.task.service.host"),
+				new Integer(properties.getProperty("jbpm.console.task.service.port")));
 			ksession.getWorkItemManager().registerWorkItemHandler(
 				"Human Task", handler);
 			handler.connect();

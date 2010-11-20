@@ -23,6 +23,7 @@ import java.io.ObjectInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.activation.DataHandler;
 
@@ -42,13 +43,20 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
  */
 public class TaskFormDispatcher extends AbstractFormDispatcher {
 
-	// TODO make this configurable
-	private String ipAddress = "127.0.0.1";
-	private int port = 9123;
 	private TaskClient client;
 
 	public void connect() {
 		if (client == null) {
+			String ipAddress;
+			int port;
+			Properties properties = new Properties();
+			try {
+				properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
+				ipAddress = properties.getProperty("jbpm.console.task.service.host");
+				port = new Integer(properties.getProperty("jbpm.console.task.service.port"));
+			} catch (IOException e) {
+				throw new RuntimeException("Could not load jbpm.console.properties", e);
+			}
 			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
 									new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
 			boolean connected = client.connect(ipAddress, port);

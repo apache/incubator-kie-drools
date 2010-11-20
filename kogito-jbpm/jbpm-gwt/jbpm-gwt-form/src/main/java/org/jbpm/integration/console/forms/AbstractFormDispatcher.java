@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -44,10 +45,15 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 
 	public URL getDispatchUrl(FormAuthorityRef ref) {
 		StringBuffer sb = new StringBuffer();
-		// TODO: fix this for non localhost:8080
+		Properties properties = new Properties();
+		try {
+			properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load jbpm.console.properties", e);
+		}
 		sb.append("http://");
-		sb.append("localhost");
-		sb.append(":").append(8080);
+		sb.append(properties.get("jbpm.console.server.host"));
+		sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
 		sb.append("/gwt-console-server/rs/form/" + getType(ref) + "/");
 		sb.append(ref.getReferenceId());
 		sb.append("/render");
