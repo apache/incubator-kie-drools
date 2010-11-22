@@ -145,11 +145,11 @@ public class WorkingMemoryDbLoggerTest extends JbpmTestCase {
         PackageBuilder builder = new PackageBuilder();
         // load the process
         Reader source = new InputStreamReader(
-            ProcessInstanceExecutor.class.getResourceAsStream("/ruleflow.rf"));
+            WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow.rf"));
         builder.addProcessFromXml(source);
         source = new InputStreamReader(
-                ProcessInstanceExecutor.class.getResourceAsStream("/ruleflow2.rf"));
-            builder.addProcessFromXml(source);
+    		WorkingMemoryDbLoggerTest.class.getResourceAsStream("/ruleflow2.rf"));
+        builder.addProcessFromXml(source);
         // create the knowledge base 
         Package pkg = builder.getPackage();
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
