@@ -8,7 +8,7 @@
   <parent>
     <artifactId>drools-docs</artifactId>
     <groupId>org.drools</groupId>
-    <version>5.2.0.SNAPSHOT</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-docs-guvnor</artifactId>
