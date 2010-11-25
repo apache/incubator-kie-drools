@@ -3,9 +3,9 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
-  <version>5.2.0-SNAPSHOT</version>
+    <artifactId>drools</artifactId>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-jsr94</artifactId>
