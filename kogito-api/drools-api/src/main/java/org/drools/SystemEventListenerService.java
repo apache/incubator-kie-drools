@@ -17,11 +17,10 @@
 package org.drools;
 
 /**
- * KnowledgeBaseFactoryService is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
+ * SystemEventListenerService is the interface implemented by SystemEventListenerServiceImpl.
+ * This class is not considered stable and may change.
  * 
- * This class is not considered stable and may change, the user is protected from this change by using 
- * the KnowledgeBaseFactory api, which is considered stable.
- *
+ * Users are referred to the SystemEventListenerFactory API, which is considered stable.
  */
 public interface SystemEventListenerService {
 
