@@ -22,11 +22,10 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 
 /**
- * KnowledgeBaseFactoryService is used by the KnowledgeBaseFacotry to "provide" it's concrete implementation.
+ * KnowledgeBaseFactoryService is the interface implemented by KnowledgeBaseFactory.
+ * This class is not considered stable and may change.
  * 
- * This class is not considered stable and may change, the user is protected from this change by using 
- * the KnowledgeBaseFactory api, which is considered stable.
- *
+ * Users are referred to the KnowledgeBaseFactory API, which is considered stable.
  */
 public interface KnowledgeBaseFactoryService extends Service {
 
