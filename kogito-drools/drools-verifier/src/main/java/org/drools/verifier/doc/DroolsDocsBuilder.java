@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.doc;
+package org.drools.verifier.doc;
 
 import java.io.OutputStream;
 import java.text.Format;
