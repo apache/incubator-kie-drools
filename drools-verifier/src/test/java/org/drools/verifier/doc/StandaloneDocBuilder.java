@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.doc;
+package org.drools.verifier.doc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.ParseException;
+
+import org.drools.verifier.doc.DroolsDocsBuilder;
 
 /**
  * Stand alone to test writing to a file.
