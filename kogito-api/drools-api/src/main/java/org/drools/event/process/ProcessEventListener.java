@@ -38,5 +38,9 @@ public interface ProcessEventListener
     void beforeNodeLeft(ProcessNodeLeftEvent event);
 
     void afterNodeLeft(ProcessNodeLeftEvent event);
+    
+    void beforeVariableChanged(ProcessVariableChangedEvent event);
+
+    void afterVariableChanged(ProcessVariableChangedEvent event);
 
 }

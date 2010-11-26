@@ -35,6 +35,10 @@ public class DefaultProcessEventListener
     public void afterProcessStarted(ProcessStartedEvent event) {
         // intentionally left blank
     }
+    
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+    	// intentionally left blank
+    }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
         // intentionally left blank
@@ -50,6 +54,10 @@ public class DefaultProcessEventListener
 
     public void beforeProcessStarted(ProcessStartedEvent event) {
         // intentionally left blank
+    }
+
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+    	// intentionally left blank
     }
 
 }
