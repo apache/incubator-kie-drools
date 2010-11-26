@@ -252,14 +252,14 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         assertNotNull(processInstance.getEnd());
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
-//        List<VariableInstanceLog> variableInstances = log.findVariableInstances(processInstanceId);
-//        assertEquals(6, variableInstances.size());
-//        for (VariableInstanceLog variableInstance: variableInstances) {
-//        	System.out.println(variableInstance);
-//            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
-//            assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
-//            assertNotNull(variableInstance.getDate());
-//        }
+        List<VariableInstanceLog> variableInstances = log.findVariableInstances(processInstanceId);
+        assertEquals(6, variableInstances.size());
+        for (VariableInstanceLog variableInstance: variableInstances) {
+        	System.out.println(variableInstance);
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+            assertNotNull(variableInstance.getDate());
+        }
         log.clear();
         processInstances = log.findProcessInstances("com.sample.ruleflow3");
         assertEquals(0, processInstances.size());

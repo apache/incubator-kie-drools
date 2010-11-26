@@ -433,7 +433,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
 							.getStrategy(index);
 
 					Object value = strategy.read(stream);
-					variableScopeInstance.setVariable(name, value);
+					variableScopeInstance.internalSetVariable(name, value);
 				} catch (ClassNotFoundException e) {
 					throw new IllegalArgumentException(
 							"Could not reload variable " + name);
@@ -476,8 +476,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
                         String name = stream.readUTF();
                         try {
                             Object value = stream.readObject();
-                            variableScopeInstance.setVariable(name,
-                                    value);
+                            variableScopeInstance.internalSetVariable(name, value);
                         } catch (ClassNotFoundException e) {
                             throw new IllegalArgumentException("Could not reload variable " + name);
                         }

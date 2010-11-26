@@ -38,9 +38,9 @@ public class ReuseContextInstanceFactory implements ContextInstanceFactory {
         }
         try {
             AbstractContextInstance contextInstance = (AbstractContextInstance) cls.newInstance();
+            contextInstance.setProcessInstance(processInstance);
             contextInstance.setContextId(context.getId());
             contextInstance.setContextInstanceContainer(contextInstanceContainer);
-            contextInstance.setProcessInstance(processInstance);
             contextInstanceContainer.addContextInstance(context.getType(), contextInstance);
             return contextInstance;
         } catch (Exception e) {

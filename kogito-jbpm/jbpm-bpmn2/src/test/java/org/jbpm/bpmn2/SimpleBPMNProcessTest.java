@@ -35,11 +35,9 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.event.process.ProcessCompletedEvent;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.ProcessNodeLeftEvent;
-import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
@@ -511,6 +509,17 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	public void testSubProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-SubProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.addEventListener(new DefaultProcessEventListener() {
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				System.out.println(event);
+			}
+			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+				System.out.println(event);
+			}
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
+				System.out.println(event);
+			}
+		});
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
@@ -816,23 +825,9 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new ProcessEventListener() {
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-			}
-			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-			}
+		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
 				list.add(event.getProcessInstance().getId());
-			}
-			public void afterProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void afterNodeLeft(ProcessNodeLeftEvent event) {
 			}
 		});
 		Thread.sleep(250);
@@ -848,23 +843,9 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		final List<Long> list = new ArrayList<Long>();
-		ksession.addEventListener(new ProcessEventListener() {
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-			}
-			public void beforeProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-			}
+		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
 				list.add(event.getProcessInstance().getId());
-			}
-			public void afterProcessCompleted(ProcessCompletedEvent event) {
-			}
-			public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-			}
-			public void afterNodeLeft(ProcessNodeLeftEvent event) {
 			}
 		});
         ksession.signalEvent("MyStartSignal", "NewValue");

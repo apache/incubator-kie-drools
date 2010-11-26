@@ -32,6 +32,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.rule.Package;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.JbpmTestCase;
@@ -122,6 +123,14 @@ public class ProcessEventListenerTest extends JbpmTestCase{
                 processEventList.add(event);
 			}
 
+			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+                processEventList.add(event);
+			}
+
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
+                processEventList.add(event);
+			}
+
         };
 
         ((InternalWorkingMemory)session).getProcessRuntime().addEventListener(listener);
@@ -131,8 +140,11 @@ public class ProcessEventListenerTest extends JbpmTestCase{
         assertEquals("MyValue", ((VariableScopeInstance)
                                     ((org.jbpm.process.instance.ProcessInstance) processInstance)
                                         .getContextInstance(VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));
-        assertEquals( 24, processEventList.size() );
-        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(0)).getProcessInstance().getProcessId());
+        assertEquals( 28, processEventList.size() );
+        for (ProcessEvent e: processEventList) {
+        	System.out.println(e);
+        }
+        assertEquals( "org.drools.event", ((ProcessStartedEvent) processEventList.get(2)).getProcessInstance().getProcessId());
 
     }
 }

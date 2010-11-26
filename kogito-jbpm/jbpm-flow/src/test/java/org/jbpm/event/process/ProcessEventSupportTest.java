@@ -29,6 +29,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessContext;
@@ -122,6 +123,14 @@ public class ProcessEventSupportTest extends JbpmTestCase {
 			}
 
 			public void beforeProcessStarted(ProcessStartedEvent event) {
+				processEventList.add(event);
+			}
+
+			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+				processEventList.add(event);
+			}
+
+			public void afterVariableChanged(ProcessVariableChangedEvent event) {
 				processEventList.add(event);
 			}
 

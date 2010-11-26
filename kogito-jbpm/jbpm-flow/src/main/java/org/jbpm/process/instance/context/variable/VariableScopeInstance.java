@@ -20,10 +20,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.event.ProcessEventSupport;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstanceContainer;
+import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
+import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 
 /**
  * 
@@ -34,6 +38,8 @@ public class VariableScopeInstance extends AbstractContextInstance {
     private static final long serialVersionUID = 510l;
     
     private Map<String, Object> variables = new HashMap<String, Object>();
+    private transient String variableIdPrefix = null;
+    private transient String variableInstanceIdPrefix = null;
 
     public String getContextType() {
         return VariableScope.VARIABLE_SCOPE;
@@ -52,7 +58,33 @@ public class VariableScopeInstance extends AbstractContextInstance {
             throw new IllegalArgumentException(
                 "The name of a variable may not be null!");
         }
-        variables.put(name, value);
+        Object oldValue = variables.get(name);
+        if (oldValue == null) {
+        	if (value == null) {
+        		return;
+        	}
+        } else {
+        	if (oldValue.equals(value)) {
+        		return;
+        	}
+        }
+        ProcessEventSupport processEventSupport = ((InternalProcessRuntime) getProcessInstance()
+    		.getKnowledgeRuntime().getProcessRuntime()).getProcessEventSupport();
+    	processEventSupport.fireBeforeVariableChanged(
+			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
+			oldValue, value, getProcessInstance(),
+			getProcessInstance().getKnowledgeRuntime());
+        internalSetVariable(name, value);
+        processEventSupport.fireAfterVariableChanged(
+			(variableIdPrefix == null ? "" : variableIdPrefix + ":") + name,
+			(variableInstanceIdPrefix == null? "" : variableInstanceIdPrefix + ":") + name,
+    		oldValue, value, getProcessInstance(),
+			getProcessInstance().getKnowledgeRuntime());
+    }
+    
+    public void internalSetVariable(String name, Object value) {
+    	variables.put(name, value);
     }
     
     public VariableScope getVariableScope() {
@@ -64,6 +96,10 @@ public class VariableScopeInstance extends AbstractContextInstance {
     	for (Variable variable : getVariableScope().getVariables()) {
             setVariable(variable.getName(), variable.getValue());
         }
-    }
+    	if (contextInstanceContainer instanceof CompositeContextNodeInstance) {
+    		this.variableIdPrefix = ((Node) ((CompositeContextNodeInstance) contextInstanceContainer).getNode()).getUniqueId();
+    		this.variableInstanceIdPrefix = ((CompositeContextNodeInstance) contextInstanceContainer).getUniqueId();
+    	}
+	}
 
 }

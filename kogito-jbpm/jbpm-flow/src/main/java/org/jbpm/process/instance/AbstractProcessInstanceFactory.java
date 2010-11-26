@@ -33,6 +33,9 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
 		processInstance.setKnowledgeRuntime( kruntime );
         processInstance.setProcess( process );
         
+        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
+    		.addProcessInstance( processInstance );
+
         // set variable default values
         // TODO: should be part of processInstanceImpl?
         VariableScope variableScope = (VariableScope) ((ContextContainer) process).getDefaultContext( VariableScope.VARIABLE_SCOPE );
@@ -49,8 +52,6 @@ public abstract class AbstractProcessInstanceFactory implements ProcessInstanceF
             }
         }
         
-        ((InternalProcessRuntime) kruntime.getProcessRuntime()).getProcessInstanceManager()
-        	.addProcessInstance( processInstance );
         return processInstance;
 	}
 	
