@@ -23,6 +23,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
@@ -125,6 +126,36 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
 
             do{
                 iter.next().afterNodeLeft(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireBeforeVariableChanged(final String id, final String instanceId, 
+    		final Object oldValue, final Object newValue, 
+    		final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
+        		id, instanceId, oldValue, newValue, processInstance, kruntime);
+
+            do {
+                iter.next().beforeVariableChanged(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterVariableChanged(final String name, final String id, 
+    		final Object oldValue, final Object newValue, 
+    		final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final ProcessVariableChangedEvent event = new ProcessVariableChangedEventImpl(
+        		name, id, oldValue, newValue, processInstance, kruntime);
+
+            do {
+                iter.next().afterVariableChanged(event);
             } while (iter.hasNext());
         }
     }

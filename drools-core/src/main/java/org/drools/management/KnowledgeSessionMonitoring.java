@@ -42,6 +42,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.management.KnowledgeSessionMonitoring.AgendaStats.AgendaStatsData;
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessInstanceStatsData;
 import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStatsData;
@@ -456,6 +457,16 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
 			
 		}
         
+		public void afterVariableChanged(ProcessVariableChangedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
         public static class GlobalProcessStatsData {
         	
             public AtomicLong processInstancesStarted;

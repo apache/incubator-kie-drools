@@ -35,6 +35,7 @@ import org.drools.audit.event.RuleBaseLogEvent;
 import org.drools.audit.event.RuleFlowGroupLogEvent;
 import org.drools.audit.event.RuleFlowLogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
+import org.drools.audit.event.RuleFlowVariableLogEvent;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.InternalFactHandle;
@@ -75,6 +76,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.impl.StatelessKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -518,7 +520,27 @@ public abstract class WorkingMemoryLogger
             event.getProcessInstance().getId()) );
     }
 
-    public void afterPackageAdded(AfterPackageAddedEvent event) {
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+    	filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
+            event.getVariableId(),
+            event.getVariableInstanceId(),
+            event.getProcessInstance().getProcessId(), 
+            event.getProcessInstance().getProcessName(),
+            event.getProcessInstance().getId(),
+            event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
+	}
+	
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+    	filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
+            event.getVariableId(),
+            event.getVariableInstanceId(),
+            event.getProcessInstance().getProcessId(), 
+            event.getProcessInstance().getProcessName(),
+            event.getProcessInstance().getId(),
+            event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
+	}
+
+	public void afterPackageAdded(AfterPackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
                                               event.getPackage().getName(),
                                               null ) );
