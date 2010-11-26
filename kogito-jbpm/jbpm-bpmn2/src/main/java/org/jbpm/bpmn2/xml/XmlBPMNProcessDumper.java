@@ -135,7 +135,7 @@ public class XmlBPMNProcessDumper {
 	       
 	    //data stores
     	Definitions def = (Definitions) process.getMetaData().get("Definitions");
-    	if (def.getDataStores() != null) {
+    	if (def != null && def.getDataStores() != null) {
     		for (DataStore dataStore : def.getDataStores()) {
     			visitDataStore(dataStore, xmlDump);
     		}
@@ -162,7 +162,7 @@ public class XmlBPMNProcessDumper {
         visitHeader(process, xmlDump, metaDataType);
         visitNodes(process, xmlDump, metaDataType);
         visitConnections(process.getNodes(), xmlDump, metaDataType);
-        if (def.getAssociations() != null) {
+        if (def != null && def.getAssociations() != null) {
         	for (Association association : def.getAssociations()) {
         		visitAssociation(association, xmlDump);
         	}
