@@ -510,19 +510,23 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     		errors.add(new ProcessValidationErrorImpl(process,
                 "Node '" + node.getName() + "' [" + node.getId() + "] has timer with no delay specified."));
     	} else {
-    		try {
-    			TimeUtils.parseTimeString(timer.getDelay());
-    		} catch (RuntimeDroolsException e) {
-    			errors.add(new ProcessValidationErrorImpl(process,
-                    "Could not parse delay '" + timer.getDelay() + "' of node '" + node.getName() + "': " + e.getMessage()));
+    		if (!timer.getDelay().contains("#{")) {
+	    		try {
+	    			TimeUtils.parseTimeString(timer.getDelay());
+	    		} catch (RuntimeDroolsException e) {
+	    			errors.add(new ProcessValidationErrorImpl(process,
+	                    "Could not parse delay '" + timer.getDelay() + "' of node '" + node.getName() + "': " + e.getMessage()));
+	    		}
     		}
     	}
     	if (timer.getPeriod() != null) {
-    		try {
-    			TimeUtils.parseTimeString(timer.getPeriod());
-    		} catch (RuntimeDroolsException e) {
-    			errors.add(new ProcessValidationErrorImpl(process,
-                    "Could not parse period '" + timer.getPeriod() + "' of node '" + node.getName() + "': " + e.getMessage()));
+    		if (!timer.getPeriod().contains("#{")) {
+	    		try {
+	    			TimeUtils.parseTimeString(timer.getPeriod());
+	    		} catch (RuntimeDroolsException e) {
+	    			errors.add(new ProcessValidationErrorImpl(process,
+	                    "Could not parse period '" + timer.getPeriod() + "' of node '" + node.getName() + "': " + e.getMessage()));
+	    		}
     		}
     	}
     }

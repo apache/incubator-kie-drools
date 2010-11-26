@@ -16,19 +16,30 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.drools.RuntimeDroolsException;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.time.TimeUtils;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.mvel2.MVEL;
 
 public class TimerNodeInstance extends StateBasedNodeInstance implements EventListener {
 
     private static final long serialVersionUID = 510l;
+    private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);
     
     private long timerId;
     
@@ -61,14 +72,50 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     protected TimerInstance createTimerInstance() {
     	Timer timer = getTimerNode().getTimer(); 
     	TimerInstance timerInstance = new TimerInstance();
-    	timerInstance.setDelay(TimeUtils.parseTimeString(timer.getDelay()));
+    	timerInstance.setDelay(resolveValue(timer.getDelay()));
     	if (timer.getPeriod() == null) {
     		timerInstance.setPeriod(0);
     	} else {
-    		timerInstance.setPeriod(TimeUtils.parseTimeString(timer.getPeriod()));
+    		timerInstance.setPeriod(resolveValue(timer.getPeriod()));
     	}
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
+    }
+    
+    private long resolveValue(String s) {
+    	try {
+    		return TimeUtils.parseTimeString(s);
+    	} catch (RuntimeDroolsException e) {
+    		// cannot parse delay, trying to interpret it
+    		Map<String, String> replacements = new HashMap<String, String>();
+    		Matcher matcher = PARAMETER_MATCHER.matcher(s);
+            while (matcher.find()) {
+            	String paramName = matcher.group(1);
+            	if (replacements.get(paramName) == null) {
+                	VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                    if (variableScopeInstance != null) {
+                        Object variableValue = variableScopeInstance.getVariable(paramName);
+                    	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+    	                replacements.put(paramName, variableValueString);
+                    } else {
+                    	try {
+                    		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+    	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
+    	                	replacements.put(paramName, variableValueString);
+                    	} catch (Throwable t) {
+    	                    System.err.println("Could not find variable scope for variable " + paramName);
+    	                    System.err.println("when trying to replace variable in processId for sub process " + getNodeName());
+    	                    System.err.println("Continuing without setting process id.");
+                    	}
+                    }
+            	}
+            }
+            for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+            	s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+            }
+            return TimeUtils.parseTimeString(s);
+    	}
     }
 
     public void signalEvent(String type, Object event) {
