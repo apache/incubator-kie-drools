@@ -55,7 +55,7 @@
           <instructions>
             <Bundle-SymbolicName>org.drools.templates;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="${pom.version}"</Require-Bundle>
+            <Require-Bundle>org.drools.core;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>org.drools.*</DynamicImport-Package>
