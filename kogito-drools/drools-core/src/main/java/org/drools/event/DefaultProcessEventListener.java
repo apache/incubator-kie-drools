@@ -21,6 +21,7 @@ import org.drools.event.process.ProcessEventListener;
 import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.process.ProcessVariableChangedEvent;
 
 public class DefaultProcessEventListener implements ProcessEventListener {
 
@@ -35,6 +36,9 @@ public class DefaultProcessEventListener implements ProcessEventListener {
 
 	public void afterProcessStarted(ProcessStartedEvent event) {
 	}
+	
+	public void afterVariableChanged(ProcessVariableChangedEvent event) {
+	}
 
 	public void beforeNodeLeft(ProcessNodeLeftEvent event) {
 	}
@@ -46,6 +50,9 @@ public class DefaultProcessEventListener implements ProcessEventListener {
 	}
 
 	public void beforeProcessStarted(ProcessStartedEvent event) {
+	}
+
+	public void beforeVariableChanged(ProcessVariableChangedEvent event) {
 	}
 
 }
