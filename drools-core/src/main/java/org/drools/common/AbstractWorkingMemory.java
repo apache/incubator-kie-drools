@@ -117,26 +117,14 @@ public abstract class AbstractWorkingMemory
     implements
     InternalWorkingMemoryActions,
     EventSupport,
-    ProcessEventManager,
-    PropertyChangeListener {
-    // ------------------------------------------------------------
-    // Constants
-    // ------------------------------------------------------------
-    protected static final Class[]                               ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
-    private static final int                                     NODE_MEMORIES_ARRAY_GROWTH                    = 32;
+    ProcessEventManager {
 
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
     protected int                                                id;
-
-    /** The arguments used when adding/removing a property change listener. */
-    protected Object[]                                           addRemovePropertyChangeListenerArgs;
 
     /** The actual memory for the <code>JoinNode</code>s. */
     protected NodeMemories                                       nodeMemories;
 
-    protected ObjectStore                                        objectStore;
+    protected NamedEntryPoint                                    defaultEntryPoint;
 
     /** Global values which are associated with this memory. */
     protected GlobalResolver                                     globalResolver;
@@ -185,13 +173,8 @@ public abstract class AbstractWorkingMemory
     private WorkItemManager                                      workItemManager;
 
     private TimeMachine                                          timeMachine;
-    
+
     private TimerService                                         timerService;
-
-    protected transient ObjectTypeConfigurationRegistry          typeConfReg;
-
-    protected EntryPoint                                         entryPoint;
-    protected transient EntryPointNode                           entryPointNode;
 
     protected Map<String, WorkingMemoryEntryPoint>               entryPoints;
 
@@ -201,9 +184,7 @@ public abstract class AbstractWorkingMemory
 
     protected PartitionManager                                   partitionManager;
 
-    protected transient AtomicReference<ExternalExecutorService> threadPool                                    = new AtomicReference<ExternalExecutorService>();
-
-    private Map<InternalFactHandle, PropagationContext>          modifyContexts;
+    protected transient AtomicReference<ExternalExecutorService> threadPool = new AtomicReference<ExternalExecutorService>();
 
     private InternalKnowledgeRuntime                             kruntime;
 
@@ -221,10 +202,10 @@ public abstract class AbstractWorkingMemory
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
     private AtomicLong                                           lastIdleTimestamp;
-    
+
     private InternalProcessRuntime                               processRuntime;
-    
-    private transient ObjectMarshallingStrategyStore           marshallingStore;
+
+    private transient ObjectMarshallingStrategyStore             marshallingStore;
 
     // ------------------------------------------------------------
     // Constructors
@@ -268,7 +249,7 @@ public abstract class AbstractWorkingMemory
               config,
               environment,
               workingMemoryEventSupport,
-              agendaEventSupport);
+              agendaEventSupport );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -286,7 +267,7 @@ public abstract class AbstractWorkingMemory
               config,
               environment,
               new WorkingMemoryEventSupport(),
-              new AgendaEventSupport());
+              new AgendaEventSupport() );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -328,12 +309,11 @@ public abstract class AbstractWorkingMemory
 
         this.sequential = conf.isSequential();
 
-
         if ( initialFactHandle == null ) {
             this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
                                                                   null,
                                                                   this,
-                                                                  this);
+                                                                  this );
         } else {
             this.initialFactHandle = initialFactHandle;
         }
@@ -341,7 +321,6 @@ public abstract class AbstractWorkingMemory
         this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
         this.evaluatingActionQueue = new AtomicBoolean( false );
 
-        this.addRemovePropertyChangeListenerArgs = new Object[]{this};
         this.workingMemoryEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
         this.__ruleBaseEventListeners = new LinkedList();
@@ -352,13 +331,10 @@ public abstract class AbstractWorkingMemory
         timerService = TimerServiceFactory.getTimerService( this.config );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
-        
-        this.tms = new TruthMaintenanceSystem(this);
+
+        this.tms = new TruthMaintenanceSystem( this );
 
         this.propagationIdCounter = new AtomicLong( propagationContext );
-
-        this.objectStore = new SingleThreadedObjectStore( conf,
-                                                          this.lock );
 
         // Only takes effect if are using idententity behaviour for assert
         if ( LogicalOverride.DISCARD.equals( conf.getLogicalOverride() ) ) {
@@ -367,9 +343,7 @@ public abstract class AbstractWorkingMemory
             this.discardOnLogicalOverride = false;
         }
 
-        initEntryPointsMap();
         this.firing = new AtomicBoolean( false );
-        this.modifyContexts = new HashMap<InternalFactHandle, PropagationContext>();
         this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
         this.channels = new ConcurrentHashMap<String, Channel>();
         initPartitionManagers();
@@ -378,7 +352,7 @@ public abstract class AbstractWorkingMemory
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
 
-        initManagementBeans();        
+        initManagementBeans();
     }
 
     private void initManagementBeans() {
@@ -386,13 +360,13 @@ public abstract class AbstractWorkingMemory
             DroolsManagementAgent.getInstance().registerKnowledgeSession( this );
         }
     }
-    
+
     private InternalProcessRuntime createProcessRuntime() {
-		try {
-			return ProcessRuntimeFactory.newProcessRuntime(this);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+        try {
+            return ProcessRuntimeFactory.newProcessRuntime( this );
+        } catch ( IllegalArgumentException e ) {
+            return null;
+        }
     }
 
     public String getEntryPointId() {
@@ -423,21 +397,6 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
-
-    public void setRuleBase(final InternalRuleBase ruleBase) {
-        this.ruleBase = ruleBase;
-        this.nodeMemories.setRuleBaseReference( this.ruleBase );
-        initTransient();
-    }
-
-    private void initEntryPointsMap() {
-        this.entryPoints = new ConcurrentHashMap<String, WorkingMemoryEntryPoint>();
-        this.entryPoints.put( "DEFAULT",
-                              this );
-        this.entryPoint = EntryPoint.DEFAULT;
-
-        updateEntryPointsCache();
-    }
 
     public void updateEntryPointsCache() {
         Map<EntryPoint, EntryPointNode> reteEPs = this.ruleBase.getRete().getEntryPointNodes();
@@ -520,12 +479,26 @@ public abstract class AbstractWorkingMemory
     }
 
     private void initTransient() {
-        this.entryPointNode = this.ruleBase.getRete().getEntryPointNode( this.entryPoint );
-        this.typeConfReg = new ObjectTypeConfigurationRegistry( this.ruleBase );
+        EntryPointNode epn = this.ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
+
+        this.defaultEntryPoint = new NamedEntryPoint( EntryPoint.DEFAULT,
+                                                      epn,
+                                                      this );
+
+        this.entryPoints = new ConcurrentHashMap<String, WorkingMemoryEntryPoint>();
+
+        this.entryPoints.put( "DEFAULT",
+                              this.defaultEntryPoint );
+
+        updateEntryPointsCache();
     }
 
     public SessionConfiguration getSessionConfiguration() {
         return this.config;
+    }
+
+    public void reset() {
+        throw new UnsupportedOperationException( "This should not be called" );
     }
 
     public void reset(int handleId,
@@ -533,7 +506,13 @@ public abstract class AbstractWorkingMemory
                       long propagationCounter) {
         this.nodeMemories.clear();
         this.agenda.clear();
-        this.objectStore.clear();
+
+        for ( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
+            // clear the state for each entry point
+            InternalWorkingMemoryEntryPoint iep = (InternalWorkingMemoryEntryPoint) ep;
+            iep.reset();
+        }
+
         this.handleFactory.clear( handleId,
                                   handleCounter );
         this.tms.clear();
@@ -616,7 +595,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-    	((ProcessEventManager) this.processRuntime).removeEventListener(listener);
+        ((ProcessEventManager) this.processRuntime).removeEventListener( listener );
     }
 
     public FactHandleFactory getFactHandleFactory() {
@@ -823,25 +802,25 @@ public abstract class AbstractWorkingMemory
      * 
      */
     public Object getObject(final org.drools.runtime.rule.FactHandle handle) {
-        return this.objectStore.getObjectForHandle( (InternalFactHandle) handle );
+        return this.defaultEntryPoint.getObject( handle );
     }
 
     public ObjectStore getObjectStore() {
-        return this.objectStore;
+        return ((InternalWorkingMemoryEntryPoint) this.defaultEntryPoint).getObjectStore();
     }
 
     /**
      * @see WorkingMemory
      */
     public FactHandle getFactHandle(final Object object) {
-        return this.objectStore.getHandleForObject( object );
+        return this.defaultEntryPoint.getFactHandle( object );
     }
 
     /**
      * @see WorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object) {
-        return this.objectStore.getHandleForObjectIdentity( object );
+        return getObjectStore().getHandleForObjectIdentity( object );
     }
 
     /**
@@ -849,7 +828,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateObjects() {
-        return this.objectStore.iterateObjects();
+        return getObjectStore().iterateObjects();
     }
 
     /**
@@ -857,7 +836,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateObjects(org.drools.runtime.ObjectFilter filter) {
-        return this.objectStore.iterateObjects( filter );
+        return getObjectStore().iterateObjects( filter );
     }
 
     /**
@@ -865,7 +844,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateFactHandles() {
-        return this.objectStore.iterateFactHandles();
+        return getObjectStore().iterateFactHandles();
     }
 
     /**
@@ -873,7 +852,7 @@ public abstract class AbstractWorkingMemory
      * iteration may give unexpected results
      */
     public Iterator iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
-        return this.objectStore.iterateFactHandles( filter );
+        return getObjectStore().iterateFactHandles( filter );
     }
 
     public abstract QueryResults getQueryResults(String query);
@@ -931,235 +910,11 @@ public abstract class AbstractWorkingMemory
                              boolean logical,
                              final Rule rule,
                              final Activation activation) throws FactException {
-        if ( object == null ) {
-            // you cannot assert a null object
-            return null;
-        }
-
-        try {
-            startOperation();
-
-            ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                          object );
-            if ( logical && !typeConf.isTMSEnabled()) {
-                enableTMS(object, typeConf);
-            }
-
-            InternalFactHandle handle = null;
-
-            if ( isSequential() ) {
-                handle = createHandle( object,
-                                       typeConf );
-                insert( handle,
-                        object,
-                        rule,
-                        activation,
-                        typeConf );
-                return handle;
-            }
-            try {
-                this.ruleBase.readLock();
-                this.lock.lock();
-                // check if the object already exists in the WM
-                handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
-
-                if ( typeConf.isTMSEnabled() ) {
-                  
-                    EqualityKey key = null;
-
-                    if ( handle == null ) {
-                        // lets see if the object is already logical asserted
-                        key = this.tms.get( object );
-                    } else {
-                        // Object is already asserted, so check and possibly correct its
-                        // status and then return the handle
-                        key = handle.getEqualityKey();
-
-                        if ( key.getStatus() == EqualityKey.STATED ) {
-                            // return null as you cannot justify a stated object.
-                            return handle;
-                        }
-
-                        if ( !logical ) {
-                            // this object was previously justified, so we have to override it to stated
-                            key.setStatus( EqualityKey.STATED );
-                            this.tms.removeLogicalDependencies( handle );
-                        } else {
-                            // this was object is already justified, so just add new logical dependency
-                            this.tms.addLogicalDependency( handle,
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
-                        }
-
-                        return handle;
-                    }
-
-                    // At this point we know the handle is null
-                    if ( key == null ) {
-                      
-                        handle = createHandle( object,
-                                               typeConf );
-
-                        key = createEqualityKey(handle);
-                        
-                        this.tms.put( key );
-                        
-                        if ( !logical ) {
-                            key.setStatus( EqualityKey.STATED );
-                        } else {
-                            key.setStatus( EqualityKey.JUSTIFIED );
-                            this.tms.addLogicalDependency( handle,
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
-                        }
-                    } else if ( !logical ) {
-                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // Its previous justified, so switch to stated and remove logical dependencies
-                            final InternalFactHandle justifiedHandle = key.getFactHandle();
-                            this.tms.removeLogicalDependencies( justifiedHandle );
-
-                            if ( this.discardOnLogicalOverride ) {
-                                // override, setting to new instance, and return
-                                // existing handle
-                                key.setStatus( EqualityKey.STATED );
-                                handle = key.getFactHandle();
-
-                                if ( AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
-                                    // as assertMap may be using an "identity"
-                                    // equality comparator,
-                                    // we need to remove the handle from the map,
-                                    // before replacing the object
-                                    // and then re-add the handle. Otherwise we may
-                                    // end up with a leak.
-                                    this.objectStore.updateHandle( handle,
-                                                                   object );
-                                } else {
-                                    Object oldObject = handle.getObject();
-                                }
-                                return handle;
-                            } else {
-                                // override, then instantiate new handle for
-                                // assertion
-                                key.setStatus( EqualityKey.STATED );
-                                handle = createHandle( object,
-                                                       typeConf );
-                                handle.setEqualityKey( key );
-                                key.addFactHandle( handle );
-                            }
-
-                        } else {
-                            handle = createHandle( object,
-                                                   typeConf );
-                            key.addFactHandle( handle );
-                            handle.setEqualityKey( key );
-
-                        }
-
-                    } else {
-                        if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                            // only add as logical dependency if this wasn't previously stated
-                            this.tms.addLogicalDependency( key.getFactHandle(),
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
-                            return key.getFactHandle();
-                        } else {
-                            // You cannot justify a previously stated equality equal object, so return null
-                            return null;
-                        }
-                    }
-
-                } else {
-                    if ( handle != null ) {
-                        return handle;
-                    }
-                    handle = createHandle( object,
-                                           typeConf );
-
-                }
-
-                // if the dynamic parameter is true or if the user declared the fact type with the meta tag:
-                // @propertyChangeSupport
-                if ( dynamic || typeConf.isDynamic() ) {
-                    addPropertyChangeListener( object );
-                }
-
-                insert( handle,
-                        object,
-                        rule,
-                        activation,
-                        typeConf );
-
-            } finally {
-                this.lock.unlock();
-                this.ruleBase.readUnlock();
-            }
-            return handle;
-        } finally {
-            endOperation();
-        }
-
-    }
-
-    /** Side-effects, will add the created key to the handle. */
-    private EqualityKey createEqualityKey(InternalFactHandle handle) {
-      EqualityKey key = new EqualityKey( handle );
-      handle.setEqualityKey( key );
-      return key;
-    }
-
-    /**
-     * TMS will be automatically enabled when the first logical insert happens. 
-     * 
-     * We will take all the already asserted objects of the same type and initialize
-     * the equality map.
-     *  
-     * @param object the logically inserted object.
-     * @param conf the type's configuration.
-     */
-    private void enableTMS(Object object, ObjectTypeConf conf) {
-
-        
-        final Rete source = this.ruleBase.getRete();
-        final ClassObjectType cot = new ClassObjectType( object.getClass() );
-        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
-        final ObjectTypeNode node = map.get( cot );
-        final ObjectHashSet memory = (ObjectHashSet) this.getNodeMemory( node );
-      
-        // All objects of this type that are already there were certainly stated,
-        // since this method call happens at the first logical insert, for any given type.
-        org.drools.core.util.Iterator it = memory.iterator();
-
-        for ( Object obj = it.next(); obj != null; obj = it.next() ) {
-          
-            org.drools.core.util.ObjectHashSet.ObjectEntry holder = (org.drools.core.util.ObjectHashSet.ObjectEntry) obj; 
-    
-            InternalFactHandle handle = (InternalFactHandle) holder.getValue();
-            
-            if ( handle != null) {
-                EqualityKey key = createEqualityKey(handle);
-                key.setStatus(EqualityKey.STATED);
-                this.tms.put(key);
-            }
-        }
-      
-        // Enable TMS for this type.
-        conf.enableTMS();
-      
-    }
-
-    private InternalFactHandle createHandle(final Object object,
-                                            ObjectTypeConf typeConf) {
-        InternalFactHandle handle;
-        handle = this.handleFactory.newFactHandle( object,
-                                                   typeConf,
-                                                   this,
-                                                   this );
-        this.objectStore.addHandle( handle,
-                                    object );
-        return handle;
+        return this.defaultEntryPoint.insert( object,
+                                              dynamic,
+                                              logical,
+                                              rule,
+                                              activation );
     }
 
     public void insert(final InternalFactHandle handle,
@@ -1167,88 +922,11 @@ public abstract class AbstractWorkingMemory
                        final Rule rule,
                        final Activation activation,
                        ObjectTypeConf typeConf) {
-        this.ruleBase.executeQueuedActions();
-
-        executeQueuedActions();
-
-        if ( activation != null ) {
-            // release resources so that they can be GC'ed
-            activation.getPropagationContext().releaseResources();
-        }
-        final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
-                                                                                  rule,
-                                                                                  (activation == null) ? null : (LeftTuple) activation.getTuple(),
-                                                                                  handle,
-                                                                                  this.agenda.getActiveActivations(),
-                                                                                  this.agenda.getDormantActivations(),
-                                                                                  entryPoint );
-
-        this.entryPointNode.assertObject( handle,
-                                          propagationContext,
-                                          typeConf,
-                                          this );
-
-        executeQueuedActions();
-
-        this.workingMemoryEventSupport.fireObjectInserted( propagationContext,
-                                                           handle,
-                                                           object,
-                                                           this );
-    }
-
-    protected void addPropertyChangeListener(final Object object) {
-        try {
-            final Method method = object.getClass().getMethod( "addPropertyChangeListener",
-                                                               AbstractWorkingMemory.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
-
-            method.invoke( object,
-                           this.addRemovePropertyChangeListenerArgs );
-        } catch ( final NoSuchMethodException e ) {
-            System.err.println( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
-        } catch ( final IllegalArgumentException e ) {
-            System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " does not take" + " a simple PropertyChangeListener argument" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object" );
-        } catch ( final IllegalAccessException e ) {
-            System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " is not public" + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
-        } catch ( final InvocationTargetException e ) {
-            System.err.println( "Warning: The addPropertyChangeListener method" + " on the class " + object.getClass() + " threw an InvocationTargetException" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
-        } catch ( final SecurityException e ) {
-            System.err.println( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a" + " addPropertyChangeListener method" + " so Drools will be unable to process JavaBean"
-                                + " PropertyChangeEvents on the asserted Object: " + e.getMessage() );
-        }
-    }
-
-    protected void removePropertyChangeListener(final FactHandle handle) {
-        Object object = null;
-        try {
-            object = ((InternalFactHandle) handle).getObject();
-
-            if ( object != null ) {
-                final Method mehod = object.getClass().getMethod( "removePropertyChangeListener",
-                                                                  AbstractWorkingMemory.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
-
-                mehod.invoke( object,
-                              this.addRemovePropertyChangeListenerArgs );
-            }
-        } catch ( final NoSuchMethodException e ) {
-            // The removePropertyChangeListener method on the class
-            // was not found so Drools will be unable to
-            // stop processing JavaBean PropertyChangeEvents
-            // on the retracted Object
-        } catch ( final IllegalArgumentException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " does not take a simple PropertyChangeListener argument so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object" );
-        } catch ( final IllegalAccessException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeListener method on the class " + object.getClass() + " is not public so Drools will be unable to stop processing JavaBean PropertyChangeEvents on the retracted Object" );
-        } catch ( final InvocationTargetException e ) {
-            throw new RuntimeDroolsException( "Warning: The removePropertyChangeL istener method on the class " + object.getClass() + " threw an InvocationTargetException so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
-        } catch ( final SecurityException e ) {
-            throw new RuntimeDroolsException( "Warning: The SecurityManager controlling the class " + object.getClass() + " did not allow the lookup of a removePropertyChangeListener method so Drools will be unable to stop processing JavaBean"
-                                              + " PropertyChangeEvents on the retracted Object: " + e.getMessage() );
-        }
+        this.defaultEntryPoint.insert( handle,
+                                       object,
+                                       rule,
+                                       activation,
+                                       typeConf );
     }
 
     public void retract(final org.drools.runtime.rule.FactHandle handle) throws FactException {
@@ -1264,90 +942,15 @@ public abstract class AbstractWorkingMemory
                         final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException {
-        try {
-            this.ruleBase.readLock();
-            this.lock.lock();
-            startOperation();
-            this.ruleBase.executeQueuedActions();
-
-            InternalFactHandle handle = (InternalFactHandle) factHandle;
-            if ( handle.getId() == -1 ) {
-                // can't retract an already retracted handle
-                return;
-            }
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( handle.isDisconnected() ) {
-                handle = this.objectStore.reconnect( handle );
-            }
-
-            removePropertyChangeListener( handle );
-
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
-            }
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RETRACTION,
-                                                                                      rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
-                                                                                      handle,
-                                                                                      this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations(),
-                                                                                      this.entryPoint );
-
-            final Object object = handle.getObject();
-            
-            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                object );
-
-            this.entryPointNode.retractObject( handle,
-                                               propagationContext,
-                                               typeConf,
-                                               this );
-
-            if ( typeConf.isTMSEnabled() ) {
-
-                // Update the equality key, which maintains a list of stated
-                // FactHandles
-                final EqualityKey key = handle.getEqualityKey();
-
-                // Its justified so attempt to remove any logical dependencies
-                // for
-                // the handle
-                if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    this.tms.removeLogicalDependencies( handle );
-                }
-
-                key.removeFactHandle( handle );
-                handle.setEqualityKey( null );
-
-                // If the equality key is now empty, then remove it
-                if ( key.isEmpty() ) {
-                    this.tms.remove( key );
-                }
-            }
-            
-
-            this.workingMemoryEventSupport.fireObjectRetracted( propagationContext,
-                                                                handle,
-                                                                object,
-                                                                this );
-
-            this.objectStore.removeHandle( handle );
-
-            this.handleFactory.destroyFactHandle( handle );
-
-            executeQueuedActions();
-        } finally {
-            endOperation();
-            this.lock.unlock();
-            this.ruleBase.readUnlock();
-        }
+        this.defaultEntryPoint.retract( factHandle,
+                                        removeLogical,
+                                        updateEqualsMap,
+                                        rule,
+                                        activation );
     }
 
     public EntryPointNode getEntryPointNode() {
-        return this.entryPointNode;
+        return ((InternalWorkingMemoryEntryPoint) this.defaultEntryPoint).getEntryPointNode();
     }
 
     public void update(final org.drools.runtime.rule.FactHandle handle,
@@ -1379,108 +982,17 @@ public abstract class AbstractWorkingMemory
                        final Object object,
                        final Rule rule,
                        final Activation activation) throws FactException {
-        try {
-            this.ruleBase.readLock();
-            this.lock.lock();
-            startOperation();
-            this.ruleBase.executeQueuedActions();
-
-            // the handle might have been disconnected, so reconnect if it has
-            if ( ((InternalFactHandle)factHandle).isDisconnected() ) {
-                factHandle = this.objectStore.reconnect( factHandle );
-            }
-            
-            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                object );
-
-            // only needed if we maintain tms, but either way we must get it before we do the retract
-            int status = -1;
-            if ( typeConf.isTMSEnabled() ) {
-                status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
-            }
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = handle.getObject();
-
-            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
-                // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
-                return;
-            }
-
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
-            }
-
-            if ( originalObject != object || !AssertBehaviour.IDENTITY.equals( this.ruleBase.getConfiguration().getAssertBehaviour() ) ) {
-                this.objectStore.removeHandle( handle );
-
-                // set anyway, so that it updates the hashCodes
-                handle.setObject( object );
-                this.objectStore.addHandle( handle,
-                                            object );
-            }
-
-            if ( typeConf.isTMSEnabled() ) {
-            
-                // the hashCode and equality has changed, so we must update the
-                // EqualityKey
-                EqualityKey key = handle.getEqualityKey();
-                key.removeFactHandle( handle );
-            
-
-                // If the equality key is now empty, then remove it
-                if ( key.isEmpty() ) {
-                    this.tms.remove( key );
-                }
-    
-                // now use an existing EqualityKey, if it exists, else create a new one
-                key = this.tms.get( object );
-                if ( key == null ) {
-                    key = new EqualityKey( handle,
-                                           status );
-                    this.tms.put( key );
-                } else {
-                    key.addFactHandle( handle );
-                }
-    
-                handle.setEqualityKey( key );
-
-            }
-
-            this.handleFactory.increaseFactHandleRecency( handle );
-
-            final PropagationContext propagationContext = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.MODIFICATION,
-                                                                                      rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
-                                                                                      handle,
-                                                                                      this.agenda.getActiveActivations(),
-                                                                                      this.agenda.getDormantActivations(),
-                                                                                      entryPoint );
-
-            this.entryPointNode.modifyObject( handle,
-                                              propagationContext,
-                                              typeConf,
-                                              this );
-
-            this.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                              (org.drools.FactHandle) factHandle,
-                                                              originalObject,
-                                                              object,
-                                                              this );
-
-            executeQueuedActions();
-        } finally {
-            endOperation();
-            this.lock.unlock();
-            this.ruleBase.readUnlock();
-        }
+        this.defaultEntryPoint.update( factHandle,
+                                       object,
+                                       rule,
+                                       activation );
     }
 
     public void executeQueuedActions() {
         try {
             startOperation();
-            if( evaluatingActionQueue.compareAndSet( false, true ) ) {
+            if ( evaluatingActionQueue.compareAndSet( false,
+                                                      true ) ) {
                 try {
                     if ( !this.actionQueue.isEmpty() ) {
                         WorkingMemoryAction action = null;
@@ -1495,7 +1007,8 @@ public abstract class AbstractWorkingMemory
                         }
                     }
                 } finally {
-                    evaluatingActionQueue.compareAndSet( true, false );
+                    evaluatingActionQueue.compareAndSet( true,
+                                                         false );
                 }
             }
         } finally {
@@ -1515,16 +1028,6 @@ public abstract class AbstractWorkingMemory
         } finally {
             endOperation();
         }
-    }
-
-    public void removeLogicalDependencies(final Activation activation,
-                                          final PropagationContext context,
-                                          final Rule rule) throws FactException {
-      
-        this.tms.removeLogicalDependencies( activation,
-                                            context,
-                                            rule );
-
     }
 
     /**
@@ -1568,21 +1071,6 @@ public abstract class AbstractWorkingMemory
      * this.joinMemories.get( it.next( ) )).dump( ); } }
      */
 
-    public void propertyChange(final PropertyChangeEvent event) {
-        final Object object = event.getSource();
-
-        try {
-            FactHandle handle = getFactHandle( object );
-            if ( handle == null ) {
-                throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
-            }
-            update( handle,
-                    object );
-        } catch ( final FactException e ) {
-            throw new RuntimeDroolsException( e.getMessage() );
-        }
-    }
-
     public long getNextPropagationIdCounter() {
         return this.propagationIdCounter.incrementAndGet();
     }
@@ -1601,18 +1089,19 @@ public abstract class AbstractWorkingMemory
 
         }
     }
-    
+
     public InternalProcessRuntime getProcessRuntime() {
-    	return processRuntime;
+        return processRuntime;
     }
 
     public ProcessInstance startProcess(final String processId) {
-    	return processRuntime.startProcess(processId);
+        return processRuntime.startProcess( processId );
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        return processRuntime.startProcess(processId, parameters);
+        return processRuntime.startProcess( processId,
+                                            parameters );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -1620,7 +1109,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId) {
-        return processRuntime.getProcessInstance(processInstanceId);
+        return processRuntime.getProcessInstance( processInstanceId );
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -1714,14 +1203,6 @@ public abstract class AbstractWorkingMemory
         this.timeMachine = timeMachine;
     }
 
-    public ExecutorService getExecutorService() {
-        return null; // no executor service
-    }
-
-    public void setExecutorService(ExecutorService executor) {
-        // no executor service, so nothing to set
-    }
-
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get( name );
         return wmEntryPoint;
@@ -1732,7 +1213,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-        return this.typeConfReg;
+        return this.defaultEntryPoint.getObjectTypeConfigurationRegistry();
     }
 
     public InternalFactHandle getInitialFactHandle() {
@@ -1771,35 +1252,6 @@ public abstract class AbstractWorkingMemory
         this.ruleBase.readUnlock();
     }
 
-    // public static class FactHandleInvalidation implements WorkingMemoryAction
-    // {
-    // private final InternalFactHandle handle;
-    //        
-    // public FactHandleInvalidation(InternalFactHandle handle) {
-    // this.handle = handle;
-    // }
-    //
-    // public void execute(InternalWorkingMemory workingMemory) {
-    // workingMemory.getFactHandleFactory().destroyFactHandle( handle );
-    // }
-    //
-    // public void write(WMSerialisationOutContext context) throws IOException {
-    // context.writeInt( handle.getId() );
-    // }
-    //
-    // public void readExternal(ObjectInput in) throws IOException,
-    // ClassNotFoundException {
-    // // TODO Auto-generated method stub
-    //            
-    // }
-    //
-    // public void writeExternal(ObjectOutput out) throws IOException {
-    // // TODO Auto-generated method stub
-    //            
-    // }
-    //        
-    // }
-
     public void dispose() {
         if ( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
             DroolsManagementAgent.getInstance().unregisterKnowledgeSession( this );
@@ -1810,8 +1262,8 @@ public abstract class AbstractWorkingMemory
             this.ruleBase.removeEventListener( (RuleBaseEventListener) it.next() );
         }
         this.stopPartitionManagers();
-        if (processRuntime != null) {
-        	this.processRuntime.dispose();
+        if ( processRuntime != null ) {
+            this.processRuntime.dispose();
         }
     }
 
@@ -1855,7 +1307,7 @@ public abstract class AbstractWorkingMemory
         this.channels.put( name,
                            channel );
     }
-    
+
     public void unregisterChannel(String name) {
         this.channels.remove( name );
     }
@@ -1869,7 +1321,7 @@ public abstract class AbstractWorkingMemory
     }
 
     public long getFactCount() {
-        return this.objectStore.size();
+        return getObjectStore().size();
     }
 
     public long getTotalFactCount() {
@@ -1959,11 +1411,11 @@ public abstract class AbstractWorkingMemory
             this.partitionManager.releaseTasks();
         }
     }
-    
-    public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore(){
-        if(this.marshallingStore == null){
+
+    public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {
+        if ( this.marshallingStore == null ) {
             this.marshallingStore = new ObjectMarshallingStrategyStore(
-                                (ObjectMarshallingStrategy[])this.environment.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+                                                                        (ObjectMarshallingStrategy[]) this.environment.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES ) );
         }
         return this.marshallingStore;
     }
