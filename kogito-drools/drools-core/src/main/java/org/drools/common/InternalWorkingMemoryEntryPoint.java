@@ -19,6 +19,7 @@ package org.drools.common;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 
@@ -43,4 +44,10 @@ public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint
     public InternalWorkingMemory getInternalWorkingMemory();
 
     public FactHandle getFactHandleByIdentity(final Object object);
+    
+    void reset();
+    
+    ObjectStore getObjectStore();
+    
+    EntryPointNode getEntryPointNode();
 }

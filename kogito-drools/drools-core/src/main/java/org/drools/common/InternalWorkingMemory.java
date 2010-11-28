@@ -51,8 +51,6 @@ public interface InternalWorkingMemory
     public int getId();
     
     public void setId(int id);
-    
-    void setRuleBase(final InternalRuleBase ruleBase);
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
 
@@ -96,10 +94,6 @@ public interface InternalWorkingMemory
      */
     public FactHandle getFactHandleByIdentity(final Object object);
 
-    public void removeLogicalDependencies(final Activation activation,
-                                          final PropagationContext context,
-                                          final Rule rule) throws FactException;
-
     void retract(final FactHandle factHandle,
                        final boolean removeLogical,
                        final boolean updateEqualsMap,
@@ -114,11 +108,7 @@ public interface InternalWorkingMemory
 
 	public TimeMachine getTimeMachine();
 
-	public void setTimeMachine(TimeMachine tm);
-	
-    public ExecutorService getExecutorService();
-
-    public void setExecutorService(ExecutorService executor);    
+	public void setTimeMachine(TimeMachine tm);    
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     

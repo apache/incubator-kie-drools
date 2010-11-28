@@ -260,10 +260,10 @@ public class RuleTerminalNode extends BaseNode
         } else {
             ((InternalAgenda) workingMemory.getAgenda()).decreaseDormantActivations();
         }
-
-        workingMemory.removeLogicalDependencies( activation,
-                                                 context,
-                                                 this.rule );
+        
+        workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
+                                                                             context,
+                                                                             this.rule );
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,

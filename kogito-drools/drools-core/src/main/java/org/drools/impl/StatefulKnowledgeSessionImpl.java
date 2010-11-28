@@ -67,6 +67,7 @@ import org.drools.event.rule.impl.BeforeActivationFiredEventImpl;
 import org.drools.event.rule.impl.ObjectInsertedEventImpl;
 import org.drools.event.rule.impl.ObjectRetractedEventImpl;
 import org.drools.event.rule.impl.ObjectUpdatedEventImpl;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -115,6 +116,18 @@ public class StatefulKnowledgeSessionImpl
         this.session.setKnowledgeRuntime( this );
         this.kbase = kbase;
     }
+    
+    public void reset() {
+        throw new UnsupportedOperationException("This should not be called");
+    }    
+    
+    public ObjectStore getObjectStore() {
+        return this.session.getObjectStore();
+    }        
+
+    public EntryPointNode getEntryPointNode() {
+        return this.session.getEntryPointNode();
+    }    
 
     public int getId() {
         return this.session.getId();
@@ -842,5 +855,6 @@ public class StatefulKnowledgeSessionImpl
 	public long getLastIdleTimestamp() {
 		return this.session.getLastIdleTimestamp();
 	}
+
 
 }
