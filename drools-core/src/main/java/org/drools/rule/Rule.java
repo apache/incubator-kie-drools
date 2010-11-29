@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -367,8 +368,7 @@ public class Rule
      *
      * This uses the dateEffective, dateExpires and enabled flag to decide this.
      */
-    public boolean isEffective(TimeMachine tm,
-                               Tuple tuple,
+    public boolean isEffective(Tuple tuple,
                                WorkingMemory workingMemory) {
         if ( !this.enabled.getValue( tuple,
                                      this,
@@ -377,8 +377,9 @@ public class Rule
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
-        } else {
-            final Calendar now = tm.getNow();
+        } else {            
+            Calendar now = Calendar.getInstance();
+            now.setTimeInMillis( workingMemory.getSessionClock().getCurrentTime() );
 
             if ( this.dateEffective != null && this.dateExpires != null ) {
                 return (now.after( this.dateEffective ) && now.before( this.dateExpires ));

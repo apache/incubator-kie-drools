@@ -17,10 +17,16 @@
 package org.drools.rule;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.TestCase;
 
+import org.drools.ClockType;
+import org.drools.SessionConfiguration;
+import org.drools.WorkingMemory;
 import org.drools.base.EnabledBoolean;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * @author Michael Neale
@@ -28,16 +34,18 @@ import org.drools.base.EnabledBoolean;
 public class RuleTest extends TestCase {
 
     public void testDateEffective() {
+        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateEffective( earlier );
 
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
@@ -45,31 +53,35 @@ public class RuleTest extends TestCase {
         assertTrue( later.after( Calendar.getInstance() ) );
 
         rule.setDateEffective( later );
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective(null, wm ) );
 
     }
 
     public void testDateExpires() throws Exception {
+        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        
         final Rule rule = new Rule( "myrule" );
 
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
         final Calendar earlier = Calendar.getInstance();
         earlier.setTimeInMillis( 10 );
 
         rule.setDateExpires( earlier );
 
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective(null, wm ) );
 
         final Calendar later = Calendar.getInstance();
         later.setTimeInMillis( later.getTimeInMillis() + 100000000 );
 
         rule.setDateExpires( later );
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
     }
 
     public void testDateEffectiveExpires() {
+        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        
         final Rule rule = new Rule( "myrule" );
 
         final Calendar past = Calendar.getInstance();
@@ -81,52 +93,57 @@ public class RuleTest extends TestCase {
         rule.setDateEffective( past );
         rule.setDateExpires( future );
 
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
         rule.setDateExpires( past );
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective(null, wm ) );
 
         rule.setDateExpires( future );
         rule.setDateEffective( future );
 
 
 
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective(null, wm ) );
 
     }
 
     public void testRuleEnabled() {
+        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective( null, wm ) );
 
         final Calendar past = Calendar.getInstance();
         past.setTimeInMillis( 10 );
 
         rule.setDateEffective( past );
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective( null, wm ) );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
 
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective( null, wm ) );
     }
 
     public void testTimeMachine() {
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession(conf, null);
+        
+        final Calendar future = Calendar.getInstance();
+        ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );        
+        
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );
-        assertTrue( rule.isEffective(new TimeMachine(), null, null ) );
+        assertTrue( rule.isEffective(null, wm ) );
 
-        final Calendar future = Calendar.getInstance();
+        
         future.setTimeInMillis( future.getTimeInMillis() + 100000000 );
         rule.setDateEffective(future);
-        assertFalse( rule.isEffective(new TimeMachine(), null, null ) );
+        assertFalse( rule.isEffective(null, wm ) );
 
-        assertTrue(rule.isEffective(new TimeMachine() {
-        	public Calendar getNow() {
-        		Calendar loveYouLongTime = Calendar.getInstance();
-        		loveYouLongTime.setTimeInMillis(future.getTimeInMillis() + 1000000000000L);
-        		return loveYouLongTime;
-        	}
-        }, null, null ));
+        ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( 1000000000000L, TimeUnit.MILLISECONDS );
+        
+        assertTrue(rule.isEffective(null, wm ));
     }
 
 }

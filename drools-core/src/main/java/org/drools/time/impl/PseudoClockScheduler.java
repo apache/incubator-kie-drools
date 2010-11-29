@@ -131,7 +131,7 @@ public class PseudoClockScheduler
         return this.timer;
     }
 
-    public synchronized void setStartupTime(int i) {
+    public synchronized void setStartupTime(long i) {
         this.timer = i;
     }
 

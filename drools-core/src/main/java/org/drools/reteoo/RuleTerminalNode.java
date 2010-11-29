@@ -160,8 +160,7 @@ public class RuleTerminalNode extends BaseNode
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         //check if the rule is effective
-        if ( !this.rule.isEffective( workingMemory.getTimeMachine(),
-                                     tuple,
+        if ( !this.rule.isEffective( tuple,
                                      workingMemory ) ) {
             return;
         }
@@ -291,8 +290,7 @@ public class RuleTerminalNode extends BaseNode
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         //check if the rule is effective
-        if ( !this.rule.isEffective( workingMemory.getTimeMachine(),
-                                     leftTuple,
+        if ( !this.rule.isEffective( leftTuple,
                                      workingMemory ) ) {
             return;
         }

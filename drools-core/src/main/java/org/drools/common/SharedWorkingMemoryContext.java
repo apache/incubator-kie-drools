@@ -23,7 +23,6 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.rule.TimeMachine;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 
@@ -46,8 +45,6 @@ public class SharedWorkingMemoryContext {
 
     private WorkItemManager                     workItemManager;
 
-    private TimeMachine                         timeMachine;
-
     public SharedWorkingMemoryContext(FactHandleFactory handleFactory) {
         this.handleFactory = handleFactory;
 
@@ -56,8 +53,6 @@ public class SharedWorkingMemoryContext {
         this.workingMemoryEventSupport = new WorkingMemoryEventSupport();
         this.agendaEventSupport = new AgendaEventSupport();
         this.__ruleBaseEventListeners = new LinkedList();
-
-        timeMachine = new TimeMachine();
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -66,14 +61,6 @@ public class SharedWorkingMemoryContext {
 
     public void setWorkItemManager(WorkItemManager workItemManager) {
         this.workItemManager = workItemManager;
-    }
-
-    public TimeMachine getTimeMachine() {
-        return timeMachine;
-    }
-
-    public void setTimeMachine(TimeMachine timeMachine) {
-        this.timeMachine = timeMachine;
     }
 
     public FactHandleFactory getHandleFactory() {
