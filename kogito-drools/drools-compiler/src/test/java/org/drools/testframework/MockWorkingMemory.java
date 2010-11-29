@@ -40,7 +40,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
@@ -64,20 +63,17 @@ public class MockWorkingMemory implements InternalWorkingMemory {
                 
 	List<Object> facts = new ArrayList<Object>();
 	AgendaEventListener agendaEventListener;
-	TimeMachine timeMachine = new TimeMachine();
 	Map<String, Object> globals = new HashMap<String, Object>();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         facts   = (List<Object>)in.readObject();
         agendaEventListener   = (AgendaEventListener)in.readObject();
-        timeMachine   = (TimeMachine)in.readObject();
         globals   = (Map<String, Object>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(facts);
         out.writeObject(agendaEventListener);
-        out.writeObject(timeMachine);
         out.writeObject(globals);
     }
     
@@ -96,11 +92,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	public void addEventListener(AgendaEventListener listener) {
 		this.agendaEventListener = listener;
-	}
-
-	public void setTimeMachine(TimeMachine tm) {
-		this.timeMachine = tm;
-
 	}
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
@@ -172,11 +163,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         // TODO Auto-generated method stub
         return null;
     }
-
-    public TimeMachine getTimeMachine() {
-		return this.timeMachine;
-    }
-
+    
     public TimerService getTimerService() {
         // TODO Auto-generated method stub
         return null;

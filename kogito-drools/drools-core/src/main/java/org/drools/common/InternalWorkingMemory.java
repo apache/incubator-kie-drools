@@ -31,7 +31,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
@@ -105,10 +104,6 @@ public interface InternalWorkingMemory
     public boolean isSequential();
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation);
-
-	public TimeMachine getTimeMachine();
-
-	public void setTimeMachine(TimeMachine tm);    
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     

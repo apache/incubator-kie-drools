@@ -79,7 +79,6 @@ import org.drools.reteoo.Rete;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
@@ -171,8 +170,6 @@ public abstract class AbstractWorkingMemory
     protected volatile AtomicBoolean                             firing;
 
     private WorkItemManager                                      workItemManager;
-
-    private TimeMachine                                          timeMachine;
 
     private TimerService                                         timerService;
 
@@ -326,7 +323,6 @@ public abstract class AbstractWorkingMemory
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
-        this.timeMachine = new TimeMachine();
 
         timerService = TimerServiceFactory.getTimerService( this.config );
 
@@ -1184,23 +1180,6 @@ public abstract class AbstractWorkingMemory
             }
         }
         return result;
-    }
-
-    /**
-     * The time machine tells you what time it is.
-     */
-    public TimeMachine getTimeMachine() {
-        return timeMachine;
-    }
-
-    /**
-     * The time machine defaults to returning the current time when asked.
-     * However, you can use tell it to go back in time.
-     * 
-     * @param timeMachine
-     */
-    public void setTimeMachine(TimeMachine timeMachine) {
-        this.timeMachine = timeMachine;
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
