@@ -14,7 +14,6 @@ import javax.persistence.Lob;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -22,12 +21,9 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 
 @Entity
 public class WorkItemInfo {
-
-    private static final String               VARIABLE_SEPARATOR = ":";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,9 +45,6 @@ public class WorkItemInfo {
     private @Transient
     Environment                               env;
     
-
-
-
     protected WorkItemInfo() {
     }
 
@@ -113,7 +106,6 @@ public class WorkItemInfo {
     public void update() {
         this.state = workItem.getState();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        boolean variablesChanged = false;
         try {
             MarshallerWriteContext context = new MarshallerWriteContext( baos,
                                                                          null,
@@ -131,8 +123,4 @@ public class WorkItemInfo {
             throw new IllegalArgumentException( "IOException while storing workItem " + workItem.getId() + ": " + e.getMessage() );
         }
     }
-
-   
-
-
 }
