@@ -32,12 +32,12 @@ public class Activator
 
     @SuppressWarnings("unchecked")
 	public void start(BundleContext bc) throws Exception {
-        System.out.println( "registering BPMN2 process drools services" );
+        System.out.println( "registering jBPM BPMN2 process services" );
         this.bpmn2ProcessReg = bc.registerService( new String[]{ BPMN2ProcessProvider.class.getName(), Service.class.getName()},
                                                    new BPMN2ProcessProviderImpl(),
                                                    new Hashtable() );
 
-        System.out.println( "drools BPMN2 process services registered" );
+        System.out.println( "jBPM BPMN2 process services registered" );
     }
 
     public void stop(BundleContext bc) throws Exception {

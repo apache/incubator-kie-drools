@@ -11,6 +11,45 @@
   <packaging>jar</packaging>
   <name>jBPM :: Flow Builder</name>
 
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Bundle-SymbolicName>org.jbpm.flow.builder;singleton:=true</Bundle-SymbolicName>
+            <Require-Bundle>org.jbpm.flow.core;bundle-version="5.0.0.SNAPSHOT", org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
+            <Import-Package>!org.drools.*, !org.jbpm.*, *</Import-Package>
+            <Export-Package>org.jbpm.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.jbpm.osgi.flow.compiler.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>

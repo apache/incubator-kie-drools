@@ -36,8 +36,11 @@ public class TypeHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
         TypeObject typeable = (TypeObject) parser.getParent();
-        final String name = attrs.getValue("name");
+        String name = attrs.getValue("name");
         emptyAttributeCheck(localName, "name", name, parser);
+        if (name.startsWith("org.drools.process.core.datatype.impl.type.")) {
+        	name = "org.jbpm.process.core.datatype.impl.type." + name.substring(43);
+        }
         DataType dataType = null;
         try {
             dataType = (DataType) Class.forName(name).newInstance();
