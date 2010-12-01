@@ -134,23 +134,12 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <aggregate>false</aggregate>
-          <!--doclet>ydoc.doclets.YStandard</doclet>
-          <docletPath>                        ${ydoc.home}/lib/ydoc.jar${path.separator}${ydoc.home}/lib/class2svg.jar${path.separator}${ydoc.home}/resources
-          </docletPath>
-          <additionalparam>-umlautogen -tag y.precondition -tag y.postcondition -tag y.complexity -tag param -tag return -tag see -tag y.uml
-          </additionalparam-->
           <links>
-            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <link>http://download.oracle.com/javase/1.5.0/docs/api</link>
           </links>
           <minmemory>128m</minmemory>
-          <maxmemory>512</maxmemory>
+          <maxmemory>512m</maxmemory>
           <author>false</author>
-          <bottom>true</bottom>
-          <header>JBoss Drools</header>
-          <packagenames>org.drools.*</packagenames>
-          <use>true</use>
-          <version>true</version>
-          <windowtitle>${project.name} ${project.version} API</windowtitle>
           <breakiterator>true</breakiterator>
           <excludePackageNames>org.drools.util*</excludePackageNames>
           <overview>src/main/java/overview.html</overview>
