@@ -81,19 +81,16 @@ public class ByteArrayResource extends BaseResource
     }      
 
     public boolean equals(Object object) {
-        return (object == this || (object instanceof ByteArrayResource && Arrays.equals( ((ByteArrayResource) object).bytes,
-                                                                                         this.bytes )));
+        return (object == this || (object instanceof ByteArrayResource
+                && Arrays.equals( ((ByteArrayResource) object).bytes, this.bytes )));
     }
 
     public int hashCode() {
-        return (byte[].class.hashCode() * 29 * this.bytes.length);
+        return Arrays.hashCode(this.bytes);
     }
     
     public String toString() {
         return "[ByteArrayResource resource=" + this.bytes + "]";
     }
-
-
-
 
 }
