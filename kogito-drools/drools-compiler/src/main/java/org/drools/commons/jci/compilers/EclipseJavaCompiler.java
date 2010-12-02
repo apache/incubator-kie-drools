@@ -236,23 +236,24 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
                 }
                 
-                
-                final InputStream is = pClassLoader.getResourceAsStream(resourceName);
-                if (is == null) {
-                    return null;
-                }
-
-                final byte[] buffer = new byte[8192];
-                final ByteArrayOutputStream baos = new ByteArrayOutputStream(buffer.length);
-                int count;
+                InputStream is = null;
+                ByteArrayOutputStream baos = null;
                 try {
-                    while ((count = is.read(buffer, 0, buffer.length)) > 0) {
-                        baos.write(buffer, 0, count);
+                    is = pClassLoader.getResourceAsStream(resourceName);
+                    if (is == null) {
+                        return null;
                     }
-                    baos.flush();
-                    final char[] fileName = pClazzName.toCharArray();
-                    final ClassFileReader classFileReader = new ClassFileReader(baos.toByteArray(), fileName, true);
-                    return new NameEnvironmentAnswer(classFileReader, null);
+    
+                    final byte[] buffer = new byte[8192];
+                    baos = new ByteArrayOutputStream(buffer.length);
+                    int count;
+                        while ((count = is.read(buffer, 0, buffer.length)) > 0) {
+                            baos.write(buffer, 0, count);
+                        }
+                        baos.flush();
+                        final char[] fileName = pClazzName.toCharArray();
+                        final ClassFileReader classFileReader = new ClassFileReader(baos.toByteArray(), fileName, true);
+                        return new NameEnvironmentAnswer(classFileReader, null);
                 } catch ( final IOException e ) {
                     throw new RuntimeException( "could not read class",
                                                 e );
@@ -261,13 +262,17 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                                                 e );
                 } finally {
                     try {
-                        baos.close();
+                        if (baos != null ) {
+                            baos.close();
+                        }
                     } catch ( final IOException oe ) {
                         throw new RuntimeException( "could not close output stream",
                                                     oe );
                     }
                     try {
-                        is.close();
+                        if ( is != null ) {
+                            is.close();
+                        }
                     } catch ( final IOException ie ) {
                         throw new RuntimeException( "could not close input stream",
                                                     ie );
@@ -276,19 +281,29 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             private boolean isPackage( final String pClazzName ) {
-                
-                final InputStream is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
-                if (is != null) {
-                    return false;
+                InputStream is = null;
+                try {
+                    is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
+                    if (is != null) {
+                        return false;
+                    }
+                    
+                    // FIXME: this should not be tied to the extension
+                    final String source = pClazzName.replace('.', '/') + ".java";
+                    if (pReader.isAvailable(source)) {
+                        return false;
+                    }
+                    
+                    return true;
+                } finally {
+                    if ( is != null ) {
+                        try {
+                            is.close();
+                        } catch ( IOException e ) {
+                            throw new RuntimeException( "Unable to close stream for resource: " + pClazzName );
+                        }
+                    }
                 }
-                
-                // FIXME: this should not be tied to the extension
-                final String source = pClazzName.replace('.', '/') + ".java";
-                if (pReader.isAvailable(source)) {
-                    return false;
-                }
-                
-                return true;
             }
 
             public boolean isPackage( char[][] parentPackageName, char[] pPackageName ) {
