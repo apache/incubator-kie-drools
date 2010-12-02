@@ -350,7 +350,6 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
 
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.WorkingMemory workingMemory) throws Exception {
-
         org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
         org.drools.rule.Declaration[] declarations = knowledgeHelper.getRule().getDeclarations();
 
@@ -359,7 +358,7 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
           @{type} @{declr.identifier} = ( @{type} )  declarations[@{index}].@{declr.nativeReadMethod.name}((org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
           @if{notPattern}@{declr.identifier}__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
           knowledgeHelper.getIdentityMap().put(@{declr.identifier}, @{declr.identifier}__Handle__ );
-        @end{}
+        @end{}        
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
         @end{}

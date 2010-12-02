@@ -26,9 +26,7 @@ import java.util.Map;
 
 import org.drools.core.util.DroolsClassLoader;
 
-public class MapBackedClassLoader extends ClassLoader
-    implements
-    DroolsClassLoader {
+public class MapBackedClassLoader extends ClassLoader {
 
     private static final long             serialVersionUID = 510l;
 

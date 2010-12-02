@@ -69,7 +69,6 @@ public class DroolsObjectIOTest  extends TestCase {
         DroolsStreamUtils.streamOut(new FileOutputStream(file), testGroupElement);
 
         InputStream         fis = getClass().getResourceAsStream(TEST_FILE);
-        System.out.println(fis.available());
 
         GroupElement    that    = (GroupElement)DroolsStreamUtils.streamIn(fis);
         assertEquals(that, testGroupElement);

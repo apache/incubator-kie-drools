@@ -30,11 +30,11 @@ import org.drools.definition.process.Process;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
+import org.drools.util.CompositeClassLoader;
 
 public interface InternalRuleBase
     extends
@@ -100,7 +100,7 @@ public interface InternalRuleBase
                               PropagationContext context,
                               ReteooWorkingMemory workingMemory) throws FactException;
  
-    public DroolsCompositeClassLoader getRootClassLoader();   
+    public CompositeClassLoader getRootClassLoader();   
     
     public Rete getRete();
     

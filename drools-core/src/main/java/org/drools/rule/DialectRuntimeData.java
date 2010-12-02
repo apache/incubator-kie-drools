@@ -16,6 +16,8 @@
 
 package org.drools.rule;
 
+import org.drools.util.CompositeClassLoader;
+
 
 public interface DialectRuntimeData extends Cloneable {
     public void removeRule(Package pkg, Rule rule);
@@ -30,10 +32,10 @@ public interface DialectRuntimeData extends Cloneable {
 
     public void reload();
 
-    public DialectRuntimeData clone(DialectRuntimeRegistry registry, DroolsCompositeClassLoader rootClassLoader);
+    public DialectRuntimeData clone(DialectRuntimeRegistry registry, CompositeClassLoader rootClassLoader);
 
     public void onAdd(DialectRuntimeRegistry dialectRuntimeRegistry,
-                     DroolsCompositeClassLoader rootClassLoader);
+                      CompositeClassLoader rootClassLoader);
     
     public void onRemove();
     

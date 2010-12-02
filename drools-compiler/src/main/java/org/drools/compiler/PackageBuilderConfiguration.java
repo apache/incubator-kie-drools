@@ -317,7 +317,7 @@ public class PackageBuilderConfiguration
                                         configuration );
     }
 
-    public ClassLoader getClassLoader() {
+    public CompositeClassLoader getClassLoader() {
         return this.classLoader;
     }
 

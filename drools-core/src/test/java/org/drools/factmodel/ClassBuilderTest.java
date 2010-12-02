@@ -31,9 +31,9 @@ import junit.framework.TestCase;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.drools.util.ClassLoaderUtil;
 
 public class ClassBuilderTest extends TestCase {
 
@@ -55,7 +55,7 @@ public class ClassBuilderTest extends TestCase {
                      
         data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
                        d );
-        classLoader = new PackageClassLoader(data, new DroolsCompositeClassLoader( getClass().getClassLoader(), false ));
+        classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         
         this.store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );

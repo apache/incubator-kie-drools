@@ -38,7 +38,6 @@ public class CronJobTest extends TestCase {
         
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
         Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
-        System.out.println( "current time " + date );
         
         timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         

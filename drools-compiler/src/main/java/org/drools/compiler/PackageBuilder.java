@@ -70,7 +70,6 @@ import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -85,6 +84,7 @@ import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
+import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
@@ -120,7 +120,7 @@ public class PackageBuilder {
      */
     private final String                      defaultDialect;
 
-    private DroolsCompositeClassLoader        rootClassLoader;
+    private CompositeClassLoader        rootClassLoader;
 
     private Map<String, Class< ? >>           globals;
 
@@ -185,8 +185,7 @@ public class PackageBuilder {
             //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
         }
 
-        this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader(),
-                                                               this.configuration.isClassLoaderCacheEnabled() );
+        this.rootClassLoader = this.configuration.getClassLoader();
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -215,8 +214,7 @@ public class PackageBuilder {
         if ( ruleBase != null ) {
             this.rootClassLoader = ((InternalRuleBase) ruleBase).getRootClassLoader();
         } else {
-            this.rootClassLoader = new DroolsCompositeClassLoader( this.configuration.getClassLoader(),
-                                                                   this.configuration.isClassLoaderCacheEnabled() );
+            this.rootClassLoader = this.configuration.getClassLoader();
         }
 
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
@@ -1512,7 +1510,7 @@ public class PackageBuilder {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
-    public DroolsCompositeClassLoader getRootClassLoader() {
+    public CompositeClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     }
 }

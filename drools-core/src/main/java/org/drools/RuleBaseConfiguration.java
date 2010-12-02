@@ -781,7 +781,7 @@ public class RuleBaseConfiguration
         return this.conflictResolver;
     }
 
-    public ClassLoader getClassLoader() {
+    public CompositeClassLoader getClassLoader() {
         return classLoader;
     }
 
