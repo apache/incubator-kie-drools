@@ -195,7 +195,7 @@ public class MVELAccumulateBuilder
             final Accumulate accumulate = new Accumulate( source,
                                                           declarations,
                                                           sourceDeclArr,
-                                                          accumulator );
+                                                          new Accumulator[] { accumulator } );
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( accumulate,

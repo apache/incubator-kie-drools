@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/semantics/java/parser/Java.g 2010-10-25 14:22:50
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/semantics/java/parser/Java.g 2010-11-26 12:32:12
 
 	package org.drools.rule.builder.dialect.java.parser;
 

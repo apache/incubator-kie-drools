@@ -585,26 +585,26 @@ public class AccumulateNode extends BetaNode {
                                            final boolean useLeftMemory) {
 
         // get the actual result
-        final Object result = this.accumulate.getResult( memory.workingMemoryContext,
-                                                         accctx.context,
-                                                         leftTuple,
-                                                         workingMemory );
+        final Object[] result = this.accumulate.getResult( memory.workingMemoryContext,
+                                                           accctx.context,
+                                                           leftTuple,
+                                                           workingMemory );
 
         if ( accctx.result == null ) {
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
+            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result[0],
                                                                                                   workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                        result ),
+                                                                                                                                                                        result[0] ),
                                                                                                   workingMemory,
                                                                                                   null ); // so far, result is not an event
 
             accctx.result = new RightTuple( handle,
                                             this );
         } else {
-            accctx.result.getFactHandle().setObject( result );
+            accctx.result.getFactHandle().setObject( result[0] );
         }
 
         // First alpha node filters
-        boolean isAllowed = result != null;
+        boolean isAllowed = result[0] != null;
         for ( int i = 0, length = this.resultConstraints.length; isAllowed && i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( accctx.result.getFactHandle(),
                                                        workingMemory,
@@ -980,14 +980,14 @@ public class AccumulateNode extends BetaNode {
         Externalizable {
         private static final long serialVersionUID = 510l;
 
-        public Object             workingMemoryContext;
+        public Object[]           workingMemoryContext;
         public BetaMemory         betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            workingMemoryContext = in.readObject();
+            workingMemoryContext = (Object[]) in.readObject();
             betaMemory = (BetaMemory) in.readObject();
             resultsContext = (ContextEntry[]) in.readObject();
             alphaContexts = (ContextEntry[]) in.readObject();
@@ -1005,13 +1005,13 @@ public class AccumulateNode extends BetaNode {
     public static class AccumulateContext
         implements
         Externalizable {
-        public Serializable context;
-        public RightTuple   result;
-        public boolean      propagated;
+        public Serializable[] context;
+        public RightTuple     result;
+        public boolean        propagated;
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            context = (Serializable) in.readObject();
+            context = (Serializable[]) in.readObject();
             result = (RightTuple) in.readObject();
             propagated = in.readBoolean();
         }

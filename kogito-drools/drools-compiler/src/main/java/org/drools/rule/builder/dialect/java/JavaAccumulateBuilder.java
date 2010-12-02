@@ -39,6 +39,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.runtime.rule.AccumulateFunction;
+import org.drools.spi.Accumulator;
 
 /**
  * A builder for the java dialect accumulate version
@@ -123,7 +124,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             accumulate = new Accumulate( source,
                                          previousDeclarations,
                                          sourceDeclArr,
-                                         accumulator );
+                                         new Accumulator[] { accumulator } );
 
             generatTemplates( "returnValueMethod",
                               "returnValueInvoker",

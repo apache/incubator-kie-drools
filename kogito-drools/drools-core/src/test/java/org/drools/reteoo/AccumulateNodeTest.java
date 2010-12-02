@@ -33,6 +33,7 @@ import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
+import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -85,7 +86,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         this.accumulate = new Accumulate( sourcePattern,
                                           new Declaration[0],
                                           new Declaration[0],
-                                          this.accumulator );
+                                          new Accumulator[] { this.accumulator });
 
         this.node = new AccumulateNode( 15,
                                         this.tupleSource,
