@@ -29,6 +29,10 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * This is an Internal Drools Class
+ *
+ */
 public class CompositeClassLoader extends ClassLoader {
     /* Assumption: modifications are really rare, but iterations are frequent. */
     private final List<ClassLoader>       classLoaders = new CopyOnWriteArrayList<ClassLoader>();
@@ -76,11 +80,34 @@ public class CompositeClassLoader extends ClassLoader {
      */
     public Class< ? > loadClass(final String name,
                                 final boolean resolve) throws ClassNotFoundException {
-        return loader.get().load( this,
-                                  name,
-                                  resolve );
+        Class cls = loader.get().load( this,
+                                       name,
+                                       resolve );
+        if ( cls == null ) {
+            throw new ClassNotFoundException( "Unable to load class: " + name );
+        }
+        
+        return cls;
     }
-
+    
+   /**
+    * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
+    * and the parent ClassLoader if one is provided
+    */
+   public Class< ? > loadClass(final String name,
+                               final boolean resolve,
+                               final ClassLoader ignore) throws ClassNotFoundException {
+       Class cls = loader.get().load( this,
+                                      name,
+                                      resolve,
+                                      ignore );
+       if ( cls == null ) {
+           throw new ClassNotFoundException( "Unable to load class" + name );
+       }
+       
+       return cls;
+   }    
+    
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
@@ -135,6 +162,11 @@ public class CompositeClassLoader extends ClassLoader {
                                final String name,
                                final boolean resolve);
 
+        public Class< ? > load(CompositeClassLoader compositeClassLoader,
+                               String name,
+                               boolean resolve,
+                               java.lang.ClassLoader ignore);
+
         public void reset();
     }
 
@@ -151,32 +183,42 @@ public class CompositeClassLoader extends ClassLoader {
         public Class< ? > load(final CompositeClassLoader cl,
                                final String name,
                                final boolean resolve) {
+            return load(cl, name, resolve, null);
+        }
+
+        public Class< ? > load(CompositeClassLoader cl,
+                               String name,
+                               boolean resolve,
+                               ClassLoader ignore) {
             // search the child ClassLoaders
             Class< ? > cls = null;
 
             for ( final ClassLoader classLoader : cl.classLoaders ) {
-                try {
-                    cls = Class.forName( name,
-                                         true,
-                                         classLoader );
-                } catch ( ClassNotFoundException e ) {
-                    // swallow as we need to check more classLoaders
+                if ( classLoader != ignore ) {
+                    if ( classLoader instanceof FastClassLoader ) {
+                        cls = ((FastClassLoader)classLoader).fastFindClass( name );
+                    } else {
+                        // we ignore a calling classloader, to stop recursion
+                        try {
+                            cls = Class.forName( name,
+                                                 resolve,
+                                                 classLoader );
+                        } catch ( ClassNotFoundException e ) {
+                            // swallow as we need to check more classLoaders
+                        }
+                    }
+                    if ( cls != null ) {
+                        break;
+                    }                    
                 }
-                if ( cls != null ) {
-                    break;
-                }
-            }
-
-            if ( resolve ) {
-                cl.resolveClass( cls );
             }
 
             return cls;
         }
-
+        
         public void reset() {
             // nothing to do
-        }
+        }        
     }
 
     private static class CachingLoader
@@ -191,6 +233,13 @@ public class CompositeClassLoader extends ClassLoader {
         public Class< ? > load(final CompositeClassLoader cl,
                                final String name,
                                final boolean resolve) {
+            return load(cl, name, resolve, null);
+        }
+
+        public Class< ? > load(CompositeClassLoader cl,
+                               String name,
+                               boolean resolve,
+                               ClassLoader ignore) {
             if ( classLoaderResultMap.containsKey( name ) ) {
                 cacheHits++;
                 return (Class< ? >) classLoaderResultMap.get( name );
@@ -199,40 +248,45 @@ public class CompositeClassLoader extends ClassLoader {
             Class< ? > cls = null;
 
             for ( final ClassLoader classLoader : cl.classLoaders ) {
-                try {
-                    cls = Class.forName( name,
-                                         true,
-                                         classLoader );
-                } catch ( ClassNotFoundException e ) {
-                    // swallow as we need to check more classLoaders
-                }
-                if ( cls != null ) {
-                    break;
+                if ( classLoader != ignore ) {
+                    if ( classLoader instanceof FastClassLoader ) {
+                        cls = ((FastClassLoader)classLoader).fastFindClass( name );
+                    } else {
+                        // we ignore a calling classloader, to stop recursion
+                        try {
+                            cls = Class.forName( name,
+                                                 resolve,
+                                                 classLoader );
+                        } catch ( ClassNotFoundException e ) {
+                            // swallow as we need to check more classLoaders
+                        }
+                    }
+                    if ( cls != null ) {
+                        break;
+                    }                    
                 }
             }
-
-            if ( resolve ) {
-                cl.resolveClass( cls );
-            }
-
-            classLoaderResultMap.put( name,
-                                      cls );
             if ( cls != null ) {
+                classLoaderResultMap.put( name,
+                                          cls );
+                
                 this.successfulCalls++;
             } else {
                 this.failedCalls++;
             }
 
             return cls;
-        }
-
+        }        
+        
         public void reset() {
+            this.classLoaderResultMap.clear();
             this.successfulCalls = this.failedCalls = this.cacheHits = 0;
         }
 
         public String toString() {
             return new StringBuilder().append( "TotalCalls: " ).append( successfulCalls + failedCalls + cacheHits ).append( " CacheHits: " ).append( cacheHits ).append( " successfulCalls: " ).append( successfulCalls ).append( " FailedCalls: " ).append( failedCalls ).toString();
         }
+
     }
 
     private static class CompositeEnumeration<URL>
