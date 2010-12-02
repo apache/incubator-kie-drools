@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/lang/DRL5x.g 2010-10-25 14:22:39
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/lang/DRL5x.g 2010-11-26 12:31:58
 
 	package org.drools.lang;
 

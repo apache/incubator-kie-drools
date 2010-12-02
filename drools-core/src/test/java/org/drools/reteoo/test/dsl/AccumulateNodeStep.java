@@ -166,7 +166,7 @@ public class AccumulateNodeStep
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration
                                                     new Declaration[]{}, // inner declarations
-                                                    accumulator );
+                                                    new Accumulator[] { accumulator } );
             AccumulateNode accNode = new AccumulateNode( buildContext.getNextId(),
                                                          leftTupleSource,
                                                          rightObjectSource,

@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g 2010-11-10 21:30:57
+// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/lang/DescrBuilderTree.g 2010-11-26 12:31:52
 
 	package org.drools.lang;
 
@@ -37,205 +37,205 @@ import java.util.ArrayList;
 
 public class DescrBuilderTree extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TYPE_DECLARE_ID", "VT_TYPE_NAME", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_RULE_ATTRIBUTES", "VT_PKG_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_TIMER", "VK_CALENDARS", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPLEMENTS", "VK_IMPORT", "VK_PACKAGE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "VK_INSTANCEOF", "VK_EXTENDS", "VK_SUPER", "VK_PRIMITIVE_TYPE", "VK_THIS", "VK_VOID", "VK_CLASS", "VK_NEW", "VK_FINAL", "VK_IF", "VK_ELSE", "VK_FOR", "VK_WHILE", "VK_DO", "VK_CASE", "VK_DEFAULT", "VK_TRY", "VK_CATCH", "VK_FINALLY", "VK_SWITCH", "VK_SYNCHRONIZED", "VK_RETURN", "VK_THROW", "VK_BREAK", "VK_CONTINUE", "VK_ASSERT", "VK_MODIFY", "VK_STATIC", "VK_PUBLIC", "VK_PROTECTED", "VK_PRIVATE", "VK_ABSTRACT", "VK_NATIVE", "VK_TRANSIENT", "VK_VOLATILE", "VK_STRICTFP", "VK_THROWS", "VK_INTERFACE", "VK_ENUM", "SIGNED_DECIMAL", "SIGNED_HEX", "SIGNED_FLOAT", "VT_PROP_KEY", "VT_PROP_VALUE", "SEMICOLON", "ID", "DOT", "DOT_STAR", "STRING", "COLON", "EQUALS_ASSIGN", "WHEN", "COMMA", "BOOL", "LEFT_PAREN", "RIGHT_PAREN", "FROM", "OVER", "TimePeriod", "DECIMAL", "ACCUMULATE", "COLLECT", "DOUBLE_PIPE", "DOUBLE_AMPER", "ARROW", "EQUALS", "GREATER", "GREATER_EQUALS", "LESS", "LESS_EQUALS", "NOT_EQUALS", "LEFT_SQUARE", "RIGHT_SQUARE", "NULL", "PLUS", "MINUS", "HEX", "FLOAT", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "QUESTION", "PIPE", "XOR", "AMPER", "SHIFT_LEFT", "SHIFT_RIGHT_UNSIG", "SHIFT_RIGHT", "STAR", "DIV", "MOD", "INCR", "DECR", "TILDE", "NEGATION", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "AT", "EOL", "WS", "Exponent", "FloatTypeSuffix", "HexDigit", "IntegerTypeSuffix", "EscapeSequence", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "MISC"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TYPE_DECLARE_ID", "VT_TYPE_NAME", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_RULE_ATTRIBUTES", "VT_PKG_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_TIMER", "VK_CALENDARS", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPLEMENTS", "VK_IMPORT", "VK_PACKAGE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_FOR", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "VK_INSTANCEOF", "VK_EXTENDS", "VK_SUPER", "VK_PRIMITIVE_TYPE", "VK_THIS", "VK_VOID", "VK_CLASS", "VK_NEW", "VK_FINAL", "VK_IF", "VK_ELSE", "VK_WHILE", "VK_DO", "VK_CASE", "VK_DEFAULT", "VK_TRY", "VK_CATCH", "VK_FINALLY", "VK_SWITCH", "VK_SYNCHRONIZED", "VK_RETURN", "VK_THROW", "VK_BREAK", "VK_CONTINUE", "VK_ASSERT", "VK_MODIFY", "VK_STATIC", "VK_PUBLIC", "VK_PROTECTED", "VK_PRIVATE", "VK_ABSTRACT", "VK_NATIVE", "VK_TRANSIENT", "VK_VOLATILE", "VK_STRICTFP", "VK_THROWS", "VK_INTERFACE", "VK_ENUM", "SIGNED_DECIMAL", "SIGNED_HEX", "SIGNED_FLOAT", "VT_PROP_KEY", "VT_PROP_VALUE", "SEMICOLON", "ID", "DOT", "DOT_STAR", "STRING", "COLON", "EQUALS_ASSIGN", "WHEN", "COMMA", "BOOL", "LEFT_PAREN", "RIGHT_PAREN", "FROM", "OVER", "TimePeriod", "DECIMAL", "ACCUMULATE", "COLLECT", "DOUBLE_PIPE", "DOUBLE_AMPER", "ARROW", "EQUALS", "GREATER", "GREATER_EQUALS", "LESS", "LESS_EQUALS", "NOT_EQUALS", "LEFT_SQUARE", "RIGHT_SQUARE", "NULL", "PLUS", "MINUS", "HEX", "FLOAT", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "QUESTION", "PIPE", "XOR", "AMPER", "SHIFT_LEFT", "SHIFT_RIGHT_UNSIG", "SHIFT_RIGHT", "STAR", "DIV", "MOD", "INCR", "DECR", "TILDE", "NEGATION", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "AT", "EOL", "WS", "Exponent", "FloatTypeSuffix", "HexDigit", "IntegerTypeSuffix", "EscapeSequence", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "MISC"
     };
-    public static final int VT_ACCESSOR_ELEMENT=36;
-    public static final int VK_CASE=95;
-    public static final int ACCUMULATE=141;
-    public static final int VK_TRY=97;
-    public static final int VT_DATA_TYPE=37;
-    public static final int STAR=169;
-    public static final int MOD=171;
-    public static final int VK_OPERATOR=78;
-    public static final int VK_FUNCTION=65;
-    public static final int VK_GLOBAL=66;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=194;
-    public static final int VK_SALIENCE=55;
-    public static final int EOF=-1;
-    public static final int EOL=185;
-    public static final int VK_MODIFY=107;
-    public static final int VK_CLASS=87;
-    public static final int VK_ACTION=75;
-    public static final int TimePeriod=139;
-    public static final int VK_INTERFACE=118;
-    public static final int SIGNED_FLOAT=122;
-    public static final int VK_FINAL=89;
-    public static final int VK_OR=71;
-    public static final int IntegerTypeSuffix=190;
-    public static final int VK_NEW=88;
-    public static final int MINUS_ASSIGN=177;
-    public static final int BOOL=134;
-    public static final int SEMICOLON=125;
-    public static final int VT_FUNCTION_ID=42;
-    public static final int SHIFT_RIGHT_UNSIG=167;
-    public static final int VK_RULEFLOW_GROUP=51;
-    public static final int VK_RESULT=77;
-    public static final int VT_LABEL=8;
-    public static final int WS=186;
-    public static final int VK_NO_LOOP=47;
-    public static final int VK_STRICTFP=116;
-    public static final int VT_FACT=6;
-    public static final int LEFT_CURLY=160;
-    public static final int VT_TYPE_NAME=11;
-    public static final int LEFT_PAREN=135;
-    public static final int VK_ASSERT=106;
-    public static final int VT_RULE_ID=12;
-    public static final int VK_ACTIVATION_GROUP=49;
-    public static final int VK_DEFAULT=96;
-    public static final int VK_VOID=86;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=195;
-    public static final int VK_EXTEND=59;
-    public static final int VT_FACT_OR=32;
-    public static final int FLOAT=158;
-    public static final int VT_ACCUMULATE_ID_CLAUSE=27;
-    public static final int NOT_EQUALS=151;
-    public static final int HexDigit=189;
-    public static final int VK_EVAL=67;
-    public static final int AT=184;
-    public static final int DOUBLE_PIPE=143;
-    public static final int RIGHT_PAREN=136;
-    public static final int THEN=159;
-    public static final int VT_COMPILATION_UNIT=4;
-    public static final int VT_EXPRESSION_CHAIN=29;
-    public static final int GREATER_EQUALS=148;
-    public static final int XOR_ASSIGN=182;
-    public static final int VK_ABSTRACT=112;
-    public static final int PIPE=163;
-    public static final int PLUS=155;
-    public static final int VK_DIALECT=54;
-    public static final int VT_GLOBAL_ID=41;
-    public static final int VK_NOT=69;
-    public static final int VT_FROM_SOURCE=28;
-    public static final int VK_ENUM=119;
-    public static final int VT_ENTRYPOINT_ID=13;
-    public static final int VK_DECLARE=64;
-    public static final int VK_INSTANCEOF=81;
-    public static final int VT_TYPE_DECLARE_ID=10;
-    public static final int VK_REVERSE=76;
-    public static final int VK_LOCK_ON_ACTIVE=46;
-    public static final int VK_PUBLIC=109;
-    public static final int SIGNED_HEX=121;
-    public static final int VK_THIS=85;
-    public static final int VT_RULE_ATTRIBUTES=14;
-    public static final int VK_SYNCHRONIZED=101;
     public static final int MINUS=156;
-    public static final int VT_ACCESSOR_PATH=35;
-    public static final int MULTI_LINE_COMMENT=196;
-    public static final int COLON=130;
+    public static final int VK_DIALECT=54;
+    public static final int HexDigit=189;
     public static final int OR_ASSIGN=181;
-    public static final int VT_AND_IMPLICIT=21;
-    public static final int VK_THROW=103;
-    public static final int NEGATION=175;
-    public static final int DECIMAL=140;
-    public static final int VK_ATTRIBUTES=57;
-    public static final int WHEN=132;
-    public static final int PLUS_ASSIGN=176;
-    public static final int VT_PARAM_LIST=43;
-    public static final int ARROW=145;
-    public static final int VT_BIND_FIELD=33;
-    public static final int DIV=170;
-    public static final int VK_AGENDA_GROUP=50;
-    public static final int VT_CONSTRAINTS=7;
-    public static final int OctalEscape=193;
-    public static final int VK_NATIVE=113;
-    public static final int STRING=129;
-    public static final int VK_THROWS=117;
-    public static final int FloatTypeSuffix=188;
-    public static final int EQUALS_ASSIGN=131;
-    public static final int VK_VOLATILE=115;
-    public static final int DOT_STAR=128;
-    public static final int MOD_ASSIGN=183;
-    public static final int VK_AND=72;
-    public static final int VT_PROP_VALUE=124;
-    public static final int EQUALS=146;
-    public static final int VK_AUTO_FOCUS=48;
-    public static final int VK_CONTINUE=105;
-    public static final int DIV_ASSIGN=179;
-    public static final int VT_PATTERN_TYPE=38;
-    public static final int VT_FUNCTION_IMPORT=5;
-    public static final int VT_OR_INFIX=25;
-    public static final int DOUBLE_AMPER=144;
-    public static final int GREATER=147;
-    public static final int VK_IMPORT=61;
-    public static final int INCR=172;
-    public static final int VK_RULE=58;
-    public static final int LESS=149;
-    public static final int VT_AND_PREFIX=22;
-    public static final int VK_SWITCH=100;
-    public static final int VK_BREAK=104;
-    public static final int NULL=154;
-    public static final int VK_RETURN=102;
-    public static final int IdentifierStart=197;
-    public static final int VK_PRIMITIVE_TYPE=84;
-    public static final int VK_QUERY=63;
-    public static final int VT_RHS_CHUNK=16;
-    public static final int VT_FACT_BINDING=31;
-    public static final int VK_ENTRY_POINT=68;
-    public static final int SHIFT_LEFT=166;
-    public static final int VT_PACKAGE_ID=39;
-    public static final int VK_IMPLEMENTS=60;
-    public static final int SHIFT_RIGHT=168;
-    public static final int VK_CALENDARS=53;
-    public static final int VK_IF=90;
-    public static final int VK_STATIC=108;
-    public static final int VK_CATCH=98;
-    public static final int VK_IN=70;
-    public static final int VT_PATTERN=30;
-    public static final int SIGNED_DECIMAL=120;
-    public static final int VT_IMPORT_ID=40;
     public static final int MISC=199;
-    public static final int VK_PRIVATE=111;
-    public static final int FROM=137;
-    public static final int COLLECT=142;
-    public static final int EscapeSequence=191;
-    public static final int VK_ENABLED=56;
-    public static final int VK_WHILE=93;
-    public static final int VK_END=79;
-    public static final int VK_PACKAGE=62;
-    public static final int OVER=138;
-    public static final int RIGHT_SQUARE=153;
-    public static final int RIGHT_CURLY=161;
-    public static final int VK_ELSE=91;
-    public static final int VK_FOR=92;
-    public static final int VK_PROTECTED=110;
-    public static final int VT_PROP_KEY=123;
-    public static final int MULT_ASSIGN=178;
-    public static final int VT_FIELD=34;
-    public static final int VK_FINALLY=99;
-    public static final int Exponent=187;
-    public static final int VK_SUPER=83;
-    public static final int VK_EXISTS=73;
-    public static final int VK_DATE_EXPIRES=45;
-    public static final int ID=126;
+    public static final int VK_QUERY=63;
+    public static final int VK_INTERFACE=118;
     public static final int AND_ASSIGN=180;
-    public static final int VK_TIMER=52;
-    public static final int VT_PKG_ATTRIBUTES=15;
-    public static final int VT_OR_PREFIX=23;
-    public static final int LESS_EQUALS=150;
-    public static final int VK_TRANSIENT=114;
-    public static final int COMMA=133;
-    public static final int HEX=157;
-    public static final int AMPER=165;
     public static final int TILDE=174;
-    public static final int VT_BEHAVIOR=20;
-    public static final int VT_QUERY_ID=9;
     public static final int DOT=127;
+    public static final int NOT_EQUALS=151;
+    public static final int VT_PACKAGE_ID=39;
+    public static final int VK_FINAL=90;
+    public static final int VK_RETURN=102;
+    public static final int VT_FACT=6;
+    public static final int FloatTypeSuffix=188;
+    public static final int MINUS_ASSIGN=177;
+    public static final int LEFT_PAREN=135;
     public static final int IdentifierPart=198;
-    public static final int VT_PAREN_CHUNK=19;
-    public static final int XOR=164;
-    public static final int VK_EXTENDS=82;
-    public static final int VT_AND_INFIX=24;
+    public static final int VT_PROP_KEY=123;
+    public static final int IntegerTypeSuffix=190;
+    public static final int VT_ACCESSOR_PATH=35;
+    public static final int WHEN=132;
+    public static final int VT_ENTRYPOINT_ID=13;
+    public static final int MOD_ASSIGN=183;
+    public static final int VK_SALIENCE=55;
+    public static final int WS=186;
+    public static final int OVER=138;
+    public static final int VK_AND=72;
+    public static final int STRING=129;
+    public static final int VT_ACCESSOR_ELEMENT=36;
+    public static final int LESS_EQUALS=150;
+    public static final int VK_THROWS=117;
     public static final int VK_FORALL=74;
-    public static final int VK_DO=94;
-    public static final int VT_ACCUMULATE_INIT_CLAUSE=26;
-    public static final int VT_CURLY_CHUNK=17;
-    public static final int QUESTION=162;
+    public static final int VT_COMPILATION_UNIT=4;
+    public static final int VK_CATCH=98;
+    public static final int VK_RESULT=78;
+    public static final int VK_VOLATILE=115;
+    public static final int EQUALS=146;
     public static final int UnicodeEscape=192;
-    public static final int VT_SQUARE_CHUNK=18;
-    public static final int DECR=173;
-    public static final int VK_DATE_EFFECTIVE=44;
+    public static final int DIV_ASSIGN=179;
+    public static final int SIGNED_FLOAT=122;
+    public static final int VT_RULE_ID=12;
+    public static final int VK_NO_LOOP=47;
+    public static final int XOR=164;
+    public static final int NULL=154;
+    public static final int COLON=130;
+    public static final int AMPER=165;
+    public static final int MULTI_LINE_COMMENT=196;
+    public static final int VT_RULE_ATTRIBUTES=14;
+    public static final int TimePeriod=139;
+    public static final int SHIFT_LEFT=166;
+    public static final int VK_AGENDA_GROUP=50;
+    public static final int INCR=172;
+    public static final int VK_THROW=103;
+    public static final int VK_DATE_EXPIRES=45;
+    public static final int ARROW=145;
+    public static final int FLOAT=158;
+    public static final int VK_ASSERT=106;
+    public static final int VK_PUBLIC=109;
+    public static final int MOD=171;
+    public static final int PLUS_ASSIGN=176;
+    public static final int QUESTION=162;
+    public static final int VT_OR_PREFIX=23;
+    public static final int DOUBLE_PIPE=143;
+    public static final int VK_END=80;
+    public static final int LESS=149;
+    public static final int VK_EXISTS=73;
+    public static final int EscapeSequence=191;
+    public static final int VT_BIND_FIELD=33;
+    public static final int VK_RULE=58;
+    public static final int VK_EVAL=67;
+    public static final int VK_FOR=75;
+    public static final int VT_FACT_BINDING=31;
+    public static final int VT_PKG_ATTRIBUTES=15;
+    public static final int FROM=137;
+    public static final int ID=126;
+    public static final int VK_SWITCH=100;
+    public static final int VT_TYPE_NAME=11;
+    public static final int VK_PRIMITIVE_TYPE=85;
+    public static final int RIGHT_CURLY=161;
+    public static final int VK_OPERATOR=79;
+    public static final int BOOL=134;
+    public static final int VT_PARAM_LIST=43;
+    public static final int VT_FROM_SOURCE=28;
+    public static final int VK_LOCK_ON_ACTIVE=46;
+    public static final int VK_TRANSIENT=114;
+    public static final int VK_SUPER=84;
+    public static final int VK_IN=70;
+    public static final int VT_RHS_CHUNK=16;
+    public static final int VK_CLASS=88;
+    public static final int VT_GLOBAL_ID=41;
+    public static final int GREATER_EQUALS=148;
+    public static final int VK_RULEFLOW_GROUP=51;
+    public static final int VT_CONSTRAINTS=7;
+    public static final int EOL=185;
+    public static final int VK_INIT=81;
+    public static final int VK_ACTIVATION_GROUP=49;
+    public static final int VK_EXTENDS=83;
+    public static final int OctalEscape=193;
+    public static final int VK_ACTION=76;
+    public static final int SIGNED_HEX=121;
+    public static final int VK_CALENDARS=53;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=195;
+    public static final int COMMA=133;
+    public static final int VT_PATTERN_TYPE=38;
+    public static final int VT_ACCUMULATE_ID_CLAUSE=27;
+    public static final int VK_IMPLEMENTS=60;
+    public static final int VK_FUNCTION=65;
+    public static final int VK_ATTRIBUTES=57;
+    public static final int VK_IF=91;
+    public static final int VT_EXPRESSION_CHAIN=29;
+    public static final int XOR_ASSIGN=182;
+    public static final int VT_AND_PREFIX=22;
+    public static final int VK_INSTANCEOF=82;
+    public static final int VK_NATIVE=113;
+    public static final int THEN=159;
+    public static final int VK_AUTO_FOCUS=48;
+    public static final int PIPE=163;
+    public static final int VK_IMPORT=61;
+    public static final int MULT_ASSIGN=178;
     public static final int LEFT_SQUARE=152;
-    public static final int VK_INIT=80;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=194;
+    public static final int VK_TIMER=52;
+    public static final int VT_DATA_TYPE=37;
+    public static final int PLUS=155;
+    public static final int LEFT_CURLY=160;
+    public static final int VK_ABSTRACT=112;
+    public static final int AT=184;
+    public static final int VK_VOID=87;
+    public static final int DOUBLE_AMPER=144;
+    public static final int VT_QUERY_ID=9;
+    public static final int NEGATION=175;
+    public static final int VT_LABEL=8;
+    public static final int VT_FIELD=34;
+    public static final int VK_REVERSE=77;
+    public static final int VK_GLOBAL=66;
+    public static final int VT_ACCUMULATE_INIT_CLAUSE=26;
+    public static final int VK_ENUM=119;
+    public static final int VT_BEHAVIOR=20;
+    public static final int VT_SQUARE_CHUNK=18;
+    public static final int VT_PAREN_CHUNK=19;
+    public static final int VK_ENABLED=56;
+    public static final int COLLECT=142;
+    public static final int VK_CASE=95;
+    public static final int VK_PACKAGE=62;
+    public static final int IdentifierStart=197;
+    public static final int SEMICOLON=125;
+    public static final int VK_THIS=86;
+    public static final int VT_AND_IMPLICIT=21;
+    public static final int EQUALS_ASSIGN=131;
+    public static final int VK_STATIC=108;
+    public static final int DIV=170;
+    public static final int VK_TRY=97;
+    public static final int VK_ELSE=92;
+    public static final int HEX=157;
+    public static final int RIGHT_SQUARE=153;
+    public static final int VK_WHILE=93;
+    public static final int VT_FACT_OR=32;
+    public static final int VK_NOT=69;
+    public static final int DECR=173;
+    public static final int VK_FINALLY=99;
+    public static final int VK_MODIFY=107;
+    public static final int VK_EXTEND=59;
+    public static final int VT_CURLY_CHUNK=17;
+    public static final int VK_NEW=89;
+    public static final int VK_SYNCHRONIZED=101;
+    public static final int DECIMAL=140;
+    public static final int VT_TYPE_DECLARE_ID=10;
+    public static final int VT_PATTERN=30;
+    public static final int VK_DATE_EFFECTIVE=44;
+    public static final int GREATER=147;
+    public static final int Exponent=187;
+    public static final int VK_ENTRY_POINT=68;
+    public static final int VT_AND_INFIX=24;
+    public static final int VK_DO=94;
+    public static final int VK_BREAK=104;
+    public static final int VT_FUNCTION_IMPORT=5;
+    public static final int VK_PRIVATE=111;
+    public static final int VT_OR_INFIX=25;
+    public static final int VK_CONTINUE=105;
+    public static final int DOT_STAR=128;
+    public static final int VK_OR=71;
+    public static final int VK_DEFAULT=96;
+    public static final int ACCUMULATE=141;
+    public static final int SIGNED_DECIMAL=120;
+    public static final int VT_FUNCTION_ID=42;
+    public static final int SHIFT_RIGHT=168;
+    public static final int EOF=-1;
+    public static final int VT_IMPORT_ID=40;
+    public static final int VT_PROP_VALUE=124;
+    public static final int STAR=169;
+    public static final int RIGHT_PAREN=136;
+    public static final int VK_STRICTFP=116;
+    public static final int SHIFT_RIGHT_UNSIG=167;
+    public static final int VK_PROTECTED=110;
+    public static final int VK_DECLARE=64;
 
     // delegates
     // delegators
@@ -251,7 +251,7 @@ public class DescrBuilderTree extends TreeParser {
         
 
     public String[] getTokenNames() { return DescrBuilderTree.tokenNames; }
-    public String getGrammarFileName() { return "/home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g"; }
+    public String getGrammarFileName() { return "src/main/resources/org/drools/lang/DescrBuilderTree.g"; }
 
 
     	DescrFactory factory = new DescrFactory();
@@ -264,11 +264,11 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "compilation_unit"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:49:1: compilation_unit : ^( VT_COMPILATION_UNIT package_statement ( statement )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:49:1: compilation_unit : ^( VT_COMPILATION_UNIT package_statement ( statement )* ) ;
     public final void compilation_unit() throws RecognitionException {
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:50:2: ( ^( VT_COMPILATION_UNIT package_statement ( statement )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:50:4: ^( VT_COMPILATION_UNIT package_statement ( statement )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:50:2: ( ^( VT_COMPILATION_UNIT package_statement ( statement )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:50:4: ^( VT_COMPILATION_UNIT package_statement ( statement )* )
             {
             match(input,VT_COMPILATION_UNIT,FOLLOW_VT_COMPILATION_UNIT_in_compilation_unit49); 
 
@@ -279,7 +279,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 state._fsp--;
 
-                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:50:44: ( statement )*
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:50:44: ( statement )*
                 loop1:
                 do {
                     int alt1=2;
@@ -292,7 +292,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt1) {
                 	case 1 :
-                	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:50:44: statement
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:50:44: statement
                 	    {
                 	    pushFollow(FOLLOW_statement_in_compilation_unit53);
                 	    statement();
@@ -327,7 +327,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "package_statement"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:53:1: package_statement returns [String packageName] : ( ^( VK_PACKAGE packageId= package_id ) | );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:53:1: package_statement returns [String packageName] : ( ^( VK_PACKAGE packageId= package_id ) | );
     public final String package_statement() throws RecognitionException {
         String packageName = null;
 
@@ -335,7 +335,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:54:2: ( ^( VK_PACKAGE packageId= package_id ) | )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:54:2: ( ^( VK_PACKAGE packageId= package_id ) | )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -353,7 +353,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt2) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:54:4: ^( VK_PACKAGE packageId= package_id )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:54:4: ^( VK_PACKAGE packageId= package_id )
                     {
                     match(input,VK_PACKAGE,FOLLOW_VK_PACKAGE_in_package_statement71); 
 
@@ -371,7 +371,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:58:2: 
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:58:2: 
                     {
                     	this.packageDescr = factory.createPackage(null);	
                     		packageName = "";	
@@ -393,7 +393,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "package_id"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:62:1: package_id returns [List idList] : ^( VT_PACKAGE_ID (tempList+= ID )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:62:1: package_id returns [List idList] : ^( VT_PACKAGE_ID (tempList+= ID )+ ) ;
     public final List package_id() throws RecognitionException {
         List idList = null;
 
@@ -401,13 +401,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_tempList=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:63:2: ( ^( VT_PACKAGE_ID (tempList+= ID )+ ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:63:4: ^( VT_PACKAGE_ID (tempList+= ID )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:63:2: ( ^( VT_PACKAGE_ID (tempList+= ID )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:63:4: ^( VT_PACKAGE_ID (tempList+= ID )+ )
             {
             match(input,VT_PACKAGE_ID,FOLLOW_VT_PACKAGE_ID_in_package_id102); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:63:28: (tempList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:63:28: (tempList+= ID )+
             int cnt3=0;
             loop3:
             do {
@@ -421,7 +421,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt3) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:63:28: tempList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:63:28: tempList+= ID
             	    {
             	    tempList=(DroolsTree)match(input,ID,FOLLOW_ID_in_package_id106); 
             	    if (list_tempList==null) list_tempList=new ArrayList();
@@ -459,7 +459,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "statement"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:67:1: statement : (a= rule_attribute | fi= function_import_statement | is= import_statement | gl= global | fn= function | rl= rule | qr= query | td= type_declaration );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:67:1: statement : (a= rule_attribute | fi= function_import_statement | is= import_statement | gl= global | fn= function | rl= rule | qr= query | td= type_declaration );
     public final void statement() throws RecognitionException {
         AttributeDescr a = null;
 
@@ -479,7 +479,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:68:2: (a= rule_attribute | fi= function_import_statement | is= import_statement | gl= global | fn= function | rl= rule | qr= query | td= type_declaration )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:68:2: (a= rule_attribute | fi= function_import_statement | is= import_statement | gl= global | fn= function | rl= rule | qr= query | td= type_declaration )
             int alt4=8;
             switch ( input.LA(1) ) {
             case VK_DATE_EFFECTIVE:
@@ -543,7 +543,7 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt4) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:68:4: a= rule_attribute
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:68:4: a= rule_attribute
                     {
                     pushFollow(FOLLOW_rule_attribute_in_statement124);
                     a=rule_attribute();
@@ -555,7 +555,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:70:4: fi= function_import_statement
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:70:4: fi= function_import_statement
                     {
                     pushFollow(FOLLOW_function_import_statement_in_statement134);
                     fi=function_import_statement();
@@ -567,7 +567,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:72:4: is= import_statement
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:72:4: is= import_statement
                     {
                     pushFollow(FOLLOW_import_statement_in_statement144);
                     is=import_statement();
@@ -579,7 +579,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:74:4: gl= global
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:74:4: gl= global
                     {
                     pushFollow(FOLLOW_global_in_statement155);
                     gl=global();
@@ -591,7 +591,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:76:4: fn= function
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:76:4: fn= function
                     {
                     pushFollow(FOLLOW_function_in_statement165);
                     fn=function();
@@ -603,7 +603,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:78:4: rl= rule
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:78:4: rl= rule
                     {
                     pushFollow(FOLLOW_rule_in_statement175);
                     rl=rule();
@@ -615,7 +615,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:80:4: qr= query
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:80:4: qr= query
                     {
                     pushFollow(FOLLOW_query_in_statement185);
                     qr=query();
@@ -627,7 +627,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:82:4: td= type_declaration
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:82:4: td= type_declaration
                     {
                     pushFollow(FOLLOW_type_declaration_in_statement195);
                     td=type_declaration();
@@ -653,7 +653,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "import_statement"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:86:1: import_statement returns [ImportDescr importDescr] : ^(importStart= VK_IMPORT importId= import_name ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:86:1: import_statement returns [ImportDescr importDescr] : ^(importStart= VK_IMPORT importId= import_name ) ;
     public final ImportDescr import_statement() throws RecognitionException {
         ImportDescr importDescr = null;
 
@@ -662,8 +662,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:87:2: ( ^(importStart= VK_IMPORT importId= import_name ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:87:4: ^(importStart= VK_IMPORT importId= import_name )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:87:2: ( ^(importStart= VK_IMPORT importId= import_name ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:87:4: ^(importStart= VK_IMPORT importId= import_name )
             {
             importStart=(DroolsTree)match(input,VK_IMPORT,FOLLOW_VK_IMPORT_in_import_statement216); 
 
@@ -692,7 +692,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "function_import_statement"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:91:1: function_import_statement returns [FunctionImportDescr functionImportDescr] : ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:91:1: function_import_statement returns [FunctionImportDescr functionImportDescr] : ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name ) ;
     public final FunctionImportDescr function_import_statement() throws RecognitionException {
         FunctionImportDescr functionImportDescr = null;
 
@@ -701,8 +701,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:92:2: ( ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:92:4: ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:92:2: ( ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:92:4: ^(importStart= VT_FUNCTION_IMPORT VK_FUNCTION importId= import_name )
             {
             importStart=(DroolsTree)match(input,VT_FUNCTION_IMPORT,FOLLOW_VT_FUNCTION_IMPORT_in_function_import_statement242); 
 
@@ -736,7 +736,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "import_name"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:96:1: import_name returns [List idList, DroolsTree dotStar] : ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:96:1: import_name returns [List idList, DroolsTree dotStar] : ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? ) ;
     public final DescrBuilderTree.import_name_return import_name() throws RecognitionException {
         DescrBuilderTree.import_name_return retval = new DescrBuilderTree.import_name_return();
         retval.start = input.LT(1);
@@ -746,13 +746,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_tempList=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:2: ( ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:4: ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:2: ( ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:4: ^( VT_IMPORT_ID (tempList+= ID )+ (tempDotStar= DOT_STAR )? )
             {
             match(input,VT_IMPORT_ID,FOLLOW_VT_IMPORT_ID_in_import_name267); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:27: (tempList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:27: (tempList+= ID )+
             int cnt5=0;
             loop5:
             do {
@@ -766,7 +766,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt5) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:27: tempList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:27: tempList+= ID
             	    {
             	    tempList=(DroolsTree)match(input,ID,FOLLOW_ID_in_import_name271); 
             	    if (list_tempList==null) list_tempList=new ArrayList();
@@ -785,7 +785,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt5++;
             } while (true);
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:44: (tempDotStar= DOT_STAR )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:44: (tempDotStar= DOT_STAR )?
             int alt6=2;
             int LA6_0 = input.LA(1);
 
@@ -794,7 +794,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt6) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:97:44: tempDotStar= DOT_STAR
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:97:44: tempDotStar= DOT_STAR
                     {
                     tempDotStar=(DroolsTree)match(input,DOT_STAR,FOLLOW_DOT_STAR_in_import_name276); 
 
@@ -826,7 +826,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "global"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:102:1: global returns [GlobalDescr globalDescr] : ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:102:1: global returns [GlobalDescr globalDescr] : ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID ) ;
     public final DescrBuilderTree.global_return global() throws RecognitionException {
         DescrBuilderTree.global_return retval = new DescrBuilderTree.global_return();
         retval.start = input.LT(1);
@@ -837,8 +837,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:103:2: ( ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:103:4: ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:103:2: ( ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:103:4: ^(start= VK_GLOBAL dt= data_type globalId= VT_GLOBAL_ID )
             {
             start=(DroolsTree)match(input,VK_GLOBAL,FOLLOW_VK_GLOBAL_in_global299); 
 
@@ -871,7 +871,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "function"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:107:1: function returns [FunctionDescr functionDescr] : ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:107:1: function returns [FunctionDescr functionDescr] : ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK ) ;
     public final DescrBuilderTree.function_return function() throws RecognitionException {
         DescrBuilderTree.function_return retval = new DescrBuilderTree.function_return();
         retval.start = input.LT(1);
@@ -885,13 +885,13 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:108:2: ( ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:108:4: ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:108:2: ( ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:108:4: ^(start= VK_FUNCTION (dt= data_type )? functionId= VT_FUNCTION_ID params= parameters content= VT_CURLY_CHUNK )
             {
             start=(DroolsTree)match(input,VK_FUNCTION,FOLLOW_VK_FUNCTION_in_function329); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:108:26: (dt= data_type )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:108:26: (dt= data_type )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -900,7 +900,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt7) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:108:26: dt= data_type
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:108:26: dt= data_type
                     {
                     pushFollow(FOLLOW_data_type_in_function333);
                     dt=data_type();
@@ -942,7 +942,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "query"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:112:1: query returns [QueryDescr queryDescr] : ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:112:1: query returns [QueryDescr queryDescr] : ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END ) ;
     public final DescrBuilderTree.query_return query() throws RecognitionException {
         DescrBuilderTree.query_return retval = new DescrBuilderTree.query_return();
         retval.start = input.LT(1);
@@ -956,14 +956,14 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:113:2: ( ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:113:4: ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:113:2: ( ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:113:4: ^(start= VK_QUERY id= VT_QUERY_ID (params= parameters )? lb= lhs_block end= VK_END )
             {
             start=(DroolsTree)match(input,VK_QUERY,FOLLOW_VK_QUERY_in_query368); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)match(input,VT_QUERY_ID,FOLLOW_VT_QUERY_ID_in_query372); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:113:42: (params= parameters )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:113:42: (params= parameters )?
             int alt8=2;
             int LA8_0 = input.LA(1);
 
@@ -972,7 +972,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt8) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:113:42: params= parameters
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:113:42: params= parameters
                     {
                     pushFollow(FOLLOW_parameters_in_query376);
                     params=parameters();
@@ -1013,7 +1013,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "rule"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:117:1: rule returns [RuleDescr ruleDescr] : ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:117:1: rule returns [RuleDescr ruleDescr] : ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) ;
     public final DescrBuilderTree.rule_return rule() throws RecognitionException {
         DescrBuilderTree.rule_return retval = new DescrBuilderTree.rule_return();
         retval.start = input.LT(1);
@@ -1031,14 +1031,14 @@ public class DescrBuilderTree extends TreeParser {
 
         	List<Map> declMetadaList = new LinkedList<Map>();
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:119:2: ( ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:119:4: ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:119:2: ( ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:119:4: ^(start= VK_RULE id= VT_RULE_ID ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )? (dm= decl_metadata )* (ra= rule_attributes )? (wn= when_part )? content= VT_RHS_CHUNK )
             {
             start=(DroolsTree)match(input,VK_RULE,FOLLOW_VK_RULE_in_rule412); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)match(input,VT_RULE_ID,FOLLOW_VT_RULE_ID_in_rule416); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:119:35: ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:119:35: ( ^( VK_EXTEND parent_id= VT_RULE_ID ) )?
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -1047,7 +1047,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt9) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:119:36: ^( VK_EXTEND parent_id= VT_RULE_ID )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:119:36: ^( VK_EXTEND parent_id= VT_RULE_ID )
                     {
                     match(input,VK_EXTEND,FOLLOW_VK_EXTEND_in_rule421); 
 
@@ -1061,7 +1061,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:120:3: (dm= decl_metadata )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:120:3: (dm= decl_metadata )*
             loop10:
             do {
                 int alt10=2;
@@ -1074,7 +1074,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt10) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:120:4: dm= decl_metadata
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:120:4: dm= decl_metadata
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_rule435);
             	    dm=decl_metadata();
@@ -1091,7 +1091,7 @@ public class DescrBuilderTree extends TreeParser {
                 }
             } while (true);
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:121:6: (ra= rule_attributes )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:121:6: (ra= rule_attributes )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1100,7 +1100,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt11) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:121:6: ra= rule_attributes
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:121:6: ra= rule_attributes
                     {
                     pushFollow(FOLLOW_rule_attributes_in_rule446);
                     ra=rule_attributes();
@@ -1113,7 +1113,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:122:6: (wn= when_part )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:122:6: (wn= when_part )?
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1122,7 +1122,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt12) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:122:6: wn= when_part
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:122:6: wn= when_part
                     {
                     pushFollow(FOLLOW_when_part_in_rule455);
                     wn=when_part();
@@ -1155,7 +1155,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "when_part"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:126:1: when_part returns [AndDescr andDescr] : WHEN lh= lhs_block ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:126:1: when_part returns [AndDescr andDescr] : WHEN lh= lhs_block ;
     public final AndDescr when_part() throws RecognitionException {
         AndDescr andDescr = null;
 
@@ -1163,8 +1163,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:127:2: ( WHEN lh= lhs_block )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:127:4: WHEN lh= lhs_block
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:127:2: ( WHEN lh= lhs_block )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:127:4: WHEN lh= lhs_block
             {
             match(input,WHEN,FOLLOW_WHEN_in_when_part479); 
             pushFollow(FOLLOW_lhs_block_in_when_part483);
@@ -1189,7 +1189,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "rule_attributes"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:131:1: rule_attributes returns [List attrList] : ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:131:1: rule_attributes returns [List attrList] : ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) ;
     public final List rule_attributes() throws RecognitionException {
         List attrList = null;
 
@@ -1200,13 +1200,13 @@ public class DescrBuilderTree extends TreeParser {
         	attrList = new LinkedList<AttributeDescr>();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:3: ( ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:5: ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:3: ( ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:5: ^( VT_RULE_ATTRIBUTES ( VK_ATTRIBUTES )? (rl= rule_attribute )+ )
             {
             match(input,VT_RULE_ATTRIBUTES,FOLLOW_VT_RULE_ATTRIBUTES_in_rule_attributes505); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:26: ( VK_ATTRIBUTES )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:26: ( VK_ATTRIBUTES )?
             int alt13=2;
             int LA13_0 = input.LA(1);
 
@@ -1215,7 +1215,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt13) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:26: VK_ATTRIBUTES
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:26: VK_ATTRIBUTES
                     {
                     match(input,VK_ATTRIBUTES,FOLLOW_VK_ATTRIBUTES_in_rule_attributes507); 
 
@@ -1224,7 +1224,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:41: (rl= rule_attribute )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:41: (rl= rule_attribute )+
             int cnt14=0;
             loop14:
             do {
@@ -1238,7 +1238,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt14) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:134:42: rl= rule_attribute
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:134:42: rl= rule_attribute
             	    {
             	    pushFollow(FOLLOW_rule_attribute_in_rule_attributes513);
             	    rl=rule_attribute();
@@ -1277,7 +1277,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "parameters"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:137:1: parameters returns [List paramList] : ^( VT_PARAM_LIST (p= param_definition )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:137:1: parameters returns [List paramList] : ^( VT_PARAM_LIST (p= param_definition )* ) ;
     public final List parameters() throws RecognitionException {
         List paramList = null;
 
@@ -1288,14 +1288,14 @@ public class DescrBuilderTree extends TreeParser {
         	paramList = new LinkedList<Map<BaseDescr, BaseDescr>>();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:140:3: ( ^( VT_PARAM_LIST (p= param_definition )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:140:5: ^( VT_PARAM_LIST (p= param_definition )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:3: ( ^( VT_PARAM_LIST (p= param_definition )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:5: ^( VT_PARAM_LIST (p= param_definition )* )
             {
             match(input,VT_PARAM_LIST,FOLLOW_VT_PARAM_LIST_in_parameters537); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:140:21: (p= param_definition )*
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:21: (p= param_definition )*
                 loop15:
                 do {
                     int alt15=2;
@@ -1308,7 +1308,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt15) {
                 	case 1 :
-                	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:140:22: p= param_definition
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:140:22: p= param_definition
                 	    {
                 	    pushFollow(FOLLOW_param_definition_in_parameters542);
                 	    p=param_definition();
@@ -1344,7 +1344,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "param_definition"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:143:1: param_definition returns [Map param] : (dt= data_type )? a= argument ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:143:1: param_definition returns [Map param] : (dt= data_type )? a= argument ;
     public final Map param_definition() throws RecognitionException {
         Map param = null;
 
@@ -1354,10 +1354,10 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:144:2: ( (dt= data_type )? a= argument )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:144:4: (dt= data_type )? a= argument
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:144:2: ( (dt= data_type )? a= argument )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:144:4: (dt= data_type )? a= argument
             {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:144:6: (dt= data_type )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:144:6: (dt= data_type )?
             int alt16=2;
             int LA16_0 = input.LA(1);
 
@@ -1366,7 +1366,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt16) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:144:6: dt= data_type
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:144:6: dt= data_type
                     {
                     pushFollow(FOLLOW_data_type_in_param_definition564);
                     dt=data_type();
@@ -1402,7 +1402,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "argument"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:149:1: argument returns [BaseDescr arg] : id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:149:1: argument returns [BaseDescr arg] : id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ;
     public final BaseDescr argument() throws RecognitionException {
         BaseDescr arg = null;
 
@@ -1411,11 +1411,11 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:150:2: (id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:150:4: id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:150:2: (id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:150:4: id= ID ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             {
             id=(DroolsTree)match(input,ID,FOLLOW_ID_in_argument589); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:150:10: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:150:10: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop17:
             do {
                 int alt17=2;
@@ -1428,7 +1428,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt17) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:150:11: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:150:11: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
             	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_argument592); 
             	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_argument596); 
@@ -1461,7 +1461,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "type_declaration"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:154:1: type_declaration returns [TypeDeclarationDescr declaration] : ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:154:1: type_declaration returns [TypeDeclarationDescr declaration] : ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END ) ;
     public final TypeDeclarationDescr type_declaration() throws RecognitionException {
         TypeDeclarationDescr declaration = null;
 
@@ -1478,14 +1478,14 @@ public class DescrBuilderTree extends TreeParser {
         		List<String> interfaces = new LinkedList<String>(); 
         		
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:159:2: ( ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:159:4: ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:159:2: ( ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:159:4: ^( VK_DECLARE id= VT_TYPE_DECLARE_ID ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )? ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )? (dm= decl_metadata )* (df= decl_field )* VK_END )
             {
             match(input,VK_DECLARE,FOLLOW_VK_DECLARE_in_type_declaration623); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)match(input,VT_TYPE_DECLARE_ID,FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration627); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:160:4: ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:160:4: ( ^( VK_EXTENDS ext= VT_TYPE_NAME ) )?
             int alt18=2;
             int LA18_0 = input.LA(1);
 
@@ -1494,7 +1494,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt18) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:160:10: ^( VK_EXTENDS ext= VT_TYPE_NAME )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:160:10: ^( VK_EXTENDS ext= VT_TYPE_NAME )
                     {
                     match(input,VK_EXTENDS,FOLLOW_VK_EXTENDS_in_type_declaration640); 
 
@@ -1508,7 +1508,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:161:4: ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:161:4: ( ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ ) )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -1517,12 +1517,12 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt20) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:161:10: ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:161:10: ^( VK_IMPLEMENTS (intf= VT_TYPE_NAME )+ )
                     {
                     match(input,VK_IMPLEMENTS,FOLLOW_VK_IMPLEMENTS_in_type_declaration663); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:161:26: (intf= VT_TYPE_NAME )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:161:26: (intf= VT_TYPE_NAME )+
                     int cnt19=0;
                     loop19:
                     do {
@@ -1536,7 +1536,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt19) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:161:27: intf= VT_TYPE_NAME
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:161:27: intf= VT_TYPE_NAME
                     	    {
                     	    intf=(DroolsTree)match(input,VT_TYPE_NAME,FOLLOW_VT_TYPE_NAME_in_type_declaration668); 
                     	    interfaces.add((intf!=null?intf.getText():null));
@@ -1561,7 +1561,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:162:4: (dm= decl_metadata )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:162:4: (dm= decl_metadata )*
             loop21:
             do {
                 int alt21=2;
@@ -1574,7 +1574,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt21) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:162:5: dm= decl_metadata
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:162:5: dm= decl_metadata
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_type_declaration688);
             	    dm=decl_metadata();
@@ -1591,7 +1591,7 @@ public class DescrBuilderTree extends TreeParser {
                 }
             } while (true);
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:163:4: (df= decl_field )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:4: (df= decl_field )*
             loop22:
             do {
                 int alt22=2;
@@ -1604,7 +1604,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt22) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:163:5: df= decl_field
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:163:5: df= decl_field
             	    {
             	    pushFollow(FOLLOW_decl_field_in_type_declaration701);
             	    df=decl_field();
@@ -1641,7 +1641,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "decl_metadata"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:175:1: decl_metadata returns [Map attData] : ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:175:1: decl_metadata returns [Map attData] : ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? ) ;
     public final Map decl_metadata() throws RecognitionException {
         Map attData = null;
 
@@ -1651,14 +1651,14 @@ public class DescrBuilderTree extends TreeParser {
 
         attData = new HashMap();
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:177:2: ( ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:177:4: ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:177:2: ( ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:177:4: ^( AT att= VT_TYPE_NAME (p= decl_metadata_properties )? )
             {
             match(input,AT,FOLLOW_AT_in_decl_metadata747); 
 
             match(input, Token.DOWN, null); 
             att=(DroolsTree)match(input,VT_TYPE_NAME,FOLLOW_VT_TYPE_NAME_in_decl_metadata751); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:177:26: (p= decl_metadata_properties )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:177:26: (p= decl_metadata_properties )?
             int alt23=2;
             int LA23_0 = input.LA(1);
 
@@ -1667,7 +1667,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt23) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:177:27: p= decl_metadata_properties
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:177:27: p= decl_metadata_properties
                     {
                     pushFollow(FOLLOW_decl_metadata_properties_in_decl_metadata756);
                     p=decl_metadata_properties();
@@ -1699,7 +1699,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "decl_metadata_properties"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:181:1: decl_metadata_properties returns [Hashtable props] : ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+ ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:181:1: decl_metadata_properties returns [Hashtable props] : ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+ ;
     public final Hashtable decl_metadata_properties() throws RecognitionException {
         Hashtable props = null;
 
@@ -1708,10 +1708,10 @@ public class DescrBuilderTree extends TreeParser {
 
         props = new Hashtable();
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:183:2: ( ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+ )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:183:4: ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:183:2: ( ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:183:4: ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+
             {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:183:4: ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:183:4: ( ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? ) )+
             int cnt25=0;
             loop25:
             do {
@@ -1725,13 +1725,13 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt25) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:184:4: ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? )
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:4: ^(key= VT_PROP_KEY (val= VT_PROP_VALUE )? )
             	    {
             	    key=(DroolsTree)match(input,VT_PROP_KEY,FOLLOW_VT_PROP_KEY_in_decl_metadata_properties791); 
 
             	    if ( input.LA(1)==Token.DOWN ) {
             	        match(input, Token.DOWN, null); 
-            	        // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:184:22: (val= VT_PROP_VALUE )?
+            	        // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:22: (val= VT_PROP_VALUE )?
             	        int alt24=2;
             	        int LA24_0 = input.LA(1);
 
@@ -1740,7 +1740,7 @@ public class DescrBuilderTree extends TreeParser {
             	        }
             	        switch (alt24) {
             	            case 1 :
-            	                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:184:23: val= VT_PROP_VALUE
+            	                // src/main/resources/org/drools/lang/DescrBuilderTree.g:184:23: val= VT_PROP_VALUE
             	                {
             	                val=(DroolsTree)match(input,VT_PROP_VALUE,FOLLOW_VT_PROP_VALUE_in_decl_metadata_properties796); 
 
@@ -1782,7 +1782,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "decl_field"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:189:1: decl_field returns [TypeFieldDescr fieldDescr] : ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:189:1: decl_field returns [TypeFieldDescr fieldDescr] : ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) ;
     public final TypeFieldDescr decl_field() throws RecognitionException {
         TypeFieldDescr fieldDescr = null;
 
@@ -1796,13 +1796,13 @@ public class DescrBuilderTree extends TreeParser {
 
         List<Map> declMetadaList = new LinkedList<Map>(); 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:2: ( ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:4: ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:2: ( ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:4: ^(id= ID (init= decl_field_initialization )? dt= data_type (dm= decl_metadata )* )
             {
             id=(DroolsTree)match(input,ID,FOLLOW_ID_in_decl_field833); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:16: (init= decl_field_initialization )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:16: (init= decl_field_initialization )?
             int alt26=2;
             int LA26_0 = input.LA(1);
 
@@ -1811,7 +1811,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt26) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:16: init= decl_field_initialization
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:16: init= decl_field_initialization
                     {
                     pushFollow(FOLLOW_decl_field_initialization_in_decl_field837);
                     init=decl_field_initialization();
@@ -1829,7 +1829,7 @@ public class DescrBuilderTree extends TreeParser {
 
             state._fsp--;
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:57: (dm= decl_metadata )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:57: (dm= decl_metadata )*
             loop27:
             do {
                 int alt27=2;
@@ -1842,7 +1842,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt27) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:191:58: dm= decl_metadata
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:191:58: dm= decl_metadata
             	    {
             	    pushFollow(FOLLOW_decl_metadata_in_decl_field847);
             	    dm=decl_metadata();
@@ -1878,15 +1878,15 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "decl_field_initialization"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:195:1: decl_field_initialization returns [String expr] : ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:195:1: decl_field_initialization returns [String expr] : ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK ) ;
     public final String decl_field_initialization() throws RecognitionException {
         String expr = null;
 
         DroolsTree pc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:196:2: ( ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:196:4: ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:2: ( ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:196:4: ^( EQUALS_ASSIGN pc= VT_PAREN_CHUNK )
             {
             match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_decl_field_initialization874); 
 
@@ -1911,7 +1911,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "rule_attribute"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:200:1: rule_attribute returns [AttributeDescr attributeDescr] : ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:200:1: rule_attribute returns [AttributeDescr attributeDescr] : ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) ) ;
     public final AttributeDescr rule_attribute() throws RecognitionException {
         AttributeDescr attributeDescr = null;
 
@@ -1919,10 +1919,10 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree value=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:2: ( ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:2: ( ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) )
             {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:4: ( ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_NO_LOOP (value= BOOL )? ) | ^(attrName= VK_AGENDA_GROUP value= STRING ) | ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_ACTIVATION_GROUP value= STRING ) | ^(attrName= VK_AUTO_FOCUS (value= BOOL )? ) | ^(attrName= VK_DATE_EFFECTIVE value= STRING ) | ^(attrName= VK_DATE_EXPIRES value= STRING ) | ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) ) | ^(attrName= VK_RULEFLOW_GROUP value= STRING ) | ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? ) | ^(attrName= VK_DIALECT value= STRING ) | ^(attrName= VK_CALENDARS value= STRING ) )
             int alt34=13;
             switch ( input.LA(1) ) {
             case VK_SALIENCE:
@@ -1999,12 +1999,12 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt34) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:5: ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:5: ^(attrName= VK_SALIENCE (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) )
                     {
                     attrName=(DroolsTree)match(input,VK_SALIENCE,FOLLOW_VK_SALIENCE_in_rule_attribute901); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:28: (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:28: (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK )
                     int alt28=2;
                     int LA28_0 = input.LA(1);
 
@@ -2022,14 +2022,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt28) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:29: value= SIGNED_DECIMAL
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:29: value= SIGNED_DECIMAL
                             {
                             value=(DroolsTree)match(input,SIGNED_DECIMAL,FOLLOW_SIGNED_DECIMAL_in_rule_attribute906); 
 
                             }
                             break;
                         case 2 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:201:50: value= VT_PAREN_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:201:50: value= VT_PAREN_CHUNK
                             {
                             value=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute910); 
 
@@ -2044,13 +2044,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:202:4: ^(attrName= VK_NO_LOOP (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:4: ^(attrName= VK_NO_LOOP (value= BOOL )? )
                     {
                     attrName=(DroolsTree)match(input,VK_NO_LOOP,FOLLOW_VK_NO_LOOP_in_rule_attribute921); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:202:31: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:31: (value= BOOL )?
                         int alt29=2;
                         int LA29_0 = input.LA(1);
 
@@ -2059,7 +2059,7 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt29) {
                             case 1 :
-                                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:202:31: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:202:31: value= BOOL
                                 {
                                 value=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_rule_attribute925); 
 
@@ -2075,7 +2075,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:203:4: ^(attrName= VK_AGENDA_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:203:4: ^(attrName= VK_AGENDA_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_AGENDA_GROUP,FOLLOW_VK_AGENDA_GROUP_in_rule_attribute937); 
 
@@ -2087,12 +2087,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:204:4: ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:4: ^(attrName= VK_TIMER (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK ) )
                     {
                     attrName=(DroolsTree)match(input,VK_TIMER,FOLLOW_VK_TIMER_in_rule_attribute952); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:204:24: (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:24: (value= SIGNED_DECIMAL | value= VT_PAREN_CHUNK )
                     int alt30=2;
                     int LA30_0 = input.LA(1);
 
@@ -2110,14 +2110,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt30) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:204:25: value= SIGNED_DECIMAL
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:25: value= SIGNED_DECIMAL
                             {
                             value=(DroolsTree)match(input,SIGNED_DECIMAL,FOLLOW_SIGNED_DECIMAL_in_rule_attribute957); 
 
                             }
                             break;
                         case 2 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:204:46: value= VT_PAREN_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:204:46: value= VT_PAREN_CHUNK
                             {
                             value=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute961); 
 
@@ -2132,7 +2132,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:205:4: ^(attrName= VK_ACTIVATION_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:205:4: ^(attrName= VK_ACTIVATION_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_ACTIVATION_GROUP,FOLLOW_VK_ACTIVATION_GROUP_in_rule_attribute974); 
 
@@ -2144,13 +2144,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:206:4: ^(attrName= VK_AUTO_FOCUS (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:206:4: ^(attrName= VK_AUTO_FOCUS (value= BOOL )? )
                     {
                     attrName=(DroolsTree)match(input,VK_AUTO_FOCUS,FOLLOW_VK_AUTO_FOCUS_in_rule_attribute988); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:206:34: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:206:34: (value= BOOL )?
                         int alt31=2;
                         int LA31_0 = input.LA(1);
 
@@ -2159,7 +2159,7 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt31) {
                             case 1 :
-                                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:206:34: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:206:34: value= BOOL
                                 {
                                 value=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_rule_attribute992); 
 
@@ -2175,7 +2175,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:207:4: ^(attrName= VK_DATE_EFFECTIVE value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:207:4: ^(attrName= VK_DATE_EFFECTIVE value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_DATE_EFFECTIVE,FOLLOW_VK_DATE_EFFECTIVE_in_rule_attribute1003); 
 
@@ -2187,7 +2187,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:208:4: ^(attrName= VK_DATE_EXPIRES value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:208:4: ^(attrName= VK_DATE_EXPIRES value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_DATE_EXPIRES,FOLLOW_VK_DATE_EXPIRES_in_rule_attribute1017); 
 
@@ -2199,12 +2199,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:209:4: ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:209:4: ^(attrName= VK_ENABLED (value= BOOL | value= VT_PAREN_CHUNK ) )
                     {
                     attrName=(DroolsTree)match(input,VK_ENABLED,FOLLOW_VK_ENABLED_in_rule_attribute1031); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:209:26: (value= BOOL | value= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:209:26: (value= BOOL | value= VT_PAREN_CHUNK )
                     int alt32=2;
                     int LA32_0 = input.LA(1);
 
@@ -2222,14 +2222,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt32) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:209:27: value= BOOL
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:209:27: value= BOOL
                             {
                             value=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_rule_attribute1036); 
 
                             }
                             break;
                         case 2 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:209:38: value= VT_PAREN_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:209:38: value= VT_PAREN_CHUNK
                             {
                             value=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_rule_attribute1040); 
 
@@ -2244,7 +2244,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:210:4: ^(attrName= VK_RULEFLOW_GROUP value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:210:4: ^(attrName= VK_RULEFLOW_GROUP value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_RULEFLOW_GROUP,FOLLOW_VK_RULEFLOW_GROUP_in_rule_attribute1051); 
 
@@ -2256,13 +2256,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:211:4: ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:211:4: ^(attrName= VK_LOCK_ON_ACTIVE (value= BOOL )? )
                     {
                     attrName=(DroolsTree)match(input,VK_LOCK_ON_ACTIVE,FOLLOW_VK_LOCK_ON_ACTIVE_in_rule_attribute1065); 
 
                     if ( input.LA(1)==Token.DOWN ) {
                         match(input, Token.DOWN, null); 
-                        // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:211:38: (value= BOOL )?
+                        // src/main/resources/org/drools/lang/DescrBuilderTree.g:211:38: (value= BOOL )?
                         int alt33=2;
                         int LA33_0 = input.LA(1);
 
@@ -2271,7 +2271,7 @@ public class DescrBuilderTree extends TreeParser {
                         }
                         switch (alt33) {
                             case 1 :
-                                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:211:38: value= BOOL
+                                // src/main/resources/org/drools/lang/DescrBuilderTree.g:211:38: value= BOOL
                                 {
                                 value=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_rule_attribute1069); 
 
@@ -2287,7 +2287,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:212:4: ^(attrName= VK_DIALECT value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:212:4: ^(attrName= VK_DIALECT value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_DIALECT,FOLLOW_VK_DIALECT_in_rule_attribute1079); 
 
@@ -2299,7 +2299,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:213:4: ^(attrName= VK_CALENDARS value= STRING )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:213:4: ^(attrName= VK_CALENDARS value= STRING )
                     {
                     attrName=(DroolsTree)match(input,VK_CALENDARS,FOLLOW_VK_CALENDARS_in_rule_attribute1092); 
 
@@ -2330,7 +2330,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "lhs_block"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:217:1: lhs_block returns [AndDescr andDescr] : ^( VT_AND_IMPLICIT (dt= lhs )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:217:1: lhs_block returns [AndDescr andDescr] : ^( VT_AND_IMPLICIT (dt= lhs )* ) ;
     public final AndDescr lhs_block() throws RecognitionException {
         AndDescr andDescr = null;
 
@@ -2341,14 +2341,14 @@ public class DescrBuilderTree extends TreeParser {
         	andDescr = new AndDescr();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:220:3: ( ^( VT_AND_IMPLICIT (dt= lhs )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:220:5: ^( VT_AND_IMPLICIT (dt= lhs )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:220:3: ( ^( VT_AND_IMPLICIT (dt= lhs )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:220:5: ^( VT_AND_IMPLICIT (dt= lhs )* )
             {
             match(input,VT_AND_IMPLICIT,FOLLOW_VT_AND_IMPLICIT_in_lhs_block1121); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:220:23: (dt= lhs )*
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:220:23: (dt= lhs )*
                 loop35:
                 do {
                     int alt35=2;
@@ -2361,7 +2361,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt35) {
                 	case 1 :
-                	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:220:24: dt= lhs
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:220:24: dt= lhs
                 	    {
                 	    pushFollow(FOLLOW_lhs_in_lhs_block1126);
                 	    dt=lhs();
@@ -2400,7 +2400,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "lhs"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:223:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:223:1: lhs returns [BaseDescr baseDescr] : ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern );
     public final DescrBuilderTree.lhs_return lhs() throws RecognitionException {
         DescrBuilderTree.lhs_return retval = new DescrBuilderTree.lhs_return();
         retval.start = input.LT(1);
@@ -2422,7 +2422,7 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> lhsList = new LinkedList<BaseDescr>();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:226:3: ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:226:3: ( ^(start= VT_OR_PREFIX (dt= lhs )+ ) | ^(start= VT_OR_INFIX dt1= lhs dt2= lhs ) | ^(start= VT_AND_PREFIX (dt= lhs )+ ) | ^(start= VT_AND_INFIX dt1= lhs dt2= lhs ) | ^(start= VK_EXISTS dt= lhs ) | ^(start= VK_NOT dt= lhs ) | ^(start= VK_EVAL pc= VT_PAREN_CHUNK ) | ^(start= VK_FORALL (dt= lhs )+ ) | ^( FROM pn= lhs_pattern fe= from_elements ) | pn= lhs_pattern )
             int alt39=10;
             switch ( input.LA(1) ) {
             case VT_OR_PREFIX:
@@ -2484,12 +2484,12 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt39) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:226:5: ^(start= VT_OR_PREFIX (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:226:5: ^(start= VT_OR_PREFIX (dt= lhs )+ )
                     {
                     start=(DroolsTree)match(input,VT_OR_PREFIX,FOLLOW_VT_OR_PREFIX_in_lhs1152); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:226:26: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:226:26: (dt= lhs )+
                     int cnt36=0;
                     loop36:
                     do {
@@ -2503,7 +2503,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt36) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:226:27: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:226:27: dt= lhs
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs1157);
                     	    dt=lhs();
@@ -2531,7 +2531,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:228:4: ^(start= VT_OR_INFIX dt1= lhs dt2= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:228:4: ^(start= VT_OR_INFIX dt1= lhs dt2= lhs )
                     {
                     start=(DroolsTree)match(input,VT_OR_INFIX,FOLLOW_VT_OR_INFIX_in_lhs1173); 
 
@@ -2555,12 +2555,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:232:4: ^(start= VT_AND_PREFIX (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:232:4: ^(start= VT_AND_PREFIX (dt= lhs )+ )
                     {
                     start=(DroolsTree)match(input,VT_AND_PREFIX,FOLLOW_VT_AND_PREFIX_in_lhs1193); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:232:26: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:232:26: (dt= lhs )+
                     int cnt37=0;
                     loop37:
                     do {
@@ -2574,7 +2574,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt37) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:232:27: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:232:27: dt= lhs
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs1198);
                     	    dt=lhs();
@@ -2602,7 +2602,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:234:4: ^(start= VT_AND_INFIX dt1= lhs dt2= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:234:4: ^(start= VT_AND_INFIX dt1= lhs dt2= lhs )
                     {
                     start=(DroolsTree)match(input,VT_AND_INFIX,FOLLOW_VT_AND_INFIX_in_lhs1214); 
 
@@ -2626,7 +2626,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:238:4: ^(start= VK_EXISTS dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:238:4: ^(start= VK_EXISTS dt= lhs )
                     {
                     start=(DroolsTree)match(input,VK_EXISTS,FOLLOW_VK_EXISTS_in_lhs1234); 
 
@@ -2643,7 +2643,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:240:4: ^(start= VK_NOT dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:240:4: ^(start= VK_NOT dt= lhs )
                     {
                     start=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_lhs1250); 
 
@@ -2660,7 +2660,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:242:4: ^(start= VK_EVAL pc= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:242:4: ^(start= VK_EVAL pc= VT_PAREN_CHUNK )
                     {
                     start=(DroolsTree)match(input,VK_EVAL,FOLLOW_VK_EVAL_in_lhs1266); 
 
@@ -2673,12 +2673,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:244:4: ^(start= VK_FORALL (dt= lhs )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:244:4: ^(start= VK_FORALL (dt= lhs )+ )
                     {
                     start=(DroolsTree)match(input,VK_FORALL,FOLLOW_VK_FORALL_in_lhs1282); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:244:22: (dt= lhs )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:244:22: (dt= lhs )+
                     int cnt38=0;
                     loop38:
                     do {
@@ -2692,7 +2692,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt38) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:244:23: dt= lhs
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:244:23: dt= lhs
                     	    {
                     	    pushFollow(FOLLOW_lhs_in_lhs1287);
                     	    dt=lhs();
@@ -2720,7 +2720,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:246:4: ^( FROM pn= lhs_pattern fe= from_elements )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:246:4: ^( FROM pn= lhs_pattern fe= from_elements )
                     {
                     match(input,FROM,FOLLOW_FROM_in_lhs1301); 
 
@@ -2742,7 +2742,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:248:4: pn= lhs_pattern
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:248:4: pn= lhs_pattern
                     {
                     pushFollow(FOLLOW_lhs_pattern_in_lhs1320);
                     pn=lhs_pattern();
@@ -2771,7 +2771,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "from_elements"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:252:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:252:1: from_elements returns [PatternSourceDescr patternSourceDescr] : ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause );
     public final DescrBuilderTree.from_elements_return from_elements() throws RecognitionException {
         DescrBuilderTree.from_elements_return retval = new DescrBuilderTree.from_elements_return();
         retval.start = input.LT(1);
@@ -2786,7 +2786,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:253:2: ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:253:2: ( ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] ) | ^(start= COLLECT dt= lhs ) | ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID ) | fs= from_source_clause )
             int alt40=4;
             switch ( input.LA(1) ) {
             case ACCUMULATE:
@@ -2818,7 +2818,7 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt40) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:253:4: ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:253:4: ^(start= ACCUMULATE dt= lhs ret= accumulate_parts[$patternSourceDescr] )
                     {
                     start=(DroolsTree)match(input,ACCUMULATE,FOLLOW_ACCUMULATE_in_from_elements1341); 
 
@@ -2841,7 +2841,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:257:4: ^(start= COLLECT dt= lhs )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:257:4: ^(start= COLLECT dt= lhs )
                     {
                     start=(DroolsTree)match(input,COLLECT,FOLLOW_COLLECT_in_from_elements1368); 
 
@@ -2858,7 +2858,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:259:4: ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:259:4: ^(start= VK_ENTRY_POINT entryId= VT_ENTRYPOINT_ID )
                     {
                     start=(DroolsTree)match(input,VK_ENTRY_POINT,FOLLOW_VK_ENTRY_POINT_in_from_elements1384); 
 
@@ -2871,7 +2871,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:261:4: fs= from_source_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:261:4: fs= from_source_clause
                     {
                     pushFollow(FOLLOW_from_source_clause_in_from_elements1399);
                     fs=from_source_clause();
@@ -2897,7 +2897,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "accumulate_parts"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:265:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:265:1: accumulate_parts[PatternSourceDescr patternSourceDescr] returns [AccumulateDescr accumulateDescr] : (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] );
     public final AccumulateDescr accumulate_parts(PatternSourceDescr patternSourceDescr) throws RecognitionException {
         AccumulateDescr accumulateDescr = null;
 
@@ -2907,7 +2907,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:266:2: (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:266:2: (ac1= accumulate_init_clause[$patternSourceDescr] | ac2= accumulate_id_clause[$patternSourceDescr] )
             int alt41=2;
             int LA41_0 = input.LA(1);
 
@@ -2925,7 +2925,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt41) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:266:4: ac1= accumulate_init_clause[$patternSourceDescr]
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:266:4: ac1= accumulate_init_clause[$patternSourceDescr]
                     {
                     pushFollow(FOLLOW_accumulate_init_clause_in_accumulate_parts1420);
                     ac1=accumulate_init_clause(patternSourceDescr);
@@ -2937,7 +2937,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:268:4: ac2= accumulate_id_clause[$patternSourceDescr]
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:268:4: ac2= accumulate_id_clause[$patternSourceDescr]
                     {
                     pushFollow(FOLLOW_accumulate_id_clause_in_accumulate_parts1431);
                     ac2=accumulate_id_clause(patternSourceDescr);
@@ -2966,7 +2966,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "accumulate_init_clause"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:272:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:272:1: accumulate_init_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) ;
     public final DescrBuilderTree.accumulate_init_clause_return accumulate_init_clause(PatternSourceDescr accumulateParam) throws RecognitionException {
         DescrBuilderTree.accumulate_init_clause_return retval = new DescrBuilderTree.accumulate_init_clause_return();
         retval.start = input.LT(1);
@@ -2979,8 +2979,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:273:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:273:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:273:2: ( ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:273:4: ^( VT_ACCUMULATE_INIT_CLAUSE ^(start= VK_INIT pc1= VT_PAREN_CHUNK ) ^( VK_ACTION pc2= VT_PAREN_CHUNK ) (rev= accumulate_init_reverse_clause )? ^( VK_RESULT pc3= VT_PAREN_CHUNK ) )
             {
             match(input,VT_ACCUMULATE_INIT_CLAUSE,FOLLOW_VT_ACCUMULATE_INIT_CLAUSE_in_accumulate_init_clause1454); 
 
@@ -2997,7 +2997,7 @@ public class DescrBuilderTree extends TreeParser {
             pc2=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1479); 
 
             match(input, Token.UP, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:276:7: (rev= accumulate_init_reverse_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:276:7: (rev= accumulate_init_reverse_clause )?
             int alt42=2;
             int LA42_0 = input.LA(1);
 
@@ -3006,7 +3006,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt42) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:276:7: rev= accumulate_init_reverse_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:276:7: rev= accumulate_init_reverse_clause
                     {
                     pushFollow(FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1488);
                     rev=accumulate_init_reverse_clause();
@@ -3052,7 +3052,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "accumulate_init_reverse_clause"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:285:1: accumulate_init_reverse_clause returns [DroolsTree vkReverse, DroolsTree vkReverseChunk] : ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:285:1: accumulate_init_reverse_clause returns [DroolsTree vkReverse, DroolsTree vkReverseChunk] : ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) ;
     public final DescrBuilderTree.accumulate_init_reverse_clause_return accumulate_init_reverse_clause() throws RecognitionException {
         DescrBuilderTree.accumulate_init_reverse_clause_return retval = new DescrBuilderTree.accumulate_init_reverse_clause_return();
         retval.start = input.LT(1);
@@ -3061,8 +3061,8 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:286:2: ( ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:286:4: ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:286:2: ( ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:286:4: ^(vk= VK_REVERSE pc= VT_PAREN_CHUNK )
             {
             vk=(DroolsTree)match(input,VK_REVERSE,FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1522); 
 
@@ -3088,7 +3088,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "accumulate_id_clause"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:291:1: accumulate_id_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:291:1: accumulate_id_clause[PatternSourceDescr accumulateParam] returns [AccumulateDescr accumulateDescr] : ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) ;
     public final AccumulateDescr accumulate_id_clause(PatternSourceDescr accumulateParam) throws RecognitionException {
         AccumulateDescr accumulateDescr = null;
 
@@ -3096,8 +3096,8 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:292:2: ( ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:292:4: ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:2: ( ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:292:4: ^( VT_ACCUMULATE_ID_CLAUSE id= ID pc= VT_PAREN_CHUNK )
             {
             match(input,VT_ACCUMULATE_ID_CLAUSE,FOLLOW_VT_ACCUMULATE_ID_CLAUSE_in_accumulate_id_clause1548); 
 
@@ -3132,7 +3132,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "from_source_clause"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:296:1: from_source_clause returns [FromDescr fromDescr, AccessorDescr retAccessorDescr] : ^(fs= VT_FROM_SOURCE ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:296:1: from_source_clause returns [FromDescr fromDescr, AccessorDescr retAccessorDescr] : ^(fs= VT_FROM_SOURCE ) ;
     public final DescrBuilderTree.from_source_clause_return from_source_clause() throws RecognitionException {
         from_source_clause_stack.push(new from_source_clause_scope());
         DescrBuilderTree.from_source_clause_return retval = new DescrBuilderTree.from_source_clause_return();
@@ -3141,8 +3141,8 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree fs=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:299:3: ( ^(fs= VT_FROM_SOURCE ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:299:5: ^(fs= VT_FROM_SOURCE )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:3: ( ^(fs= VT_FROM_SOURCE ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:299:5: ^(fs= VT_FROM_SOURCE )
             {
             fs=(DroolsTree)match(input,VT_FROM_SOURCE,FOLLOW_VT_FROM_SOURCE_in_from_source_clause1580); 
 
@@ -3174,7 +3174,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "expression_chain"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:319:1: expression_chain : ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:319:1: expression_chain : ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) ;
     public final DescrBuilderTree.expression_chain_return expression_chain() throws RecognitionException {
         DescrBuilderTree.expression_chain_return retval = new DescrBuilderTree.expression_chain_return();
         retval.start = input.LT(1);
@@ -3185,14 +3185,14 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:2: ( ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:4: ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:2: ( ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:4: ^(start= VT_EXPRESSION_CHAIN id= ID (sc= VT_SQUARE_CHUNK )? (pc= VT_PAREN_CHUNK )? ( expression_chain )? )
             {
             start=(DroolsTree)match(input,VT_EXPRESSION_CHAIN,FOLLOW_VT_EXPRESSION_CHAIN_in_expression_chain1610); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)match(input,ID,FOLLOW_ID_in_expression_chain1614); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:40: (sc= VT_SQUARE_CHUNK )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:40: (sc= VT_SQUARE_CHUNK )?
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -3201,7 +3201,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt43) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:40: sc= VT_SQUARE_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:40: sc= VT_SQUARE_CHUNK
                     {
                     sc=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_expression_chain1618); 
 
@@ -3210,7 +3210,7 @@ public class DescrBuilderTree extends TreeParser {
 
             }
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:60: (pc= VT_PAREN_CHUNK )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:60: (pc= VT_PAREN_CHUNK )?
             int alt44=2;
             int LA44_0 = input.LA(1);
 
@@ -3219,7 +3219,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt44) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:320:60: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:320:60: pc= VT_PAREN_CHUNK
                     {
                     pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_expression_chain1623); 
 
@@ -3230,7 +3230,7 @@ public class DescrBuilderTree extends TreeParser {
 
             	DeclarativeInvokerDescr declarativeInvokerResult = factory.createExpressionChain(start, id, sc, pc);	
             		((from_source_clause_scope)from_source_clause_stack.peek()).accessorDescr.addInvoker(declarativeInvokerResult);	
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:323:3: ( expression_chain )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:3: ( expression_chain )?
             int alt45=2;
             int LA45_0 = input.LA(1);
 
@@ -3239,7 +3239,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt45) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:323:3: expression_chain
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:3: expression_chain
                     {
                     pushFollow(FOLLOW_expression_chain_in_expression_chain1631);
                     expression_chain();
@@ -3270,7 +3270,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "lhs_pattern"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:326:1: lhs_pattern returns [BaseDescr baseDescr] : ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:326:1: lhs_pattern returns [BaseDescr baseDescr] : ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? ;
     public final BaseDescr lhs_pattern() throws RecognitionException {
         BaseDescr baseDescr = null;
 
@@ -3280,8 +3280,8 @@ public class DescrBuilderTree extends TreeParser {
 
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:327:2: ( ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:327:4: ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:2: ( ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )? )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:4: ^( VT_PATTERN fe= fact_expression ) (oc= over_clause )?
             {
             match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_lhs_pattern1649); 
 
@@ -3293,7 +3293,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
             match(input, Token.UP, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:327:39: (oc= over_clause )?
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:39: (oc= over_clause )?
             int alt46=2;
             int LA46_0 = input.LA(1);
 
@@ -3302,7 +3302,7 @@ public class DescrBuilderTree extends TreeParser {
             }
             switch (alt46) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:327:39: oc= over_clause
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:39: oc= over_clause
                     {
                     pushFollow(FOLLOW_over_clause_in_lhs_pattern1658);
                     oc=over_clause();
@@ -3332,7 +3332,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "over_clause"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:331:1: over_clause returns [List behaviorList] : ^( OVER (oe= over_element )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:331:1: over_clause returns [List behaviorList] : ^( OVER (oe= over_element )+ ) ;
     public final List over_clause() throws RecognitionException {
         List behaviorList = null;
 
@@ -3341,13 +3341,13 @@ public class DescrBuilderTree extends TreeParser {
 
         behaviorList = new LinkedList();
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:333:2: ( ^( OVER (oe= over_element )+ ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:333:4: ^( OVER (oe= over_element )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:333:2: ( ^( OVER (oe= over_element )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:333:4: ^( OVER (oe= over_element )+ )
             {
             match(input,OVER,FOLLOW_OVER_in_over_clause1683); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:333:11: (oe= over_element )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:333:11: (oe= over_element )+
             int cnt47=0;
             loop47:
             do {
@@ -3361,7 +3361,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt47) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:333:12: oe= over_element
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:333:12: oe= over_element
             	    {
             	    pushFollow(FOLLOW_over_element_in_over_clause1688);
             	    oe=over_element();
@@ -3400,7 +3400,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "over_element"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:336:1: over_element returns [BehaviorDescr behavior] : ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:1: over_element returns [BehaviorDescr behavior] : ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) ;
     public final BehaviorDescr over_element() throws RecognitionException {
         BehaviorDescr behavior = null;
 
@@ -3408,8 +3408,8 @@ public class DescrBuilderTree extends TreeParser {
         DroolsTree pc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:337:2: ( ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:337:4: ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:337:2: ( ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:337:4: ^( VT_BEHAVIOR ID id2= ID pc= VT_PAREN_CHUNK )
             {
             match(input,VT_BEHAVIOR,FOLLOW_VT_BEHAVIOR_in_over_element1709); 
 
@@ -3439,7 +3439,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "fact_expression"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:341:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:341:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
     public final DescrBuilderTree.fact_expression_return fact_expression() throws RecognitionException {
         DescrBuilderTree.fact_expression_return retval = new DescrBuilderTree.fact_expression_return();
         retval.start = input.LT(1);
@@ -3476,7 +3476,7 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> exprList = new LinkedList<BaseDescr>();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:344:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
             int alt60=22;
             switch ( input.LA(1) ) {
             case VT_FACT:
@@ -3605,7 +3605,7 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt60) {
                 case 1 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:344:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
                     {
                     match(input,VT_FACT,FOLLOW_VT_FACT_in_fact_expression1742); 
 
@@ -3615,7 +3615,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     state._fsp--;
 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:344:31: (fe= fact_expression )*
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:31: (fe= fact_expression )*
                     loop48:
                     do {
                         int alt48=2;
@@ -3628,7 +3628,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt48) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:344:32: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:32: fe= fact_expression
                     	    {
                     	    pushFollow(FOLLOW_fact_expression_in_fact_expression1751);
                     	    fe=fact_expression();
@@ -3652,7 +3652,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:346:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:346:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
                     {
                     match(input,VT_FACT_BINDING,FOLLOW_VT_FACT_BINDING_in_fact_expression1765); 
 
@@ -3670,7 +3670,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:348:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:348:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
                     {
                     start=(DroolsTree)match(input,VT_FACT_OR,FOLLOW_VT_FACT_OR_in_fact_expression1785); 
 
@@ -3692,7 +3692,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:351:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:351:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
                     {
                     match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1804); 
 
@@ -3702,7 +3702,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     state._fsp--;
 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:351:37: (fe= fact_expression )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:351:37: (fe= fact_expression )?
                     int alt49=2;
                     int LA49_0 = input.LA(1);
 
@@ -3711,7 +3711,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt49) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:351:37: fe= fact_expression
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:351:37: fe= fact_expression
                             {
                             pushFollow(FOLLOW_fact_expression_in_fact_expression1812);
                             fe=fact_expression();
@@ -3735,7 +3735,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:357:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:357:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
                     {
                     match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1823); 
 
@@ -3753,7 +3753,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:360:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:360:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
                     {
                     match(input,VK_EVAL,FOLLOW_VK_EVAL_in_fact_expression1842); 
 
@@ -3766,7 +3766,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:363:4: ^(op= EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:4: ^(op= EQUALS fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,EQUALS,FOLLOW_EQUALS_in_fact_expression1859); 
 
@@ -3783,7 +3783,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:365:4: ^(op= NOT_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:4: ^(op= NOT_EQUALS fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,NOT_EQUALS,FOLLOW_NOT_EQUALS_in_fact_expression1875); 
 
@@ -3800,7 +3800,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:367:4: ^(op= GREATER fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:4: ^(op= GREATER fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,GREATER,FOLLOW_GREATER_in_fact_expression1891); 
 
@@ -3817,7 +3817,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:369:4: ^(op= GREATER_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:4: ^(op= GREATER_EQUALS fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,GREATER_EQUALS,FOLLOW_GREATER_EQUALS_in_fact_expression1907); 
 
@@ -3834,7 +3834,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:371:4: ^(op= LESS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:371:4: ^(op= LESS fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,LESS,FOLLOW_LESS_in_fact_expression1923); 
 
@@ -3851,7 +3851,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:373:4: ^(op= LESS_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:4: ^(op= LESS_EQUALS fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,LESS_EQUALS,FOLLOW_LESS_EQUALS_in_fact_expression1939); 
 
@@ -3868,12 +3868,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:375:4: ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:4: ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
                     {
                     op=(DroolsTree)match(input,VK_OPERATOR,FOLLOW_VK_OPERATOR_in_fact_expression1955); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:375:24: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:24: (not= VK_NOT )?
                     int alt50=2;
                     int LA50_0 = input.LA(1);
 
@@ -3882,7 +3882,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt50) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:375:24: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:24: not= VK_NOT
                             {
                             not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1959); 
 
@@ -3891,7 +3891,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     }
 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:375:38: (param= VT_SQUARE_CHUNK )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:38: (param= VT_SQUARE_CHUNK )?
                     int alt51=2;
                     int LA51_0 = input.LA(1);
 
@@ -3900,7 +3900,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt51) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:375:38: param= VT_SQUARE_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:38: param= VT_SQUARE_CHUNK
                             {
                             param=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1964); 
 
@@ -3921,12 +3921,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:378:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
                     {
                     match(input,VK_IN,FOLLOW_VK_IN_in_fact_expression1980); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:378:15: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:15: (not= VK_NOT )?
                     int alt52=2;
                     int LA52_0 = input.LA(1);
 
@@ -3935,7 +3935,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt52) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:378:15: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:15: not= VK_NOT
                             {
                             not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression1984); 
 
@@ -3944,7 +3944,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     }
 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:378:24: (fe= fact_expression )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:24: (fe= fact_expression )+
                     int cnt53=0;
                     loop53:
                     do {
@@ -3958,7 +3958,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt53) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:378:25: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:378:25: fe= fact_expression
                     	    {
                     	    pushFollow(FOLLOW_fact_expression_in_fact_expression1990);
                     	    fe=fact_expression();
@@ -3986,7 +3986,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:381:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:381:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
                     {
                     match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_expression2005); 
 
@@ -4008,7 +4008,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:383:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:383:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
                     {
                     match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_fact_expression2023); 
 
@@ -4030,12 +4030,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:386:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
                     {
                     match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2042); 
 
                     match(input, Token.DOWN, null); 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:386:23: (ae= accessor_element )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:23: (ae= accessor_element )+
                     int cnt54=0;
                     loop54:
                     do {
@@ -4049,7 +4049,7 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt54) {
                     	case 1 :
-                    	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:386:24: ae= accessor_element
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:24: ae= accessor_element
                     	    {
                     	    pushFollow(FOLLOW_accessor_element_in_fact_expression2047);
                     	    ae=accessor_element();
@@ -4077,7 +4077,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:388:4: s= STRING
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:4: s= STRING
                     {
                     s=(DroolsTree)match(input,STRING,FOLLOW_STRING_in_fact_expression2062); 
                     	retval.descr = factory.createStringLiteralRestriction(s);	
@@ -4085,9 +4085,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 19 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:390:4: ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:4: ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
                     {
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:390:4: ( PLUS | m= MINUS )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:4: ( PLUS | m= MINUS )?
                     int alt55=3;
                     int LA55_0 = input.LA(1);
 
@@ -4099,14 +4099,14 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt55) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:390:5: PLUS
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:5: PLUS
                             {
                             match(input,PLUS,FOLLOW_PLUS_in_fact_expression2071); 
 
                             }
                             break;
                         case 2 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:390:10: m= MINUS
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:10: m= MINUS
                             {
                             m=(DroolsTree)match(input,MINUS,FOLLOW_MINUS_in_fact_expression2075); 
 
@@ -4115,7 +4115,7 @@ public class DescrBuilderTree extends TreeParser {
 
                     }
 
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:391:10: ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:10: ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
                     int alt59=3;
                     switch ( input.LA(1) ) {
                     case SIGNED_DECIMAL:
@@ -4145,9 +4145,9 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt59) {
                         case 1 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:391:12: (i= DECIMAL | i= SIGNED_DECIMAL )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:12: (i= DECIMAL | i= SIGNED_DECIMAL )
                             {
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:391:12: (i= DECIMAL | i= SIGNED_DECIMAL )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:12: (i= DECIMAL | i= SIGNED_DECIMAL )
                             int alt56=2;
                             int LA56_0 = input.LA(1);
 
@@ -4165,14 +4165,14 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt56) {
                                 case 1 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:391:13: i= DECIMAL
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:13: i= DECIMAL
                                     {
                                     i=(DroolsTree)match(input,DECIMAL,FOLLOW_DECIMAL_in_fact_expression2094); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:391:23: i= SIGNED_DECIMAL
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:23: i= SIGNED_DECIMAL
                                     {
                                     i=(DroolsTree)match(input,SIGNED_DECIMAL,FOLLOW_SIGNED_DECIMAL_in_fact_expression2098); 
 
@@ -4186,9 +4186,9 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             break;
                         case 2 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:392:5: (h= HEX | h= SIGNED_HEX )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:392:5: (h= HEX | h= SIGNED_HEX )
                             {
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:392:5: (h= HEX | h= SIGNED_HEX )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:392:5: (h= HEX | h= SIGNED_HEX )
                             int alt57=2;
                             int LA57_0 = input.LA(1);
 
@@ -4206,14 +4206,14 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt57) {
                                 case 1 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:392:6: h= HEX
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:392:6: h= HEX
                                     {
                                     h=(DroolsTree)match(input,HEX,FOLLOW_HEX_in_fact_expression2110); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:392:12: h= SIGNED_HEX
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:392:12: h= SIGNED_HEX
                                     {
                                     h=(DroolsTree)match(input,SIGNED_HEX,FOLLOW_SIGNED_HEX_in_fact_expression2114); 
 
@@ -4227,9 +4227,9 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             break;
                         case 3 :
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:393:5: (f= FLOAT | f= SIGNED_FLOAT )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:5: (f= FLOAT | f= SIGNED_FLOAT )
                             {
-                            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:393:5: (f= FLOAT | f= SIGNED_FLOAT )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:5: (f= FLOAT | f= SIGNED_FLOAT )
                             int alt58=2;
                             int LA58_0 = input.LA(1);
 
@@ -4247,14 +4247,14 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt58) {
                                 case 1 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:393:6: f= FLOAT
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:6: f= FLOAT
                                     {
                                     f=(DroolsTree)match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression2128); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:393:14: f= SIGNED_FLOAT
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:14: f= SIGNED_FLOAT
                                     {
                                     f=(DroolsTree)match(input,SIGNED_FLOAT,FOLLOW_SIGNED_FLOAT_in_fact_expression2132); 
 
@@ -4274,7 +4274,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:395:4: b= BOOL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:4: b= BOOL
                     {
                     b=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_fact_expression2148); 
                     	retval.descr = factory.createBoolLiteralRestriction(b);	
@@ -4282,7 +4282,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 21 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:397:4: n= NULL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:397:4: n= NULL
                     {
                     n=(DroolsTree)match(input,NULL,FOLLOW_NULL_in_fact_expression2158); 
                     	retval.descr = factory.createNullLiteralRestriction(n);	
@@ -4290,7 +4290,7 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 22 :
-                    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:399:4: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:399:4: pc= VT_PAREN_CHUNK
                     {
                     pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression2168); 
                     	retval.descr = factory.createReturnValue(pc);	
@@ -4312,7 +4312,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "field_element"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:403:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:403:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
     public final FieldConstraintDescr field_element() throws RecognitionException {
         FieldConstraintDescr element = null;
 
@@ -4323,13 +4323,13 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> aeList = new LinkedList<BaseDescr>();
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:406:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:406:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:406:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:406:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
             {
             match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_field_element2190); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:406:24: (ae= accessor_element )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:406:24: (ae= accessor_element )+
             int cnt61=0;
             loop61:
             do {
@@ -4343,7 +4343,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt61) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:406:25: ae= accessor_element
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:406:25: ae= accessor_element
             	    {
             	    pushFollow(FOLLOW_accessor_element_in_field_element2195);
             	    ae=accessor_element();
@@ -4383,7 +4383,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "accessor_element"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:410:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
     public final BaseDescr accessor_element() throws RecognitionException {
         BaseDescr element = null;
 
@@ -4392,14 +4392,14 @@ public class DescrBuilderTree extends TreeParser {
         List list_sc=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:411:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:411:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:411:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:411:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
             {
             match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2219); 
 
             match(input, Token.DOWN, null); 
             id=(DroolsTree)match(input,ID,FOLLOW_ID_in_accessor_element2223); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:411:34: (sc+= VT_SQUARE_CHUNK )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:411:34: (sc+= VT_SQUARE_CHUNK )*
             loop62:
             do {
                 int alt62=2;
@@ -4412,7 +4412,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt62) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:411:34: sc+= VT_SQUARE_CHUNK
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:411:34: sc+= VT_SQUARE_CHUNK
             	    {
             	    sc=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2227); 
             	    if (list_sc==null) list_sc=new ArrayList();
@@ -4446,7 +4446,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "pattern_type"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:415:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr pattern_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4456,13 +4456,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
             match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type2248); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:28: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:28: (idList+= ID )+
             int cnt63=0;
             loop63:
             do {
@@ -4476,7 +4476,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt63) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:28: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:28: idList+= ID
             	    {
             	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_pattern_type2252); 
             	    if (list_idList==null) list_idList=new ArrayList();
@@ -4495,7 +4495,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt63++;
             } while (true);
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop64:
             do {
                 int alt64=2;
@@ -4508,7 +4508,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt64) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:416:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:416:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
             	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern_type2256); 
             	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern_type2260); 
@@ -4543,7 +4543,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "data_type"
-    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:420:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:420:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr data_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4553,13 +4553,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
             match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type2282); 
 
             match(input, Token.DOWN, null); 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:25: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:25: (idList+= ID )+
             int cnt65=0;
             loop65:
             do {
@@ -4573,7 +4573,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt65) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:25: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:25: idList+= ID
             	    {
             	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_data_type2286); 
             	    if (list_idList==null) list_idList=new ArrayList();
@@ -4592,7 +4592,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt65++;
             } while (true);
 
-            // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop66:
             do {
                 int alt66=2;
@@ -4605,7 +4605,7 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt66) {
             	case 1 :
-            	    // /home/davide/Projects/Eclipse/drools-trunk/trunk/drools-compiler/src/main/resources/org/drools/lang/DescrBuilderTree.g:421:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:421:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
             	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_data_type2290); 
             	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_data_type2294); 
@@ -4677,7 +4677,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VK_QUERY_in_query368 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_QUERY_ID_in_query372 = new BitSet(new long[]{0x0000080000200000L});
     public static final BitSet FOLLOW_parameters_in_query376 = new BitSet(new long[]{0x0000080000200000L});
-    public static final BitSet FOLLOW_lhs_block_in_query381 = new BitSet(new long[]{0x0000000000000000L,0x0000000000008000L});
+    public static final BitSet FOLLOW_lhs_block_in_query381 = new BitSet(new long[]{0x0000000000000000L,0x0000000000010000L});
     public static final BitSet FOLLOW_VK_END_in_query385 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_RULE_in_rule412 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_RULE_ID_in_rule416 = new BitSet(new long[]{0x0800000000014000L,0x0000000000000000L,0x0100000000000010L});
@@ -4700,13 +4700,13 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_LEFT_SQUARE_in_argument592 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000002000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_argument596 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000000L,0x0000000001000000L});
     public static final BitSet FOLLOW_VK_DECLARE_in_type_declaration623 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration627 = new BitSet(new long[]{0x1000000000000000L,0x4000000000048000L,0x0100000000000000L});
+    public static final BitSet FOLLOW_VT_TYPE_DECLARE_ID_in_type_declaration627 = new BitSet(new long[]{0x1000000000000000L,0x4000000000090000L,0x0100000000000000L});
     public static final BitSet FOLLOW_VK_EXTENDS_in_type_declaration640 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_TYPE_NAME_in_type_declaration644 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_IMPLEMENTS_in_type_declaration663 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_TYPE_NAME_in_type_declaration668 = new BitSet(new long[]{0x0000000000000808L});
-    public static final BitSet FOLLOW_decl_metadata_in_type_declaration688 = new BitSet(new long[]{0x0000000000000000L,0x4000000000008000L,0x0100000000000000L});
-    public static final BitSet FOLLOW_decl_field_in_type_declaration701 = new BitSet(new long[]{0x0000000000000000L,0x4000000000008000L});
+    public static final BitSet FOLLOW_decl_metadata_in_type_declaration688 = new BitSet(new long[]{0x0000000000000000L,0x4000000000010000L,0x0100000000000000L});
+    public static final BitSet FOLLOW_decl_field_in_type_declaration701 = new BitSet(new long[]{0x0000000000000000L,0x4000000000010000L});
     public static final BitSet FOLLOW_VK_END_in_type_declaration715 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_AT_in_decl_metadata747 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_TYPE_NAME_in_decl_metadata751 = new BitSet(new long[]{0x0000000000000008L,0x0800000000000000L});
@@ -4787,7 +4787,7 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1467 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_ACTION_in_accumulate_init_clause1475 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1479 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1488 = new BitSet(new long[]{0x0000000000000000L,0x0000000000002000L});
+    public static final BitSet FOLLOW_accumulate_init_reverse_clause_in_accumulate_init_clause1488 = new BitSet(new long[]{0x0000000000000000L,0x0000000000004000L});
     public static final BitSet FOLLOW_VK_RESULT_in_accumulate_init_clause1495 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_accumulate_init_clause1499 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_REVERSE_in_accumulate_init_reverse_clause1522 = new BitSet(new long[]{0x0000000000000004L});
@@ -4811,19 +4811,19 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_ID_in_over_element1715 = new BitSet(new long[]{0x0000000000080000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element1719 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_in_fact_expression1742 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_pattern_type_in_fact_expression1746 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000004048L,0x000000007CFD9042L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1751 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_pattern_type_in_fact_expression1746 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000008048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1751 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1765 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1769 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1769 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1773 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1785 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1789 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1789 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1793 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1804 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_field_element_in_fact_expression1808 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_field_element_in_fact_expression1808 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1812 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1823 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1827 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1827 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1831 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1842 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1846 = new BitSet(new long[]{0x0000000000000008L});
@@ -4840,17 +4840,17 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_LESS_EQUALS_in_fact_expression1939 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1943 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_OPERATOR_in_fact_expression1955 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1959 = new BitSet(new long[]{0x0000000F800C0040L,0x0700000000004048L,0x000000007CFD9042L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1964 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1959 = new BitSet(new long[]{0x0000000F800C0040L,0x0700000000008048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression1964 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression1969 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_IN_in_fact_expression1980 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1984 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1990 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression1984 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1990 = new BitSet(new long[]{0x0000000F80080048L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2005 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2009 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2009 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression2013 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2023 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2027 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000004048L,0x000000007CFD9042L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2027 = new BitSet(new long[]{0x0000000F80080040L,0x0700000000008048L,0x000000007CFD9042L});
     public static final BitSet FOLLOW_fact_expression_in_fact_expression2031 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2042 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_accessor_element_in_fact_expression2047 = new BitSet(new long[]{0x0000001000000008L});

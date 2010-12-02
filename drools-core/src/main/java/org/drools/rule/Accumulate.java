@@ -43,12 +43,12 @@ public class Accumulate extends ConditionalElement
 
     private static final long    serialVersionUID = 510l;
 
-    private Accumulator          accumulator;
+    private Accumulator[]        accumulators;
     private RuleConditionElement source;
     private Declaration[]        requiredDeclarations;
     private Declaration[]        innerDeclarations;
-    
-    private List<Accumulate> cloned = Collections.<Accumulate>emptyList();
+
+    private List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
 
     public Accumulate() {
 
@@ -75,51 +75,63 @@ public class Accumulate extends ConditionalElement
     public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations,
-                      final Accumulator accumulator) {
+                      final Accumulator[] accumulators) {
 
         this.source = source;
         this.requiredDeclarations = requiredDeclarations;
         this.innerDeclarations = innerDeclarations;
-        this.accumulator = accumulator;
+        this.accumulators = accumulators;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        accumulator = (Accumulator)in.readObject();
-        source = (RuleConditionElement)in.readObject();
-        requiredDeclarations = (Declaration[])in.readObject();
-        innerDeclarations = (Declaration[])in.readObject();
-        this.cloned = (List<Accumulate>) in.readObject();        
+    @SuppressWarnings("unchecked")
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.accumulators = new Accumulator[in.readInt()];
+        for ( int i = 0; i < this.accumulators.length; i++ ) {
+            this.accumulators[i] = (Accumulator) in.readObject();
+        }
+        source = (RuleConditionElement) in.readObject();
+        requiredDeclarations = (Declaration[]) in.readObject();
+        innerDeclarations = (Declaration[]) in.readObject();
+        this.cloned = (List<Accumulate>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        if ( this.accumulator instanceof CompiledInvoker ) {
-            out.writeObject(  null );
-        } else {
-            out.writeObject(this.accumulator);   
+        out.writeInt( accumulators.length );
+        for ( Accumulator acc : accumulators ) {
+            if ( acc instanceof CompiledInvoker ) {
+                out.writeObject( null );
+            } else {
+                out.writeObject( acc );
+            }
         }
-        out.writeObject(this.source);
-        out.writeObject(this.requiredDeclarations);
-        out.writeObject(this.innerDeclarations);
+        out.writeObject( this.source );
+        out.writeObject( this.requiredDeclarations );
+        out.writeObject( this.innerDeclarations );
         out.writeObject( this.cloned );
     }
 
-    public Accumulator getAccumulator() {
-        return this.accumulator;
+    public Accumulator[] getAccumulators() {
+        return this.accumulators;
     }
-    
+
     public void wire(Object object) {
-        setAccumulator( (Accumulator) object );
+        setAccumulators( new Accumulator[] { (Accumulator) object } );
         for ( Accumulate clone : this.cloned ) {
             clone.wire( object );
-        }        
+        }
     }
 
-    public void setAccumulator(final Accumulator accumulator) {
-        this.accumulator = accumulator;
+    public void setAccumulators(final Accumulator[] accumulators) {
+        this.accumulators = accumulators;
     }
 
-    public Serializable createContext() {
-        return this.accumulator.createContext();
+    public Serializable[] createContext() {
+        Serializable[] ctxs = new Serializable[this.accumulators.length];
+        for ( int i = 0; i < ctxs.length; i++ ) {
+            ctxs[i] = this.accumulators[i].createContext();
+        }
+        return ctxs;
     }
 
     /**
@@ -130,16 +142,18 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void init(final Object workingMemoryContext,
-                     final Object context,
+    public void init(final Object[] workingMemoryContext,
+                     final Object[] context,
                      final Tuple leftTuple,
                      final WorkingMemory workingMemory) {
         try {
-            this.accumulator.init( workingMemoryContext,
-                                   context,
-                                   leftTuple,
-                                   this.requiredDeclarations,
-                                   workingMemory );
+            for ( int i = 0; i < this.accumulators.length; i++ ) {
+                this.accumulators[i].init( workingMemoryContext[i],
+                                           context[i],
+                                           leftTuple,
+                                           this.requiredDeclarations,
+                                           workingMemory );
+            }
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -155,19 +169,21 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void accumulate(final Object workingMemoryContext,
-                           final Object context,
+    public void accumulate(final Object[] workingMemoryContext,
+                           final Object[] context,
                            final Tuple leftTuple,
                            final InternalFactHandle handle,
                            final WorkingMemory workingMemory) {
         try {
-            this.accumulator.accumulate( workingMemoryContext,
-                                         context,
-                                         leftTuple,
-                                         handle,
-                                         this.requiredDeclarations,
-                                         this.innerDeclarations,
-                                         workingMemory );
+            for ( int i = 0; i < this.accumulators.length; i++ ) {
+                this.accumulators[i].accumulate( workingMemoryContext[i],
+                                                 context[i],
+                                                 leftTuple,
+                                                 handle,
+                                                 this.requiredDeclarations,
+                                                 this.innerDeclarations,
+                                                 workingMemory );
+            }
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -183,26 +199,28 @@ public class Accumulate extends ConditionalElement
      * @param workingMemory
      * @throws Exception
      */
-    public void reverse(final Object workingMemoryContext,
-                        final Object context,
+    public void reverse(final Object[] workingMemoryContext,
+                        final Object[] context,
                         final Tuple leftTuple,
                         final InternalFactHandle handle,
                         final WorkingMemory workingMemory) {
         try {
-            this.accumulator.reverse( workingMemoryContext,
-                                      context,
-                                      leftTuple,
-                                      handle,
-                                      this.requiredDeclarations,
-                                      this.innerDeclarations,
-                                      workingMemory );
+            for ( int i = 0; i < this.accumulators.length; i++ ) {
+                this.accumulators[i].reverse( workingMemoryContext[i],
+                                              context[i],
+                                              leftTuple,
+                                              handle,
+                                              this.requiredDeclarations,
+                                              this.innerDeclarations,
+                                              workingMemory );
+            }
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
     }
 
     /**
-     * Gets the result of the accummulation
+     * Gets the result of the accumulation
      *
      * @param leftTuple
      * @param declarations
@@ -210,16 +228,20 @@ public class Accumulate extends ConditionalElement
      * @return
      * @throws Exception
      */
-    public Object getResult(final Object workingMemoryContext,
-                            final Object context,
+    public Object[] getResult(final Object[] workingMemoryContext,
+                            final Object[] context,
                             final Tuple leftTuple,
                             final WorkingMemory workingMemory) {
         try {
-            return this.accumulator.getResult( workingMemoryContext,
-                                               context,
-                                               leftTuple,
-                                               this.requiredDeclarations,
-                                               workingMemory );
+            Object[] results = new Object[this.accumulators.length];
+            for ( int i = 0; i < this.accumulators.length; i++ ) {
+                results[i] = this.accumulators[i].getResult( workingMemoryContext[i],
+                                                             context[i],
+                                                             leftTuple,
+                                                             this.requiredDeclarations,
+                                                             workingMemory );
+            }
+            return results;
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
@@ -230,21 +252,28 @@ public class Accumulate extends ConditionalElement
      * @return
      */
     public boolean supportsReverse() {
-        return this.accumulator.supportsReverse();
+        boolean supports = true;
+        for( Accumulator acc : this.accumulators ) {
+            if( ! acc.supportsReverse() ) {
+                supports = false;
+                break;
+            }
+        }
+        return supports;
     }
 
     public Object clone() {
         Accumulate clone = new Accumulate( this.source,
-                               this.requiredDeclarations,
-                               this.innerDeclarations,
-                               this.accumulator );
-        
+                                           this.requiredDeclarations,
+                                           this.innerDeclarations,
+                                           this.accumulators );
+
         if ( this.cloned == Collections.EMPTY_LIST ) {
-            this.cloned = new ArrayList<Accumulate>(1);
+            this.cloned = new ArrayList<Accumulate>( 1 );
         }
-        
+
         this.cloned.add( clone );
-        
+
         return clone;
     }
 
@@ -252,12 +281,12 @@ public class Accumulate extends ConditionalElement
         return this.source;
     }
 
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         return this.source.getInnerDeclarations();
     }
 
-    public Map getOuterDeclarations() {
-        return Collections.EMPTY_MAP;
+    public Map<String, Declaration> getOuterDeclarations() {
+        return Collections.emptyMap();
     }
 
     /**
@@ -267,11 +296,15 @@ public class Accumulate extends ConditionalElement
         return (Declaration) this.source.getInnerDeclarations().get( identifier );
     }
 
-    public Object createWorkingMemoryContext() {
-        return this.accumulator.createWorkingMemoryContext();
+    public Object[] createWorkingMemoryContext() {
+        Object[] ctx = new Object[ this.accumulators.length ];
+        for( int i = 0; i < this.accumulators.length; i++ ) {
+            ctx[i] = this.accumulators[i].createWorkingMemoryContext();
+        }
+        return ctx;
     }
 
-    public List getNestedElements() {
+    public List<RuleConditionElement> getNestedElements() {
         return Collections.singletonList( this.source );
     }
 

@@ -57,7 +57,7 @@ public class MVELAccumulateBuilderTest extends TestCase {
         final Accumulate acc = (Accumulate) builder.build( context,
                                                            accDescr );
 
-        ((MVELCompileable) acc.getAccumulator()).compile( pkgBuilder.getRootClassLoader() );
+        ((MVELCompileable) acc.getAccumulators()[0]).compile( pkgBuilder.getRootClassLoader() );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -74,8 +74,8 @@ public class MVELAccumulateBuilderTest extends TestCase {
                                                sink,
                                                true );
 
-        Object wmContext = acc.createWorkingMemoryContext();
-        Object accContext = acc.createContext();
+        Object[] wmContext = acc.createWorkingMemoryContext();
+        Object[] accContext = acc.createContext();
         acc.init( wmContext,
                   accContext,
                   tuple,
@@ -96,7 +96,7 @@ public class MVELAccumulateBuilderTest extends TestCase {
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     wm ) );
+                                     wm )[0] );
 
         acc.reverse( wmContext,
                      accContext,
@@ -108,7 +108,7 @@ public class MVELAccumulateBuilderTest extends TestCase {
                       acc.getResult( wmContext,
                                      accContext,
                                      tuple,
-                                     wm ) );
+                                     wm )[0] );
     }
 
 }

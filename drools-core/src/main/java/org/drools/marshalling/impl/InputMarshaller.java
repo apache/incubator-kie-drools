@@ -565,7 +565,7 @@ public class InputMarshaller {
                                                 (RightTupleSink) sink );
 
                 // then we de-serialize the associated accumulation context
-                accctx.context = (Serializable) stream.readObject();
+                accctx.context = (Serializable[]) stream.readObject();
                 // then we de-serialize the boolean propagated flag
                 accctx.propagated = stream.readBoolean();
 

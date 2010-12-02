@@ -87,6 +87,7 @@ tokens {
 	VK_AND;
 	VK_EXISTS;
 	VK_FORALL;
+	VK_FOR;
 	VK_ACTION;
 	VK_REVERSE;
 	VK_RESULT;
@@ -105,7 +106,6 @@ tokens {
   VK_FINAL;
   VK_IF;
   VK_ELSE;
-  VK_FOR;
   VK_WHILE;
   VK_DO;
   VK_CASE;
@@ -688,6 +688,7 @@ lhs_unary
 		|	lhs_not
 		|	lhs_eval
 		|	lhs_forall
+		| 	lhs_for
 		|	LEFT_PAREN! {	helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); helper.emit(Location.LOCATION_LHS_BEGIN_OF_CONDITION );	}  
 				lhs_or 
 			RIGHT_PAREN {	helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
@@ -743,6 +744,24 @@ lhs_forall
 		RIGHT_PAREN {	helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
 		-> ^(forall_key pattern_source+ RIGHT_PAREN)
 	;
+
+lhs_for
+	:	for_key 
+		LEFT_PAREN {	helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL);	} 
+			lhs_or SEMICOLON
+			for_functions
+			(SEMICOLON constraints)?
+		RIGHT_PAREN {	helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
+		-> ^(for_key lhs_or for_functions constraints?)
+	;
+	
+for_functions
+	:	for_function (COMMA for_function)*
+	;
+	
+for_function 
+	: 	label ID arguments
+	;	
 
 pattern_source
 @init { boolean isFailed = true;	}
@@ -1471,9 +1490,6 @@ options{ backtrack=true; memoize=true; }
     
     | assert_key expression (COLON expression)? SEMICOLON    
 	;
-
-
-
 
 
 forControl 

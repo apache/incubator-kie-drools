@@ -16,7 +16,6 @@
 
 package org.drools.time.impl;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;

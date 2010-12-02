@@ -33,6 +33,7 @@ import org.drools.rule.Collect;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
+import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
 /**
@@ -110,7 +111,7 @@ public class CollectBuilder
         Accumulate accumulate = new Accumulate( sourcePattern,
                                                 sourcePattern.getRequiredDeclarations(),
                                                 (Declaration[]) collect.getInnerDeclarations().values().toArray( new Declaration[0] ),
-                                                accumulator );
+                                                new Accumulator[] { accumulator });
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     new AccumulateNode( context.getNextId(),
                                                                                         context.getTupleSource(),
