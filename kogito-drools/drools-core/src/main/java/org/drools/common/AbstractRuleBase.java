@@ -155,6 +155,7 @@ abstract public class AbstractRuleBase
         }
 
         this.rootClassLoader = this.config.getClassLoader();
+        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
         
         this.pkgs = new HashMap<String, Package>();
         this.processes = new HashMap();
