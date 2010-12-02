@@ -186,6 +186,7 @@ public class PackageBuilder {
         }
 
         this.rootClassLoader = this.configuration.getClassLoader();
+        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );        
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -216,6 +217,8 @@ public class PackageBuilder {
         } else {
             this.rootClassLoader = this.configuration.getClassLoader();
         }
+        
+        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );        
 
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if ( this.dateFormats == null ) {
