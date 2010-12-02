@@ -62,7 +62,7 @@ public class CompositeClassLoader extends ClassLoader {
                 return;
             }
         }
-        this.classLoaders.add( classLoader );
+        this.classLoaders.add( 0, classLoader );
         this.loader.get().reset();
     }
 

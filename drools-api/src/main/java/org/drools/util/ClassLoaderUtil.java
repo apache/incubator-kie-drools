@@ -26,6 +26,24 @@ public class ClassLoaderUtil {
 
         CompositeClassLoader cl = new CompositeClassLoader( null );
 
+        // ClassLoaders are added to the head of the list, so add in reverse
+        if ( systemClassLoader != null ) {
+            // system classloader
+            cl.addClassLoader( systemClassLoader );
+        }        
+        
+        if ( currentClassLoader != null ) {
+            // the current classloader, typically from a drools-core or drools-compiler class
+            cl.addClassLoader( currentClassLoader );
+        }        
+        
+
+        if ( contextClassLoader != null ) {
+            // context classloader
+            cl.addClassLoader( contextClassLoader );
+        }
+                
+        
         if ( classLoaders != null && classLoaders.length > 0) {
             // the user specified classloaders
             for (ClassLoader classLoader : classLoaders ) {
@@ -33,21 +51,6 @@ public class ClassLoaderUtil {
                     cl.addClassLoader( classLoader );
                 }
             }
-        }
-
-        if ( contextClassLoader != null ) {
-            // context classloader
-            cl.addClassLoader( contextClassLoader );
-        }
-        
-        if ( currentClassLoader != null ) {
-            // the current classloader, typically from a drools-core or drools-compiler class
-            cl.addClassLoader( currentClassLoader );
-        }
-
-        if ( systemClassLoader != null ) {
-            // system classloader
-            cl.addClassLoader( systemClassLoader );
         }
 
         cl.setCachingEnabled( enableCache );
