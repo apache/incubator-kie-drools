@@ -25,6 +25,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.net.URL;
 import java.security.AccessController;
 import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
@@ -34,6 +35,7 @@ import java.security.ProtectionDomain;
 import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -593,6 +595,15 @@ public class JavaDialectRuntimeData
             }
             return null;
         }
+        
+        public URL getResource(String name) {
+            return null;
+        }
+        
+        public Enumeration<URL> getResources(String name) throws IOException {
+            return null;
+        }
+
     }
 
     /**
