@@ -100,8 +100,6 @@ public class JavaFunctionBuilder
 
         final String text = String.valueOf(TemplateRuntime.eval( template, null, new MapVariableResolverFactory(vars)));
 
-        //System.out.println( text );
-
         final BufferedReader reader = new BufferedReader( new StringReader( text ) );
         String line = null;
         final String lineStartsWith = "    public static " + functionDescr.getReturnType() + " " + functionDescr.getName();

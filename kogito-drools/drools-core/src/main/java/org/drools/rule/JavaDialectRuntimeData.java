@@ -46,6 +46,8 @@ import org.drools.core.util.DroolsClassLoader;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.spi.Wireable;
+import org.drools.util.CompositeClassLoader;
+import org.drools.util.FastClassLoader;
 
 public class JavaDialectRuntimeData
     implements
@@ -67,7 +69,7 @@ public class JavaDialectRuntimeData
 
     private transient PackageClassLoader         classLoader;
 
-    private transient DroolsCompositeClassLoader rootClassLoader;
+    private transient CompositeClassLoader      rootClassLoader;
 
     private boolean                              dirty;
 
@@ -216,7 +218,7 @@ public class JavaDialectRuntimeData
     }
 
     public void onAdd(DialectRuntimeRegistry registry,
-                      DroolsCompositeClassLoader rootClassLoader) {
+                      CompositeClassLoader rootClassLoader) {
         this.registry = registry;
         this.rootClassLoader = rootClassLoader;
         this.classLoader = new PackageClassLoader( this,
@@ -247,7 +249,7 @@ public class JavaDialectRuntimeData
     }
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    DroolsCompositeClassLoader rootClassLoader) {
+                                    CompositeClassLoader rootClassLoader) {
         DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
         cloneOne.merge( registry,
                         this );
@@ -518,23 +520,37 @@ public class JavaDialectRuntimeData
         getInvokers().remove( className );
     }
 
-    public static class PackageClassLoader extends ClassLoader
-        implements
-        DroolsClassLoader {
+    /**
+     * This is an Internal Drools Class
+     *
+     */    
+    public static class PackageClassLoader extends ClassLoader implements FastClassLoader {
         private JavaDialectRuntimeData store;
-        DroolsCompositeClassLoader     rootClassLoader;
-
-        private Map<String, Object>    cache           = new HashMap<String, Object>();
-        private long                   successfulCalls = 0;
-        private long                   failedCalls     = 0;
-        private long                   cacheHits       = 0;
+        CompositeClassLoader     rootClassLoader;
 
         public PackageClassLoader(JavaDialectRuntimeData store,
-                                  DroolsCompositeClassLoader rootClassLoader) {
+                                  CompositeClassLoader rootClassLoader) {
             super( rootClassLoader );
             this.rootClassLoader = rootClassLoader;
             this.store = store;
         }
+
+        public Class< ? > loadClass(final String name,
+                                    final boolean resolve) throws ClassNotFoundException {  
+            Class< ? > cls = fastFindClass( name );
+            
+            if ( cls == null ) {
+                final CompositeClassLoader parent = ( CompositeClassLoader ) getParent();
+                cls = parent.loadClass( name, resolve, this );
+            }        
+            
+            if ( cls == null ) {
+                throw new ClassNotFoundException("Unable to load class: " + name);
+            }
+
+            return cls;
+        }
+     
 
         public Class< ? > fastFindClass(final String name) {
             Class< ? > cls = findLoadedClass( name );
@@ -554,59 +570,20 @@ public class JavaDialectRuntimeData
                                        "",
                                        null );
                     }
+
                     cls = defineClass( name,
                                        clazzBytes,
                                        0,
                                        clazzBytes.length,
                                        PROTECTION_DOMAIN );
                 }
-            }
-
-            return cls;
-        }
-
-        public Class< ? > loadClass(final String name,
-                                    final boolean resolve) throws ClassNotFoundException {
-            try {
-                if ( cache.containsKey( name ) ) {
-                    this.cacheHits++;
-                    Object result = cache.get( name );
-                    if ( result instanceof ClassNotFoundException ) {
-                        throw (ClassNotFoundException) result;
-                    } else {
-                        return (Class< ? >) result;
-                    }
-                }
-                Class< ? > cls = fastFindClass( name );
-                if ( cls == null ) {
-                    final ClassLoader parent = getParent();
-                    if ( parent != null ) {
-                        cls = Class.forName( name,
-                                             true,
-                                             parent );
-                    }
-                }
-                if ( resolve && cls != null ) {
-                    resolveClass( cls );
-                }
+                
                 if ( cls != null ) {
-                    this.successfulCalls++;
-                } else {
-                    this.failedCalls++;
-                }
-                cache.put( name,
-                           cls );
-                return cls;
-            } catch ( ClassNotFoundException e ) {
-                this.failedCalls++;
-                cache.put( name,
-                           e );
-                throw e;
+                    resolveClass( cls );
+                }                    
             }
-        }
-
-        protected Class< ? > findClass(final String name) throws ClassNotFoundException {
-            return fastFindClass( name );
+            
+            return cls;
         }
 
         public InputStream getResourceAsStream(final String name) {
@@ -615,16 +592,6 @@ public class JavaDialectRuntimeData
                 return new ByteArrayInputStream( clsBytes );
             }
             return null;
-        }
-
-        public void reset() {
-            this.cacheHits = this.failedCalls = this.successfulCalls = 0;
-            this.cache.clear();
-        }
-
-        public void printStats() {
-            System.out.println( "CacheHits = " + this.cacheHits + "\nSuccessful=" + this.successfulCalls + "\nFailed=" + this.failedCalls + "\n" );
-
         }
     }
 

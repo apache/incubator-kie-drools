@@ -212,8 +212,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
                 }
             }
             if ( !errors.isEmpty() ) {
-                System.out.println( errors.toString() );
-                fail( " Errors occured during execution " );
+                fail( " Errors occured during execution\n" + errors.toString()  );
             }
         } catch ( InterruptedException e ) {
             e.printStackTrace();

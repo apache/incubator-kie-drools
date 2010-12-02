@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.util.CompositeClassLoader;
+
 public class DialectRuntimeRegistry
     implements
     Externalizable {
@@ -60,12 +62,12 @@ public class DialectRuntimeRegistry
         this.lineMappings = (Map) stream.readObject();
     }
 
-    public void onAdd(DroolsCompositeClassLoader rootClassLoader) {
+    public void onAdd(CompositeClassLoader rootClassLoader) {
         //this.classLoader = rootClassLoader;
         for ( Iterator it = this.dialects.values().iterator(); it.hasNext(); ) {
             DialectRuntimeData data = (DialectRuntimeData) it.next();
             data.onAdd( this,
-                            rootClassLoader );
+                        rootClassLoader );
         }
     }
     
@@ -103,7 +105,7 @@ public class DialectRuntimeRegistry
     }
 
     public void merge(DialectRuntimeRegistry newDatas,
-                      DroolsCompositeClassLoader rootClassLoader) {
+                      CompositeClassLoader rootClassLoader) {
         for ( Entry<String, DialectRuntimeData> entry : newDatas.dialects.entrySet() ) {
             DialectRuntimeData data = this.dialects.get( entry.getKey() );
             if ( data == null ) {

@@ -5370,7 +5370,13 @@ public class MiscTest extends TestCase {
 
     public void testDynamicallyAddInitialFactRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
-        String rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\n i:Integer()\nthen\n list.add(i);\nend";
+        String rule = "package org.drools.test\n" +
+                      "global java.util.List list\n" + 
+                      "rule xxx when\n" + 
+                      "   i:Integer()\n" +
+                      "then\n" +
+                      "   list.add(i);\n"+ 
+                      "end";
         builder.addPackageFromDrl( new StringReader( rule ) );
         Package pkg = builder.getPackage();
 
@@ -5390,7 +5396,12 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
 
         builder = new PackageBuilder();
-        rule = "package org.drools.test\n global java.util.List list\n rule xxx\n when\nthen\n list.add(\"x\");\nend";
+        rule = "package org.drools.test\n"+
+               "global java.util.List list\n" +
+               "rule xxx when\n" +
+               "then\n" +
+               "   list.add(\"x\");\n"+
+               "end";
         builder.addPackageFromDrl( new StringReader( rule ) );
         pkg = builder.getPackage();
 

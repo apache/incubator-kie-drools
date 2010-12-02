@@ -86,8 +86,6 @@ public class PackageCompilationDataTest extends TestCase {
         
         Class cls = ((InternalRuleBase)rb).getRootClassLoader().loadClass( "org.drools.rule.PackageCompilationDataTest$TestEvalExpression" );
         
-        System.out.println( cls );
-        
         final CodeSource codeSource = invoker.getEvalExpression().getClass().getProtectionDomain().getCodeSource();
         assertNotNull(codeSource.getLocation());
     }

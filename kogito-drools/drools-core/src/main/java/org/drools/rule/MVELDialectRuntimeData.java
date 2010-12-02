@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.spi.Wireable;
+import org.drools.util.CompositeClassLoader;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 
@@ -41,7 +42,7 @@ public class MVELDialectRuntimeData
 
     private Map<Wireable, MVELCompileable> invokerLookups;
 
-    private DroolsCompositeClassLoader           rootClassLoader;
+    private CompositeClassLoader           rootClassLoader;
 
     private List<Wireable>                 wireList = Collections.<Wireable> emptyList();
 
@@ -86,7 +87,7 @@ public class MVELDialectRuntimeData
     }
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
-                                    DroolsCompositeClassLoader rootClassLoader) {
+                                    CompositeClassLoader rootClassLoader) {
         DialectRuntimeData clone = new MVELDialectRuntimeData();
         clone.merge( registry,
                      this );
@@ -96,7 +97,7 @@ public class MVELDialectRuntimeData
     }
 
     public void onAdd(DialectRuntimeRegistry registry,
-                      DroolsCompositeClassLoader rootClassLoader) {
+                      CompositeClassLoader rootClassLoader) {
         this.rootClassLoader = rootClassLoader;
 
         //        for (Entry<Wireable, MVELCompilable> entry : this.invokerLookups.entrySet() ) {

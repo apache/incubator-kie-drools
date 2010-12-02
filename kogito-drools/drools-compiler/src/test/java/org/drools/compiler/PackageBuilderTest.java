@@ -67,7 +67,6 @@ import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
-import org.drools.rule.DroolsCompositeClassLoader;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.GroupElement;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -85,6 +84,8 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.drools.util.ClassLoaderUtil;
+import org.drools.util.CompositeClassLoader;
 
 public class PackageBuilderTest extends DroolsTestCase {
 
@@ -1026,8 +1027,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
-        DroolsCompositeClassLoader rootClassloader = new DroolsCompositeClassLoader( Thread.currentThread().getContextClassLoader(),
-                                                                                     false );
+        CompositeClassLoader rootClassloader = ClassLoaderUtil.getClassLoader( new ClassLoader[] { Thread.currentThread().getContextClassLoader() } , getClass(), false );
         JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
         dialectData.onAdd( bp.getDialectRuntimeRegistry(),
                            rootClassloader );
