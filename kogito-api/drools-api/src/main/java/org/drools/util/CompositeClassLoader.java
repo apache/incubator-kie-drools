@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +43,10 @@ public class CompositeClassLoader extends ClassLoader {
     public CompositeClassLoader() {
         super( null );
         loader.set( new DefaultLoader() );
+    }
+    
+    public Collection<ClassLoader> getClassLoaders() {
+        return Collections.unmodifiableCollection( this.classLoaders );
     }
 
     public synchronized void setCachingEnabled(boolean enabled) {
