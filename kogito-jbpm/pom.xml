@@ -21,7 +21,7 @@
     <drools.version>5.2.0-SNAPSHOT</drools.version>
   </properties>
   <prerequisites>
-    <maven>3.0.0</maven>
+    <maven>2.2.1</maven>
   </prerequisites>
   <issueManagement>
     <system>jira</system>
