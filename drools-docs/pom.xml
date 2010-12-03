@@ -148,13 +148,13 @@
             <format>
               <formatName>eclipse</formatName>
               <stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource>
-              <finalName>${artifactId}.html</finalName>
+              <finalName>${project.artifactId}.html</finalName>
             </format>
 
             <format>
               <formatName>pdf</formatName>
               <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
-              <finalName>${artifactId}.pdf</finalName>
+              <finalName>${project.artifactId}.pdf</finalName>
             </format>
           </formats>
           <options>
