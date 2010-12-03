@@ -318,7 +318,7 @@ public class PackageBuilderConfiguration
     }
 
     public CompositeClassLoader getClassLoader() {
-        return this.classLoader;
+        return this.classLoader.clone();
     }
 
     /** Use this to override the classLoader that will be used for the rules. */
