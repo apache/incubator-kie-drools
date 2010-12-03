@@ -37,23 +37,22 @@ import org.drools.lang.ExpanderException;
  * For most people, this should do the job just fine. 
  */
 public class DefaultExpander
-    implements
-    Expander {
+implements
+Expander {
 
-    // Be EXTREMELLY careful if you decide to change bellow regexp's
+    // Be EXTREMELLY careful if you decide to change the following regexp's
     //
-    // bellow regexp is used to find and parse rule parts: header, LHS, RHS, trailer, etc
+    // regexp used to find and parse rule parts: header, LHS, RHS, trailer, etc
     private static final String           rulesExpr     = "(^\\s*rule.*?$.*?^\\s*when.*?)$(.*?)(^\\s*then.*?$)(.*?)(^\\s*end)";
-    // bellow regexp is used to find and parse query parts: header, condition, trailer
+    // regexp used to find and parse query parts: header, condition, trailer
     private static final String           queryExpr     = "(^\\s*query.*?)$(.*?)(^\\s*end)";
 
-    // bellow we combine and compile above expressions into a pattern object
+    // below we combine and compile above expressions into a pattern object
     private static final Pattern          finder        = Pattern.compile( "(" + rulesExpr + "|" + queryExpr + ")",
-                                                                           Pattern.DOTALL | Pattern.MULTILINE );
-    // bellow pattern is used to find a pattern's constraint list
+            Pattern.DOTALL | Pattern.MULTILINE );
+    // below pattern is used to find a pattern's constraint list
     private static final Pattern          patternFinder = Pattern.compile( "\\((.*?)\\)" );
 
-    private final Map<String, DSLMapping> mappings      = new HashMap<String, DSLMapping>();
     private final List<DSLMappingEntry>   keywords      = new LinkedList<DSLMappingEntry>();
     private final List<DSLMappingEntry>   condition     = new LinkedList<DSLMappingEntry>();
     private final List<DSLMappingEntry>   consequence   = new LinkedList<DSLMappingEntry>();
@@ -66,11 +65,11 @@ public class DefaultExpander
      */
     public DefaultExpander() {
         this.cleanup.add( new AntlrDSLMappingEntry( DSLMappingEntry.KEYWORD,
-                                                    DSLMappingEntry.EMPTY_METADATA,
-                                                    "expander {name}",
-                                                    "",
-                                                    "expander (.*?)",
-                                                    "" ) );
+                DSLMappingEntry.EMPTY_METADATA,
+                "expander {name}",
+                "",
+                "expander (.*?)",
+        "" ) );
     }
 
     /**
@@ -78,8 +77,6 @@ public class DefaultExpander
      * @param mapping
      */
     public void addDSLMapping(final DSLMapping mapping) {
-        this.mappings.put( mapping.getIdentifier(),
-                           mapping );
         for ( DSLMappingEntry entry : mapping.getEntries() ) {
             if ( DSLMappingEntry.KEYWORD.equals( entry.getSection() ) ) {
                 this.keywords.add( entry );
@@ -134,12 +131,12 @@ public class DefaultExpander
                 expanded.append( headerFragment ); // adding rule header and attributes
                 String lhsFragment = m.group( 3 );
                 expanded.append( this.expandLHS( lhsFragment,
-                                                 countNewlines( headerFragment ) + 1 ) ); // adding expanded LHS
+                        countNewlines( headerFragment ) + 1 ) ); // adding expanded LHS
                 String thenFragment = m.group( 4 );
 
                 expanded.append( thenFragment ); // adding "then" header
                 expanded.append( this.expandRHS( m.group( 5 ),
-                                                 countNewlines( headerFragment + lhsFragment + thenFragment ) + 1 ) ); // adding expanded RHS
+                        countNewlines( headerFragment + lhsFragment + thenFragment ) + 1 ) ); // adding expanded RHS
                 expanded.append( m.group( 6 ) ); // adding rule trailer
                 expanded.append( "\n" );
             } else if ( constr.startsWith( "query" ) ) {
@@ -147,17 +144,17 @@ public class DefaultExpander
                 String fragment = m.group( 7 );
                 expanded.append( fragment ); // adding query header and attributes
                 expanded.append( this.expandLHS( m.group( 8 ),
-                                                 countNewlines( fragment ) + 1 ) ); // adding expanded LHS
+                        countNewlines( fragment ) + 1 ) ); // adding expanded LHS
                 expanded.append( m.group( 9 ) ); // adding query trailer
                 expanded.append( "\n" );
             } else {
                 // strange behavior
                 this.addError( new ExpanderException( "Unable to expand statement: " + constr,
-                                                      0 ) );
+                        0 ) );
             }
             m.appendReplacement( buf,
-                                 expanded.toString().replaceAll( "\\$",
-                                                                 "\\\\\\$" ) );
+                    expanded.toString().replaceAll( "\\$",
+                    "\\\\\\$" ) );
         }
         m.appendTail( buf );
         return buf;
@@ -209,7 +206,7 @@ public class DefaultExpander
      * @return
      */
     private String expandLHS(final String lhs,
-                             int lineOffset) {
+            int lineOffset) {
         final StringBuilder buf = new StringBuilder();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
@@ -224,7 +221,7 @@ public class DefaultExpander
             } else if ( trimmed.startsWith( ">" ) ) { // passthrough code
                 // simply remove the passthrough mark character
                 expanded[lastExpanded] = lines[i].replaceFirst( ">",
-                                                                " " );
+                " " );
             } else { // regular expansion
                 // expand the expression
                 for ( final DSLMappingEntry entry : this.condition ) {
@@ -239,8 +236,8 @@ public class DefaultExpander
                 if ( lines[i].equals( expanded[lastExpanded] ) ) {
                     // report error
                     this.addError( new ExpanderException( "Unable to expand: " + lines[i].replaceAll( "[\n\r]",
-                                                                                                      "" ).trim(),
-                                                          i + lineOffset ) );
+                    "" ).trim(),
+                    i + lineOffset ) );
                 }
                 // but if the original starts with a "-", it means we need to add it
                 // as a constraint to the previous pattern
@@ -259,12 +256,12 @@ public class DefaultExpander
                     if ( lastMatchStart > -1 ) {
                         // rebuilding previous pattern structure
                         expanded[lastPattern] = expanded[lastPattern].substring( 0,
-                                                                                 lastMatchStart ) + "( " + constraints + ((constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + " )"
-                                                + expanded[lastPattern].substring( lastMatchEnd );
+                                lastMatchStart ) + "( " + constraints + ((constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + " )"
+                                + expanded[lastPattern].substring( lastMatchEnd );
                     } else {
                         // error, pattern not found to add constraint to
                         this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i].trim(),
-                                                              i + lineOffset ) );
+                                i + lineOffset ) );
                     }
                     lastExpanded--;
                 } else {
@@ -287,7 +284,7 @@ public class DefaultExpander
      * @return
      */
     private String expandRHS(final String lhs,
-                             int lineOffset) {
+            int lineOffset) {
         final StringBuilder buf = new StringBuilder();
         final String[] lines = lhs.split( "\n" ); // since we assembled the string, we know line breaks are \n
         for ( int i = 0; i < lines.length; i++ ) {
@@ -297,7 +294,7 @@ public class DefaultExpander
                 buf.append( lines[i] );
             } else if ( trimmed.startsWith( ">" ) ) { // passthrough code
                 buf.append( lines[i].replaceFirst( ">",
-                                                   "" ) );
+                "" ) );
             } else { // regular expansions
                 String expanded = lines[i];
                 for ( final DSLMappingEntry entry : this.consequence ) {
@@ -308,7 +305,7 @@ public class DefaultExpander
                 if ( lines[i].equals( expanded ) ) {
                     // report error
                     this.addError( new ExpanderException( "Unable to expand: " + lines[i],
-                                                          i + lineOffset ) );
+                            i + lineOffset ) );
                 }
             }
             buf.append( "\n" );
