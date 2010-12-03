@@ -24,7 +24,7 @@ public class ClassLoaderUtil {
         ClassLoader currentClassLoader = (cls != null) ? cls.getClassLoader() : ClassLoaderUtil.class.getClassLoader();
         ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 
-        CompositeClassLoader cl = new CompositeClassLoader( null );
+        CompositeClassLoader cl = new CompositeClassLoader( );
 
         // ClassLoaders are added to the head of the list, so add in reverse
         if ( systemClassLoader != null ) {
