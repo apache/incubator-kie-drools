@@ -36,7 +36,7 @@ import com.google.common.collect.TreeMultimap;
  * 
  * @author Toni Rikkola
  */
-class VerifierReportImpl
+public class VerifierReportImpl
     implements
     VerifierReport {
     private static final long                       serialVersionUID               = 510l;
