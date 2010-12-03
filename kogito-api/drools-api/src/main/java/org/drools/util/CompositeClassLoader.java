@@ -38,7 +38,7 @@ public class CompositeClassLoader extends ClassLoader {
     private final List<ClassLoader>       classLoaders = new CopyOnWriteArrayList<ClassLoader>();
     private final AtomicReference<Loader> loader       = new AtomicReference<Loader>();
 
-    public CompositeClassLoader(final ClassLoader parentClassLoader) {
+    public CompositeClassLoader() {
         super( null );
         loader.set( new DefaultLoader() );
     }
@@ -343,5 +343,14 @@ public class CompositeClassLoader extends ClassLoader {
             }
             return it.next();
         }
+    }
+    
+    public CompositeClassLoader clone() {
+        CompositeClassLoader classLoader = new CompositeClassLoader();
+        classLoader.classLoaders.addAll( this.classLoaders );
+        if ( this.loader.get() instanceof CachingLoader ) {
+            classLoader.setCachingEnabled( true );
+        }
+        return classLoader;
     }
 }
