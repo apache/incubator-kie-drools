@@ -782,7 +782,7 @@ public class RuleBaseConfiguration
     }
 
     public CompositeClassLoader getClassLoader() {
-        return classLoader;
+        return this.classLoader.clone();
     }
 
     public void setClassLoader(ClassLoader... classLoaders) {

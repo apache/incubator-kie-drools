@@ -44,6 +44,7 @@ import org.drools.runtime.process.WorkItemHandler;
 import org.drools.time.TimerService;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
+import org.drools.util.CompositeClassLoader;
 import org.mvel2.MVEL;
 
 /**
@@ -68,30 +69,30 @@ public class SessionConfiguration
     implements
     KnowledgeSessionConfiguration,
     Externalizable {
-    private static final long             serialVersionUID = 510l;
+    private static final long              serialVersionUID = 510l;
 
-    private ChainedProperties             chainedProperties;
+    private ChainedProperties              chainedProperties;
 
-    private volatile boolean              immutable;
+    private volatile boolean               immutable;
 
-    private boolean                       keepReference;
+    private boolean                        keepReference;
 
-    private ClockType                     clockType;
+    private ClockType                      clockType;
 
-    private QueryListenerOption           queryListener;
+    private QueryListenerOption            queryListener;
 
-    private Map<String, WorkItemHandler>  workItemHandlers;
-    private WorkItemManagerFactory        workItemManagerFactory;
-    private CommandService                commandService;
+    private Map<String, WorkItemHandler>   workItemHandlers;
+    private WorkItemManagerFactory         workItemManagerFactory;
+    private CommandService                 commandService;
 
-    private transient ClassLoader         classLoader;
-    
+    private transient CompositeClassLoader classLoader;
+
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
         out.writeBoolean( immutable );
         out.writeBoolean( keepReference );
         out.writeObject( clockType );
-        out.writeObject( queryListener );  
+        out.writeObject( queryListener );
     }
 
     @SuppressWarnings("unchecked")
@@ -101,7 +102,7 @@ public class SessionConfiguration
         immutable = in.readBoolean();
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
-        queryListener = (QueryListenerOption) in.readObject();  
+        queryListener = (QueryListenerOption) in.readObject();
     }
 
     /**
@@ -124,7 +125,7 @@ public class SessionConfiguration
     }
 
     public SessionConfiguration(ClassLoader... classLoader) {
-        init( null,  
+        init( null,
               classLoader );
     }
 
@@ -237,11 +238,11 @@ public class SessionConfiguration
         this.queryListener = QueryListenerOption.determineQueryListenerClassOption( property );
     }
 
-    private void setQueryListenerClass( QueryListenerOption option ) {
+    private void setQueryListenerClass(QueryListenerOption option) {
         checkCanChange();
         this.queryListener = option;
     }
-    
+
     public Map<String, WorkItemHandler> getWorkItemHandlers() {
         if ( this.workItemHandlers == null ) {
             initWorkItemHandlers();
@@ -312,17 +313,16 @@ public class SessionConfiguration
             throw new IllegalArgumentException( "Work item manager factory '" + className + "' not found" );
         }
     }
-    
+
     public String getProcessInstanceManagerFactory() {
         return this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
                                                    "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
     }
 
     public String getSignalManagerFactory() {
-    	return this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
+        return this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
                                                    "org.drools.process.instance.event.DefaultSignalManagerFactory" );
     }
-
 
     public CommandService getCommandService(KnowledgeBase kbase,
                                             Environment environment) {
@@ -348,7 +348,6 @@ public class SessionConfiguration
         } catch ( ClassNotFoundException e ) {
         }
 
-        
         if ( clazz != null ) {
             try {
                 this.commandService = clazz.getConstructor( KnowledgeBase.class,
@@ -365,33 +364,34 @@ public class SessionConfiguration
         }
     }
 
-	public TimerService newTimerService() {
-		String className = this.chainedProperties.getProperty(
-			"drools.timerService",
-			"org.drools.time.impl.JDKTimerService");
-		if (className == null) {
-			return null;
-		}
+    public TimerService newTimerService() {
+        String className = this.chainedProperties.getProperty(
+                                                               "drools.timerService",
+                                                               "org.drools.time.impl.JDKTimerService" );
+        if ( className == null ) {
+            return null;
+        }
 
-		Class<TimerService> clazz = null;
-		try {
-			clazz = (Class<TimerService>) this.classLoader.loadClass(className);
-		} catch (ClassNotFoundException e) {
-		}
+        Class<TimerService> clazz = null;
+        try {
+            clazz = (Class<TimerService>) this.classLoader.loadClass( className );
+        } catch ( ClassNotFoundException e ) {
+        }
 
-		if (clazz != null) {
-			try {
-				return clazz.newInstance();
-			} catch (Exception e) {
-				throw new IllegalArgumentException(
-					"Unable to instantiate timer service '" + className
-							+ "'", e);
-			}
-		} else {
-			throw new IllegalArgumentException("Timer service '" + className
-					+ "' not found");
-		}
-	}
+        if ( clazz != null ) {
+            try {
+                return clazz.newInstance();
+            } catch ( Exception e ) {
+                throw new IllegalArgumentException(
+                                                    "Unable to instantiate timer service '" + className
+                                                            + "'",
+                                                    e );
+            }
+        } else {
+            throw new IllegalArgumentException( "Timer service '" + className
+                                                + "' not found" );
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKnowledgeSessionOption> T getOption(Class<T> option) {
@@ -429,15 +429,15 @@ public class SessionConfiguration
     }
 
     public ClassLoader getClassLoader() {
-        return classLoader;
+        return this.classLoader.clone();
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(CompositeClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
     public QueryListenerOption getQueryListenerOption() {
         return this.queryListener;
     }
-    
+
 }
