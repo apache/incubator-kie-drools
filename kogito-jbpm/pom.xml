@@ -36,6 +36,18 @@
     <name>JBoss Inc.</name>
     <url>http://www.jboss.org/</url>
   </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/krisv/jbpm</url>
+    <connection>https://github.com/krisv/jbpm</connection>
+    <developerConnection>https://github.com/krisv/jbpm</developerConnection>
+  </scm>
 
   <repositories>
     <repository>
@@ -166,8 +178,27 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>2.1.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.2</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>jar</goal>
+                <goal>test-jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>				  
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
