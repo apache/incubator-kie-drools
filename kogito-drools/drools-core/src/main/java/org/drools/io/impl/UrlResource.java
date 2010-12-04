@@ -269,7 +269,7 @@ public class UrlResource extends BaseResource
     }
 
     private long grabLastMod() throws IOException {
-        // use File, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
+        // use File if possible, as http rounds milliseconds on some machines, this fine level of granularity is only really an issue for testing
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504473
         if ( "file".equals( url.getProtocol() ) ) {
             File file = getFile();
