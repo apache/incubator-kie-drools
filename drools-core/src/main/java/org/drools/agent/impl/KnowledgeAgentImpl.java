@@ -81,25 +81,27 @@ import org.drools.xml.XmlChangeSetReader;
  *
  * @author Mark Proctor, Sam Romano
  */
-public class KnowledgeAgentImpl implements KnowledgeAgent,
+public class KnowledgeAgentImpl
+    implements
+    KnowledgeAgent,
         ResourceChangeListener {
 
-    private String name;
-    private Set<Resource> resourceDirectories;
-    private KnowledgeBase kbase;
-    private ResourceChangeNotifierImpl notifier;
-    private boolean newInstance;
-    private SystemEventListener listener;
-    private boolean scanDirectories;
-    private boolean useKBaseClassLoaderForCompiling;
+    private String                         name;
+    private Set<Resource>                  resourceDirectories;
+    private KnowledgeBase                  kbase;
+    private ResourceChangeNotifierImpl     notifier;
+    private boolean                        newInstance;
+    private SystemEventListener            listener;
+    private boolean                        scanDirectories;
+    private boolean                        useKBaseClassLoaderForCompiling;
     private LinkedBlockingQueue<ChangeSet> queue;
-    private Thread thread;
-    private ChangeSetNotificationDetector changeSetNotificationDetector;
-    private SemanticModules semanticModules;
-    private final RegisteredResourceMap registeredResources = new RegisteredResourceMap();
-    private Map<Resource, String> dslResources = new HashMap<Resource, String>();
-    private KnowledgeAgentEventSupport eventSupport = new KnowledgeAgentEventSupport();
-    private KnowledgeBuilderConfiguration builderConfiguration;
+    private Thread                         thread;
+    private ChangeSetNotificationDetector  changeSetNotificationDetector;
+    private SemanticModules                semanticModules;
+    private final RegisteredResourceMap    registeredResources = new RegisteredResourceMap();
+    private Map<Resource, String>          dslResources        = new HashMap<Resource, String>();
+    private KnowledgeAgentEventSupport     eventSupport        = new KnowledgeAgentEventSupport();
+    private KnowledgeBuilderConfiguration  builderConfiguration;
 
     /**
      * Default constructor for KnowledgeAgentImpl
@@ -108,8 +110,10 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param kbase
      * @param configuration
      */
-    public KnowledgeAgentImpl(String name, KnowledgeBase kbase,
-            KnowledgeAgentConfiguration configuration, KnowledgeBuilderConfiguration builderConfiguration) {
+    public KnowledgeAgentImpl(String name,
+                              KnowledgeBase kbase,
+                              KnowledgeAgentConfiguration configuration,
+                              KnowledgeBuilderConfiguration builderConfiguration) {
         this.name = name;
         this.kbase = kbase;
         this.builderConfiguration = builderConfiguration;
@@ -119,38 +123,37 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         this.queue = new LinkedBlockingQueue<ChangeSet>();
         boolean scanResources = false;
         boolean monitor = false;
-        if (configuration != null) {
+        if ( configuration != null ) {
             // New Instance describes if we do incremental builds or not
             this.newInstance = ((KnowledgeAgentConfigurationImpl) configuration).isNewInstance();
             this.useKBaseClassLoaderForCompiling = ((KnowledgeAgentConfigurationImpl) configuration).isUseKBaseClassLoaderForCompiling();
             this.notifier = (ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService();
-            if (((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents()) {
+            if ( ((KnowledgeAgentConfigurationImpl) configuration).isMonitorChangeSetEvents() ) {
                 monitor = true;
             }
 
-            if (((KnowledgeAgentConfigurationImpl) configuration).isScanDirectories()) {
+            if ( ((KnowledgeAgentConfigurationImpl) configuration).isScanDirectories() ) {
                 this.scanDirectories = true;
             }
 
             scanResources = ((KnowledgeAgentConfigurationImpl) configuration).isScanResources();
-            if (scanResources) {
-                this.notifier.addResourceChangeMonitor(ResourceFactory.getResourceChangeScannerService());
+            if ( scanResources ) {
+                this.notifier.addResourceChangeMonitor( ResourceFactory.getResourceChangeScannerService() );
                 monitor = true; // if scanning, monitor must be true;
             }
         }
 
-        monitorResourceChangeEvents(monitor);
-
+        monitorResourceChangeEvents( monitor );
 
         autoBuildResourceMapping();
 
-        this.listener.info("KnowledgeAgent created, with configuration:\nmonitorChangeSetEvents="
-                + monitor
-                + " scanResources="
-                + scanResources
-                + " scanDirectories="
-                + this.scanDirectories
-                + " newInstance=" + this.newInstance);
+        this.listener.info( "KnowledgeAgent created, with configuration:\nmonitorChangeSetEvents="
+                            + monitor
+                            + " scanResources="
+                            + scanResources
+                            + " scanDirectories="
+                            + this.scanDirectories
+                            + " newInstance=" + this.newInstance );
     }
 
     public void setSystemEventListener(SystemEventListener listener) {
@@ -166,14 +169,14 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     }
 
     public void applyChangeSet(Resource resource) {
-        applyChangeSet(getChangeSet(resource));
+        applyChangeSet( getChangeSet( resource ) );
     }
 
     public void applyChangeSet(ChangeSet changeSet) {
-        synchronized (this.registeredResources) {
-            this.eventSupport.fireBeforeChangeSetApplied(changeSet);
+        synchronized ( this.registeredResources ) {
+            this.eventSupport.fireBeforeChangeSetApplied( changeSet );
 
-            this.listener.info("KnowledgeAgent applying ChangeSet");
+            this.listener.info( "KnowledgeAgent applying ChangeSet" );
 
             ChangeSetState changeSetState = new ChangeSetState();
             changeSetState.scanDirectories = this.scanDirectories;
@@ -181,19 +184,21 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             changeSetState.incrementalBuild = !(this.newInstance);
 
             // Process the new ChangeSet
-            processChangeSet(changeSet, changeSetState);
+            processChangeSet( changeSet,
+                              changeSetState );
             // Rebuild or do an update to the KnowledgeBase
-            buildKnowledgeBase(changeSetState);
+            buildKnowledgeBase( changeSetState );
             // Rebuild the resource mapping
             //buildResourceMapping();
 
-            this.eventSupport.fireAfterChangeSetApplied(changeSet);
+            this.eventSupport.fireAfterChangeSetApplied( changeSet );
         }
     }
 
     public void processChangeSet(Resource resource,
-            ChangeSetState changeSetState) {
-        processChangeSet(getChangeSet(resource), changeSetState);
+                                 ChangeSetState changeSetState) {
+        processChangeSet( getChangeSet( resource ),
+                          changeSetState );
     }
 
     /**
@@ -205,60 +210,72 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param changeSetState
      */
     public void processChangeSet(ChangeSet changeSet,
-            ChangeSetState changeSetState) {
-        synchronized (this.registeredResources) {
-            this.eventSupport.fireBeforeChangeSetProcessed(changeSet);
+                                 ChangeSetState changeSetState) {
+        synchronized ( this.registeredResources ) {
+            this.eventSupport.fireBeforeChangeSetProcessed( changeSet );
 
             /*
              * Process the added resources from a ChangeSet by subscribing to
              * the notifier and inserting a new ResourceMapping.
              */
-            for (Resource resource : changeSet.getResourcesAdded()) {
-                this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_ADDED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
-                    this.notifier.subscribeResourceChangeListener(this,
-                            resource);
+            for ( Resource resource : changeSet.getResourcesAdded() ) {
+                this.eventSupport.fireBeforeResourceProcessed( changeSet,
+                                                               resource,
+                                                               ((InternalResource) resource).getResourceType(),
+                                                               ResourceStatus.RESOURCE_ADDED );
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
+                    this.notifier.subscribeResourceChangeListener( this,
+                                                                   resource );
                     try {
-                        this.retrieveDSLResource(resource);
-                    } catch (IOException ex) {
-                        this.listener.exception("KnowledgeAgent Fails trying to read DSL Resource: "
-                                + resource, ex);
+                        this.retrieveDSLResource( resource );
+                    } catch ( IOException ex ) {
+                        this.listener.exception( "KnowledgeAgent Fails trying to read DSL Resource: "
+                                                         + resource,
+                                                 ex );
                     }
-                } else if (((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET) {
+                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
                     // @TODO We should not ignore an added change set
-                    this.listener.debug("KnowledgeAgent processing sub ChangeSet="
-                            + resource);
-                    processChangeSet(resource, changeSetState);
-                } else if (((InternalResource) resource).isDirectory()) {
-                    this.resourceDirectories.add(resource);
-                    this.listener.debug("KnowledgeAgent subscribing to directory="
-                            + resource);
-                    this.notifier.subscribeResourceChangeListener(this,
-                            resource);
+                    this.listener.debug( "KnowledgeAgent processing sub ChangeSet="
+                                         + resource );
+                    processChangeSet( resource,
+                                      changeSetState );
+                } else if ( ((InternalResource) resource).isDirectory() ) {
+                    this.resourceDirectories.add( resource );
+                    this.listener.debug( "KnowledgeAgent subscribing to directory="
+                                         + resource );
+                    this.notifier.subscribeResourceChangeListener( this,
+                                                                   resource );
                     // if it's a dir, subscribe it's children first
-                    for (Resource child : ((InternalResource) resource).listResources()) {
+                    for ( Resource child : ((InternalResource) resource).listResources() ) {
 
                         // ignore sub directories
-                        if (((InternalResource) child).isDirectory()) {
+                        if ( ((InternalResource) child).isDirectory() ) {
                             continue;
                         }
 
-                        ((InternalResource) child).setResourceType(((InternalResource) resource).getResourceType());
+                        ((InternalResource) child).setResourceType( ((InternalResource) resource).getResourceType() );
 
-                        this.addDefinitionMapping(child, null, true);
-                        if (this.addResourceMapping(child, true)
-                                && changeSetState.incrementalBuild) {
-                            changeSetState.addedResources.add(child);
+                        this.addDefinitionMapping( child,
+                                                   null,
+                                                   true );
+                        if ( this.addResourceMapping( child,
+                                                      true )
+                                && changeSetState.incrementalBuild ) {
+                            changeSetState.addedResources.add( child );
                         }
                     }
                 } else {
-                    if (this.addResourceMapping(resource, true)
-                            && changeSetState.incrementalBuild) {
-                        changeSetState.addedResources.add(resource);
+                    if ( this.addResourceMapping( resource,
+                                                  true )
+                            && changeSetState.incrementalBuild ) {
+                        changeSetState.addedResources.add( resource );
 
                     }
                 }
-                this.eventSupport.fireAfterResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_ADDED);
+                this.eventSupport.fireAfterResourceProcessed( changeSet,
+                                                              resource,
+                                                              ((InternalResource) resource).getResourceType(),
+                                                              ResourceStatus.RESOURCE_ADDED );
             }
 
             /*
@@ -266,32 +283,41 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              * mappings, index them if we are doing incremental builds so the
              * incremental building process knows what to remove.
              */
-            for (Resource resource : changeSet.getResourcesRemoved()) {
-                this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_MODIFIED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
-                    this.notifier.unsubscribeResourceChangeListener(this,
-                            resource);
-                    this.dslResources.remove(resource);
-                } else if (((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET) {
+            for ( Resource resource : changeSet.getResourcesRemoved() ) {
+                this.eventSupport.fireBeforeResourceProcessed( changeSet,
+                                                               resource,
+                                                               ((InternalResource) resource).getResourceType(),
+                                                               ResourceStatus.RESOURCE_MODIFIED );
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
+                    this.notifier.unsubscribeResourceChangeListener( this,
+                                                                     resource );
+                    this.dslResources.remove( resource );
+                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
                     // @TODO Is this true? Shouldn't we just ignore it in
                     // removed?
-                    processChangeSet(resource, changeSetState);
-                } else if (changeSetState.scanDirectories
-                        && ((InternalResource) resource).isDirectory()) {
-                    this.listener.debug("KnowledgeAgent unsubscribing from directory resource="
-                            + resource);
-                    this.resourceDirectories.remove(resource);
-                    this.notifier.unsubscribeResourceChangeListener(this,
-                            resource);
+                    processChangeSet( resource,
+                                      changeSetState );
+                } else if ( changeSetState.scanDirectories
+                            && ((InternalResource) resource).isDirectory() ) {
+                    this.listener.debug( "KnowledgeAgent unsubscribing from directory resource="
+                                         + resource );
+                    this.resourceDirectories.remove( resource );
+                    this.notifier.unsubscribeResourceChangeListener( this,
+                                                                     resource );
                 } else {
 
-                    Set<KnowledgeDefinition> definitions = this.removeResourceMapping(resource, true);
+                    Set<KnowledgeDefinition> definitions = this.removeResourceMapping( resource,
+                                                                                       true );
 
-                    if (definitions != null && changeSetState.incrementalBuild) {
-                        changeSetState.removedResourceMappings.put(resource, definitions);
+                    if ( definitions != null && changeSetState.incrementalBuild ) {
+                        changeSetState.removedResourceMappings.put( resource,
+                                                                    definitions );
                     }
                 }
-                this.eventSupport.fireAfterResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_MODIFIED);
+                this.eventSupport.fireAfterResourceProcessed( changeSet,
+                                                              resource,
+                                                              ((InternalResource) resource).getResourceType(),
+                                                              ResourceStatus.RESOURCE_MODIFIED );
             }
 
             /*
@@ -300,69 +326,82 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
              * repopulated with the KnowledgeDefinitions later after rebuilding.
              * Process any modified ChangeSets - treat them as if they were new.
              */
-            for (Resource resource : changeSet.getResourcesModified()) {
-                this.eventSupport.fireBeforeResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_REMOVED);
-                if (((InternalResource) resource).getResourceType() == ResourceType.DSL) {
+            for ( Resource resource : changeSet.getResourcesModified() ) {
+                this.eventSupport.fireBeforeResourceProcessed( changeSet,
+                                                               resource,
+                                                               ((InternalResource) resource).getResourceType(),
+                                                               ResourceStatus.RESOURCE_REMOVED );
+                if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
                     try {
-                        this.retrieveDSLResource(resource);
-                    } catch (IOException ex) {
-                        this.listener.exception("KnowledgeAgent Fails trying to read DSL Resource: "
-                                + resource, ex);
+                        this.retrieveDSLResource( resource );
+                    } catch ( IOException ex ) {
+                        this.listener.exception( "KnowledgeAgent Fails trying to read DSL Resource: " + resource,
+                                                 ex );
                     }
-                } else if (((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET) {
+                } else if ( ((InternalResource) resource).getResourceType() == ResourceType.CHANGE_SET ) {
                     // processChangeSet(resource, changeSetState);
                     continue;
-                } else if (((InternalResource) resource).isDirectory()) {
-                    if (this.resourceDirectories.add(resource)) {
-                        this.listener.warning("KnowledgeAgent is subscribing to a modified directory="
-                                + resource
-                                + " when it should have already been subscribed");
-                        this.notifier.subscribeResourceChangeListener(this,
-                                resource);
+                } else if ( ((InternalResource) resource).isDirectory() ) {
+                    if ( this.resourceDirectories.add( resource ) ) {
+                        this.listener.warning( "KnowledgeAgent is subscribing to a modified directory=" + resource+ 
+                                               " when it should have already been subscribed" );
+                        this.notifier.subscribeResourceChangeListener( this,
+                                                                       resource );
                     }
                     // if it's a dir, subscribe it's children first
-                    for (Resource child : ((InternalResource) resource).listResources()) {
+                    for ( Resource child : ((InternalResource) resource).listResources() ) {
 
                         // ignore sub directories
-                        if (((InternalResource) child).isDirectory()) {
+                        if ( ((InternalResource) child).isDirectory() ) {
                             continue;
                         }
 
-                        if (this.addResourceMapping(child, true)) {
-                            ((InternalResource) child).setResourceType(((InternalResource) resource).getResourceType());
-                            if (changeSetState.incrementalBuild) {
-                                changeSetState.addedResources.add(child);
+                        if ( this.addResourceMapping( child,
+                                                      true ) ) {
+                            ((InternalResource) child).setResourceType( ((InternalResource) resource).getResourceType() );
+                            if ( changeSetState.incrementalBuild ) {
+                                changeSetState.addedResources.add( child );
                             }
                         }
                     }
                 } else {
 
-                    boolean isResourceMapped = this.registeredResources.isResourceMapped(resource);
+                    boolean isResourceMapped = this.registeredResources.isResourceMapped( resource );
 
-                    if (!isResourceMapped) {
-                        this.listener.warning("KnowledgeAgent subscribing to new resource="
-                                + resource
-                                + ", though it was marked as modified.");
-                        this.addResourceMapping(resource, true);
-                        if (changeSetState.incrementalBuild) {
-                            changeSetState.addedResources.add(resource);
+                    if ( !isResourceMapped ) {
+                        this.listener.warning( "KnowledgeAgent subscribing to new resource="
+                                               + resource
+                                               + ", though it was marked as modified." );
+                        this.addResourceMapping( resource,
+                                                 true );
+                        if ( changeSetState.incrementalBuild ) {
+                            changeSetState.addedResources.add( resource );
                         }
                     } else {
-                        if (changeSetState.incrementalBuild) {
+                        if ( changeSetState.incrementalBuild ) {
 
-                            Set<KnowledgeDefinition> definitions = this.removeResourceMapping(resource, true);
+                            Set<KnowledgeDefinition> definitions = this.removeResourceMapping( resource,
+                                                                                               true );
 
-                            changeSetState.modifiedResourceMappings.put(resource, definitions);
+                            changeSetState.modifiedResourceMappings.put( resource,
+                                                                         definitions );
 
                             //adds a new empty mapping that will be filled in buildKnowledgeBase()
-                            this.addResourceMapping(resource, false);
+                            this.addResourceMapping( resource,
+                                                     false );
                         }
                     }
                 }
-                this.eventSupport.fireAfterResourceProcessed(changeSet, resource, ((InternalResource) resource).getResourceType(), ResourceStatus.RESOURCE_REMOVED);
+                this.eventSupport.fireAfterResourceProcessed( changeSet,
+                                                              resource,
+                                                              ((InternalResource) resource).getResourceType(),
+                                                              ResourceStatus.RESOURCE_REMOVED );
             }
 
-            this.eventSupport.fireAfterChangeSetProcessed(changeSet, changeSetState.addedResources, changeSetState.modifiedResourceMappings, changeSetState.removedResourceMappings);
+            this.eventSupport.fireAfterChangeSetProcessed( changeSet,
+                                                           changeSetState.addedResources,
+                                                           changeSetState.modifiedResourceMappings,
+                                                           changeSetState.removedResourceMappings );
         }
     }
 
@@ -375,28 +414,31 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @return A ChangeSet that can be processed by this Agent.
      */
     public ChangeSet getChangeSet(Resource resource) {
-        if (this.semanticModules == null) {
+        if ( this.semanticModules == null ) {
             this.semanticModules = new SemanticModules();
-            this.semanticModules.addSemanticModule(new ChangeSetSemanticModule());
+            this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
         }
 
-        XmlChangeSetReader reader = new XmlChangeSetReader(this.semanticModules);
-        if (resource instanceof ClassPathResource) {
-            reader.setClassLoader(((ClassPathResource) resource).getClassLoader(), null);
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.semanticModules );
+        if ( resource instanceof ClassPathResource ) {
+            reader.setClassLoader( ((ClassPathResource) resource).getClassLoader(),
+                                   null );
         } else {
-            reader.setClassLoader(((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader(), null);
+            reader.setClassLoader( ((AbstractRuleBase) (((KnowledgeBaseImpl) this.kbase).ruleBase)).getConfiguration().getClassLoader(),
+                                   null );
         }
 
         ChangeSet changeSet = null;
         try {
-            changeSet = reader.read(resource.getReader());
-        } catch (Exception e) {
-            this.listener.exception(new RuntimeException(
-                    "Unable to parse ChangeSet", e));
+            changeSet = reader.read( resource.getReader() );
+        } catch ( Exception e ) {
+            this.listener.exception( new RuntimeException(
+                                                           "Unable to parse ChangeSet",
+                                                           e ) );
         }
-        if (changeSet == null) {
-            this.listener.exception(new RuntimeException(
-                    "Unable to parse ChangeSet"));
+        if ( changeSet == null ) {
+            this.listener.exception( new RuntimeException(
+                                                           "Unable to parse ChangeSet" ) );
         }
         return changeSet;
     }
@@ -409,12 +451,12 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     public static class ChangeSetState {
 
-        List<Resource> addedResources = new ArrayList<Resource>();
+        List<Resource>                          addedResources           = new ArrayList<Resource>();
         /**
          * Map of removed definitions. The Set of kdefinitions is the original
          * definitions of the resource (before the deletion).
          */
-        Map<Resource, Set<KnowledgeDefinition>> removedResourceMappings = new HashMap<Resource, Set<KnowledgeDefinition>>();
+        Map<Resource, Set<KnowledgeDefinition>> removedResourceMappings  = new HashMap<Resource, Set<KnowledgeDefinition>>();
         /**
          * Map of modified definitions. The Set of kdefinitions is the original
          * definitions of the resource (before the modification).
@@ -424,9 +466,9 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
          *Map of created Packages. The agent will create this packages when
          * processing added and modified resources
          */
-        Map<Resource, KnowledgePackage> createdPackages = new LinkedHashMap<Resource, KnowledgePackage>();
-        boolean scanDirectories;
-        boolean incrementalBuild;
+        Map<Resource, KnowledgePackage>         createdPackages          = new LinkedHashMap<Resource, KnowledgePackage>();
+        boolean                                 scanDirectories;
+        boolean                                 incrementalBuild;
     }
 
     /**
@@ -436,12 +478,15 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param pkg
      * @param resource
      */
-    private void buildResourceMapping(Package pkg, Resource resource) {
-        if (resource == null) {
-            this.listener.warning("KnowledgeAgent: trying to build a resource map for a null resource!");
+    private void buildResourceMapping(Package pkg,
+                                      Resource resource) {
+        if ( resource == null ) {
+            this.listener.warning( "KnowledgeAgent: trying to build a resource map for a null resource!" );
             return;
         }
-        this.buildResourceMapping(pkg, resource, false);
+        this.buildResourceMapping( pkg,
+                                   resource,
+                                   false );
     }
 
     /**
@@ -461,63 +506,73 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * will be taken from each definition. If that is the case, the parameter
      * <code>resource</code> is not used.
      */
-    private void buildResourceMapping(Package pkg, Resource resource, boolean autoDiscoverResource) {
+    private void buildResourceMapping(Package pkg,
+                                      Resource resource,
+                                      boolean autoDiscoverResource) {
 
-        synchronized (this.registeredResources) {
-            if (!autoDiscoverResource && resource == null) {
-                this.listener.warning("KnowledgeAgent: Impossible to map to a null resource! Use autoDiscoverResource = true ");
+        synchronized ( this.registeredResources ) {
+            if ( !autoDiscoverResource && resource == null ) {
+                this.listener.warning( "KnowledgeAgent: Impossible to map to a null resource! Use autoDiscoverResource = true " );
                 return;
             }
 
-            if (autoDiscoverResource && resource != null) {
-                this.listener.warning("KnowledgeAgent: building resource map with resource set and autoDiscoverResource=true. Resource value wil be overwritten!");
+            if ( autoDiscoverResource && resource != null ) {
+                this.listener.warning( "KnowledgeAgent: building resource map with resource set and autoDiscoverResource=true. Resource value wil be overwritten!" );
             }
 
-            for (Rule rule : pkg.getRules()) {
-                if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for rule="
-                            + rule);
+            for ( Rule rule : pkg.getRules() ) {
+                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                    this.listener.debug( "KnowledgeAgent no resource mapped for rule="
+                                         + rule );
                 }
-                if (autoDiscoverResource) {
+                if ( autoDiscoverResource ) {
                     resource = rule.getResource();
                 }
 
-                this.addDefinitionMapping(resource, rule, true);
+                this.addDefinitionMapping( resource,
+                                           rule,
+                                           true );
             }
 
-            for (Process process : pkg.getRuleFlows().values()) {
-                if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for process="
-                            + process);
+            for ( Process process : pkg.getRuleFlows().values() ) {
+                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                    this.listener.debug( "KnowledgeAgent no resource mapped for process="
+                                         + process );
                 }
-                if (autoDiscoverResource) {
+                if ( autoDiscoverResource ) {
                     resource = ((ResourcedObject) process).getResource();
                 }
 
-                this.addDefinitionMapping(resource, process, true);
+                this.addDefinitionMapping( resource,
+                                           process,
+                                           true );
             }
 
-            for (TypeDeclaration typeDeclaration : pkg.getTypeDeclarations().values()) {
-                if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for type="
-                            + typeDeclaration);
+            for ( TypeDeclaration typeDeclaration : pkg.getTypeDeclarations().values() ) {
+                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                    this.listener.debug( "KnowledgeAgent no resource mapped for type="
+                                         + typeDeclaration );
                 }
-                if (autoDiscoverResource) {
+                if ( autoDiscoverResource ) {
                     resource = typeDeclaration.getResource();
                 }
 
-                this.addDefinitionMapping(resource, typeDeclaration, true);
+                this.addDefinitionMapping( resource,
+                                           typeDeclaration,
+                                           true );
             }
 
-            for (Function function : pkg.getFunctions().values()) {
-                if (resource != null && !((InternalResource) resource).hasURL()) {
-                    this.listener.debug("KnowledgeAgent no resource mapped for function="
-                            + function);
+            for ( Function function : pkg.getFunctions().values() ) {
+                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                    this.listener.debug( "KnowledgeAgent no resource mapped for function="
+                                         + function );
                 }
-                if (autoDiscoverResource) {
+                if ( autoDiscoverResource ) {
                     resource = function.getResource();
                 }
-                this.addDefinitionMapping(resource, function, true);
+                this.addDefinitionMapping( resource,
+                                           function,
+                                           true );
             }
         }
     }
@@ -528,39 +583,45 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * not just removing of an entire package
      */
     public void autoBuildResourceMapping() {
-        this.listener.debug("KnowledgeAgent building resource map");
-        synchronized (this.registeredResources) {
+        this.listener.debug( "KnowledgeAgent building resource map" );
+        synchronized ( this.registeredResources ) {
             RuleBase rbase = ((KnowledgeBaseImpl) this.kbase).ruleBase;
 
-            for (Package pkg : rbase.getPackages()) {
-                this.buildResourceMapping(pkg, null, true);
+            for ( Package pkg : rbase.getPackages() ) {
+                this.buildResourceMapping( pkg,
+                                           null,
+                                           true );
             }
         }
     }
 
     public KnowledgeBase getKnowledgeBase() {
-        synchronized (this.registeredResources) {
+        synchronized ( this.registeredResources ) {
             return this.kbase;
         }
     }
 
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
-        return new StatelessKnowledgeSessionImpl(null, this, null);
+        return new StatelessKnowledgeSessionImpl( null,
+                                                  this,
+                                                  null );
     }
 
     public StatelessKnowledgeSession newStatelessKnowledgeSession(
-            KnowledgeSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl(null, this, conf);
+                                                                  KnowledgeSessionConfiguration conf) {
+        return new StatelessKnowledgeSessionImpl( null,
+                                                  this,
+                                                  conf );
     }
 
     public void resourcesChanged(ChangeSet changeSet) {
         try {
-            this.listener.debug("KnowledgeAgent received ChangeSet changed notification");
-            this.queue.put(changeSet);
-        } catch (InterruptedException e) {
-            this.listener.exception(new RuntimeException(
-                    "KnowledgeAgent error while adding ChangeSet notification to queue",
-                    e));
+            this.listener.debug( "KnowledgeAgent received ChangeSet changed notification" );
+            this.queue.put( changeSet );
+        } catch ( InterruptedException e ) {
+            this.listener.exception( new RuntimeException(
+                                                           "KnowledgeAgent error while adding ChangeSet notification to queue",
+                                                           e ) );
         }
     }
 
@@ -574,17 +635,17 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      *            The state that the ChangeSet performed
      */
     public void buildKnowledgeBase(ChangeSetState changeSetState) {
-        this.listener.debug("KnowledgeAgent rebuilding KnowledgeBase using ChangeSet");
-        synchronized (this.registeredResources) {
+        this.listener.debug( "KnowledgeAgent rebuilding KnowledgeBase using ChangeSet" );
+        synchronized ( this.registeredResources ) {
 
             /*
              * Do the following only if we are building a new instance,
              * otherwise, do an incremental build/update
              */
-            if (this.newInstance) {
-                rebuildResources(changeSetState);
+            if ( this.newInstance ) {
+                rebuildResources( changeSetState );
             } else {
-                incrementalBuildResources(changeSetState);
+                incrementalBuildResources( changeSetState );
             }
 
             /*
@@ -600,10 +661,10 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
                 }
             } finally {
                 ruleBase.unlock();
-            }            
+            }
         }
-        this.eventSupport.fireKnowledgeBaseUpdated(this.kbase);
-        this.listener.debug("KnowledgeAgent finished rebuilding KnowledgeBase using ChangeSet");
+        this.eventSupport.fireKnowledgeBaseUpdated( this.kbase );
+        this.listener.debug( "KnowledgeAgent finished rebuilding KnowledgeBase using ChangeSet" );
     }
 
     /**
@@ -615,7 +676,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @see #createPackageFromResource(org.drools.io.Resource, org.drools.builder.KnowledgeBuilder) 
      */
     private KnowledgePackageImp createPackageFromResource(Resource resource) {
-        return this.createPackageFromResource(resource, null);
+        return this.createPackageFromResource( resource,
+                                               null );
     }
 
     /**
@@ -627,21 +689,26 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * is already a package, this builder is not used.
      * @return the package resulting of the compilation of resource.
      */
-    private KnowledgePackageImp createPackageFromResource(Resource resource, KnowledgeBuilder kbuilder) {
+    private KnowledgePackageImp createPackageFromResource(Resource resource,
+                                                          KnowledgeBuilder kbuilder) {
 
-        if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
+        if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
 
-            if (kbuilder == null) {
+            if ( kbuilder == null ) {
                 kbuilder = this.createKBuilder();
             }
 
-            kbuilder.add(resource, ((InternalResource) resource).getResourceType());
-            if (kbuilder.hasErrors()) {
-                this.eventSupport.fireResourceCompilationFailed(kbuilder, resource, ((InternalResource) resource).getResourceType());
+            kbuilder.add( resource,
+                          ((InternalResource) resource).getResourceType() );
+            if ( kbuilder.hasErrors() ) {
+                this.eventSupport.fireResourceCompilationFailed( kbuilder,
+                                                                 resource,
+                                                                 ((InternalResource) resource).getResourceType() );
                 this.listener.warning(
-                        "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
+                                       "KnowledgeAgent has KnowledgeBuilder errors ",
+                                       kbuilder.getErrors() );
             }
-            if (kbuilder.getKnowledgePackages().iterator().hasNext()) {
+            if ( kbuilder.getKnowledgePackages().iterator().hasNext() ) {
                 return (KnowledgePackageImp) kbuilder.getKnowledgePackages().iterator().next();
             }
             return null;
@@ -651,25 +718,27 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             KnowledgePackageImp kpkg = null;
             try {
                 is = resource.getInputStream();
-                Object object = DroolsStreamUtils.streamIn(is);
-                if (object instanceof KnowledgePackageImp) {
+                Object object = DroolsStreamUtils.streamIn( is );
+                if ( object instanceof KnowledgePackageImp ) {
                     kpkg = ((KnowledgePackageImp) object);
                 } else {
-                    kpkg = new KnowledgePackageImp((Package) object);
+                    kpkg = new KnowledgePackageImp( (Package) object );
                 }
-                for (Rule rule : kpkg.pkg.getRules()) {
-                    rule.setResource(resource);
+                for ( Rule rule : kpkg.pkg.getRules() ) {
+                    rule.setResource( resource );
                 }
 
-            } catch (Exception ex) {
-                this.listener.exception(new RuntimeException("KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ", ex));
+            } catch ( Exception ex ) {
+                this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ",
+                                                               ex ) );
             } finally {
                 try {
-                    if (is != null) {
+                    if ( is != null ) {
                         is.close();
                     }
-                } catch (IOException e) {
-                    this.listener.exception(new RuntimeException("KnowledgeAgent exception while trying to close KnowledgeDefinitionsPackage  ", e));
+                } catch ( IOException e ) {
+                    this.listener.exception( new RuntimeException( "KnowledgeAgent exception while trying to close KnowledgeDefinitionsPackage  ",
+                                                                   e ) );
                 }
             }
             return kpkg;
@@ -685,26 +754,26 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      *            The ChangeSetState
      */
     private void rebuildResources(ChangeSetState changeSetState) {
-        if (!this.newInstance) {
-            listener.warning("KnowledgeAgent rebuilding KnowledgeBase when newInstance is false");
+        if ( !this.newInstance ) {
+            listener.warning( "KnowledgeAgent rebuilding KnowledgeBase when newInstance is false" );
         }
 
         /*
          * Rebuild a new knowledge base. Try to use the old configuration if
          * possible
          */
-        if (this.kbase != null) {
-            this.kbase = KnowledgeBaseFactory.newKnowledgeBase(((InternalRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration());
+        if ( this.kbase != null ) {
+            this.kbase = KnowledgeBaseFactory.newKnowledgeBase( ((InternalRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getConfiguration() );
         } else {
             this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
         }
 
         //puts all the resources as added in the changeSet.
         changeSetState.addedResources.clear();
-        changeSetState.addedResources.addAll(this.registeredResources.getAllResources());
-        addResourcesToKnowledgeBase(changeSetState);
+        changeSetState.addedResources.addAll( this.registeredResources.getAllResources() );
+        addResourcesToKnowledgeBase( changeSetState );
 
-        this.listener.info("KnowledgeAgent new KnowledgeBase now built and in use");
+        this.listener.info( "KnowledgeAgent new KnowledgeBase now built and in use" );
     }
 
     /**
@@ -745,73 +814,77 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param changeSetState the ChangeSetState
      */
     private void incrementalBuildResources(ChangeSetState changeSetState) {
-        if (this.newInstance) {
-            this.listener.warning("KnowledgeAgent incremental build of KnowledgeBase when newInstance is true");
+        if ( this.newInstance ) {
+            this.listener.warning( "KnowledgeAgent incremental build of KnowledgeBase when newInstance is true" );
         }
         // Incrementally rebuild the resources
-        synchronized (this.registeredResources) {
-            this.listener.info("KnowledgeAgent performing an incremental build of the ChangeSet");
+        synchronized ( this.registeredResources ) {
+            this.listener.info( "KnowledgeAgent performing an incremental build of the ChangeSet" );
 
             // Create the knowledge base if one does not exist
-            if (this.kbase == null) {
+            if ( this.kbase == null ) {
                 this.kbase = KnowledgeBaseFactory.newKnowledgeBase();
             }
 
             // Remove all rules from the resources removed and also those
             // modified
-            for (Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.removedResourceMappings.entrySet()) {
-                for (KnowledgeDefinition kd : entry.getValue()) {
-                    removeKnowledgeDefinitionFromBase(kd);
+            for ( Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.removedResourceMappings.entrySet() ) {
+                for ( KnowledgeDefinition kd : entry.getValue() ) {
+                    removeKnowledgeDefinitionFromBase( kd );
                 }
             }
 
-            for (Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.modifiedResourceMappings.entrySet()) {
+            for ( Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.modifiedResourceMappings.entrySet() ) {
 
-                KnowledgePackageImp kpkg = createPackageFromResource(entry.getKey());
+                KnowledgePackageImp kpkg = createPackageFromResource( entry.getKey() );
 
-                if (kpkg == null) {
-                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: " + entry.getKey());
+                if ( kpkg == null ) {
+                    this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey() );
                     continue;
                 }
 
-
-                this.listener.debug("KnowledgeAgent: Diffing: " + entry.getKey());
-
+                this.listener.debug( "KnowledgeAgent: Diffing: " + entry.getKey() );
 
                 ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
 
                 //we suppose that the package definition didn't change in the resource.
                 //That's why we are serching the current package as
                 //this.kbase.getKnowledgePackage(kpkg.getName())
-                ResourceDiffResult diff = rdp.diff(entry.getValue(), kpkg, (KnowledgePackageImp) this.kbase.getKnowledgePackage(kpkg.getName()));
+                ResourceDiffResult diff = rdp.diff( entry.getValue(),
+                                                    kpkg,
+                                                    (KnowledgePackageImp) this.kbase.getKnowledgePackage( kpkg.getName() ) );
 
-                for (KnowledgeDefinition kd : diff.getRemovedDefinitions()) {
-                    this.listener.debug("KnowledgeAgent: Removing: " + kd);
-                    removeKnowledgeDefinitionFromBase(kd);
+                for ( KnowledgeDefinition kd : diff.getRemovedDefinitions() ) {
+                    this.listener.debug( "KnowledgeAgent: Removing: " + kd );
+                    removeKnowledgeDefinitionFromBase( kd );
                 }
 
                 //because all the mappings for "resource" were removed, we
                 //need to map again the definitions that didn't change.
                 //Those modified or added will be mapped in addResourcesToKnowledgeBase()
-                for (KnowledgeDefinition knowledgeDefinition : diff.getUnmodifiedDefinitions()) {
-                    this.addDefinitionMapping(entry.getKey(), knowledgeDefinition, false);
+                for ( KnowledgeDefinition knowledgeDefinition : diff.getUnmodifiedDefinitions() ) {
+                    this.addDefinitionMapping( entry.getKey(),
+                                               knowledgeDefinition,
+                                               false );
                 }
 
-                changeSetState.createdPackages.put(entry.getKey(), diff.getPkg());
+                changeSetState.createdPackages.put( entry.getKey(),
+                                                    diff.getPkg() );
 
             }
 
             /*
              * Compile the newly added resources
              */
-            for (Resource resource : changeSetState.addedResources) {
+            for ( Resource resource : changeSetState.addedResources ) {
                 ///compile the new resource
-                KnowledgePackageImp kpkg = createPackageFromResource(resource);
-                if (kpkg == null) {
-                    this.listener.warning("KnowledgeAgent: The resource didn't create any package: " + resource);
+                KnowledgePackageImp kpkg = createPackageFromResource( resource );
+                if ( kpkg == null ) {
+                    this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + resource );
                     continue;
                 }
-                changeSetState.createdPackages.put(resource, kpkg);
+                changeSetState.createdPackages.put( resource,
+                                                    kpkg );
             }
 
             //the added and modified resources were already processed and 
@@ -819,10 +892,10 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
             changeSetState.addedResources.clear();
             changeSetState.modifiedResourceMappings.clear();
 
-            addResourcesToKnowledgeBase(changeSetState);
+            addResourcesToKnowledgeBase( changeSetState );
 
         }
-        this.listener.info("KnowledgeAgent incremental build of KnowledgeBase finished and in use");
+        this.listener.info( "KnowledgeAgent incremental build of KnowledgeBase finished and in use" );
     }
 
     /**
@@ -831,30 +904,33 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private void removeKnowledgeDefinitionFromBase(KnowledgeDefinition kd) {
         try {
-            if (kd instanceof Query) {
+            if ( kd instanceof Query ) {
                 Query query = (Query) kd;
-                this.listener.debug("KnowledgeAgent removing Query=" + query
-                        + " from package=" + query.getPackageName());
-                this.kbase.removeQuery(query.getPackageName(), query.getName());
-            }else if (kd instanceof Rule) {
+                this.listener.debug( "KnowledgeAgent removing Query=" + query
+                                     + " from package=" + query.getPackageName() );
+                this.kbase.removeQuery( query.getPackageName(),
+                                        query.getName() );
+            } else if ( kd instanceof Rule ) {
                 Rule rule = (Rule) kd;
-                this.listener.debug("KnowledgeAgent removing Rule=" + rule
-                        + " from package=" + rule.getPackageName());
-                this.kbase.removeRule(rule.getPackageName(), rule.getName());
-            } else if (kd instanceof Process) {
+                this.listener.debug( "KnowledgeAgent removing Rule=" + rule
+                                     + " from package=" + rule.getPackageName() );
+                this.kbase.removeRule( rule.getPackageName(),
+                                       rule.getName() );
+            } else if ( kd instanceof Process ) {
                 Process process = (Process) kd;
-                this.listener.debug("KnowledgeAgent removing Process=" + process);
-                this.kbase.removeProcess(process.getId());
-            } else if (kd instanceof TypeDeclaration) {
+                this.listener.debug( "KnowledgeAgent removing Process=" + process );
+                this.kbase.removeProcess( process.getId() );
+            } else if ( kd instanceof TypeDeclaration ) {
                 // @TODO Handle Type Declarations... is there a way to remove this?
-            } else if (kd instanceof Function) {
+            } else if ( kd instanceof Function ) {
                 Function function = (Function) kd;
-                this.kbase.removeFunction(function.getNamespace(), function.getName());
+                this.kbase.removeFunction( function.getNamespace(),
+                                           function.getName() );
             }
-        } catch (IllegalArgumentException e) {
+        } catch ( IllegalArgumentException e ) {
             //it could be possible that a definition does not longer exists
             //in the kbase.
-            this.listener.warning(e.getMessage());
+            this.listener.warning( e.getMessage() );
         }
     }
 
@@ -885,57 +961,59 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         KnowledgeBuilder kbuilder = this.createKBuilder();
         List<Package> packages = new ArrayList<Package>();
 
-
-        for (Resource resource : changeSetState.addedResources) {
-            KnowledgePackageImp createdPackage = this.createPackageFromResource(resource, kbuilder);
-            changeSetState.createdPackages.put(resource, createdPackage);
+        for ( Resource resource : changeSetState.addedResources ) {
+            KnowledgePackageImp createdPackage = this.createPackageFromResource( resource,
+                                                                                 kbuilder );
+            changeSetState.createdPackages.put( resource,
+                                                createdPackage );
         }
 
         //createPackageFromResource already log this
-//        if (kbuilder.hasErrors()) {
-//            this.listener.warning(
-//                    "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
-//        }
+        //        if (kbuilder.hasErrors()) {
+        //            this.listener.warning(
+        //                    "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
+        //        }
 
-        for (Map.Entry<Resource, KnowledgePackage> entry : changeSetState.createdPackages.entrySet()) {
+        for ( Map.Entry<Resource, KnowledgePackage> entry : changeSetState.createdPackages.entrySet() ) {
             // For PKG (.pks) just add them
             Resource resource = entry.getKey();
-            this.listener.debug("KnowledgeAgent obtaining pkg resource="
-                    + resource);
+            this.listener.debug( "KnowledgeAgent obtaining pkg resource="
+                                 + resource );
 
             try {
                 Package pkg = ((KnowledgePackageImp) entry.getValue()).pkg;
-                for (Rule rule : pkg.getRules()) {
-                    rule.setResource(resource);
+                for ( Rule rule : pkg.getRules() ) {
+                    rule.setResource( resource );
                 }
-                packages.add(pkg);
+                packages.add( pkg );
 
-                this.buildResourceMapping(pkg, resource);
-            } catch (Exception e) {
-                this.listener.exception(new RuntimeException(
-                        "KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ",
-                        e));
+                this.buildResourceMapping( pkg,
+                                           resource );
+            } catch ( Exception e ) {
+                this.listener.exception( new RuntimeException(
+                                                               "KnowledgeAgent exception while trying to deserialize KnowledgeDefinitionsPackage  ",
+                                                               e ) );
             }
         }
 
-//        if (kbuilder
-//                != null) {
-//            // Log any errors we come across
-//            if (kbuilder.hasErrors()) {
-//                this.listener.warning(
-//                        "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
-//            }
-//            this.listener.debug("KnowledgeAgent adding KnowledgePackages from KnowledgeBuilder");
-//            this.kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-//        }
+        //        if (kbuilder
+        //                != null) {
+        //            // Log any errors we come across
+        //            if (kbuilder.hasErrors()) {
+        //                this.listener.warning(
+        //                        "KnowledgeAgent has KnowledgeBuilder errors ", kbuilder.getErrors());
+        //            }
+        //            this.listener.debug("KnowledgeAgent adding KnowledgePackages from KnowledgeBuilder");
+        //            this.kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        //        }
         /*
          * Add all the packages we found, but did not build, from the resources
          * now
          */
-        for (Package pkg : packages) {
-            this.listener.debug("KnowledgeAgent adding KnowledgeDefinitionsPackage "
-                    + pkg.getName());
-            ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage(pkg);
+        for ( Package pkg : packages ) {
+            this.listener.debug( "KnowledgeAgent adding KnowledgeDefinitionsPackage "
+                                 + pkg.getName() );
+            ((KnowledgeBaseImpl) this.kbase).ruleBase.addPackage( pkg );
         }
     }
 
@@ -946,9 +1024,6 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     public String getName() {
         return this.name;
-
-
-
 
     }
 
@@ -961,34 +1036,37 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     public void monitorResourceChangeEvents(boolean monitor) {
 
         Set<Resource> allResources = new HashSet<Resource>();
-        allResources.addAll(this.resourceDirectories);
-        allResources.addAll(this.registeredResources.getAllResources());
-        allResources.addAll(this.dslResources.keySet());
-
+        allResources.addAll( this.resourceDirectories );
+        allResources.addAll( this.registeredResources.getAllResources() );
+        allResources.addAll( this.dslResources.keySet() );
 
         //subscribe/unsubscribe from resources
-        for (Resource resource : allResources) {
-            if (monitor) {
-                this.listener.debug("KnowledgeAgent subscribing from resource="
-                        + resource);
-                this.notifier.subscribeResourceChangeListener(this, resource);
+        for ( Resource resource : allResources ) {
+            if ( monitor ) {
+                this.listener.debug( "KnowledgeAgent subscribing from resource="
+                                     + resource );
+                this.notifier.subscribeResourceChangeListener( this,
+                                                               resource );
             } else {
-                this.listener.debug("KnowledgeAgent unsubscribing from resource="
-                        + resource);
-                this.notifier.unsubscribeResourceChangeListener(this, resource);
+                this.listener.debug( "KnowledgeAgent unsubscribing from resource="
+                                     + resource );
+                this.notifier.unsubscribeResourceChangeListener( this,
+                                                                 resource );
             }
         }
 
-        if (!monitor && this.changeSetNotificationDetector != null) {
+        if ( !monitor && this.changeSetNotificationDetector != null ) {
             // we are running, but it wants to stop
             // this will stop the thread
             this.changeSetNotificationDetector.stop();
             this.thread.interrupt();
             this.changeSetNotificationDetector = null;
-        } else if (monitor && this.changeSetNotificationDetector == null) {
+        } else if ( monitor && this.changeSetNotificationDetector == null ) {
             this.changeSetNotificationDetector = new ChangeSetNotificationDetector(
-                    this, this.queue, this.listener);
-            this.thread = new Thread(this.changeSetNotificationDetector);
+                                                                                    this,
+                                                                                    this.queue,
+                                                                                    this.listener );
+            this.thread = new Thread( this.changeSetNotificationDetector );
             this.thread.start();
         }
     }
@@ -999,14 +1077,15 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param notify
      * @return
      */
-    public boolean addResourceMapping(Resource resource, boolean notify) {
-        boolean newMapping = this.registeredResources.createNewResourceEntry(resource);
+    public boolean addResourceMapping(Resource resource,
+                                      boolean notify) {
+        boolean newMapping = this.registeredResources.createNewResourceEntry( resource );
 
-        if (notify && newMapping) {
-            this.listener.debug("KnowledgeAgent notifier subscribing to resource="
-                    + resource);
-            this.notifier.subscribeResourceChangeListener(this,
-                    resource);
+        if ( notify && newMapping ) {
+            this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
+                                 + resource );
+            this.notifier.subscribeResourceChangeListener( this,
+                                                           resource );
             return true;
         }
         return false;
@@ -1020,51 +1099,52 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      * @param notify
      * @return if the resource/definition didn't exist in registeredResources.
      */
-    public boolean addDefinitionMapping(Resource resource, KnowledgeDefinition definition, boolean notify) {
+    public boolean addDefinitionMapping(Resource resource,
+                                        KnowledgeDefinition definition,
+                                        boolean notify) {
 
-        if (resource == null) {
-            listener.warning("KnowledgeAgent: impossible to add a map for a null resource! skiping.");
+        if ( resource == null ) {
+            listener.warning( "KnowledgeAgent: impossible to add a map for a null resource! skiping." );
             return false;
         }
 
-        this.listener.debug("KnowledgeAgent mapping resource="
-                + resource + " to KnowledgeDefinition=" + definition);
+        this.listener.debug( "KnowledgeAgent mapping resource="
+                             + resource + " to KnowledgeDefinition=" + definition );
 
-        boolean isNewResource = this.registeredResources.isResourceMapped(resource);
+        boolean isNewResource = this.registeredResources.isResourceMapped( resource );
 
         boolean isNewDefinition = true;
 
-        if (definition != null) {
-            isNewDefinition = this.registeredResources.putDefinition(resource, definition);
+        if ( definition != null ) {
+            isNewDefinition = this.registeredResources.putDefinition( resource,
+                                                                      definition );
         }
 
-        if (notify && isNewResource) {
-            this.listener.debug("KnowledgeAgent notifier subscribing to resource="
-                    + resource);
+        if ( notify && isNewResource ) {
+            this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
+                                 + resource );
 
-            this.notifier.subscribeResourceChangeListener(this,
-                    resource);
+            this.notifier.subscribeResourceChangeListener( this,
+                                                           resource );
         }
 
         return isNewDefinition;
     }
 
     public Set<KnowledgeDefinition> removeResourceMapping(Resource resource,
-            boolean unsubscribe) {
-        this.listener.debug("KnowledgeAgent removing mappings for resource="
-                + resource + " with unsubscribe=" + unsubscribe);
-        Set<KnowledgeDefinition> definitions = this.registeredResources.removeDefinitions(resource);
+                                                          boolean unsubscribe) {
+        this.listener.debug( "KnowledgeAgent removing mappings for resource="
+                             + resource + " with unsubscribe=" + unsubscribe );
+        Set<KnowledgeDefinition> definitions = this.registeredResources.removeDefinitions( resource );
 
-
-
-
-        if (definitions != null) {
-            if (unsubscribe) {
-                this.listener.debug("KnowledgeAgent notifier unsubscribing to resource="
-                        + resource);
+        if ( definitions != null ) {
+            if ( unsubscribe ) {
+                this.listener.debug( "KnowledgeAgent notifier unsubscribing to resource="
+                                     + resource );
 
                 this.notifier.unsubscribeResourceChangeListener(
-                        this, resource);
+                                                                 this,
+                                                                 resource );
             }
         }
         return definitions;
@@ -1077,16 +1157,18 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      *
      * @author Mark Proctor
      */
-    public static class ChangeSetNotificationDetector implements Runnable {
+    public static class ChangeSetNotificationDetector
+        implements
+        Runnable {
 
         private LinkedBlockingQueue<ChangeSet> queue;
-        private volatile boolean monitor;
-        private KnowledgeAgentImpl kagent;
-        private SystemEventListener listener;
+        private volatile boolean               monitor;
+        private KnowledgeAgentImpl             kagent;
+        private SystemEventListener            listener;
 
         public ChangeSetNotificationDetector(KnowledgeAgentImpl kagent,
-                LinkedBlockingQueue<ChangeSet> queue,
-                SystemEventListener listener) {
+                                             LinkedBlockingQueue<ChangeSet> queue,
+                                             SystemEventListener listener) {
             this.queue = queue;
             this.kagent = kagent;
             this.listener = listener;
@@ -1098,25 +1180,25 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         }
 
         public void run() {
-            if (this.monitor) {
-                this.listener.info("KnowledegAgent has started listening for ChangeSet notifications");
+            if ( this.monitor ) {
+                this.listener.info( "KnowledegAgent has started listening for ChangeSet notifications" );
             }
-            while (this.monitor) {
+            while ( this.monitor ) {
                 Exception exception = null;
                 try {
-                    kagent.applyChangeSet(this.queue.take());
-                } catch (InterruptedException e) {
+                    kagent.applyChangeSet( this.queue.take() );
+                } catch ( InterruptedException e ) {
                     exception = e;
                 }
                 Thread.yield();
-                if (this.monitor && exception != null) {
-                    this.listener.exception(new RuntimeException(
-                            "KnowledgeAgent ChangeSet notification thread has been interrupted, but shutdown was not scheduled",
-                            exception));
+                if ( this.monitor && exception != null ) {
+                    this.listener.exception( new RuntimeException(
+                                                                   "KnowledgeAgent ChangeSet notification thread has been interrupted, but shutdown was not scheduled",
+                                                                   exception ) );
                 }
             }
 
-            this.listener.info("KnowledegAgent has stopped listening for ChangeSet notifications");
+            this.listener.info( "KnowledegAgent has stopped listening for ChangeSet notifications" );
         }
     }
 
@@ -1132,23 +1214,26 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
          * @return true if the resource was not previously mapped.
          */
         public boolean createNewResourceEntry(Resource resource) {
-            if (!this.isResourceMapped(resource)) {
-                this.map.put(resource, new HashSet<KnowledgeDefinition>());
+            if ( !this.isResourceMapped( resource ) ) {
+                this.map.put( resource,
+                              new HashSet<KnowledgeDefinition>() );
                 return true;
             }
             return false;
         }
 
-        public boolean putDefinition(Resource resource, KnowledgeDefinition definition) {
-            Set<KnowledgeDefinition> defList = map.get(resource);
-            if (defList == null) {
+        public boolean putDefinition(Resource resource,
+                                     KnowledgeDefinition definition) {
+            Set<KnowledgeDefinition> defList = map.get( resource );
+            if ( defList == null ) {
                 defList = new HashSet<KnowledgeDefinition>();
-                this.map.put(resource, defList);
+                this.map.put( resource,
+                              defList );
             }
 
             //support for lazy loading
-            if (definition != null) {
-                boolean isNew = defList.add(definition);
+            if ( definition != null ) {
+                boolean isNew = defList.add( definition );
                 return isNew;
             }
 
@@ -1156,23 +1241,25 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         }
 
         public Set<KnowledgeDefinition> removeDefinitions(Resource resource) {
-            return this.map.remove(resource);
+            return this.map.remove( resource );
         }
 
         public Set<KnowledgeDefinition> getDefinitions(Resource resource) {
-            return this.getDefinitions(resource, false);
+            return this.getDefinitions( resource,
+                                        false );
         }
 
-        public Set<KnowledgeDefinition> getDefinitions(Resource resource, boolean returnEmptyIfNull) {
-            Set<KnowledgeDefinition> definitions = this.map.get(resource);
-            if (returnEmptyIfNull && definitions == null) {
+        public Set<KnowledgeDefinition> getDefinitions(Resource resource,
+                                                       boolean returnEmptyIfNull) {
+            Set<KnowledgeDefinition> definitions = this.map.get( resource );
+            if ( returnEmptyIfNull && definitions == null ) {
                 definitions = new HashSet<KnowledgeDefinition>();
             }
             return definitions;
         }
 
         public boolean isResourceMapped(Resource resource) {
-            return this.map.containsKey(resource);
+            return this.map.containsKey( resource );
         }
 
         public Set<Resource> getAllResources() {
@@ -1180,8 +1267,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
         }
 
         public boolean onlyHasPKGResources() {
-            for (Resource resource : map.keySet()) {
-                if (((InternalResource) resource).getResourceType() != ResourceType.PKG) {
+            for ( Resource resource : map.keySet() ) {
+                if ( ((InternalResource) resource).getResourceType() != ResourceType.PKG ) {
                     return false;
                 }
             }
@@ -1202,22 +1289,24 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
      */
     private KnowledgeBuilder createKBuilder() {
 
-        if (this.registeredResources.onlyHasPKGResources()){
+        if ( this.registeredResources.onlyHasPKGResources() ) {
             return null;
         }
 
         KnowledgeBuilder kbuilder = null;
-        if (this.builderConfiguration != null) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.builderConfiguration);
-        } else if (this.useKBaseClassLoaderForCompiling) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader()));
+        if ( this.builderConfiguration != null ) {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
+        } else if ( this.useKBaseClassLoaderForCompiling ) {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
+                                                                                                                              ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader() ) );
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }
 
-        if (this.dslResources != null) {
-            for (Map.Entry<Resource, String> entry : this.dslResources.entrySet()) {
-                kbuilder.add(ResourceFactory.newByteArrayResource(entry.getValue().getBytes()), ResourceType.DSL);
+        if ( this.dslResources != null ) {
+            for ( Map.Entry<Resource, String> entry : this.dslResources.entrySet() ) {
+                kbuilder.add( ResourceFactory.newByteArrayResource( entry.getValue().getBytes() ),
+                              ResourceType.DSL );
             }
         }
 
@@ -1225,35 +1314,40 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     }
 
     private void retrieveDSLResource(Resource resource) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(resource.getReader());
+        BufferedReader bufferedReader = new BufferedReader( resource.getReader() );
         String line = null;
         StringBuilder content = new StringBuilder();
-        while ((line = bufferedReader.readLine()) != null) {
-            content.append(line);
-            content.append("\n");
+        while ( (line = bufferedReader.readLine()) != null ) {
+            content.append( line );
+            content.append( "\n" );
         }
 
-        this.dslResources.put(resource, content.toString());
+        this.dslResources.put( resource,
+                               content.toString() );
     }
 
     public void addEventListener(KnowledgeAgentEventListener listener) {
-        this.eventSupport.addEventListener(listener);
+        this.eventSupport.addEventListener( listener );
     }
+    
+    public void removeEventListener(KnowledgeAgentEventListener listener) {
+        this.eventSupport.removeEventListener( listener );
+    }    
 
     public void dispose() {
-        synchronized (this.registeredResources) {
+        synchronized ( this.registeredResources ) {
             //all kbase's ksessions must be disposed
-            if (this.kbase != null) {
+            if ( this.kbase != null ) {
                 Collection<StatefulKnowledgeSession> statefulSessions = this.kbase.getStatefulKnowledgeSessions();
-                if (statefulSessions != null && statefulSessions.size() > 0) {
+                if ( statefulSessions != null && statefulSessions.size() > 0 ) {
                     String message = "The kbase still contains " + statefulSessions.size() + " stateful sessions. You must dispose them first.";
-                    this.listener.warning(message);
-                    throw new IllegalStateException(message);
+                    this.listener.warning( message );
+                    throw new IllegalStateException( message );
                 }
             }
 
             //stop changeSet Notification Detector
-            this.monitorResourceChangeEvents(false);
+            this.monitorResourceChangeEvents( false );
         }
     }
 
@@ -1266,10 +1360,8 @@ public class KnowledgeAgentImpl implements KnowledgeAgent,
     protected void finalize() throws Throwable {
         // users should turn off monitoring, but just in case when this class is
         // GC'd we turn off the thread
-        if (this.changeSetNotificationDetector != null) {
+        if ( this.changeSetNotificationDetector != null ) {
             this.changeSetNotificationDetector.monitor = false;
-
-
 
         }
     }

@@ -1220,8 +1220,13 @@ public class StringUtils {
         StringBuilder sb = new StringBuilder();
         try {
             String line;
+            boolean previousLine = false;
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+                if ( previousLine ) {
+                    sb.append("\n");                    
+                }
+                sb.append(line);
+                previousLine = true;
             }
         } finally {
             reader.close();
