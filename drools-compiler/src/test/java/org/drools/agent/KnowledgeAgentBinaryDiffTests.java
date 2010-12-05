@@ -22,45 +22,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
-public class KnowledgeAgentBinaryDiffTests extends TestCase {
-
-    FileManager fileManager;
-    private Server server;
-
-    @Override
-    protected void setUp() throws Exception {
-        fileManager = new FileManager();
-        fileManager.setUp();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
-
-        this.server = new Server(0);
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setResourceBase(fileManager.getRootDirectory().getPath());
-        System.out.println("root : " + fileManager.getRootDirectory().getPath());
-
-        server.setHandler(resourceHandler);
-
-        server.start();
-
-        System.out.println("Server running on port "+this.getPort());
-    }
-
-    private int getPort(){
-        return this.server.getConnectors()[0].getLocalPort();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        fileManager.tearDown();
-        ResourceFactory.getResourceChangeNotifierService().stop();
-        ResourceFactory.getResourceChangeScannerService().stop();
-        ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-
-        server.stop();
-    }
+public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     public void testDifferentDateExpires() throws Exception {
 
@@ -293,19 +255,9 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
     }
 
     public void testDifferentLHS() throws Exception {
+        File f1 = fileManager.write( "rule1.drl",
+                                     createDefaultRule( "rule1" ) );          
 
-        String header1 = "";
-        header1 += "package org.drools.test\n";
-        header1 += "global java.util.List list\n\n";
-
-        String rule1 = this.createCommonRule("rule1");
-
-
-        File f1 = fileManager.newFile("rule1.drl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1);
-        output.close();
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -315,15 +267,13 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeAgent kagent = this.createKAgent(kbase);
-
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        
+        applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -335,25 +285,11 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         assertTrue(list.contains("rule1"));
 
         list.clear();
-
-        // have to sleep here as linux lastModified does not do milliseconds
-        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
-        Thread.sleep(2000);
-
-        //String rule1v3 = this.createCommonRule("rule1","3");
-        String rule1v2 = "";
-        rule1v2 += "rule rule1\n";
-        rule1v2 += "when\n";
-        rule1v2 += "\tString()\n";
-        rule1v2 += "then\n";
-        rule1v2 += "list.add( drools.getRule().getName()+\"-V2\");\n";
-        rule1v2 += "end\n";
-
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1v2);
-        output.close();
-        Thread.sleep(3000);
+        
+        File f2 = fileManager.write( "rule1.drl",
+                                     createVersionedRule( "rule1", "2" ) );     
+        
+        scan(kagent);
 
         // Use the same session for incremental build test
         ksession = kbase.newStatefulKnowledgeSession();
@@ -365,24 +301,14 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         assertEquals(1, list.size());
         assertTrue(list.contains("rule1-V2"));
 
-        kagent.monitorResourceChangeEvents(false);
+        kagent.dispose();
     }
     
     
     public void testDifferentConsequences() throws Exception {
 
-        String header1 = "";
-        header1 += "package org.drools.test\n";
-        header1 += "global java.util.List list\n\n";
-
-        String rule1 = this.createCommonRule("rule1");
-
-
-        File f1 = fileManager.newFile("rule1.drl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1);
-        output.close();
+        File f1 = fileManager.write( "rule1.drl",
+                                     createDefaultRule( "rule1" ) ); 
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -392,15 +318,13 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeAgent kagent = this.createKAgent(kbase);
-
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        
+        applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -413,17 +337,10 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
 
         list.clear();
 
-        // have to sleep here as linux lastModified does not do milliseconds
-        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
-        Thread.sleep(2000);
-
-        String rule1v2 = this.createCommonRule("rule1", "2");
-
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1v2);
-        output.close();
-        Thread.sleep(3000);
+        fileManager.write( "rule1.drl",
+                           createVersionedRule( "rule1", "2" ) );
+        
+        scan( kagent );
 
         // Use the same session for incremental build test
         ksession = kbase.newStatefulKnowledgeSession();
@@ -435,37 +352,12 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         assertEquals(1, list.size());
         assertTrue(list.contains("rule1-V2"));
 
-        kagent.monitorResourceChangeEvents(false);
+        kagent.dispose();
     }
 
-
-
-
-
-
-//
-
-    private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {
-
-        String header1 = "";
-        header1 += "package org.drools.test\n";
-        header1 += "global java.util.List list\n\n";
-
-        String rule1 = "";
-        rule1 += "rule rule1\n";
-        rule1 += attribute1+"\n";
-        rule1 += "when\n";
-        rule1 += "\tString()\n";
-        rule1 += "then\n";
-        rule1 += "list.add( drools.getRule().getName());\n";
-        rule1 += "end\n";
-
-
-        File f1 = fileManager.newFile("rule1.drl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1);
-        output.close();
+    private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {        
+        File f1 = fileManager.write( "rule1.drl",
+                                     createAttributeRule( "rule1", attribute1 ) ); 
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -475,97 +367,30 @@ public class KnowledgeAgentBinaryDiffTests extends TestCase {
         xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeAgent kagent = this.createKAgent(kbase);
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
 
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
         org.drools.rule.Rule rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
 
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute1, rule);
 
-
-        // have to sleep here as linux lastModified does not do milliseconds
-        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
-        Thread.sleep(2000);
-
-        String rule1v2 = "";
-        rule1v2 += "rule rule1\n";
-        rule1v2 += attribute2+"\n";
-        rule1v2 += "when\n";
-        rule1v2 += "\tString()\n";
-        rule1v2 += "then\n";
-        rule1v2 += "list.add( drools.getRule().getName());\n";
-        rule1v2 += "end\n";
-
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header1);
-        output.write(rule1v2);
-        output.close();
-        Thread.sleep(3000);
-
+        File f2 = fileManager.write( "rule1.drl",
+                                     createAttributeRule( "rule1", attribute2 ) );
+        
+        scan( kagent );
+        
         rule = (org.drools.rule.Rule) kagent.getKnowledgeBase().getRule("org.drools.test", "rule1");
         assertNotNull(rule);
         asserter.assertRuleAttribute(attribute2, rule);
 
-        kagent.monitorResourceChangeEvents(false);
+        kagent.dispose();
     }
-
-    private KnowledgeAgent createKAgent(KnowledgeBase kbase) {
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        //System.setProperty(KnowledgeAgentFactory.PROVIDER_CLASS_NAME_PROPERTY_NAME, "org.drools.agent.impl.KnowledgeAgentProviderImpl");
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "false");
-
-
-
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        assertEquals("test agent", kagent.getName());
-
-        return kagent;
-    }
-
-    private String createCommonRule(String ruleName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("rule ");
-        sb.append(ruleName);
-        sb.append("\n");
-        sb.append("when\n");
-        sb.append("then\n");
-        sb.append("list.add( drools.getRule().getName() );\n");
-        sb.append("end\n");
-
-        return sb.toString();
-    }    
-
-    private String createCommonRule(String ruleName, String version) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("rule ");
-        sb.append(ruleName);
-        sb.append("\n");
-        sb.append("when\n");
-        sb.append("then\n");
-        sb.append("list.add( drools.getRule().getName()+\"-V" + version + "\");\n");
-        sb.append("end\n");
-
-        return sb.toString();
-    }
-
     
 }
 

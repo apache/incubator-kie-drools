@@ -110,6 +110,10 @@ public class ResourceChangeScannerImpl
                 // exist
             }
         }
+    }       
+
+    public Map<Resource, Set<ResourceChangeNotifier>> getResources() {
+        return resources;
     }
 
     public void scan() {
@@ -161,6 +165,7 @@ public class ResourceChangeScannerImpl
                     // detect if Resource has been removed
                     long lastModified = ((InternalResource) resource).getLastModified();
                     long lastRead = ((InternalResource) resource).getLastRead();
+                    
                     if ( lastModified == 0 ) {
                         this.listener.debug( "ResourceChangeScanner removed resource=" + resource );
                         removed.add( resource );
