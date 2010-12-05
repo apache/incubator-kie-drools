@@ -34,6 +34,8 @@ import org.drools.runtime.StatelessKnowledgeSession;
 public interface KnowledgeAgent {
 
     void addEventListener(KnowledgeAgentEventListener listener);
+    
+    void removeEventListener(KnowledgeAgentEventListener listener);
 
 
     public enum ResourceStatus{
