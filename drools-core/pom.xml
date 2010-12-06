@@ -80,7 +80,7 @@
 
   <profiles>
     <profile>
-      <id>grammars</id>
+      <id>grammarsProfile</id>
       <activation>
         <property>
           <name>grammars</name>
