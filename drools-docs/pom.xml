@@ -14,14 +14,29 @@
   <name>Drools :: Documentation</name>
 
   <modules>
+    <!-- These are just the soa modules -->
     <module>drools-docs-introduction</module>
     <module>drools-docs-expert</module>
     <module>drools-docs-flow</module>
     <module>drools-docs-fusion</module>
     <module>drools-docs-guvnor</module>
-    <module>drools-docs-planner</module>
-    <module>drools-docs-integration</module>
+    <!-- Other modules are defined in the not-soa profile -->
   </modules>
+
+  <profiles>
+    <profile>
+      <id>notSoaProfile</id>
+      <activation>
+        <property>
+          <name>!soa</name>
+        </property>
+      </activation>
+      <modules>
+        <module>drools-docs-planner</module>
+        <module>drools-docs-integration</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>
@@ -69,27 +84,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <profiles>
-    <profile>
-      <id>soa</id>
-      <activation>
-        <property>
-          <name>soa</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-docs-introduction</module>
-        <module>drools-docs-expert</module>
-        <module>drools-docs-flow</module>
-        <module>drools-docs-fusion</module>
-        <module>drools-docs-guvnor</module>
-        <!--module>drools-docs-planner</module-->
-        <!--module>drools-docs-integration</module-->
-      </modules>
-    </profile>
-  </profiles>
-
 
   <build>
     <plugins>
