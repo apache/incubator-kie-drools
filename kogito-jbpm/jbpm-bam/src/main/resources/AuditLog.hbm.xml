@@ -24,7 +24,7 @@
         <property name="nodeId"/>
         <property name="processInstanceId"/>
         <property name="processId"/>
-        <property name="date" type="timestamp" column="DATE"/>
+        <property name="date" type="timestamp" column="LOG_DATE"/>
     </class>
 
 </hibernate-mapping>
