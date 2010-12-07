@@ -75,7 +75,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
 
             if ( !keyPattern.startsWith( "^" ) ) {
                 // making it start with a space char or a line start
-                keyPattern = "(\\s|^)" + keyPattern;
+                keyPattern = "(\\W|^)" + keyPattern;
                 // adding a dummy variable due to index shift
                 getVariables().put( HEAD_TAG,
                                     Integer.valueOf( 0 ) );
@@ -87,7 +87,7 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
             if ( keyPattern.endsWith( "(.*?)" ) ) {
                 keyPattern += "$";
             } else {
-                keyPattern += "(\\s|$)";
+                keyPattern += "(\\W|$)";
                 getVariables().put( TAIL_TAG,
                                     Integer.valueOf( 1 ) );
                 tailMatchGroupAdded = true;

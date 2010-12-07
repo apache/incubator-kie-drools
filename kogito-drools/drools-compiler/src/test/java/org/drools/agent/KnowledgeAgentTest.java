@@ -313,7 +313,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    public void testDeletePackageUrl() throws Exception {
+    public void FIXMEtestDeletePackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1",
                                                "org.drools.test1" );
 
