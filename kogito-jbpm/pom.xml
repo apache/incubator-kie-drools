@@ -3,12 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.jboss</groupId>
-    <artifactId>jboss-parent</artifactId>
-    <version>5</version>
-  </parent>
-  
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jbpm</groupId>
   <artifactId>jbpm</artifactId>
@@ -82,6 +76,12 @@
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>
+    </repository>
+    <!-- used in jbpm-workitems for commons-finder -->
+    <repository>
+      <id>apache-incubating</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository/</url>
     </repository>
   </repositories>
 
