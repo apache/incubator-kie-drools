@@ -1,0 +1,20 @@
+/*  The node type definition for the rule node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+    
+    This is used for folders that hold versionable assets, such as rules.
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:versionableAssetFolder]
+
+// Supertypes
+> 'nt:folder','mix:versionable'
+
+// what it contains
++ * (drools:versionableNodeType)
+  ignore
