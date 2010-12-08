@@ -388,7 +388,7 @@
       <para>By default authorization is not enabled. To enable it, edit the
       components.xml file in the WEB-INF directory:</para>
 
-      <programlisting language="xml">
+       <programlisting language="xml">
       	 &lt;component name="org.jboss.seam.security.roleBasedPermissionResolver"&gt;
       		&lt;property name="enableRoleBasedAuthorization">false&lt;/property&gt;
      	&lt;/component&gt;   
