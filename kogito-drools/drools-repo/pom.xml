@@ -5,12 +5,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
    <parent>
       <artifactId>drools</artifactId>
       <groupId>org.drools</groupId>
-      <version>5.1.0.BRMS</version>
+      <version>5.2.0-SNAPSHOT</version>
    </parent>
    <artifactId>drools-repository-parent</artifactId>
    <packaging>pom</packaging>
    <name>Drools :: Repository :: Parent</name>
    <modules>
+     <module>jcr-api</module>
      <module>drools-repository</module>
    </modules>
 </project>
