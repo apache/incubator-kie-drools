@@ -42,12 +42,12 @@ public class VerifierReportImpl
     private static final long                       serialVersionUID               = 510l;
 
     private Map<String, Gap>                        gapsById                       = new TreeMap<String, Gap>();
-    private Multimap<String, Gap>                   gapsByFieldId                  = new TreeMultimap<String, Gap>();
+    private Multimap<String, Gap>                   gapsByFieldId                  = TreeMultimap.create();
     private Map<String, MissingNumberPattern>       missingNumberPatternsById      = new TreeMap<String, MissingNumberPattern>();
-    private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = new TreeMultimap<String, MissingNumberPattern>();
+    private Multimap<String, MissingNumberPattern>  missingNumberPatternsByFieldId = TreeMultimap.create();
 
     private List<VerifierMessageBase>               messages                       = new ArrayList<VerifierMessageBase>();
-    private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = new TreeMultimap<Severity, VerifierMessageBase>();
+    private Multimap<Severity, VerifierMessageBase> messagesBySeverity             = TreeMultimap.create();
 
     private VerifierData                            data;
 

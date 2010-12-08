@@ -52,15 +52,15 @@ class VerifierDataMaps
     private Map<String, RulePackage>                                   packagesByName                 = new TreeMap<String, RulePackage>();
     private Map<String, ObjectType>                                    objectTypesByFullName          = new TreeMap<String, ObjectType>();
     private Map<String, Field>                                         fieldsByObjectTypeAndFieldName = new TreeMap<String, Field>();
-    private Multimap<String, Field>                                    fieldsByObjectTypeId           = new TreeMultimap<String, Field>();
-    private Multimap<String, Pattern>                                  patternsByObjectTypeId         = new TreeMultimap<String, Pattern>();
-    private Multimap<String, Pattern>                                  patternsByRuleName             = new TreeMultimap<String, Pattern>();
-    private Multimap<String, Restriction>                              restrictionsByFieldId          = new TreeMultimap<String, Restriction>();
+    private Multimap<String, Field>                                    fieldsByObjectTypeId           = TreeMultimap.create();
+    private Multimap<String, Pattern>                                  patternsByObjectTypeId         = TreeMultimap.create();
+    private Multimap<String, Pattern>                                  patternsByRuleName             = TreeMultimap.create();
+    private Multimap<String, Restriction>                              restrictionsByFieldId          = TreeMultimap.create();
     private Map<String, Variable>                                      variablesByRuleAndVariableName = new TreeMap<String, Variable>();
     private Map<String, EntryPoint>                       entryPointsByEntryId           = new TreeMap<String, EntryPoint>();
     private Map<String, VerifierRule>                                  rulesByName                    = new TreeMap<String, VerifierRule>();
     private Map<String, Import>                                        importsByName                  = new TreeMap<String, Import>();
-    private Multimap<String, VerifierRule>                             rulesByCategory                = new TreeMultimap<String, VerifierRule>();
+    private Multimap<String, VerifierRule>                             rulesByCategory                = TreeMultimap.create();
 
     public Collection<ObjectType> getObjectTypesByRuleName(String ruleName) {
         Set<ObjectType> set = new HashSet<ObjectType>();

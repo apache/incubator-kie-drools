@@ -40,7 +40,8 @@ class MissingRangesReportVisitor extends ReportVisitor {
     public static Collection<String> visitRestrictionsCollection(String sourceFolder,
                                                                  Collection<Restriction> restrictions,
                                                                  Collection<MissingRange> causes) {
-        Multimap<Object, DataRow> dt = new TreeMultimap<Object, DataRow>();
+    	
+    	Multimap<String, DataRow> dt =  TreeMultimap.create();
         Collection<String> stringRows = new ArrayList<String>();
 
         for ( MissingRange cause : causes ) {
