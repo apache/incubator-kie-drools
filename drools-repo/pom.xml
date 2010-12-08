@@ -11,7 +11,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
    <packaging>pom</packaging>
    <name>Drools :: Repository :: Parent</name>
    <modules>
-     <module>jcr-api</module>
      <module>drools-repository</module>
+     <module>jcr-api</module>
+     <module>jcr-jr-impl</module>
    </modules>
 </project>
