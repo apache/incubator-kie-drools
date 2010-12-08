@@ -149,18 +149,14 @@ public abstract class CategorisableItem extends VersionableItem {
             Node ruleNode = getVersionContentNode();
             try {
                 Property tagReferenceProperty = ruleNode.getProperty( CATEGORY_PROPERTY_NAME );
-                Value[] tagValues = tagReferenceProperty.getValues();
-                for ( int i = 0; i < tagValues.length; i++ ) {
-                    try {
-                        Node tagNode = this.node.getSession().getNodeByIdentifier( tagValues[i].getString() );
-                        CategoryItem tagItem = new CategoryItem( this.rulesRepository,
-                                                                 tagNode );
-                        ac.add(tagItem);
-
-                    } catch (ItemNotFoundException e) {
-                        //ignore
-                        log.debug( "Was unable to load a category by UUID - must have been removed." );
-                    }
+                if (tagReferenceProperty.isMultiple()) {
+	                Value[] tagValues = tagReferenceProperty.getValues();
+	                for ( int i = 0; i < tagValues.length; i++ ) {
+	                	addTag(ac, tagValues[i].getString());
+	                }
+                } else {
+                	Value tagValue = tagReferenceProperty.getValue();
+                	addTag(ac, tagValue.getString());
                 }
             } catch ( PathNotFoundException e ) {
                 //the property doesn't even exist yet, so just return nothing
@@ -168,6 +164,19 @@ public abstract class CategorisableItem extends VersionableItem {
         } catch ( RepositoryException e ) {
             log.error( "Error loading cateories", e );
             throw new RulesRepositoryException( e );
+        }
+	}
+	
+	private void addTag(Accum ac, String tag) throws RepositoryException {
+		try {
+            Node tagNode = this.node.getSession().getNodeByIdentifier( tag );
+            CategoryItem tagItem = new CategoryItem( this.rulesRepository,
+                                                     tagNode );
+            ac.add(tagItem);
+
+        } catch (ItemNotFoundException e) {
+            //ignore
+            log.debug( "Was unable to load a category by UUID - must have been removed." );
         }
 	}
 

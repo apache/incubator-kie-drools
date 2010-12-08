@@ -7,7 +7,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <groupId>org.drools</groupId>
       <version>5.2.0-SNAPSHOT</version>
    </parent>
-   <artifactId>jcr-jr-impl</artifactId>
+   <artifactId>drools-repository-jcr-jr-impl</artifactId>
    <packaging>jar</packaging>
    <name>Drools :: Repository :: JR</name>
    
@@ -20,7 +20,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
 	      <artifactId>drools-repository-jcr-api</artifactId>
 	      <groupId>org.drools</groupId>
-	      <version>5.1.0.BRMS</version>
+	      <version>5.2.0-SNAPSHOT</version>
       </dependency>
       
    </dependencies>
