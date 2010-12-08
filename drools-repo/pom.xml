@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <parent>
+      <artifactId>drools</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.1.0.BRMS</version>
+   </parent>
+   <artifactId>drools-repository-parent</artifactId>
+   <packaging>pom</packaging>
+   <name>Drools :: Repository :: Parent</name>
+   <modules>
+     <module>drools-repository</module>
+   </modules>
+</project>
