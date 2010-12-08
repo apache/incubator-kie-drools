@@ -1,0 +1,38 @@
+/*  The node type definition for the rule node type.  
+    See http://jackrabbit.apache.org/doc/nodetype/cnd.html for an explanation
+*/
+
+// The namespace declaration
+<drools = 'http://www.jboss.org/drools-repository/1.0'>
+<nt='http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+
+// Node type name
+[drools:assetNodeType]
+
+// Supertypes
+> 'drools:versionableNodeType'
+
+// Properties:
+- drools:content (string)
+- drools:binaryContent (binary)
+- drools:attachmentFileName (string)
+- drools:archive (boolean) = 'false' mandatory autocreated
+
+  
+// use this to capture fields which are not known ahead of time 
+- * (undefined)
+
+- drools:dateEffective (date)
+
+- drools:dateExpired (date)
+  
+- drools:packageName (string)
+  mandatory  
+
+//for taxonomies/asset classification  
+- drools:categoryReference (reference)
+  multiple 
+  copy
+  < 'drools:categoryNodeType'  
+  

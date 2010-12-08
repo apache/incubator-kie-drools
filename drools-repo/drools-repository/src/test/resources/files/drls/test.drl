@@ -1,0 +1,17 @@
+#created on: Oct 30, 2006
+package test
+
+rule "Your First Rule"	
+	when
+		#conditions
+	then 
+		#actions		
+end
+
+rule "Your Second Rule"
+	#include attributes such as "salience" here...
+	when
+		#conditions
+	then 
+		#actions		
+end
