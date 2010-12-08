@@ -116,7 +116,7 @@ public class RulesRepository {
 
     private Session             session;
 
-    static boolean              initialized           = false;
+    boolean              initialized           = false;
 
     /**
      * This requires a JCR session be setup, and the repository be configured.
@@ -126,7 +126,7 @@ public class RulesRepository {
         checkForDataMigration( this );
     }
 
-    private synchronized static void checkForDataMigration(RulesRepository self) {
+    private synchronized  void checkForDataMigration(RulesRepository self) {
         if ( initialized ) return;
         if ( self.session.getUserID().equals( "anonymous" ) ) return;
         try {

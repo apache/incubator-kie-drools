@@ -20,15 +20,20 @@ import javax.jcr.Session;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RepositorySessionUtil;
+import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MigrateDroolsPackageTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+public class MigrateDroolsPackageTest extends RepositoryTestCase {
+
+	@Test
 	public void testMigrate() throws Exception {
-		RulesRepository repo = RepositorySessionUtil.getRepository();
+		RulesRepository repo = getRepo();
 		Session sess = repo.getSession();
 		sess.getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).getNode("drools.package.migrated").remove();
 		sess.save();

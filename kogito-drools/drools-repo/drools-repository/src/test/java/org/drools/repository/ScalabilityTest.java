@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.jcr.Node;
 import javax.jcr.Repository;
@@ -27,11 +28,12 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.UnsupportedRepositoryOperationException;
 
-import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.VersionableItem;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 
@@ -42,26 +44,28 @@ import junit.framework.TestCase;
  * It will take a LONG time to add these nodes, and does it in batches.
  *
  */
-public class ScalabilityTest extends TestCase {
+public class ScalabilityTest extends RepositoryTestCase {
 
     private static final int NUM = 5000;
     private RulesRepository repo;
 
+    @Test
     public void testDummy() {
 
     }
 
+    @Test @Ignore
     public void xxtestRun() throws Exception {
-        JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
-
-        Session session = config.getJCRRepository("./scalabilityTestRepo").login(
+    	Properties properties = new Properties();
+    	properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");
+        RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(properties);
+        Session session = config.getJCRRepository().login(
                                            new SimpleCredentials("alan_parsons", "password".toCharArray()));
-
-
+        config.setupRepository(session);
         repo = new RulesRepository(session);
 
         long start = System.currentTimeMillis();
-        //setupData( repo );
+        setupData( repo );
         System.out.println("time to add, version and tag 5000: " + (System.currentTimeMillis() - start));
         List list = listACat(repo);
         System.out.println("list size is: " + list.size());

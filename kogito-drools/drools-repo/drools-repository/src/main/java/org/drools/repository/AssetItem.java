@@ -291,26 +291,28 @@ public class AssetItem extends CategorisableItem {
         }
     }
 
-    /**
-     * Creates a new version of this object's rule node, updating the effective
-     * date for the rule node.
-     * 
-     * @param newDateEffective
-     *            the new effective date for the rule
-     * @throws RulesRepositoryException
-     */
-    public void updateDateEffective(Calendar newDateEffective) throws RulesRepositoryException {
-        checkIsUpdateable();
-        checkout();
-        try {
-            this.node.setProperty( DATE_EFFECTIVE_PROPERTY_NAME,
-                                   newDateEffective );
-        } catch ( RepositoryException e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
+	/**
+	 * Creates a new version of this object's rule node, updating the effective
+	 * date for the rule node.
+	 * 
+	 * @param newDateEffective
+	 *            the new effective date for the rule
+	 * @throws RulesRepositoryException
+	 */
+	public void updateDateEffective(Calendar newDateEffective)
+			throws RulesRepositoryException {
+		checkIsUpdateable();
+		checkout();
+		try {
+			if (newDateEffective!=null || this.node.hasProperty(DATE_EFFECTIVE_PROPERTY_NAME)) {
+				this.node.setProperty(DATE_EFFECTIVE_PROPERTY_NAME,
+					newDateEffective);
+			}
+		} catch (RepositoryException e) {
+			log.error("Caught Exception", e);
+			throw new RulesRepositoryException(e);
+		}
+	}
 
     /**
      * Creates a new version of this object's rule node, updating the disable
@@ -364,15 +366,15 @@ public class AssetItem extends CategorisableItem {
     public void updateDateExpired(Calendar newDateExpired) throws RulesRepositoryException {
         checkout();
 
-        try {
-            this.node.setProperty( DATE_EXPIRED_PROPERTY_NAME,
-                                   newDateExpired );
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
-        }
-    }
+		try {
+			if (newDateExpired!=null || this.node.hasProperty(DATE_EXPIRED_PROPERTY_NAME)) {
+				this.node.setProperty(DATE_EXPIRED_PROPERTY_NAME, newDateExpired);
+			}
+		} catch (Exception e) {
+			log.error("Caught Exception", e);
+			throw new RulesRepositoryException(e);
+		}
+	}
 
     /**
      * This will update the asset's content (checking it out if it is not

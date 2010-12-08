@@ -16,26 +16,33 @@
 
 package org.drools.repository.events;
 
-import junit.framework.TestCase;
+import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
-import org.drools.repository.RepositorySessionUtil;
+import org.junit.After;
+import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Michael Neale
  */
-public class StorageEventManagerTest extends TestCase {
+public class StorageEventManagerTest extends RepositoryTestCase {
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDownLocal() throws Exception {
+        //super.tearDown();
         StorageEventManager.le = null;
         StorageEventManager.se = null;
     }
 
-
+    @Test
     public void testLoadEvent() {
         System.setProperty("guvnor.loadEventListener", "org.drools.repository.events.MockLoadEvent");
         LoadEvent le = StorageEventManager.loadEvent();
@@ -56,7 +63,7 @@ public class StorageEventManagerTest extends TestCase {
 
     }
 
-
+    @Test
     public void testSaveEvent() {
         System.setProperty("guvnor.saveEventListener", "org.drools.repository.events.MockSaveEvent");
         SaveEvent le = StorageEventManager.saveEvent();
@@ -76,7 +83,7 @@ public class StorageEventManagerTest extends TestCase {
 
     }
 
-
+    @Test
     public void testAssetContentCallbacks() {
 
         StorageEventManager.le = null;
@@ -101,6 +108,7 @@ public class StorageEventManagerTest extends TestCase {
 
     }
 
+    @Test
     public void testCheckinListener() throws Exception {
         StorageEventManager.le = null;
         StorageEventManager.se = null;
@@ -125,10 +133,4 @@ public class StorageEventManagerTest extends TestCase {
 
 
     }
-
-
-    private RulesRepository getRepo() {
-        return RepositorySessionUtil.getRepository();
-    }
-
 }
