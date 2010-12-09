@@ -18,10 +18,13 @@ package org.drools.repository;
 
 import java.util.Properties;
 
+import javax.jcr.Credentials;
+import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 import javax.jcr.Workspace;
 
 import org.drools.repository.util.ClassUtil;
@@ -39,6 +42,7 @@ import org.drools.repository.util.ClassUtil;
 public abstract class JCRRepositoryConfigurator {
 
 	protected RepositoryFactory factory;
+	protected Repository repository;
 
 	public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
 	protected static String defaultJCRImplClass = null;
@@ -71,11 +75,11 @@ public abstract class JCRRepositoryConfigurator {
 //					}
 //				}
 			 
-			Class jcrFactory = ClassUtil.forName(jcrImplementationClass, this.getClass());
+			Class<?> jcrFactory = ClassUtil.forName(jcrImplementationClass, this.getClass());
 			RepositoryFactory factory = (RepositoryFactory) jcrFactory.newInstance();
-			Repository repo = factory.getRepository(properties);
+			repository = factory.getRepository(properties);
 			this.factory = factory;
-			return repo;
+			return repository;
 				
 		} catch (Exception re) {
 			throw new RepositoryException(re);
@@ -83,6 +87,13 @@ public abstract class JCRRepositoryConfigurator {
 		// If here, then we couldn't find a repository factory ...
 //		String msg = "Unable to find an appropriate JCR 2.0 RepositoryFactory; check the 'drools_repository.properties' configuration file.";
 //		throw new RepositoryException(msg);
+	}
+	
+	public abstract Session login(String userName) throws LoginException,RepositoryException;
+	
+	public Session login (String userName, String password) throws RepositoryException {
+		Credentials credentials = new SimpleCredentials(userName, password.toCharArray());
+        return repository.login( credentials );
 	}
 
 	public abstract void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException;
