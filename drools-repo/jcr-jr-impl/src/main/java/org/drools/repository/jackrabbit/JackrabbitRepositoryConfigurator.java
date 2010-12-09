@@ -38,13 +38,16 @@ import org.slf4j.LoggerFactory;
  */
 public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator {
 
+	
     private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);
     private static TransientRepository transientRepository = null;
     
-    /* (non-Javadoc)
-     * @see org.drools.repository.RepositoryConfigurator#getJCRRepository()
-     */
-    @Override
+    public JackrabbitRepositoryConfigurator() {
+		super();
+		defaultJCRImplClass = "org.apache.jackrabbit.core.RepositoryFactoryImpl";
+	}
+
+	@Override
     public Repository getJCRRepository(Properties properties) throws RepositoryException {
 
     	String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);

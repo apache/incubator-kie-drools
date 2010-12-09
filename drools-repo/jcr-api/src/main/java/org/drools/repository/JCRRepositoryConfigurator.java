@@ -17,7 +17,6 @@
 package org.drools.repository;
 
 import java.util.Properties;
-import java.util.ServiceLoader;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -25,10 +24,13 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 
+import org.drools.repository.util.ClassUtil;
+
+
 /**
  * This abstract class is required so different JCR implementations can provide their own configuration mechanism.
  * 
- * * This contains code to initialise the repository using the {@link javax.jcr.RepositoryFactory} interface defined by the JCR 2.0
+ * This contains code to initialise the repository using the {@link javax.jcr.RepositoryFactory} interface defined by the JCR 2.0
  * specification. This configurator loads the properties from the {@link PROPERTIES_FILE "/drools_repository.properties"}
  * resource, and passes these to the {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}.
  * 
@@ -39,6 +41,7 @@ public abstract class JCRRepositoryConfigurator {
 	protected RepositoryFactory factory;
 
 	public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
+	protected static String defaultJCRImplClass = null;
 	public static final String REPOSITORY_ROOT_DIRECTORY = "repository.root.directory";
 
 	/**
@@ -55,21 +58,31 @@ public abstract class JCRRepositoryConfigurator {
 			//Instantiate real repo.
 
 			if (jcrImplementationClass==null) {
-				// Use the JCR 2.0 RepositoryFactory to get a repository using the properties as input ...
-				for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
-					Repository repo = factory.getRepository(properties);
-					if (repo != null) {
-						this.factory = factory;
-						return repo;
-					}
-				}
+				jcrImplementationClass = defaultJCRImplClass;
 			}
-		} catch (RepositoryException re) {
+			
+				// Use the JCR 2.0 RepositoryFactory to get a repository using the properties as input ...
+// We're not yet supporting JSE 1.6, so until then this needs to stay commented out
+//				for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
+//					Repository repo = factory.getRepository(properties);
+//					if (repo != null) {
+//						this.factory = factory;
+//						return repo;
+//					}
+//				}
+			 
+			Class jcrFactory = ClassUtil.forName(jcrImplementationClass, this.getClass());
+			RepositoryFactory factory = (RepositoryFactory) jcrFactory.newInstance();
+			Repository repo = factory.getRepository(properties);
+			this.factory = factory;
+			return repo;
+				
+		} catch (Exception re) {
 			throw new RepositoryException(re);
 		}
 		// If here, then we couldn't find a repository factory ...
-		String msg = "Unable to find an appropriate JCR 2.0 RepositoryFactory; check the 'drools_repository.properties' configuration file.";
-		throw new RepositoryException(msg);
+//		String msg = "Unable to find an appropriate JCR 2.0 RepositoryFactory; check the 'drools_repository.properties' configuration file.";
+//		throw new RepositoryException(msg);
 	}
 
 	public abstract void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException;
