@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+
+<policy xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="urn:jboss:security-config:5.0" xmlns="urn:jboss:security-config:5.0"
+        xmlns:jbxb="urn:jboss:security-config:5.0">
+        <application-policy name="modeshape-jcr">
+                <authentication>
+                        <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                <module-option name="usersProperties">modeshape/users.properties</module-option>
+                <module-option name="rolesProperties">modeshape/roles.properties</module-option>
+                                <module-option name="name">1.1</module-option>
+                                <module-option name="succeed">true</module-option>
+                                <module-option name="throwEx">false</module-option>
+                        </login-module>
+                </authentication>        
+        </application-policy>
+</policy>
+                
