@@ -20,9 +20,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
+import javax.jcr.Credentials;
+import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 import javax.jcr.Workspace;
 
 import org.apache.jackrabbit.commons.cnd.CndImporter;
@@ -40,7 +43,6 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
 
 	
     private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);
-    private static TransientRepository transientRepository = null;
     
     public JackrabbitRepositoryConfigurator() {
 		super();
@@ -52,13 +54,18 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
 
     	String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
         if (repoRootDir == null) {
-        	transientRepository = new TransientRepository();
+        	repository = new TransientRepository();
         } else { 
-        	transientRepository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
+        	repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
         }
-        return transientRepository;
+        return repository;
 
     }
+	
+	public Session login (String userName) throws LoginException,RepositoryException {
+		Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
+        return repository.login( credentials );
+	}
     
     public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException {
         try {
@@ -78,7 +85,9 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
      * @see org.drools.repository.JCRRepositoryConfigurator#shutdown()
      */
     public void shutdown() {
-        transientRepository.shutdown();
+    	if (repository instanceof TransientRepository) {
+            ((TransientRepository)repository).shutdown();
+        }
     }
     
 }
