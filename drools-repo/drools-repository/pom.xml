@@ -36,24 +36,24 @@
     <!-- External dependencies -->
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
-			<artifactId>drools-repository-jcr-api</artifactId>
-			<groupId>org.drools</groupId>
-			<version>5.2.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<artifactId>drools-repository-jcr-jr-impl</artifactId>
-			<groupId>org.drools</groupId>
-			<version>5.2.0-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		<!-- use this instead of jackrabbit (jr) above for modeshape 
-		<dependency>
-			<artifactId>drools-repository-jcr-ms-impl</artifactId>
-			<groupId>org.drools</groupId>
-			<version>5.2.0-SNAPSHOT</version>
-			<scope>runtime</scope>
-		</dependency>
-		-->
+      <artifactId>drools-repository-jcr-api</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <artifactId>drools-repository-jcr-jr-impl</artifactId>
+      <groupId>org.drools</groupId>
+      <version>5.2.0-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- use this instead of jackrabbit (jr) above for modeshape
+     <dependency>
+       <artifactId>drools-repository-jcr-ms-impl</artifactId>
+       <groupId>org.drools</groupId>
+       <version>5.2.0-SNAPSHOT</version>
+       <scope>runtime</scope>
+     </dependency>
+     -->
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
