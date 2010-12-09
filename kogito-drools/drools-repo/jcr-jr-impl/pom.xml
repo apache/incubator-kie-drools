@@ -9,7 +9,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
    </parent>
    <artifactId>drools-repository-jcr-jr-impl</artifactId>
    <packaging>jar</packaging>
-   <name>Drools :: Repository :: JR</name>
+   <name>Drools :: Repository :: JRC JackRabbit</name>
    
    <dependencies>
       
@@ -22,6 +22,5 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	      <groupId>org.drools</groupId>
 	      <version>5.2.0-SNAPSHOT</version>
       </dependency>
-      
    </dependencies>
 </project>

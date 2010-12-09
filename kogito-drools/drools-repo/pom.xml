@@ -14,8 +14,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
      <module>drools-repository</module>
      <module>jcr-api</module>
      <module>jcr-jr-impl</module>
-     <!-- this can be uncommented once we have a modeshape 2.3 release
      <module>jcr-ms-impl</module>
-     -->
    </modules>
 </project>
