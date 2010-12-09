@@ -30,45 +30,48 @@ public class RulesRepositoryConfigurator {
 
 	public Repository getJCRRepository() throws RepositoryException 
 	{
-		getInstance(null);
 		return jcrRepository;
 	}
 
+	/**
+	 * Creates an instance of the RulesRepositoryConfigurator, which stores a reference to the under laying JCRRepository.
+	 * 
+	 * @param properties - if null, they will be read from the /drools_repository.properties file.
+	 * @return RulesRepositoryConfigurator
+	 * @throws RepositoryException
+	 */
 	public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException 
 	{
 		if (rulesRepositoryConfigurator == null ) {
 			log.info("Creating an instance of the RulesRepositoryConfigurator.");
 			rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
-			if (properties==null) properties = new Properties();
-			Properties fileProperties = new Properties();
-			// Load the properties file ...
-			InputStream propStream = ClassUtil.getResourceAsStream(PROPERTIES_FILE, rulesRepositoryConfigurator.getClass());
-			if (propStream != null) {
-				try {
-					fileProperties.load(propStream);
-					for (Object key : fileProperties.keySet()) {
-						if (!properties.containsKey(key)) {
-							properties.put(key, fileProperties.get(key));
-						}
-					}
-				} catch (IOException ioe) {
-					throw new RepositoryException (ioe);
-				} finally {
+			
+			if (properties==null) { //load from file only when the properties passed in are null
+				properties = new Properties();
+				// Load the properties file ...
+				InputStream propStream = ClassUtil.getResourceAsStream(PROPERTIES_FILE, rulesRepositoryConfigurator.getClass());
+				if (propStream != null) {
 					try {
-						propStream.close();
+						properties.load(propStream);
 					} catch (IOException ioe) {
 						throw new RepositoryException (ioe);
+					} finally {
+						try {
+							propStream.close();
+						} catch (IOException ioe) {
+							throw new RepositoryException (ioe);
+						}
 					}
+				} else {
+					throw new RepositoryException ("Cannot load properties from " + PROPERTIES_FILE);
 				}
-			} else {
-				throw new RepositoryException ("Cannot load properties from " + PROPERTIES_FILE);
 			}
 				
 			try {
 				String configuratorClazz = properties.getProperty(CONFIGURATOR_CLASS);
 				if (configuratorClazz==null) throw new RepositoryException("User must define a '" + 
 						CONFIGURATOR_CLASS + "' property.");
-				Class clazz = ClassUtil.forName(configuratorClazz, rulesRepositoryConfigurator.getClass());
+				Class<?> clazz = ClassUtil.forName(configuratorClazz, rulesRepositoryConfigurator.getClass());
 				jcrRepositoryConfigurator = (JCRRepositoryConfigurator) clazz.newInstance();
 				jcrRepository = jcrRepositoryConfigurator.getJCRRepository(properties);
 			} catch (Exception ex) {
