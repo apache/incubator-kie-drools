@@ -23,6 +23,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a one time class which will be used to migrate package header info for drools.
@@ -31,13 +33,14 @@ import org.drools.repository.RulesRepository;
  */
 public class MigrateDroolsPackage {
 
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	public boolean needsMigration(RulesRepository repo) throws RepositoryException {
 		Node root = repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
 		return !root.hasNode("drools.package.migrated");
 	}
 
 	public void migrate(RulesRepository repo) throws RepositoryException {
-		System.out.println("AUTO MIGRATION: Performing drools.package migration...");
+		log.info("AUTO MIGRATION: Performing drools.package migration...");
     	PackageIterator pkgs = repo.listPackages();
     	boolean performed = false;
     	while(pkgs.hasNext()) {
@@ -59,7 +62,7 @@ public class MigrateDroolsPackage {
     	if (performed) {
 	    	repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).addNode("drools.package.migrated", "nt:folder");
 	    	repo.save();
-	    	System.out.println("AUTO MIGRATION: drools.package migration completed.");
+	    	log.info("AUTO MIGRATION: drools.package migration completed.");
     	}
 	}
 

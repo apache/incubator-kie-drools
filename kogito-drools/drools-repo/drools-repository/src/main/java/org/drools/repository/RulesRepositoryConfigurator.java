@@ -37,7 +37,7 @@ public class RulesRepositoryConfigurator {
 	public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException 
 	{
 		if (rulesRepositoryConfigurator == null ) {
-			System.out.println("******* RULES CONFIG ");
+			log.info("Creating an instance of the RulesRepositoryConfigurator.");
 			rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
 			if (properties==null) properties = new Properties();
 			Properties fileProperties = new Properties();
@@ -87,7 +87,7 @@ public class RulesRepositoryConfigurator {
  * @throws RepositoryException
  */
 public void setupRepository(Session session) throws RepositoryException {
-	System.out.println("Setting up the repository, registering node types etc.");
+	log.info("Setting up the repository, registering node types etc.");
 	try {
 		Node root = session.getRootNode();
 		Workspace ws = session.getWorkspace();
@@ -151,7 +151,7 @@ public void setupRepository(Session session) throws RepositoryException {
 
 	public void shutdown() {
 		jcrRepositoryConfigurator.shutdown();
-		System.out.println("SHUTDOWN RULES CONFIG");
+		log.info("SHUTDOWN RULES CONFIG");
 		rulesRepositoryConfigurator = null;
 	}
 }
