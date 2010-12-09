@@ -23,6 +23,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This is a utility to simulate session behavior for the test suite.
  * 
@@ -33,6 +36,7 @@ public class RepositorySessionUtil {
     private static ThreadLocal<RulesRepository> repo = new ThreadLocal<RulesRepository>();
     private static Repository multiThreadedRepository;
     private static Session session = null;
+    private static final Logger log = LoggerFactory.getLogger(RepositorySessionUtil.class);
 
     // private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
 
@@ -53,17 +57,14 @@ public class RepositorySessionUtil {
 
     public static RulesRepository getRepository() throws RulesRepositoryException {
         RulesRepository repoInstance = repo.get();
-        // System.out.println("----------getRepository");
         if (repoInstance == null) {
 
-            // System.out.println("----------repoInstance == null");
-
-            System.out.println("----------repoInstance == null");
+            log.info("Creating a new Repository Instance..");
 
             File dir = new File("repository");
-            System.out.println("DELETING test repo: " + dir.getAbsolutePath());
+            log.info("DELETING test repo: " + dir.getAbsolutePath());
             deleteDir(dir);
-            System.out.println("TEST repo was deleted.");
+            log.info("TEST repo was deleted.");
 
             try {
             	//configurator = new JackrabbitRepository
@@ -98,12 +99,11 @@ public class RepositorySessionUtil {
 
     public static synchronized RulesRepository getMultiThreadedRepository() throws RulesRepositoryException {
         if (multiThreadedRepository == null) {
-            // System.out.println("----------repoInstance == null");
-
+           
             File dir = new File("repository");
-            System.out.println("DELETING test repo: " + dir.getAbsolutePath());
+            log.info("DELETING test repo: " + dir.getAbsolutePath());
             deleteDir(dir);
-            System.out.println("TEST repo was deleted.");
+            log.info("TEST repo was deleted.");
 
             try {
             	// create a repo instance (startup)
@@ -130,7 +130,6 @@ public class RepositorySessionUtil {
             RulesRepository threadLocalRepo = new RulesRepository(session);
             return threadLocalRepo;
         } catch (LoginException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (RepositoryException e) {
             // TODO Auto-generated catch block
