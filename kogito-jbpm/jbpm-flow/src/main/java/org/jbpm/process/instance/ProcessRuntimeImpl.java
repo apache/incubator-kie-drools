@@ -9,16 +9,19 @@ import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.common.InternalRuleBase;
 import org.drools.definition.process.Process;
 import org.drools.event.ProcessEventSupport;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemManager;
+import org.drools.util.CompositeClassLoader;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.instance.event.SignalManager;
@@ -41,6 +44,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
 	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
 		this.kruntime = kruntime;
+		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
@@ -51,6 +55,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
 		this.workingMemory = workingMemory;
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
+		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
@@ -62,12 +67,12 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	private void initProcessInstanceManager() {
 		String processInstanceManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getProcessInstanceManagerFactory();
 		try {
-			processInstanceManager = ((ProcessInstanceManagerFactory) Class.forName(processInstanceManagerClass).newInstance()).createProcessInstanceManager(kruntime);
+			processInstanceManager = 
+				((ProcessInstanceManagerFactory) loadClass(processInstanceManagerClass).newInstance())
+			        .createProcessInstanceManager(kruntime);
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -75,14 +80,25 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	private void initSignalManager() {
 		String signalManagerClass = ((SessionConfiguration) kruntime.getSessionConfiguration()).getSignalManagerFactory();
 		try {
-			signalManager = ((SignalManagerFactory) Class.forName(signalManagerClass).newInstance()).createSignalManager(kruntime);
+			signalManager = ((SignalManagerFactory) loadClass(signalManagerClass).newInstance())
+		        .createSignalManager(kruntime);
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException(e);
 		}
+	}
+	
+	private Class<?> loadClass(String className) {
+	    try {
+            return getRootClassLoader().loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+	}
+	
+	private ClassLoader getRootClassLoader() {
+	    return ((InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKnowledgeBase()).getRuleBase()).getRootClassLoader();
 	}
 	
     public ProcessInstance startProcess(final String processId) {
