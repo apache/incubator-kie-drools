@@ -11,16 +11,16 @@
     </imports>
     <variables>
       <variable name="x" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
       <variable name="y" >
-        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
       </variable>
       <variable name="z" >
-        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
       </variable>
       <variable name="v" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value>Default</value>
       </variable>
     </variables>
@@ -32,17 +32,17 @@
     <composite id="4" name="CompositeNode" x="187" y="33" width="326" height="327" >
     <variables>
       <variable name="y" >
-        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
       </variable>
       <variable name="z" >
-        <type name="org.jbpm.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
       </variable>
       <variable name="x" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value></value>
       </variable>
       <variable name="w" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value>New default</value>
       </variable>
     </variables>
@@ -55,22 +55,22 @@ kcontext.setVariable("z", new MyVariableSerializable("This is a new test Seriali
     <humanTask id="2" name="Human Task" x="122" y="61" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
@@ -84,11 +84,11 @@ System.out.println("z = " + z);</action>
     <composite id="7" name="CompositeNode" x="26" y="136" width="273" height="173" >
     <variables>
       <variable name="a" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value>Newest Default 1</value>
       </variable>
       <variable name="z" >
-        <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+        <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         <value>Newest Default 2</value>
       </variable>
     </variables>
@@ -104,22 +104,22 @@ System.out.println("z = " + z);</action>
     <humanTask id="2" name="Human Task" x="140" y="40" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>
@@ -165,22 +165,22 @@ System.out.println("z = " + z);</action>
     <humanTask id="6" name="Human Task" >
       <work name="Human Task" >
         <parameter name="ActorId" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Comment" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Content" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Priority" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="Skippable" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
         <parameter name="TaskName" >
-          <type name="org.jbpm.process.core.datatype.impl.type.StringDataType" />
+          <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
         </parameter>
       </work>
     </humanTask>

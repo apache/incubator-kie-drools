@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.xml.XmlDumper;
+import org.drools.process.core.Work;
+import org.drools.process.core.impl.WorkImpl;
 import org.drools.xml.ExtensibleXmlParser;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;

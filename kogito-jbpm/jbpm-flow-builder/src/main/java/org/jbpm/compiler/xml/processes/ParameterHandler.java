@@ -2,15 +2,15 @@ package org.jbpm.compiler.xml.processes;
 
 import java.util.HashSet;
 
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.TypeObject;
+import org.drools.process.core.Work;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.impl.ParameterDefinitionImpl;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
-import org.jbpm.process.core.ParameterDefinition;
-import org.jbpm.process.core.TypeObject;
 import org.jbpm.process.core.ValueObject;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.impl.ParameterDefinitionImpl;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 

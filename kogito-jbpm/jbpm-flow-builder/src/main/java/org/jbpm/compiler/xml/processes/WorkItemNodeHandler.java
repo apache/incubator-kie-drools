@@ -6,11 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.Work;
+import org.drools.process.core.datatype.DataType;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.compiler.xml.XmlWorkflowProcessDumper;
-import org.jbpm.process.core.ParameterDefinition;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;

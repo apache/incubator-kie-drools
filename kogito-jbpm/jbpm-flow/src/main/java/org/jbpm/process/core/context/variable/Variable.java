@@ -20,10 +20,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.process.core.TypeObject;
+import org.drools.process.core.TypeObject;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.UndefinedDataType;
 import org.jbpm.process.core.ValueObject;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;
 
 /**
  * Default implementation of a variable.

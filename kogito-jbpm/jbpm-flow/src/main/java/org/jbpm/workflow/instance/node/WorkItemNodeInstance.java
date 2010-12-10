@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.definition.process.Node;
+import org.drools.process.core.Work;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.WorkItem;
-import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;

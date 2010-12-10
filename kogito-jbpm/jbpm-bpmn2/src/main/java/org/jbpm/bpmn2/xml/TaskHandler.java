@@ -19,9 +19,9 @@ package org.jbpm.bpmn2.xml;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.process.core.Work;
+import org.drools.process.core.impl.WorkImpl;
 import org.drools.xml.ExtensibleXmlParser;
-import org.jbpm.process.core.Work;
-import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;

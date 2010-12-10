@@ -19,7 +19,6 @@ package org.jbpm.bpmn2.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.process.Connection;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
