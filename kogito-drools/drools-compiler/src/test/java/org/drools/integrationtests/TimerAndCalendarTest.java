@@ -954,7 +954,7 @@ public class TimerAndCalendarTest extends TestCase {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        final StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         new Thread( new Runnable(){
             public void run(){ workingMemory.fireUntilHalt(); }
