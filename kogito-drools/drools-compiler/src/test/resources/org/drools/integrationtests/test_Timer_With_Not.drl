@@ -1,0 +1,30 @@
+import java.util.Date
+
+declare A
+    id: String
+end
+
+declare B
+    a: A
+end
+
+# insert one A
+rule "insert A"
+timer(int: 1)
+when
+then
+    A a = new A();
+    a.setId( (new Date()).toString() );
+    insert( a );
+end
+
+# wrap the single A into a B => 2 facts
+rule "wrap A"
+timer(int: 100 100)
+when
+    $a: A( $id: id )
+    not B( a == $a )
+then
+    B b = new B( $a );
+    insert( b );
+end
