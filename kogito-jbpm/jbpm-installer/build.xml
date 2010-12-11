@@ -256,7 +256,7 @@
   <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
     <echo message="Getting jBPM Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-4-18524/jbpm-5.0-SNAPSHOT-eclipse-all.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
+    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-4-18524/jbpm-5.0-SNAPSHOT-eclipse-all.zip" dest="${install.home}/lib/jbpm-5.0-SNAPSHOT-eclipse-all.zip" />
   </target>
 
   <!-- Download Drools Eclipse plugins -->
@@ -416,13 +416,20 @@
   <!-- Install Eclipse plugins -->
   <target name="install.jBPM-eclipse.into.eclipse" depends="download.jBPM.eclipse">
     <!-- install plugins -->
-    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" dest="${eclipse.home}" />
+    <unzip src="${install.home}/lib/jbpm-5.0-SNAPSHOT-eclipse-all.zip" dest="${eclipse.home}" />
   </target>
 
   <!-- Install Eclipse plugins -->
   <target name="install.drools-eclipse.into.eclipse" depends="download.drools.eclipse">
     <!-- install plugins -->
     <unzip src="${install.home}/lib/drools-${drools.version}-eclipse-all.zip" dest="${eclipse.home}" />
+    <copy todir="${eclipse.home}/features" overwrite="true">
+      <fileset dir="${eclipse.home}/drools-update-site/features"/>
+    </copy>
+    <copy todir="${eclipse.home}/plugins" overwrite="true">
+      <fileset dir="${eclipse.home}/drools-update-site/plugins"/>
+    </copy>
+    <delete dir="${eclipse.home}/drools-update-site"/>
   </target>
 
   <!-- Install Demo -->
