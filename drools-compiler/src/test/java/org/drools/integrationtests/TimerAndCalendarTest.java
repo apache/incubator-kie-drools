@@ -927,6 +927,47 @@ public class TimerAndCalendarTest extends TestCase {
 
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
         assertEquals( 3, list.size() );  
-    }        
+    }
+    
+    public void FIXME_testTimerWithNot() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        workingMemory.fireAllRules();
+        Thread.sleep( 1500 );
+
+        // now check that rule "wrap A" fired once, creating one B
+        assertEquals( 2, workingMemory.getFactCount() );
+    }
+
+    public void FIXME_testHaltWithTimer() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        new Thread( new Runnable(){
+            public void run(){ workingMemory.fireUntilHalt(); }
+            } ).start();
+        Thread.sleep( 1000 );
+        workingMemory.insert( "halt" );
+        Thread.sleep( 2000 );
+
+        // now check that rule "halt" fired once, creating one Integer
+        assertEquals( 2, workingMemory.getFactCount() );
+    }
+
+    
+    
     
 }

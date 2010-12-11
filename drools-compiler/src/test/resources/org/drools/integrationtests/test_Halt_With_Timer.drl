@@ -1,0 +1,10 @@
+
+# fire once, for a String, create an Integer, halt!
+rule x
+timer(int:0 1000)
+when
+    $s: String()
+then
+    insert( new Integer(1) );
+    drools.halt();
+end
