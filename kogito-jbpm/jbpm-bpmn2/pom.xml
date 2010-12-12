@@ -39,7 +39,7 @@
                <instructions>
                   <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
                   <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.jbpm.flow.builder;bundle-version="5.0.0.SNAPSHOT"</Require-Bundle>
+                  <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
                   <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
                   <Export-Package> org.jbpm.*</Export-Package>
                   <DynamicImport-Package>*</DynamicImport-Package>

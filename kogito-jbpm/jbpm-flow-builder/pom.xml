@@ -39,7 +39,7 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.jbpm.flow.builder;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.jbpm.flow.core;bundle-version="5.0.0.SNAPSHOT", org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
+            <Require-Bundle>org.jbpm.flow.core;bundle-version="${jbpm.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*, !org.jbpm.*, *</Import-Package>
             <Export-Package>org.jbpm.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>

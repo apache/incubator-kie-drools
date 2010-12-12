@@ -2,7 +2,7 @@
 <project name="Drools" basedir="." default="usage">
 
   <target name="usage">
-    <echo>ant -f update-version.xml -Dcurrent="5.0-SNAPSHOT" -Dnew="5.0.0" updateVersion</echo>
+    <echo>ant -f update-version.xml -Dcurrent="5.0-SNAPSHOT" -Dnew="5.0.0" -Dosgi.current="5.0.0.SNAPSHOT" -Dosgi.new="5.0.0" updateVersion</echo>
   </target>
 
   <target name="updateVersion" depends="checkProps, error" unless="propsNotSet">
@@ -13,7 +13,12 @@
                                  jbpm-*/pom.xml, 
                                  jbpm-gwt/**/pom.xml,
                                  jbpm-docs/**/pom.xml"/>
-    </replaceregexp>             
+    </replaceregexp>
+  	<replaceregexp match="&lt;jbpm.osgi.version&gt;${osgi.current}&lt;/jbpm.osgi.version&gt;"
+  	               replace="&lt;jbpm.osgi.version&gt;${osgi.new}&lt;/jbpm.osgi.version&gt;" 
+  	               byline="true">
+  	  <fileset dir="." includes="pom.xml"/>
+  	</replaceregexp>
     <replaceregexp match="&lt;releaseinfo&gt;${current}&lt;/releaseinfo&gt;"
                    replace="&lt;releaseinfo&gt;${new}&lt;/releaseinfo&gt;" 
                    byline="true">
