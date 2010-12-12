@@ -929,7 +929,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );  
     }
     
-    public void FIXME_testTimerWithNot() throws Exception {
+    public void testTimerWithNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -946,7 +946,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 2, workingMemory.getFactCount() );
     }
 
-    public void FIXME_testHaltWithTimer() throws Exception {
+    public void testHaltWithTimer() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );
         final Package pkg = builder.getPackage();
