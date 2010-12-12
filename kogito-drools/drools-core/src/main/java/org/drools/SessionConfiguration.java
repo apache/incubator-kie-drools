@@ -316,12 +316,12 @@ public class SessionConfiguration
 
     public String getProcessInstanceManagerFactory() {
         return this.chainedProperties.getProperty( "drools.processInstanceManagerFactory",
-                                                   "org.drools.process.instance.impl.DefaultProcessInstanceManagerFactory" );
+                                                   "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory" );
     }
 
     public String getSignalManagerFactory() {
         return this.chainedProperties.getProperty( "drools.processSignalManagerFactory",
-                                                   "org.drools.process.instance.event.DefaultSignalManagerFactory" );
+                                                   "org.jbpm.process.instance.event.DefaultSignalManagerFactory" );
     }
 
     public CommandService getCommandService(KnowledgeBase kbase,

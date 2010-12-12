@@ -21,6 +21,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +47,10 @@ import javax.swing.table.TableColumnModel;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.DumpDirOption;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -55,7 +58,9 @@ public class PetStore {
 
     public static void main(String[] args) {
         try {
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        	KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        	conf.setOption( DumpDirOption.get(new File("/home/kverlaen/NotBackedUp/development/drools/drools-examples/drools-examples-drl/dump")) );
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
             kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
                                                                         PetStore.class ),
