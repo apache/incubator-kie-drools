@@ -24,7 +24,7 @@ public class ProcessRuntimeFactory {
 	}
 
 	private static void loadProvider() {	    	    	    
-        ServiceRegistryImpl.getInstance().addDefault( ProcessRuntimeFactoryService.class, "org.drools.process.instance.ProcessRuntimeFactoryServiceImpl" );            
+        ServiceRegistryImpl.getInstance().addDefault( ProcessRuntimeFactoryService.class, "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl" );            
         setProcessRuntimeFactoryService(ServiceRegistryImpl.getInstance().get( ProcessRuntimeFactoryService.class ) );	    
 	}
 	

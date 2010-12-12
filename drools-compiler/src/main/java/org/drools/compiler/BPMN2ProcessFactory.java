@@ -25,7 +25,7 @@ public class BPMN2ProcessFactory {
 
 	@SuppressWarnings("unchecked")
 	private static void loadProvider() {	    	    	    
-        ServiceRegistryImpl.getInstance().addDefault( BPMN2ProcessProvider.class,  "org.drools.bpmn2.BPMN2ProcessProviderImpl" );            
+        ServiceRegistryImpl.getInstance().addDefault( BPMN2ProcessProvider.class,  "org.jbpm.bpmn2.BPMN2ProcessProviderImpl" );            
         setBPMN2ProcessProvider(ServiceRegistryImpl.getInstance().get( BPMN2ProcessProvider.class ) );	    
 	}
 	

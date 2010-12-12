@@ -22,7 +22,7 @@ public class ProcessMarshallerFactory {
 	}
 
 	private static void loadProvider() {	    	    	    
-        ServiceRegistryImpl.getInstance().addDefault( ProcessMarshallerFactoryService.class, "org.drools.marshalling.impl.ProcessMarshallerFactoryServiceImpl" );            
+        ServiceRegistryImpl.getInstance().addDefault( ProcessMarshallerFactoryService.class, "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl" );            
         setProcessMarshallerFactoryService(ServiceRegistryImpl.getInstance().get( ProcessMarshallerFactoryService.class ) );	    
 	}
 	

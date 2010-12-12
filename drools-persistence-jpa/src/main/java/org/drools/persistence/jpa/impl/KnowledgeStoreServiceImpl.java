@@ -35,9 +35,9 @@ public class KnowledgeStoreServiceImpl
 
     protected void setDefaultImplementations() {
         setCommandServiceClass( SingleSessionCommandService.class );
-        setProcessInstanceManagerFactoryClass( "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+        setProcessInstanceManagerFactoryClass( "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory" );
         setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
-        setProcessSignalManagerFactoryClass( "org.drools.persistence.processinstance.JPASignalManagerFactory" );
+        setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
         setTimerServiceClass( JpaJDKTimerService.class );
     }
 
