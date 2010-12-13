@@ -11,6 +11,7 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.Person;
 import org.drools.core.util.FileManager;
 import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
@@ -25,82 +26,33 @@ import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
-public class KnowledgeAgentEventListenerTest extends TestCase {
+public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
-    FileManager fileManager;
-    private Server server;
-    private final Object lock = new Object();
+    private final Object     lock = new Object();
     private volatile boolean changeSetApplied;
-    private boolean compilationErrors;
-    private boolean kbaseUpdated;
-    private int beforeChangeSetProcessed;
-    private int afterChangeSetProcessed;
-    private int beforeChangeSetApplied;
-    private int afterChangeSetApplied;
-    private int beforeResourceProcessed;
-    private int afterResourceProcessed;
-
-
-    @Override
-    protected void setUp() throws Exception {
-        fileManager = new FileManager();
-        fileManager.setUp();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
-
-        this.server = new Server(0);
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setResourceBase(fileManager.getRootDirectory().getPath());
-
-        server.setHandler(resourceHandler);
-
-        server.start();
-
-        this.resetEventCounters();
-    }
-
-    private int getPort() {
-        return this.server.getConnectors()[0].getLocalPort();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        fileManager.tearDown();
-        ResourceFactory.getResourceChangeNotifierService().stop();
-        ResourceFactory.getResourceChangeScannerService().stop();
-        ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-
-        server.stop();
-    }
+    private boolean          compilationErrors;
+    private boolean          kbaseUpdated;
+    private int              beforeChangeSetProcessed;
+    private int              afterChangeSetProcessed;
+    private int              beforeChangeSetApplied;
+    private int              afterChangeSetApplied;
+    private int              beforeResourceProcessed;
+    private int              afterResourceProcessed;
     
-    public void testDummy() {
+    public void test_RemoveMeAfterFixedFIXMES() {
+        
     }
 
     public void FIXMEtestEventListenerWithIncrementalChangeSet() throws Exception {
+        fileManager.write( "myExpander.dsl",
+                           this.createCommonDSL( null ) );
 
-        String header = "";
-        header += "package org.drools.test\n";
-        header += "import org.drools.Person\n\n";
-        header += "global java.util.List list\n\n";
-
-        //create a basic dsl file
-        File f1 = fileManager.newFile("myExpander.dsl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL(null));
-        output.close();
-
-        //create a basic dslr file
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -111,146 +63,165 @@ public class KnowledgeAgentEventListenerTest extends TestCase {
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
         List<String> list = new ArrayList<String>();
 
         //Create a new Agent with newInstace=true
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        KnowledgeAgent kagent = this.createKAgent( kbase,
+                                                   false );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         //Agent: take care of them!
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        applyChangeSet( kagent,
+                        ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        Thread.sleep(2000);
-        //the dsl is now modified.
-        f1 = fileManager.newFile("myExpander.dsl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL("name == \"John\""));
-        output.close();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
 
-        //We also need to mark the dslr file as modified, so the rules could
-        //be regenerated
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        list.clear();
 
+        File f2 = fileManager.write( "myExpander.dsl",
+                                     this.createCommonDSL( "name == \"John\"" ) );
 
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
+
+        scan( kagent );
+
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        //The new fact activated and fired the modified rule
-        Thread.sleep(2000);
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        list.clear();
 
-        //let's add a new rule
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.write(this.createCommonDSLRRule("Rule2"));
-        output.close();
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( new String[]{"Rule1", "Rule2"} ) );
 
-        this.waitUntilChangeSetApplied();
+        scan( kagent );
 
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(1, this.beforeResourceProcessed);
-        assertEquals(1, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 1,
+                      this.beforeResourceProcessed );
+        assertEquals( 1,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
+
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule2" ) );
+        list.clear();
 
         //let's remove Rule1 and Rule2 and add a new rule: Rule3
-        Thread.sleep(2000);
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule3"));
-        output.close();
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule3" ) );
+        scan( kagent );
 
-        this.waitUntilChangeSetApplied();
-
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(1, this.beforeResourceProcessed);
-        assertEquals(1, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 1,
+                      this.beforeResourceProcessed );
+        assertEquals( 1,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
+
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule3" ) );
+        list.clear();
 
         //let's delete the dsl file (errors are expected)
-        Thread.sleep(2000);
-        f1 = fileManager.newFile("myExpander.dsl");
-        f1.delete();
+        this.fileManager.deleteFile( f2 );
+        scan( kagent );
 
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
-
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertTrue(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
+        scan( kagent );
+        assertEquals( 2,
+                      this.beforeChangeSetApplied );
+        assertEquals( 2,
+                      this.afterChangeSetApplied );
+        assertEquals( 2,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 2,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertTrue( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        kagent.monitorResourceChangeEvents(false);
+        ksession.dispose();
+        kagent.dispose();
     }
 
     public void FIXMEtestEventListenerWithoutIncrementalChangeSet() throws Exception {
+        fileManager.write( "myExpander.dsl",
+                           this.createCommonDSL( null ) );
 
-        System.out.println("\n\ntestDSLAndNewInstance\n\n");
-
-        String header = "";
-        header += "package org.drools.test\n";
-        header += "import org.drools.Person\n\n";
-        header += "global java.util.List list\n\n";
-
-        //create a basic dsl file
-        File f1 = fileManager.newFile("myExpander.dsl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL(null));
-        output.close();
-
-        //create a basic dslr file
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -261,142 +232,192 @@ public class KnowledgeAgentEventListenerTest extends TestCase {
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
         List<String> list = new ArrayList<String>();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         //Create a new Agent with newInstace=true
-        KnowledgeAgent kagent = this.createKAgent(kbase,true);
+        KnowledgeAgent kagent = this.createKAgent( kbase,
+                                                   false );
 
         //Agent: take care of them!
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        applyChangeSet( kagent,
+                        ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        Thread.sleep(2000);
-        //Let's modify the dsl file
-        f1 = fileManager.newFile("myExpander.dsl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL("name == \"John\""));
-        output.close();
+        StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        list.clear();
 
-        //We need to mark the dslr file as modified (even when it was not) so
-        //the agent could recreate the rules it contains using the new dsl.
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        File f2 = fileManager.write( "myExpander.dsl",
+                                     this.createCommonDSL( "name == \"John\"" ) );
 
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
+
+        scan( kagent );
+
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        list.clear();
+
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        Thread.sleep(2000);
-        //Let's add a new Rule
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.write(this.createCommonDSLRRule("Rule2"));
-        output.close();
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        list.clear();
 
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(1, this.beforeResourceProcessed);
-        assertEquals(1, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( new String[]{"Rule1", "Rule2"} ) );
+
+        scan( kagent );
+
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 1,
+                      this.beforeResourceProcessed );
+        assertEquals( 1,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        Thread.sleep(2000);
-        //Let's remove both rules and add a new one: Rule3
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule3"));
-        output.close();
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 2,
+                      list.size() );
+        assertTrue( list.contains( "Rule1" ) );
+        assertTrue( list.contains( "Rule2" ) );
+        list.clear();
 
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(1, this.beforeResourceProcessed);
-        assertEquals(1, this.afterResourceProcessed);
-        assertFalse(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        //let's remove Rule1 and Rule2 and add a new rule: Rule3
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule3" ) );
+        scan( kagent );
+
+        assertEquals( 1,
+                      this.beforeChangeSetApplied );
+        assertEquals( 1,
+                      this.afterChangeSetApplied );
+        assertEquals( 1,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 1,
+                      this.afterChangeSetProcessed );
+        assertEquals( 1,
+                      this.beforeResourceProcessed );
+        assertEquals( 1,
+                      this.afterResourceProcessed );
+        assertFalse( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-        Thread.sleep(2000);
+        ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+        ksession.setGlobal( "list",
+                            list );
+        ksession.insert( new Person( "John" ) );
+        ksession.fireAllRules();
+        ksession.dispose();
+        assertEquals( 1,
+                      list.size() );
+        assertTrue( list.contains( "Rule3" ) );
+        list.clear();
+
         //let's delete the dsl file (errors are expected)
-        f1 = fileManager.newFile("myExpander.dsl");
-        f1.delete();
+        this.fileManager.deleteFile( f2 );
+        scan( kagent );
 
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
-
-        this.waitUntilChangeSetApplied();
-        assertEquals(1, this.beforeChangeSetApplied);
-        assertEquals(1, this.afterChangeSetApplied);
-        assertEquals(1, this.beforeChangeSetProcessed);
-        assertEquals(1, this.afterChangeSetProcessed);
-        assertEquals(2, this.beforeResourceProcessed);
-        assertEquals(2, this.afterResourceProcessed);
-        assertTrue(this.compilationErrors);
-        assertTrue(this.kbaseUpdated);
+        fileManager.write( "rules.drl",
+                           createCommonDSLRRule( "Rule1" ) );
+        scan( kagent );
+        assertEquals( 2,
+                      this.beforeChangeSetApplied );
+        assertEquals( 2,
+                      this.afterChangeSetApplied );
+        assertEquals( 2,
+                      this.beforeChangeSetProcessed );
+        assertEquals( 2,
+                      this.afterChangeSetProcessed );
+        assertEquals( 2,
+                      this.beforeResourceProcessed );
+        assertEquals( 2,
+                      this.afterResourceProcessed );
+        assertTrue( this.compilationErrors );
+        assertTrue( this.kbaseUpdated );
         this.resetEventCounters();
 
-
-        kagent.monitorResourceChangeEvents(false);
+        ksession.dispose();
+        kagent.dispose();
     }
 
-    private KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance) {
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
+    public KnowledgeAgent createKAgent(KnowledgeBase kbase,
+                                       boolean newInstance) {
+        KnowledgeAgent kagent = super.createKAgent( kbase,
+                                                    newInstance );
 
-        //System.setProperty(KnowledgeAgentFactory.PROVIDER_CLASS_NAME_PROPERTY_NAME, "org.drools.agent.impl.KnowledgeAgentProviderImpl");
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "" + newInstance);
-
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
-
-        final KnowledgeAgentEventListenerTest test = this;
-        kagent.addEventListener(new KnowledgeAgentEventListener() {
+        kagent.addEventListener( new KnowledgeAgentEventListener() {
 
             public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
                 beforeChangeSetApplied++;
@@ -404,7 +425,7 @@ public class KnowledgeAgentEventListenerTest extends TestCase {
 
             public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
                 afterChangeSetApplied++;
-                synchronized (lock) {
+                synchronized ( lock ) {
                     changeSetApplied = true;
                     lock.notifyAll();
                 }
@@ -432,59 +453,23 @@ public class KnowledgeAgentEventListenerTest extends TestCase {
 
             public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
                 compilationErrors = true;
+                System.out.println( event.getKnowledgeBuilder().getErrors().toString() );
             }
-        });
+        } );
 
-        assertEquals("test agent", kagent.getName());
+        assertEquals( "test agent",
+                      kagent.getName() );
 
         return kagent;
     }
 
-    private String createCommonDSLRRule(String ruleName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("rule ");
-        sb.append(ruleName);
-        sb.append("\n");
-        sb.append("when\n");
-        sb.append("There is a Person\n");
-        sb.append("then\n");
-        sb.append("add rule's name to list;\n");
-        sb.append("end\n");
-
-        return sb.toString();
-    }
-
-    private String createCommonDSL(String restriction) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[condition][]There is a Person = Person(");
-        if (restriction != null) {
-            sb.append(restriction);
-        }
-        sb.append(")\n");
-        sb.append("[consequence][]add rule's name to list = list.add( drools.getRule().getName() );\n");
-        return sb.toString();
-    }
-
-    private void waitUntilChangeSetApplied() {
-        synchronized (lock) {
-            while (!changeSetApplied) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                }
-                System.out.println("Waking up!");
-            }
-            changeSetApplied = false;
-        }
-    }
-
-    private void resetEventCounters(){
-        this.beforeChangeSetApplied=0;
-        this.beforeChangeSetProcessed=0;
-        this.beforeResourceProcessed=0;
-        this.afterChangeSetApplied=0;
-        this.afterChangeSetProcessed=0;
-        this.afterResourceProcessed=0;
+    private void resetEventCounters() {
+        this.beforeChangeSetApplied = 0;
+        this.beforeChangeSetProcessed = 0;
+        this.beforeResourceProcessed = 0;
+        this.afterChangeSetApplied = 0;
+        this.afterChangeSetProcessed = 0;
+        this.afterResourceProcessed = 0;
         this.compilationErrors = false;
         this.changeSetApplied = false;
         this.kbaseUpdated = false;
