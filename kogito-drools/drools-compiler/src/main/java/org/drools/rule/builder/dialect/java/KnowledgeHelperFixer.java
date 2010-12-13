@@ -23,10 +23,10 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
 public class KnowledgeHelperFixer {
-    private static final Map macros;
+    private static final Map<String, Macro> macros;
     
     static {
-        macros = new HashMap(5);
+        macros = new HashMap<String, Macro>(5);
         
         macros.put( "insert",
                     new Macro() {
