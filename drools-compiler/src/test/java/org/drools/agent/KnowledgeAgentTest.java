@@ -1,17 +1,11 @@
 package org.drools.agent;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -20,27 +14,10 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.command.runtime.rule.InsertObjectCommand;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
-import org.drools.core.util.IoUtils;
 import org.drools.definition.KnowledgePackage;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 
 public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
@@ -70,7 +47,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = createKAgent( kbase );
 
-        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -145,7 +122,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase );
 
-        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxm2.toURI().toURL() ) );
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxm2.toURI().toURL() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -204,7 +181,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase );
 
-        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
         StatelessKnowledgeSession ksession = kagent.newStatelessKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -266,7 +243,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         KnowledgeAgent kagent = this.createKAgent( kbase );
 
-        kagent.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -351,9 +328,9 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeAgent kagent = this.createKAgent( kbase );
+        KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
-        kagent.applyChangeSet( ResourceFactory.newByteArrayResource( xml.getBytes() ) );
+        applyChangeSet( kagent, ResourceFactory.newByteArrayResource( xml.getBytes() )  );
 
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
