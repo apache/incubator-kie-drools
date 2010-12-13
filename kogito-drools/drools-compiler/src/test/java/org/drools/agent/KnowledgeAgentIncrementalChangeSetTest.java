@@ -1,40 +1,24 @@
 package org.drools.agent;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.Person;
+import org.drools.runtime.rule.QueryResults;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 
 public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTest {
 
@@ -989,120 +973,84 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-    //    public void testAddModifyQueryIncremental() throws Exception {
-    //        String header = "";
-    //        header += "package org.drools.test\n";
-    //        header += "global java.util.List list\n\n";
-    //
-    //
-    //        String query1 = "";
-    //        query1 += "query \"all the Strings\"\n";
-    //        query1 += "     $strings : String()\n";
-    //        query1 += "end\n";
-    //
-    //        String rule1 = this.createCommonRule("rule1");
-    //
-    //        File f1 = fileManager.newFile("rule1.drl");
-    //        Writer output = new BufferedWriter(new FileWriter(f1));
-    //        output.write(header);
-    //        output.write(rule1);
-    //        output.close();
-    //
-    //        String xml = "";
-    //        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-    //        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-    //        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
-    //        xml += "    <add> ";
-    //        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
-    //        xml += "    </add> ";
-    //        xml += "</change-set>";
-    //        File fxml = fileManager.newFile("changeset.xml");
-    //        output = new BufferedWriter(new FileWriter(fxml));
-    //        output.write(xml);
-    //        output.close();
-    //
-    //        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-    //        KnowledgeAgent kagent = this.createKAgent(kbase);
-    //
-    //        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-    //
-    //
-    //        KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.drools.test");
-    //
-    //        assertNotNull(knowledgePackage);
-    //
-    //        Rule allTheStringsQuery = ((KnowledgePackageImp) knowledgePackage).getRule("all the Strings");
-    //
-    //        assertNull(allTheStringsQuery);
-    //
-    //        // have to sleep here as linux lastModified does not do milliseconds
-    //        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
-    //        System.gc();
-    //        Thread.sleep(2000);
-    //
-    //        //we are going to add the query now
-    //        output = new BufferedWriter(new FileWriter(f1));
-    //        output.write(header);
-    //        output.write(query1);
-    //        output.write(rule1);
-    //        output.close();
-    //        System.gc();
-    //        Thread.sleep(3000);
-    //
-    //        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-    //        List<String> list = new ArrayList<String>();
-    //        ksession.setGlobal("list", list);
-    //        ksession.insert("Some String");
-    //        ksession.insert("Some Other String");
-    //
-    //        QueryResults queryResults = ksession.getQueryResults("all the Strings");
-    //
-    //        ksession.dispose();
-    //
-    //
-    //        assertEquals(2, queryResults.size());
-    //
-    //        Iterator<QueryResultsRow> iterator = queryResults.iterator();
-    //        while (iterator.hasNext()){
-    //            System.out.println("Row= "+iterator.next().get("$strings"));
-    //        }
-    //
-    //        //we are going to modify the query definition
-    //        // have to sleep here as linux lastModified does not do milliseconds
-    //        // http://saloon.javaranch.com/cgi-bin/ubb/ultimatebb.cgi?ubb=get_topic&f=1&t=019789
-    //        System.gc();
-    //        Thread.sleep(2000);
-    //
-    //        //we are going to add function1 now
-    //        String query1V2 = "";
-    //        query1V2 += "query \"all the Strings\"\n";
-    //        query1V2 += "     $strings : String(this == \"Some String\")\n";
-    //        query1V2 += "end\n";
-    //
-    //        output = new BufferedWriter(new FileWriter(f1));
-    //        output.write(header);
-    //        output.write(query1V2);
-    //        output.write(rule1);
-    //        output.close();
-    //        System.gc();
-    //        Thread.sleep(3000);
-    //
-    //        ksession = kbase.newStatefulKnowledgeSession();
-    //        list = new ArrayList<String>();
-    //        ksession.setGlobal("list", list);
-    //        ksession.insert("Some String");
-    //        ksession.insert("Some Other String");
-    //
-    //        queryResults = ksession.getQueryResults("all the Strings");
-    //
-    //        ksession.dispose();
-    //
-    //
-    //        assertEquals(1, queryResults.size());
-    //        assertEquals("Some String",queryResults.iterator().next().get("$strings"));
-    //
-    //        kagent.monitorResourceChangeEvents(false);
-    //    }
+        public void testAddModifyQueryIncremental() throws Exception {
+    
+            String query1 = "";
+            query1 += "query \"all the Strings\"\n";
+            query1 += "     $strings : String()\n";
+            query1 += "end\n";
+    
+            fileManager.write("rule1.drl", this.createDefaultRule("rule1") );
+    
+            String xml = "";
+            xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+            xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+            xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+            xml += "    <add> ";
+            xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
+            xml += "    </add> ";
+            xml += "</change-set>";
+            File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            KnowledgeAgent kagent = this.createKAgent( kbase, false );
+
+            try {
+                applyChangeSet( kagent,
+                                ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+            } catch (Exception e) {
+                fail( "Knowledge shouldn't fail to compile" );
+            }
+    
+            KnowledgePackage knowledgePackage = kbase.getKnowledgePackage("org.drools.test");
+    
+            assertNotNull(knowledgePackage);
+    
+            Rule allTheStringsQuery = ((KnowledgePackageImp) knowledgePackage).getRule("all the Strings");
+    
+            assertNull(allTheStringsQuery);
+    
+                
+            //we are going to add the query now
+            fileManager.write("rule1.drl", this.createDefaultRule("rule1") + " \n " + query1 );
+            
+            this.scan(kagent);
+    
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal("list", list);
+            ksession.insert("Some String");
+            ksession.insert("Some Other String");
+    
+            QueryResults queryResults = ksession.getQueryResults("all the Strings");
+    
+            assertEquals(2, queryResults.size());
+    
+            Iterator<QueryResultsRow> iterator = queryResults.iterator();
+            while (iterator.hasNext()){
+                System.out.println("Row= "+iterator.next().get("$strings"));
+            }
+    
+            //we are going to modify the query definition
+            String query1V2 = "";
+            query1V2 += "query \"all the Strings\"\n";
+            query1V2 += "     $strings : String(this == \"Some String\")\n";
+            query1V2 += "end\n";
+            
+            fileManager.write("rule1.drl", this.createDefaultRule("rule1") + " \n " + query1V2 );
+            
+            this.scan(kagent);
+    
+            queryResults = ksession.getQueryResults("all the Strings");
+    
+    
+            assertEquals(1, queryResults.size());
+            assertEquals("Some String",queryResults.iterator().next().get("$strings"));
+    
+            ksession.dispose();
+            kagent.dispose();
+        }
     //
     //    public void testStatefulSessionReuse() throws Exception {
     //
