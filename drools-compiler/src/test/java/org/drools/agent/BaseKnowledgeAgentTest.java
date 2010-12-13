@@ -29,6 +29,7 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
 import junit.framework.TestCase;
+import org.drools.builder.KnowledgeBuilderConfiguration;
 
 public abstract class BaseKnowledgeAgentTest extends TestCase {
     FileManager     fileManager;
@@ -246,26 +247,47 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
     public KnowledgeAgent createKAgent(KnowledgeBase kbase) {
         return createKAgent( kbase, true );
     }
-    public KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInsatnce) {
+    
+    
+    
+    public KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance) {
+        return this.createKAgent(kbase, newInstance, null, null);
+    }
+    
+    public KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance, boolean useKBaseClassLoaderForCompiling) {
+        return this.createKAgent(kbase, newInstance, useKBaseClassLoaderForCompiling, null);
+    }
+    
+    public KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance, Boolean useKBaseClassLoaderForCompiling, KnowledgeBuilderConfiguration builderConf) {
         KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
         aconf.setProperty( "drools.agent.scanDirectories",
                            "true" );
         aconf.setProperty( "drools.agent.scanResources",
                            "true" );
         aconf.setProperty( "drools.agent.newInstance",
-                           Boolean.toString( newInsatnce ) );
-
+                           Boolean.toString( newInstance ) );
+        if (useKBaseClassLoaderForCompiling != null){
+            aconf.setProperty("drools.agent.useKBaseClassLoaderForCompiling", 
+                ""+useKBaseClassLoaderForCompiling);
+        }
+        
         KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("test agent",
                                                                          kbase,
-                                                                         aconf );
+                                                                         aconf,
+                                                                         builderConf);
 
         assertEquals( "test agent",
                       kagent.getName() );
 
         return kagent;
-    }    
+        
+    }
     
     public String createHeader(String packageName) {
+        return this.createHeader(packageName, null);
+    }
+    
+    public String createHeader(String packageName, String[] customImports) {
         StringBuilder header = new StringBuilder();
         if ( StringUtils.isEmpty( packageName ) ) {
             header.append( "package org.drools.test\n" );
@@ -274,7 +296,14 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
             header.append( packageName );
             header.append( "\n" );
         }
-        header.append( "import org.drools.Person\n" );
+        header.append( "import org.drools.Person;\n" );
+        if (customImports != null){
+            for (String customImport : customImports) {
+                header.append( "import " );
+                header.append( customImport );
+                header.append( ";\n" );
+            }
+        }
         header.append( "global java.util.List list\n" );
         
         return header.toString();
@@ -285,11 +314,16 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
         return createVersionedRule( true, packageName, ruleNames, attribute, lhs, version );
     }
     
+    
     public String createCustomRule(boolean header, String packageName, String[] ruleNames, String attribute, String lhs, String rhs) {
+        return this.createCustomRule(header, packageName, null, ruleNames, attribute, lhs, rhs);
+    }
+    
+    public String createCustomRule(boolean header, String packageName,  String[] customImports, String[] ruleNames, String attribute, String lhs, String rhs) {
         StringBuilder rule = new StringBuilder();
         
         if ( header ) {
-            rule.append( createHeader( packageName ) );
+            rule.append( createHeader( packageName, customImports ) );
         }
         
         for (String ruleName : ruleNames ) {

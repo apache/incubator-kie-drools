@@ -1,26 +1,16 @@
 package org.drools.agent;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.core.util.FileManager;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 
 public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
