@@ -79,6 +79,7 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
         KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
             
             public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
+                throw new RuntimeException("Unable to compile Knowledge"+ event );
             }
             
             public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
@@ -128,6 +129,7 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
         KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
             
             public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
+                throw new RuntimeException("Unable to compile Knowledge"+ event );
             }
             
             public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
@@ -177,6 +179,7 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
         KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
             
             public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
+                throw new RuntimeException("Unable to compile Knowledge"+ event );
             }
             
             public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
@@ -260,53 +263,153 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
                       kagent.getName() );
 
         return kagent;
-    }
-    
-    
-    public String createVersionedRule(String packageName, String ruleName, String attribute, String version) {        
-        StringBuilder rule = new StringBuilder();
-        if ( StringUtils.isEmpty( packageName ) ) {
-            rule.append( "package org.drools.test\n" );
-        } else {
-            rule.append( "package " );
-            rule.append( packageName );
-            rule.append( "\n" );
-        }
-        rule.append( "global java.util.List list\n" );
-        rule.append( "rule " );
-        rule.append( ruleName );
-        rule.append( "\n" );
-        if ( !StringUtils.isEmpty( attribute ) ) {
-            rule.append( attribute +"\n" );    
-        }
-        rule.append( "when\n" );
-        rule.append( "then\n" );
-        if ( StringUtils.isEmpty( version ) ) {
-            rule.append( "list.add( drools.getRule().getName() );\n" );
-        } else {
-            rule.append("list.add( drools.getRule().getName()+\"-V" + version + "\");\n");
-        }
-        rule.append( "end\n" );
-
-        return rule.toString();       
     }    
     
+    public String createHeader(String packageName) {
+        StringBuilder header = new StringBuilder();
+        if ( StringUtils.isEmpty( packageName ) ) {
+            header.append( "package org.drools.test\n" );
+        } else {
+            header.append( "package " );
+            header.append( packageName );
+            header.append( "\n" );
+        }
+        header.append( "import org.drools.Person\n" );
+        header.append( "global java.util.List list\n" );
+        
+        return header.toString();
+    }
+    
+    
+    public String createVersionedRule(String packageName, String[] ruleNames, String attribute, String lhs, String version) {
+        return createVersionedRule( true, packageName, ruleNames, attribute, lhs, version );
+    }
+    
+    public String createCustomRule(boolean header, String packageName, String[] ruleNames, String attribute, String lhs, String rhs) {
+        StringBuilder rule = new StringBuilder();
+        
+        if ( header ) {
+            rule.append( createHeader( packageName ) );
+        }
+        
+        for (String ruleName : ruleNames ) {
+            rule.append( "rule " );
+            rule.append( ruleName );
+            rule.append( "\n" );
+            if ( !StringUtils.isEmpty( attribute ) ) {
+                rule.append( attribute +"\n" );    
+            }
+            rule.append( "when\n" );
+            if ( !StringUtils.isEmpty( lhs ) ) {
+                rule.append( lhs );
+            }
+            rule.append( "then\n" );
+            rule.append( rhs );
+            rule.append( "end\n\n" );
+        }
+                
+        return rule.toString();  
+    }
+    
+    public String createVersionedRule(boolean header, String packageName, String[] ruleNames, String attribute, String lhs, String version) {
+        String rhs = null;
+        if ( StringUtils.isEmpty( version ) ) {
+            rhs = "list.add( drools.getRule().getName() );\n";
+        } else {
+            rhs = "list.add( drools.getRule().getName()+\"-V" + version + "\");\n";
+        }
+        return createCustomRule(header, packageName, ruleNames, attribute, lhs, rhs  );
+    }     
+    
+    public String createLhsRule(String[] ruleNames, String lhs) {
+        return createVersionedRule( null, ruleNames, null, lhs, null );
+    }    
+    
+    public String createLhsRule(String ruleName, String lhs) {
+        return createVersionedRule( null, new String[] { ruleName }, null, lhs, null );
+    }
+    
     public String createVersionedRule(String ruleName, String version) {
-        return createVersionedRule( null, ruleName, null, version );
+        return createVersionedRule( null, new String[] { ruleName }, null, null, version );
     }
 
-    public String createDefaultRule(String name) {
-        return createDefaultRule( name,
+    public String createDefaultRule(String ruleName) {
+        return createDefaultRule( new String[] { ruleName },
                                   null );
     }
-
+    
+    public String createDefaultRule(String[] rulesNames) {
+        return createDefaultRule( rulesNames,
+                                  null );
+    }    
+    
     public String createDefaultRule(String ruleName,
                                     String packageName) {
-        return createVersionedRule( null, ruleName, null, null );
+        return createVersionedRule( packageName,  new String[] { ruleName }, null, null, null );
+    }     
+
+    public String createDefaultRule(String[] ruleNames,
+                                    String packageName) {
+        return createVersionedRule( packageName, ruleNames, null, null, null );
     }  
     
     public String createAttributeRule(String ruleName,
                                       String attribute) {
-        return createVersionedRule( null, ruleName, attribute, null );
-    }     
+        return createVersionedRule( null, new String[] { ruleName }, attribute, null, null );
+    }  
+
+    public String createCommonDSLRRule(String[] ruleNames) {
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("package org.drools.test\n");
+        sb.append("import org.drools.Person\n\n");
+        sb.append("global java.util.List list\n\n");
+        
+        for (String ruleName : ruleNames ) {
+            sb.append("rule ");
+            sb.append(ruleName);
+            sb.append("\n");
+            sb.append("when\n");
+            sb.append("There is a Person\n");
+            sb.append("then\n");
+            sb.append("    add rule's name to list\n");
+            sb.append("end\n\n");
+        }
+
+        return sb.toString(); 
+    }
+    
+    public String createCommonDSLRRule(String ruleName) {
+        return createCommonDSLRRule( new String[] { ruleName } );
+    }
+
+    public String createCommonDSL(String restriction) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[condition][]There is a Person = Person(");
+        if (restriction != null) {
+            sb.append(restriction);
+        }
+        sb.append(")\n");
+        sb.append("[consequence][]add rule's name to list = list.add( drools.getRule().getName() );\n");
+        return sb.toString();
+    }
+    
+    public String createCommonFunction(String functionName, String valueToAdd) {
+      StringBuilder sb = new StringBuilder();
+      
+      sb.append("package org.drools.test\n");
+      sb.append("import org.drools.Person\n\n");
+      sb.append("global java.util.List list\n\n");
+      
+      sb.append("function void  ");
+      sb.append(functionName);
+      sb.append("(java.util.List myList,String source){\n");
+      sb.append(" myList.add(\"");
+      sb.append(valueToAdd);
+      sb.append(" from \"+source);\n");
+      sb.append("}\n");
+    
+      return sb.toString();
+    }    
+
 }
