@@ -891,7 +891,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
     }
 
-    public void FIXME_testAddModifyFunctionIncremental() throws Exception {
+    public void testAddModifyFunctionIncremental() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createCustomRule( true, null, new String[] { "rule1" },
                                                        null, "String()\n", "function1 (list,drools.getRule().getName());\n") );
@@ -960,13 +960,12 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         assertEquals( 0,
                       list.size() );
         
-        ksession.insert( "String1" );
+        ksession.insert( "String2" );
         ksession.fireAllRules();
         
         assertEquals( 1,
                       list.size() );
         
-        System.out.println( list );
         assertTrue( list.contains( "function1-V2 from rule1" ) );
 
         ksession.dispose();
