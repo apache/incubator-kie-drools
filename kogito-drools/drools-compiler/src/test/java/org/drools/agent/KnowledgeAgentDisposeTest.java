@@ -3,157 +3,63 @@ package org.drools.agent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SystemEventListener;
-import org.drools.core.util.FileManager;
-import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetAppliedEvent;
-import org.drools.event.knowledgeagent.BeforeChangeSetProcessedEvent;
-import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
-import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
-import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
-import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 
-public class KnowledgeAgentDisposeTest extends TestCase {
-
-    FileManager fileManager;
-    private Server server;
-    private final Object lock = new Object();
-    private volatile boolean kbaseUpdated;
-    private boolean compilationErrors;
+public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
     private int resourceChangeNotificationCount = 0;
 
-
-    @Override
-    protected void setUp() throws Exception {
-        fileManager = new FileManager();
-        fileManager.setUp();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
-
-        this.server = new Server(0);
-        ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setResourceBase(fileManager.getRootDirectory().getPath());
-
-        server.setHandler(resourceHandler);
-
-        server.start();
-
-        this.kbaseUpdated = false;
-        this.resourceChangeNotificationCount = 0;
-    }
-
-    private int getPort() {
-        return this.server.getConnectors()[0].getLocalPort();
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        fileManager.tearDown();
-        ResourceFactory.getResourceChangeNotifierService().stop();
-        ResourceFactory.getResourceChangeScannerService().stop();
-        ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();
-        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
-
-        server.stop();
-    }
-    
-    public void testDummy() {
-    }
-
-    public void FIXMEtestMonitorResourceChangeEvents() throws Exception {
-
-        String header = "";
-        header += "package org.drools.test\n";
-        header += "import org.drools.Person\n\n";
-        header += "global java.util.List list\n\n";
-
+    public void testMonitorResourceChangeEvents() throws Exception {
         //create a basic dsl file
-        File f1 = fileManager.newFile("myExpander.dsl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL(null));
-        output.close();
+        this.fileManager.write("myExpander.dsl", this.createCommonDSL(null));
 
         //create a basic dslr file
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
         xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
-        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.drl' type='DSLR' />";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.dslr' type='DSLR' />";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
 
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+        
         //Create a new Agent with newInstace=true
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent(kbase, false);
 
         //Agent: take care of them!
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
-
-        kbaseUpdated = false;
+        this.applyChangeSet(kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()));
         resourceChangeNotificationCount = 0;
         
-        Thread.sleep(2000);
         //the dsl is now modified.
-        f1 = fileManager.newFile("myExpander.dsl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL("name == \"John\""));
-        output.close();
+        this.fileManager.write("myExpander.dsl", this.createCommonDSL("name == \"John\""));
 
         //the drl file is marked as modified too
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
-
-        this.waitUntilKBaseUpdate();
+        this.scan(kagent);
 
         //two resources were modified, but only one change set is created
         assertEquals(1, resourceChangeNotificationCount);
         resourceChangeNotificationCount = 0;
-        Thread.sleep(2000);
 
         //let's add a new rule
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.write(this.createCommonDSLRRule("Rule2"));
-        output.close();
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule(new String[]{"Rule1","Rule2"}));
 
-        this.waitUntilKBaseUpdate();
+        this.scan(kagent);
 
         assertEquals(1, resourceChangeNotificationCount);
         resourceChangeNotificationCount = 0;
@@ -161,31 +67,24 @@ public class KnowledgeAgentDisposeTest extends TestCase {
         //the kagent is stopped
         kagent.monitorResourceChangeEvents(false);
 
-        //the drl file is marked as modified
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        //the dsrl file is marked as modified
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
-        //we can't wait until kbase update, because the agent is not monitoring
-        //change sets anymore
-        Thread.sleep(5000);
-
+        try{
+            this.scan(kagent);
+            fail("The agent didn't process any change set. This should be failed.");
+        }catch (RuntimeException e){
+            assertEquals(e.getMessage(), "Event for KnowlegeBase update, due to scan, was never received");
+        }
         assertEquals(0, resourceChangeNotificationCount);
-
-
+        
         //let start the agent again
         kagent.monitorResourceChangeEvents(true);
 
-        //the drl file is marked as modified
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        //the dsrl file is marked as modified
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
-         Thread.sleep(2000);
+        this.scan(kagent);
 
         assertEquals(1, resourceChangeNotificationCount);
 
@@ -193,67 +92,44 @@ public class KnowledgeAgentDisposeTest extends TestCase {
     }
 
 
-    public void FIXMEtestDispose() throws Exception {
-
-        String header = "";
-        header += "package org.drools.test\n";
-        header += "import org.drools.Person\n\n";
-        header += "global java.util.List list\n\n";
+    public void testDispose() throws Exception {
 
         //create a basic dsl file
-        File f1 = fileManager.newFile("myExpander.dsl");
-        Writer output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL(null));
-        output.close();
+        this.fileManager.write("myExpander.dsl", this.createCommonDSL(null));
 
         //create a basic dslr file
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
         xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
         xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         xml += "    <add> ";
-        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.drl' type='DSLR' />";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rules.dslr' type='DSLR' />";
         xml += "        <resource source='http://localhost:" + this.getPort() + "/myExpander.dsl' type='DSL' />";
         xml += "    </add> ";
         xml += "</change-set>";
-        File fxml = fileManager.newFile("changeset.xml");
-        output = new BufferedWriter(new FileWriter(fxml));
-        output.write(xml);
-        output.close();
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
 
-        //Create a new Agent with newInstace=true
+        //Create a new Agent with newInstace=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
         //Agent: take care of them!
-        kagent.applyChangeSet(ResourceFactory.newUrlResource(fxml.toURI().toURL()));
+        this.applyChangeSet(kagent,ResourceFactory.newUrlResource(fxml.toURI().toURL()));
 
-        kbaseUpdated = false;
         resourceChangeNotificationCount = 0;
 
-        Thread.sleep(2000);
         //the dsl is now modified.
-        f1 = fileManager.newFile("myExpander.dsl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(this.createCommonDSL("name == \"John\""));
-        output.close();
+        this.fileManager.write("myExpander.dsl", this.createCommonDSL("name == \"John\""));
 
-        //the drl file is marked as modified too
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        //We also need to mark the dslr file as modified, so the rules could
+        //be regenerated
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
-
-        this.waitUntilKBaseUpdate();
-
+        this.scan(kagent);
+        
         //two resources were modified, but only one change set is created
         assertEquals(1, resourceChangeNotificationCount);
         resourceChangeNotificationCount = 0;
@@ -263,17 +139,11 @@ public class KnowledgeAgentDisposeTest extends TestCase {
         ksession.setGlobal("list", new ArrayList<String>());
         ksession.fireAllRules();
 
-        Thread.sleep(2000);
 
         //let's add a new rule
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.write(this.createCommonDSLRRule("Rule2"));
-        output.close();
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule(new String[]{"Rule1","Rule2"}));
 
-        this.waitUntilKBaseUpdate();
+        this.scan(kagent);
 
         assertEquals(1, resourceChangeNotificationCount);
         resourceChangeNotificationCount = 0;
@@ -295,40 +165,24 @@ public class KnowledgeAgentDisposeTest extends TestCase {
         //Now it is safe to dispose the kagent
         kagent.dispose();
 
-        //the drl file is marked as modified
-        f1 = fileManager.newFile("rules.drl");
-        output = new BufferedWriter(new FileWriter(f1));
-        output.write(header);
-        output.write(this.createCommonDSLRRule("Rule1"));
-        output.close();
+        //the dsrl file is modified
+        this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule1"));
 
-        //we can't wait until kbase update, because the agent is not monitoring
-        //change sets anymore
-        Thread.sleep(5000);
-
+        try{
+            this.scan(kagent);
+            fail("The agent didn't process any change set. This should be failed.");
+        }catch (RuntimeException e){
+            assertEquals(e.getMessage(), "Event for KnowlegeBase update, due to scan, was never received");
+        }
         assertEquals(0, resourceChangeNotificationCount);
-
-
 
 
     }
 
 
-    private KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance) {
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty("drools.resource.scanner.interval", "2");
-        ResourceFactory.getResourceChangeScannerService().configure(sconf);
-
-        //System.setProperty(KnowledgeAgentFactory.PROVIDER_CLASS_NAME_PROPERTY_NAME, "org.drools.agent.impl.KnowledgeAgentProviderImpl");
-
-        KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-        aconf.setProperty("drools.agent.scanDirectories", "true");
-        aconf.setProperty("drools.agent.scanResources", "true");
-        // Testing incremental build here
-        aconf.setProperty("drools.agent.newInstance", "" + newInstance);
-
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent(
-                "test agent", kbase, aconf);
+    @Override
+    public KnowledgeAgent createKAgent(KnowledgeBase kbase, boolean newInstance) {
+        KnowledgeAgent kagent = super.createKAgent(kbase, newInstance);
 
         kagent.setSystemEventListener(new SystemEventListener() {
 
@@ -360,79 +214,6 @@ public class KnowledgeAgentDisposeTest extends TestCase {
             }
         });
 
-        kagent.addEventListener(new KnowledgeAgentEventListener() {
-
-            public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
-            }
-
-            public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
-            }
-
-            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
-            }
-
-            public void afterChangeSetProcessed(AfterChangeSetProcessedEvent event) {
-            }
-
-            public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
-            }
-
-            public void afterResourceProcessed(AfterResourceProcessedEvent event) {
-            }
-
-            public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
-                System.out.println("KBase was updated");
-                synchronized (lock) {
-                    kbaseUpdated = true;
-                    lock.notifyAll();
-                }
-            }
-
-            public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
-                compilationErrors = true;
-            }
-        });
-
-        assertEquals("test agent", kagent.getName());
-
         return kagent;
-    }
-
-    private String createCommonDSLRRule(String ruleName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("rule ");
-        sb.append(ruleName);
-        sb.append("\n");
-        sb.append("when\n");
-        sb.append("There is a Person\n");
-        sb.append("then\n");
-        sb.append("add rule's name to list;\n");
-        sb.append("end\n");
-
-        return sb.toString();
-    }
-
-    private String createCommonDSL(String restriction) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[condition][]There is a Person = Person(");
-        if (restriction != null) {
-            sb.append(restriction);
-        }
-        sb.append(")\n");
-        sb.append("[consequence][]add rule's name to list = list.add( drools.getRule().getName() );\n");
-        return sb.toString();
-    }
-
-    private void waitUntilKBaseUpdate() {
-        synchronized (lock) {
-            while (!kbaseUpdated) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                }
-                System.out.println("Waking up!");
-            }
-            kbaseUpdated = false;
-        }
     }
 }

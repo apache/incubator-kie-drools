@@ -35,7 +35,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
         List<String> list = new ArrayList<String>();
 
-        //Create a new Agent with newInstace=true
+        //Create a new Agent with newInstace=false
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeAgent kagent = this.createKAgent( kbase, false );
 
@@ -74,7 +74,6 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         ksession.fireAllRules();
 
         //The new fact activated and fired the modified rule
-        Thread.sleep(2000);
         assertEquals(1, list.size());
         assertTrue(list.contains("Rule1"));
 
@@ -217,7 +216,6 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
         ksession.dispose();
 
-        Thread.sleep(2000);
         //Let's remove both rules and add a new one: Rule3
         this.fileManager.write("rules.dslr", this.createCommonDSLRRule("Rule3"));
 
@@ -237,7 +235,6 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
         ksession.dispose();
 
-        Thread.sleep(2000);
         //let's delete the dsl file (errors are expected)
         fileManager.deleteFile(expander);
 
