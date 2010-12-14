@@ -445,5 +445,23 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
     
       return sb.toString();
     }    
+    
+    public String createCommonQuery(String name, String[] patterns){
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.createHeader("org.drools.test"));
+        sb.append("\n");
+        sb.append("query \"");
+        sb.append(name);
+        sb.append("\"\n");
+                
+        for (String pattern : patterns) {
+            sb.append(pattern);
+            sb.append("\n");
+        }
+        
+        sb.append("end\n");
+        
+        return sb.toString();
+    }
 
 }
