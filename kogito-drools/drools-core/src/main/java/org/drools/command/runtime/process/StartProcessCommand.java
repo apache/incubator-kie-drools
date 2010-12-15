@@ -31,6 +31,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
 
@@ -46,6 +47,8 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 	
 	@XmlElementWrapper(name="data")
 	private List<Object> data = null;
+	@XmlAttribute(name="out-identifier")
+    private String outIdentifier;
 
 	public StartProcessCommand() {
 	}
@@ -53,12 +56,21 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 	public StartProcessCommand(String processId) {
 		this.processId = processId;
 	}
-	
+
+	public StartProcessCommand(String processId, String outIdentifier) {
+	    this(processId);
+        this.outIdentifier = outIdentifier;
+    }
+
 	public StartProcessCommand(String processId, Map<String, Object> parameters) {
 		this(processId);
 		this.parameters = parameters; 
 	}
 
+	public StartProcessCommand(String processId, Map<String, Object> parameters, String outIdentifier) {
+        this(processId, outIdentifier);
+        this.parameters = parameters; 
+    }
 
 	public String getProcessId() {
 		return processId;
@@ -88,7 +100,15 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 		this.data = data;
 	}
 
-	public ProcessInstance execute(Context context) {
+	public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public ProcessInstance execute(Context context) {
 		StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
 		if (data != null) {
@@ -97,6 +117,10 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 			}
 		}
 		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
+		if ( this.outIdentifier != null ) {
+		    ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
+		                                                                                                       processInstance.getId());
+		}
 		return processInstance;
 	}
 

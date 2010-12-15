@@ -616,6 +616,8 @@ public static class StartProcessConvert extends AbstractCollectionConverter
       StartProcessCommand cmd = (StartProcessCommand) object;
       writer.addAttribute( "processId",
                            cmd.getProcessId() );
+      writer.addAttribute( "out-identifier",
+              cmd.getOutIdentifier() );
 
       for ( Entry<String, Object> entry : cmd.getParameters().entrySet() ) {
           writer.startNode( "parameter" );
@@ -631,6 +633,7 @@ public static class StartProcessConvert extends AbstractCollectionConverter
   public Object unmarshal(HierarchicalStreamReader reader,
                           UnmarshallingContext context) {
       String processId = reader.getAttribute( "processId" );
+      String outIdentifier = reader.getAttribute( "out-identifier" );
 
       HashMap<String, Object> params = new HashMap<String, Object>();
       while ( reader.hasMoreChildren() ) {
@@ -648,6 +651,7 @@ public static class StartProcessConvert extends AbstractCollectionConverter
       StartProcessCommand cmd = new StartProcessCommand();
       cmd.setProcessId( processId );
       cmd.setParameters( params );
+      cmd.setOutIdentifier( outIdentifier );
 
       return cmd;
   }
