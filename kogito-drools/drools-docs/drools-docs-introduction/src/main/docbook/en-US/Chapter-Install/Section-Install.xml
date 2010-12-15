@@ -93,8 +93,7 @@
     -Ddrools.compiler=JANINO.</para>
 
     <para>For up to date info on dependencies in a release, consult the
-    README_DEPENDENCIES.txt file, which can be found in the lib directory of
-    the download bundle, or in the root of the project directory.</para>
+    released poms, which can be found on the maven repository.</para>
   </section>
 
   <section>
