@@ -218,7 +218,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 
 	public void signalEvent(String type, Object event) {
 		super.signalEvent(type, event);
-		for (Node node: getCompositeNode().getNodes()) {
+		for (Node node: getCompositeNode().internalGetNodes()) {
 			if (node instanceof EventNodeInterface) {
 				if (((EventNodeInterface) node).acceptsEvent(type, event)) {
 					if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
