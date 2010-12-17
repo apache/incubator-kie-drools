@@ -102,7 +102,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
     		"  <header>\n" +
     		"    <variables>\n" +
     		"      <variable name=\"myVariable\" >\n" +
-    		"        <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"        <value>OldValue</value>\n" +
     		"      </variable>\n" +
     		"    </variables>\n" +
@@ -112,19 +112,19 @@ public class ProcessMarshallingTest extends JbpmTestCase {
     		"    <workItem id=\"2\" name=\"Email\" >\n" +
     		"      <work name=\"Email\" >\n" +
     		"        <parameter name=\"Subject\" >\n" +
-    		"          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"          <value>Mail</value>\n" +
     		"        </parameter>\n" +
     		"        <parameter name=\"Text\" >\n" +
-    		"          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"          <value>This is an email</value>\n" +
     		"        </parameter>\n" +
     		"        <parameter name=\"To\" >\n" +
-    		"          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"          <value>you@mail.com</value>\n" +
     		"        </parameter>\n" +
     		"        <parameter name=\"From\" >\n" +
-    		"          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"          <value>me@mail.com</value>\n" +
     		"        </parameter>\n" +
     		"      </work>\n" +
@@ -200,7 +200,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
             "    <workItem id=\"12\" name=\"Log\" >\n" +
             "      <work name=\"Log\" >\n" +
             "        <parameter name=\"Message\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>This is a log message</value>\n" +
             "        </parameter>\n" +
             "      </work>\n" +
@@ -208,7 +208,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
             "    <composite id=\"13\" name=\"CompositeNode\" >\n" +
             "      <variables>\n" +
             "        <variable name=\"x\" >\n" +
-            "          <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "          <value>x-value</value>\n" +
             "        </variable>\n" +
             "      </variables>\n" +
@@ -216,35 +216,35 @@ public class ProcessMarshallingTest extends JbpmTestCase {
             "        <humanTask id=\"1\" name=\"Human Task\" swimlane=\"swimlane\" >\n" +
             "          <work name=\"Human Task\" >\n" +
             "            <parameter name=\"ActorId\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "              <value>John Doe</value>\n" +
             "            </parameter>\n" +
             "            <parameter name=\"Priority\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "            <parameter name=\"TaskName\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "              <value>Do something !</value>\n" +
             "            </parameter>\n" +
             "            <parameter name=\"Comment\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "          </work>\n" +
             "        </humanTask>\n" +
             "        <humanTask id=\"2\" name=\"Human Task\" swimlane=\"swimlane\" >\n" +
             "          <work name=\"Human Task\" >\n" +
             "            <parameter name=\"ActorId\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "            <parameter name=\"Priority\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "            <parameter name=\"TaskName\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "              <value>Do something else !</value>\n" +
             "            </parameter>\n" +
             "            <parameter name=\"Comment\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "          </work>\n" +
             "          <mapping type=\"in\" from=\"x\" to=\"Priority\" />\n" +
@@ -368,7 +368,7 @@ public class ProcessMarshallingTest extends JbpmTestCase {
             "    <header>\n" +
             "      <variables>\n" +
             "        <variable name=\"list\" >\n" +
-    		"          <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+    		"          <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
     		"        </variable>\n" +
     		"      </variables>\n" +
     		"    </header>\n" +
@@ -379,16 +379,16 @@ public class ProcessMarshallingTest extends JbpmTestCase {
     		"          <humanTask id=\"1\" name=\"Human Task\" >\n" +
     		"            <work name=\"Human Task\" >\n" +
     		"              <parameter name=\"Comment\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"ActorId\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"Priority\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"TaskName\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"                <value>Do something: #{item}</value>\n" +
     		"              </parameter>\n" +
     		"            </work>\n" +
@@ -396,16 +396,16 @@ public class ProcessMarshallingTest extends JbpmTestCase {
     		"          <humanTask id=\"2\" name=\"Human Task Again\" >\n" +
     		"            <work name=\"Human Task\" >\n" +
     		"              <parameter name=\"Comment\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"ActorId\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"Priority\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"              </parameter>\n" +
     		"              <parameter name=\"TaskName\" >\n" +
-    		"                <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+    		"                <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
     		"                <value>Do something else: #{item}</value>\n" +
     		"              </parameter>\n" +
     		"            </work>\n" +

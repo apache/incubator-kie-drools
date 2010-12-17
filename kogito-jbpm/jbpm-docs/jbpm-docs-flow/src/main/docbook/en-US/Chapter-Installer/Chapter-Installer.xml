@@ -105,10 +105,6 @@
       </itemizedlist>
     </para>
 
-    <para>Once Eclipse has opened, simple import (using "File -> Import ..." and then under the General category, select "Existing Projects into Workspace") the existing sample project (in the jbpm-installer/sample/evaluation directory).  This should add the sample project, including a simple BPMN2 process and a Java file to start the process.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java in the com.sample package (under "src/main/java") and select "Run As - Java Application".  In this case, it will simply start the process, which will result in the creation of a new user task for the user "krisv" in the human task service, after which the process will wait for its execution.  We will show you later how you could complete human tasks like this using a human task client like the jbpm-console.</para>
-
-    <para>You could also create a new project using the jBPM project wizard.  This sample project contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.  Simple select "File - New ... - Project ..." and under the "jBPM" category, select "jBPM project" and click "Next".  Give the project a name and click "Finish".  You should see a new project containing a "sample.bpmn" process and a "com.sample.ProcessTest" Java class.  You can open the BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java and select "Run As - Java Application".  You should see a "Hello World" statement in the output console.</para>
-
   </section>
 
   <section>
@@ -148,7 +144,7 @@ It is currently not yet possible to use a package built on Guvnor as a jBPM5 kno
     <title>What to do if I encounter problems or have questions?</title>
 
     <para>You can always contact the jBPM community for assistance.</para>
-    <para>Email: jbpm-dev@jboss.org</para>
+    <para>Email: jbpm-dev@lists.jboss.org</para>
     <para>IRC: #jbpm at irc.codehaus.org</para>
     <para><ulink url="http://community.jboss.org/en/jbpm?view=discussions">jBPM User Forum</ulink></para>
   

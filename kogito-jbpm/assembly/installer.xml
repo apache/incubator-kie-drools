@@ -16,6 +16,11 @@
         <exclude>repository.xml</exclude>
         <exclude>runtime/**</exclude>
         <exclude>workspace/**</exclude>
+        <exclude>sample/evaluation/bin/**</exclude>
+        <exclude>sample/evaluation/.settings/**</exclude>
+        <exclude>sample/evaluation/src/main/resources/.guvnorinfo/**</exclude>
+        <exclude>task-service/target/**</exclude>
+        <exclude>derby.log</exclude>
       </excludes>
     </fileSet>
   </fileSets>   

@@ -35,7 +35,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -95,7 +95,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "  <header>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -106,7 +106,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "        <workItem id=\"1\" name=\"Log\" >\n" +
             "          <work name=\"Log\" >\n" +
             "            <parameter name=\"Message\" >\n" +
-            "              <type name=\"org.jbpm.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "              <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
             "            </parameter>\n" +
             "          </work>\n" +
             "          <mapping type=\"in\" from=\"item\" to=\"Message\" />" +
@@ -172,7 +172,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -231,7 +231,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -287,7 +287,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -376,7 +376,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "    </globals>\n" +
             "    <variables>\n" +
             "      <variable name=\"collection\" >\n" +
-            "        <type name=\"org.jbpm.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
             "      </variable>\n" +
             "    </variables>\n" +
             "  </header>\n" +
@@ -449,6 +449,83 @@ public class ProcessForEachTest extends JbpmTestCase {
         assertEquals(4, workingMemory.getProcessInstances().size());
         processInstance.setState(ProcessInstance.STATE_ABORTED);
         assertEquals(3, workingMemory.getProcessInstances().size());
+    }
+    
+    public void testForEachWithEventNode() {
+        PackageBuilder builder = new PackageBuilder();
+        Reader source = new StringReader(
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
+            "  <header>\n" +
+            "    <globals>\n" +
+            "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
+            "    </globals>\n" +
+            "    <variables>\n" +
+            "      <variable name=\"collection\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" className=\"java.util.List\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>\n" +
+            "\n" +
+            "  <nodes>\n" +
+            "    <forEach id=\"2\" name=\"ForEach\" variableName=\"item\" collectionExpression=\"collection\" >\n" +
+            "      <nodes>\n" +
+            "        <eventNode id=\"2\" name=\"OrderPreparation Response\" >\n" +
+            "          <eventFilters>\n" +
+            "            <eventFilter type=\"eventType\" eventType=\"MyEvent\" />\n" +
+            "          </eventFilters>\n" +
+            "        </eventNode>\n" +
+            "        <actionNode id=\"3\" name=\"ORDER_PREP\" >\n" +
+            "          <action type=\"expression\" dialect=\"java\" >System.out.println(\"action1\");</action>\n" +
+            "        </actionNode>\n" +
+            "        <join id=\"4\" name=\"Join\" type=\"1\" />\n" +
+            "        <actionNode id=\"5\" name=\"ORDER_VALIDATION\" >\n" +
+            "          <action type=\"expression\" dialect=\"java\" >System.out.println(\"action2\");myList.add(item);</action>\n" +
+            "        </actionNode>\n" +
+            "      </nodes>\n" +
+            "      <connections>\n" +
+            "        <connection from=\"3\" to=\"4\" />\n" +
+            "        <connection from=\"2\" to=\"4\" />\n" +
+            "        <connection from=\"4\" to=\"5\" />\n" +
+            "      </connections>\n" +
+            "      <in-ports>\n" +
+            "        <in-port type=\"DROOLS_DEFAULT\" nodeId=\"3\" nodeInType=\"DROOLS_DEFAULT\" />\n" +
+            "      </in-ports>\n" +
+            "      <out-ports>\n" +
+            "        <out-port type=\"DROOLS_DEFAULT\" nodeId=\"5\" nodeOutType=\"DROOLS_DEFAULT\" />\n" +
+            "      </out-ports>\n" +
+            "    </forEach>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\" />\n" +
+            "    <connection from=\"2\" to=\"3\" />\n" +
+            "  </connections>\n" +
+            "</process>");
+        builder.addRuleFlow(source);
+        Package pkg = builder.getPackage();
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage( pkg );
+        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        List<String> myList = new ArrayList<String>();
+        workingMemory.setGlobal("myList", myList);
+        List<String> collection = new ArrayList<String>();
+        collection.add("one");
+        collection.add("two");
+        collection.add("three");
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("collection", collection);
+        ProcessInstance processInstance = ( ProcessInstance )
+            workingMemory.startProcess("org.drools.ForEach", params);
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        processInstance.signalEvent("MyEvent", null);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals(3, myList.size());
     }
     
 }

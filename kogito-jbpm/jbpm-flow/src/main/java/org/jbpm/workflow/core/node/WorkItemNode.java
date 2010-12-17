@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.definition.process.Connection;
-import org.jbpm.process.core.Work;
+import org.drools.process.core.Work;
 import org.jbpm.process.core.context.variable.Mappable;
 
 /**

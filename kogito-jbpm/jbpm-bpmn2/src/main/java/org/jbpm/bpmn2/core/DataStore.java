@@ -17,7 +17,7 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 
-import org.jbpm.process.core.datatype.DataType;
+import org.drools.process.core.datatype.DataType;
 
 /**
  * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>

@@ -16,7 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import org.drools.compiler.xml.XmlDumper;
 import org.drools.xml.ExtensibleXmlParser;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.RuleSetNode;

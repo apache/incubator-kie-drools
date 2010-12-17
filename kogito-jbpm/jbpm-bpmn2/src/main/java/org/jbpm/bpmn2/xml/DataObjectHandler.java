@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -29,8 +31,6 @@ import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.workflow.core.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
