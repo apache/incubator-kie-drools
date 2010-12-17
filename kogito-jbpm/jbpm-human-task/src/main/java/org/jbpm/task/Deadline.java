@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -44,6 +45,7 @@ public class Deadline implements Externalizable {
     @JoinColumn(name = "Deadline_Documentation_Id", nullable = true)     
     private List<I18NText>   documentation = Collections.emptyList();
 
+    @Column(name = "deadline_date")
     private Date             date;
 
     @OneToMany(cascade = CascadeType.ALL)

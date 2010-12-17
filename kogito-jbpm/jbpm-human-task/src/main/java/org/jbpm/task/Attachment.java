@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -54,6 +55,7 @@ public class Attachment implements Externalizable {
     
     private Date   attachedAt;    
 
+    @Column(name = "attachment_size")
     private int    size;    
     
     private long   attachmentContentId;

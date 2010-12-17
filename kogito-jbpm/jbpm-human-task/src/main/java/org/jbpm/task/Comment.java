@@ -28,8 +28,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "task_comment")
 public class Comment implements Externalizable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

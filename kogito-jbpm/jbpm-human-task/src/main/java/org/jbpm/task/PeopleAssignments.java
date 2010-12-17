@@ -39,19 +39,19 @@ public class PeopleAssignments
     private User                       taskInitiator;
 
     @ManyToMany
-    @JoinTable(name = "PeopleAssignments_PotentialOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_PotOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> potentialOwners        = Collections.emptyList();
 
     @ManyToMany
-    @JoinTable(name = "PeopleAssignments_ExcludedOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_ExclOwners", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> excludedOwners         = Collections.emptyList();
 
     @ManyToMany
-    @JoinTable(name = "PeopleAssignments_TaskStakeholders", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_Stakeholders", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> taskStakeholders       = Collections.emptyList();
 
     @ManyToMany
-    @JoinTable(name = "PeopleAssignments_BusinessAdministrators", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
+    @JoinTable(name = "PeopleAssignments_BAs", joinColumns = @JoinColumn(name = "task_id"), inverseJoinColumns = @JoinColumn(name = "entity_id"))
     private List<OrganizationalEntity> businessAdministrators = Collections.emptyList();
 
     @ManyToMany

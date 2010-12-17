@@ -30,8 +30,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "email_header")
 public class EmailNotificationHeader implements Externalizable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
