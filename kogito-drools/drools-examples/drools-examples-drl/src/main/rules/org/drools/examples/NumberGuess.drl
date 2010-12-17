@@ -39,7 +39,7 @@ rule "Get user Guess"
         br = new BufferedReader( new InputStreamReader( System.in ) );
         modify ( game ) { guessCount += 1 }
         i = br.readLine();        
-	    insert( new Guess( i ) );
+	    insert( new Guess( new Integer(i) ) );
 end	 
 
 rule "Record the biggest Guess"
