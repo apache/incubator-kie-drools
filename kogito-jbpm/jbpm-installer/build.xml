@@ -15,11 +15,11 @@
 
   <property name="eclipse.workspace.dir" value="${install.home}/workspace"/>
 
-  <property name="jboss.download.url" value="http://downloads.sourceforge.net/jboss/jboss-4.2.3.GA.zip"/>
+  <property name="jboss.download.url" value="http://downloads.sourceforge.net/jboss/jboss-${jboss.server.version}.zip"/>
   <property name="h2.download.url" value="http://repository.jboss.org/maven2/com/h2database/h2/1.2.124/h2-1.2.124.jar"/>
   <property name="slf4j.download.url" value="http://repo1.maven.org/maven2/org/slf4j/slf4j-jdk14/1.5.11/slf4j-jdk14-1.5.11.jar"/>
   <property name="birt.download.url" value="http://www.eclipse.org/downloads/download.php?file=/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;url=http://download.eclipse.org/birt/downloads/drops/R-R1-2_3_2_2-200906011507/birt-runtime-2_3_2_2.zip&amp;mirror_id=1"/>
-
+	
   <!-- ############ DOWNLOAD ############ -->
 
   <!-- Download H2 -->
@@ -57,14 +57,14 @@
     <echo message="Checking JBoss AS download ..." />
     <condition property="jboss.not.available">
       <not>
-        <available file="${install.home}/lib/jboss-4.2.3.GA.zip" />
+        <available file="${install.home}/lib/jboss-${jboss.server.version}.zip" />
       </not>
     </condition>
   </target>
   <target name="download.jboss" depends="download.jboss.check" if="jboss.not.available">
     <echo message="Getting JBoss AS ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-4.2.3.GA.zip" />
+    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-${jboss.server.version}.zip" />
   </target>
 
   <!-- Download Eclipse -->
@@ -293,27 +293,68 @@
 
   <!-- Install JBoss AS -->
   <target name="install.jboss" depends="download.jboss">
-    <unzip src="${install.home}/lib/jboss-4.2.3.GA.zip" dest="${install.home}" />
-    <chmod perm="a+x" file="${install.home}/jboss-4.2.3.GA/bin/run.sh" />
-    <chmod perm="a+x" file="${install.home}/jboss-4.2.3.GA/bin/shutdown.sh" />
+    <unzip src="${install.home}/lib/jboss-${jboss.server.version}.zip" dest="${install.home}" />
+    <chmod perm="a+x" file="${install.home}/jboss-${jboss.server.version}/bin/run.sh" />
+    <chmod perm="a+x" file="${install.home}/jboss-${jboss.server.version}/bin/shutdown.sh" />
   </target>
 
   <!-- Install guvnor -->
-  <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
-    <copy file="${install.home}/lib/drools-${drools.version}-guvnor.war"
-          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
-          overwrite="true" />
+  <target name="check.jboss.version">
+    <condition property="jboss.version.is.5">
+      <equals arg1="${jboss.server.version}" arg2="5.1.0.GA" />
+    </condition>
   </target>
 
+  <target name="install.guvnor.into.jboss" depends="download.drools.guvnor">
+    <antcall target="install.guvnor.into.jboss.5" />
+    <antcall target="install.guvnor.into.jboss.other" />
+  </target>
+  
+  <target name="install.guvnor.into.jboss.5" depends="check.jboss.version" if="jboss.version.is.5">
+    <mkdir dir="${install.home}/target/drools-guvnor"/>
+    <unzip src="${install.home}/lib/drools-${drools.version}-guvnor.war" dest="${install.home}/target/drools-guvnor" />
+  	<delete>
+      <fileset dir="${install.home}/target/drools-guvnor/WEB-INF/lib" includes="xml-apis-*.jar"/>
+    </delete>
+  	<zip basedir="${install.home}/target/drools-guvnor"
+  	     destfile="${install.home}/target/drools-guvnor.war"/>
+    <copy file="${install.home}/target/drools-guvnor.war"
+          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+          overwrite="true" />
+    <delete dir="${install.home}/target"/>
+  </target>  	
+
+  <target name="install.guvnor.into.jboss.other" depends="check.jboss.version" unless="jboss.version.is.5">
+    <copy file="${install.home}/lib/drools-${drools.version}-guvnor.war"
+         tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+         overwrite="true" />
+  </target> 
+		
   <!-- Install designer -->
   <target name="install.designer.into.jboss" depends="download.designer,download.slf4j">
+    <antcall target="install.designer.into.jboss.5" />
+    <antcall target="install.designer.into.jboss.other" />
+  </target>
+  
+  <target name="install.designer.into.jboss.5" depends="check.jboss.version" if="jboss.version.is.5">
     <mkdir dir="${jboss.server.deploy.dir}/designer.war"/>
     <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${jboss.server.deploy.dir}/designer.war" />
     <delete file="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/servlet-api-2.5.jar"/>
     <copy file="${install.home}/lib/slf4j-jdk14-1.5.11.jar"
           tofile="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/slf4j-jdk14-1.5.11.jar"/>
-  </target>
+  	<delete>
+      <fileset dir="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib" includes="xercesImpl-*.jar"/>
+    </delete>
+  </target>  	
 
+  <target name="install.designer.into.jboss.other" depends="check.jboss.version" unless="jboss.version.is.5">
+    <mkdir dir="${jboss.server.deploy.dir}/designer.war"/>
+    <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${jboss.server.deploy.dir}/designer.war" />
+    <delete file="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/servlet-api-2.5.jar"/>
+    <copy file="${install.home}/lib/slf4j-jdk14-1.5.11.jar"
+          tofile="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/slf4j-jdk14-1.5.11.jar"/>
+  </target> 
+			
   <!-- Install gwt-console -->
   <target name="install.jBPM-gwt-console.into.jboss" depends="download.h2,download.birt,download.jBPM.gwt-console">
     <!-- gwt-console -->
@@ -545,7 +586,7 @@
 	
   <!-- Clean jboss -->
   <target name="clean.jboss">
-    <delete dir="${install.home}/jboss-4.2.3.GA"/>
+    <delete dir="${install.home}/jboss-${jboss.server.version}"/>
     <delete dir="${install.home}/repository"/>
     <delete file="${install.home}/repository.xml"/>
   </target>
