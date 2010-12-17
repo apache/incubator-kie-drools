@@ -78,6 +78,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.dialect.DialectError;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.ProcessRuntimeFactory;
@@ -628,7 +629,11 @@ public class PackageBuilder {
         }
 
         compileAll();
-        reloadAll();
+        try {
+        	reloadAll();
+        } catch ( Exception e) {
+        	this.results.add( new DialectError( "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
+        }
         updateResults();
 
         // iterate and compile
