@@ -17,9 +17,9 @@
 package org.drools.examples.process.order.logging
 
 import org.drools.process.instance.impl.WorkItemImpl
-import org.drools.workflow.instance.node.WorkItemNodeInstance
-import org.drools.process.core.context.variable.VariableScope
-import org.drools.process.instance.context.variable.VariableScopeInstance
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance
+import org.jbpm.process.core.context.variable.VariableScope
+import org.jbpm.process.instance.context.variable.VariableScopeInstance
 
 rule "Log the execution of 'Correct Order'" salience 25
 	when

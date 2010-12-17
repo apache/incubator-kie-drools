@@ -17,7 +17,7 @@
 package org.drools.examples.process.order
 
 import org.drools.process.instance.impl.WorkItemImpl
-import org.drools.workflow.instance.node.WorkItemNodeInstance
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance
 import org.drools.WorkingMemory
 import org.drools.FactHandle
 
@@ -33,8 +33,9 @@ rule "Execute Pending Work Item" salience 20
 	    workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0 )
 	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
 	then 
-		workItemNodeInstance.getProcessInstance().getWorkingMemory()
-			.getWorkItemManager().internalExecuteWorkItem(workItem);
+		((org.drools.process.instance.WorkItemManager) 
+			workItemNodeInstance.getProcessInstance().getKnowledgeRuntime()
+				.getWorkItemManager()).internalExecuteWorkItem(workItem);
 		workItemNodeInstance.internalSetWorkItemId(workItem.getId());
 		updateIfExists(drools.getWorkingMemory(), workItemNodeInstance);
 end
