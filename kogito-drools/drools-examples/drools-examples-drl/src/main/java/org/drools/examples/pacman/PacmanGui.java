@@ -48,8 +48,8 @@ public class PacmanGui extends JFrame
                 UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
             } else if ( osName.indexOf( "Windows" ) >= 0 ) {
                 UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-            } else if ( osName.indexOf( "Mac" ) >= 0 ) {
-                UIManager.setLookAndFeel( "com.apple.laf.AquaLookAndFeel" );
+            } else if ( osName.indexOf( "Mac OS X" ) >= 0 ) {
+                UIManager.setLookAndFeel( "apple.laf.AquaLookAndFeel" );
             } else {
                 UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
             }
