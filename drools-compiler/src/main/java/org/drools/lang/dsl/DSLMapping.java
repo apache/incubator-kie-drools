@@ -16,6 +16,7 @@
 
 package org.drools.lang.dsl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.lang.dsl.DSLMappingEntry.Section;
@@ -82,4 +83,19 @@ public interface DSLMapping {
      */
     public List<DSLMappingEntry> getEntries(Section section);
 
+    /**
+     * Sets an expansion option.
+     * @param option
+     */
+    public void setOptions( Collection<String> option );
+    
+    /**
+     * Retrieves an an expansion option.
+     * @param option
+     * @return true if option is set.
+     */
+    public boolean getOption( String option );
+    
+    
+    
 }

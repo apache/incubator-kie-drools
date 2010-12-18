@@ -28,7 +28,6 @@ scope {
 
 valid_entry returns [DSLMappingEntry mappingEntry]
 	: ent=entry {$mappingEntry = ent; }
-	| ^(VT_COMMENT lc=LINE_COMMENT) {$mappingEntry = null;}
 	;
 
 
@@ -54,7 +53,7 @@ scope {
 	             $entry::retval.setMappingKey($entry::sentenceKeyBuffer.toString());
 	             $entry::retval.setKeyPattern($entry::keybuffer.toString());
 	        }
-		value_section)
+		value_section?)
 	{
 		$entry::retval.setMappingValue($entry::sentenceValueBuffer.toString());
 		$entry::retval.setValuePattern($entry::valuebuffer.toString());
@@ -110,7 +109,7 @@ value_sentence
 	: variable_reference
 	| vtl=VT_LITERAL
 	{
-		$entry::valuebuffer.append($vtl.text.replaceAll("\\$", "\\\\\\$"));
+		$entry::valuebuffer.append($vtl.text);
 		$entry::sentenceValueBuffer.append($vtl.text);
 	}
 	| VT_SPACE
@@ -125,24 +124,17 @@ literal
 	;	
 
 variable_definition
-	:   ^(VT_VAR_DEF varname=LITERAL  ^(VT_QUAL q=LITERAL?) pattern=VT_PATTERN? )
+	:   ^(VT_VAR_DEF varname=LITERAL pattern=VT_PATTERN? )
 	{
 		$entry::variables.put($varname.text, Integer.valueOf(0));
 		
-		if($q!=null && $pattern!=null){
-			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$q.text+":"+$pattern.text+"}");
-		}else if($q==null && $pattern!=null){
+		if($pattern!=null){
 			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$pattern.text+"}");
 		}else{
 			$entry::sentenceKeyBuffer.append("{"+$varname.text+"}");
 		}
 		
-		if($q == null || (!$q.getText().equals("ENUM") && !$q.getText().equals("DATE") && !$q.getText().equals("BOOLEAN"))){
-			$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
-		}else{
-			$entry::keybuffer.append("(.*?)");
-			
-		}
+		$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
 	}
 	;
 

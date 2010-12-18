@@ -16,10 +16,13 @@
 
 package org.drools.lang.dsl;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.lang.dsl.DSLMappingEntry.Section;
 
@@ -36,6 +39,7 @@ public class DefaultDSLMapping
     private String                identifier;
     private String                description;
     private List<DSLMappingEntry> entries;
+    private Set<String>           options;
 
     public DefaultDSLMapping() {
         this( "" );
@@ -44,6 +48,7 @@ public class DefaultDSLMapping
     public DefaultDSLMapping(final String identifier) {
         this.identifier = identifier;
         this.entries = new LinkedList<DSLMappingEntry>();
+        this.options = new HashSet<String>();
     }
 
     /**
@@ -118,6 +123,20 @@ public class DefaultDSLMapping
      */
     public void setIdentifier(final String identifier) {
         this.identifier = identifier;
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public void setOptions( Collection<String> option ){
+        this.options.addAll(option);
+    }
+    
+    /**
+     * @inheritDoc
+     */
+    public boolean getOption( String option ){
+        return this.options.contains( option );
     }
 
 }
