@@ -405,7 +405,9 @@ public class PackageBuilder {
         this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        file.parseAndLoad( resource.getReader() );
+        if( ! file.parseAndLoad( resource.getReader() ) ){
+            this.results.addAll( file.getErrors() );
+        }
         if ( this.dslFiles == null ) {
             this.dslFiles = new ArrayList<DSLTokenizedMappingFile>();
         }

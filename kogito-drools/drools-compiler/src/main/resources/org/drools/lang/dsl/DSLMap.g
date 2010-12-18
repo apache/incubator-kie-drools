@@ -5,7 +5,6 @@ options { output = AST; backtrack = true; }
 tokens {
        // imaginary tokens
        VT_DSL_GRAMMAR;
-       VT_COMMENT;
        VT_ENTRY;
        
        VT_SCOPE;
@@ -21,34 +20,66 @@ tokens {
        VT_VAR_REF;
        VT_LITERAL;
        VT_PATTERN;
-       VT_QUAL;
        
        VT_SPACE;
        
-}
-
-@parser::header {
-	package org.drools.lang.dsl;
-	import java.util.List;
-	import java.util.ArrayList;
-//	import org.drools.lang.dsl.DSLMappingParseException;
 }
 
 @lexer::header {
 	package org.drools.lang.dsl;
 	import java.util.List;
 	import java.util.ArrayList;
-//	import org.drools.lang.dsl.DSLMappingParseException;
+    import org.drools.compiler.ParserError;
+}
+
+@parser::header {
+	package org.drools.lang.dsl;
+	import java.util.List;
+	import java.util.ArrayList;
+    import java.util.regex.Pattern;
+    import org.drools.compiler.ParserError;
+}
+
+@lexer::members {
+	private List<ParserError> errors = new ArrayList<ParserError>();
+
+	public void reportError(RecognitionException ex) {
+		errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
+	}
+
+	public List<ParserError> getErrors() {
+		return errors;
+	}
+
+	/** Override this method to not output mesages */
+	public void emitErrorMessage(String msg) {
+	}
 }
 
 @parser::members {
-//we may not need the check on [], as the LITERAL token being examined 
-//should not have them.
-	
-	private List errorList = new ArrayList();
-	public List getErrorList(){
-		return errorList;
+	private List<ParserError> errors = new ArrayList<ParserError>();
+
+	public void reportError(RecognitionException ex) {
+		errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
 	}
+
+	public List<ParserError> getErrors() {
+		return errors;
+	}
+
+	/** Override this method to not output mesages */
+	public void emitErrorMessage(String msg) {
+	}
+
+    private static final Pattern namePat = Pattern.compile( "[\\p{L}_$][\\p{L}_$\\d]*" );
+
+    private void isIdentifier( Token name ){
+        String nameString = name.getText();
+        if( ! namePat.matcher( nameString ).matches() ){
+            errors.add(new ParserError( "invalid variable identifier " + nameString,
+                                        name.getLine(), name.getCharPositionInLine() ) );
+        }
+    }
 
 	private boolean validateLT(int LTNumber, String text){
 		if (null == input) return false;
@@ -66,19 +97,7 @@ tokens {
 	private boolean validateIdentifierKey(String text){
 		return validateLT(1, text);
 	}
-	
-	//public void reportError(RecognitionException re) {
-		// if we've already reported an error and have not matched a token
-		// yet successfully, don't report any errors.
-	//	if (errorRecovery) {
-	//		return;
-	//	}
-	//	errorRecovery = true;
-	//
-	//	String error = "Error parsing mapping entry: " + getErrorMessage(re, tokenNames);
-	//	DSLMappingParseException exception = new DSLMappingParseException (error, re.line);
-	//	errorList.add(exception);
-	//}
+
 	
 }
 
@@ -90,19 +109,14 @@ mapping_file
 
 statement
 	: entry 	
-	| comment 
 	| EOL! 
 	;
 	//! after EOL means to not put it into the AST
 	
 
-comment	: LINE_COMMENT 
-	-> ^(VT_COMMENT[$LINE_COMMENT, "COMMENT"] LINE_COMMENT )
-	;	
-
 //we need to make entry so the meta section is optional
-entry 	: scope_section meta_section? key_section EQUALS value_section (EOL|EOF)
-	-> ^(VT_ENTRY scope_section meta_section? key_section value_section)
+entry 	: scope_section meta_section? key_section EQUALS value_section? (EOL|EOF)
+	-> ^(VT_ENTRY scope_section meta_section? key_section value_section?)
 	;
 	catch [ RecognitionException e ] {
 		reportError( e );
@@ -141,7 +155,7 @@ key_sentence
         String text = "";
 }	
 	: variable_definition
-	| cb=key_chunk { text = $cb.text;}
+	| cb=key_chunk { text = $cb.text; }
 	-> VT_LITERAL[$cb.start, text]
 	;		
 
@@ -183,45 +197,36 @@ variable_definition
 		CommonToken back2 =  (CommonToken)input.LT(-2);
 		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
 		} 
-	name=LITERAL ( (COLON q=LITERAL)? COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
+	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
 	{
-	CommonToken rc1 = (CommonToken)input.LT(1);
-	if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
+      CommonToken rc1 = (CommonToken)input.LT(1);
+      if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
+      isIdentifier( $name );
 	}
-	-> {hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )  //pat can be null if there's no pattern here
-	-> {!hasSpaceBefore && !"".equals(text)  && !hasSpaceAfter}? ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
-	-> {hasSpaceBefore  && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
-	-> {!hasSpaceBefore  && !hasSpaceAfter}?	 ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
-	
-	-> {hasSpaceBefore && !"".equals(text) && hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
-	-> {!hasSpaceBefore && !"".equals(text)  && hasSpaceAfter}? ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE //pat can be null if there's no pattern here
-	-> {hasSpaceBefore  && hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) VT_SPACE
-	-> {!hasSpaceBefore  && hasSpaceAfter}?	 ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) VT_SPACE
-	-> ^(VT_VAR_DEF $name ^(VT_QUAL $q?)) 
+    //pat can be null if there's no pattern here
+	-> { hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+	-> {!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}?          ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
+	-> { hasSpaceBefore                     && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) 
+	-> {!hasSpaceBefore                     && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ) 
+	-> { hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
+	-> {!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}?          ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
+	-> { hasSpaceBefore &&                      hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name                              ) VT_SPACE
+	-> {!hasSpaceBefore &&                      hasSpaceAfter}?	         ^(VT_VAR_DEF $name                              ) VT_SPACE
+	->                                                                   ^(VT_VAR_DEF $name ) 
 	;
 	
-variable_definition2
-@init {
-        String text = "";
-}	
-	: LEFT_CURLY name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? RIGHT_CURLY
-	-> {!"".equals(text)}? ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) //pat can be null if there's no pattern here
-	->	^(VT_VAR_DEF $name ) //do we need to build a VT_LITERAL token for $name?
-	;
-
-
 pattern 
         : ( literal
           | LEFT_CURLY literal RIGHT_CURLY
           | LEFT_SQUARE pattern RIGHT_SQUARE
           )+
-	;	
-	
+;	
 
 variable_reference
 @init {
         boolean hasSpaceBefore = false;
         boolean hasSpaceAfter = false;
+        String text = "";
 }	
 	: lc=LEFT_CURLY 
 		{
@@ -230,18 +235,11 @@ variable_reference
 		} 
 	name=LITERAL rc=RIGHT_CURLY
 	{if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
-	-> {hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
-	-> {hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) 
-	-> {!hasSpaceBefore && hasSpaceAfter}?  ^(VT_VAR_REF $name ) VT_SPACE
-	->  ^(VT_VAR_REF $name )
+	-> { hasSpaceBefore &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
+	-> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) 
+	-> {!hasSpaceBefore &&  hasSpaceAfter}?          ^(VT_VAR_REF $name ) VT_SPACE
+	->                                               ^(VT_VAR_REF $name )
 	;
-
-	
-variable_reference2 
-	: LEFT_CURLY name=LITERAL RIGHT_CURLY
-	-> ^(VT_VAR_REF $name )
-	;	
-
 
 condition_key
 	:	{validateIdentifierKey("condition")||validateIdentifierKey("when")}?  value=LITERAL
@@ -310,26 +308,11 @@ EQUALS	:	'='
 DOT	:	'.'
 	;
 	
-POUND   :	'#'
-	;
-
 COLON	:	':'
 	;
 	
 COMMA	:	','
 	;
-
-
-//the problem here with LINE COMMENT is that the lexer is not identifying 
-//#comment without a EOL character.  For example, what if it's the last line in a file?
-//should still be a comment.  Changing to (EOL|EOF) causes it to only match the POUND	
-LINE_COMMENT	
-	:	POUND ( options{greedy=false;} : .)* EOL /* ('\r')? '\n'  */
-	;
-
-//META_LITERAL
-//	: ('a'..'z'|'A'..'Z'|'_'|'0'..'9'|'*'|DOT)+
-//	;
 
 LITERAL	
 	:	(IdentifierPart|MISC|EscapeSequence|DOT)+
@@ -337,7 +320,7 @@ LITERAL
 
 fragment		
 MISC 	:
-		'>'|'<'|'!' | '@' | '%' | '^' | '*' | '-' | '+'  | '?' | COMMA | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';'
+		'>'|'<'|'!' | '@' | '%' | '^' | '*' | '-' | '+'  | '?' | COMMA | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';' | '#'
 	;
 
 
