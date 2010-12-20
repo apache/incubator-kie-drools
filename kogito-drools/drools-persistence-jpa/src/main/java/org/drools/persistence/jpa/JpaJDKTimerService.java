@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.persistence.session;
+package org.drools.persistence.jpa;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
