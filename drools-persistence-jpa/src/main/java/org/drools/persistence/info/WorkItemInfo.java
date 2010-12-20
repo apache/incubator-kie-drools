@@ -1,4 +1,4 @@
-package org.drools.persistence.processinstance;
+package org.drools.persistence.info;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,11 +19,12 @@ import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.persistence.EntityInfo;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
 
 @Entity
-public class WorkItemInfo {
+public class WorkItemInfo implements EntityInfo  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

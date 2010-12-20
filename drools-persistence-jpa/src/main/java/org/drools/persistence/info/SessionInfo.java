@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.persistence.info;
 
 import java.util.Date;
 
@@ -13,11 +13,14 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.drools.persistence.EntityInfo;
+import org.drools.persistence.SessionMarshallingHelper;
+
 @Entity
-public class SessionInfo {
+public class SessionInfo implements EntityInfo {
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int                        id;
+    long                        id;
 
     @Version
     @Column(name = "OPTLOCK")     
@@ -30,13 +33,13 @@ public class SessionInfo {
     private byte[]             rulesByteArray;
 
     @Transient
-    JPASessionMarshallingHelper helper;
+    SessionMarshallingHelper helper;
     
     public SessionInfo() {
         this.startDate = new Date();
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
     
@@ -44,11 +47,11 @@ public class SessionInfo {
         return this.version;
     }
 
-    public void setJPASessionMashallingHelper(JPASessionMarshallingHelper helper) {
+    public void setJPASessionMashallingHelper(SessionMarshallingHelper helper) {
         this.helper = helper;
     }
 
-    public JPASessionMarshallingHelper getJPASessionMashallingHelper() {
+    public SessionMarshallingHelper getJPASessionMashallingHelper() {
         return helper;
     }
     
