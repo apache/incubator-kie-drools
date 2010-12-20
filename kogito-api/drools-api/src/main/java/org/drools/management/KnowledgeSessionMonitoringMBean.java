@@ -52,7 +52,7 @@ public interface KnowledgeSessionMonitoringMBean {
      * 
      * @return
      */
-    public int getKnowledgeSessionId();
+    public long getKnowledgeSessionId();
 
     /**
      * Returns the total fact count current loaded into this session

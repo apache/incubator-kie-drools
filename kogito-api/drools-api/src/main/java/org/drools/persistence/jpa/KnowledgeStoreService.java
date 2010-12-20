@@ -27,7 +27,7 @@ public interface KnowledgeStoreService {
                                                          KnowledgeSessionConfiguration configuration,
                                                          Environment environment);
 
-    StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
+    StatefulKnowledgeSession loadStatefulKnowledgeSession(long id,
                                                           KnowledgeBase kbase,
                                                           KnowledgeSessionConfiguration configuration,
                                                           Environment environment);
