@@ -1,4 +1,4 @@
-package org.drools.persistence.jpa.impl;
+package org.drools.persistence.jpa;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -8,10 +8,9 @@ import org.drools.KnowledgeBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.CommandService;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.KnowledgeStoreService;
-import org.drools.persistence.processinstance.JPAWorkItemManagerFactory;
-import org.drools.persistence.session.JpaJDKTimerService;
-import org.drools.persistence.session.SingleSessionCommandService;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.instance.WorkItemManagerFactory;
 import org.drools.runtime.CommandExecutor;
 import org.drools.runtime.Environment;
@@ -57,7 +56,7 @@ public class KnowledgeStoreServiceImpl
                                                                              environment ) );
     }
 
-    public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
+    public StatefulKnowledgeSession loadStatefulKnowledgeSession(long id,
                                                                  KnowledgeBase kbase,
                                                                  KnowledgeSessionConfiguration configuration,
                                                                  Environment environment) {
@@ -70,12 +69,12 @@ public class KnowledgeStoreServiceImpl
         }
 
         return new CommandBasedStatefulKnowledgeSession( (CommandService) buildCommanService( id,
-                                                                             kbase,
-                                                                             mergeConfig( configuration ),
-                                                                             environment ) );
+                                                                                              kbase,
+                                                                                              mergeConfig( configuration ),
+                                                                                              environment ) );
     }
 
-    private CommandExecutor buildCommanService(int sessionId,
+    private CommandExecutor buildCommanService(long sessionId,
                                               KnowledgeBase kbase,
                                               KnowledgeSessionConfiguration conf,
                                               Environment env) {
@@ -137,7 +136,7 @@ public class KnowledgeStoreServiceImpl
         return configuration;
     }
 
-    public int getStatefulKnowledgeSessionId(StatefulKnowledgeSession ksession) {
+    public long getStatefulKnowledgeSessionId(StatefulKnowledgeSession ksession) {
         if ( ksession instanceof CommandBasedStatefulKnowledgeSession ) {
             SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
             return commandService.getSessionId();
