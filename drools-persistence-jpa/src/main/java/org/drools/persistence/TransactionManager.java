@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.persistence;
 
 
 public interface TransactionManager {
