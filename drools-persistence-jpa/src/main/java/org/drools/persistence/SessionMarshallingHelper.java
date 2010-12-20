@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.persistence;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,7 +13,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class JPASessionMarshallingHelper {
+public class SessionMarshallingHelper {
 
     private KnowledgeBase                 kbase;
     private KnowledgeSessionConfiguration conf;
@@ -28,7 +28,7 @@ public class JPASessionMarshallingHelper {
      * @param conf
      * @param marshallingConfiguration
      */
-    public JPASessionMarshallingHelper(KnowledgeBase kbase,
+    public SessionMarshallingHelper(KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
                                        Environment env) {
         this.kbase = kbase;
@@ -50,7 +50,7 @@ public class JPASessionMarshallingHelper {
      * @param conf
      * @param marshallingConfiguration
      */
-    public JPASessionMarshallingHelper(StatefulKnowledgeSession ksession,
+    public SessionMarshallingHelper(StatefulKnowledgeSession ksession,
                                        KnowledgeSessionConfiguration conf) {
         this.ksession = ksession;
         this.kbase = ksession.getKnowledgeBase();
