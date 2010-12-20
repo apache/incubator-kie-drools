@@ -111,7 +111,7 @@ public class JPAKnowledgeService {
                                                                              environment );
     }
 
-    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
+    public static StatefulKnowledgeSession loadStatefulKnowledgeSession(long id,
                                                                         KnowledgeBase kbase,
                                                                         KnowledgeSessionConfiguration configuration,
                                                                         Environment environment) {
