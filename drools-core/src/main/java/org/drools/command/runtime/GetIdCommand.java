@@ -28,7 +28,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetIdCommand
     implements
-    GenericCommand<Integer> {
+    GenericCommand<Long> {
 
 	private static final long serialVersionUID = 510l;
 
@@ -36,7 +36,7 @@ public class GetIdCommand
     public GetIdCommand() {
 	}
 
-    public Integer execute(Context context) {
+    public Long execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         return ((StatefulKnowledgeSessionImpl)ksession).getId();
     }
