@@ -324,6 +324,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void signalEvent(String type, Object event) {
 		synchronized (this) {
+			if (getState() != ProcessInstance.STATE_ACTIVE) {
+				return;
+			}
 			List<EventListener> listeners = eventListeners.get(type);
 			if (listeners != null) {
 				for (EventListener listener : listeners) {
