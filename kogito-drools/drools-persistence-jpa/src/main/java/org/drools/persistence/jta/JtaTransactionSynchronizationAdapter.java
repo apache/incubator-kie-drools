@@ -1,7 +1,10 @@
-package org.drools.persistence.session;
+package org.drools.persistence.jta;
 
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
+
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionSynchronization;
 
 public class JtaTransactionSynchronizationAdapter
     implements
