@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.persistence.jta;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -6,6 +6,9 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.TransactionSynchronizationRegistryHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
