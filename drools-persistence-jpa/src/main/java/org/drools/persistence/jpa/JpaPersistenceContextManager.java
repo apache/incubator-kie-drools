@@ -1,14 +1,16 @@
-package org.drools.persistence.session;
+package org.drools.persistence.jpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.PersistenceContextManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 
-public class DefaultJpaManager
+public class JpaPersistenceContextManager
     implements
-    JpaManager {
+    PersistenceContextManager {
     Environment                  env;
 
     private EntityManagerFactory emf;
@@ -19,12 +21,12 @@ public class DefaultJpaManager
     private boolean              internalAppScopedEntityManager;
     private boolean              internalCmdScopedEntityManager;
 
-    public DefaultJpaManager(Environment env) {
+    public JpaPersistenceContextManager(Environment env) {
         this.env = env;
         this.emf = ( EntityManagerFactory ) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
     }    
     
-    public EntityManager getApplicationScopedEntityManager() {
+    public PersistenceContext getApplicationScopedPersistenceContext() {
         if ( this.appScopedEntityManager == null ) {
             // Use the App scoped EntityManager if the user has provided it, and it is open.
             this.appScopedEntityManager = (EntityManager) this.env.get( EnvironmentName.APP_SCOPED_ENTITY_MANAGER );
@@ -42,11 +44,11 @@ public class DefaultJpaManager
                 internalAppScopedEntityManager = false;
             }            
         }
-        return appScopedEntityManager;
+        return new JpaPersistenceContext( appScopedEntityManager );
     }
 
-    public EntityManager getCommandScopedEntityManager() {
-        return this.cmdScopedEntityManager;
+    public PersistenceContext getCommandScopedPersistenceContext() {
+        return new JpaPersistenceContext( this.cmdScopedEntityManager );
     }    
 
     public void beginCommandScopedEntityManager() {
