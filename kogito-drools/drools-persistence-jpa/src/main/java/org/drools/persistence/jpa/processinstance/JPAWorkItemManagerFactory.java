@@ -1,4 +1,4 @@
-package org.drools.persistence.processinstance;
+package org.drools.persistence.jpa.processinstance;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.process.instance.WorkItemManager;
