@@ -1,4 +1,4 @@
-package org.drools.persistence.session;
+package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
@@ -18,7 +18,11 @@ import org.drools.command.runtime.DisposeCommand;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.impl.KnowledgeBaseImpl;
-import org.drools.persistence.processinstance.JPAWorkItemManager;
+import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.jpa.JpaJDKTimerService;
+import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -33,14 +37,14 @@ public class SingleSessionCommandService
     Logger                               logger                                            = LoggerFactory.getLogger( getClass() );    
 
     private SessionInfo                 sessionInfo;
-    private JPASessionMarshallingHelper marshallingHelper;
+    private SessionMarshallingHelper marshallingHelper;
 
     private StatefulKnowledgeSession    ksession;
     private Environment                 env;
     private KnowledgeCommandContext     kContext;
 
     private TransactionManager          txm;
-    private JpaManager                  jpm;
+    private PersistenceContextManager                  jpm;
     
     private volatile boolean  doRollback;
     
@@ -67,7 +71,7 @@ public class SingleSessionCommandService
               env );
     }
 
-    public SingleSessionCommandService(int sessionId,
+    public SingleSessionCommandService(long sessionId,
                                        RuleBase ruleBase,
                                        SessionConfiguration conf,
                                        Environment env) {
@@ -103,7 +107,7 @@ public class SingleSessionCommandService
 
         ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
         
-        this.marshallingHelper = new JPASessionMarshallingHelper( this.ksession,
+        this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
                                                                   conf );
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );        
@@ -116,7 +120,7 @@ public class SingleSessionCommandService
             //this.appScopedEntityManager.joinTransaction();
             registerRollbackSync();
 
-            jpm.getApplicationScopedEntityManager().persist( this.sessionInfo );
+            jpm.getApplicationScopedPersistenceContext().persist( this.sessionInfo );
 
             this.txm.commit();
 
@@ -136,7 +140,7 @@ public class SingleSessionCommandService
 
     }
 
-    public SingleSessionCommandService(int sessionId,
+    public SingleSessionCommandService(long sessionId,
                                        KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
                                        Environment env) {
@@ -156,7 +160,7 @@ public class SingleSessionCommandService
                       conf );
     }
 
-    public void initKsession(int sessionId,
+    public void initKsession(long sessionId,
                              KnowledgeBase kbase,
                              KnowledgeSessionConfiguration conf) {
         if ( !doRollback && this.ksession != null ) {
@@ -167,7 +171,7 @@ public class SingleSessionCommandService
         this.doRollback = false;       
 
         try {
-            this.sessionInfo = jpm.getApplicationScopedEntityManager().find( SessionInfo.class,
+            this.sessionInfo = jpm.getApplicationScopedPersistenceContext().find( SessionInfo.class,
                                                                              sessionId );
         } catch ( Exception e ) {
             throw new RuntimeException( "Could not find session data for id " + sessionId,
@@ -180,7 +184,7 @@ public class SingleSessionCommandService
 
         if ( this.marshallingHelper == null ) {
             // this should only happen when this class is first constructed
-            this.marshallingHelper = new JPASessionMarshallingHelper( kbase,
+            this.marshallingHelper = new SessionMarshallingHelper( kbase,
                                                                       conf,
                                                                       env );
         }
@@ -223,7 +227,7 @@ public class SingleSessionCommandService
                     // configure spring for JPA and local transactions
                     cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
                     con = cls.getConstructors()[0];
-                    this.jpm =  ( JpaManager) con.newInstance( new Object[] { this.env } );
+                    this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
                 } else {
                     // configure spring for JPA and distributed transactions 
                 }
@@ -236,7 +240,7 @@ public class SingleSessionCommandService
             this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                                                   env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
                                                   tm ); 
-            this.jpm = new DefaultJpaManager(this.env);
+            this.jpm = new JpaPersistenceContextManager(this.env);
         }
     }
 
@@ -306,7 +310,7 @@ public class SingleSessionCommandService
         }
     }
 
-    public int getSessionId() {
+    public long getSessionId() {
         return sessionInfo.getId();
     }
 
