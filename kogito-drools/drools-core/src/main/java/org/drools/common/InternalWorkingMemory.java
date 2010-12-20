@@ -47,9 +47,9 @@ import org.drools.type.DateFormats;
 public interface InternalWorkingMemory
     extends
     WorkingMemory {
-    public int getId();
+    public long getId();
     
-    public void setId(int id);
+    public void setId(long id);
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport);
 

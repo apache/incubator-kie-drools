@@ -118,7 +118,7 @@ public abstract class AbstractWorkingMemory
     EventSupport,
     ProcessEventManager {
 
-    protected int                                                id;
+    protected long                                                id;
 
     /** The actual memory for the <code>JoinNode</code>s. */
     protected NodeMemories                                       nodeMemories;
@@ -649,11 +649,11 @@ public abstract class AbstractWorkingMemory
         return this.dateFormats;
     }
 
-    public int getId() {
+    public long getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
