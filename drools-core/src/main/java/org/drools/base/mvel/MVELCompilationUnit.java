@@ -368,8 +368,6 @@ public class MVELCompilationUnit
                                 final int languageLevel) {
     	MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
     	
-        ExpressionCompiler compiler = new ExpressionCompiler( text.trim() );
-
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
         }
@@ -382,7 +380,7 @@ public class MVELCompilationUnit
             AbstractParser.setLanguageLevel( languageLevel );
             Serializable expr = null;
             try {
-                expr = compiler.compile( parserContext );
+                expr = MVEL.compileExpression( text.trim(), parserContext );
             } finally {
                 // make sure that in case of exceptions the context classloader is properly restored
                 Thread.currentThread().setContextClassLoader( tempClassLoader );
