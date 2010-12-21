@@ -26,7 +26,7 @@ import org.drools.util.ServiceRegistryImpl;
 /**
  * <p>
  * This factory will create and return a KnowledgeBase instance, an optional KnowledgeBaseConfiguration
- * can be provided. The KnowlegeBaseConfiguration is also itself created from this factory.
+ * can be provided. The KnowledgeBaseConfiguration is also itself created from this factory.
  * </p>
  * <pre>
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
