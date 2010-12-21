@@ -14,4 +14,5 @@ public interface ApplicationScopedPersistenceContext {
 
     void update(StatefulKnowledgeSession internalKnowledgeSession);
 
+    void setLastModificationDate(long sessionId);
 }
