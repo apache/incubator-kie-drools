@@ -102,7 +102,7 @@ public class RuleConstraintEvaluator implements Constraint,
         InternalAgenda agenda = (InternalAgenda) ((ProcessInstance) processInstance).getKnowledgeRuntime().getAgenda();
         String rule = "RuleFlow-Split-" + processInstance.getProcessId() + "-" + 
         	((Node) instance.getNode()).getUniqueId() + "-" + 
-        	((Node) connection.getTo()).getId() + "-" + connection.getToType();
+        	((Node) connection.getTo()).getUniqueId() + "-" + connection.getToType();
 
         boolean isActive = agenda.isRuleActiveInRuleFlowGroup( "DROOLS_SYSTEM", rule, processInstance.getId() );
         return isActive;
