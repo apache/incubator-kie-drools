@@ -55,6 +55,10 @@ public class SessionInfo implements EntityInfo {
         return helper;
     }
     
+    public void setData( byte[] data) {
+        this.rulesByteArray = data;
+    }
+    
     public byte[] getData() {
         return this.rulesByteArray;
     }
