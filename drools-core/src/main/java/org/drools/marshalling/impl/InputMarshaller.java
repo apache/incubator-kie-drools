@@ -140,7 +140,7 @@ public class InputMarshaller {
             processMarshaller.readProcessInstances( context );
         }
 
-        if ( context.marshalWorkItems ) {
+        if ( context.marshalWorkItems  && processMarshaller != null) {
         	processMarshaller.readWorkItems( context );
         }
 
