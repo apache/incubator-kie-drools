@@ -31,6 +31,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.impl.EnvironmentFactory;
@@ -814,12 +815,13 @@ public class StandaloneBPMNProcessTest extends JbpmTestCase {
 //		ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
 		XmlProcessReader processReader = new XmlProcessReader(
 	        ((PackageBuilderConfiguration) conf).getSemanticModules());
-		RuleFlowProcess p = (RuleFlowProcess)
-		    processReader.read(StandaloneBPMNProcessTest.class.getResourceAsStream("/" + process));
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-//		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
-		kbuilder.add(ResourceFactory.newReaderResource(
-            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
+		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
+        for (Process p : processes) {
+            RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
+            kbuilder.add(ResourceFactory.newReaderResource(
+                    new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
+        }
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
 				System.err.println(error);

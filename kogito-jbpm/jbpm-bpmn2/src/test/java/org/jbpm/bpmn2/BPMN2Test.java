@@ -48,7 +48,11 @@ public class BPMN2Test extends JbpmTestCase {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultipleProcessInOneFile.xml"), ResourceType.BPMN2);
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Properties properties = new Properties();
+        properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
+        properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
+        KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(config, EnvironmentFactory.newEnvironment());
         ProcessInstance processInstance = ksession.startProcess("Evaluation");
         assertNotNull(processInstance);
         ProcessInstance processInstance2 = ksession.startProcess("Simple");

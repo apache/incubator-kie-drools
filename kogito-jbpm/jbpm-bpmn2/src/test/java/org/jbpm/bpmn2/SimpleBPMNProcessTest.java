@@ -595,7 +595,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 //        ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
 		XmlProcessReader processReader = new XmlProcessReader(
 		        ((PackageBuilderConfiguration) conf).getSemanticModules());
-		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.xml"));
+		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcess.bpmn2"));
 		assertNotNull(processes);
 		assertEquals(1, processes.size());
 		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
@@ -640,7 +640,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 //      ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
 		XmlProcessReader processReader = new XmlProcessReader(
 	        ((PackageBuilderConfiguration) conf).getSemanticModules());
-		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.xml"));
+		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/BPMN2-AdHocSubProcessAutoComplete.bpmn2"));
         assertNotNull(processes);
         assertEquals(1, processes.size());
         RuleFlowProcess p = (RuleFlowProcess) processes.get(0);

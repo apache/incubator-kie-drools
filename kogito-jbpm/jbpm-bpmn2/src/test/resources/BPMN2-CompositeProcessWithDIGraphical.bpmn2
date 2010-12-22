@@ -37,8 +37,8 @@
 
   </process>
 
-  <bpmndi:BPMNDiagram id="MinimalDiagram">
-    <bpmndi:BPMNPlane bpmnElement="Minimal">
+  <bpmndi:BPMNDiagram id="CompositeDiagram">
+    <bpmndi:BPMNPlane bpmnElement="Composite">
       <bpmndi:BPMNShape bpmnElement="_1">
         <dc:Bounds x="16" y="101" width="48" height="48"/>
       </bpmndi:BPMNShape>

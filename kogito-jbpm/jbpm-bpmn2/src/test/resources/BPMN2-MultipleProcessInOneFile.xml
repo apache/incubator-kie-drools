@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/EvaluationExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.example.org/EvaluationExample">
+
+  <process id="Evaluation" name="Evaluation Process">
+  
+    <!-- nodes -->  
+    <startEvent id="_1" name="StartProcess"/>
+    <scriptTask id="_2" name="Log">
+      <script>System.out.println("Evaluation: Just outputting something");</script>
+    </scriptTask>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
+    
+    <!-- connections -->
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    
+  </process>
+  
+  <process id="Simple" name="Simple Process">
+    
+    <!-- nodes -->  
+    <startEvent id="_1" name="StartProcess"/>
+    <scriptTask id="_2" name="Log">
+      <script>System.out.println("Simple: Just outputting something");</script>
+    </scriptTask>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition/>
+    </endEvent>
+    
+    <!-- connections -->
+    <sequenceFlow sourceRef="_1" targetRef="_2"/>
+    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    
+  </process>
+  
+</definitions>
