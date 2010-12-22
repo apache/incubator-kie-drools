@@ -20,31 +20,26 @@ import org.drools.PropertiesConfiguration;
 import org.drools.runtime.conf.KnowledgeSessionOptionsConfiguration;
 
 /**
- * An object of this class stores a configuration for a Session. It must be used at session instantiation time
+ * KnowledgeSessionConfiguration
+ *
+ * A class to store Session related configuration. It must be used at session instantiation time
  * or not used at all.
- * <p>
+ * 
  * This class will automatically load default values from a number of places, accumulating properties from each location.
- * This list of locations, in decreasing priority, is:
- * System properties, home directory, working directory, META-INF/ of an optionally provided classLoader,
- * META-INF/ of Thread.currentThread().getContextClassLoader() and META-INF/ of ClassLoader.getSystemClassLoader().
- * Thus, a default configuration value for all your new Knowledge Sessions is provided by setting the corresponding
- * System property.
- * <p>
- * The configuration is immutable after the KnowledgeSession is created, and there is no way to make it
- * mutable again. This is to avoid inconsistent behaviour within a Knowledge Session.
- * <p>
- * The available properties are:
- * <ul>
- * <li>drools.keepReference = &lt;"true"|"false"&gt;<br>
- * If set to true (the default), the KnowledgeBase will retain a reference to the newly created session.
- * <li>drools.clockType = &lt;"pseudo"|"realtime"&gt;<br>
- * Defines the kind of clock to be used for Event timestamps and temporal reasoning. Default is "realtime".
- * <li>drools.queryListener = &lt;"standard"|"lightweight"&gt;<br>
- * The "standard" (and default) query data collection mechanism copies matching facts for safeguarding against
- * Working Memory modifications happening concurrently. If no such parallel modification
- * is possible, the more efficient lightweight query listener may be used.
- * <li>drools.workItemHandlers is the prefix for the property name for a Drools Flow work item handler.
- * </ul>
+ * This list of locations, in given priority is:
+ * System properties, home directory, working directory, META-INF/ of optionally provided classLoader
+ * META-INF/ of Thread.currentThread().getContextClassLoader() and META-INF/ of  ClassLoader.getSystemClassLoader()
+ * 
+ * So if you want to set a default configuration value for all your new KnowledgeSession, you can simply set the property as
+ * a System property.
+ *
+ * After the KnowledgeSession is created, it makes the configuration immutable and there is no way to make it
+ * mutable again. This is to avoid inconsistent behaviour inside KnowledgeSession.
+ *
+ * 
+ * 
+ * drools.keepReference = <true|false>
+ * drools.clockType = <pseudo|realtime>
  */
 public interface KnowledgeSessionConfiguration
     extends
