@@ -246,10 +246,13 @@ public class ProcessBuilderImpl implements ProcessBuilder {
             } else {
                 portedReader = reader;
             }
-            Process process = xmlReader.read(portedReader);
-            if ( process != null ) {
-                // it is possible an xml file could not be parsed, so we need to stop null pointers
-                buildProcess( process, resource );
+            List<Process> processes = xmlReader.read(portedReader);
+            if (processes != null) {
+                // it is possible an xml file could not be parsed, so we need to
+                // stop null pointers
+                for (Process process : processes) {
+                    buildProcess(process, resource);
+                }
             } else {
                 // @TODO could we maybe add something a bit more informative about what is wrong with the XML ?
                 this.errors.add( new ProcessLoadError( "unable to parse xml", null ) );

@@ -49,7 +49,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             process.setMetaData("routerLayout", new Integer(routerLayout));
         }
 
-        ((ProcessBuildData)parser.getData()).setProcess( process );
+        ((ProcessBuildData)parser.getData()).addProcess( process );
         
         return process;
     }    

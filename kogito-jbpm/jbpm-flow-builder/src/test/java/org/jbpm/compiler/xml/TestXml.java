@@ -2,7 +2,9 @@ package org.jbpm.compiler.xml;
 
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.List;
 
+import org.drools.definition.process.Process;
 import org.drools.xml.SemanticModules;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -14,7 +16,10 @@ public class TestXml extends JbpmTestCase {
         modules.addSemanticModule(new ProcessSemanticModule());
         XmlProcessReader reader = new XmlProcessReader(modules);
         reader.read(new InputStreamReader(TestXml.class.getResourceAsStream("XmlTest.xml")));
-        RuleFlowProcess process = (RuleFlowProcess) reader.getProcess();
+        List<Process> processes = reader.getProcess();
+        assertNotNull(processes);
+        assertEquals(1, processes.size());
+        RuleFlowProcess process = (RuleFlowProcess) processes.get(0);
         assertNotNull(process);
 
         String output = XmlRuleFlowProcessDumper.INSTANCE.dump(process);

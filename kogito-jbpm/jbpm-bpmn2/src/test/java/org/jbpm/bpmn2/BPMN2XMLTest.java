@@ -18,9 +18,11 @@ package org.jbpm.bpmn2;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.drools.definition.process.Process;
 import org.drools.xml.SemanticModules;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -49,8 +51,10 @@ public class BPMN2XMLTest extends XMLTestCase {
         XmlProcessReader processReader = new XmlProcessReader(modules);
         for (String processName: processes) {
 			String original = slurp(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
-			RuleFlowProcess p = (RuleFlowProcess)
-		    	processReader.read(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
+			List<Process> processes = processReader.read(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
+            assertNotNull(processes);
+            assertEquals(1, processes.size());
+            RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
 			String result = XmlBPMNProcessDumper.INSTANCE.dump(p, XmlBPMNProcessDumper.META_DATA_USING_DI);
 			System.out.println(original);
 			System.out.println("---------------------------------------------------------------");

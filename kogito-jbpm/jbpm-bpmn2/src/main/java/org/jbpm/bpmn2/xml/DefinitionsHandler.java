@@ -17,7 +17,9 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.HashSet;
+import java.util.List;
 
+import org.drools.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -56,13 +58,14 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 			          final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
 		Definitions definitions = (Definitions) parser.getCurrent();
-        RuleFlowProcess process = (RuleFlowProcess)
-			((ProcessBuildData) parser.getData()).getProcess();
-		String namespace = element.getAttribute("targetNamespace");
-		process.setMetaData("TargetNamespace", namespace);
-		definitions.setTargetNamespace(namespace);
-		process.setMetaData("Definitions", definitions);
-		return definitions;
+        String namespace = element.getAttribute("targetNamespace");
+        List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
+        for (Process process : processes) {
+            RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)process;
+            ruleFlowProcess.setMetaData("TargetNamespace", namespace);
+        }
+        definitions.setTargetNamespace(namespace);
+        return definitions;
 	}
 
 	public Class<?> generateNodeFor() {

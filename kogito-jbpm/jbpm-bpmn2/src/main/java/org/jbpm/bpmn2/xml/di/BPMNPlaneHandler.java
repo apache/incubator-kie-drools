@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.definition.process.NodeContainer;
+import org.drools.definition.process.Process;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -51,7 +52,7 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
 		this.validPeers.add(null);
-        this.validPeers.add(org.drools.definition.process.Process.class);
+        this.validPeers.add(Process.class);
     }
     
     public Object start(final String uri, final String localName,
@@ -68,8 +69,14 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
                       final ExtensibleXmlParser parser) throws SAXException {
         parser.endElementBuilder();
         ProcessInfo processInfo = (ProcessInfo) parser.getCurrent();
-        RuleFlowProcess process = (RuleFlowProcess)
-            ((ProcessBuildData) parser.getData()).getProcess();
+        List<Process> processes = ((ProcessBuildData) parser.getData()).getProcesses();
+        RuleFlowProcess process = null;
+        for (Process p : processes) {
+            if (p.getId().equals(processInfo.getProcessRef())) {
+                process = (RuleFlowProcess) p;
+                break;
+            }
+        }
         for (NodeInfo nodeInfo: processInfo.getNodeInfos()) {
         	boolean found = processNodeInfo(nodeInfo, process.getNodes());
             if (!found) {

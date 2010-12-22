@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.definition.process.Process;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
@@ -116,7 +117,9 @@ public class XMLPersistenceTest extends JbpmTestCase {
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
         XmlProcessReader reader = new XmlProcessReader(modules);
-        process = (RuleFlowProcess) reader.read(new StringReader(xml));
+        List<Process> processes = reader.read(new StringReader(xml));
+        assertNotNull(processes);
+        process = (RuleFlowProcess) processes.get(0);
         if (process == null) {
             throw new IllegalArgumentException("Failed to reload process!");
         }
@@ -544,7 +547,9 @@ public class XMLPersistenceTest extends JbpmTestCase {
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
         XmlProcessReader reader = new XmlProcessReader(modules);
-        process = (RuleFlowProcess) reader.read(new StringReader(xml));
+        List<Process> processes = reader.read(new StringReader(xml));
+        assertNotNull(processes);
+        process = (RuleFlowProcess) processes.get(0);
         if (process == null) {
             throw new IllegalArgumentException("Failed to reload process!");
         }

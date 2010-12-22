@@ -3,6 +3,7 @@ package org.jbpm.compiler.xml;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 
@@ -15,7 +16,7 @@ import org.xml.sax.SAXException;
 public class XmlProcessReader {
     private ExtensibleXmlParser parser;
 
-    private Process        process;
+    private List<Process>        processes;
 
     public XmlProcessReader(final SemanticModules modules) {
         this( modules, null );
@@ -39,10 +40,10 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final Reader reader) throws SAXException,
+    public List<Process> read(final Reader reader) throws SAXException,
                                                  IOException {
-        this.process = ((ProcessBuildData) this.parser.read( reader )).getProcess();
-        return this.process;
+        this.processes = ((ProcessBuildData) this.parser.read( reader )).getProcesses();
+        return this.processes;
     }
 
     /**
@@ -53,10 +54,10 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final InputStream inputStream) throws SAXException,
+    public List<Process> read(final InputStream inputStream) throws SAXException,
                                                            IOException {
-        this.process = ((ProcessBuildData) this.parser.read( inputStream )).getProcess();
-        return this.process;
+        this.processes = ((ProcessBuildData) this.parser.read( inputStream )).getProcesses();
+        return this.processes;
     }
 
     /**
@@ -67,17 +68,17 @@ public class XmlProcessReader {
      *
      * @return The rule-set.
      */
-    public Process read(final InputSource in) throws SAXException,
+    public List<Process> read(final InputSource in) throws SAXException,
                                                   IOException {
-        this.process = ((ProcessBuildData)this.parser.read( in )).getProcess();
-        return this.process;
+        this.processes = ((ProcessBuildData)this.parser.read( in )).getProcesses();
+        return this.processes;
     }
 
-    void setProcess(final Process process) {
-        this.process = process;
+    void setProcesses(final List<Process> processes) {
+        this.processes = processes;
     }
 
-    public Process getProcess() {
-        return this.process;
+    public List<Process> getProcess() {
+        return this.processes;
     }
 }
