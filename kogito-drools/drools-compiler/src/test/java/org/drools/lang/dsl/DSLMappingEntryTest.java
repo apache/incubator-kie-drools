@@ -2,6 +2,8 @@ package org.drools.lang.dsl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -30,7 +32,6 @@ public class DSLMappingEntryTest extends TestCase {
         } finally {
             dsl.close();
         }
-
         return entry;
     }
 
@@ -38,8 +39,8 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
         final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
-        final String expectedKeyP = "(\\W|^)The\\s+Customer\\s+name\\s+is\\s+(.*?)\\s+and\\s+surname\\s+is\\s+(.*?)\\s+and\\s+it\\s+has\\s+US\\$\\s+50,00\\s+on\\s+his\\s+(.*?)$";
-        final String expectedValP = "$1Customer( name == \"$2\", surname == \"$3\", money > \\$money )";
+        final String expectedKeyP = "(?<=\\W|^)The\\s+Customer\\s+name\\s+is\\s+(.*?)\\s+and\\s+surname\\s+is\\s+(.*?)\\s+and\\s+it\\s+has\\s+US\\$\\s+50,00\\s+on\\s+his\\s+(.*?)$";
+        final String expectedValP = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
@@ -58,8 +59,8 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "-name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(\\W|^)-\\s*name\\s+is\\s+(.*?)$";
-        final String expectedValP = "$1name == \"$2\"";
+        final String expectedKeyP = "(?<=\\W|^)-\\s*name\\s+is\\s+(.*?)$";
+        final String expectedValP = "name == \"{name}\"";
 
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
@@ -79,8 +80,8 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "- name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(\\W|^)-\\s*name\\s+is\\s+(.*?)$";
-        final String expectedValP = "$1name == \"$2\"";
+        final String expectedKeyP = "(?<=\\W|^)-\\s*name\\s+is\\s+(.*?)$";
+        final String expectedValP = "name == \"{name}\"";
 
         final DSLMappingEntry entry = createEntry( inputKey,
                                                    inputValue );
@@ -103,223 +104,122 @@ public class DSLMappingEntryTest extends TestCase {
         return createEntry( inputKey,
                             inputValue );
     }
-
-    public void testExpandNoSpaces() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"blah\"" ).replaceAll( entry.getValuePattern() );
-
-        assertEquals( "SomeFact(value==\"blah\")",
-                      result );
+        
+    private DefaultExpander makeExpander( DSLMappingEntry... entries ){
+    	DefaultExpander expander = new DefaultExpander();
+    	DefaultDSLMapping mapping = new DefaultDSLMapping();
+    	for( DSLMappingEntry entry: entries ){
+    		mapping.addEntry( entry );
+    	}
+    	List<String> options = new ArrayList<String>();
+    	options.add("result");
+    	options.add("when");
+    	options.add("steps");
+    	mapping.setOptions(options);
+    	expander.addDSLMapping(mapping);
+    	return expander;
     }
+    
 
-    public void testExpandWithLeadingSpace() throws IOException {
+    public void testExpandSpaces() throws IOException {
         DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \" blah\"" ).replaceAll( entry.getValuePattern() );
-
-        assertEquals( "SomeFact(value==\" blah\")",
-                      result );
-    }
-
-    public void testExpandWithMultipleLeadingSpaces() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"   blah\"" ).replaceAll( entry.getValuePattern() );
-        assertEquals( "SomeFact(value==\"   blah\")",
-                      result );
-    }
-
-    public void testExpandWithTrailingSpace() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"blah \"" ).replaceAll( entry.getValuePattern() );
-        assertEquals( "SomeFact(value==\"blah \")",
-                      result );
-    }
-
-    public void testExpandWithMultipleTrailingSpaces() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"blah  \"" ).replaceAll( entry.getValuePattern() );
-        assertEquals( "SomeFact(value==\"blah  \")",
-                      result );
-    }
-
-    public void testExpandWithInternalSpace() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"bl ah\"" ).replaceAll( entry.getValuePattern() );
-        assertEquals( "SomeFact(value==\"bl ah\")",
-                      result );
-    }
-
-    public void testExpandWithMultipleSpaces() throws IOException {
-        DSLMappingEntry entry = this.setupEntry();
-        final String result = entry.getKeyPattern().matcher( "String is \"  bl  ah  \"" ).replaceAll( entry.getValuePattern() );
-        assertEquals( "SomeFact(value==\"  bl  ah  \")",
-                      result );
+        DefaultExpander ex = makeExpander( entry );
+        String[] strs = new String[]{ "0_sp", " 1_sp", "   3_sp", "0_sp_1 ", 
+        		                      "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
+        StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
+        for( String str: strs ){
+        	sb.append( "String is \"" + str + "\"\n" );
+        }
+        sb.append( "then\n" + "end\n" );
+        String dslr = sb.toString();
+        String drl = ex.expand( dslr );
+        
+        for( String str: strs ){
+        	assertTrue( drl.contains( '"' + str + '"' ) );
+        }
     }
 
     public void testExpandWithDots() throws IOException {
-        final String inputKey = "- {prop} is {val} ";
-        final String inputValue = "{prop} == {val}";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "- type is ClientServiceType.TypeGOLD" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "type == ClientServiceType.TypeGOLD",
-                      result );
+        DSLMappingEntry entry1 = this.createEntry( "- {prop} is not {val} ", "{prop} != {val}" );
+        DSLMappingEntry entry2 = this.createEntry( "- {prop} is {val} ",     "{prop} == {val}" );
+        DSLMappingEntry entry3 = this.createEntry( "- {prop} is_not {val} ", "{prop} != {val}" );
+        DefaultExpander ex = makeExpander( entry1, entry2, entry3 );
+        StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
+        sb.append( "> Foo()").append( "\n" );
+        sb.append( "- type1 is ClientServiceType.TypeGOLD" ).append( "\n" );
+        sb.append( "- type2 is_not ClientServiceType.TypeGOLD" ).append( "\n" );
+        sb.append( "- type3 is not ClientServiceType.TypeGOLD" ).append( "\n" );
+        sb.append( "then\n" + "end\n" );
+        String dslr = sb.toString();
+        String drl = ex.expand( dslr );
+        System.out.println( dslr );
+        System.out.println( drl );
+        assertTrue( "failure type1", drl.contains( "type1 == ClientServiceType.TypeGOLD" ) );
+        assertTrue( "failure type2", drl.contains( "type2 != ClientServiceType.TypeGOLD" ) );
+        assertTrue( "failure type3", drl.contains( "type3 != ClientServiceType.TypeGOLD" ) );
     }
 
-    public void testExpandPartialWords() throws IOException {
-        final String inputKey = "- {prop} is {val} ";
-        final String inputValue = "{prop} == {val}";
 
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-        // not supposed to expand
-        String result = entry.getKeyPattern().matcher( "- type is_not ClientServiceType.TypeGOLD" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "- type is_not ClientServiceType.TypeGOLD",
-                      result );
-    }
-
-    public void testExpandPartialWords2() throws IOException {
-        final String inputKey = "- {prop} is_not {val} ";
-        final String inputValue = "{prop} != {val}";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "- type is_not ClientServiceType.TypeGOLD" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "type != ClientServiceType.TypeGOLD",
-                      result );
-    }
-
-    public void testExpandPartialWords3() throws IOException {
-        final String inputKey = "- {prop} is not {val} ";
-        final String inputValue = "{prop} != {val}";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "- type is not ClientServiceType.TypeGOLD" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "type != ClientServiceType.TypeGOLD",
-                      result );
-    }
 
     public void testExpandWithBrackets() throws IOException {
-        final String inputKey = "attr {attr_name} is in \\[ {values} \\]";
-        final String inputValue = "{attr_name} in ( {values} )";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "attr name is in [ 'Edson', 'Bob' ]" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "name in ( 'Edson', 'Bob' )",
-                      result );
-    }
-
-    public void testExpandWithParethesis() throws IOException {
-        final String inputKey = "((H|h)e|(S|s)he) \\(is\\) (a|an) $xx {attribute} (man|woman)";
-        final String inputValue = "Person( attribute == \"{attribute}\" )";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "he (is) a $xx handsome man" ).replaceAll( entry.getValuePattern() );
-
-        assertEquals( result,
-                      "Person( attribute == \"handsome\" )",
-                      result );
-    }
-
-    public void testSingleCharacterBetweenVars() throws IOException {
-        final String inputKey = "DSL sentence with {key1} {key2}";
-        final String inputValue = "Sentence( {key1} == {key2} )";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "DSL sentence with mykey myvalue" ).replaceAll( entry.getValuePattern() );
-        assertEquals( result,
-                      "Sentence( mykey == myvalue )",
-                      result );
-    }
-
-    public void testExpandWithQualifiedVars() throws IOException {
-        final String inputKey = "When the credit rating is {rating:ENUM:Applicant.creditRating}";
-        final String inputValue = "applicant:Applicant(credit=={rating})";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        String result = entry.getKeyPattern().matcher( "When the credit rating is AA" ).replaceAll( entry.getValuePattern() );
-
-        assertEquals( result,
-                      "applicant:Applicant(credit==AA)",
-                      result );
-    }
-
-    
-    public void testExpandWithRegexp() throws IOException {
-        final String inputKey = "When the credit rating is {rating:regexp:\\d{3}}";
-        final String inputValue = "applicant:Applicant(credit=={rating})";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        assertEquals( "(\\W|^)When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(\\W|$)",
-                      entry.getKeyPattern().toString() );
-        assertEquals( "$1applicant:Applicant(credit==$2)$3",
-                      entry.getValuePattern());
+        DSLMappingEntry entry1 = this.createEntry( "attr {attr_name} is in \\[ {values} \\]",
+                                                   "{attr_name} in ( {values} )" );
+        DSLMappingEntry entry2 = this.createEntry( "((H|h)e|(S|s)he) \\(is\\) (a|an) $xx {attribute} (man|woman)",
+                                                   "Person( attribute == \"{attribute}\" )" );
+        DSLMappingEntry entry3 = this.createEntry( "DSL sentence with {key1} {key2}",
+                                                   "Sentence( {key1} == {key2} )" );
+//        DSLMappingEntry entry4 = this.createEntry( "When the credit rating is {rating:ENUM:Applicant.creditRating}",
+//                                                   "applicant:Applicant(credit=={rating})" );
+        DSLMappingEntry entry5 = this.createEntry( "When the credit rating is {rating:\\d{3}}",
+                                                   "applicant:Applicant(credit=={rating})" );
         
+        assertEquals( "(?<=\\W|^)When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)",
+                      entry5.getKeyPattern().toString() );
+        assertEquals( "applicant:Applicant(credit=={rating})",
+                      entry5.getValuePattern() );
+
+        DSLMappingEntry entry6 = this.createEntry( "This is a sentence with line breaks",
+                                                   "Cheese\\n(price == 10)" );
         
-        String result = entry.getKeyPattern().matcher( "When the credit rating is 555" ).replaceAll( entry.getValuePattern() );
+        assertEquals( "(?<=\\W|^)This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(?=\\W|$)",
+                      entry6.getKeyPattern().toString() );
+        assertEquals( "Cheese\n(price == 10)",
+                      entry6.getValuePattern());
 
-        assertEquals( result,
-                      "applicant:Applicant(credit==555)",
-                      result );
-    }
-
-    public void testExpandWithLineBreaks() throws IOException {
-        final String inputKey = "This is a sentence with line breaks";
-        final String inputValue = "Cheese\\n(price == 10)";
-
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        assertEquals( "(\\W|^)This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(\\W|$)",
-                      entry.getKeyPattern().toString() );
-        assertEquals( "$1Cheese\n(price == 10)$2",
-                      entry.getValuePattern());
+        DSLMappingEntry entry7 = this.createEntry( "Bedingung-\\#19-MKM4",
+                                                   "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )" );
         
+        assertEquals( "(?<=\\W|^)Bedingung-#19-MKM4(?=\\W|$)",
+                      entry7.getKeyPattern().toString() );
+        assertEquals( "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
+                       entry7.getValuePattern());
+  
+        DefaultExpander ex = makeExpander( entry1, entry2, entry3, /* entry4, */
+        		                           entry5, entry6, entry7 );
+        StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
         
-        String result = entry.getKeyPattern().matcher( "This is a sentence with line breaks" ).replaceAll( entry.getValuePattern() );
+        sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
+        sb.append( "he (is) a $xx handsome man" ).append( "\n" );
+        sb.append( "DSL sentence with mykey myvalue" ).append( "\n" );
+//        "When the credit rating is AA"
+        sb.append( "When the credit rating is 555" ).append( "\n" );
+        sb.append( "This is a sentence with line breaks" ).append( "\n" );
+        sb.append( "Bedingung-#19-MKM4" ).append( "\n" );
+        sb.append( "then\n" + "end\n" );
+        String dslr = sb.toString();
+        String drl = ex.expand( dslr );
 
-        assertEquals( result,
-                      "Cheese\n(price == 10)",
-                      result );
-    }
-    
-    public void testExpandWithPound() throws IOException {
-        final String inputKey = "Bedingung-\\#19-MKM4";
-        final String inputValue = "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )";
+        for( String exp: new String[]{
+        		"name in ( 'Edson', 'Bob' )",
+        		"Person( attribute == \"handsome\" )",
+                "Sentence( mykey == myvalue )",
+//                "applicant:Applicant(credit==AA)",
+                "applicant:Applicant(credit==555)",
+                "Cheese\n(price == 10)",
+                "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )" } ){
 
-        DSLMappingEntry entry = createEntry( inputKey,
-                                  inputValue );
-
-        assertEquals( "(\\W|^)Bedingung-#19-MKM4(\\W|$)",
-                      entry.getKeyPattern().toString() );
-        assertEquals( "$1eval ( \\$p.getTempVal(\"#UML-ATZ-1\") < \\$p.getZvUmlStfr() )$2",
-                      entry.getValuePattern());
-        
-        
-        String result = entry.getKeyPattern().matcher( "Bedingung-#19-MKM4" ).replaceAll( entry.getValuePattern() );
-
-        assertEquals( result,
-                      "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
-                      result );
+            assertTrue( "failed to expand to: " + exp, drl.contains( exp ) );
+        }
     }
     
 }

@@ -101,9 +101,15 @@ public class DSLMappingFileTest extends TestCase {
             assertEquals( "modify(policy) \\{price = {surcharge}\\}",
                           entry.getMappingValue() );
             
-            String input = "Add surcharge 300 to Policy";
-            String expected = "modify(policy) {price = 300}"; 
-            String result = entry.getKeyPattern().matcher( input ).replaceAll( entry.getValuePattern() );
+            String input = "rule x\nwhen\nthen\nAdd surcharge 300 to Policy\nend\n";
+            String expected = "rule x\nwhen\nthen\nmodify(policy) {price = 300}\nend\n"; 
+            
+            DefaultExpander de = new DefaultExpander();
+            de.addDSLMapping( this.file.getMapping() );
+
+            final String result = de.expand( input );
+            
+//            String result = entry.getKeyPattern().matcher( input ).replaceAll( entry.getValuePattern() );
             
             assertEquals( expected, 
                           result );
@@ -117,8 +123,9 @@ public class DSLMappingFileTest extends TestCase {
     /**
      * Right now this test fails because there is no RHS for the rule. It connects the "then" and "end" to "thenend".
      */
-    public void FIXME_testNoRHS() {
-        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
+    public void testNoRHS() {
+        String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" +
+        "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
                       + "[when]code {code1} occurs=BBBB\n";
         try {
             final Reader reader = new StringReader( file );
@@ -139,7 +146,7 @@ public class DSLMappingFileTest extends TestCase {
 
             final String ruleAfterExpansion = de.expand( rule );
 
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nend\n";
+            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nend";
 
             assertEquals( expected,
                           ruleAfterExpansion );
