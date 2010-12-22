@@ -62,10 +62,10 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                           entry.getSection() );
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
-            assertEquals( "(\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+[(.*?)](\\W|$)",
+            assertEquals( "(?<=\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+[(.*?)](?=\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
-            assertEquals( "$1Attribute( $2 in ($3) )$4",
+            assertEquals( "Attribute( {attr} in ({list}) )",
                           entry.getValuePattern() );
 
         } catch ( final IOException e ) {
@@ -97,10 +97,10 @@ public class DSLTokenizedMappingFileTest extends TestCase {
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
             
-            assertEquals( "(\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+\\[(.*?)\\](\\W|$)",
+            assertEquals( "(?<=\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+\\[(.*?)\\](?=\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
-            assertEquals( "$1Attribute( $2 in ($3) )$4",
+            assertEquals( "Attribute( {attr} in ({list}) )",
                           entry.getValuePattern() );
 
         } catch ( final IOException e ) {
@@ -133,7 +133,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                     
             final String ruleAfterExpansion = de.expand(rule);
             
-            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend\n";
+            final String expected = "rule \"x\"\nwhen\nAAAA( cd1 == 1041, cd2 != ( 1034 + 1035 ))\nthen\nSystem.out.println(\"DO_SOMETHING\");\nend";
             
             assertEquals( expected, ruleAfterExpansion );
             
@@ -166,9 +166,9 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                           entry.getSection() );
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
-            assertEquals( "(\\W|^)something:\\=(.*?)$",
+            assertEquals( "(?<=\\W|^)something:\\=(.*?)$",
                           entry.getKeyPattern().toString() );
-            assertEquals( "$1Attribute( something == \"$2\" )",
+            assertEquals( "Attribute( something == \"{value}\" )",
                           entry.getValuePattern() );
 
         } catch ( final IOException e ) {

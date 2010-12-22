@@ -17,8 +17,11 @@
 package org.drools.lang.dsl;
 
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
+import org.drools.compiler.ParserError;
 import org.mvel2.util.ParseTools;
 
 /**
@@ -28,27 +31,21 @@ import org.mvel2.util.ParseTools;
  */
 public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
 
-    private static final String HEAD_TAG            = "__HEAD__";
-    private static final String TAIL_TAG            = "__TAIL__";
-
-    private boolean             headMatchGroupAdded = false;
-    private boolean             tailMatchGroupAdded = false;
-
     public AntlrDSLMappingEntry() {
         this( DSLMappingEntry.ANY,
-              DSLMappingEntry.EMPTY_METADATA,
-              null,
-              null,
-              null,
-              null );
+                DSLMappingEntry.EMPTY_METADATA,
+                null,
+                null,
+                null,
+                null );
     }
 
     public AntlrDSLMappingEntry(final Section section,
-                                final MetaData metadata,
-                                final String key,
-                                final String value,
-                                final String keyPattern,
-                                final String valuePattern) {
+            final MetaData metadata,
+            final String key,
+            final String value,
+            final String keyPattern,
+            final String valuePattern) {
         setSection( section );
         setMetaData( metadata );
         setMappingKey( key );
@@ -64,33 +61,25 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
     public void setKeyPattern(final String keyPat) {
         //the "key" in this case is already mostly formed into 
         //a pattern by ANTLR, and just requires a bit of post-processing.
+
         if ( keyPat != null ) {
             String trimmed = keyPat.trim();
             // escaping the special character $
-            String keyPattern = trimmed.replaceAll( "\\$",
-                                                    "\\\\\\$" );
+            String keyPattern = trimmed.replaceAll( "\\$", "\\\\\\$" );
             // unescaping the special character #
-            keyPattern = keyPattern.replaceAll( "\\\\#",
-                                                "#" );
+            keyPattern = keyPattern.replaceAll( "\\\\#", "#" );
 
             if ( !keyPattern.startsWith( "^" ) ) {
-                // making it start with a space char or a line start
-                keyPattern = "(\\W|^)" + keyPattern;
-                // adding a dummy variable due to index shift
-                getVariables().put( HEAD_TAG,
-                                    Integer.valueOf( 0 ) );
-                headMatchGroupAdded = true;
+                // making it start after a non word char or at line start
+                keyPattern = "(?<=\\W|^)" + keyPattern;
             }
 
-            // if pattern ends with a pure variable whose pattern could create
+            // If the pattern ends with a pure variable whose pattern could create
             // a greedy match, append a line end to avoid multiple line matching
             if ( keyPattern.endsWith( "(.*?)" ) ) {
                 keyPattern += "$";
             } else {
-                keyPattern += "(\\W|$)";
-                getVariables().put( TAIL_TAG,
-                                    Integer.valueOf( 1 ) );
-                tailMatchGroupAdded = true;
+                keyPattern += "(?=\\W|$)";
             }
 
             // fix variables offset
@@ -100,19 +89,15 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
             //first, look to see if it's 
             if ( trimmed.startsWith( "-" ) && (!trimmed.startsWith( "-\\s*" )) ) {
                 int index = keyPattern.indexOf( '-' ) + 1;
-                keyPattern = keyPattern.substring( 0,
-                                                   index ) + "\\s*" + keyPattern.substring( index ).trim();
+                keyPattern = keyPattern.substring( 0, index ) + "\\s*" + keyPattern.substring( index ).trim();
             }
 
-            // making the pattern space insensitive
-            keyPattern = keyPattern.replaceAll( "\\s+",
-                                                "\\\\s+" );
+            // Make the pattern space insensitive. 
+            keyPattern = keyPattern.replaceAll( "\\s+", "\\\\s+" );
             // normalize duplications
-            keyPattern = keyPattern.replaceAll( "(\\\\s\\+)+",
-                                                "\\\\s+" );
+            keyPattern = keyPattern.replaceAll( "(\\\\s\\+)+", "\\\\s+" );
 
-            setKeyPattern( Pattern.compile( keyPattern,
-                                            Pattern.DOTALL | Pattern.MULTILINE ) );
+            setKeyPattern( Pattern.compile( keyPattern, Pattern.DOTALL | Pattern.MULTILINE ) );
 
         } else {
             setKeyPattern( (Pattern) null );
@@ -123,45 +108,37 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
         char[] input = getMappingKey().toCharArray();
         int counter = 1;
         boolean insideCurly = false;
-        if ( headMatchGroupAdded ) {
-            getVariables().put( HEAD_TAG,
-                                Integer.valueOf( counter ) );
-            counter++;
-        }
         for ( int i = 0; i < input.length; i++ ) {
             switch ( input[i] ) {
-                case '\\' :
-                    // next char is escaped
-                    i++;
-                    break;
-                case '(' :
-                    // All groups starting with "(?" are non-capturing.
-                    if( i == input.length - 1 || input[i+1] != '?' ) counter++;
-                    break;
-                case '{' :
-                    if ( insideCurly ) {
-                        i = ParseTools.balancedCapture( input,
-                                                        i,
-                                                        '{' );
-                    } else {
-                        insideCurly = true;
-                        updateVariableIndex( i,
-                                             counter );
-                        counter++;
-                    }
-                    break;
-                case '}' :
-                    if ( insideCurly ) insideCurly = false;
+            case '\\' :
+                // next char is escaped
+                i++;
+                break;
+            case '(' :
+                // Don't count /.{x(y}./ or /.(?./
+                if( ! insideCurly &&
+                        (i == input.length - 1 || input[i+1] != '?' ) ) counter++;
+                break;
+            case '{' :
+                if ( insideCurly ) {
+                    i = ParseTools.balancedCapture( input,
+                            i,
+                    '{' );
+                } else {
+                    insideCurly = true;
+                    updateVariableIndex( i,
+                            counter );
+                    counter++;
+                }
+                break;
+            case '}' :
+                if ( insideCurly ) insideCurly = false;
             }
-        }
-        if ( tailMatchGroupAdded ) {
-            getVariables().put( TAIL_TAG,
-                                Integer.valueOf( counter ) );
         }
     }
 
     private void updateVariableIndex(int offset,
-                                     int counter) {
+            int counter) {
         String subs = getMappingKey().substring( offset );
         for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
             if ( subs.startsWith( "{" + entry.getKey() ) && ((subs.charAt( entry.getKey().length() + 1 ) == '}') || (subs.charAt( entry.getKey().length() + 1 ) == ':')) ) {
@@ -179,25 +156,16 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
         if ( value != null ) {
             StringBuilder valuePatternBuffer = new StringBuilder();
 
-            if ( headMatchGroupAdded ) {
-                valuePatternBuffer.append( "$1" );
-            }
             valuePatternBuffer.append( value );
             if ( value.endsWith( " " ) ) {
                 valuePatternBuffer.deleteCharAt( valuePatternBuffer.length() - 1 );
             }
-            if ( tailMatchGroupAdded ) {
-                int tailIndex = getVariables().get( TAIL_TAG ).intValue();
-                valuePatternBuffer.append( "$" + tailIndex );
-            }
+
             // unescaping the special character # and creating the line breaks
-            String pat = valuePatternBuffer.toString().replaceAll( "\\\\#",
-                                                                   "#" ).replaceAll( "\\\\n", 
-                                                                                     "\n" );
-            for ( Map.Entry<String, Integer> entry : getVariables().entrySet() ) {
-                pat = pat.replaceAll( "\\{" + entry.getKey() + "(:(.*?))?\\}",
-                                      "\\$" + entry.getValue() );
-            }
+            String pat = valuePatternBuffer.toString().replaceAll( "\\\\(#|\\{|\\})", "$1" ).
+            replaceAll( "\\\\n", "\n" ).
+            replaceAll( "\\\\\\$", "\\$" );
+
             super.setValuePattern( pat );
         }
 
