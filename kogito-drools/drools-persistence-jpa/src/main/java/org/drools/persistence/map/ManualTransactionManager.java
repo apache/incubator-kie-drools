@@ -4,7 +4,7 @@ import org.drools.persistence.EntityInfo;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 
-public abstract class ManualTransactionManager
+public class ManualTransactionManager
     implements
     TransactionManager {
     
