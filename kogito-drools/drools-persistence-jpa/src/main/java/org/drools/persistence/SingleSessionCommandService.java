@@ -215,33 +215,35 @@ public class SingleSessionCommandService
     }
     
     public void initTransactionManager(Environment env) {
-        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
-        if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
-            try {
-                Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
-                Constructor<?> con = cls.getConstructors()[0];
-                this.txm = (TransactionManager) con.newInstance( tm );
-                logger.debug( "Instantiating  DroolsSpringTransactionManager" );
-                                
-                if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
-                    // configure spring for JPA and local transactions
-                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
-                    con = cls.getConstructors()[0];
-                    this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
-                } else {
-                    // configure spring for JPA and distributed transactions 
-                }
-            } catch ( Exception e ) {
-                logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
-                throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
-            }
-        } else {
-            logger.debug( "Instantiating  JtaTransactionManager" );
-            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-                                                  env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                                                  tm ); 
-            this.jpm = new JpaPersistenceContextManager(this.env);
-        }
+        this.txm = (TransactionManager) env.get( EnvironmentName.TRANSACTION_MANAGER );
+        this.jpm = (PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
+//        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
+//        if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
+//            try {
+//                Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+//                Constructor<?> con = cls.getConstructors()[0];
+//                this.txm = (TransactionManager) con.newInstance( tm );
+//                logger.debug( "Instantiating  DroolsSpringTransactionManager" );
+//                                
+//                if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
+//                    // configure spring for JPA and local transactions
+//                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
+//                    con = cls.getConstructors()[0];
+//                    this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
+//                } else {
+//                    // configure spring for JPA and distributed transactions 
+//                }
+//            } catch ( Exception e ) {
+//                logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
+//                throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
+//            }
+//        } else {
+//            logger.debug( "Instantiating  JtaTransactionManager" );
+//            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
+//                                                  env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
+//                                                  tm ); 
+//            this.jpm = new JpaPersistenceContextManager(this.env);
+//        }
     }
 
     public static class EndOperationListenerImpl
