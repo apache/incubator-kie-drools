@@ -1,6 +1,7 @@
 package org.drools.persistence.map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public class MapBasedPersistenceContext
     public MapBasedPersistenceContext(AbstractStorage storage) {
         open = true;
         this.storage = storage;
+        this.entities = new HashMap<Long, EntityInfo>();
     }
     
     public void persist(Object entity) {
