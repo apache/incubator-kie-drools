@@ -20,6 +20,7 @@ tokens {
        VT_VAR_REF;
        VT_LITERAL;
        VT_PATTERN;
+       VT_QUAL;
        
        VT_SPACE;
        
@@ -197,22 +198,22 @@ variable_definition
 		CommonToken back2 =  (CommonToken)input.LT(-2);
 		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
 		} 
-	name=LITERAL ( COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
+	name=LITERAL ( (COLON q=LITERAL)? COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
 	{
       CommonToken rc1 = (CommonToken)input.LT(1);
       if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
       isIdentifier( $name );
 	}
     //pat can be null if there's no pattern here
-	-> { hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
-	-> {!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}?          ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] )
-	-> { hasSpaceBefore                     && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ) 
-	-> {!hasSpaceBefore                     && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ) 
-	-> { hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
-	-> {!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}?          ^(VT_VAR_DEF $name VT_PATTERN[$pat.start, text] ) VT_SPACE
-	-> { hasSpaceBefore &&                      hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name                              ) VT_SPACE
-	-> {!hasSpaceBefore &&                      hasSpaceAfter}?	         ^(VT_VAR_DEF $name                              ) VT_SPACE
-	->                                                                   ^(VT_VAR_DEF $name ) 
+	-> { hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
+	-> {!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
+	-> { hasSpaceBefore                     && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) ) 
+	-> {!hasSpaceBefore                     && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) )
+	-> { hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
+	-> {!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
+	-> { hasSpaceBefore &&                      hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
+	-> {!hasSpaceBefore &&                      hasSpaceAfter}?	         ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
+	->                                                                   ^(VT_VAR_DEF $name ^(VT_QUAL $q?) ) 
 	;
 	
 pattern 

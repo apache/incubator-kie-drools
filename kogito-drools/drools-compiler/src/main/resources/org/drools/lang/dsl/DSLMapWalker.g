@@ -124,17 +124,23 @@ literal
 	;	
 
 variable_definition
-	:   ^(VT_VAR_DEF varname=LITERAL pattern=VT_PATTERN? )
+	:   ^(VT_VAR_DEF varname=LITERAL ^(VT_QUAL q=LITERAL?) pattern=VT_PATTERN? )
 	{
 		$entry::variables.put($varname.text, Integer.valueOf(0));
 		
-		if($pattern!=null){
+		if($q!=null && $pattern!=null){
+			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$q.text+":"+$pattern.text+"}");
+		}else if($q==null && $pattern!=null){
 			$entry::sentenceKeyBuffer.append("{"+$varname.text+":"+$pattern.text+"}");
 		}else{
 			$entry::sentenceKeyBuffer.append("{"+$varname.text+"}");
 		}
 		
-		$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
+		if($q == null || (!$q.getText().equals("ENUM") && !$q.getText().equals("DATE") && !$q.getText().equals("BOOLEAN"))){
+			$entry::keybuffer.append($pattern != null? "(" + $pattern.text + ")" : "(.*?)");
+		}else{
+			$entry::keybuffer.append("(.*?)");	
+		}
 	}
 	;
 

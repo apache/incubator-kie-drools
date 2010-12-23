@@ -168,9 +168,9 @@ public class DSLMappingEntryTest extends TestCase {
                                                    "Person( attribute == \"{attribute}\" )" );
         DSLMappingEntry entry3 = this.createEntry( "DSL sentence with {key1} {key2}",
                                                    "Sentence( {key1} == {key2} )" );
-//        DSLMappingEntry entry4 = this.createEntry( "When the credit rating is {rating:ENUM:Applicant.creditRating}",
-//                                                   "applicant:Applicant(credit=={rating})" );
-        DSLMappingEntry entry5 = this.createEntry( "When the credit rating is {rating:\\d{3}}",
+        DSLMappingEntry entry4 = this.createEntry( "When the credit rating is {rating:ENUM:Applicant.creditRating}",
+                                                   "applicant:Applicant(credit=={rating})" );
+        DSLMappingEntry entry5 = this.createEntry( "When the credit rating is {rating:regex:\\d{3}}",
                                                    "applicant:Applicant(credit=={rating})" );
         
         assertEquals( "(?<=\\W|^)When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)",
@@ -194,14 +194,14 @@ public class DSLMappingEntryTest extends TestCase {
         assertEquals( "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
                        entry7.getValuePattern());
   
-        DefaultExpander ex = makeExpander( entry1, entry2, entry3, /* entry4, */
+        DefaultExpander ex = makeExpander( entry1, entry2, entry3, entry4,
         		                           entry5, entry6, entry7 );
         StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
         
         sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
         sb.append( "he (is) a $xx handsome man" ).append( "\n" );
         sb.append( "DSL sentence with mykey myvalue" ).append( "\n" );
-//        "When the credit rating is AA"
+        sb.append( "When the credit rating is AA" ).append( "\n" );
         sb.append( "When the credit rating is 555" ).append( "\n" );
         sb.append( "This is a sentence with line breaks" ).append( "\n" );
         sb.append( "Bedingung-#19-MKM4" ).append( "\n" );
