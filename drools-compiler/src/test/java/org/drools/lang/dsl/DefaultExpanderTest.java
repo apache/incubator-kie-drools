@@ -217,7 +217,7 @@ public class DefaultExpanderTest extends TestCase {
 
     }
     
-    public void FIXME_testANTLREnumExpand() throws Exception {
+    public void testANTLREnumExpand() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]When the credit rating is {rating:ENUM:Applicant.creditRating} = applicant:Applicant(credit=={rating})";
         file.parseAndLoad( new StringReader( dsl ) );
@@ -239,7 +239,7 @@ public class DefaultExpanderTest extends TestCase {
         "dialect \"mvel\"\n"+
         "when\n"+
         "applicant:Applicant(credit==AA)\n"+ 
-        "then \nend\n";
+        "then  \nend";
         
         assertFalse(ex.getErrors().toString(),ex.hasErrors());
         assertEquals( expected, drl );
