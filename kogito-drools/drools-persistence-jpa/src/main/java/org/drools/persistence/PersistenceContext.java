@@ -1,7 +1,5 @@
 package org.drools.persistence;
 
-import org.drools.persistence.info.SessionInfo;
-
 public interface PersistenceContext {
 
     void persist(Object entity);
