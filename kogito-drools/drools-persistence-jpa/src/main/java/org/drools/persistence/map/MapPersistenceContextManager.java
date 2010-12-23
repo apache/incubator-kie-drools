@@ -9,8 +9,8 @@ public class MapPersistenceContextManager
 
     private PersistenceContext persistenceContext;
     
-    public MapPersistenceContextManager(AbstractStorage storage) {
-        persistenceContext = new MapBasedPersistenceContext(storage);
+    public MapPersistenceContextManager(PersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
     }
     
     public PersistenceContext getApplicationScopedPersistenceContext() {
