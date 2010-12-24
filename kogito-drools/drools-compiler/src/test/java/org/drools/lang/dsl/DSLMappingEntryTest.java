@@ -144,12 +144,12 @@ public class DSLMappingEntryTest extends TestCase {
         DSLMappingEntry entry2 = this.createEntry( "- {prop} is {val} ",     "{prop} == {val}" );
         DSLMappingEntry entry3 = this.createEntry( "- {prop} is_not {val} ", "{prop} != {val}" );
         DefaultExpander ex = makeExpander( entry1, entry2, entry3 );
-        StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
+        StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
         sb.append( "> Foo()").append( "\n" );
         sb.append( "- type1 is ClientServiceType.TypeGOLD" ).append( "\n" );
         sb.append( "- type2 is_not ClientServiceType.TypeGOLD" ).append( "\n" );
         sb.append( "- type3 is not ClientServiceType.TypeGOLD" ).append( "\n" );
-        sb.append( "then\n" + "end\n" );
+        sb.append( "then\n" ).append( "end\n" );
         String dslr = sb.toString();
         String drl = ex.expand( dslr );
         System.out.println( dslr );
