@@ -9,6 +9,10 @@ import junit.framework.TestCase;
 
 public class DSLMappingEntryTest extends TestCase {
 
+	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
+	// JDK works correctly with "(?<=^|\\W)"
+	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+	
     protected void setUp() throws Exception {
         super.setUp();
     }
@@ -39,7 +43,7 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
         final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
-        final String expectedKeyP = "(?<=\\W|^)The\\s+Customer\\s+name\\s+is\\s+(.*?)\\s+and\\s+surname\\s+is\\s+(.*?)\\s+and\\s+it\\s+has\\s+US\\$\\s+50,00\\s+on\\s+his\\s+(.*?)$";
+        final String expectedKeyP = lookbehind + "The\\s+Customer\\s+name\\s+is\\s+(.*?)\\s+and\\s+surname\\s+is\\s+(.*?)\\s+and\\s+it\\s+has\\s+US\\$\\s+50,00\\s+on\\s+his\\s+(.*?)$";
         final String expectedValP = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
 
         final DSLMappingEntry entry = createEntry( inputKey,
@@ -59,7 +63,7 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "-name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(?<=\\W|^)-\\s*name\\s+is\\s+(.*?)$";
+        final String expectedKeyP = lookbehind + "-\\s*name\\s+is\\s+(.*?)$";
         final String expectedValP = "name == \"{name}\"";
 
         final DSLMappingEntry entry = createEntry( inputKey,
@@ -80,7 +84,7 @@ public class DSLMappingEntryTest extends TestCase {
         final String inputKey = "- name is {name}";
         final String inputValue = "name == \"{name}\"";
 
-        final String expectedKeyP = "(?<=\\W|^)-\\s*name\\s+is\\s+(.*?)$";
+        final String expectedKeyP = lookbehind + "-\\s*name\\s+is\\s+(.*?)$";
         final String expectedValP = "name == \"{name}\"";
 
         final DSLMappingEntry entry = createEntry( inputKey,
@@ -173,7 +177,7 @@ public class DSLMappingEntryTest extends TestCase {
         DSLMappingEntry entry5 = this.createEntry( "When the credit rating is {rating:regex:\\d{3}}",
                                                    "applicant:Applicant(credit=={rating})" );
         
-        assertEquals( "(?<=\\W|^)When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)",
+        assertEquals( lookbehind + "When\\s+the\\s+credit\\s+rating\\s+is\\s+(\\d{3})(?=\\W|$)",
                       entry5.getKeyPattern().toString() );
         assertEquals( "applicant:Applicant(credit=={rating})",
                       entry5.getValuePattern() );
@@ -181,7 +185,7 @@ public class DSLMappingEntryTest extends TestCase {
         DSLMappingEntry entry6 = this.createEntry( "This is a sentence with line breaks",
                                                    "Cheese\\n(price == 10)" );
         
-        assertEquals( "(?<=\\W|^)This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(?=\\W|$)",
+        assertEquals( lookbehind + "This\\s+is\\s+a\\s+sentence\\s+with\\s+line\\s+breaks(?=\\W|$)",
                       entry6.getKeyPattern().toString() );
         assertEquals( "Cheese\n(price == 10)",
                       entry6.getValuePattern());
@@ -189,14 +193,14 @@ public class DSLMappingEntryTest extends TestCase {
         DSLMappingEntry entry7 = this.createEntry( "Bedingung-\\#19-MKM4",
                                                    "eval ( $p.getTempVal(\"\\#UML-ATZ-1\") < $p.getZvUmlStfr() )" );
         
-        assertEquals( "(?<=\\W|^)Bedingung-#19-MKM4(?=\\W|$)",
+        assertEquals( lookbehind  + "Bedingung-#19-MKM4(?=\\W|$)",
                       entry7.getKeyPattern().toString() );
         assertEquals( "eval ( $p.getTempVal(\"#UML-ATZ-1\") < $p.getZvUmlStfr() )",
                        entry7.getValuePattern());
   
         DefaultExpander ex = makeExpander( entry1, entry2, entry3, entry4,
         		                           entry5, entry6, entry7 );
-        StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
+        StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
         
         sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
         sb.append( "he (is) a $xx handsome man" ).append( "\n" );
