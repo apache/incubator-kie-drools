@@ -19,6 +19,7 @@ package org.drools.verifier;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
+import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.verifier.builder.ScopesAgendaFilter;
@@ -33,6 +34,9 @@ public interface Verifier {
      */
     public void addResourcesToVerify(Resource resource,
                                      ResourceType type);
+    
+    public void addResourcesToVerify(Resource resource,
+            ResourceType type, ResourceConfiguration config);
 
     /**
      * Give model info optionally as a jar. This way verifier doesn't have to figure out the field types.
