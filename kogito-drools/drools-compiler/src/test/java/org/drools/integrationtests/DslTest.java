@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -158,7 +159,8 @@ public class DslTest {
                       messages.size() );
     }
 
-    public void FIXME_testEmptyDSL() throws Exception {
+    @Test @Ignore
+    public void testEmptyDSL() throws Exception {
         // FIXME eterelli / mic_hat not sure what to do with this?
         final String DSL = "# This is an empty dsl file.";  // gives antlr <EOF> error
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -1347,7 +1348,8 @@ public class CepEspTest {
 
     }
 
-    //    public void FIXME_testTransactionCorrelation() throws Exception {
+    //    @Test @Ignore
+    //    public void testTransactionCorrelation() throws Exception {
     //        // read in the source
     //        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_TransactionCorrelation.drl" ) );
     //        final RuleBase ruleBase = loadRuleBase( reader );

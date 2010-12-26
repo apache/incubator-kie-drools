@@ -24,6 +24,7 @@ import org.drools.runtime.ClassObjectFilter;
 import org.drools.verifier.TestBase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
@@ -35,7 +36,8 @@ import org.drools.verifier.report.components.Overlap;
 public class OverlappingRestrictionsTest extends TestBase {
 
 	// TODO: Add this feature
-	public void FIXMEtestOverlap() {
+    @Test @Ignore
+	public void testOverlap() {
 		VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
 		Verifier verifier = vBuilder.newVerifier();

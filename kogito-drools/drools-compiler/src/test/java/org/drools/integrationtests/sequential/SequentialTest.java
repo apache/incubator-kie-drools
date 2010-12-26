@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -289,10 +290,9 @@ public class SequentialTest {
         assertEquals( "rule 1", list.get( 5 ));
         assertEquals( person, list.get( 6 ));
     }
-    
-    
 
-    public void XXtestProfileSequential() throws Exception {
+    @Test @Ignore
+    public void testProfileSequential() throws Exception {
 
         runTestProfileManyRulesAndFacts( true,
                                          "Sequential mode",
@@ -305,7 +305,8 @@ public class SequentialTest {
         Thread.sleep( 100 );
     }
 
-    public void XXtestProfileRETE() throws Exception {
+    @Test @Ignore
+    public void testProfileRETE() throws Exception {
         runTestProfileManyRulesAndFacts( false,
                                          "Normal RETE mode",
                                          0, "sequentialProfile.drl"  );
@@ -333,23 +334,23 @@ public class SequentialTest {
                                          2000, "sequentialProfile.drl"  );
 
     }
-    
-    public void XXtestPerfJDT() throws Exception {
+
+    @Test @Ignore
+    public void testPerfJDT() throws Exception {
         runTestProfileManyRulesAndFacts( true,
                                          "JDT",
                                          2000, "sequentialProfile.drl"  );
         
-    }    
-    
-    public void XXtestPerfMVEL() throws Exception {
+    }
+
+    @Test @Ignore
+    public void testPerfMVEL() throws Exception {
         runTestProfileManyRulesAndFacts( true,
                                          "MVEL",
                                          2000, "sequentialProfileMVEL.drl"  );
         
     }
-    
 
-    
 
     private void runTestProfileManyRulesAndFacts(boolean sequentialMode,
                                                  String message,

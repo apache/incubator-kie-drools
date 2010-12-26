@@ -25,6 +25,7 @@ import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -69,11 +70,9 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 
         ruleBase.addPackage(pkg);
     }
-    
-    @Test
-    public void testDummy() {}
 
-    public void FIXME_testNewSessionWhileModifyingRuleBase() throws InterruptedException {
+    @Test @Ignore
+    public void testNewSessionWhileModifyingRuleBase() throws InterruptedException {
         PackageModifier modifier = new PackageModifier();
         SessionCreator creator = new SessionCreator();
 

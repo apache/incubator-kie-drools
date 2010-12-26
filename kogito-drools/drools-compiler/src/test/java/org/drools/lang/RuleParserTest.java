@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -375,7 +376,8 @@ public class RuleParserTest {
                                       (String) rule.getConsequence() );
     }
 
-    public void FIXME_testLatinChars() throws Exception {
+    @Test @Ignore
+    public void testLatinChars() throws Exception {
         final DrlParser parser = new DrlParser();
         final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "latin-sample.dslr" ) );
         final Reader dsl = new InputStreamReader( this.getClass().getResourceAsStream( "latin.dsl" ) );

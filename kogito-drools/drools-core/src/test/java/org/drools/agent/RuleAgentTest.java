@@ -27,6 +27,7 @@ import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -401,7 +402,8 @@ public class RuleAgentTest {
     }
 
     //    // FIXME - for some reason failing on hudson
-    //    public void FIXME_testPollingFilesRuleBaseReplace2() throws Exception {
+    //    @Test @Ignore
+    //    public void testPollingFilesRuleBaseReplace2() throws Exception {
     //        File dir = RuleBaseAssemblerTest.getTempDirectory();
     //
     //        Package p1 = new Package( "p1" );

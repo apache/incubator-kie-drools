@@ -21,6 +21,7 @@ import java.util.jar.JarInputStream;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -2413,7 +2414,8 @@ public class MarshallingTest {
      * 
      * @throws Exception
      */
-    public void FIXME_testDroolsObjectOutputInputStream() throws Exception {
+    @Test @Ignore
+    public void testDroolsObjectOutputInputStream() throws Exception {
         Person bob = new Person();
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

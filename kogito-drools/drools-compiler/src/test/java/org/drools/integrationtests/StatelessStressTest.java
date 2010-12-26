@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -36,9 +37,9 @@ public class StatelessStressTest {
         ruleBase.addPackage( pkg );
         return SerializationHelper.serializeObject(ruleBase);
     }
-    
-    
-    public void XXXtestLotsOfStateless() throws Exception {
+
+    @Test @Ignore
+    public void testLotsOfStateless() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "thread_class_test.drl" ) ) );
         assertFalse(builder.hasErrors());

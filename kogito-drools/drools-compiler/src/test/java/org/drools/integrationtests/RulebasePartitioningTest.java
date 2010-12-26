@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -53,8 +54,9 @@ public class RulebasePartitioningTest {
     public void testEmpty() {
     	
     }
-    
-    public void FIXMEtestRulebasePartitions1() throws Exception {
+
+    @Test @Ignore
+    public void testRulebasePartitions1() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_rulebasePartitions1.drl" ) ) );
         final org.drools.rule.Package pkg = builder.getPackage();

@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -97,7 +98,8 @@ public class OtherwiseTest {
      * @TODO: this is a future to be implemented in the future
      * @throws Exception
      */
-    public void FIXME_testOtherwiseFiringWithOneRule() throws Exception {
+    @Test @Ignore
+    public void testOtherwiseFiringWithOneRule() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );
@@ -123,7 +125,8 @@ public class OtherwiseTest {
      * @TODO: this is a future to be implemented in the future
      * @throws Exception
      */
-    public void FIXME_testOtherwiseFiringMultipleRules() throws Exception {
+    @Test @Ignore
+    public void testOtherwiseFiringMultipleRules() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
         final Package pkg = new Package( "Miss Manners" );

@@ -66,6 +66,7 @@ import javax.rules.ObjectFilter;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -344,7 +345,8 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test executeRules drl with dsl.
      */
-    public void xxxtestExecuteRules_dsl() throws Exception {
+    @Test @Ignore
+    public void testExecuteRules_dsl() throws Exception {
         // @FIXME
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri_drl );
 

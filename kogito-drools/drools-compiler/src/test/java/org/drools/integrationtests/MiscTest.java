@@ -43,6 +43,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -1289,7 +1290,7 @@ public class MiscTest {
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.err.println( parser.getErrors() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail("Error messages in parser, need to sort this our (or else collect error messages)");
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -2635,12 +2636,12 @@ public class MiscTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( "The rule is being incorrectly fired",
-                             35,
-                             mussarela.getPrice() );
-        assertEquals( "Rule is incorrectly being fired",
-                             20,
-                             provolone.getPrice() );
+        assertEquals("The rule is being incorrectly fired",
+                35,
+                mussarela.getPrice());
+        assertEquals("Rule is incorrectly being fired",
+                20,
+                provolone.getPrice());
     }
 
     @Test
@@ -3077,12 +3078,12 @@ public class MiscTest {
 
         workingMemory.fireAllRules();
 
-        assertEquals( "Indexing with null values is not working correctly.",
-                             "OK",
-                             bob.getStatus() );
-        assertEquals( "Indexing with null values is not working correctly.",
-                             "OK",
-                             pete.getStatus() );
+        assertEquals("Indexing with null values is not working correctly.",
+                "OK",
+                bob.getStatus());
+        assertEquals("Indexing with null values is not working correctly.",
+                "OK",
+                pete.getStatus());
 
     }
 
@@ -3190,13 +3191,13 @@ public class MiscTest {
                 workingMemory.insert( n );
             }
             workingMemory.fireAllRules();
-            assertTrue( "Processing generated errors: " + errors.toString(),
-                               errors.isEmpty() );
+            assertTrue("Processing generated errors: " + errors.toString(),
+                    errors.isEmpty());
             for ( int i = 1; i <= MAX; i++ ) {
                 final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
-                assertEquals( "Fact is out of order",
-                                     i,
-                                     n.getIndex() );
+                assertEquals("Fact is out of order",
+                        i,
+                        n.getIndex());
             }
         } finally {
         }
@@ -3440,12 +3441,12 @@ public class MiscTest {
             ruleBase.addPackage( pkg );
             ruleBase = SerializationHelper.serializeObject( ruleBase );
 
-            fail( "Should have thrown an InvalidRulePackage" );
+            fail("Should have thrown an InvalidRulePackage");
         } catch ( final InvalidRulePackage e ) {
             // everything fine
         } catch ( final Exception e ) {
             e.printStackTrace();
-            fail( "Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage() );
+            fail("Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage());
         }
     }
 
@@ -3507,7 +3508,8 @@ public class MiscTest {
         }
     }
 
-    public void FIXME_testDeclareAndFrom() throws Exception {
+    @Test @Ignore
+    public void testDeclareAndFrom() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_DeclareWithFrom.drl" );
         FactType profileType = kbase.getFactType( "org.drools", "Profile" );
         
@@ -3567,9 +3569,9 @@ public class MiscTest {
 
         wm.fireAllRules();
 
-        assertEquals( "Rule should have fired twice, seting the price to 30",
-                             30,
-                             e.getPrice() );
+        assertEquals("Rule should have fired twice, seting the price to 30",
+                30,
+                e.getPrice());
         // success
     }
 
@@ -7372,7 +7374,8 @@ public class MiscTest {
     }
 
     // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
-    public void FIXME_testMVELConsequenceUsingFactConstructors() throws Exception {
+    @Test @Ignore
+    public void testMVELConsequenceUsingFactConstructors() throws Exception {
         String drl = "";
         drl += "package test\n";
         drl += "import org.drools.Person\n";

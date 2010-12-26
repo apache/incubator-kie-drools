@@ -26,6 +26,7 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -50,12 +51,8 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class AlwaysTruePatternTest extends TestBase {
 
-    @Test
-    public void testDummy() throws Exception {
-        assertTrue( true );
-    }
-
-    public void FIXMEtestPatternPossibilities() throws Exception {
+    @Test @Ignore
+    public void testPatternPossibilities() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Pattern possibility that is always true" ) );
@@ -161,7 +158,8 @@ public class AlwaysTruePatternTest extends TestBase {
         assertTrue( pp4true );
     }
 
-    public void FIXMEtestPatterns() throws Exception {
+    @Test @Ignore
+    public void testPatterns() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
         session.setAgendaFilter( new RuleNameMatchesAgendaFilter( "Pattern that is always true" ) );
