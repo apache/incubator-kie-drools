@@ -3,7 +3,10 @@ package org.drools.testframework;
 import java.util.HashSet;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
@@ -18,8 +21,9 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
-public class RuleCoverageListenerTest extends TestCase {
+public class RuleCoverageListenerTest {
 
+    @Test
     public void testCoverage() throws Exception {
         HashSet<String> rules = new HashSet<String>();
         rules.add( "rule1" );

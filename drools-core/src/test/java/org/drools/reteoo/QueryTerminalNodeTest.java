@@ -36,8 +36,10 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.QueryResult;
@@ -61,7 +63,7 @@ import org.drools.rule.Query;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 
-public class QueryTerminalNodeTest extends TestCase {
+public class QueryTerminalNodeTest {
     private ReteooRuleBase   ruleBase;
     private BuildContext     buildContext;
     private EntryPointNode   entryPoint;
@@ -70,7 +72,8 @@ public class QueryTerminalNodeTest extends TestCase {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -82,6 +85,7 @@ public class QueryTerminalNodeTest extends TestCase {
         this.entryPoint.attach();
     }
 
+    @Test
     public void testQueryTerminalNode() {
         final ClassObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
         final ObjectTypeNode queryObjectTypeNode = new ObjectTypeNode( this.buildContext.getNextId(),
@@ -167,7 +171,7 @@ public class QueryTerminalNodeTest extends TestCase {
             pkgs.put( pkg.getName(),
                       pkg );
         } catch ( final Exception e ) {
-            Assert.fail( "Should not throw any exception: " + e.getMessage() );
+            fail( "Should not throw any exception: " + e.getMessage() );
         }
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();

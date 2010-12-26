@@ -3,7 +3,10 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Person;
 import org.drools.RuleBase;
@@ -25,12 +28,12 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Salience;
 
-public class MVELSalienceBuilderTest extends TestCase {
+public class MVELSalienceBuilderTest {
     private InstrumentedBuildContent context;
     private RuleBase                 ruleBase;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
         ruleDescr.addAttribute( new AttributeDescr( "salience",
@@ -73,6 +76,7 @@ public class MVELSalienceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testSimpleExpression() {
         WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -90,6 +94,7 @@ public class MVELSalienceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testMultithreadSalienceExpression() {
         final int tcount = 10;
         final SalienceEvaluator[] evals = new SalienceEvaluator[tcount];

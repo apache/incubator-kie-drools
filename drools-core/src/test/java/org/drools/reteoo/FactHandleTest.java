@@ -32,15 +32,19 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.DisconnectedWorkingMemoryEntryPoint;
 
-public class FactHandleTest extends TestCase {
+public class FactHandleTest {
     /*
      * Class under test for void FactHandleImpl(long)
      */
+    @Test
     public void testFactHandleImpllong() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );
@@ -53,6 +57,7 @@ public class FactHandleTest extends TestCase {
     /*
      * Class under test for void FactHandleImpl(long, long)
      */
+    @Test
     public void testFactHandleImpllonglong() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese",
@@ -67,6 +72,7 @@ public class FactHandleTest extends TestCase {
     /*
      * Class under test for boolean equals(Object)
      */
+    @Test
     public void testEqualsObject() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );
@@ -83,6 +89,7 @@ public class FactHandleTest extends TestCase {
                        f3 );
     }
 
+    @Test
     public void testHashCode() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 234,
                                                             "cheese" );
@@ -93,6 +100,7 @@ public class FactHandleTest extends TestCase {
                       f0.hashCode() );
     }
 
+    @Test
     public void testInvalidate() {
         final DefaultFactHandle f0 = new DefaultFactHandle( 134,
                                                             "cheese" );

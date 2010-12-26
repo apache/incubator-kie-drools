@@ -21,7 +21,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseConfiguration;
@@ -53,14 +56,15 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
-public class FromNodeTest extends TestCase {
+public class FromNodeTest {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
     private ReteooRuleBase       ruleBase;
     private BuildContext         buildContext;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
@@ -69,6 +73,7 @@ public class FromNodeTest extends TestCase {
                                          new ReteooBuilder.IdGenerator() );
     }
 
+    @Test
     public void testAlphaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -170,6 +175,7 @@ public class FromNodeTest extends TestCase {
                        cheese2 );
     }
 
+    @Test
     public void testBetaNode() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -287,6 +293,7 @@ public class FromNodeTest extends TestCase {
                        cheese2 );
     }
 
+    @Test
     public void testRestract() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,

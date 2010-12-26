@@ -1,6 +1,9 @@
 package org.drools.integrationtests;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StatefulSessionTest extends TestCase {
+public class StatefulSessionTest {
     final List list = new ArrayList();
 
     protected RuleBase getRuleBase() throws Exception {
@@ -43,6 +46,7 @@ public class StatefulSessionTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testSingleObjectAssert() throws Exception {
         StatefulSession session = getSession();
 
@@ -66,6 +70,7 @@ public class StatefulSessionTest extends TestCase {
         
     }
     
+    @Test
     public void testInsertObject() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -101,6 +106,7 @@ public class StatefulSessionTest extends TestCase {
         assertSame( o, stilton );
     }    
     
+    @Test
     public void testArrayObjectAssert() throws Exception {
         StatefulSession session = getSession();
 
@@ -126,6 +132,7 @@ public class StatefulSessionTest extends TestCase {
                       list.get( 0 ) );        
     } 
     
+    @Test
     public void testCollectionObjectAssert() throws Exception {
         StatefulSession session = getSession();
 
@@ -152,6 +159,7 @@ public class StatefulSessionTest extends TestCase {
                       list.get( 0 ) );
     }   
     
+    @Test
     public void testHasExceptionSingleAssert()throws Exception {
 
         StatefulSession session = getExceptionSession();
@@ -176,6 +184,7 @@ public class StatefulSessionTest extends TestCase {
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }
     
+    @Test
     public void testHasExceptionArrayAssert()throws Exception {
 
         StatefulSession session = getExceptionSession();
@@ -199,6 +208,7 @@ public class StatefulSessionTest extends TestCase {
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }   
     
+    @Test
     public void testHasExceptionCollectionAssert()throws Exception {
 
         StatefulSession session = getExceptionSession();
@@ -224,6 +234,7 @@ public class StatefulSessionTest extends TestCase {
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }    
     
+    @Test
     public void testSequentialException() {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setSequential( true );

@@ -20,7 +20,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
@@ -38,9 +41,9 @@ import org.drools.template.parser.TemplateDataListener;
  *         Note that some of this may still use the drools 2.x syntax, as it is not compiled, only tested that it
  *         generates DRL in the correct structure (not that the DRL itself is correct).
  */
-public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
-{
-    public void testIntegration() throws Exception 
+public class ExternalSpreadsheetCompilerIntegrationTest {
+    @Test
+    public void testIntegration() throws Exception
     {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile("/data/IntegrationExampleTest.xls", "/templates/test_integration.drl", 18, 3);
@@ -77,7 +80,8 @@ public class ExternalSpreadsheetCompilerIntegrationTest extends TestCase
         
     }
     
-    public void testPricing() throws Exception 
+    @Test
+    public void testPricing() throws Exception
     {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final List<DataListener> listeners = new ArrayList<DataListener>();

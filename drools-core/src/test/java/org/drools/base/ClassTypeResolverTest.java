@@ -21,7 +21,10 @@ package org.drools.base;
 
 import java.util.HashSet;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FirstClass;
@@ -31,8 +34,9 @@ import org.drools.SecondClass;
  * @author fburlet
  *
  */
-public class ClassTypeResolverTest extends TestCase {
+public class ClassTypeResolverTest {
 
+    @Test
     public void testResolvePrimtiveTypes() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( boolean.class,
@@ -53,6 +57,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "short" ) );
     }
 
+    @Test
     public void testResolveArrayOfPrimitiveTypes() throws Exception {
         final ClassTypeResolver resolver =  new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( boolean[].class,
@@ -73,6 +78,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "short[]" ) );
     }
 
+    @Test
     public void testResolveMultidimensionnalArrayOfPrimitiveTypes() throws Exception {
         final ClassTypeResolver resolver =  new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( int[][].class,
@@ -83,6 +89,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "int[][][][]" ) );
     }
 
+    @Test
     public void testResolveObjectNotFromImport() throws Exception {
         final ClassTypeResolver resolver =  new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( String.class,
@@ -100,6 +107,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese" ) );
     }
 
+    @Test
     public void testResolveObjectFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
@@ -127,6 +135,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.SecondClass.AlternativeKey" ) );
     }
 
+    @Test
     public void testResolveObjectFromImportNested() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.FirstClass" );
@@ -135,6 +144,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "FirstClass.AlternativeKey" ) );
     }
 
+    @Test
     public void testResolveFullTypeName() throws Exception {
 
         final TypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
@@ -148,6 +158,7 @@ public class ClassTypeResolverTest extends TestCase {
 
     }
 
+    @Test
     public void testResolveObjectFromImportMultipleClassesDifferentPackages() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
@@ -161,6 +172,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese" ) );
     }
 
+    @Test
     public void testResolveArrayOfObjectsNotFromImport() throws Exception {
         final ClassTypeResolver resolver =  new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( String[].class,
@@ -178,6 +190,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese[]" ) );
     }
 
+    @Test
     public void testResolveArrayOfObjectsFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
@@ -191,6 +204,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese[]" ) );
     }
 
+    @Test
     public void testResolveMultidimensionnalArrayOfObjectsNotFromImport() throws Exception {
         final ClassTypeResolver resolver =  new ClassTypeResolver(new HashSet(), Thread.currentThread().getContextClassLoader());
         assertEquals( String[][].class,
@@ -208,6 +222,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese[][]" ) );
     }
 
+    @Test
     public void testResolveMultidimensionnalArrayOfObjectsFromImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "org.drools.Cheese" );
@@ -221,6 +236,7 @@ public class ClassTypeResolverTest extends TestCase {
                       resolver.resolveType( "org.drools.Cheese[][]" ) );
     }
     
+    @Test
     public void testDefaultPackageImport() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         resolver.addImport( "Goo" );
@@ -232,6 +248,7 @@ public class ClassTypeResolverTest extends TestCase {
         }
     }    
     
+    @Test
     public void testNestedClassResolving() throws Exception {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         

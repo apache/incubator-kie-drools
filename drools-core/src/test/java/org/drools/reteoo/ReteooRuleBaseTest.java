@@ -39,6 +39,12 @@ import org.drools.StatefulSession;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.WorkingMemory;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class ReteooRuleBaseTest extends DroolsTestCase {
     ReteooRuleBase ruleBase;
 
@@ -47,6 +53,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
     StatefulSession  wm3;
     StatefulSession  wm4;
 
+    @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
@@ -56,6 +63,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         this.wm4 = this.ruleBase.newStatefulSession();
     }
 
+    @Test
     public void testKeepReference() throws Exception {
         /* Make sure the RuleBase is referencing all 4 Working Memories */
         assertLength( 4,
@@ -66,6 +74,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         assertContains( this.wm4, this.ruleBase.getStatefulSessions() );
     }
     
+    @Test
     public void testDispose() throws Exception {
         /*
          * Now lets test the dispose method on the WorkingMemory itself. dispose
@@ -79,6 +88,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         assertNotContains( this.wm3, this.ruleBase.getStatefulSessions() );
     }
 
+    @Test
     public void testNoKeepReference() throws Exception {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setKeepReference( false );
@@ -90,6 +100,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         assertNotContains( wm6, this.ruleBase.getStatefulSessions() );
     }
 
+    @Test
     public void testAddPackage() throws Exception {
         final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
         pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
@@ -151,6 +162,7 @@ public class ReteooRuleBaseTest extends DroolsTestCase {
         }
     }
 
+    @Test
     public void testRemovePackage() throws Exception {
         final org.drools.rule.Package pkg1 = new org.drools.rule.Package( "org.droos.test" );
         pkg1.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );

@@ -17,11 +17,15 @@ import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ProcessEscapesMvelTest extends TestCase {
+public class ProcessEscapesMvelTest {
 	
-	public void testProcessStringEscapesOptionOn() throws Exception {
+    @Test
+    public void testProcessStringEscapesOptionOn() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -41,7 +45,8 @@ public class ProcessEscapesMvelTest extends TestCase {
 		
 	}
 	
-	public void testProcessStringEscapesOptionOff() throws Exception {
+    @Test
+    public void testProcessStringEscapesOptionOff() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBaseWithEscapesOff();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		

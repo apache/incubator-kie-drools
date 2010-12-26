@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -45,9 +48,10 @@ import org.drools.rule.Package;
 import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemory;
 
-public class SequentialTest extends TestCase {
+public class SequentialTest {
     //  FIXME lots of XXX tests here, need to find out why.
     
+    @Test
     public void testBasicOperation() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "simpleSequential.drl", getClass() ), ResourceType.DRL );
@@ -87,7 +91,8 @@ public class SequentialTest extends TestCase {
                       list.size() );
     }
     
-    public void testSalience() throws Exception {        
+    @Test
+    public void testSalience() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
 
@@ -118,6 +123,7 @@ public class SequentialTest extends TestCase {
         assertEquals( "rule 1", list.get( 2 ));
     }
     
+    @Test
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
         str += "package org.test\n";
@@ -148,6 +154,7 @@ public class SequentialTest extends TestCase {
         ksession.execute( new Message( "help" ) );
     }
     
+    @Test
     public void testEvents() throws Exception {
         String str = "";
         str += "package org.test\n";
@@ -237,6 +244,7 @@ public class SequentialTest extends TestCase {
     
 
     // JBRULES-1567 - ArrayIndexOutOfBoundsException in sequential execution after calling RuleBase.addPackage(..)
+    @Test
     public void testSequentialWithRulebaseUpdate() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "simpleSalience.drl", getClass() ), ResourceType.DRL );
@@ -309,6 +317,7 @@ public class SequentialTest extends TestCase {
         Thread.sleep( 100 );
     }
 
+    @Test
     public void testNumberofIterationsSeq() throws Exception {
         //test throughput
         runTestProfileManyRulesAndFacts( true,
@@ -316,6 +325,7 @@ public class SequentialTest extends TestCase {
                                          2000, "sequentialProfile.drl"  );
     }
 
+    @Test
     public void testNumberofIterationsRETE() throws Exception {
         //test throughput
         runTestProfileManyRulesAndFacts( false,

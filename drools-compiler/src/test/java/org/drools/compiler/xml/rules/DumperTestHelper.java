@@ -6,8 +6,6 @@ package org.drools.compiler.xml.rules;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import junit.framework.Assert;
-
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlDumper;
@@ -15,12 +13,14 @@ import org.drools.compiler.xml.XmlPackageReader;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.PackageDescr;
 
+import static org.junit.Assert.*;
+
 /**
  * Helper Class for both xml and drl Dump Tests
  * 
  * @author fernandomeyer
  */
-public class DumperTestHelper extends Assert {
+public class DumperTestHelper {
     
     public static void XmlFile(String filename) throws Exception {
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();

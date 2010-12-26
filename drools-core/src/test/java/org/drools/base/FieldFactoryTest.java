@@ -21,13 +21,17 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.spi.FieldValue;
 import org.drools.type.DateFormatsImpl;
 
-public class FieldFactoryTest extends TestCase {
+public class FieldFactoryTest {
 
+    @Test
     public void testBigDecimal() {
         final FieldValue val = FieldFactory.getFieldValue( "42.42",
                                                            ValueType.BIG_DECIMAL_TYPE,
@@ -37,6 +41,7 @@ public class FieldFactoryTest extends TestCase {
         assertTrue( val.getValue().equals( new BigDecimal( "42.42" ) ) );
     }
 
+    @Test
     public void testBigInteger() {
         final FieldValue val = FieldFactory.getFieldValue( "424242",
                                                            ValueType.BIG_INTEGER_TYPE,
@@ -46,6 +51,7 @@ public class FieldFactoryTest extends TestCase {
         assertTrue( val.getValue().equals( new BigInteger( "424242" ) ) );
     }
 
+    @Test
     public void testDate() throws Exception {
     	SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
     	String s = df.format(df.parse("10-Jul-1974"));

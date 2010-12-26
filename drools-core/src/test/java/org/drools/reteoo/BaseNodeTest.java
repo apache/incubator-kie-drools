@@ -16,15 +16,19 @@
 
 package org.drools.reteoo;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
-public class BaseNodeTest extends TestCase {
+public class BaseNodeTest {
 
+    @Test
     public void testBaseNode() {
         MockBaseNode node = new MockBaseNode( 10 );
         assertEquals( 10,

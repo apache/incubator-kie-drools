@@ -18,7 +18,10 @@ package org.drools.integrationtests;
 
 import java.io.InputStreamReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -31,7 +34,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
 /** Run all the tests with the ReteOO engine implementation */
-public class OutOfMemoryTest extends TestCase {
+public class OutOfMemoryTest {
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -45,6 +48,7 @@ public class OutOfMemoryTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testStatefulSessionsCreation() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -73,6 +77,7 @@ public class OutOfMemoryTest extends TestCase {
 
     }
 
+    @Test
     public void testAgendaLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );

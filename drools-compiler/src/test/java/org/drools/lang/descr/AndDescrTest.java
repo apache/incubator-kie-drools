@@ -1,9 +1,13 @@
 package org.drools.lang.descr;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class AndDescrTest extends TestCase {
+public class AndDescrTest {
 
+    @Test
     public void testAddUnboundPatternsEtc() {
         final AndDescr and = new AndDescr();
         and.addDescr( new NotDescr() );

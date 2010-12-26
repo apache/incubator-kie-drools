@@ -23,7 +23,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
@@ -51,10 +54,11 @@ import org.drools.spi.InternalReadAccessor;
  *
  * @author Tino Breddin
  */
-public class TemporalEvaluatorFactoryTest extends TestCase {
+public class TemporalEvaluatorFactoryTest {
 
     private EvaluatorRegistry registry = new EvaluatorRegistry();
 
+    @Test
     public void testAfter() {
         registry.addEvaluatorDefinition( AfterEvaluatorDefinition.class.getName() );
 
@@ -143,6 +147,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testBefore() {
         registry.addEvaluatorDefinition( BeforeEvaluatorDefinition.class.getName() );
 
@@ -231,6 +236,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testCoincides() {
         registry.addEvaluatorDefinition( CoincidesEvaluatorDefinition.class.getName() );
 
@@ -297,6 +303,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testDuring() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -366,6 +373,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testIncludes() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -435,6 +443,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testFinishes() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -491,6 +500,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testFinishedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -547,6 +557,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testStarts() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -603,6 +614,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testStartedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -659,6 +671,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testMeets() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -711,6 +724,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testMetBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -763,6 +777,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testOverlaps() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 
@@ -829,6 +844,7 @@ public class TemporalEvaluatorFactoryTest extends TestCase {
                           ValueType.OBJECT_TYPE );
     }
 
+    @Test
     public void testOverlapedBy() {
         registry.addEvaluatorDefinition( DuringEvaluatorDefinition.class.getName() );
 

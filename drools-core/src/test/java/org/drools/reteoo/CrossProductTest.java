@@ -22,7 +22,10 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -36,13 +39,13 @@ import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ObjectType;
 
-public class CrossProductTest extends TestCase {
+public class CrossProductTest {
     private Package       pkg;
     private WorkingMemory workingMemory;
     private List          values;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         final ObjectType list1ObjectType = new ClassObjectType( String.class );
         final ObjectType list2ObjectType = new ClassObjectType( String.class );
 
@@ -94,6 +97,7 @@ public class CrossProductTest extends TestCase {
         this.pkg.addRule( rule );
     }
 
+    @Test
     public void testNotRemoveIdentities() throws Exception {
         // Default is remove identity FALSE
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -112,6 +116,7 @@ public class CrossProductTest extends TestCase {
                       this.values.size() );
     }
 
+    @Test
     public void testRemoveIdentities() throws Exception {
         System.setProperty( "drools.removeIdentities",
                             "true" );

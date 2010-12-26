@@ -20,7 +20,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
@@ -42,16 +45,18 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
 
-public class RightTupleIndexHashTableTest extends TestCase {
+public class RightTupleIndexHashTableTest {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testSingleEntry() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -108,6 +113,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
         assertNull( list.first.getNext() );
     }
 
+    @Test
     public void testTwoDifferentEntries() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -172,6 +178,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
         assertNull( list.first.getNext() );
     }
 
+    @Test
     public void testTwoEqualEntries() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -235,6 +242,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                     ((RightTuple) list.first.getNext()).getFactHandle() );
     }
 
+    @Test
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
         final InternalReadAccessor extractor = store.getReader( TestClass.class,
                                                                 "object",
@@ -295,6 +303,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
         assertNull( ((RightTupleList) list.next).next );
     }
 
+    @Test
     public void testRemove() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -369,6 +378,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
                       tablePopulationSize( map ) );
     }
 
+    @Test
     public void testResize() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -597,6 +607,7 @@ public class RightTupleIndexHashTableTest extends TestCase {
         return (Entry[]) list.toArray( new Entry[list.size()] );
     }
 
+    @Test
     public void testEmptyIterator() {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",

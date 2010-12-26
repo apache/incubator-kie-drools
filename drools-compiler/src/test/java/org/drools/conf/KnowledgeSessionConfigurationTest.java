@@ -16,7 +16,10 @@
  */
 package org.drools.conf;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -26,18 +29,19 @@ import org.drools.runtime.conf.ClockTypeOption;
  * @author etirelli
  *
  */
-public class KnowledgeSessionConfigurationTest extends TestCase {
+public class KnowledgeSessionConfigurationTest {
 
     private KnowledgeSessionConfiguration config;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
     }
 
+    @Test
     public void testClockTypeConfiguration() {
         // setting the option using the type safe method
         config.setOption( ClockTypeOption.get("pseudo") );

@@ -24,7 +24,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
@@ -42,10 +45,11 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.spi.GlobalResolver;
 
-public class ReteooWorkingMemoryTest extends TestCase {
+public class ReteooWorkingMemoryTest {
     /*
      * @see JBRULES-356
      */
+    @Test
     public void testBasicWorkingMemoryActions() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
         final TruthMaintenanceSystem tms = workingMemory.getTruthMaintenanceSystem();
@@ -93,6 +97,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
         assertNull( key.getOtherFactHandle() );
     }
 
+    @Test
     public void testId() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -103,6 +108,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
                       workingMemory.getId() );
     }
 
+    @Test
     public void testGlobalResolver() {
         final Map map = new HashMap();
         map.put( "global1",
@@ -119,6 +125,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
                       workingMemory.getGlobal( "global2" ) );
     }
     
+    @Test
     public void testObjectIterator() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final StatefulSession session = ruleBase.newStatefulSession();
@@ -146,6 +153,7 @@ public class ReteooWorkingMemoryTest extends TestCase {
         }               
     }
     
+    @Test
     public void testExecuteQueueActions() {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory wm = (ReteooWorkingMemory) ruleBase.newStatefulSession();

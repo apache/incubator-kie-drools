@@ -30,7 +30,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.common.InternalWorkingMemory;
@@ -52,10 +55,11 @@ import org.drools.spi.InternalReadAccessor;
  * Evaluator concrete instances are inside the factory at this time.
  * @author Michael Neale
  */
-public class EvaluatorFactoryTest extends TestCase {
+public class EvaluatorFactoryTest {
 
     private EvaluatorRegistry registry = new EvaluatorRegistry();
     
+    @Test
     public void testObject() {
 
         final List list = new ArrayList();
@@ -79,6 +83,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testArrayType() {
 
         final Object[] field = new Object[]{"foo", "bar"};
@@ -93,6 +98,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testString() {
 
         Collection col = Arrays.asList( new String[]{"foo", "bar", null} );
@@ -109,6 +115,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testInteger() {
         
         Collection col = new ArrayList();
@@ -155,6 +162,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testBigDecimal() {
 
         final ValueType type = ValueType.determineValueType( BigDecimal.class );
@@ -212,6 +220,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testBigInteger() {
 
         final ValueType type = ValueType.determineValueType( BigInteger.class );
@@ -262,6 +271,7 @@ public class EvaluatorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testShort() {
 
         Collection col = new ArrayList();
@@ -280,6 +290,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PSHORT_TYPE );
     }
 
+    @Test
     public void testBoolean() {
 
         Collection col = new ArrayList();
@@ -297,6 +308,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PBOOLEAN_TYPE );
     }
 
+    @Test
     public void testDouble() {
         Collection col = new ArrayList();
         col.add( new Double( 42 ) );
@@ -314,6 +326,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PDOUBLE_TYPE );
     }
 
+    @Test
     public void testFloat() {
         Collection col = new ArrayList();
         col.add( new Float( 42 ) );
@@ -331,6 +344,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PFLOAT_TYPE );
     }
 
+    @Test
     public void testLong() {
         Collection col = new ArrayList();
         col.add( new Long( 42 ) );
@@ -347,6 +361,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PLONG_TYPE );
     }
 
+    @Test
     public void testCharacter() {
         Collection col = new ArrayList();
         col.add( new Character( 'a' ) );
@@ -363,6 +378,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.PCHAR_TYPE );
     }
 
+    @Test
     public void testDate() throws Exception {
 
         final SimpleDateFormat df = new SimpleDateFormat( "dd-MMM-yyyy",
@@ -385,6 +401,7 @@ public class EvaluatorFactoryTest extends TestCase {
                           ValueType.DATE_TYPE );
     }
 
+    @Test
     public void testByte() {
         Collection col = new ArrayList();
         col.add( new Byte( "1" ) );

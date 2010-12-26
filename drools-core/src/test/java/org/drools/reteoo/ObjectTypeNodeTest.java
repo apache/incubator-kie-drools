@@ -54,12 +54,19 @@ import org.drools.rule.EntryPoint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class ObjectTypeNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
     private EntryPointNode entryPoint;
     
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
         this.entryPoint = new EntryPointNode( 0,
@@ -68,6 +75,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         this.entryPoint.attach();
     }
     
+    @Test
     public void testAttach() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
@@ -98,6 +106,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     map.get( objectType ) );
     }
 
+    @Test
     public void testAssertObject() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -148,6 +157,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertTrue( memory.contains( handle1 ) );
     }
     
+    @Test
     public void testAssertObjectSequentialMode() {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
@@ -201,6 +211,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       memory.size() );
     }
 
+    @Test
     public void testMemory() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();   
@@ -217,6 +228,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
+    @Test
     public void testIsAssignableFrom() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator(); 
@@ -242,6 +254,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testRetractObject() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();      
@@ -293,6 +306,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                     ((Object[]) retracted.get( 0 ))[0] );
     }
 
+    @Test
     public void testUpdateSink() throws FactException {
         // Tests that when new child is added only the last added child is
         // updated
@@ -366,6 +380,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testAssertObjectWithShadowEnabled() throws Exception {
 
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -407,6 +422,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertTrue( memory.contains( handle1 ) );
     }
 
+    @Test
     public void testAssertObjectWithShadowEnabledNoDefaultConstr() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,

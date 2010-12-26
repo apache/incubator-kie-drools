@@ -3,28 +3,33 @@ package org.drools.rule.builder.dialect;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 
-public class JavaAndMVELCombinedTest extends TestCase {
+public class JavaAndMVELCombinedTest {
 
     private final static String FN1 = "mveljavarules.drl";
     private final static String FN2 = "mvelonly.drl";
     private final static String FN3 = "javaonly.drl";
 
+    @Test
     public void testMixed() {
         timing( FN1, "mveljava: ");
     }
     
+    @Test
     public void testMVEL() {
         timing( FN2, "    mvel: ");
     }
     
+    @Test
     public void testJAVA() {
         timing( FN3, "    java: ");
     }
@@ -65,14 +70,14 @@ public class JavaAndMVELCombinedTest extends TestCase {
 
             PackageBuilder builder = new PackageBuilder();
             builder.addPackageFromDrl( source );
-            Assert.assertEquals( 0,
+            assertEquals( 0,
                                  builder.getErrors().getErrors().length );
 
             Package pkg = builder.getPackage();
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
             ruleBase.addPackage( pkg );
 
-            Assert.assertEquals( 2,
+            assertEquals( 2,
                                  pkg.getRules().length );
         } catch ( Throwable t ) {
             throw new RuntimeException(t);

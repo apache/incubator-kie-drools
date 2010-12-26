@@ -18,7 +18,10 @@ package org.drools;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
@@ -26,8 +29,9 @@ import org.drools.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
 
-public class RuleBaseConfigurationTest extends TestCase {
+public class RuleBaseConfigurationTest {
 
+    @Test
     public void testSystemProperties() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
         assertEquals( AssertBehaviour.IDENTITY,
@@ -42,6 +46,7 @@ public class RuleBaseConfigurationTest extends TestCase {
         System.getProperties().remove( "drools.assertBehaviour" );        
     }
 
+    @Test
     public void testProgrammaticPropertiesFile() {
         RuleBaseConfiguration cfg = new RuleBaseConfiguration();
         assertEquals( true,
@@ -58,6 +63,7 @@ public class RuleBaseConfigurationTest extends TestCase {
         System.getProperties().remove( "drools.indexLeftBetaMemory" );        
     }
     
+    @Test
     public void testAssertBehaviour() {
         Properties properties = new Properties();
         properties.setProperty( "drools.assertBehaviour", "identity" );
@@ -72,6 +78,7 @@ public class RuleBaseConfigurationTest extends TestCase {
         assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );        
     }
     
+    @Test
     public void testLogicalOverride() {
         Properties properties = new Properties();
         properties.setProperty( "drools.logicalOverride", "preserve" );
@@ -86,6 +93,7 @@ public class RuleBaseConfigurationTest extends TestCase {
         assertEquals( LogicalOverride.DISCARD, cfg.getLogicalOverride() );        
     }    
     
+    @Test
     public void testSequential() {
         Properties properties = new Properties();
         properties.setProperty( "drools.sequential", "false" );

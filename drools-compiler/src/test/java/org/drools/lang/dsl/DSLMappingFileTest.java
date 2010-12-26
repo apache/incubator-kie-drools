@@ -5,20 +5,16 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DSLMappingFileTest extends TestCase {
+public class DSLMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );
@@ -40,6 +36,7 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
+    @Test
     public void testParseFileWithEscaptedBrackets() {
         String file = "[when][]ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]=Attribute( {attr} in ({list}) )";
         try {
@@ -74,6 +71,7 @@ public class DSLMappingFileTest extends TestCase {
 
     }
 
+    @Test
     public void testParseFileWithEscaptedCurlyBrackets() {
         String file = "[consequence][$policy]Add surcharge {surcharge} to Policy=modify(policy) \\{price = {surcharge}\\}";
         try {
@@ -123,6 +121,7 @@ public class DSLMappingFileTest extends TestCase {
     /**
      * Right now this test fails because there is no RHS for the rule. It connects the "then" and "end" to "thenend".
      */
+    @Test
     public void testNoRHS() {
         String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" +
         "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"

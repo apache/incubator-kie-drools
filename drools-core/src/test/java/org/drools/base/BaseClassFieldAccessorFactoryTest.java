@@ -32,7 +32,10 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.spi.InternalReadAccessor;
 import org.drools.util.asm.BeanInherit;
@@ -41,15 +44,17 @@ import org.drools.util.asm.TestAbstractImpl;
 import org.drools.util.asm.TestInterface;
 import org.drools.util.asm.TestInterfaceImpl;
 
-public class BaseClassFieldAccessorFactoryTest extends TestCase {
+public class BaseClassFieldAccessorFactoryTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testIt() throws Exception {
         ClassFieldAccessorFactory factory = new ClassFieldAccessorFactory();
         
@@ -70,6 +75,7 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
 
     }
 
+    @Test
     public void testInterface() throws Exception {
         final InternalReadAccessor ex = store.getReader( TestInterface.class,
                                                          "something",
@@ -81,6 +87,7 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
                                    new TestInterfaceImpl() ) );
     }
 
+    @Test
     public void testAbstract() throws Exception {
         final InternalReadAccessor ex = store.getReader( TestAbstract.class,
                                                          "something",
@@ -92,6 +99,7 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
                                    new TestAbstractImpl() ) );
     }
 
+    @Test
     public void testInherited() throws Exception {
         final InternalReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "text",
@@ -101,6 +109,7 @@ public class BaseClassFieldAccessorFactoryTest extends TestCase {
                                    new BeanInherit() ) );
     }
 
+    @Test
     public void testSelfReference() throws Exception {
         final InternalReadAccessor ex = store.getReader( BeanInherit.class,
                                                          "this",

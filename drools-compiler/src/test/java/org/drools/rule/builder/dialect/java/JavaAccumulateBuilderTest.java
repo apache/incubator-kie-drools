@@ -3,7 +3,10 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
@@ -20,19 +23,16 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
 
-public class JavaAccumulateBuilderTest extends TestCase {
+public class JavaAccumulateBuilderTest {
 
     private JavaAccumulateBuilder builder;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         builder = new JavaAccumulateBuilder();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testBuildRuleBuildContextBaseDescr() {
         // $total : Integer() from accumulate( Cheese( $price : price ) init( int x = 0; ) action( x += $price ) result( new Integer( x ) ) ) 
         AccumulateDescr accumDescr = new DescrFactory().createAccumulate();
@@ -69,6 +69,7 @@ public class JavaAccumulateBuilderTest extends TestCase {
 //        System.out.println( context.getMethods() );
     }
     
+    @Test
     public void testFixInitCode() throws Exception {
         JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
         JavaAccumulateBuilder builder = new JavaAccumulateBuilder();

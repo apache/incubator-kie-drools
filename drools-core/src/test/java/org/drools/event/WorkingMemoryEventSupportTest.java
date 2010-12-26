@@ -36,7 +36,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -47,11 +50,13 @@ import org.drools.WorkingMemory;
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class WorkingMemoryEventSupportTest extends TestCase {
+public class WorkingMemoryEventSupportTest {
+    @Test
     public void testIsSerializable() {
         assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
     }
 
+    @Test
     public void testWorkingMemoryEventListener() {
         final RuleBase rb = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = rb.newStatefulSession();

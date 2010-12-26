@@ -19,18 +19,22 @@ package org.drools.reteoo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseFactory;
 import org.drools.base.ClassObjectType;
 import org.drools.reteoo.builder.BuildContext;
 
-public class PropertyChangeListenerTest extends TestCase {
+public class PropertyChangeListenerTest {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
     private EntryPointNode entryPoint;
     
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
         this.entryPoint = new EntryPointNode( 0,
@@ -39,6 +43,7 @@ public class PropertyChangeListenerTest extends TestCase {
         this.entryPoint.attach();
     }
     
+    @Test
     public void test1() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 

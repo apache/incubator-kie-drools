@@ -19,7 +19,10 @@ package org.drools.decisiontable.parser.xls;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import jxl.Cell;
 import jxl.CellType;
 import jxl.Range;
@@ -33,8 +36,9 @@ import org.drools.template.parser.DataListener;
  * Some unit tests for the corners of ExcelParser that are not explicitly
  * covered by integration tests.
  */
-public class ExcelParserTest extends TestCase {
+public class ExcelParserTest {
 
+    @Test
     public void testRemoveTrailingZero() {
         String test = "1.0";
         assertEquals( "1",
@@ -55,6 +59,7 @@ public class ExcelParserTest extends TestCase {
      * If it is in a merged range, then it should return the top left cell.
      * @throws Exception
      */
+    @Test
     public void testCellMerge() throws Exception {
     	ExcelParser parser = new ExcelParser((Map<String, List<DataListener>>) null);
     	

@@ -6,7 +6,10 @@ import java.util.GregorianCalendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -24,8 +27,9 @@ import org.drools.runtime.StatefulKnowledgeSession;
 /**
  * This is a sample class to launch a rule.
  */
-public class DateComparisonTest extends TestCase {
+public class DateComparisonTest {
 
+    @Test
     public void testDateComparisonThan() throws Exception {
         List<String> results = new ArrayList<String>();
         // load up the knowledge base

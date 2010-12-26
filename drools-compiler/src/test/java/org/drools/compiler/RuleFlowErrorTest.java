@@ -1,10 +1,14 @@
 package org.drools.compiler;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class RuleFlowErrorTest extends TestCase {
+public class RuleFlowErrorTest {
 
+    @Test
     public void testError() {
         ProcessLoadError err = new ProcessLoadError("XXX", null);
         assertEquals("XXX", err.getMessage());

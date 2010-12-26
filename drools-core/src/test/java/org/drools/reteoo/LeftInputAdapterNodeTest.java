@@ -42,16 +42,26 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
+import org.junit.Before;
+import org.junit.Test;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class LeftInputAdapterNodeTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
     
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
     }
     
+    @Test
     public void testLeftInputAdapterNode() {
         final MockObjectSource source = new MockObjectSource( 15 );
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
@@ -71,6 +81,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      * Tests the attaching of the LeftInputAdapterNode to an ObjectSource
      * @throws Exception
      */
+    @Test
     public void testAttach() throws Exception {
         final MockObjectSource source = new MockObjectSource( 15 );
 
@@ -101,6 +112,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testAssertObjectWithoutMemory() throws Exception {
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,

@@ -15,9 +15,13 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ArrayContainsTest extends TestCase {
+public class ArrayContainsTest {
+    @Test
     public void testContainsBooleanArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -82,6 +86,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }      
     
+    @Test
     public void testNotContainsBooleanArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -147,6 +152,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }          
     
+    @Test
     public void testContainsByteArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -211,6 +217,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }       
     
+    @Test
     public void testNotContainsByteArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -275,6 +282,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }           
     
+    @Test
     public void testContainsShortArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -339,6 +347,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }       
     
+    @Test
     public void testNotContainsShortArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -403,6 +412,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }           
     
+    @Test
     public void testContainsCharArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -467,6 +477,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }     
     
+    @Test
     public void testNotContainsCharArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -531,6 +542,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }         
     
+    @Test
     public void testContainsIntArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -596,6 +608,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     } 
     
+    @Test
     public void testNotContainsIntArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -661,6 +674,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }     
     
+    @Test
     public void testContainsLongArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -726,6 +740,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }     
     
+    @Test
     public void testNotContainsLongArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -791,6 +806,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }         
     
+    @Test
     public void testContainsFloatArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -856,6 +872,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }     
     
+    @Test
     public void testNotContainsFloatArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -922,6 +939,7 @@ public class ArrayContainsTest extends TestCase {
     }         
        
     
+    @Test
     public void testContainsDoubleArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";
@@ -988,6 +1006,7 @@ public class ArrayContainsTest extends TestCase {
                       list.size() );        
     }    
     
+    @Test
     public void testNotContainsDoubleArray() throws Exception {
         String str = "";
         str += "package org.drools;\n";

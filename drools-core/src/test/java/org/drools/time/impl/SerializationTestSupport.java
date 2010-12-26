@@ -21,14 +21,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Base class for unit tests that wish to verify 
  * backwards compatibily of serialization with earlier versions
  * of Quartz.
  */
-public abstract class SerializationTestSupport extends TestCase {
+public abstract class SerializationTestSupport {
 
     /**
      * Get the object to serialize when generating serialized file for future
@@ -52,6 +56,7 @@ public abstract class SerializationTestSupport extends TestCase {
      * Test that we can successfully deserialize our target
      * class for all of the given Quartz versions. 
      */
+    @Test
     public void testSerialization() throws Exception {
         Object targetObject = getTargetObject();
         

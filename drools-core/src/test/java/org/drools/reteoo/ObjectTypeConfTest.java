@@ -17,11 +17,15 @@
 package org.drools.reteoo;
 
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ObjectTypeConfTest extends TestCase {
+public class ObjectTypeConfTest {
 
-	public void testGetPackageName() {
+    @Test
+    public void testGetPackageName() {
 		assertEquals("org.drools.reteoo", ClassObjectTypeConf.getPackageName(this.getClass(), null));
 		Package thispkg = this.getClass().getPackage();
 		assertNotNull(thispkg);

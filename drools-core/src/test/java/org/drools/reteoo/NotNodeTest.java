@@ -38,8 +38,6 @@ import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 
-import junit.framework.Assert;
-
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.FactException;
@@ -57,6 +55,10 @@ import org.drools.rule.ContextEntry;
 import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class NotNodeTest extends DroolsTestCase {
     Rule                    rule;
@@ -74,6 +76,7 @@ public class NotNodeTest extends DroolsTestCase {
      * Setup the BetaNode used in each of the tests
      * @throws IntrospectionException 
      */
+    @Before
     public void setUp() throws IntrospectionException {
         // create mock objects
         constraint = mock( BetaNodeFieldConstraint.class );
@@ -124,6 +127,7 @@ public class NotNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
+    @Test
     public void testNotStandard() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
@@ -227,6 +231,7 @@ public class NotNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
+    @Test
     public void testNotWithConstraints() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
         when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(false);
@@ -365,10 +370,11 @@ public class NotNodeTest extends DroolsTestCase {
             assertEquals( 0,
                           this.memory.getLeftTupleMemory().size() );
         } catch ( final Exception e ) {
-            Assert.fail( "No exception should be raised in this procedure, but got: " + e.toString() );
+            fail( "No exception should be raised in this procedure, but got: " + e.toString() );
         }
     }
 
+    @Test
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
@@ -395,6 +401,7 @@ public class NotNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
+    @Test
     public void testAssertTupleSequentialMode() throws Exception {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);

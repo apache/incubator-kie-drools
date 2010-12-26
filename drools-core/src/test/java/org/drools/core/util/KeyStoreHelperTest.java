@@ -8,12 +8,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.KeyStoreHelper;
 
-public class KeyStoreHelperTest extends TestCase {
+public class KeyStoreHelperTest {
 
+    @Test
     public void testSignDataWithPrivateKey() throws UnsupportedEncodingException,
                                             UnrecoverableKeyException,
                                             InvalidKeyException,

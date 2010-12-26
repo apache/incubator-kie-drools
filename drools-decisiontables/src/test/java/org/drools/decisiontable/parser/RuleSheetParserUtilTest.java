@@ -18,7 +18,10 @@ package org.drools.decisiontable.parser;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
@@ -29,8 +32,9 @@ import org.drools.template.parser.DecisionTableParseException;
  * 
  * Nuff said...
  */
-public class RuleSheetParserUtilTest extends TestCase {
+public class RuleSheetParserUtilTest {
 
+    @Test
     public void testRuleName() {
         final String row = "  RuleTable       This is my rule name";
         final String result = RuleSheetParserUtil.getRuleName( row );
@@ -41,6 +45,7 @@ public class RuleSheetParserUtilTest extends TestCase {
     /**
      * This is hear as the old way was to do this.
      */
+    @Test
     public void testInvalidRuleName() {
         final String row = "RuleTable       This is my rule name (type class)";
         try {
@@ -51,6 +56,7 @@ public class RuleSheetParserUtilTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsStringMeaningTrue() {
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "true" ) );
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "TRUE" ) );
@@ -62,6 +68,7 @@ public class RuleSheetParserUtilTest extends TestCase {
         assertFalse( RuleSheetParserUtil.isStringMeaningTrue( null ) );
     }
 
+    @Test
     public void testListImports() {
         String cellVal = null;
         List<Import> list = RuleSheetParserUtil.getImportList( cellVal );
@@ -84,6 +91,7 @@ public class RuleSheetParserUtilTest extends TestCase {
                       (list.get( 2 )).getClassName() );
     }
 
+    @Test
     public void testListVariables() {
         final List<Global> varList = RuleSheetParserUtil.getVariableList( "Var1 var1, Var2 var2,Var3 var3" );
         assertNotNull( varList );
@@ -99,6 +107,7 @@ public class RuleSheetParserUtilTest extends TestCase {
                       var.getIdentifier() );
     }
 
+    @Test
     public void testBadVariableFormat() {
         final String bad = "class1, object2";
         try {

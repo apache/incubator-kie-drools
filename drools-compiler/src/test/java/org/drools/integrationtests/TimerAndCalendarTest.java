@@ -9,7 +9,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Alarm;
 import org.drools.Cheese;
@@ -33,7 +36,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.Calendar;
 import org.drools.time.impl.PseudoClockScheduler;
 
-public class TimerAndCalendarTest extends TestCase {
+public class TimerAndCalendarTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -46,6 +49,7 @@ public class TimerAndCalendarTest extends TestCase {
                                             config );
     }
     
+    @Test
     public void testDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration.drl" ) ) );
@@ -79,6 +83,7 @@ public class TimerAndCalendarTest extends TestCase {
 
     }
 
+    @Test
     public void testDurationWithNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Duration_with_NoLoop.drl" ) ) );
@@ -111,6 +116,7 @@ public class TimerAndCalendarTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
         str += "package org.drools.test\n";
@@ -148,6 +154,7 @@ public class TimerAndCalendarTest extends TestCase {
                       session.getAgenda().getScheduledActivations().length );
     }
     
+    @Test
     public void testFireRuleAfterDuration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FireRuleAfterDuration.drl" ) ) );
@@ -183,6 +190,7 @@ public class TimerAndCalendarTest extends TestCase {
 
     }    
     
+    @Test
     public void testNoProtocolIntervalTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -240,6 +248,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );                   
     }
     
+    @Test
     public void testIntervalTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -298,6 +307,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );                   
     }    
     
+    @Test
     public void testCronTimer() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -354,6 +364,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 2, list.size() );                   
     }        
     
+    @Test
     public void testCalendarNormalRuleSingleCalendar() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -425,6 +436,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );                    
     }   
     
+    @Test
     public void testCalendarNormalRuleMultipleCalendars() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -499,6 +511,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 2, list.size() );                    
     }      
     
+    @Test
     public void testCalendarsWithCron() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -588,6 +601,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 4, list.size() );          
     }   
     
+    @Test
     public void testCalendarsWithIntervals() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -677,6 +691,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 4, list.size() );          
     }     
     
+    @Test
     public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -740,6 +755,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );  
     }
     
+    @Test
     public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -803,6 +819,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );  
     }    
     
+    @Test
     public void testCalendarsWithCronAndStartAndEnd() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -866,6 +883,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );  
     }    
 
+    @Test
     public void testCalendarsWithCronAndStartAndLimit() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -929,6 +947,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 3, list.size() );  
     }
     
+    @Test
     public void testTimerWithNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Timer_With_Not.drl" ) ) );
@@ -946,6 +965,7 @@ public class TimerAndCalendarTest extends TestCase {
         assertEquals( 2, workingMemory.getFactCount() );
     }
 
+    @Test
     public void testHaltWithTimer() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Halt_With_Timer.drl" ) ) );

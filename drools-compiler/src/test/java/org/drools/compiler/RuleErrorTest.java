@@ -1,13 +1,17 @@
 package org.drools.compiler;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
 
-public class RuleErrorTest extends TestCase {
+public class RuleErrorTest {
 
+    @Test
     public void testNewLineInMessage() {
         CompilationProblem[] probs = new CompilationProblem[3];
         probs[0] = new MockCompilationProblem();

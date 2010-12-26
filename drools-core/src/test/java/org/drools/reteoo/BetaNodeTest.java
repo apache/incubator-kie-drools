@@ -16,7 +16,10 @@
 
 package org.drools.reteoo;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseFactory;
 import org.drools.common.EmptyBetaConstraints;
@@ -27,25 +30,12 @@ import org.drools.rule.Behavior;
  * @author etirelli
  *
  */
-public class BetaNodeTest extends TestCase {
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+public class BetaNodeTest {
 
     /**
      * Test method for {@link org.drools.reteoo.BetaNode#equals(java.lang.Object)}.
      */
+    @Test
     public void testEqualsObject() {
         final LeftTupleSource ts = new MockTupleSource( 1 );
         final ObjectSource os = new MockObjectSource( 2 );

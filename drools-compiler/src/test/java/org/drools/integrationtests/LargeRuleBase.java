@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.StringReader;
 
-import junit.framework.Assert;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
@@ -18,6 +16,8 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
+
+import static org.junit.Assert.*;
 
 /**
  * This generates a large number of rules (complex ones) and then times
@@ -62,7 +62,7 @@ public class LargeRuleBase {
 		time = System.currentTimeMillis();
 		PackageBuilder b = new PackageBuilder();
 		b.addPackage(pkg);
-		Assert.assertFalse(b.getErrors().toString(), b.hasErrors());
+		assertFalse(b.getErrors().toString(), b.hasErrors());
 
 		System.err.println("Time taken for compiling: "
 				+ (System.currentTimeMillis() - time));
@@ -113,7 +113,7 @@ public class LargeRuleBase {
 
 		}
 
-		Assert.assertFalse(b.getErrors().toString(), b.hasErrors());
+		assertFalse(b.getErrors().toString(), b.hasErrors());
 
 		System.err.println("Time taken for compiling: "
 				+ (System.currentTimeMillis() - time));
@@ -151,7 +151,7 @@ public class LargeRuleBase {
 
 		}
 
-		Assert.assertFalse(b.getErrors().toString(), b.hasErrors());
+		assertFalse(b.getErrors().toString(), b.hasErrors());
 
 		System.err.println("Time taken for compiling: "
 				+ (System.currentTimeMillis() - time));

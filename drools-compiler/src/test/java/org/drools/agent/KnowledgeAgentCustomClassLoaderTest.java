@@ -15,21 +15,31 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentCustomClassLoaderTest extends BaseKnowledgeAgentTest {
 
     
+    @Test
     public void testCustomKnowledgeBuilderConfigurationWithIncrementalProcessing() throws Exception{
         this.testCustomKnowledgeBuilderConfiguration(false);
     }
 
+    @Test
     public void testCustomKnowledgeBuilderConfigurationWithoutIncrementalProcessing() throws Exception{
         this.testCustomKnowledgeBuilderConfiguration(true);
     }
 
+    @Test
     public void testUseKBaseClassLoaderForCompilingPropertyWithIncrementalProcessing() throws Exception{
         this.testUseKBaseClassLoaderForCompilingProperty(false);
     }
 
+    @Test
     public void testUseKBaseClassLoaderForCompilingPropertyWithoutIncrementalProcessing() throws Exception{
         this.testUseKBaseClassLoaderForCompilingProperty(true);
     }

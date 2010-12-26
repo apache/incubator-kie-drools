@@ -45,16 +45,19 @@ import org.drools.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class EvalConditionNodeTest extends DroolsTestCase {
     private PropagationContext  context;
     private ReteooWorkingMemory workingMemory;
     private ReteooRuleBase      ruleBase;
     private BuildContext        buildContext;
 
-    public EvalConditionNodeTest(final String name) {
-        super( name );
-    }
-
+    @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
@@ -69,6 +72,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         this.workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
     }
 
+    @Test
     public void testAttach() throws Exception {
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -90,6 +94,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testMemory() {
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -112,6 +117,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
+    @Test
     public void testAssertedAllowed() throws FactException {
         final MockEvalCondition eval = new MockEvalCondition( true );
 
@@ -153,6 +159,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                       sink.getAsserted().size() );
     }
 
+    @Test
     public void testAssertedAllowedThenRetract() throws FactException {
         final MockEvalCondition eval = new MockEvalCondition( true );
 
@@ -213,6 +220,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                       sink.getRetracted().size() );
     }
 
+    @Test
     public void testAssertedNotAllowed() throws FactException {
         final MockEvalCondition eval = new MockEvalCondition( false );
 
@@ -265,6 +273,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
+    @Test
     public void testDoRemove() throws FactException {
         final MockEvalCondition eval = new MockEvalCondition( true );
 

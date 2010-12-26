@@ -15,8 +15,6 @@
  */
 
 package org.drools.reteoo;
-
-import junit.framework.Assert;
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
@@ -26,6 +24,10 @@ import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
@@ -39,6 +41,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
     Rule rule;
     org.drools.rule.Package pkg;
 
+    @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
 
@@ -67,6 +70,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
         ruleBase.addPackage(pkg);
     }
     
+    @Test
     public void testDummy() {}
 
     public void FIXME_testNewSessionWhileModifyingRuleBase() throws InterruptedException {
@@ -88,18 +92,18 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
             printThreadStatus(modifier);
         }
 
-        Assert.assertEquals("Threads are deadlocked! See previous stacks for more detail", false, deadlockDetected);
+        assertEquals("Threads are deadlocked! See previous stacks for more detail", false, deadlockDetected);
 
         // check to see if either had an exception also
         if (creator.isInError()) {
             creator.getError().printStackTrace();
         }
-        Assert.assertEquals("Exception in creator thread", false, creator.isInError());
+        assertEquals("Exception in creator thread", false, creator.isInError());
 
         if (modifier.isInError()) {
             modifier.getError().printStackTrace();
         }
-        Assert.assertEquals("Exception in modifier thread", false, modifier.isInError());
+        assertEquals("Exception in modifier thread", false, modifier.isInError());
     }
 
     private void printThreadStatus(Thread thread) {

@@ -3,7 +3,10 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -27,15 +30,17 @@ import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
 
-public class MVELEvalBuilderTest extends TestCase {
+public class MVELEvalBuilderTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testSimpleExpression() {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );

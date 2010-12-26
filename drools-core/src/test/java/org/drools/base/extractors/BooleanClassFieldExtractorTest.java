@@ -16,18 +16,21 @@
 
 package org.drools.base.extractors;
 
-import junit.framework.Assert;
-
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     InternalReadAccessor reader;
     TestBean  bean      = new TestBean();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -36,11 +39,13 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
                                               getClass().getClassLoader() );
     }
 
+    @Test
     public void testGetBooleanValue() {
-            Assert.assertTrue( this.reader.getBooleanValue( null,
-                                                               this.bean ) );
+        assertTrue(this.reader.getBooleanValue(null,
+                this.bean));
     }
 
+    @Test
     public void testGetByteValue() {
         try {
             this.reader.getByteValue( null,
@@ -51,6 +56,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetCharValue() {
         try {
             this.reader.getCharValue( null,
@@ -61,6 +67,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetDoubleValue() {
         try {
             this.reader.getDoubleValue( null,
@@ -71,6 +78,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetFloatValue() {
         try {
             this.reader.getFloatValue( null,
@@ -81,6 +89,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetIntValue() {
         try {
             this.reader.getIntValue( null,
@@ -91,6 +100,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetLongValue() {
         try {
             this.reader.getLongValue( null,
@@ -101,6 +111,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetShortValue() {
         try {
             this.reader.getShortValue( null,
@@ -111,14 +122,16 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         }
     }
 
+    @Test
     public void testGetValue() {
-            Assert.assertSame( Boolean.TRUE,
-                               this.reader.getValue( null,
-                                                        this.bean ) );
+            assertSame(Boolean.TRUE,
+                    this.reader.getValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testIsNullValue() {
-            Assert.assertFalse( this.reader.isNullValue( null,
-                                                            this.bean ) );
+            assertFalse(this.reader.isNullValue(null,
+                    this.bean));
     }
 }

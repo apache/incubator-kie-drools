@@ -16,12 +16,14 @@
 
 package org.drools.base.extractors;
 
-import junit.framework.Assert;
-
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     private static final short VALUE = 3;
@@ -29,7 +31,8 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     InternalReadAccessor       reader;
     TestBean                   bean  = new TestBean();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -38,6 +41,7 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
                                               getClass().getClassLoader() );
     }
 
+    @Test
     public void testGetBooleanValue() {
         try {
             this.reader.getBooleanValue( null,
@@ -48,9 +52,10 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         }
     }
 
+    @Test
     public void testGetByteValue() {
         try {
-            Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+            assertEquals( ShortClassFieldExtractorTest.VALUE,
                                  this.reader.getByteValue( null,
                                                               this.bean ) );
         } catch ( final Exception e ) {
@@ -58,6 +63,7 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         }
     }
 
+    @Test
     public void testGetCharValue() {
         try {
             this.reader.getCharValue( null,
@@ -68,46 +74,53 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         }
     }
 
+    @Test
     public void testGetDoubleValue() {
-            Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+            assertEquals( ShortClassFieldExtractorTest.VALUE,
                                  this.reader.getDoubleValue( null,
                                                                 this.bean ),
                                  0.01 );
     }
 
+    @Test
     public void testGetFloatValue() {
-            Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+            assertEquals( ShortClassFieldExtractorTest.VALUE,
                                  this.reader.getFloatValue( null,
                                                                this.bean ),
                                  0.01 );
     }
 
+    @Test
     public void testGetIntValue() {
-        Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+        assertEquals( ShortClassFieldExtractorTest.VALUE,
                              this.reader.getIntValue( null,
                                                          this.bean ) );
     }
 
+    @Test
     public void testGetLongValue() {
-        Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+        assertEquals( ShortClassFieldExtractorTest.VALUE,
                              this.reader.getLongValue( null,
                                                           this.bean ) );
     }
 
+    @Test
     public void testGetShortValue() {
-        Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+        assertEquals( ShortClassFieldExtractorTest.VALUE,
                              this.reader.getShortValue( null,
                                                            this.bean ) );
     }
 
+    @Test
     public void testGetValue() {
-        Assert.assertEquals( ShortClassFieldExtractorTest.VALUE,
+        assertEquals( ShortClassFieldExtractorTest.VALUE,
                              ((Number) this.reader.getValue( null,
                                                                 this.bean )).shortValue() );
     }
 
+    @Test
     public void testIsNullValue() {
-        Assert.assertFalse( this.reader.isNullValue( null,
+        assertFalse( this.reader.isNullValue( null,
                                                         this.bean ) );
     }
 }

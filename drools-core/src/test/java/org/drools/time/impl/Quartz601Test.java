@@ -16,39 +16,51 @@
 
 package org.drools.time.impl;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.text.ParseException;
 import java.util.Set;
 
-public class Quartz601Test extends TestCase {
+public class Quartz601Test {
 
+    @Test
     public void testNormal() {
         for(int i=0; i<6; i++) {
             assertParsesForField("0 15 10 * * ? 2005", i);
         }
     }
+    @Test
     public void testSecond() {
           assertParsesForField("58-4 5 21 ? * MON-FRI", 0);
     }
+    @Test
     public void testMinute() {
           assertParsesForField("0 58-4 21 ? * MON-FRI", 1);
     }
+    @Test
     public void testHour() {
           assertParsesForField("0 0/5 21-3 ? * MON-FRI", 2);
     }
+    @Test
     public void testDayOfWeekNumber() {
           assertParsesForField("58 5 21 ? * 6-2", 5);
     }
+    @Test
     public void testDayOfWeek() {
           assertParsesForField("58 5 21 ? * FRI-TUE", 5);
     }
+    @Test
     public void testDayOfMonth() {
           assertParsesForField("58 5 21 28-5 1 ?", 3);
     }
+    @Test
     public void testMonth() {
           assertParsesForField("58 5 21 ? 11-2 FRI", 4);
     }
+    @Test
     public void testAmbiguous() {
           System.err.println( assertParsesForField("0 0 14-6 ? * FRI-MON", 2) );
           System.err.println( assertParsesForField("0 0 14-6 ? * FRI-MON", 5) );

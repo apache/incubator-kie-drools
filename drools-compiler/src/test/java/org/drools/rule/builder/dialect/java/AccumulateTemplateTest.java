@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Person;
@@ -22,19 +25,17 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 
-public class AccumulateTemplateTest extends TestCase {
+public class AccumulateTemplateTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testMethodGeneration() {
         final String className = "accumulate0";
 
@@ -117,6 +118,7 @@ public class AccumulateTemplateTest extends TestCase {
         //System.out.println( method );
     }
 
+    @Test
     public void testInvokerGenerationSinglePattern() {
         final String className = "accumulate0";
 
@@ -204,6 +206,7 @@ public class AccumulateTemplateTest extends TestCase {
         //System.out.println( method );
     }
 
+    @Test
     public void testInvokerGenerationMultiPattern() {
         final String className = "accumulate0";
 

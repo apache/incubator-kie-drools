@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.RecognitionException;
 
@@ -29,25 +32,12 @@ import org.antlr.runtime.RecognitionException;
  * @author etirelli
  *
  */
-public class JavaExprAnalyzerTest extends TestCase {
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+public class JavaExprAnalyzerTest {
 
     /**
      * Test method for {@link org.drools.rule.builder.dialect.java.JavaExprAnalyzer#analyzeBlock(java.lang.String, java.util.Set[])}.
      */
+    @Test
     public void testAnalyzeBlock() {
         JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
         String codeBlock = "int x;\n"+

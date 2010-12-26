@@ -38,6 +38,12 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.time.impl.DurationTimer;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * @author mproctor
  */
@@ -46,12 +52,14 @@ public class SchedulerTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext buildContext;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase, ((ReteooRuleBase)ruleBase).getReteooBuilder().getIdGenerator() );
     }
 
 
+    @Test
     public void testScheduledActivation() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         InternalWorkingMemory workingMemory = ( InternalWorkingMemory ) ruleBase.newStatefulSession();
@@ -115,6 +123,7 @@ public class SchedulerTest extends DroolsTestCase {
                       data.size() );
     }
 
+    @Test
     public void testDoLoopScheduledActivation() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
@@ -194,6 +203,7 @@ public class SchedulerTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testNoLoopScheduledActivation() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();

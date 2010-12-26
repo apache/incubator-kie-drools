@@ -16,37 +16,33 @@
 
 package org.drools.base;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ValueTypeTest extends TestCase {
+public class ValueTypeTest {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testIsBoolean() {
-        Assert.assertTrue( ValueType.BOOLEAN_TYPE.isBoolean() );
-        Assert.assertTrue( ValueType.PBOOLEAN_TYPE.isBoolean() );
+        assertTrue( ValueType.BOOLEAN_TYPE.isBoolean() );
+        assertTrue( ValueType.PBOOLEAN_TYPE.isBoolean() );
     }
 
+    @Test
     public void testIsNumber() {
-        Assert.assertTrue( ValueType.PBYTE_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.PSHORT_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.PINTEGER_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.PLONG_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.PFLOAT_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.PDOUBLE_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.BYTE_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.SHORT_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.INTEGER_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.LONG_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.FLOAT_TYPE.isNumber() );
-        Assert.assertTrue( ValueType.DOUBLE_TYPE.isNumber() );
+        assertTrue( ValueType.PBYTE_TYPE.isNumber() );
+        assertTrue( ValueType.PSHORT_TYPE.isNumber() );
+        assertTrue( ValueType.PINTEGER_TYPE.isNumber() );
+        assertTrue( ValueType.PLONG_TYPE.isNumber() );
+        assertTrue( ValueType.PFLOAT_TYPE.isNumber() );
+        assertTrue( ValueType.PDOUBLE_TYPE.isNumber() );
+        assertTrue( ValueType.BYTE_TYPE.isNumber() );
+        assertTrue( ValueType.SHORT_TYPE.isNumber() );
+        assertTrue( ValueType.INTEGER_TYPE.isNumber() );
+        assertTrue( ValueType.LONG_TYPE.isNumber() );
+        assertTrue( ValueType.FLOAT_TYPE.isNumber() );
+        assertTrue( ValueType.DOUBLE_TYPE.isNumber() );
 
     }
 

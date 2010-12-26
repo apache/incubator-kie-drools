@@ -4,7 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -15,13 +18,12 @@ import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 
-public class MVELDumperTest extends TestCase {
+public class MVELDumperTest {
 
     private MVELDumper dumper;
     
-    protected void setUp() throws Exception {
-        super.setUp();
-        
+    @Before
+    public void setUp() throws Exception {
         // configure operators
         new SetEvaluatorsDefinition();
         new MatchesEvaluatorsDefinition();
@@ -29,10 +31,7 @@ public class MVELDumperTest extends TestCase {
         dumper = new MVELDumper();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testDump() throws Exception {
         String input = "Cheese( price > 10 && < 20 || == $val || == 30 )";
         String expected = "( ( price > 10 && price < 20 ) || price == $val || price == 30 )" ;
@@ -44,6 +43,7 @@ public class MVELDumperTest extends TestCase {
         assertEquals( expected, result );
     }
     
+    @Test
     public void testDumpMatches() throws Exception {
         String input = "Cheese( type.toString matches \"something\\swith\\tsingle escapes\" )";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"" ;
@@ -55,6 +55,7 @@ public class MVELDumperTest extends TestCase {
         assertEquals( expected, result );
     }
 
+    @Test
     public void testDumpMatches2() throws Exception {
         String input = "Cheese( type.toString matches 'something\\swith\\tsingle escapes' )";
         String expected = "type.toString ~= \"something\\swith\\tsingle escapes\"" ;
@@ -66,6 +67,7 @@ public class MVELDumperTest extends TestCase {
         assertEquals( expected, result );
     }
 
+    @Test
     public void testDumpMatches3() throws Exception {
         String input = "Map( this[\"content\"] matches \"hello ;=\" )";
         String expected = "this[\"content\"] ~= \"hello ;=\"" ;
@@ -77,6 +79,7 @@ public class MVELDumperTest extends TestCase {
         assertEquals( expected, result );
     }
 
+    @Test
     public void testDumpWithDateAttr() throws Exception {
         String input = "Person( son.birthDate == \"01-jan-2000\" )";
         String expected = "son.birthDate == org.drools.util.DateUtils.parseDate( \"01-jan-2000\" )" ;

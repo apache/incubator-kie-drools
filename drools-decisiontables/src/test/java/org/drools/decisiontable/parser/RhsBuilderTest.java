@@ -1,9 +1,13 @@
 package org.drools.decisiontable.parser;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class RhsBuilderTest extends TestCase {
+public class RhsBuilderTest {
 
+    @Test
     public void testConsBuilding() {
         RhsBuilder builder = new RhsBuilder("foo");
         builder.addTemplate( 1, "setFoo($param)");
@@ -17,6 +21,7 @@ public class RhsBuilderTest extends TestCase {
         assertEquals("foo.setFoo(33);", builder.getResult());
     }
     
+    @Test
     public void testClassicMode() {
         RhsBuilder builder = new RhsBuilder("");
         builder.addTemplate( 1, "p.setSomething($param);" );
@@ -30,6 +35,7 @@ public class RhsBuilderTest extends TestCase {
         assertEquals("p.setSomething(42);\ndrools.clearAgenda();", builder.getResult());
     }
     
+    @Test
     public void testEmptyCellData() {
         RhsBuilder builder = new RhsBuilder("Foo");
         builder.addTemplate( 1, "p.setSomething($param);" );        

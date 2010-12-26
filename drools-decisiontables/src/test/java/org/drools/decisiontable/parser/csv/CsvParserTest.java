@@ -19,12 +19,16 @@ package org.drools.decisiontable.parser.csv;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.template.parser.DataListener;
 
-public class CsvParserTest extends TestCase {
+public class CsvParserTest {
 
+    @Test
     public void testCsv() {
         final MockSheetListener listener = new MockSheetListener();
         final CsvLineParser lineParser = new CsvLineParser();
@@ -56,6 +60,7 @@ public class CsvParserTest extends TestCase {
     /**
      * Test the handling of merged cells.
      */
+    @Test
     public void testCellMergeHandling() {
         CsvParser parser = new CsvParser( (DataListener) null,
                                           null );

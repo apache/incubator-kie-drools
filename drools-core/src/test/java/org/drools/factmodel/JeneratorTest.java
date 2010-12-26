@@ -20,7 +20,10 @@ import java.io.ByteArrayInputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 /**
@@ -29,10 +32,11 @@ import junit.framework.TestCase;
  *
  * @author Michael Neale
  */
-public class JeneratorTest extends TestCase {
+public class JeneratorTest {
 
 
-	public void testRoundTrip() throws Exception {
+    @Test
+    public void testRoundTrip() throws Exception {
 		Fact f = new Fact();
 		f.name = "Foobar";
 		Field f1 = new Field();

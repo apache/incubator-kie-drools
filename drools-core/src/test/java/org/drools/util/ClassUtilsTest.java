@@ -18,54 +18,56 @@ package org.drools.util;
 
 import org.drools.core.util.ClassUtils;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ClassUtilsTest extends TestCase {
+public class ClassUtilsTest {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testCanonicalNameSimpleClass() {
         String name = ClassUtils.canonicalName( ClassUtilsTest.class );
         assertEquals( "org.drools.util.ClassUtilsTest",
                       name );
     }
 
+    @Test
     public void testCanonicalNameInnerClass() {
         String name = ClassUtils.canonicalName( A.class );
         assertEquals( "org.drools.util.ClassUtilsTest.A",
                       name );
     }
     
+    @Test
     public void testCanonicalNameInnerInnerClass() {
         String name = ClassUtils.canonicalName( A.B.class );
         assertEquals( "org.drools.util.ClassUtilsTest.A.B",
                       name );
     }
     
+    @Test
     public void testCanonicalNameArray() {
         String name = ClassUtils.canonicalName( Object[].class );
         assertEquals( "java.lang.Object[]",
                       name );
     }
     
+    @Test
     public void testCanonicalNameMultiIndexArray() {
         String name = ClassUtils.canonicalName( Object[][][].class );
         assertEquals( "java.lang.Object[][][]",
                       name );
     }
     
+    @Test
     public void testCanonicalNameMultiIndexArrayInnerClass() {
         String name = ClassUtils.canonicalName( A.B[][][].class );
         assertEquals( "org.drools.util.ClassUtilsTest.A.B[][][]",
                       name );
     }
     
+    @Test
     public void testCanonicalNameMultiIndexArrayPrimitives() {
         String name = ClassUtils.canonicalName( long[][][].class );
         assertEquals( "long[][][]",

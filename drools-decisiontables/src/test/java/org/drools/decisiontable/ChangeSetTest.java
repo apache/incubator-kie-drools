@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -24,11 +27,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
-public class ChangeSetTest extends TestCase {
+public class ChangeSetTest {
     
     FileManager fileManager;
     
-    protected void setUp() throws Exception {        
+    @Before
+    public void setUp() throws Exception {
         fileManager = new FileManager();
         fileManager.setUp();
         ResourceFactory.getResourceChangeNotifierService().start();
@@ -36,12 +40,14 @@ public class ChangeSetTest extends TestCase {
     }
     
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
     }
     
+    @Test
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), ResourceType.CHANGE_SET );

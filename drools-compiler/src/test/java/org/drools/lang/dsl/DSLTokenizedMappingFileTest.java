@@ -5,9 +5,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DSLTokenizedMappingFileTest extends TestCase {
+public class DSLTokenizedMappingFileTest {
 	
 	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
 	// JDK works correctly with "(?<=^|\\W)"
@@ -16,14 +19,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );
@@ -45,6 +41,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
 
     }
 
+    @Test
     public void testParseFileWithBrackets() {
         String file = "[when]ATTRIBUTE \"{attr}\" IS IN [{list}]=Attribute( {attr} in ({list}) )";
         try {
@@ -79,6 +76,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
         }
     }
 
+    @Test
     public void testParseFileWithEscaptedBrackets() {
         String file = "[when]ATTRIBUTE \"{attr}\" IS IN \\[{list}\\]=Attribute( {attr} in ({list}) )";
         try {
@@ -115,6 +113,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
 
     }
 
+    @Test
     public void testParseFileWithEscapes() {
         String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + 
                       "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n" + 
@@ -149,6 +148,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
 
     }
 
+    @Test
     public void testParseFileWithEscaptedEquals() {
         String file = "[when]something:\\={value}=Attribute( something == \"{value}\" )";
         try {

@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -19,7 +21,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 
 
-public class SimpleEventGeneratorTest extends TestCase {
+public class SimpleEventGeneratorTest {
 	
 	private final static String TEST_RULE_FILE = "test_eventGenerator.drl";
 	
@@ -36,7 +38,7 @@ public class SimpleEventGeneratorTest extends TestCase {
 		final PackageDescr packageDescr = parser.parse( reader );
 		if ( parser.hasErrors() ) {
 			System.out.println( parser.getErrors() );
-			Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+			fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
 		}
 		// pre build the package
 		final PackageBuilder builder = new PackageBuilder();
@@ -50,7 +52,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		return SerializationHelper.serializeObject(ruleBase);
 	}
     
-	public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -64,7 +67,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertEquals(wm.getQueryResults("all inserted events").size(), 10);
 	}
 	
-	public void testEventGenerationMaxTime() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationMaxTime() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -78,7 +82,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertEquals(wm.getQueryResults("all inserted events").size(), wm.getQueryResults("all inserted events with generation time < 1 min").size());
 	}
 	
-	public void testEventGenerationMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -93,7 +98,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertTrue(wm.getQueryResults("all inserted events with generation time < 1 min").size()<=10);
 	}
 	
-	public void testEventGenerationDelayedMaxItems() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationDelayedMaxItems() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -107,7 +113,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertEquals(wm.getQueryResults("all inserted events").size(), 10);
 	}
 	
-	public void testEventGenerationDelayedMaxTime() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationDelayedMaxTime() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -121,7 +128,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertEquals(wm.getQueryResults("all inserted events").size(), wm.getQueryResults("all inserted events with 2 min < generation time < 3 min").size());
 	}
 	
-	public void testEventGenerationDelayedMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationDelayedMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -136,7 +144,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertTrue(wm.getQueryResults("all inserted events with 2 min < generation time < 3 min").size()<=10);
 	}
 	
-	public void testEventGenerationGlobalMaxTime() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationGlobalMaxTime() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();
@@ -150,7 +159,8 @@ public class SimpleEventGeneratorTest extends TestCase {
 		assertEquals(wm.getQueryResults("all inserted events").size(), wm.getQueryResults("all inserted events with generation time < 1 min").size());
 	}
 	
-	public void testEventGenerationMultipleSources() throws DroolsParserException, IOException, Exception{
+    @Test
+    public void testEventGenerationMultipleSources() throws DroolsParserException, IOException, Exception{
 		final Reader reader = new InputStreamReader( getClass().getResourceAsStream( TEST_RULE_FILE ) );
         final RuleBase ruleBase = loadRuleBase( reader );
 		final WorkingMemory wm = ruleBase.newStatefulSession();

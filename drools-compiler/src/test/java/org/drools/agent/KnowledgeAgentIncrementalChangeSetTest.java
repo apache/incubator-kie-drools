@@ -20,8 +20,15 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResultsRow;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTest {
 
+    @Test
     public void testModifyFileUrlIncremental() throws Exception {
         fileManager.write( "rule1.drl",
                            createDefaultRule( "rule1" ) );
@@ -91,6 +98,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
+    @Test
     public void testRemoveFileUrlIncremental() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createLhsRule( "rule1",
@@ -168,6 +176,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
      *
      * @throws Exception
      */
+    @Test
     public void testModifyFileUrlOverwriteIncremental() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createLhsRule( new String[]{"rule1", "rule2"},
@@ -250,6 +259,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
      * drl file to change rule2 with rule3.
      * @throws Exception
      */
+    @Test
     public void testMultipleRulesOnFileUrlIncremental() throws Exception {
 
         File f1 = fileManager.write( "rules.drl",
@@ -308,6 +318,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
+    @Test
     public void testMultipleRulesOnFilesUrlIncremental() throws Exception {
 
         File f1 = fileManager.write( "rules1.drl",
@@ -402,6 +413,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
+    @Test
     public void testModifyPackageUrlIncremental() throws Exception {
 
         // Put just Rule1 in the first package
@@ -562,6 +574,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
+    @Test
     public void testUpdatePackageUrlOverwriteIncremental() throws Exception {
 
         // Add Rule1 and Rule2 in the first package
@@ -891,6 +904,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
 
     }
 
+    @Test
     public void testAddModifyFunctionIncremental() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createCustomRule( true, null, new String[] { "rule1" },
@@ -972,7 +986,8 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-        public void testAddModifyQueryIncremental() throws Exception {
+    @Test
+    public void testAddModifyQueryIncremental() throws Exception {
     
             String query1 = "";
             query1 += "query \"all the Strings\"\n";

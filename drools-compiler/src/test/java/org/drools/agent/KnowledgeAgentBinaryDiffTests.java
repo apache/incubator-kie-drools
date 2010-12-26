@@ -12,6 +12,12 @@ import org.drools.io.ResourceFactory;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     public void testDifferentDateExpires() throws Exception {

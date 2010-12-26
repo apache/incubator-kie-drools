@@ -21,14 +21,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.rule.Package;
 
-public class FileScannerTest extends TestCase {
+public class FileScannerTest {
 
+    @Test
     public void testHasChanged() {
         Map lastMod = new HashMap();
         
@@ -47,6 +51,7 @@ public class FileScannerTest extends TestCase {
         assertTrue(scan.hasChanged( "/goo/baaaa", lastMod, 69 ));
     }
     
+    @Test
     public void testScanAndLoad() throws Exception {
         Package p1 = new Package("p1");
         Package p2 = new Package("p2");
@@ -87,6 +92,7 @@ public class FileScannerTest extends TestCase {
         
     }
     
+    @Test
     public void testEmptyList() throws Exception {
         FileScanner scan = new FileScanner();
         RuleBase rb = RuleBaseFactory.newRuleBase();
@@ -96,6 +102,7 @@ public class FileScannerTest extends TestCase {
         assertEquals(0, rb.getPackages().length);
     }
     
+    @Test
     public void testFileChanges() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
         File t = new File(dir, "x.bar");

@@ -25,14 +25,17 @@ import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 import org.drools.util.ClassLoaderUtil;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author framos
  * @version $Id$
  *
  */
-public class InstancesHashcodedTest extends TestCase {
+public class InstancesHashcodedTest {
 	
 	
 /*
@@ -64,7 +67,8 @@ public class InstancesHashcodedTest extends TestCase {
         
     }    
 	
-	public void testInstanceHashcodes() {
+    @Test
+    public void testInstanceHashcodes() {
 		
 		ClassDefinition cd = new ClassDefinition( "br.com.auster.TestClass2", null, new String[]{} );
 		cd.addField(new FieldDefinition("cutDate", "java.util.Date", true));

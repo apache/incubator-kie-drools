@@ -19,7 +19,10 @@ package org.drools.rule;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.SessionConfiguration;
@@ -31,8 +34,9 @@ import org.drools.time.impl.PseudoClockScheduler;
 /**
  * @author Michael Neale
  */
-public class RuleTest extends TestCase {
+public class RuleTest {
 
+    @Test
     public void testDateEffective() {
         WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
 
@@ -57,6 +61,7 @@ public class RuleTest extends TestCase {
 
     }
 
+    @Test
     public void testDateExpires() throws Exception {
         WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
         
@@ -79,6 +84,7 @@ public class RuleTest extends TestCase {
 
     }
 
+    @Test
     public void testDateEffectiveExpires() {
         WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
         
@@ -107,6 +113,7 @@ public class RuleTest extends TestCase {
 
     }
 
+    @Test
     public void testRuleEnabled() {
         WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
         
@@ -124,6 +131,7 @@ public class RuleTest extends TestCase {
         assertTrue( rule.isEffective( null, wm ) );
     }
 
+    @Test
     public void testTimeMachine() {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );

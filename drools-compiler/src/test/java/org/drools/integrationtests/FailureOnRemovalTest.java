@@ -6,7 +6,10 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
@@ -24,7 +27,7 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class FailureOnRemovalTest extends TestCase {
+public class FailureOnRemovalTest {
     private static final String  LS                   = System.getProperty( "line.separator" );
     private static final String  PACKAGE              = "failure_on_removal";
     private static final String  RULE_1               = "rule_1";
@@ -33,10 +36,12 @@ public class FailureOnRemovalTest extends TestCase {
     private static final boolean SHARE_BETA_NODES     = true;
     private static final boolean NOT_SHARE_BETA_NODES = false;
 
+    @Test
     public void testWithBetaNodeSharing() throws Exception {
         runTest( SHARE_BETA_NODES );
     }
 
+    @Test
     public void testWithoutBetaNodeSharing() throws Exception {
         runTest( NOT_SHARE_BETA_NODES );
     }

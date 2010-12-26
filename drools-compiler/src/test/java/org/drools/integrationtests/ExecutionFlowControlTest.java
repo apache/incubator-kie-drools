@@ -6,8 +6,10 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cell;
 import org.drools.Cheese;
@@ -44,7 +46,7 @@ import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 
-public class ExecutionFlowControlTest extends TestCase {
+public class ExecutionFlowControlTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -57,6 +59,7 @@ public class ExecutionFlowControlTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testSalienceIntegerAndDepthCrs() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceIntegerRule.drl" ) ) );
@@ -77,20 +80,21 @@ public class ExecutionFlowControlTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Three rules should have been fired",
+        assertEquals( "Three rules should have been fired",
                              3,
                              list.size() );
-        Assert.assertEquals( "Rule 4 should have been fired first",
+        assertEquals( "Rule 4 should have been fired first",
                              "Rule 4",
                              list.get( 0 ) );
-        Assert.assertEquals( "Rule 2 should have been fired second",
+        assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
                              list.get( 1 ) );        
-        Assert.assertEquals( "Rule 3 should have been fired third",
+        assertEquals( "Rule 3 should have been fired third",
                              "Rule 3",
                              list.get( 2 ) );        
     }
 
+    @Test
     public void testSalienceExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_salienceExpressionRule.drl" ) ) );
@@ -117,17 +121,18 @@ public class ExecutionFlowControlTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Two rules should have been fired",
+        assertEquals( "Two rules should have been fired",
                              2,
                              list.size() );
-        Assert.assertEquals( "Rule 3 should have been fired first",
+        assertEquals( "Rule 3 should have been fired first",
                              "Rule 3",
                              list.get( 0 ) );
-        Assert.assertEquals( "Rule 2 should have been fired second",
+        assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
                              list.get( 1 ) );
     }
 
+    @Test
     public void testNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
@@ -148,12 +153,13 @@ public class ExecutionFlowControlTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Should not loop  and thus size should be 1",
+        assertEquals( "Should not loop  and thus size should be 1",
                              1,
                              list.size() );
 
     }
     
+    @Test
     public void testNoLoopWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop_with_modify.drl" ) ) );
@@ -174,13 +180,14 @@ public class ExecutionFlowControlTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Should not loop  and thus size should be 1",
+        assertEquals( "Should not loop  and thus size should be 1",
                              1,
                              list.size() );
         assertEquals( 50, brie.getPrice() );
 
     }    
 
+    @Test
     public void testLockOnActive() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActive.drl" ) ) );
@@ -228,6 +235,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       group2.size() );
     }
     
+    @Test
     public void testLockOnActiveForMain() {
         String str = "";
         str += "package org.drools \n";
@@ -265,6 +273,7 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 6, list.size() );                
     }
     
+    @Test
     public void testLockOnActiveForMainWithHalt() {
         String str = "";
         str += "package org.drools \n";
@@ -304,6 +313,7 @@ public class ExecutionFlowControlTest extends TestCase {
         assertEquals( 3, list.size() );                
     }    
 
+    @Test
     public void testLockOnActiveWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithUpdate.drl" ) ) );
@@ -365,6 +375,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       group2.size() );
     }
 
+    @Test
     public void testLockOnActiveWithModify2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LockOnActiveWithModify.drl" ) ) );
@@ -527,6 +538,7 @@ public class ExecutionFlowControlTest extends TestCase {
         }
     }
 
+    @Test
     public void testAgendaGroups() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), ResourceType.DRL );
@@ -592,6 +604,7 @@ public class ExecutionFlowControlTest extends TestCase {
         
     }
 
+    @Test
     public void testActivationGroups() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ActivationGroups.drl" ) ) );
@@ -647,6 +660,7 @@ public class ExecutionFlowControlTest extends TestCase {
 
     }
 
+    @Test
     public void testInsertRetractNoloop() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Insert_Retract_Noloop.drl" ) );
@@ -660,6 +674,7 @@ public class ExecutionFlowControlTest extends TestCase {
         wm.fireAllRules();
     }
 
+    @Test
     public void testUpdateNoLoop() throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an issue
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateNoloop.drl" ) );
@@ -673,6 +688,7 @@ public class ExecutionFlowControlTest extends TestCase {
         wm.fireAllRules();
     }
 
+    @Test
     public void testUpdateActivationCreationNoLoop() throws Exception {
         // JBRULES-787, no-loop blocks all dependant tuples for update 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateActivationCreationNoLoop.drl" ) );
@@ -733,6 +749,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       cancelled.size() );
     }
 
+    @Test
     public void testRuleFlowGroup() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
@@ -759,6 +776,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testRuleFlowGroupDeactivate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup2.drl" ) ) );
@@ -787,6 +805,7 @@ public class ExecutionFlowControlTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testRuleFlowGroupInActiveMode() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "ruleflowgroup.drl" ) ) );
@@ -821,7 +840,7 @@ public class ExecutionFlowControlTest extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -835,6 +854,7 @@ public class ExecutionFlowControlTest extends TestCase {
         return ruleBase;
     }
 
+    @Test
     public void testDateEffective() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_EffectiveDate.drl" ) );

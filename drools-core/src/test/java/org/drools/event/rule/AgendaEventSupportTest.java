@@ -38,7 +38,10 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -69,7 +72,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 
-public class AgendaEventSupportTest extends TestCase {
+public class AgendaEventSupportTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
     static {
@@ -84,6 +87,7 @@ public class AgendaEventSupportTest extends TestCase {
     //        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
     //    }
 
+    @Test
     public void testAgendaEventListener() throws Exception {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 

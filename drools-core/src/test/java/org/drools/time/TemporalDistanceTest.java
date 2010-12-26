@@ -16,15 +16,19 @@
 
 package org.drools.time;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test class for the time distance calculation algorithm
  */
-public class TemporalDistanceTest  extends TestCase {
+public class TemporalDistanceTest {
     public static final long MIN = Long.MIN_VALUE;
     public static final long MAX = Long.MAX_VALUE;
 
+    @Test
     public void testTemporalDistance() {
         Interval[][] matrix = new Interval[][] {
                 { new Interval(0,0), new Interval(-2,2), new Interval(-3, 4), new Interval(MIN, MAX), new Interval(MIN, MAX) },
@@ -44,6 +48,7 @@ public class TemporalDistanceTest  extends TestCase {
         assertEqualsMatrix( expected, result );
     }
 
+    @Test
     public void testTemporalDistance2() {
         Interval[][] matrix = new Interval[][] {
                 { new Interval(0,0), new Interval(5,10), new Interval(65, MAX), new Interval(30,40), new Interval(50,55) },

@@ -19,15 +19,19 @@ package org.drools.agent;
 import java.io.File;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.rule.Package;
 
-public class DirectoryScannerTest extends TestCase {
+public class DirectoryScannerTest {
 
-	public void testScan() throws Exception {
+    @Test
+    public void testScan() throws Exception {
 		File dir = RuleBaseAssemblerTest.getTempDirectory();
 
 		Package p1 = new Package("p1");
@@ -62,7 +66,8 @@ public class DirectoryScannerTest extends TestCase {
 		assertEquals(3, rb.getPackages().length);
 	}
 
-	public void testScanDRLFileReplace() throws Exception {
+    @Test
+    public void testScanDRLFileReplace() throws Exception {
 		File dir = RuleBaseAssemblerTest.getTempDirectory();
 
 		Package p1 = new Package("p1");

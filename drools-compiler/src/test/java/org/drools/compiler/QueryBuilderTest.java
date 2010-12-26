@@ -18,10 +18,18 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class QueryBuilderTest extends DroolsTestCase {
     
     // FIXME: TODO: Fix the use of VariableDescr without disabling node memory indexing
-    public void FIXME_testRuleWithQuery() throws Exception {
+    @Test @Ignore
+    public void testRuleWithQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -83,6 +91,7 @@ public class QueryBuilderTest extends DroolsTestCase {
         session.fireAllRules();
     }
 
+    @Test
     public void testQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 

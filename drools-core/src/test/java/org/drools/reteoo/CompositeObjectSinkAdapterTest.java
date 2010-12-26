@@ -23,7 +23,10 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
@@ -46,14 +49,15 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
 
-public class CompositeObjectSinkAdapterTest extends TestCase {
+public class CompositeObjectSinkAdapterTest {
     private ReteooRuleBase               ruleBase;
     private BuildContext                 buildContext;
 
     private EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
@@ -65,6 +69,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
     public int    blah;
     public String wah;
 
+    @Test
     public void testBeta() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
@@ -91,6 +96,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
                       ad.getSinks().length );
     }
 
+    @Test
     public void testAlphaWithPredicate() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         final AlphaNode al = new AlphaNode( buildContext.getNextId(),
@@ -114,6 +120,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
+    @Test
     public void testSingleAlpha() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
@@ -141,6 +148,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
+    @Test
     public void testDoubleAlphaWithBeta() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
@@ -202,6 +210,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
+    @Test
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
@@ -264,6 +273,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
 
     }
 
+    @Test
     public void testTripleAlphaCharacterConstraint() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
@@ -346,6 +356,7 @@ public class CompositeObjectSinkAdapterTest extends TestCase {
         assertNull( ad.hashedSinkMap );
     }
 
+    @Test
     public void testPropagationWithNullValue() {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();

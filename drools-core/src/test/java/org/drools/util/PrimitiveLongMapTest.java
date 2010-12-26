@@ -36,9 +36,13 @@ import java.util.Collection;
 
 import org.drools.core.util.PrimitiveLongMap;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PrimitiveLongMapTest extends TestCase {
+public class PrimitiveLongMapTest {
+    @Test
     public void testValues() {
         final PrimitiveLongMap map = new PrimitiveLongMap();
         assertNotNull( "MapNotNullTest ",
@@ -52,6 +56,7 @@ public class PrimitiveLongMapTest extends TestCase {
                       values.size() );
     }
 
+    @Test
     public void testPaging() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                            8 );
@@ -70,6 +75,7 @@ public class PrimitiveLongMapTest extends TestCase {
 
     }
 
+    @Test
     public void testGetWithNegativeKeyReturnsNull() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                            1 );
@@ -77,6 +83,7 @@ public class PrimitiveLongMapTest extends TestCase {
         assertNull( map.get( -1 ) );
     }
 
+    @Test
     public void testRemoveWithNegativeReturnsNull() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                            1 );
@@ -84,6 +91,7 @@ public class PrimitiveLongMapTest extends TestCase {
         assertNull( map.remove( -1 ) );
     }
 
+    @Test
     public void testPutWithNegativeKeyThrowsIllegalArgumentException() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 2,
                                                            1 );
@@ -102,6 +110,7 @@ public class PrimitiveLongMapTest extends TestCase {
      * return null; }
      * 
      */
+    @Test
     public void testMaxKey() {
 
         final PrimitiveLongMap map = new PrimitiveLongMap( 8,
@@ -153,6 +162,7 @@ public class PrimitiveLongMapTest extends TestCase {
         assertNull( map.get( 128 ) );
     }
 
+    @Test
     public void testLastIndexBoundary() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                            8 );
@@ -165,6 +175,7 @@ public class PrimitiveLongMapTest extends TestCase {
                  new Object() );
     }
 
+    @Test
     public void testSize() {
         final PrimitiveLongMap map = new PrimitiveLongMap( 32,
                                                            8 );

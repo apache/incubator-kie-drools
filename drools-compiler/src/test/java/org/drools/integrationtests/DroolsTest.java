@@ -2,14 +2,17 @@ package org.drools.integrationtests;
 
 import java.io.StringReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 
-public class DroolsTest extends TestCase {
+public class DroolsTest {
     private final static int NUM_FACTS = 20;
 
     private static int       counter;
@@ -38,7 +41,8 @@ public class DroolsTest extends TestCase {
         }
     }
 
-    public static void test1() throws Exception {
+    @Test
+    public void test1() throws Exception {
         String str = "package org.drools.integrationtests;\n";
         str += "import org.drools.integrationtests.DroolsTest;\n";
         str += "import org.drools.integrationtests.DroolsTest.Foo;\n";

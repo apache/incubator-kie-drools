@@ -1,6 +1,9 @@
 package org.drools.agent;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.FileManager;
 import org.drools.core.util.StringUtils;
@@ -24,13 +27,12 @@ import java.net.URL;
 /**
  * @author Michael Neale
  */
-public class UrlResourceTest extends TestCase {
+public class UrlResourceTest {
     private FileManager fileManager;
     private Server server;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         fileManager = new FileManager();
         fileManager.setUp();
         ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
@@ -51,8 +53,8 @@ public class UrlResourceTest extends TestCase {
         return this.server.getConnectors()[0].getLocalPort();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ResourceFactory.getResourceChangeScannerService().stop();
@@ -63,6 +65,7 @@ public class UrlResourceTest extends TestCase {
     }
 
 
+    @Test
     public void testWithCache() throws Exception {
         URL url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
         UrlResource ur = new UrlResource(url);
@@ -146,6 +149,7 @@ public class UrlResourceTest extends TestCase {
 
     }
 
+    @Test
     public void testWithoutCache() throws Exception {
         UrlResource ur = new UrlResource(new URL("http://localhost:"+this.getPort()+"/rule1.drl"));
         UrlResource.CACHE_DIR = null;

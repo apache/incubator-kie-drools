@@ -19,7 +19,10 @@ package org.drools.reteoo;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -34,12 +37,12 @@ import static org.mockito.Mockito.*;
  *
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
-public class PartitionTaskManagerTest extends TestCase {
+public class PartitionTaskManagerTest {
     private PartitionManager manager; 
     private PartitionTaskManager taskManager;
     private InternalWorkingMemory workingMemory;
 
-    @Override
+    @Before
     public void setUp() {
         RuleBase rulebase = RuleBaseFactory.newRuleBase();
         workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession();
@@ -47,12 +50,8 @@ public class PartitionTaskManagerTest extends TestCase {
         taskManager = new PartitionTaskManager( manager, workingMemory );
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-
-    }
-
     @Ignore
+    @Test
     public void testEnqueueBeforeSettingExecutor() throws InterruptedException {
         final PartitionTaskManager.Action action = mock( PartitionTaskManager.Action.class );
 
@@ -69,6 +68,7 @@ public class PartitionTaskManagerTest extends TestCase {
     }
 
     @Ignore
+    @Test
     public void testFireCorrectly() throws InterruptedException {
         // creates a mock action
         final PartitionTaskManager.Action action = mock( PartitionTaskManager.Action.class );

@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.template.model.Condition;
 import org.drools.template.model.Consequence;
@@ -36,8 +39,9 @@ import org.drools.template.model.Rule;
  * Assumes it has a sheet called "Decision Tables" with a rule table identified
  * by a "RuleTable" cell
  */
-public class RuleWorksheetParseTest extends TestCase {
+public class RuleWorksheetParseTest {
 
+    @Test
     public void testBasicWorkbookProperties() throws Exception {
 
         final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
@@ -56,6 +60,7 @@ public class RuleWorksheetParseTest extends TestCase {
          */
     }
 
+    @Test
     public void testComplexWorkbookProperties() throws Exception {
 
         final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/ComplexWorkbook.xls" );
@@ -69,6 +74,7 @@ public class RuleWorksheetParseTest extends TestCase {
 
     }
 
+    @Test
     public void testWorkbookParse() throws Exception {
         final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/BasicWorkbook.xls" );
         final RuleSheetListener listener = getRuleSheetListener( stream );

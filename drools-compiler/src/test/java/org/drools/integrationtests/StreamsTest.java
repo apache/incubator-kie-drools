@@ -31,7 +31,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
@@ -63,21 +66,7 @@ import org.drools.time.impl.PseudoClockScheduler;
  * 
  * @author etirelli
  */
-public class StreamsTest extends TestCase {
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+public class StreamsTest {
 
     private KnowledgeBase loadKnowledgeBase(final String fileName) throws IOException,
                                                                   DroolsParserException,
@@ -105,6 +94,7 @@ public class StreamsTest extends TestCase {
         return SerializationHelper.serializeObject( kbase );
     }
 
+    @Test
     public void testEventAssertion() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPoint.drl" );
@@ -200,6 +190,7 @@ public class StreamsTest extends TestCase {
 
     }
 
+    @Test
     public void testEntryPointReference() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );
@@ -252,6 +243,7 @@ public class StreamsTest extends TestCase {
 
     }
 
+    @Test
     public void testModifyRetracOnEntryPointFacts() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_modifyRetractEntryPoint.drl" );
@@ -314,6 +306,7 @@ public class StreamsTest extends TestCase {
 
     }
 
+    @Test
     public void testGetEntryPointList() throws Exception {
         // read in the source
         KnowledgeBase kbase = loadKnowledgeBase( "test_EntryPointReference.drl" );
@@ -333,6 +326,7 @@ public class StreamsTest extends TestCase {
         assertTrue( eps.contains( s3 ) );
     }
 
+    @Test
     public void testEventDoesNotExpireIfNotInPattern() throws Exception {
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EventProcessingOption.STREAM );
@@ -379,6 +373,7 @@ public class StreamsTest extends TestCase {
                     equalTo( 0 ) );
     }
 
+    @Test
     public void testEventExpirationSetToZero() throws Exception {
         KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EventProcessingOption.STREAM );

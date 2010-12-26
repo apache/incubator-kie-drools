@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -47,7 +50,7 @@ import org.drools.spi.KnowledgeHelper;
  * @author etirelli
  *
  */
-public class RuleBaseEventSupportTest extends TestCase {
+public class RuleBaseEventSupportTest {
 
     private RuleBase             ruleBase;
     private TestRuleBaseListener listener1;
@@ -57,9 +60,8 @@ public class RuleBaseEventSupportTest extends TestCase {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         ruleBase = RuleBaseFactory.newRuleBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
@@ -152,13 +154,7 @@ public class RuleBaseEventSupportTest extends TestCase {
 
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testAddPackageEvents() throws Exception {
         assertEquals( 0,
                       listener1.getBeforePackageAdded() );
@@ -197,6 +193,7 @@ public class RuleBaseEventSupportTest extends TestCase {
                       listener2.getAfterRuleAdded() );
     }
 
+    @Test
     public void testRemovePackageEvents() throws Exception {
         this.ruleBase.addPackage( pkg );
 

@@ -24,7 +24,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.accumulators.AverageAccumulateFunction;
 import org.drools.base.accumulators.MaxAccumulateFunction;
@@ -43,18 +46,19 @@ import org.drools.runtime.rule.AccumulateFunction;
  * @author etirelli
  *
  */
-public class KnowledgeBuilderConfigurationTest extends TestCase {
+public class KnowledgeBuilderConfigurationTest {
 
     private KnowledgeBuilderConfiguration config;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
     }
 
+    @Test
     public void testDefaultDialectConfiguration() {
         // setting the default dialect using the type safe method
         config.setOption( DefaultDialectOption.get( "mvel" ) );
@@ -86,6 +90,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
                       config.getProperty( DefaultDialectOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testAccumulateFunctionConfiguration() {
         Set<String> keySet = new HashSet<String>();
         // in this use case, the application already has the instance of the accumulate function
@@ -154,6 +159,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
 //        }
     }
     
+    @Test
     public void testDumpDirectoryConfiguration() {
         File dumpDir = new File("target");
         // setting the dump directory using the type safe method
@@ -185,6 +191,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
                       config.getProperty( DumpDirOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testEvaluatorConfiguration() {
         // in this use case, the application already has the instance of the evaluator definition
         EvaluatorDefinition afterDef = new AfterEvaluatorDefinition();
@@ -226,6 +233,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
                       config.getProperty( EvaluatorOption.PROPERTY_NAME+"before" ) );
     }
     
+    @Test
     public void testProcessStringEscapesConfiguration() {
         // setting the process string escapes option using the type safe method
         config.setOption( ProcessStringEscapesOption.YES );
@@ -249,6 +257,7 @@ public class KnowledgeBuilderConfigurationTest extends TestCase {
                       config.getProperty( ProcessStringEscapesOption.PROPERTY_NAME ) );
     }
 
+    @Test
     public void testDefaultPackageNameConfiguration() {
         // setting the default dialect using the type safe method
         config.setOption( DefaultPackageNameOption.get( "org.test" ) );

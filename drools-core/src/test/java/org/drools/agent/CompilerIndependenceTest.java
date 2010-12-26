@@ -18,7 +18,10 @@ package org.drools.agent;
 
 
 import java.io.File;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -37,8 +40,9 @@ import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.impl.ResourceChangeScannerImpl;
 
-public class CompilerIndependenceTest extends TestCase {
+public class CompilerIndependenceTest {
 
+    @Test
     public void testFixme() {
         
     }
@@ -46,15 +50,15 @@ public class CompilerIndependenceTest extends TestCase {
 //    private final Object lock = new Object();
 //    private volatile boolean kbaseUpdated;
 //
-//    @Override
-//    protected void setUp() throws Exception {
+//    @Before
+//    public void setUp() throws Exception {
 //        ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
 //        ResourceFactory.getResourceChangeNotifierService().start();
 //        ResourceFactory.getResourceChangeScannerService().start();
 //    }
 //
-//    @Override
-//    protected void tearDown() throws Exception {
+//    @After
+//    public void tearDown() throws Exception {
 //        ResourceFactory.getResourceChangeNotifierService().stop();
 //        ResourceFactory.getResourceChangeScannerService().stop();
 //        ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();

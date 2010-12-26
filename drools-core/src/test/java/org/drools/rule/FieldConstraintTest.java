@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBaseFactory;
@@ -49,13 +52,14 @@ import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 
-public class FieldConstraintTest extends TestCase {
+public class FieldConstraintTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
     EqualityEvaluatorsDefinition   equals      = new EqualityEvaluatorsDefinition();
     ComparableEvaluatorsDefinition comparables = new ComparableEvaluatorsDefinition();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
@@ -77,6 +81,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testLiteralConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -127,6 +132,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testPrimitiveLiteralConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -178,6 +184,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testPredicateConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -280,6 +287,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testReturnValueConstraint() throws IntrospectionException {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -407,6 +415,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testCompositeAndConstraint() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -482,6 +491,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testCompositeOrConstraint() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
@@ -556,6 +566,7 @@ public class FieldConstraintTest extends TestCase {
      *
      * @throws IntrospectionException
      */
+    @Test
     public void testNestedCompositeConstraints() {
         final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();

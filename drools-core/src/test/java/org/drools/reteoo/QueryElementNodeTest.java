@@ -53,16 +53,19 @@ import org.drools.rule.Variable;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class QueryElementNodeTest extends DroolsTestCase {
     private PropagationContext  context;
     private ReteooWorkingMemory workingMemory;
     private ReteooRuleBase      ruleBase;
     private BuildContext        buildContext;
 
-    public QueryElementNodeTest(final String name) {
-        super( name );
-    }
-
+    @Before
     public void setUp() {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
@@ -78,6 +81,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
                                        (InternalRuleBase) this.ruleBase );
     }
 
+    @Test
     public void testAttach() throws Exception {
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -100,6 +104,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void test1() {
         Pattern p = new Pattern();
         QueryElement qe = new QueryElement( p,

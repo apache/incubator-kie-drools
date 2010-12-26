@@ -32,15 +32,19 @@ package org.drools.reteoo;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.common.DefaultFactHandle;
 
-public class DefaultFactHandleFactoryTest extends TestCase {
+public class DefaultFactHandleFactoryTest {
 
     /*
      * Class under test for FactHandle newFactHandle()
      */
+    @Test
     public void testNewFactHandle() {
         final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );

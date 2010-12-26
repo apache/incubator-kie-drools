@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -28,7 +31,7 @@ import org.drools.lang.dsl.DefaultExpanderResolver;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class DslTest extends TestCase {
+public class DslTest {
    
     protected RuleBase getRuleBase() throws Exception {
 
@@ -43,6 +46,7 @@ public class DslTest extends TestCase {
     }
 
 
+    @Test
     public void testMultiLineTemplates() throws Exception {
         final Reader source = new InputStreamReader( getClass().getResourceAsStream( "rule_with_expander_multiline.dslr" ) );
         final Reader dsl = new InputStreamReader( getClass().getResourceAsStream( "test_dsl_multiline.dsl" ) );
@@ -51,6 +55,7 @@ public class DslTest extends TestCase {
         assertEquals("when Car(color==\"Red\") then doSomething();", r.trim());
     }
 
+    @Test
     public void testWithExpanderDSL() throws Exception {
         //final PackageBuilder builder = new PackageBuilder();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -95,6 +100,7 @@ public class DslTest extends TestCase {
 
     }
 
+    @Test
     public void testWithExpanderMore() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
         
@@ -185,6 +191,7 @@ public class DslTest extends TestCase {
         assertNull( pkgs );
     }
 
+    @Test
     public void testDSLWithIndividualConstraintMappings() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dsl", getClass() ),

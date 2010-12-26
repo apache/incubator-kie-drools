@@ -2,7 +2,10 @@ package org.drools.integrationtests;
 
 import java.util.Comparator;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -20,7 +23,7 @@ import org.drools.runtime.rule.Row;
 
 import ca.odell.glazedlists.SortedList;
 
-public class DroolsEventListTest extends TestCase {
+public class DroolsEventListTest {
     protected RuleBase getRuleBase() throws Exception {
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
@@ -29,6 +32,7 @@ public class DroolsEventListTest extends TestCase {
                                             config );
     }
     
+    @Test
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";

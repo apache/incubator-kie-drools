@@ -22,7 +22,10 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -51,7 +54,7 @@ import org.drools.spi.KnowledgeHelper;
  * @author etirelli
  *
  */
-public class KnowledgeBaseEventSupportTest extends TestCase {
+public class KnowledgeBaseEventSupportTest {
 
     private KnowledgeBase        kbase;
     private TestRuleBaseListener listener1;
@@ -61,9 +64,8 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         kbase = KnowledgeBaseFactory.newKnowledgeBase();
         listener1 = new TestRuleBaseListener( "(listener-1) " );
         listener2 = new TestRuleBaseListener( "(listener-2) " );
@@ -155,13 +157,7 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
         pkg.pkg.addRule( rule2 );
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testAddPackageEvents() throws Exception {
         assertEquals( 0,
                       listener1.getBeforePackageAdded() );
@@ -202,6 +198,7 @@ public class KnowledgeBaseEventSupportTest extends TestCase {
                       listener2.getAfterRuleAdded() );
     }
 
+    @Test
     public void testRemovePackageEvents() throws Exception {
         List<KnowledgePackage> pkgs = new ArrayList<KnowledgePackage>();
         pkgs.add( pkg );

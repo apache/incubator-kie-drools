@@ -29,8 +29,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FactA;
@@ -74,7 +76,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
-public class DynamicRulesTest extends TestCase {
+public class DynamicRulesTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -87,6 +89,7 @@ public class DynamicRulesTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testDynamicRuleAdditions() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Dynamic1.drl" ) );
 
@@ -159,7 +162,7 @@ public class DynamicRulesTest extends TestCase {
         // As we added person instance in advance, rule should fire now
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Rule from package 3 should have been fired",
+        assertEquals( "Rule from package 3 should have been fired",
                              "match Person ok",
                              bob.getStatus() );
 
@@ -177,7 +180,7 @@ public class DynamicRulesTest extends TestCase {
         workingMemory.fireAllRules();
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
-        Assert.assertEquals( "Rule from package 4 should have been fired",
+        assertEquals( "Rule from package 4 should have been fired",
                              "Who likes Stilton ok",
                              bob.getStatus() );
 
@@ -189,6 +192,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testDynamicRuleRemovals() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -265,6 +269,7 @@ public class DynamicRulesTest extends TestCase {
                       workingMemory.getAgenda().getActivations().length );
     }
 
+    @Test
     public void testDynamicRuleRemovalsUnusedWorkingMemory() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -306,6 +311,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    @Test
     public void testDynamicFunction() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicFunction1.drl" ) ) );
@@ -377,6 +383,7 @@ public class DynamicRulesTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testRemovePackage() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RemovePackage.drl" ) ) );
@@ -409,6 +416,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBaseWM.addPackage( SerializationHelper.serializeObject( builder1.getPackage() ) );
     }
 
+    @Test
     public void testDynamicRules() throws Exception {
         RuleBase ruleBase = getRuleBase();
         StatefulSession session = ruleBase.newStatefulSession();
@@ -433,6 +441,7 @@ public class DynamicRulesTest extends TestCase {
         session.fireAllRules();
     }
 
+    @Test
     public void testDynamicRules2() throws Exception {
         RuleBase ruleBase = getRuleBase();
         StatefulSession session = ruleBase.newStatefulSession();
@@ -458,6 +467,7 @@ public class DynamicRulesTest extends TestCase {
         session.fireAllRules();
     }
 
+    @Test
     public void testRuleBaseAddRemove() throws Exception {
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 
@@ -478,6 +488,7 @@ public class DynamicRulesTest extends TestCase {
         ruleBase.removePackage( pkg.getName() );
     }
 
+    @Test
     public void testClassLoaderSwitchsUsingConf() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -525,6 +536,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testClassLoaderSwitchsUsingContext() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -569,6 +581,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    @Test
     public void testCollectDynamicRules() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectDynamicRules1.drl" ) ) );
@@ -606,6 +619,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testDynamicNotNode() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_CollectDynamicRules1.drl",
@@ -684,6 +698,7 @@ public class DynamicRulesTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testDynamicRulesAddRemove() {
         try {
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -765,6 +780,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    @Test
     public void testDynamicRuleRemovalsSubNetwork() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -852,6 +868,7 @@ public class DynamicRulesTest extends TestCase {
                       session.getAgenda().getActivations().length );
     }
 
+    @Test
     public void testDynamicRuleRemovalsUnusedWorkingMemorySubNetwork() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -891,6 +908,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    @Test
     public void testRemovePackageSubNetwork() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DynamicRulesWithSubnetwork.drl" ) ) );
@@ -978,6 +996,7 @@ public class DynamicRulesTest extends TestCase {
         results.clear();
     }
 
+    @Test
     public void testRuleBaseAddRemoveSubNetworks() throws Exception {
         try {
             RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -1001,6 +1020,7 @@ public class DynamicRulesTest extends TestCase {
         }
     }
 
+    @Test
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_DynamicWithEntryPoint.drl" ) );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1040,6 +1060,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testIsolatedClassLoaderWithEnumsPkgBuilder() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -1089,6 +1110,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testIsolatedClassLoaderWithEnumsContextClassloader() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
@@ -1141,6 +1163,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testDynamicRuleRemovalsSubNetworkAndNot() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_DynamicRulesWithNotSubnetwork.drl" ) ),
@@ -1190,6 +1213,7 @@ public class DynamicRulesTest extends TestCase {
 
     }
 
+    @Test
     public void testSharedLIANodeRemoval() throws IOException,
                                           DroolsParserException {
         String str = "global java.util.List list;\n";
@@ -1202,7 +1226,7 @@ public class DynamicRulesTest extends TestCase {
 
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackageFromDrl( new StringReader( str ) );
-        Assert.assertTrue( "Should not have errors",
+        assertTrue( "Should not have errors",
                            pkgBuilder.getErrors().isEmpty() );
 
         // Add once ...
@@ -1230,6 +1254,7 @@ public class DynamicRulesTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testJBRULES_2206() {
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );

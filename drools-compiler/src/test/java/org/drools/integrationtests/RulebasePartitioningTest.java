@@ -19,7 +19,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Person;
@@ -32,7 +35,7 @@ import org.drools.compiler.PackageBuilder;
 /**
  * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
-public class RulebasePartitioningTest extends TestCase {
+public class RulebasePartitioningTest {
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -46,6 +49,7 @@ public class RulebasePartitioningTest extends TestCase {
                                             config );
     }
     
+    @Test
     public void testEmpty() {
     	
     }

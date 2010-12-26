@@ -42,8 +42,15 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.WorkingMemory;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class ReteooMannersTest extends BaseMannersTest {
 
+    @Test
     public void testManners() throws Exception {
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );

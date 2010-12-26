@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -44,7 +47,7 @@ import org.drools.runtime.StatelessKnowledgeSessionResults;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.GlobalResolver;
 
-public class StatelessSessionTest extends TestCase {
+public class StatelessSessionTest {
     final List list = new ArrayList();
     final Cheesery cheesery = new Cheesery();
     final GlobalResolver globalResolver = new MapGlobalResolver();
@@ -61,6 +64,7 @@ public class StatelessSessionTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testSingleObjectAssert() throws Exception {
         StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
 
@@ -73,6 +77,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testArrayObjectAssert() throws Exception {
         StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
 
@@ -85,6 +90,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testCollectionObjectAssert() throws Exception {
         StatelessKnowledgeSession session = getSession2( "literal_rule_test.drl" );
 
@@ -99,6 +105,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
     
+    @Test
     public void testInsertObject() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -123,6 +130,7 @@ public class StatelessSessionTest extends TestCase {
                       stilton.getPrice() );       
     }
     
+    @Test
     public void testSetGlobal() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -176,6 +184,7 @@ public class StatelessSessionTest extends TestCase {
         assertSame( stilton, list3.get( 0 ) );        
     }    
     
+    @Test
     public void testQuery() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
@@ -345,6 +354,7 @@ public class StatelessSessionTest extends TestCase {
 //        
 //    }    
     
+    @Test
     public void testAsynSingleOjbectcAssert() throws Exception {
         StatelessSession session = getSession();
 
@@ -359,6 +369,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testAsynArrayOjbectcAssert() throws Exception {
         StatelessSession session = getSession();
 
@@ -373,6 +384,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testAsynCollectionOjbectcAssert() throws Exception {
         StatelessSession session = getSession();
 
@@ -389,6 +401,7 @@ public class StatelessSessionTest extends TestCase {
                       list.get( 0 ) );
     }
     
+    @Test
     public void testCopyIdentifierGlobalExporterOneValue() throws Exception {
         StatelessSession session = getSession();       
 
@@ -406,6 +419,7 @@ public class StatelessSessionTest extends TestCase {
         assertNotSame( this.globalResolver, result.getGlobalResolver() );
     }
     
+    @Test
     public void testCopyIdentifierGlobalExporterTwoValues() throws Exception {
         StatelessSession session = getSession();
 
@@ -423,6 +437,7 @@ public class StatelessSessionTest extends TestCase {
         assertNotSame( this.globalResolver, result.getGlobalResolver() );        
     }    
     
+    @Test
     public void testCopyIdentifierGlobalExporterAllValues() throws Exception {
         StatelessSession session = getSession();
 
@@ -441,6 +456,7 @@ public class StatelessSessionTest extends TestCase {
         assertNotSame( this.globalResolver, result.getGlobalResolver() );        
     }     
     
+    @Test
     public void testReferenceOriginalGlobalExporter() throws Exception {
         StatelessSession session = getSession();
 

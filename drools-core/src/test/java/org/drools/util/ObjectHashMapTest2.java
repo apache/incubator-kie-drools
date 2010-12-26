@@ -18,14 +18,15 @@ package org.drools.util;
 
 import org.drools.core.util.ObjectHashMap;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public class ObjectHashMapTest2 extends TestCase {
+import static org.junit.Assert.*;
 
-    public ObjectHashMapTest2() {
-        super();
-    }
+public class ObjectHashMapTest2 {
 
+    @Test
     public void testJUHashmap() {
         final java.util.HashMap map = new java.util.HashMap();
         assertNotNull( map );
@@ -40,6 +41,7 @@ public class ObjectHashMapTest2 extends TestCase {
         }
     }
 
+    @Test
     public void testStringData() {
         final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
@@ -54,6 +56,7 @@ public class ObjectHashMapTest2 extends TestCase {
         }
     }
 
+    @Test
     public void testStringDataDupFalse() {
         final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
@@ -69,6 +72,7 @@ public class ObjectHashMapTest2 extends TestCase {
         }
     }
 
+    @Test
     public void testIntegerData() {
         final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
@@ -83,6 +87,7 @@ public class ObjectHashMapTest2 extends TestCase {
         }
     }
 
+    @Test
     public void testJUHashMap1() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
@@ -98,6 +103,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "java.util.HashMap put(key,value) ET - " + ((end - start)) );
     }
 
+    @Test
     public void testStringData2() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
@@ -113,6 +119,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "Custom ObjectHashMap put(key,value) ET - " + ((end - start)) );
     }
 
+    @Test
     public void testStringData3() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
@@ -132,6 +139,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "Custom ObjectHashMap get(key) ET - " + ((end - start)) );
     }
 
+    @Test
     public void testJUHashMap2() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
@@ -151,6 +159,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "java.util.HashMap get(key) ET - " + ((end - start)) );
     }
 
+    @Test
     public void testStringData4() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();
@@ -171,6 +180,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "Custom ObjectHashMap iterate ET - " + ((end - start)) );
     }
 
+    @Test
     public void testJUHashMap3() {
         final int count = 100000;
         final java.util.HashMap map = new java.util.HashMap();
@@ -190,6 +200,7 @@ public class ObjectHashMapTest2 extends TestCase {
         System.out.println( "java.util.HashMap iterate ET - " + ((end - start)) );
     }
 
+    @Test
     public void testStringData5() {
         final int count = 100000;
         final ObjectHashMap map = new ObjectHashMap();

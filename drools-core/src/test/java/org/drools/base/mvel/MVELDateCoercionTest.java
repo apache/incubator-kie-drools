@@ -19,13 +19,17 @@ package org.drools.base.mvel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.DateUtils;
 import org.drools.type.DateFormatsImpl;
 
-public class MVELDateCoercionTest extends TestCase {
+public class MVELDateCoercionTest {
 
+    @Test
     public void testDate() {
         MVELDateCoercion co = new MVELDateCoercion();
         assertTrue(co.canConvertFrom( Date.class ));
@@ -35,6 +39,7 @@ public class MVELDateCoercionTest extends TestCase {
         assertSame(d, co.convertFrom( d ));
     }
 
+    @Test
     public void testString() throws Exception {
         MVELDateCoercion co = new MVELDateCoercion();
         assertTrue(co.canConvertFrom( Date.class ));

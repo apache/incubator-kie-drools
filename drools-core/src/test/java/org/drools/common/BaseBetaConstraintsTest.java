@@ -19,7 +19,10 @@ package org.drools.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassFieldAccessorCache;
@@ -48,7 +51,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 
-public abstract class BaseBetaConstraintsTest extends TestCase {
+public abstract class BaseBetaConstraintsTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
     static {

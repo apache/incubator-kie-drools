@@ -1,24 +1,20 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MVELExprAnalyzerTest extends TestCase {
+public class MVELExprAnalyzerTest {
 
     private MVELExprAnalyzer analyzer;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         analyzer = new MVELExprAnalyzer();
-        super.setUp();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-    
-    public void testDummy() {
-        // Added this so test does prooduce warning in eclipse
-    }
-
+    @Test
     public void testGetExpressionIdentifiers() {
 //        try {
 //            String expression = "order.id == 10";

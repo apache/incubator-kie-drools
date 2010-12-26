@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -14,22 +17,17 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
-public class PackageBuilderThreadSafetyTest extends TestCase {
+public class PackageBuilderThreadSafetyTest {
 
     private static final int _NUMBER_OF_THREADS = 100;
     private static final int _SLEEP_TIME_MS     = 100;
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void testDummy() {
-    }
-
+    @Test
     public void testThreadSafetyEclipse() {
         execute( JavaDialectConfiguration.ECLIPSE );
     }
 
+    @Test
     public void testThreadSafetyJanino() {
         execute( JavaDialectConfiguration.JANINO  );
     }

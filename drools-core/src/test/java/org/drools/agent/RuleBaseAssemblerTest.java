@@ -22,9 +22,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -33,8 +34,9 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.rule.Package;
 
-public class RuleBaseAssemblerTest extends TestCase {
+public class RuleBaseAssemblerTest {
 
+    @Test
     public void testAssemblePackages() throws Exception {
         RuleBase rb = RuleBaseFactory.newRuleBase();
         Package pkg = new Package( "goober" );
@@ -143,23 +145,6 @@ public class RuleBaseAssemblerTest extends TestCase {
 
     public static void clearTempDirectory() {
         deleteDir( tempDir() );
-
     }
 
-    /**
-     * Assembles and returns a test suite for
-     * all the test methods of this test case.
-     *
-     * @return a non-null test suite.
-     */
-    public static Test suite() {
-        return new TestSuite( RuleBaseAssemblerTest.class );
-    }
-
-    /**
-     * Run the test case.
-     */
-    public static void main(String args[]) {
-        RuleBaseAssemblerTest.suite();
-    }
 }

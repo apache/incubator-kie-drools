@@ -48,7 +48,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.WorkingMemory;
 import org.drools.base.ClassFieldAccessorCache;
@@ -79,7 +82,7 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.Tuple;
 
-public abstract class BaseMannersTest extends TestCase {
+public abstract class BaseMannersTest {
     /** Number of guests at the dinner (default: 16). */
     private final int       numGuests  = 16;
 
@@ -111,7 +114,8 @@ public abstract class BaseMannersTest extends TestCase {
 
     ClassFieldAccessorStore store;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         //Class shadow = ShadowProxyFactory.getProxy( Context.class );
         this.contextType = new ClassObjectType( Context.class );
 

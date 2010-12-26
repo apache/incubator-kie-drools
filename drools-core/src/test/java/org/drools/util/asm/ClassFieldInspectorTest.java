@@ -39,11 +39,14 @@ import java.util.Map;
 
 import org.drools.core.util.asm.ClassFieldInspector;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ClassFieldInspectorTest extends TestCase {
+public class ClassFieldInspectorTest {
 
+    @Test
     public void testIt() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         assertEquals( 7,
@@ -63,6 +66,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testInterface() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( TestInterface.class );
         assertEquals( 2,
@@ -79,6 +83,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testAbstract() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( TestAbstract.class );
         assertEquals( 5,
@@ -95,6 +100,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testInheritedFields() throws Exception {
         ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
@@ -114,6 +120,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertNotNull( ext.getFieldNames().get( "URI" ) );
     }
 
+    @Test
     public void testIntefaceInheritance() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( InterfaceChild.class );
         final Map fields = ext.getFieldNames();
@@ -123,6 +130,7 @@ public class ClassFieldInspectorTest extends TestCase {
         assertTrue( fields.containsKey( "URI" ) );
     }
 
+    @Test
     public void testFieldIndexCalculation() {
         try {
             final ClassFieldInspector ext = new ClassFieldInspector( SubPerson.class );
@@ -135,15 +143,16 @@ public class ClassFieldInspectorTest extends TestCase {
                 if ( fields[fieldIndex] == null ) {
                     fields[fieldIndex] = fieldName;
                 } else {
-                    Assert.fail( "Duplicate index found for 2 fields: index[" + fieldIndex + "] = [" + fields[fieldIndex] + "] and [" + fieldName + "]" );
+                    fail( "Duplicate index found for 2 fields: index[" + fieldIndex + "] = [" + fields[fieldIndex] + "] and [" + fieldName + "]" );
                 }
             }
         } catch ( final IOException e ) {
             e.printStackTrace();
-            Assert.fail( "Unexpected exception thrown" );
+            fail( "Unexpected exception thrown" );
         }
     }
 
+    @Test
     public void testGetReturnTypes() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         final Map types = ext.getFieldTypes();
@@ -156,6 +165,7 @@ public class ClassFieldInspectorTest extends TestCase {
                       types.get( "name" ) );
     }
 
+    @Test
     public void testGetMethodForField() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         final Map methods = ext.getGetterMethods();
@@ -171,6 +181,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testNonGetter() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( NonGetter.class );
         final Map methods = ext.getGetterMethods();
@@ -185,6 +196,7 @@ public class ClassFieldInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testWierdCapsForField() throws Exception {
         final ClassFieldInspector ext = new ClassFieldInspector( Person.class );
         final Map methods = ext.getGetterMethods();

@@ -19,19 +19,22 @@ package org.drools.base.extractors;
 import java.util.Collections;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
 
     InternalReadAccessor reader;
     TestBean             bean = new TestBean();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -40,6 +43,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
                                        getClass().getClassLoader() );
     }
 
+    @Test
     public void testGetBooleanValue() {
         try {
             this.reader.getBooleanValue( null,
@@ -50,6 +54,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetByteValue() {
         try {
             this.reader.getByteValue( null,
@@ -60,6 +65,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetCharValue() {
         try {
             this.reader.getCharValue( null,
@@ -70,6 +76,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetDoubleValue() {
         try {
             this.reader.getDoubleValue( null,
@@ -80,6 +87,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetFloatValue() {
         try {
             this.reader.getFloatValue( null,
@@ -90,6 +98,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetIntValue() {
         try {
             this.reader.getIntValue( null,
@@ -100,6 +109,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetLongValue() {
         try {
             this.reader.getLongValue( null,
@@ -110,6 +120,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetShortValue() {
         try {
             this.reader.getShortValue( null,
@@ -120,16 +131,18 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         }
     }
 
+    @Test
     public void testGetValue() {
-        Assert.assertEquals( Collections.EMPTY_LIST,
+        assertEquals( Collections.EMPTY_LIST,
                              this.reader.getValue( null,
                                                    this.bean ) );
-        Assert.assertTrue( this.reader.getValue( null,
+        assertTrue( this.reader.getValue( null,
                                                  this.bean ) instanceof List );
     }
 
+    @Test
     public void testIsNullValue() {
-        Assert.assertFalse( this.reader.isNullValue( null,
+        assertFalse( this.reader.isNullValue( null,
                                                      this.bean ) );
 
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
@@ -139,7 +152,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         InternalReadAccessor nullExtractor = store.getReader( TestBean.class,
                                                               "nullAttr",
                                                               getClass().getClassLoader() );
-        Assert.assertTrue( nullExtractor.isNullValue( null,
+        assertTrue( nullExtractor.isNullValue( null,
                                                       this.bean ) );
 
     }

@@ -1,7 +1,5 @@
 package org.drools.integrationtests;
 
-import junit.framework.TestCase;
-
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
@@ -12,17 +10,24 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * @author Damon
  * 
  */
-public class TestQuery extends TestCase {
+public class TestQuery {
 
     private KnowledgeBase knowledgeBase;
 
     /**
      * @throws java.lang.Exception
      */
+    @Before
     public void setUp() throws Exception {
         String text = "";
         text += "package org.drools.integrationtests\n";
@@ -75,6 +80,7 @@ public class TestQuery extends TestCase {
         }
     }
 
+    @Test
     public void testDifferent() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -88,6 +94,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testDifferentWithUpdate() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -101,6 +108,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testSame() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -114,6 +122,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testSameWithUpdate() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -127,6 +136,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testExtends() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -140,6 +150,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testExtendsWithUpdate() {
         Foo foo = new Foo();
         foo.setId( "x" );
@@ -153,6 +164,7 @@ public class TestQuery extends TestCase {
               false );
     }
 
+    @Test
     public void testExtendsWithRetract() {
         Foo foo = new Foo();
         foo.setId( "x" );

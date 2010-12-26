@@ -2,11 +2,15 @@ package org.drools.decisiontable.parser;
 
 import org.drools.decisiontable.parser.LhsBuilder.FieldType;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class LhsBuilderTest extends TestCase {
+public class LhsBuilderTest {
 
-	public void testBuildItUp() throws Exception {
+    @Test
+    public void testBuildItUp() throws Exception {
 		LhsBuilder builder = new LhsBuilder("Person");
 		
 		builder.addTemplate(1, "age");
@@ -26,11 +30,13 @@ public class LhsBuilderTest extends TestCase {
         assertEquals("Person(size != 42)", builder.getResult());
 	}
     
+    @Test
     public void testEmptyCells() {
         LhsBuilder builder = new LhsBuilder("Person");
         assertFalse(builder.hasValues());
     }
     
+    @Test
     public void testClassicMode() {
         LhsBuilder builder = new LhsBuilder("");
         builder.addTemplate( 1, "Person(age < $param)");
@@ -48,28 +54,32 @@ public class LhsBuilderTest extends TestCase {
         assertEquals("Foo(bar == 42)\neval(true)", builder.getResult());
     }
  
-	public void testForAllAndFucntion() {
+    @Test
+    public void testForAllAndFucntion() {
 		LhsBuilder builder = new LhsBuilder("");
 		builder.addTemplate(1, "forall(&&){Foo(bar != $)}");
 		builder.addCellValue(1, "42,43");
 		assertEquals("Foo(bar != 42) && Foo(bar != 43)", builder.getResult());
 	}
     
-	public void testForAllOr() {
+    @Test
+    public void testForAllOr() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(||){age < $}");
 		builder.addCellValue(1, "42");
 		assertEquals("Person(age < 42)", builder.getResult());
 	}
 
-	public void testForAllOrPrefix() {
+    @Test
+    public void testForAllOrPrefix() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "age < 10 && forall(||){age < $}");
 		builder.addCellValue(1, "42");
 		assertEquals("Person(age < 10 && age < 42)", builder.getResult());
 	}
 	
-	public void testForAllOrCSV() {
+    @Test
+    public void testForAllOrCSV() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(||){age < $}");
 		builder.addCellValue(1, "42, 43, 44");
@@ -77,14 +87,16 @@ public class LhsBuilderTest extends TestCase {
 				.getResult());
 	}
 
-	public void testForAllAnd() {
+    @Test
+    public void testForAllAnd() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(&&){age < $}");
 		builder.addCellValue(1, "42");
 		assertEquals("Person(age < 42)", builder.getResult());
 	}
 
-	public void testForAllAndCSV() {
+    @Test
+    public void testForAllAndCSV() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(&&){age < $}");
 		builder.addCellValue(1, "42, 43, 44");
@@ -92,7 +104,8 @@ public class LhsBuilderTest extends TestCase {
 				.getResult());
 	}
 
-	public void testForAllAndForAllOrCSVMultiple() {
+    @Test
+    public void testForAllAndForAllOrCSVMultiple() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(&&){age < $ || age == $}");
 		builder.addCellValue(1, "42, 43, 44");
@@ -101,7 +114,8 @@ public class LhsBuilderTest extends TestCase {
 				builder.getResult());
 	}
 
-	public void testForAllsAndForAllOrCSVMultiple() {
+    @Test
+    public void testForAllsAndForAllOrCSVMultiple() {
 		LhsBuilder builder = new LhsBuilder("Person");
 		builder.addTemplate(1, "forall(&&){age < $ || age == $} && forall(&&){age < $ || age == $}");
 		builder.addCellValue(1, "42, 43, 44");
@@ -110,6 +124,7 @@ public class LhsBuilderTest extends TestCase {
 				builder.getResult());
 	}
 	
+    @Test
     public void testIdentifyFieldTypes() {
         LhsBuilder builder = new LhsBuilder("");
         assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("age"));
@@ -133,6 +148,7 @@ public class LhsBuilderTest extends TestCase {
         assertEquals(FieldType.SINGLE_FIELD, builder.calcFieldType("forall(&&){{})"));
     }
     
+    @Test
     public void testIdentifyColumnCorrectly() {
         LhsBuilder builder = new LhsBuilder(null);
         assertFalse(builder.isMultipleConstraints());

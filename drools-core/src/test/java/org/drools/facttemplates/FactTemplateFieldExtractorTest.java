@@ -16,14 +16,18 @@
 
 package org.drools.facttemplates;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
 
-public class FactTemplateFieldExtractorTest extends TestCase {
+public class FactTemplateFieldExtractorTest {
+    @Test
     public void testExtractor() {
         final Package pkg = new Package( "org.store" );
 
@@ -84,6 +88,7 @@ public class FactTemplateFieldExtractorTest extends TestCase {
         assertFalse( extractPrice.isNullValue( null, stilton ) );
     }
 
+    @Test
     public void testDeclaration() {
         final Package pkg = new Package( "org.store" );
 

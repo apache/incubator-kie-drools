@@ -3,12 +3,16 @@ package org.drools.decisiontable.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.decisiontable.parser.ActionType;
 
-public class ActionTypeTest extends TestCase {
+public class ActionTypeTest {
 
+    @Test
     public void testChooseActionType() {
         Map<Integer, ActionType> actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "C", 0, 1 );

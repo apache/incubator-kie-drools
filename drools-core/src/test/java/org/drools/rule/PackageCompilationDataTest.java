@@ -23,7 +23,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.security.CodeSource;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.common.InternalRuleBase;
@@ -32,7 +35,7 @@ import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 
-public class PackageCompilationDataTest extends TestCase {
+public class PackageCompilationDataTest {
     public static class TestEvalExpression implements EvalExpression {
         public Object createContext() { return null; }
         public boolean evaluate(Tuple t, Declaration[] d, WorkingMemory w, Object context ) {
@@ -56,6 +59,7 @@ public class PackageCompilationDataTest extends TestCase {
         }
     }
 
+    @Test
     public void testCodeSourceUrl() throws Exception {
         final String className = TestEvalExpression.class.getName();
         

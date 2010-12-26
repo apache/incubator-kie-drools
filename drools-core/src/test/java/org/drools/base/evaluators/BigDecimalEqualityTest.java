@@ -16,7 +16,10 @@
 
 package org.drools.base.evaluators;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.FieldValue;
 import org.drools.common.InternalWorkingMemory;
@@ -33,8 +36,9 @@ import java.math.BigInteger;
 /**
  * @author Michael Neale
  */
-public class BigDecimalEqualityTest extends TestCase {
+public class BigDecimalEqualityTest {
 
+    @Test
     public void testEquality() {
         EqualityEvaluatorsDefinition.BigDecimalEqualEvaluator d = new EqualityEvaluatorsDefinition.BigDecimalEqualEvaluator();
 
@@ -59,6 +63,7 @@ public class BigDecimalEqualityTest extends TestCase {
 
     }
 
+    @Test
     public void testNotEquals() {
        EqualityEvaluatorsDefinition.BigDecimalNotEqualEvaluator d = new EqualityEvaluatorsDefinition.BigDecimalNotEqualEvaluator();
         assertFalse(d.evaluate(null, new MockInternalReadAcessor(new BigDecimal("42")), null, new MockFieldValue(new BigDecimal("42")) ));

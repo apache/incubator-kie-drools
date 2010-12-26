@@ -16,13 +16,16 @@
 
 package org.drools.rule;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuntimeDroolsException;
 
-public class GroupElementTest extends TestCase {
+public class GroupElementTest {
 
+    @Test
     public void testPackNestedAnd() {
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         final Pattern pattern1 = new Pattern( 0,
@@ -52,6 +55,7 @@ public class GroupElementTest extends TestCase {
                     and2.getChildren().get( 1 ) );
     }
 
+    @Test
     public void testPackNestedOr() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
         final Pattern pattern1 = new Pattern( 0,
@@ -82,6 +86,7 @@ public class GroupElementTest extends TestCase {
                     or2.getChildren().get( 1 ) );
     }
 
+    @Test
     public void testPackNestedExists() {
         final GroupElement exists1 = GroupElementFactory.newExistsInstance();
         final Pattern pattern1 = new Pattern( 0,
@@ -104,6 +109,7 @@ public class GroupElementTest extends TestCase {
                     exists2.getChildren().get( 0 ) );
     }
 
+    @Test
     public void testAddMultipleChildsIntoNot() {
         final GroupElement not = GroupElementFactory.newNotInstance();
 
@@ -112,19 +118,20 @@ public class GroupElementTest extends TestCase {
         try {
             not.addChild( pattern1 );
         } catch ( final RuntimeDroolsException rde ) {
-            Assert.fail( "Adding a single child is not supposed to throw Exception for NOT GE: " + rde.getMessage() );
+            fail( "Adding a single child is not supposed to throw Exception for NOT GE: " + rde.getMessage() );
         }
 
         final Pattern pattern2 = new Pattern( 0,
                                      null );
         try {
             not.addChild( pattern2 );
-            Assert.fail( "Adding a second child into a NOT GE should throw Exception" );
+            fail( "Adding a second child into a NOT GE should throw Exception" );
         } catch ( final RuntimeDroolsException rde ) {
             // everything is fine
         }
     }
 
+    @Test
     public void testAddSingleBranchAnd() {
         final GroupElement and1 = GroupElementFactory.newAndInstance();
         final Pattern pattern = new Pattern( 0,
@@ -145,6 +152,7 @@ public class GroupElementTest extends TestCase {
                     or1.getChildren().get( 0 ) );
     }
 
+    @Test
     public void testAddSingleBranchOr() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
         final Pattern pattern = new Pattern( 0,
@@ -187,6 +195,7 @@ public class GroupElementTest extends TestCase {
      *  C1 C2
      *
      */
+    @Test
     public void testDeepNestedStructure() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
         final Pattern pattern1 = new Pattern( 0,
@@ -274,6 +283,7 @@ public class GroupElementTest extends TestCase {
      *  C1 C2
      *
      */
+    @Test
     public void testDeepNestedStructureWithMultipleElementsInRoot() {
         final GroupElement or1 = GroupElementFactory.newOrInstance();
         final Pattern pattern1 = new Pattern( 0,
