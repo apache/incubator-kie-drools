@@ -8,6 +8,11 @@ import java.io.StringReader;
 import junit.framework.TestCase;
 
 public class DSLTokenizedMappingFileTest extends TestCase {
+	
+	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
+	// JDK works correctly with "(?<=^|\\W)"
+	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+	
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
@@ -62,7 +67,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                           entry.getSection() );
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
-            assertEquals( "(?<=\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+[(.*?)](?=\\W|$)",
+            assertEquals( lookbehind + "ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+[(.*?)](?=\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
             assertEquals( "Attribute( {attr} in ({list}) )",
@@ -97,7 +102,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
             
-            assertEquals( "(?<=\\W|^)ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+\\[(.*?)\\](?=\\W|$)",
+            assertEquals( lookbehind + "ATTRIBUTE\\s+\"(.*?)\"\\s+IS\\s+IN\\s+\\[(.*?)\\](?=\\W|$)",
                           entry.getKeyPattern().toString() );
             //Attribute( {attr} in ({list}) )
             assertEquals( "Attribute( {attr} in ({list}) )",
@@ -166,7 +171,7 @@ public class DSLTokenizedMappingFileTest extends TestCase {
                           entry.getSection() );
             assertEquals( DSLMappingEntry.EMPTY_METADATA,
                           entry.getMetaData() );
-            assertEquals( "(?<=\\W|^)something:\\=(.*?)$",
+            assertEquals( lookbehind + "something:\\=(.*?)$",
                           entry.getKeyPattern().toString() );
             assertEquals( "Attribute( something == \"{value}\" )",
                           entry.getValuePattern() );
