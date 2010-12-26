@@ -23,6 +23,7 @@ import java.util.jar.JarInputStream;
 
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderErrors;
 import org.drools.io.Resource;
@@ -196,6 +197,27 @@ public class VerifierImpl
         }
     }
 
+    
+    
+    public void addResourcesToVerify(Resource resource, ResourceType type,
+            ResourceConfiguration config) {
+        verifierPackageBuilder.addKnowledgeResource( resource,
+                type,
+                config );
+
+            if ( verifierPackageBuilder.hasErrors() ) {
+                addVerifierErrors( verifierPackageBuilder.getErrors() );
+            }
+
+            PackageDescr pkg = verifierPackageBuilder.getPackageDescr();
+            if ( pkg != null ) {
+                addPackageDescr( pkg );
+            } else {
+                errors.add( new VerifierError( "Verifier could not form a PackageDescr from the resources that it was trying to verify." ) );
+            }
+        
+    }
+    
     public void addResourcesToVerify(Resource resource,
                                      ResourceType type) {
 
