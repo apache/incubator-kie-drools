@@ -26,11 +26,6 @@ import org.drools.rule.Package;
  */
 public class StatelessStressTest {
 
-    @Test
-    public void testDummy() {
-        
-    }
-
     private static RuleBase getRuleBase(Package pkg) throws IOException, ClassNotFoundException {
         RuleBase ruleBase    = RuleBaseFactory.newRuleBase();
 

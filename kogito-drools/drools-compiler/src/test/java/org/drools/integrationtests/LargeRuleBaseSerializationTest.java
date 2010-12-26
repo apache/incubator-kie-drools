@@ -40,11 +40,6 @@ public class LargeRuleBaseSerializationTest {
             compressedBytes = DroolsStreamUtils.streamOut(ruleBase, true);
         }
     }
-    
-    @Test
-    public void testDummy() {
-        
-    }
 
     @Test @Ignore
     public void testUnmarshallingPerformance() throws Exception {

@@ -46,11 +46,6 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
     private int              afterChangeSetApplied;
     private int              beforeResourceProcessed;
     private int              afterResourceProcessed;
-    
-    @Test
-    public void test_RemoveMeAfterFixedFIXMES() {
-        
-    }
 
     @Test @Ignore
     public void testEventListenerWithIncrementalChangeSet() throws Exception {
