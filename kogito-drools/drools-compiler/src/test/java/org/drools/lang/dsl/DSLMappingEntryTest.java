@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class DSLMappingEntryTest {
 
-	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
+	// Due to a bug in JDK 5, a workaround for zero-width lookbehind has to be used.
 	// JDK works correctly with "(?<=^|\\W)"
 	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
 
