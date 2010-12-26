@@ -11,8 +11,15 @@ import org.drools.Person;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
 
+    @Test
     public void testDSLAndIncrementalChangeSet() throws Exception {
 
         //create a basic dsl file
@@ -124,6 +131,7 @@ public class KnowledgeAgentDSLTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testDSLAndNewInstance() throws Exception {
 
         //create a basic dsl file

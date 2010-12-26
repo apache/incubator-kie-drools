@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
@@ -73,7 +76,7 @@ import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.mockito.ArgumentCaptor;
 
-public class CepEspTest extends TestCase {
+public class CepEspTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -153,6 +156,7 @@ public class CepEspTest extends TestCase {
         return kbase;
     }
 
+    @Test
     public void testEventAssertion() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -220,6 +224,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testPackageSerializationWithEvents() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -284,6 +289,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testEventAssertionWithDuration() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDuration.drl" ) );
@@ -365,6 +371,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testEventAssertionWithDateTimestamp() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertionWithDateTimestamp.drl" ) );
@@ -437,6 +444,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testEventExpiration() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration.drl" ) );
@@ -449,6 +457,7 @@ public class CepEspTest extends TestCase {
                       internal.getTypeDeclaration( StockTick.class ).getExpirationOffset() );
     }
 
+    @Test
     public void testEventExpiration2() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration2.drl" ) );
@@ -470,6 +479,7 @@ public class CepEspTest extends TestCase {
                       node.getExpirationOffset() );
     }
 
+    @Test
     public void testEventExpiration3() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration3.drl" ) );
@@ -491,6 +501,7 @@ public class CepEspTest extends TestCase {
                       node.getExpirationOffset() );
     }
 
+    @Test
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_TimeRelationalOperators.drl" ) );
@@ -700,6 +711,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testBeforeOperator() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_BeforeOperator.drl" ) );
@@ -789,6 +801,7 @@ public class CepEspTest extends TestCase {
         verify( ael ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
     }
 
+    @Test
     public void testMetByOperator() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_MetByOperator.drl" ) );
@@ -882,6 +895,7 @@ public class CepEspTest extends TestCase {
                     is( fh2 ) );
     }
 
+    @Test
     public void testAfterOnArbitraryDates() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_AfterOperatorDates.drl" ) );
@@ -934,6 +948,7 @@ public class CepEspTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    @Test
     public void testBeforeOnArbitraryDates() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_BeforeOperatorDates.drl" ) );
@@ -986,6 +1001,7 @@ public class CepEspTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    @Test
     public void testCoincidesOnArbitraryDates() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_CoincidesOperatorDates.drl" ) );
@@ -1038,6 +1054,7 @@ public class CepEspTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    @Test
     public void testSimpleTimeWindow() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
@@ -1172,6 +1189,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testSimpleLengthWindow() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleLengthWindow.drl" ) );
@@ -1258,6 +1276,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testDelayingNot() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_DelayingNot.drl" ) );
@@ -1342,6 +1361,7 @@ public class CepEspTest extends TestCase {
     //
     //    }
 
+    @Test
     public void testIdleTime() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1428,6 +1448,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testIdleTimeAndTimeToNextJob() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_SimpleTimeWindow.drl" ) );
@@ -1546,6 +1567,7 @@ public class CepEspTest extends TestCase {
         }
     }
 
+    @Test
     public void testCollectWithWindows() throws Exception {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
@@ -1664,6 +1686,7 @@ public class CepEspTest extends TestCase {
 
     }
 
+    @Test
     public void testPseudoSchedulerRemoveJobTest() {
         String str = "import org.drools.integrationtests.CepEspTest.A\n";
         str += "declare A\n";
@@ -1702,6 +1725,7 @@ public class CepEspTest extends TestCase {
         Serializable {
     }
 
+    @Test
     public void testStreamModeNoSerialization() throws IOException,
                                                ClassNotFoundException {
         final KnowledgeBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -1784,6 +1808,7 @@ public class CepEspTest extends TestCase {
         ksession2.dispose();
     }
 
+    @Test
     public void testIdentityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
         StockTickInterface st1 = new StockTick( 1,
@@ -1833,6 +1858,7 @@ public class CepEspTest extends TestCase {
         ksession1.dispose();
     }
 
+    @Test
     public void testEqualityAssertBehaviorOnEntryPoints() throws IOException,
                                                          ClassNotFoundException {
         StockTickInterface st1 = new StockTick( 1,
@@ -1880,6 +1906,7 @@ public class CepEspTest extends TestCase {
         ksession1.dispose();
     }
 
+    @Test
     public void testEventDeclarationForInterfaces() throws Exception {
         // read in the source
         final KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_EventInterfaces.drl",

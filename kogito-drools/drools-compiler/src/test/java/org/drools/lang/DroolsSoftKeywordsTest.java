@@ -5,18 +5,22 @@ package org.drools.lang;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author admin
  *
  */
-public class DroolsSoftKeywordsTest extends TestCase {
+public class DroolsSoftKeywordsTest {
 
 	/**
 	 * Test method for {@link org.drools.lang.DroolsSoftKeywords#isOperator(java.lang.String, boolean)}.
 	 */
-	public void testIsOperator() {
+    @Test
+    public void testIsOperator() {
 		// initializes the registry
 		new EvaluatorRegistry();
 		

@@ -41,6 +41,12 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.spi.ObjectType;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class LogicTransformerTest extends DroolsTestCase {
     /**
      * (a||b)&&c
@@ -66,6 +72,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *         a   c    b   c
      * </pre>
      */
+    @Test
     public void testSingleOrAndOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -142,6 +149,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *                  f        f        f        f
      * </pre>
      */
+    @Test
     public void testMultipleOrAndOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -275,6 +283,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *
      *
      */
+    @Test
     public void testNotOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -341,6 +350,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *
      *
      */
+    @Test
     public void testNotExistsTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -404,6 +414,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *            a    b
      * </pre>
      */
+    @Test
     public void testExistOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -444,6 +455,7 @@ public class LogicTransformerTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testEliminateEmptyBranchesAndDuplications() throws InvalidRuleException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -535,6 +547,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      *
      *
      */
+    @Test
     public void testProcessTree() throws IOException,
                                  ClassNotFoundException,
                                  InvalidPatternException {
@@ -618,6 +631,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         }
     }
 
+    @Test
     public void testCloneable() {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
@@ -720,6 +734,7 @@ public class LogicTransformerTest extends DroolsTestCase {
      * @throws ClassNotFoundException
      *
      */
+    @Test
     public void testTransform() throws IOException,
                                ClassNotFoundException,
                                InvalidPatternException {

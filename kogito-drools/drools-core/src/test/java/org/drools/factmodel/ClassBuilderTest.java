@@ -26,8 +26,10 @@ import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
@@ -35,19 +37,15 @@ import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 import org.drools.util.ClassLoaderUtil;
 
-public class ClassBuilderTest extends TestCase {
+public class ClassBuilderTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
     ClassLoader classLoader;
     JavaDialectRuntimeData data;
     
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         data = new JavaDialectRuntimeData();        
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
@@ -71,6 +69,7 @@ public class ClassBuilderTest extends TestCase {
     /*
      * Test method for 'org.drools.common.asm.ClassBuilder.buildClass(ClassDefinition)'
      */
+    @Test
     public void testBuildClass() {
         try {
             ClassBuilder builder = new ClassBuilder();
@@ -99,10 +98,10 @@ public class ClassBuilderTest extends TestCase {
 
             byte[] d = builder.buildClass( classDef );
 
-            Assert.assertSame( "Returned class should be the same",
+            assertSame( "Returned class should be the same",
                                clazz,
                                classDef.getDefinedClass() );
-            Assert.assertEquals( "Class name should be equal",
+            assertEquals( "Class name should be equal",
                                  classDef.getClassName(),
                                  clazz.getName() );
 
@@ -111,14 +110,14 @@ public class ClassBuilderTest extends TestCase {
             String stringValue = "Atributo String ok";
             stringDef.setValue( instance,
                                 stringValue );
-            Assert.assertEquals( "Attribute should have been correctly set",
+            assertEquals( "Attribute should have been correctly set",
                                  stringValue,
                                  stringDef.getValue( instance ) );
 
             int intValue = 50;
             intDef.setValue( instance,
                              new Integer( intValue ) );
-            Assert.assertEquals( "Attribute should have been correctly set",
+            assertEquals( "Attribute should have been correctly set",
                                  intValue,
                                  ((Integer) intDef.getValue( instance )).intValue() );
 
@@ -127,7 +126,7 @@ public class ClassBuilderTest extends TestCase {
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Error creating class" );
+            fail( "Error creating class" );
         }
     }
 
@@ -148,6 +147,7 @@ public class ClassBuilderTest extends TestCase {
         jout.close();
     }
 
+    @Test
     public void testEquals() {
         try {
             ClassBuilder builder = new ClassBuilder();
@@ -241,42 +241,43 @@ public class ClassBuilderTest extends TestCase {
 
             Object o = new Object();
 
-            Assert.assertTrue( x.equals( x ) );
-            Assert.assertFalse( x.equals( null ) );
-            Assert.assertFalse( x.equals( o ) );
+            assertTrue( x.equals( x ) );
+            assertFalse( x.equals( null ) );
+            assertFalse( x.equals( o ) );
 
-            Assert.assertTrue( x.equals( y ) );
+            assertTrue( x.equals( y ) );
 
             intDef.setValue( y,
                              new Integer( 1 ) );
-            Assert.assertFalse( x.equals( y ) );
+            assertFalse( x.equals( y ) );
 
             intDef.setValue( y,
                              new Integer( 10 ) );
             strDef.setValue( y,
                              "xyz" );
-            Assert.assertFalse( x.equals( y ) );
+            assertFalse( x.equals( y ) );
 
             strDef.setValue( y,
                              null );
-            Assert.assertFalse( x.equals( y ) );
+            assertFalse( x.equals( y ) );
 
             strDef.setValue( y,
                              "abc" );
             dateDef.setValue( y,
                               new Date( 1 ) );
-            Assert.assertFalse( x.equals( y ) );
+            assertFalse( x.equals( y ) );
 
             dateDef.setValue( y,
                               null );
-            Assert.assertFalse( x.equals( y ) );
+            assertFalse( x.equals( y ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Exception not expected" );
+            fail( "Exception not expected" );
         }
     }
 
+    @Test
     public void testHashCode() {
         try {
             ClassBuilder builder = new ClassBuilder();
@@ -308,19 +309,20 @@ public class ClassBuilderTest extends TestCase {
             strDef.setValue( x,
                              "abc" );
 
-            Assert.assertEquals( "Wrong hashcode calculation",
+            assertEquals( "Wrong hashcode calculation",
                                  31 + 10,
                                  x.hashCode() );
-            Assert.assertEquals( "Wrong hashcode calculation",
+            assertEquals( "Wrong hashcode calculation",
                                  x.hashCode(),
                                  x.hashCode() );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Exception not expected" );
+            fail( "Exception not expected" );
         }
     }
 
+    @Test
     public void testToString() {
         try {
             ClassBuilder builder = new ClassBuilder();
@@ -398,21 +400,22 @@ public class ClassBuilderTest extends TestCase {
 
             String result = x.toString();
 
-            Assert.assertTrue( result.contains( long1Def.getName() ) );
-            Assert.assertTrue( result.contains( long2Def.getName() ) );
-            Assert.assertTrue( result.contains( doubleDef.getName() ) );
-            Assert.assertTrue( result.contains( intDef.getName() ) );
-            Assert.assertTrue( result.contains( strDef.getName() ) );
-            Assert.assertTrue( result.contains( dateDef.getName() ) );
-            Assert.assertTrue( result.contains( str2Def.getName() ) );
+            assertTrue( result.contains( long1Def.getName() ) );
+            assertTrue( result.contains( long2Def.getName() ) );
+            assertTrue( result.contains( doubleDef.getName() ) );
+            assertTrue( result.contains( intDef.getName() ) );
+            assertTrue( result.contains( strDef.getName() ) );
+            assertTrue( result.contains( dateDef.getName() ) );
+            assertTrue( result.contains( str2Def.getName() ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Exception not expected" );
+            fail( "Exception not expected" );
         }
 
     }
 
+    @Test
     public void testConstructorWithFields() {
         try {
             ClassBuilder builder = new ClassBuilder();
@@ -443,7 +446,7 @@ public class ClassBuilderTest extends TestCase {
 
             Constructor< ? >[] cons = clazz.getConstructors();
 
-            Assert.assertEquals( 3,
+            assertEquals( 3,
                                  cons.length );
             for ( Constructor< ? > c : cons ) {
                 Class< ? >[] ptypes = c.getParameterTypes();
@@ -453,7 +456,7 @@ public class ClassBuilderTest extends TestCase {
                     // constructor with fields
                     for ( int i = 0; i < ptypes.length; i++ ) {
                         if ( !ptypes[i].equals( fields[i].getType() ) ) {
-                            Assert.fail( "Wrong parameter in constructor. index=" + i + " expected=" + fields[i].getType() + " found=" + ptypes[i] );
+                            fail( "Wrong parameter in constructor. index=" + i + " expected=" + fields[i].getType() + " found=" + ptypes[i] );
                         }
                     }
 
@@ -491,7 +494,7 @@ public class ClassBuilderTest extends TestCase {
                     int i = 0;
                     for ( FieldDefinition field : fields ) {
                         if ( field.isKey() && !ptypes[i++].equals( field.getType() ) ) {
-                            Assert.fail( "Wrong parameter in constructor. index=" + i + " expected=" + field.getType() + " found=" + ptypes[i] );
+                            fail( "Wrong parameter in constructor. index=" + i + " expected=" + field.getType() + " found=" + ptypes[i] );
                         }
                     }
                     // test actual invocation
@@ -513,13 +516,13 @@ public class ClassBuilderTest extends TestCase {
                                   fields[8].getValue( instance ) );
                     
                 } else {
-                    Assert.fail( "Unexpected constructor: " + c.toString() );
+                    fail( "Unexpected constructor: " + c.toString() );
                 }
             }
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Unexpected Exception: " + e.getMessage() );
+            fail( "Unexpected Exception: " + e.getMessage() );
         }
 
     }

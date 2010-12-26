@@ -32,11 +32,15 @@ package org.drools;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.rule.Rule;
 
-public class RuleIntegrationExceptionTest extends TestCase {
+public class RuleIntegrationExceptionTest {
+    @Test
     public void testConstruct() {
         final Rule rule = new Rule( "cheese" );
 

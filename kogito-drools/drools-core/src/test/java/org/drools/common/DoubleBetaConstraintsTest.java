@@ -20,8 +20,15 @@ import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.VariableConstraint;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
+    @Test
     public void testAllNoneIndxed() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -29,6 +36,7 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DoubleBetaConstraints.class );
     }   
     
+    @Test
     public void testOneIndxed() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -41,6 +49,7 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DoubleBetaConstraints.class );
     }      
     
+    @Test
     public void testTwoIndxed() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );

@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.TypeResolver;
 import org.drools.io.Resource;
@@ -41,18 +44,21 @@ import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.util.ChainedProperties;
 
-public class PackageBuilderConfigurationTest extends TestCase {
+public class PackageBuilderConfigurationTest {
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
     }
 
+    @Test
     public void testIgnoreDefaults() {
         // check standard chained properties, that includes defaults
         ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
@@ -84,6 +90,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
                                                       null ) );
     }
 
+    @Test
     public void testSystemProperties() {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
@@ -123,6 +130,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
                       javaConf3.getCompiler() );
     }
 
+    @Test
     public void testProgrammaticProperties() {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         assertTrue( cfg.getDefaultDialect().equals( "java") );
@@ -138,6 +146,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
                       cfg2.getDefaultDialect().getClass() );
     }
 
+    @Test
     public void testProgramaticProperties2() {
         JavaDialectConfiguration javaConf =  new JavaDialectConfiguration( );
         javaConf.init(new PackageBuilderConfiguration());
@@ -162,6 +171,7 @@ public class PackageBuilderConfigurationTest extends TestCase {
                       javaConf2.getCompiler() );
     }
 
+    @Test
     public void testMockDialect() {
         Package pkg = new Package( "org.pkg1" );
 

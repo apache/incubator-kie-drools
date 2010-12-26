@@ -26,8 +26,10 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.HashSet;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.EnabledBoolean;
@@ -60,25 +62,12 @@ import org.drools.type.DateFormatsImpl;
  * @author etirelli
  *
  */
-public class RuleBuilderTest extends TestCase {
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
+public class RuleBuilderTest {
 
     /**
      * Test method for {@link org.drools.rule.builder.RuleBuilder#build(org.drools.rule.Package, org.drools.lang.descr.RuleDescr)}.
      */
+    @Test
     public void testBuild() throws Exception {
         final DrlParser parser = new DrlParser();
 
@@ -89,7 +78,7 @@ public class RuleBuilderTest extends TestCase {
         final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "nestedConditionalElements.drl" ) ) );
 
         // just checking there is no parsing errors
-        Assert.assertFalse( parser.getErrors().toString(),
+        assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
 
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
@@ -119,7 +108,7 @@ public class RuleBuilderTest extends TestCase {
 
         builder.build( context );
 
-        Assert.assertTrue( context.getErrors().toString(),
+        assertTrue( context.getErrors().toString(),
                            context.getErrors().isEmpty() );
 
         final Rule rule = context.getRule();
@@ -147,6 +136,7 @@ public class RuleBuilderTest extends TestCase {
         assertTrue( not2.getInnerDeclarations().keySet().contains( "$likes" ) );
     }
 
+    @Test
     public void testBuildAttributes() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
@@ -212,6 +202,7 @@ public class RuleBuilderTest extends TestCase {
         verify( rule ).setDateExpires( expires );
     }
 
+    @Test
     public void testBuildMetaAttributes() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
@@ -245,6 +236,7 @@ public class RuleBuilderTest extends TestCase {
                                          "It's a quoted\" string" );
     }
 
+    @Test
     public void testBuildDurationExpression() throws Exception {
         // creates mock objects
         final RuleBuildContext context = mock( RuleBuildContext.class );
@@ -274,6 +266,7 @@ public class RuleBuilderTest extends TestCase {
         verify( rule ).setCalendars( new String[]{"cal1", "cal2"} );
     }
 
+    @Test
     public void testBuildBigDecimalLiteralConstraint() throws Exception {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
@@ -293,7 +286,7 @@ public class RuleBuilderTest extends TestCase {
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( pkgDescr );
 
-        Assert.assertTrue( pkgBuilder.getErrors().toString(),
+        assertTrue( pkgBuilder.getErrors().toString(),
                            pkgBuilder.getErrors().isEmpty() );
 
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
@@ -304,6 +297,7 @@ public class RuleBuilderTest extends TestCase {
                     fc.getField().getValue() instanceof BigDecimal );
     }
 
+    @Test
     public void testBuildBigIntegerLiteralConstraint() throws Exception {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
@@ -323,7 +317,7 @@ public class RuleBuilderTest extends TestCase {
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( pkgDescr );
 
-        Assert.assertTrue( pkgBuilder.getErrors().toString(),
+        assertTrue( pkgBuilder.getErrors().toString(),
                            pkgBuilder.getErrors().isEmpty() );
 
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );

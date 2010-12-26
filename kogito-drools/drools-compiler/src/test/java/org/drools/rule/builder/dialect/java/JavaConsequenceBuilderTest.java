@@ -5,7 +5,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.Cheese;
@@ -23,19 +26,11 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
 
-public class JavaConsequenceBuilderTest extends TestCase {
+public class JavaConsequenceBuilderTest {
 
     private JavaConsequenceBuilder builder;
     private RuleBuildContext       context;
     private RuleDescr              ruleDescr;
-
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
         builder = new JavaConsequenceBuilder();
@@ -79,6 +74,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         pkgBuilder.reloadAll();         
     }
 
+    @Test
     public void testFixExitPointsReferences() {
         String consequence = " System.out.println(\"this is a test\");\n " + " exitPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with exitPoints\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
@@ -110,6 +106,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testFixEntryPointsReferences() {
         String consequence = " System.out.println(\"this is a test\");\n " + " entryPoints[\"foo\"].insert( new Cheese() );\n " + " System.out.println(\"we are done with entryPoints\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
@@ -141,6 +138,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testFixModifyBlocks() {
         String consequence = " System.out.println(\"this is a test\");\n " + " modify( $cheese ) { setPrice( 10 ), setAge( age ) }\n " + " System.out.println(\"we are done\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );
@@ -175,6 +173,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testFixInsertCalls() {
         String consequence = " System.out.println(\"this is a test\");\n " + 
                              " insert( $cheese );\n " + 
@@ -223,6 +222,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
 
     }
     
+    @Test
     public void testDefaultConsequenceCompilation() {
         String consequence = " System.out.println(\"this is a test\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );       
@@ -232,6 +232,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         assertTrue( context.getRule().getConsequence() instanceof Consequence );
     }
     
+    @Test
     public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         
@@ -251,6 +252,7 @@ public class JavaConsequenceBuilderTest extends TestCase {
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
     }    
     
+    @Test
     public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         

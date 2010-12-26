@@ -25,7 +25,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
@@ -36,8 +39,9 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
-public class RuleAgentTest extends TestCase {
+public class RuleAgentTest {
 
+    @Test
     public void testLists() {
         String s = "\tfoo.bar\n baz.bar\t whee ";
         List result = RuleAgent.list( s );
@@ -81,6 +85,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testFiles() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -119,6 +124,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testFilesWithKnowledgePackage() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -168,6 +174,7 @@ public class RuleAgentTest extends TestCase {
     //        assertTrue(x.exists());
     //    }
 
+    @Test
     public void testPollingFilesRuleBaseUpdate() throws Exception {
         //RuleBaseAssemblerTest.clearTempDirectory();
         final File dir = RuleBaseAssemblerTest.getTempDirectory();
@@ -263,6 +270,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testPollingFilesRuleBaseReplace() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -327,6 +335,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testPollingFilesRuleBaseReplaceWithKnowledgePackages() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -450,6 +459,7 @@ public class RuleAgentTest extends TestCase {
     //
     //    }    
 
+    @Test
     public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -507,6 +517,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testPollingFilesRuleBaseRemoveNewInstanceTrue() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -575,6 +586,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testDirectory() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -607,6 +619,7 @@ public class RuleAgentTest extends TestCase {
         //        assertEquals(1, rb.getPackages().length);
     }
 
+    @Test
     public void testCustomRuleBaseConfiguration() throws Exception {
         final File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -640,6 +653,7 @@ public class RuleAgentTest extends TestCase {
                       conf.isSequential() );
     }
 
+    @Test
     public void testLoadSampleConfig() {
         RuleAgent ag = new RuleAgent( new RuleBaseConfiguration() );
         Properties props = ag.loadFromProperties( "/sample-agent-config.properties" );
@@ -653,6 +667,7 @@ public class RuleAgentTest extends TestCase {
                                       props.getProperty( RuleAgent.FILES ) );
     }
     
+    @Test
     public void testLoadBasicAuthenticationSampleConfig() {
         RuleAgent ag = new RuleAgent( new RuleBaseConfiguration() );
         Properties props = ag.loadFromProperties( "/basic-authentication-sample-agent-config.properties" );
@@ -683,6 +698,7 @@ public class RuleAgentTest extends TestCase {
                       cleanActual );
     }
 
+    @Test
     public void testEventListenerSetup() throws Exception {
         RuleAgent ag = new RuleAgent( new RuleBaseConfiguration() );
         assertNotNull( ag.listener );
@@ -755,6 +771,7 @@ public class RuleAgentTest extends TestCase {
         ag.stopPolling();
     }
 
+    @Test
     public void testPollSetup() throws Exception {
         //this is the only method that will actually run the polling timer
 
@@ -782,6 +799,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testProviderMap() throws Exception {
 
         assertEquals( 3,
@@ -794,6 +812,7 @@ public class RuleAgentTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadUpFromProperties() throws Exception {
         AnotherRuleAgentMock ag = new AnotherRuleAgentMock();
         Map oldMap = ag.PACKAGE_PROVIDERS;
@@ -827,6 +846,7 @@ public class RuleAgentTest extends TestCase {
         ag.PACKAGE_PROVIDERS = oldMap;
     }
 
+    @Test
     public void testLoadRuleBaseConfigurationProperties() throws Exception {
         AnotherRuleAgentMock ag = new AnotherRuleAgentMock();
         Map oldMap = ag.PACKAGE_PROVIDERS;

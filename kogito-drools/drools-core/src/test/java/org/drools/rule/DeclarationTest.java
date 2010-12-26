@@ -36,7 +36,10 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
@@ -44,15 +47,17 @@ import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.spi.InternalReadAccessor;
 
-public class DeclarationTest extends TestCase {
+public class DeclarationTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testDeclaration() throws IntrospectionException {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",
@@ -81,6 +86,7 @@ public class DeclarationTest extends TestCase {
 
     }
 
+    @Test
     public void testGetFieldValue() throws IntrospectionException {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type",

@@ -29,7 +29,9 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.rule.GroupElement;
@@ -40,7 +42,7 @@ import org.junit.Ignore;
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 3, 2008 Time: 11:19:44 AM To change this template use File |
  * Settings | File Templates.
  */
-public class DroolsObjectIOTest  extends TestCase {
+public class DroolsObjectIOTest {
 
     private static final String TEST_FILE   = "test.dat";
     private static final GroupElement   testGroupElement    = new GroupElement();
@@ -56,7 +58,7 @@ public class DroolsObjectIOTest  extends TestCase {
     public DroolsObjectIOTest() {
         
     }
-    
+
     @org.junit.Test
     public void testFileIO() throws Exception {
         File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());

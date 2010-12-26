@@ -2,7 +2,10 @@ package org.drools.reteoo;
 
 import java.io.StringReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.compiler.DrlParser;
@@ -18,10 +21,11 @@ import org.drools.rule.Rule;
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 20, 2008 Time: 2:36:47 PM To change this template use File |
  * Settings | File Templates.
  */
-public class ReteooBuilderPerformanceTest extends TestCase {
+public class ReteooBuilderPerformanceTest {
     private static final int    RULE_COUNT  = Integer.parseInt(System.getProperty("rule.count", "1000"));
     private static final int    RETEBUILDER_COUNT  = Integer.parseInt(System.getProperty("retebuilder.count", "1"));
 
+    @Test
     public void testReteBuilder() throws DroolsParserException {
         addRules(generatePackage(RULE_COUNT));
     }

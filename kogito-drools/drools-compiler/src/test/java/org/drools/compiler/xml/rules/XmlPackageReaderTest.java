@@ -3,7 +3,10 @@ package org.drools.compiler.xml.rules;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -36,7 +39,7 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
-public class XmlPackageReaderTest extends TestCase {
+public class XmlPackageReaderTest {
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -50,6 +53,7 @@ public class XmlPackageReaderTest extends TestCase {
                                             config );
     }
 
+    @Test
     public void testParseFrom() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
@@ -68,6 +72,7 @@ public class XmlPackageReaderTest extends TestCase {
         
     }
 
+    @Test
     public void testAccumulate() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
@@ -111,6 +116,7 @@ public class XmlPackageReaderTest extends TestCase {
     }
     
     
+    @Test
     public void testAccumulateMultiPattern() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseAccumulate.xml" ) ) );
@@ -142,6 +148,7 @@ public class XmlPackageReaderTest extends TestCase {
         assertEquals(listpattern[1].getObjectType(), "Cup");
     }
     
+    @Test
     public void testParseForall() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseForall.xml" ) ) );
@@ -164,6 +171,7 @@ public class XmlPackageReaderTest extends TestCase {
                       "Cheese" );
     }
 
+    @Test
     public void testParseExists() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseExists.xml" ) ) );
@@ -190,6 +198,7 @@ public class XmlPackageReaderTest extends TestCase {
                       "Cheese" );
     }
 
+    @Test
     public void testParseCollect() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.xml" ) ) );
@@ -244,6 +253,7 @@ public class XmlPackageReaderTest extends TestCase {
         
     }
 
+    @Test
     public void testParsePackageName() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParsePackageName.xml" ) ) );
@@ -253,6 +263,7 @@ public class XmlPackageReaderTest extends TestCase {
                       packageDescr.getName() );
     }
 
+    @Test
     public void testParseImport() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseImport.xml" ) ) );
@@ -275,6 +286,7 @@ public class XmlPackageReaderTest extends TestCase {
                      ((FunctionImportDescr) functionImport.get( 0 )).getTarget() );
     }
 
+    @Test
     public void testParseGlobal() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseGlobal.xml" ) ) );
@@ -306,6 +318,7 @@ public class XmlPackageReaderTest extends TestCase {
                       yada.getIdentifier() );
     }
 
+    @Test
     public void testParseFunction() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFunction.xml" ) ) );
@@ -353,6 +366,7 @@ public class XmlPackageReaderTest extends TestCase {
                       functionDescr.getText().trim() );
     }
 
+    @Test
     public void testParseRule() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
@@ -422,6 +436,7 @@ public class XmlPackageReaderTest extends TestCase {
         assertNotNull( consequence );
     }
 
+    @Test
     public void testParseLhs() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.xml" ) ) );
@@ -561,6 +576,7 @@ public class XmlPackageReaderTest extends TestCase {
                       evalDescr.getContent() );
     }
 
+    @Test
     public void testParseRhs() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRhs.xml" ) ) );
@@ -617,6 +633,7 @@ public class XmlPackageReaderTest extends TestCase {
                       consequence.trim() );
     }
 
+    @Test
     public void testParseQuery() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseQuery.xml" ) ) );

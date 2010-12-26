@@ -3,13 +3,17 @@ package org.drools.testframework;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.mvel2.MVEL;
 
-public class FactPopulatorTest extends TestCase {
+public class FactPopulatorTest {
 
-	public void testMVELPopulate() throws Exception {
+    @Test
+    public void testMVELPopulate() throws Exception {
 		Object q = MVEL.eval("new org.drools.testframework.DumbFact()");
 
 		Map m = new HashMap();
@@ -45,7 +49,8 @@ public class FactPopulatorTest extends TestCase {
 
 	}
 
-	public void testMVELFactChecker() throws Exception {
+    @Test
+    public void testMVELFactChecker() throws Exception {
 		//now we have a bean check it can be verified
 		final DumbFact d = new DumbFact();
 		d.setAge(42);

@@ -55,6 +55,12 @@ import org.drools.rule.EntryPoint;
 import org.drools.FactHandle;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * @author mproctor
  *
@@ -64,7 +70,8 @@ public class ReteTest extends DroolsTestCase {
     private BuildContext   buildContext;
     private EntryPointNode entryPoint;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         this.buildContext = new BuildContext( ruleBase,
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
@@ -80,6 +87,7 @@ public class ReteTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testObjectTypeNodes() throws Exception {
         final Rete rete = ruleBase.getRete();
 
@@ -110,6 +118,7 @@ public class ReteTest extends DroolsTestCase {
      * 
      * @throws FactException
      */
+    @Test
     public void testCache() throws FactException {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -175,6 +184,7 @@ public class ReteTest extends DroolsTestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testAssertObject() throws Exception {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -227,6 +237,7 @@ public class ReteTest extends DroolsTestCase {
                     ((DefaultFactHandle) results[0]).getObject() );
     }
 
+    @Test
     public void testAssertObjectWithNoMatchingObjectTypeNode() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -242,6 +253,7 @@ public class ReteTest extends DroolsTestCase {
                       rete.getObjectTypeNodes().size() );
     }
 
+    @Test
     public void testHierarchy() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -320,6 +332,7 @@ public class ReteTest extends DroolsTestCase {
      * All objects retracted from a RootNode must be propagated to all children
      * ObjectTypeNodes.
      */
+    @Test
     public void testRetractObject() throws Exception {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -381,6 +394,7 @@ public class ReteTest extends DroolsTestCase {
                     ((DefaultFactHandle) results[0]).getObject() );
     }
 
+    @Test
     public void testIsShadowed() {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) this.ruleBase.newStatefulSession();
 
@@ -412,6 +426,7 @@ public class ReteTest extends DroolsTestCase {
         final Object[] results = (Object[]) sink1.getAsserted().get( 0 );
     }
 
+    @Test
     public void testNotShadowed() {
 
         Properties properties = new Properties();

@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -15,7 +18,7 @@ import org.drools.rule.Package;
 
 import com.thoughtworks.xstream.XStream;
 
-public class ReteooBuilderTest extends TestCase {
+public class ReteooBuilderTest {
 
     private final boolean writeTree = false;
 
@@ -24,14 +27,17 @@ public class ReteooBuilderTest extends TestCase {
         return RuleBaseFactory.newRuleBase();
     }
 
+    @Test
     public void testThreePatternsWithConstraints() throws Exception {
         //checkRuleBase( "ThreePatternsWithConstraints" );
     }
 
+    @Test
     public void testOneAndTwoOrs() throws Exception {
         //checkRuleBase( "OneAndTwoOrs" );
     }
 
+    @Test
     public void testOneAndTwoOrsPerson() throws Exception {
         //checkRuleBase( "OneAndTwoOrsPerson" );
     }

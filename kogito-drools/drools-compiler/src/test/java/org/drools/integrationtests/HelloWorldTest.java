@@ -3,7 +3,10 @@ package org.drools.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -25,9 +28,10 @@ import org.mvel2.debug.Frame;
 /**
  * This is a sample class to launch a rule.
  */
-public class HelloWorldTest extends TestCase {
+public class HelloWorldTest {
 
-	public void testHelloWorld() throws Exception {
+    @Test
+    public void testHelloWorld() throws Exception {
 		// load up the knowledge base
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -41,7 +45,8 @@ public class HelloWorldTest extends TestCase {
 		logger.close();
 	}
 
-	public void testHelloWorldDebug() throws Exception {
+    @Test
+    public void testHelloWorldDebug() throws Exception {
 		final List<String> knownVariables = new ArrayList<String>();
 		MVELRuntime.resetDebugger();
 		MVELDebugHandler.setDebugMode(true);

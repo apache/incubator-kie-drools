@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Otherwise;
 import org.drools.RuleBase;
@@ -39,8 +42,9 @@ import org.drools.spi.KnowledgeHelper;
  * This tests the "otherwise" feature.
  * @author Michael Neale
  */
-public class OtherwiseTest extends TestCase {
+public class OtherwiseTest {
     
+    @Test
     public void testOneRuleFiringNoOtherwise() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 
@@ -63,6 +67,7 @@ public class OtherwiseTest extends TestCase {
 
     }
 
+    @Test
     public void testTwoRulesFiringNoOtherwise() throws Exception {
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase( RuleBase.RETEOO );
 

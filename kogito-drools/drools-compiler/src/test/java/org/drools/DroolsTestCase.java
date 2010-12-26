@@ -19,16 +19,13 @@ package org.drools;
 import java.util.Arrays;
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-public abstract class DroolsTestCase extends TestCase {
-    public DroolsTestCase() {
-        super();
-    }
+import static org.junit.Assert.*;
 
-    public DroolsTestCase(final String name) {
-        super( name );
-    }
+public abstract class DroolsTestCase {
 
     public void assertLength(final int len,
                              final Object[] array) {

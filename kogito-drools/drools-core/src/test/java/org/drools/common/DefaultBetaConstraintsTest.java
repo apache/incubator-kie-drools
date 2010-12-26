@@ -20,8 +20,15 @@ import org.drools.Cheese;
 import org.drools.base.evaluators.Operator;
 import org.drools.rule.VariableConstraint;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     
+    @Test
     public void testNoIndexConstraints() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );        
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0 };        
@@ -52,6 +59,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );             
     }    
     
+    @Test
     public void testIndexedConstraint() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );        
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0 };        
@@ -83,6 +91,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     }        
     
     
+    @Test
     public void testSingleIndex() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -94,6 +103,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );    
     }   
     
+    @Test
     public void testSingleIndexNotFirst() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -106,6 +116,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );         
     }    
     
+    @Test
     public void testDoubleIndex() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -118,6 +129,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );       
     }   
     
+    @Test
     public void testDoubleIndexNotFirst() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -131,6 +143,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
     }       
     
     
+    @Test
     public void testTripleIndex() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
@@ -143,6 +156,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );               
     }      
     
+    @Test
     public void testTripleIndexNotFirst() {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );

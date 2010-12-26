@@ -29,25 +29,6 @@ import static org.junit.Assert.*;
  */
 public class ResourceChangeScannerTest {
 
-    public ResourceChangeScannerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
     public void testValidPollIntervals(){
         //the default configuration should be valid!!

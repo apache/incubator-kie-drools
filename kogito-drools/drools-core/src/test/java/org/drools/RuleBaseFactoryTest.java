@@ -32,12 +32,16 @@ package org.drools;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.common.InternalRuleBase;
 
-public class RuleBaseFactoryTest extends TestCase {
+public class RuleBaseFactoryTest {
 
+    @Test
     public void testReteOO() {
         final RuleBase rb = RuleBaseFactory.newRuleBase();
         assertTrue( rb instanceof org.drools.reteoo.ReteooRuleBase );

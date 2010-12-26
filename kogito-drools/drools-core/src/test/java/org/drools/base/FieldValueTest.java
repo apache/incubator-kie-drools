@@ -32,64 +32,63 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.spi.FieldValue;
 
-public class FieldValueTest extends TestCase {
+public class FieldValueTest {
     FieldValue field1;
     FieldValue field2;
     FieldValue field3;
     FieldValue field4;
     FieldValue field5;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.field1 = FieldFactory.getFieldValue( null );
         this.field2 = FieldFactory.getFieldValue( null );
         this.field3 = FieldFactory.getFieldValue( "A" );
         this.field4 = FieldFactory.getFieldValue( "A" );
         this.field5 = FieldFactory.getFieldValue( "B" );
-
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /*
      * Test method for 'org.drools.base.FieldValue.hashCode()'
      */
+    @Test
     public void testHashCode() {
-        Assert.assertEquals( this.field1.hashCode(),
+        assertEquals( this.field1.hashCode(),
                              this.field1.hashCode() );
-        Assert.assertEquals( this.field1.hashCode(),
+        assertEquals( this.field1.hashCode(),
                              this.field2.hashCode() );
-        Assert.assertEquals( this.field3.hashCode(),
+        assertEquals( this.field3.hashCode(),
                              this.field3.hashCode() );
-        Assert.assertEquals( this.field3.hashCode(),
+        assertEquals( this.field3.hashCode(),
                              this.field4.hashCode() );
-        Assert.assertFalse( this.field1.hashCode() == this.field3.hashCode() );
-        Assert.assertFalse( this.field3.hashCode() == this.field1.hashCode() );
-        Assert.assertFalse( this.field3.hashCode() == this.field5.hashCode() );
+        assertFalse( this.field1.hashCode() == this.field3.hashCode() );
+        assertFalse( this.field3.hashCode() == this.field1.hashCode() );
+        assertFalse( this.field3.hashCode() == this.field5.hashCode() );
     }
 
     /*
      * Test method for 'org.drools.base.FieldValue.equals(Object)'
      */
+    @Test
     public void testEqualsObject() {
-        Assert.assertEquals( this.field1,
+        assertEquals( this.field1,
                              this.field1 );
-        Assert.assertEquals( this.field1,
+        assertEquals( this.field1,
                              this.field2 );
-        Assert.assertEquals( this.field3,
+        assertEquals( this.field3,
                              this.field3 );
-        Assert.assertEquals( this.field3,
+        assertEquals( this.field3,
                              this.field4 );
-        Assert.assertFalse( this.field1.equals( this.field3 ) );
-        Assert.assertFalse( this.field3.equals( this.field1 ) );
-        Assert.assertFalse( this.field3.equals( this.field5 ) );
+        assertFalse( this.field1.equals( this.field3 ) );
+        assertFalse( this.field3.equals( this.field1 ) );
+        assertFalse( this.field3.equals( this.field5 ) );
     }
 
 }

@@ -23,8 +23,6 @@ import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
-
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
 import org.drools.RuleIntegrationException;
@@ -39,13 +37,20 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * This is a sample file to launch a rule package from a rule source file.
  */
-public abstract class Waltz extends TestCase {
+public abstract class Waltz {
 
     protected abstract RuleBase getRuleBase() throws Exception;
 
+    @Test
     public void testWaltz() {
         try {
 

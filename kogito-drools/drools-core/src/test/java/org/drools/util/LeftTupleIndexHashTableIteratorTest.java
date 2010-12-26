@@ -26,7 +26,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -60,7 +63,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 
-public class LeftTupleIndexHashTableIteratorTest extends TestCase {
+public class LeftTupleIndexHashTableIteratorTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
     static {
@@ -71,6 +74,7 @@ public class LeftTupleIndexHashTableIteratorTest extends TestCase {
         registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
     }
 
+    @Test
     public void test1() {
         VariableConstraint constraint0 = (VariableConstraint) getConstraint( "d",
                                                                              Operator.EQUAL,
@@ -225,6 +229,7 @@ public class LeftTupleIndexHashTableIteratorTest extends TestCase {
 
     }
 
+    @Test
     public void testLastBucketInTheTable() {
         // JBRULES-2574
         // setup the entry array with an element in the first bucket, one 

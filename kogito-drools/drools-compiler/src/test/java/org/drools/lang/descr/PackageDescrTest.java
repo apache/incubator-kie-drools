@@ -3,10 +3,14 @@ package org.drools.lang.descr;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PackageDescrTest extends TestCase {
+public class PackageDescrTest {
 
+    @Test
     public void testAttributeOverriding() {
         PackageDescr desc = new PackageDescr("foo");
         

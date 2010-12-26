@@ -18,8 +18,10 @@ package org.drools.base.extractors;
 
 import java.util.Vector;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Address;
 import org.drools.Person;
@@ -27,7 +29,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.spi.InternalReadAccessor;
 
-public class MVELClassFieldExtractorTest extends TestCase {
+public class MVELClassFieldExtractorTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
     InternalReadAccessor    extractor;
@@ -35,7 +37,8 @@ public class MVELClassFieldExtractorTest extends TestCase {
     private final Address[] business = new Address[2];
     private final Address[] home     = new Address[2];
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
@@ -70,6 +73,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
 
     }
 
+    @Test
     public void testGetBooleanValue() {
         try {
             this.extractor.getBooleanValue( null,
@@ -80,6 +84,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetByteValue() {
         try {
             this.extractor.getByteValue( null,
@@ -90,6 +95,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetCharValue() {
         try {
             this.extractor.getCharValue( null,
@@ -100,6 +106,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetDoubleValue() {
         try {
             this.extractor.getDoubleValue( null,
@@ -110,6 +117,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetFloatValue() {
         try {
             this.extractor.getFloatValue( null,
@@ -120,6 +128,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetIntValue() {
         try {
             this.extractor.getIntValue( null,
@@ -130,6 +139,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetLongValue() {
         try {
             this.extractor.getLongValue( null,
@@ -140,6 +150,7 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetShortValue() {
         try {
             this.extractor.getShortValue( null,
@@ -150,33 +161,36 @@ public class MVELClassFieldExtractorTest extends TestCase {
         }
     }
 
+    @Test
     public void testGetValue() {
         try {
-            Assert.assertEquals( home[0].getStreet(),
+            assertEquals( home[0].getStreet(),
                                  this.extractor.getValue( null,
                                                           this.person[0] ) );
-            Assert.assertTrue( this.extractor.getValue( null,
+            assertTrue( this.extractor.getValue( null,
                                                         this.person[0] ) instanceof String );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
     }
 
+    @Test
     public void testIsNullValue() {
         try {
-            Assert.assertFalse( this.extractor.isNullValue( null,
+            assertFalse( this.extractor.isNullValue( null,
                                                             this.person[0] ) );
 
             InternalReadAccessor nullExtractor = store.getReader( Person.class,
                                                                   "addresses['business'].phone",
                                                                   getClass().getClassLoader() );
-            Assert.assertTrue( nullExtractor.isNullValue( null,
+            assertTrue( nullExtractor.isNullValue( null,
                                                           this.person[0] ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
     }
 
+    @Test
     public void testMultithreads() {
         final int THREAD_COUNT = 30;
 

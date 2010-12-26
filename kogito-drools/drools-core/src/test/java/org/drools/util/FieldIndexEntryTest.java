@@ -16,7 +16,10 @@
 
 package org.drools.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.base.ClassFieldAccessorCache;
@@ -32,16 +35,18 @@ import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.AbstractHashTable.SingleIndex;
 import org.drools.reteoo.RightTuple;
 
-public class FieldIndexEntryTest extends TestCase {
+public class FieldIndexEntryTest {
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testSingleEntry() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",
@@ -87,6 +92,7 @@ public class FieldIndexEntryTest extends TestCase {
         assertNull( index.first );
     }
 
+    @Test
     public void testTwoEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",
@@ -142,6 +148,7 @@ public class FieldIndexEntryTest extends TestCase {
         stilton1.setType( "cheddar" );
     }
 
+    @Test
     public void testThreeEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                                   "type",

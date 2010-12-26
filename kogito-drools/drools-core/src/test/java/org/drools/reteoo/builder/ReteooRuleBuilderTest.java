@@ -21,8 +21,10 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.ClassObjectType;
 import org.drools.reteoo.ReteooBuilder;
@@ -40,30 +42,23 @@ import org.drools.spi.KnowledgeHelper;
  * @author etirelli
  *
  */
-public class ReteooRuleBuilderTest extends TestCase {
+public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
     private ReteooRuleBase    rulebase;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before
+    public void setUp() throws Exception {
         this.builder = new ReteooRuleBuilder();
         this.rulebase = new ReteooRuleBase( "default" );
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /**
      * Test method for {@link org.drools.reteoo.builder.ReteooRuleBuilder#addRule(org.drools.rule.Rule, org.drools.reteoo.ReteooRuleBase, java.util.Map, int)}.
      */
+    @Test
     public void testAddRuleWithPatterns() {
         final Rule rule = new Rule( "only patterns" );
         final Pattern c1 = new Pattern( 0,
@@ -105,7 +100,7 @@ public class ReteooRuleBuilderTest extends TestCase {
                                                this.rulebase,
                                                new ReteooBuilder.IdGenerator( 1 ) );
 
-        Assert.assertEquals( "Rule must have a single terminal node",
+        assertEquals( "Rule must have a single terminal node",
                              1,
                              terminals.size() );
 

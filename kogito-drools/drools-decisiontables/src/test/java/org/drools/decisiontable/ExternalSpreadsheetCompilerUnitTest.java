@@ -19,7 +19,10 @@ package org.drools.decisiontable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a> Some
@@ -28,7 +31,8 @@ import junit.framework.TestCase;
  *         that it generates DRL in the correct structure (not that the DRL
  *         itself is correct).
  */
-public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
+public class ExternalSpreadsheetCompilerUnitTest {
+    @Test
     public void testLoadFromClassPath() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile( "/data/MultiSheetDST.xls",
@@ -45,6 +49,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "import example.model.Car;" ) > -1 );
     }
 
+    @Test
     public void testLoadSpecificWorksheet() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile( "/data/MultiSheetDST.xls",
@@ -56,6 +61,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
         assertNotNull( drl );
     }
 
+    @Test
     public void testLoadCsv() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile( "/data/ComplexWorkbook.csv",
@@ -71,6 +77,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red),\n\t\tmyObject.size () > 1" ) > 0 );
     }
 
+    @Test
     public void testLoadBasicWithMergedCells() {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final String drl = converter.compile( "/data/BasicWorkbook.xls",
@@ -105,6 +112,7 @@ public class ExternalSpreadsheetCompilerUnitTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadBasicWithExtraCells() {
         final ExternalSpreadsheetCompiler compiler = new ExternalSpreadsheetCompiler();
         final String drl = compiler.compile( "/data/BasicWorkbook.xls",

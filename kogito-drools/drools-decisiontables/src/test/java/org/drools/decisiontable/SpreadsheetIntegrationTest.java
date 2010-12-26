@@ -20,7 +20,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.acme.insurance.launcher.PricingRuleLauncher;
 import org.drools.KnowledgeBase;
@@ -33,8 +36,9 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class SpreadsheetIntegrationTest extends TestCase {
+public class SpreadsheetIntegrationTest {
 
+    @Test
     public void testExecute() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -70,6 +74,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testNamedWorksheet() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -109,6 +114,7 @@ public class SpreadsheetIntegrationTest extends TestCase {
     /**
      * A smoke test mainly.
      */
+    @Test
     public void testInsuranceExample() throws Exception {
         PricingRuleLauncher launcher = new PricingRuleLauncher();
         assertEquals( 120,

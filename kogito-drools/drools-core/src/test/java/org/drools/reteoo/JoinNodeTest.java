@@ -55,6 +55,12 @@ import org.drools.rule.Rule;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class JoinNodeTest extends DroolsTestCase {
 	Rule rule;
 	PropagationContext context;
@@ -69,7 +75,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	/**
 	 * Setup the BetaNode used in each of the tests
 	 */
-	public void setUp() {
+    @Before
+    public void setUp() {
 		// create mock objects
 		constraint = mock(BetaNodeFieldConstraint.class);
 		final ContextEntry c = mock(ContextEntry.class);
@@ -109,7 +116,8 @@ public class JoinNodeTest extends DroolsTestCase {
 
 	}
 
-	public void testAttach() throws Exception {
+    @Test
+    public void testAttach() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -142,7 +150,8 @@ public class JoinNodeTest extends DroolsTestCase {
 		assertSame(this.node, tupleSink.getSinks()[0]);
 	}
 
-	public void testMemory() {
+    @Test
+    public void testMemory() {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -171,7 +180,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	 * 
 	 * @throws AssertionException
 	 */
-	public void testAssertTuple() throws Exception {
+    @Test
+    public void testAssertTuple() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -202,7 +212,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	 * 
 	 * @throws AssertionException
 	 */
-	public void testAssertTupleSequentialMode() throws Exception {
+    @Test
+    public void testAssertTupleSequentialMode() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -257,7 +268,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void testAssertObject() throws Exception {
+    @Test
+    public void testAssertObject() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -291,7 +303,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	 * 
 	 * @throws Exception
 	 */
-	public void testAssertPropagations() throws Exception {
+    @Test
+    public void testAssertPropagations() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -340,7 +353,8 @@ public class JoinNodeTest extends DroolsTestCase {
 	 * @throws Exception
 	 * @throws RetractionException
 	 */
-	public void testRetractTuple() throws Exception {
+    @Test
+    public void testRetractTuple() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
@@ -406,7 +420,8 @@ public class JoinNodeTest extends DroolsTestCase {
 				.getFirstRightTuple(), this.sink, true)));
 	}
 
-	public void testConstraintPropagations() throws Exception {
+    @Test
+    public void testConstraintPropagations() throws Exception {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(false);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(false);
 
@@ -428,7 +443,8 @@ public class JoinNodeTest extends DroolsTestCase {
 		assertLength(0, this.sink.getRetracted());
 	}
 
-	public void testUpdateSink() {
+    @Test
+    public void testUpdateSink() {
 		when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
 		when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 

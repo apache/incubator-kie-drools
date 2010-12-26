@@ -2,7 +2,10 @@ package org.drools.integrationtests;
 
 import java.io.StringReader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -17,7 +20,7 @@ import org.drools.rule.Package;
  * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |
  * Settings | File Templates.
  */
-public class LargeRuleBaseSerializationTest extends TestCase {
+public class LargeRuleBaseSerializationTest {
     private static final int    RULE_COUNT = Integer.parseInt(System.getProperty("test.count", "525"));
     private static final int    ITERATIONS = Integer.parseInt(System.getProperty("test.iterations", "5"));
 
@@ -25,7 +28,8 @@ public class LargeRuleBaseSerializationTest extends TestCase {
     private static byte[]   bytes;
     private static byte[]   compressedBytes;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         if (ruleBase == null)
             ruleBase    = createRuleBase();
         if (bytes == null) {
@@ -36,6 +40,7 @@ public class LargeRuleBaseSerializationTest extends TestCase {
         }
     }
     
+    @Test
     public void testDummy() {
         
     }

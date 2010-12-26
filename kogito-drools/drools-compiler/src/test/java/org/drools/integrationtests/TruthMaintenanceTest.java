@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.CheeseEqual;
@@ -41,7 +44,7 @@ import static org.mockito.Mockito.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class TruthMaintenanceTest extends TestCase {
+public class TruthMaintenanceTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -62,6 +65,7 @@ public class TruthMaintenanceTest extends TestCase {
         return KnowledgeBaseFactory.newKnowledgeBase( config );
     }
 
+    @Test
     public void testLogicalInsertionsDynamicRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsDynamicRule.drl",
@@ -178,6 +182,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testLogicalInsertions() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertions.drl",
@@ -221,6 +226,7 @@ public class TruthMaintenanceTest extends TestCase {
                       session.getObjects().size() );
     }
 
+    @Test
     public void testLogicalInsertionsBacking() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsBacking.drl",
@@ -277,6 +283,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testLogicalInsertionsSelfreferencing() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsSelfreferencing.drl",
@@ -321,6 +328,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testLogicalInsertionsLoop() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertionsLoop.drl",
@@ -350,6 +358,7 @@ public class TruthMaintenanceTest extends TestCase {
                       l.size() );
     }
 
+    @Test
     public void testLogicalInsertionsNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNoLoop.drl" ) ) );
@@ -379,6 +388,7 @@ public class TruthMaintenanceTest extends TestCase {
                       l.size() );
     }
 
+    @Test
     public void testLogicalInsertionsWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsWithUpdate.drl" ) ) );
@@ -421,6 +431,7 @@ public class TruthMaintenanceTest extends TestCase {
                       m.size() );
     }
 
+    @Test
     public void testLogicalInsertions2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertions2.drl" ) ) );
@@ -472,6 +483,7 @@ public class TruthMaintenanceTest extends TestCase {
                       events.size() );
     }
 
+    @Test
     public void testLogicalInsertionsNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNot.drl" ) ) );
@@ -530,6 +542,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testLogicalInsertionsNotPingPong() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsNotPingPong.drl" ) ) );
@@ -564,6 +577,7 @@ public class TruthMaintenanceTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testLogicalInsertionsUpdateEqual() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsUpdateEqual.drl" ) ) );
@@ -605,6 +619,7 @@ public class TruthMaintenanceTest extends TestCase {
                       m.size() );
     }
 
+    @Test
     public void testLogicalInsertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionWithExists.drl" ) ) );
@@ -692,6 +707,7 @@ public class TruthMaintenanceTest extends TestCase {
                       cheeseList.size() );
     }
 
+    @Test
     public void testLogicalInsertions3() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_logicalInsertions3.drl" ) ) );
@@ -744,6 +760,7 @@ public class TruthMaintenanceTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
 
+    @Test
     public void testLogicalInsertionsAccumulatorPattern() throws Exception {
         // JBRULES-449
         final PackageBuilder builder = new PackageBuilder();
@@ -794,6 +811,7 @@ public class TruthMaintenanceTest extends TestCase {
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
     }
 
+    @Test
     public void testLogicalInsertionsModifySameRuleGivesDifferentLogicalInsertion() throws Exception {
         // TODO JBRULES-1804
 

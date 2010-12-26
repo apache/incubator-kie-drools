@@ -10,10 +10,17 @@ import org.drools.SystemEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
     private int resourceChangeNotificationCount = 0;
 
+    @Test
     public void testMonitorResourceChangeEvents() throws Exception {
         //create a basic dsl file
         this.fileManager.write("myExpander.dsl", this.createCommonDSL(null));
@@ -90,6 +97,7 @@ public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
     }
 
 
+    @Test
     public void testDispose() throws Exception {
 
         //create a basic dsl file

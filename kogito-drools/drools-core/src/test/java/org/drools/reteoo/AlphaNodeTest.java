@@ -56,17 +56,25 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class AlphaNodeTest extends DroolsTestCase {
     
     EqualityEvaluatorsDefinition equals = new EqualityEvaluatorsDefinition();
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testLiteralConstraintAssertObjectWithoutMemory() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
@@ -147,6 +155,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     /*
      *  This just test AlphaNode With a different Constraint type.
      */
+    @Test
     public void testReturnValueConstraintAssertObject() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
@@ -215,6 +224,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                       sink.getAsserted() );
     }
 
+    @Test
     public void testUpdateSinkWithoutMemory() throws FactException,
                                              IntrospectionException {
         // An AlphaNode should try and repropagate from its source

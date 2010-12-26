@@ -18,13 +18,17 @@ package org.drools.util.asm;
 
 import java.io.InputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.asm.MethodComparator;
 import org.mvel2.asm.ClassReader;
 
-public class MethodComparerTest extends TestCase {
+public class MethodComparerTest {
 
+    @Test
     public void testMethodCompare() throws Exception {
         final MethodComparator comp = new MethodComparator();
         boolean result = comp.equivalent( "evaluate",

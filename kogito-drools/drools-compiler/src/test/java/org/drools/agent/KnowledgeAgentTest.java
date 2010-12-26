@@ -19,11 +19,15 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
- 
-
-
+    @Test
     public void testModifyFileUrl() throws Exception {
         fileManager.write( "rule1.drl",
                            createDefaultRule( "rule1" ) );        
@@ -90,6 +94,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
      * @throws Exception
      *             If an unexpected exception occurs.
      */
+    @Test
     public void testChangeSetInChangeSet() throws Exception {
         fileManager.write( "rule1.drl",
                            createDefaultRule( "rule1" ) );        
@@ -159,6 +164,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testModifyFileUrlWithStateless() throws Exception {
         fileManager.write( "rule1.drl",
                            createDefaultRule( "rule1" ) );        
@@ -211,6 +217,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testModifyPackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1" );
 
@@ -371,6 +378,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testOldSchoolPackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1" );
 
@@ -423,6 +431,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testModifyFile() throws IOException,
                                 InterruptedException {
         File f1 = fileManager.write( "rule1.drl",
@@ -483,6 +492,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.monitorResourceChangeEvents( false );
     }
 
+    @Test
     public void testModifyDirectory() throws IOException,
                                      InterruptedException {
         // adds 2 files to a dir and executes then adds one and removes one and
@@ -547,6 +557,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testModifyFileInDirectory() throws Exception {
         // Create the test directory
         File testDirectory = fileManager.newFile( "test" );
@@ -614,6 +625,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
     public void testStatelessWithCommands() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createDefaultRule( "rule1" ) );        

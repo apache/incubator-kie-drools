@@ -16,12 +16,16 @@
 
 package org.drools.common;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.reteoo.ReteooFactHandleFactory;
 
-public class EqualityKeyTest extends TestCase {
+public class EqualityKeyTest {
+    @Test
     public void test1() {
         ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         

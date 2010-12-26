@@ -18,13 +18,17 @@ package org.drools.base;
 
 import java.lang.reflect.Field;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 
-public class DelegateJavaFactHandlerTest extends TestCase {
+public class DelegateJavaFactHandlerTest {
 
+    @Test
     public void test1Entry() throws Exception {
         final DelegateJavaFactHandler handler = new DelegateJavaFactHandler();
 
@@ -54,6 +58,7 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         assertNull( entries );
     }
 
+    @Test
     public void test2Entries() throws Exception {
         final DelegateJavaFactHandler handler = new DelegateJavaFactHandler();
 
@@ -106,6 +111,7 @@ public class DelegateJavaFactHandlerTest extends TestCase {
         assertNull( entries );
     }
 
+    @Test
     public void test3Entries() throws Exception {
         final DelegateJavaFactHandler handler = new DelegateJavaFactHandler();
 

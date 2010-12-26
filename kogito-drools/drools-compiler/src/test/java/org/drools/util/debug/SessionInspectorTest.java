@@ -3,7 +3,10 @@ package org.drools.util.debug;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -20,12 +23,9 @@ import org.drools.core.util.debug.StatefulKnowledgeSessionInfo;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class SessionInspectorTest extends TestCase {
+public class SessionInspectorTest {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
+    @Test
     public void testGetSessionInfo() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),
@@ -107,6 +107,7 @@ public class SessionInspectorTest extends TestCase {
         
     }
     
+    @Test
     public void testGetSessionInfoWithCustomTemplate() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/integrationtests/test_SubNetworks.drl" ),

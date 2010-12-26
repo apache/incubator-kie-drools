@@ -36,8 +36,15 @@ import java.lang.reflect.Field;
 
 import org.drools.DroolsTestCase;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class ObjectSourceTest extends DroolsTestCase {
 
+    @Test
     public void testObjectSourceConstructor() {
         final MockObjectSource source = new MockObjectSource( 15 );
         assertEquals( 15,
@@ -50,6 +57,7 @@ public class ObjectSourceTest extends DroolsTestCase {
                       source.getAttached() );
     }
 
+    @Test
     public void testAddObjectSink() throws Exception {
         final MockObjectSource source = new MockObjectSource( 15 );
 

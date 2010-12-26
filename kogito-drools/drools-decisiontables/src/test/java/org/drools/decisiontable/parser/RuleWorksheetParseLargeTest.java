@@ -16,7 +16,10 @@
 
 package org.drools.decisiontable.parser;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -24,7 +27,7 @@ import junit.framework.TestCase;
  * A special test for parsing a large workbook, to see how it scales.
  * 
  */
-public class RuleWorksheetParseLargeTest extends TestCase {
+public class RuleWorksheetParseLargeTest {
 
 //    private long startTimer;
 //
@@ -43,6 +46,7 @@ public class RuleWorksheetParseLargeTest extends TestCase {
      * 
      * @throws Exception
      */
+    @Test
     public void testLargeWorkSheetParseToRuleset() throws Exception {
         //  Test removed until have streaming sorted in future. No one using Uber Tables just yet !        
         //        InputStream stream = RuleWorksheetParseLargeTest.class.getResourceAsStream( "/data/VeryLargeWorkbook.xls" );

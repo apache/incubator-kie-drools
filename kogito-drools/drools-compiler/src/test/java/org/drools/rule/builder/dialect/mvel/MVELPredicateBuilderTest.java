@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -30,16 +33,18 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.spi.InternalReadAccessor;
 
-public class MVELPredicateBuilderTest extends TestCase {
+public class MVELPredicateBuilderTest {
 
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testSimpleExpression() {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );

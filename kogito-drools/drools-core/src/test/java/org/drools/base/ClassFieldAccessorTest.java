@@ -32,8 +32,10 @@ package org.drools.base;
  * limitations under the License.
  */
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.util.asm.BeanInherit;
@@ -44,15 +46,17 @@ import org.drools.util.asm.TestBean;
 import org.drools.util.asm.TestInterface;
 import org.drools.util.asm.TestInterfaceImpl;
 
-public class ClassFieldAccessorTest extends TestCase {
+public class ClassFieldAccessorTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
     }
 
+    @Test
     public void testBasic() throws Exception {
         final Object[] objArray = new Object[1];
 
@@ -84,6 +88,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     }
 
+    @Test
     public void testInterface() throws Exception {
 
         final TestInterface obj = new TestInterfaceImpl();
@@ -97,6 +102,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     }
 
+    @Test
     public void testAbstract() throws Exception {
 
         final ClassFieldReader ext = store.getReader( TestAbstract.class,
@@ -109,6 +115,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     }
 
+    @Test
     public void testInherited() throws Exception {
         final ClassFieldReader ext = store.getReader( BeanInherit.class,
                                                       "text",
@@ -120,6 +127,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     }
 
+    @Test
     public void testMultipleInterfaces() throws Exception {
         final ConcreteChild obj = new ConcreteChild();
         final ClassFieldReader ext = store.getReader( InterfaceChild.class,
@@ -130,6 +138,7 @@ public class ClassFieldAccessorTest extends TestCase {
                                               obj )).intValue() );
     }
 
+    @Test
     public void testLong() throws Exception {
         final ClassFieldReader ext = store.getReader( TestBean.class,
                                                       "longField",
@@ -140,6 +149,7 @@ public class ClassFieldAccessorTest extends TestCase {
                                               bean )).longValue() );
     }
 
+    @Test
     public void testNonExistentField() throws Exception {
         final Object[] objArray = new Object[1];
 
@@ -162,6 +172,7 @@ public class ClassFieldAccessorTest extends TestCase {
 
     }
 
+    @Test
     public void testBuildFieldAccessor() {
         try {
             ClassFieldAccessor intAccessor = store.getAccessor( TestClass.class,
@@ -177,13 +188,13 @@ public class ClassFieldAccessorTest extends TestCase {
             instance.setIntAttr( 10 );
             instance.setStrAttr( testString1 );
 
-            Assert.assertEquals( "Error reading int attr",
+            assertEquals( "Error reading int attr",
                                  10,
                                  ((Integer) intAccessor.getValue( instance )).intValue() );
-            Assert.assertEquals( "Error reading int attr",
+            assertEquals( "Error reading int attr",
                                  10,
                                  intAccessor.getIntValue( instance ) );
-            Assert.assertEquals( "Error reading String attr",
+            assertEquals( "Error reading String attr",
                                  testString1,
                                  strAccessor.getValue( instance ) );
 
@@ -192,28 +203,29 @@ public class ClassFieldAccessorTest extends TestCase {
             strAccessor.setValue( instance,
                                   testString2 );
 
-            Assert.assertEquals( "Error setting int attr",
+            assertEquals( "Error setting int attr",
                                  50,
                                  instance.getIntAttr() );
-            Assert.assertEquals( "Error setting String attr",
+            assertEquals( "Error setting String attr",
                                  testString2,
                                  instance.getStrAttr() );
 
             intAccessor.setIntValue( instance,
                                      40 );
-            Assert.assertEquals( "Error reading int attr",
+            assertEquals( "Error reading int attr",
                                  40,
                                  intAccessor.getIntValue( instance ) );
-            Assert.assertEquals( "Error reading String attr",
+            assertEquals( "Error reading String attr",
                                  testString2,
                                  strAccessor.getValue( instance ) );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "No exception is supposed to be generated when creating field accessor: " + e );
+            fail( "No exception is supposed to be generated when creating field accessor: " + e );
         }
     }
 
+    @Test
     public void testNullOnPrimitives() {
         try {
             ClassFieldAccessor intAccessor = store.getAccessor( TestClass.class,
@@ -275,67 +287,67 @@ public class ClassFieldAccessorTest extends TestCase {
             shortAccessor.setValue( instance,
                                     null );
 
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  0,
                                  instance.getIntAttr() );
-            Assert.assertNull( "Error setting attr",
+            assertNull( "Error setting attr",
                                instance.getStrAttr() );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  0,
                                  instance.getByteAttr() );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  false,
                                  instance.isBooleanAttr() );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  '\0',
                                  instance.getCharAttr() );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  0.0d,
                                  instance.getDoubleAttr(),
                                  0.1d );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  0.0f,
                                  instance.getFloatAttr(),
                                  0.1f );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  0l,
                                  instance.getLongAttr() );
-            Assert.assertEquals( "Error setting attr",
+            assertEquals( "Error setting attr",
                                  (short) 0,
                                  instance.getShortAttr() );
 
-            Assert.assertEquals( "Error reading int attr",
+            assertEquals( "Error reading int attr",
                                  0,
                                  ((Integer) intAccessor.getValue( instance )).intValue() );
-            Assert.assertNull( "Error reading String attr",
+            assertNull( "Error reading String attr",
                                strAccessor.getValue( instance ) );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  0,
                                  ((Byte) byteAccessor.getValue( instance )).byteValue() );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  false,
                                  ((Boolean) booleanAccessor.getValue( instance )).booleanValue() );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  '\0',
                                  ((Character) charAccessor.getValue( instance )).charValue() );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  0.0d,
                                  ((Double) doubleAccessor.getValue( instance )).doubleValue(),
                                  0.1d );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  0.0f,
                                  ((Float) floatAccessor.getValue( instance )).floatValue(),
                                  0.1f );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  0l,
                                  ((Long) longAccessor.getValue( instance )).longValue() );
-            Assert.assertEquals( "Error reading attr",
+            assertEquals( "Error reading attr",
                                  (short) 0,
                                  ((Short) shortAccessor.getValue( instance )).shortValue() );
 
         } catch ( Exception e ) {
             e.printStackTrace();
-            Assert.fail( "No exception is supposed to be generated when creating field accessor: " + e );
+            fail( "No exception is supposed to be generated when creating field accessor: " + e );
         }
     }
 

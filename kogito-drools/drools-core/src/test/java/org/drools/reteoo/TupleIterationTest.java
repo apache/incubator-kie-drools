@@ -22,11 +22,15 @@ import java.util.List;
 
 import org.drools.reteoo.TupleIterator.OnLeaf;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
-public class TupleIterationTest extends TestCase {
-    public void testRootTraversal() {        
+public class TupleIterationTest {
+    @Test
+    public void testRootTraversal() {
         LeftTuple t0 = new LeftTuple();
         LeftTuple t1 = new LeftTuple(t0, null, true);
         LeftTuple t2 = new LeftTuple(t0, null, true);
@@ -78,7 +82,8 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         assertEquals( Arrays.asList( leafs ), foundLeafs );        
     }
     
-    public void testMidTraversal() {        
+    @Test
+    public void testMidTraversal() {
         LeftTuple tm2 = new LeftTuple();
         LeftTuple tm1 = new LeftTuple(tm2, null, true);
         LeftTuple tm1_1 = new LeftTuple(tm1, null, true); // this leaf will not be included

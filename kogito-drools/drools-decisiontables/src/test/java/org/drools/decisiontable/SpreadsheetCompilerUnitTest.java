@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 
@@ -32,8 +35,9 @@ import org.drools.decisiontable.parser.RuleMatrixSheetListener;
  * only tested that it generates DRL in the correct structure (not that the DRL itself
  * is correct).
  */
-public class SpreadsheetCompilerUnitTest extends TestCase {
+public class SpreadsheetCompilerUnitTest {
 
+    @Test
     public void testLoadFromClassPath() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         String drl = converter.compile( "/data/MultiSheetDST.xls",
@@ -59,6 +63,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadSpecificWorksheet() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/MultiSheetDST.xls" );
@@ -67,6 +72,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertNotNull( drl );
     }
 
+    @Test
     public void testLoadCustomListener() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/CustomWorkbook.xls" );
@@ -80,6 +86,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "Role" ) != -1 );
     }
 
+    @Test
     public void testLoadCsv() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/ComplexWorkbook.csv" );
@@ -95,6 +102,7 @@ public class SpreadsheetCompilerUnitTest extends TestCase {
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size () > 1)" ) > 0 );
     }
 
+    @Test
     public void testLoadBasicWithMergedCells() {
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
         final InputStream stream = this.getClass().getResourceAsStream( "/data/BasicWorkbook.xls" );

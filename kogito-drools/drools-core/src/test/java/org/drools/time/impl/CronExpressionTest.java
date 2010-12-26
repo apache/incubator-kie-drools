@@ -22,6 +22,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class CronExpressionTest extends SerializationTestSupport {
     private static final String[] VERSIONS = new String[] {"1.5.2"};
 
@@ -62,6 +68,7 @@ public class CronExpressionTest extends SerializationTestSupport {
     /*
      * Test method for 'org.quartz.CronExpression.isSatisfiedBy(Date)'.
      */
+    @Test
     public void testIsSatisfiedBy() throws Exception {
         CronExpression cronExpression = new CronExpression("0 15 10 * * ? 2005");
         
@@ -85,6 +92,7 @@ public class CronExpressionTest extends SerializationTestSupport {
     /*
      * QUARTZ-571: Showing that expressions with months correctly serialize.
      */
+    @Test
     public void testQuartz571() throws Exception {
         CronExpression cronExpression = new CronExpression("19 15 10 4 Apr ? ");
 
@@ -104,6 +112,7 @@ public class CronExpressionTest extends SerializationTestSupport {
     /*
      * QUARTZ-574: Showing that storeExpressionVals correctly calculates the month number
      */
+    @Test
     public void testQuartz574() {
         try {
             CronExpression cronExpression = new CronExpression("* * * * Foo ? ");
@@ -122,6 +131,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         }
     }
 
+    @Test
     public void testQuartz621() {
         try {
             CronExpression cronExpression = new CronExpression("0 0 * * * *");
@@ -146,6 +156,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         }
     }
 
+    @Test
     public void testQuartz640() throws ParseException {
         try {
             CronExpression cronExpression = new CronExpression("0 43 9 1,5,29,L * ?");
@@ -175,6 +186,7 @@ public class CronExpressionTest extends SerializationTestSupport {
         }
     }
     
+    @Test
     public void testSerialization() {
         // TODO as we don't want to worry about this for now
     }

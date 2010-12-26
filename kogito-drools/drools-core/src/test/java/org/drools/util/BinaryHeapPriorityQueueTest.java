@@ -41,9 +41,13 @@ import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class BinaryHeapPriorityQueueTest extends TestCase {
+public class BinaryHeapPriorityQueueTest {
+    @Test
     public void testOptimised() {
         final Random random = new Random();
         final List items = new LinkedList();
@@ -79,6 +83,7 @@ public class BinaryHeapPriorityQueueTest extends TestCase {
         //        System.out.println( "elapsedDequeue = " + elapsedDequeue );
     }
 
+    @Test
     public void testBasic() {
         final Random random = new Random();
         final List items = new LinkedList();

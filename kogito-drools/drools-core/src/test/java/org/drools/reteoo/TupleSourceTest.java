@@ -36,14 +36,22 @@ import java.lang.reflect.Field;
 
 import org.drools.DroolsTestCase;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class TupleSourceTest extends DroolsTestCase {
 
+    @Test
     public void testObjectTupleConstructor() {
         final MockTupleSource source = new MockTupleSource( 15 );
         assertEquals( 15,
                       source.getId() );
     }
 
+    @Test
     public void testAddTupleSink() throws Exception {
         final MockTupleSource source = new MockTupleSource( 15 );
 

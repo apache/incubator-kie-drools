@@ -42,12 +42,19 @@ import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class LogicalAssertionTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext   buildContext;
     private EntryPointNode entryPoint;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         buildContext = new BuildContext( ruleBase,
                                          ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
@@ -57,6 +64,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         this.entryPoint.attach();
     }
 
+    @Test
     public void testSingleLogicalRelationship() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
@@ -178,6 +186,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                     ((RightTuple) values[0]).getFactHandle() );
     }
 
+    @Test
     public void testEqualsMap() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so w can detect assertions and retractions
@@ -286,6 +295,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testStatedOverrideDiscard() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
@@ -439,6 +449,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testStatedOverridePreserve() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
@@ -556,6 +567,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         logicalHandle2 = workingMemory.insert( logicalString2 );
     }
 
+    @Test
     public void testRetract() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
@@ -674,6 +686,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testMultipleLogicalRelationships() throws FactException {
         final Rule rule1 = new Rule( "test-rule1" );
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
@@ -830,6 +843,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testMultipleAssert() throws Exception {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
@@ -948,6 +962,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
     /**
      * This test checks that truth maintenance is correctly maintained for modified objects
      */
+    @Test
     public void testMutableObject() {
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions

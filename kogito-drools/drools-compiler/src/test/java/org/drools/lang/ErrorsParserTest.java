@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -32,29 +35,29 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.dsl.DefaultExpander;
 
-public class ErrorsParserTest extends TestCase {
+public class ErrorsParserTest {
 
     private DRLParser parser;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.parser = null;
 
         // initializes pluggable operators
         new EvaluatorRegistry();
     }
 
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         this.parser = null;
-        super.tearDown();
     }
 
+    @Test
     public void testPartialAST() throws Exception {
         parseResource( "pattern_partial.drl" );
 
         Tree object = (Tree) this.parser.compilation_unit().getTree();
 
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -79,10 +82,10 @@ public class ErrorsParserTest extends TestCase {
         // pattern.getIdentifier() );
     }
 
+    @Test
     public void testNotBindindShouldBarf() throws Exception {
         final DRLParser parser = parseResource( "not_with_binding_error.drl" );
         parser.compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -90,6 +93,7 @@ public class ErrorsParserTest extends TestCase {
         assertTrue( parser.hasErrors() );
     }
 
+    @Test
     public void testExpanderErrorsAfterExpansion() throws Exception {
 
         final String name = "expander_post_errors.dslr";
@@ -111,18 +115,18 @@ public class ErrorsParserTest extends TestCase {
                       err.getLineNumber() );
     }
 
+    @Test
     public void testInvalidSyntax_Catches() throws Exception {
         parseResource( "invalid_syntax.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
         assertTrue( this.parser.hasErrors() );
     }
 
+    @Test
     public void testMultipleErrors() throws Exception {
         parseResource( "multiple_errors.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -131,19 +135,19 @@ public class ErrorsParserTest extends TestCase {
                       this.parser.getErrors().size() );
     }
 
+    @Test
     public void testPackageGarbage() throws Exception {
 
         parseResource( "package_garbage.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
         assertTrue( this.parser.hasErrors() );
     }
 
+    @Test
     public void testEvalWithSemicolon() throws Exception {
         parseResource( "eval_with_semicolon.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -154,39 +158,39 @@ public class ErrorsParserTest extends TestCase {
                       this.parser.getErrors().get( 0 ).getErrorCode() );
     }
 
+    @Test
     public void testLexicalError() throws Exception {
         parseResource( "lex_error.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
         assertTrue( parser.hasErrors() );
     }
 
+    @Test
     public void testTempleteError() throws Exception {
         parseResource( "template_test_error.drl" ).compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
         assertTrue( parser.hasErrors() );
     }
 
+    @Test
     public void testRuleParseLhs2() throws Exception {
         final String text = "Message( Message.HELLO )\n";
         parse( text ).lhs_pattern();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
         assertTrue( parser.hasErrors() );
     }
 
+    @Test
     public void testErrorMessageForMisplacedParenthesis() throws Exception {
         final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
         parser.compilation_unit();
 
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -202,10 +206,10 @@ public class ErrorsParserTest extends TestCase {
                       parser.getErrors().get( 1 ).getErrorCode() );
     }
 
+    @Test
     public void testNPEOnParser() throws Exception {
         final DRLParser parser = parseResource( "npe_on_parser.drl" );
         parser.compilation_unit();
-        System.out.println( this.getName() );
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -218,6 +222,7 @@ public class ErrorsParserTest extends TestCase {
         assertTrue( parser.getErrors().get( 0 ).getErrorCode().equals( "ERR 101" ) );
     }
 
+    @Test
     public void testCommaMisuse() throws Exception {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {

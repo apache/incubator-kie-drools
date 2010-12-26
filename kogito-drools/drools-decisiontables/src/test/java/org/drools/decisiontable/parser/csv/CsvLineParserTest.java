@@ -18,10 +18,14 @@ package org.drools.decisiontable.parser.csv;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class CsvLineParserTest extends TestCase {
+public class CsvLineParserTest {
 
+    @Test
     public void testSimpleLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,b,c";
@@ -37,6 +41,7 @@ public class CsvLineParserTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testLineParse() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"b\",c";
@@ -52,6 +57,7 @@ public class CsvLineParserTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testDoubleQuotes() {
         final CsvLineParser parser = new CsvLineParser();
         final String s = "a,\"\"\"b\"\"\",c";

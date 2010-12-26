@@ -19,7 +19,10 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Address;
 import org.drools.Cell;
@@ -72,8 +75,9 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.GlobalResolver;
 
-public class MarshallingTest extends TestCase {
+public class MarshallingTest {
 
+    @Test
     public void testSerializable() throws Exception {
 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -139,6 +143,7 @@ public class MarshallingTest extends TestCase {
         assertTrue( IteratorToList.convert( session.iterateObjects() ).contains( new Person( "help" ) ) );
     }
 
+    @Test
     public void testSerializeWorkingMemoryAndRuleBase1() throws Exception {
         // has the first newStatefulSession before the ruleBase is serialised
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -212,6 +217,7 @@ public class MarshallingTest extends TestCase {
 
     }
 
+    @Test
     public void testSerializeWorkingMemoryAndRuleBase2() throws Exception {
         // has the first newStatefulSession after the ruleBase is serialised
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -285,6 +291,7 @@ public class MarshallingTest extends TestCase {
         assertTrue( IteratorToList.convert( session.iterateObjects() ).contains( new Person( "help" ) ) );
     }
 
+    @Test
     public void testSerializeWorkingMemoryAndRuleBase3() throws Exception {
         // has the first newStatefulSession after the ruleBase is serialised
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable.drl" ) );
@@ -358,6 +365,7 @@ public class MarshallingTest extends TestCase {
         assertTrue( IteratorToList.convert( session.iterateObjects() ).contains( new Person( "help" ) ) );
     }
 
+    @Test
     public void testSerializeAdd() throws Exception {
 
         //Create a rulebase, a session, and test it
@@ -419,6 +427,7 @@ public class MarshallingTest extends TestCase {
 
     }
 
+    @Test
     public void testSerializationOfIndexedWM() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Serializable2.drl" ) );
 
@@ -487,6 +496,7 @@ public class MarshallingTest extends TestCase {
      *
      *  Result: Pkg/Rule addition is failing with ClassCastException
      */
+    @Test
     public void testSerializeAdd2() throws Exception {
 
         //Create a rulebase, a session, and test it
@@ -586,6 +596,7 @@ public class MarshallingTest extends TestCase {
      *  Result: new rule is not getting fired for new data points having type as 'brie'.
      *          Only for old data points having type as 'brie' the new rule got fired.
      */
+    @Test
     public void testSerializeAdd_newRuleNotFiredForNewData() throws Exception {
         //Create a rulebase, a session, and test it
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -673,6 +684,7 @@ public class MarshallingTest extends TestCase {
     /*
      *  Works Fine if both the scenarios mentioned above are skipped.
      */
+    @Test
     public void testSerializeAdd3() throws Exception {
         //Create a rulebase, a session, and test it
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -865,6 +877,7 @@ public class MarshallingTest extends TestCase {
      * session.fireAllRules() is throwing NoClassDefFoundError
      *
      */
+    @Test
     public void testSerializeAddRemove_NoClassDefFoundError() throws Exception {
 
         //Create a rulebase, a session, and test it
@@ -1067,6 +1080,7 @@ public class MarshallingTest extends TestCase {
     /*
      *  Testing the signature framework 
      */
+    @Test
     public void testSignedSerialization1() throws Exception {
         try {
             setPrivateKeyProperties();
@@ -1096,6 +1110,7 @@ public class MarshallingTest extends TestCase {
      *  Deserializing a signed package without the proper public key 
      *  should fail. 
      */
+    @Test
     public void testSignedSerialization2() throws Exception {
         try {
             // set only the serialisation properties, but not the deserialization
@@ -1121,6 +1136,7 @@ public class MarshallingTest extends TestCase {
      *  Deserializing a signed rulebase without the proper public key 
      *  should fail. 
      */
+    @Test
     public void testSignedSerialization3() throws Exception {
         try {
             // set only the serialisation properties, but not the deserialization
@@ -1152,6 +1168,7 @@ public class MarshallingTest extends TestCase {
      *  A client environment configured to use signed serialization
      *  should refuse any non-signed serialized rulebase 
      */
+    @Test
     public void testSignedSerialization4() throws Exception {
 
         //Compile a package
@@ -1231,6 +1248,7 @@ public class MarshallingTest extends TestCase {
      * In this case we are dealing with facts which are not on the systems classpath.
      *
      */
+    @Test
     public void testSerializabilityWithJarFacts() throws Exception {
         MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
 
@@ -1267,6 +1285,7 @@ public class MarshallingTest extends TestCase {
         assertNotNull( p_ );
     }
 
+    @Test
     public void testEmptyRule() throws Exception {
         String rule = "package org.test;\n";
         rule += "global java.util.List list\n";
@@ -1311,6 +1330,7 @@ public class MarshallingTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testDynamicEmptyRule() throws Exception {
         String rule1 = "package org.test;\n";
         rule1 += "global java.util.List list\n";
@@ -1376,6 +1396,7 @@ public class MarshallingTest extends TestCase {
                       ((List) session2.getGlobal( "list" )).get( 1 ) );
     }
 
+    @Test
     public void testSinglePattern() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Person\n";
@@ -1422,6 +1443,7 @@ public class MarshallingTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testSingleRuleSingleJoinNodePattern() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Person\n";
@@ -1515,6 +1537,7 @@ public class MarshallingTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 2 ) );
     }
 
+    @Test
     public void testMultiRuleMultiJoinNodePatternsWithHalt() throws Exception {
         String rule1 = "package org.test;\n";
         rule1 += "import org.drools.Person\n";
@@ -1651,6 +1674,7 @@ public class MarshallingTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 6 ) );
     }
 
+    @Test
     public void testNot() throws Exception {
         String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
@@ -1781,6 +1805,7 @@ public class MarshallingTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testExists() throws Exception {
         String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
@@ -1922,6 +1947,7 @@ public class MarshallingTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testTruthMaintenance() throws Exception {
         String header = "package org.drools.test;\n";
         header += "import java.util.List;\n";
@@ -1995,6 +2021,7 @@ public class MarshallingTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testActivationGroups() throws Exception {
         String rule1 = "package org.test;\n";
         rule1 += "import org.drools.Cheese\n";
@@ -2081,6 +2108,7 @@ public class MarshallingTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testAgendaGroups() throws Exception {
         String rule1 = "package org.test;\n";
         rule1 += "import org.drools.Cheese\n";
@@ -2177,6 +2205,7 @@ public class MarshallingTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testRuleFlowGroups() throws Exception {
         String rule1 = "package org.test;\n";
         rule1 += "import org.drools.Cheese\n";
@@ -2273,6 +2302,7 @@ public class MarshallingTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testAccumulate() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader( "package org.drools\n" + "\n" + "import org.drools.Message\n" + "global java.util.List results\n" + "\n" + "rule MyRule\n" + "  when\n"
@@ -2309,6 +2339,7 @@ public class MarshallingTest extends TestCase {
                       ((Number) results.get( 1 )).intValue() );
     }
 
+    @Test
     public void testAccumulate2() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         Reader source = new StringReader( "package org.drools\n" + "\n" + "import org.drools.Message\n" + "\n" + "rule MyRule\n" + "  when\n" + "    Number( intValue >= 5 ) from accumulate ( m: Message( ), count( m ) )\n" + "  then\n"
@@ -2331,6 +2362,7 @@ public class MarshallingTest extends TestCase {
                       session.getAgenda().getActivations().length );
     }
 
+    @Test
     public void testAccumulateSessionSerialization() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_AccumulateSerialization.drl" ) ),
@@ -2420,6 +2452,7 @@ public class MarshallingTest extends TestCase {
         in.close();
     }
 
+    @Test
     public void testAccumulateSerialization() {
         try {
             KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -2486,6 +2519,7 @@ public class MarshallingTest extends TestCase {
         }
     }
 
+    @Test
     public void testJBRULES_1946() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -2522,6 +2556,7 @@ public class MarshallingTest extends TestCase {
         }
     }
 
+    @Test
     public void testJBRULES_1946_2() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -2558,6 +2593,7 @@ public class MarshallingTest extends TestCase {
         }
     }
 
+    @Test
     public void testJBRULES_1946_3() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -2594,6 +2630,7 @@ public class MarshallingTest extends TestCase {
         }
     }
 
+    @Test
     public void testJBRULES_2331() throws Exception {
         String source = "package test.drl\n";
         source += "rule dummy_rule\n";

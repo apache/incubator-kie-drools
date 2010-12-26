@@ -3,7 +3,10 @@ package org.drools.api;
 import java.io.StringReader;
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -11,8 +14,9 @@ import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 
-public class KnowledgeSessionTest extends TestCase {
-	public void testKnowledgeProviderWithRules() {
+public class KnowledgeSessionTest {
+    @Test
+    public void testKnowledgeProviderWithRules() {
 		KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		
 		String str = "";

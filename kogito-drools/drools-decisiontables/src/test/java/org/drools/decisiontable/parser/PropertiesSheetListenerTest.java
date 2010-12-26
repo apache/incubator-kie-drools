@@ -18,13 +18,17 @@ package org.drools.decisiontable.parser;
 
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.template.parser.DataListener;
 
-public class PropertiesSheetListenerTest extends TestCase {
+public class PropertiesSheetListenerTest {
 
+    @Test
     public void testProperties() {
         final PropertiesSheetListener listener = new PropertiesSheetListener();
         listener.startSheet( "test" );
@@ -67,6 +71,7 @@ public class PropertiesSheetListenerTest extends TestCase {
 
     }
 
+    @Test
     public void testCaseInsensitive() {
     	Properties map = new PropertiesSheetListener.CaseInsensitiveMap();
     	map.setProperty("x3", "hey");

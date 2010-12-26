@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
@@ -56,7 +59,7 @@ import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.ObjectType;
 
-public class QueryTest extends TestCase {
+public class QueryTest {
     protected RuleBase getRuleBase() throws Exception {
 
         RuleBaseConfiguration config = new RuleBaseConfiguration();
@@ -66,6 +69,7 @@ public class QueryTest extends TestCase {
     }
     
 
+    @Test
     public void testQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
@@ -89,6 +93,7 @@ public class QueryTest extends TestCase {
     }
     
 
+    @Test
     public void testQueryRemoval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "simple_query_test.drl" ) ) );
@@ -121,6 +126,7 @@ public class QueryTest extends TestCase {
 
     }    
     
+    @Test
     public void testQuery2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
@@ -139,6 +145,7 @@ public class QueryTest extends TestCase {
                       results.get( 0 ).get( 0 ) );
     }
     
+    @Test
     public void testQuery2KnowledgeBuilder() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_Query.drl", getClass() ), ResourceType.DRL );
@@ -157,6 +164,7 @@ public class QueryTest extends TestCase {
                       results.iterator().next().get( "assertedobj" ) );
     }    
 
+    @Test
     public void testQueryWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
@@ -195,6 +203,7 @@ public class QueryTest extends TestCase {
                       results.get( 0 ).get( 0 ) );
     }
 
+    @Test
     public void testQueryWithParamsOnKnowledgeApi() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryWithParams.drl",
@@ -241,6 +250,7 @@ public class QueryTest extends TestCase {
                       ((org.drools.runtime.rule.QueryResultsRow) results.iterator().next()).get( "assertedobj" ) );
     }
 
+    @Test
     public void testQueryWithMultipleResultsOnKnowledgeApi() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
@@ -331,6 +341,7 @@ public class QueryTest extends TestCase {
                       newSet );
     }
 
+    @Test
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
@@ -366,6 +377,7 @@ public class QueryTest extends TestCase {
                       results.size() );
     }
     
+    @Test
     public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DoubleQueryWithExists.drl" ) ) );
@@ -452,6 +464,7 @@ public class QueryTest extends TestCase {
                       queryResults.size() );
     }
     
+    @Test
     public void testQueryWithCollect() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
@@ -474,6 +487,7 @@ public class QueryTest extends TestCase {
                       list.size() );
     }
     
+    @Test
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_QueryMemoryLeak.drl",
@@ -544,6 +558,7 @@ public class QueryTest extends TestCase {
         }
     }    
     
+    @Test
     public void testQueriesWithVariableUnification() throws Exception {
             String str = "";
             str += "package org.drools.test  \n";
@@ -620,6 +635,7 @@ public class QueryTest extends TestCase {
 //                          newSet );
         }
     
+    @Test
     public void testOpenQuery() throws Exception {
         String str = "";
         str += "package org.drools.test  \n";
@@ -780,10 +796,12 @@ public class QueryTest extends TestCase {
         assertEquals( 1, updated.size() );           
     }
     
+    @Test
     public void testStandardQueryListener() {
         runQueryListenerTest( QueryListenerOption.STANDARD );
     }
     
+    @Test
     public void testNonCloningQueryListener() {
         runQueryListenerTest( QueryListenerOption.LIGHTWEIGHT );
     }

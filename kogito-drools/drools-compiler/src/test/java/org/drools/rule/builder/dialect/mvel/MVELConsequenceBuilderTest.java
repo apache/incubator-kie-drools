@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -50,11 +52,9 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.debug.DebugTools;
 
-public class MVELConsequenceBuilderTest extends TestCase {
+public class MVELConsequenceBuilderTest {
 
-    public void setUp() {
-    }
-
+    @Test
     public void testSimpleExpression() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "pkg1" );
         PackageBuilder pkgBuilder = new PackageBuilder();
@@ -128,6 +128,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
                       cheddar.getPrice() );
     }
 
+    @Test
     public void testImperativeCodeError() throws Exception {
         final Package pkg = new Package( "pkg1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule 1" );
@@ -210,6 +211,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
      *
      * @throws Exception
      */
+    @Test
     public void testLineSpanOptionalSemis() throws Exception {
 
         String simpleEx = "foo\nbar\nbaz";
@@ -243,6 +245,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testMVELDebugSymbols() throws DroolsParserException {
 
         MVELDebugHandler.setDebugMode( true );
@@ -252,7 +255,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
             final PackageDescr pkgDescr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "mvel_rule.drl" ) ) );
 
             // just checking there is no parsing errors
-            Assert.assertFalse( parser.getErrors().toString(),
+            assertFalse( parser.getErrors().toString(),
                                 parser.hasErrors() );
 
             final Package pkg = new Package( "org.drools" );
@@ -274,7 +277,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
             builder.build( context );
 
-            Assert.assertTrue( context.getErrors().toString(),
+            assertTrue( context.getErrors().toString(),
                                context.getErrors().isEmpty() );
 
             final Rule rule = context.getRule();
@@ -297,6 +300,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testX() {
         String expr = "System.out.println( \"a1\" );\n" + "System.out.println( \"a2\" );\n" + "System.out.println( \"a3\" );\n" + "System.out.println( \"a4\" );\n";
 
@@ -376,6 +380,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
     }
     
 
+    @Test
     public void testDefaultConsequenceCompilation() {
         String consequence = " System.out.println(\"this is a test\");\n ";
         setupTest( consequence, new HashMap<String, Object>() );       
@@ -384,6 +389,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );    	
     }
     
+    @Test
     public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         
@@ -401,6 +407,7 @@ public class MVELConsequenceBuilderTest extends TestCase {
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
     }     
     
+    @Test
     public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         

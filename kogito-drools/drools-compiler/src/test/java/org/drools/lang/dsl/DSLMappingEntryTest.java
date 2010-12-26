@@ -5,21 +5,16 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DSLMappingEntryTest extends TestCase {
+public class DSLMappingEntryTest {
 
 	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
 	// JDK works correctly with "(?<=^|\\W)"
 	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
-	
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     private DSLMappingEntry createEntry(final String inputKey,
                                         final String inputValue) throws IOException {
@@ -39,6 +34,7 @@ public class DSLMappingEntryTest extends TestCase {
         return entry;
     }
 
+    @Test
     public void testPatternCalculation() throws IOException {
         final String inputKey = "The Customer name is {name} and surname is {surname} and it has US$ 50,00 on his {pocket}";
         final String inputValue = "Customer( name == \"{name}\", surname == \"{surname}\", money > $money )";
@@ -59,6 +55,7 @@ public class DSLMappingEntryTest extends TestCase {
                       entry.getValuePattern() );
     }
 
+    @Test
     public void testPatternCalculation2() throws IOException {
         final String inputKey = "-name is {name}";
         final String inputValue = "name == \"{name}\"";
@@ -80,6 +77,7 @@ public class DSLMappingEntryTest extends TestCase {
 
     }
 
+    @Test
     public void testPatternCalculation3() throws IOException {
         final String inputKey = "- name is {name}";
         final String inputValue = "name == \"{name}\"";
@@ -125,6 +123,7 @@ public class DSLMappingEntryTest extends TestCase {
     }
     
 
+    @Test
     public void testExpandSpaces() throws IOException {
         DSLMappingEntry entry = this.setupEntry();
         DefaultExpander ex = makeExpander( entry );
@@ -143,6 +142,7 @@ public class DSLMappingEntryTest extends TestCase {
         }
     }
 
+    @Test
     public void testExpandWithDots() throws IOException {
         DSLMappingEntry entry1 = this.createEntry( "- {prop} is not {val} ", "{prop} != {val}" );
         DSLMappingEntry entry2 = this.createEntry( "- {prop} is {val} ",     "{prop} == {val}" );
@@ -165,6 +165,7 @@ public class DSLMappingEntryTest extends TestCase {
 
 
 
+    @Test
     public void testExpandWithBrackets() throws IOException {
         DSLMappingEntry entry1 = this.createEntry( "attr {attr_name} is in \\[ {values} \\]",
                                                    "{attr_name} in ( {values} )" );

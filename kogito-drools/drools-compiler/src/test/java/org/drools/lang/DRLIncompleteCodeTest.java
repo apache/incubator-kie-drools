@@ -2,7 +2,10 @@ package org.drools.lang;
 
 import java.util.LinkedList;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -12,14 +15,15 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
-public class DRLIncompleteCodeTest extends TestCase {
+public class DRLIncompleteCodeTest {
 
     public void setup() {
         // just initialising the static operator definitions
         new EvaluatorRegistry();
     }
     
-	public void testIncompleteCode1() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode1() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.* query MyQuery rule MyRule when Class ( property memberOf collexction ";
 		DrlParser parser = new DrlParser();
@@ -36,7 +40,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 						.getContent()));
 	}
 
-	public void testIncompleteCode2() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode2() throws DroolsParserException,
 			RecognitionException {
 		String input = "rule MyRule when Class ( property memberOf collection ";
 		DrlParser parser = new DrlParser();
@@ -48,7 +53,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 						.getContent()));
 	}
 
-	public void testIncompleteCode3() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode3() throws DroolsParserException,
 			RecognitionException {
 		String input = "rule MyRule when Class ( property > somevalue ) then end query MyQuery Class ( property == collection ) end ";
 		DrlParser parser = new DrlParser();
@@ -64,7 +70,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 				.getEditorSentences().get(0).getContent()));
 	}
 
-	public void testIncompleteCode4() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode4() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.*"
 				+ " rule MyRule when Class ( property == collection ) then end "
@@ -83,7 +90,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(1)).getName());
 	}
 
-	public void testIncompleteCode5() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode5() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.*"
 				+ " rule MyRule when Class ( property memberOf collection ) then end "
@@ -94,7 +102,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertNotNull(descr);
 	}
 
-	public void testIncompleteCode6() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode6() throws DroolsParserException,
 			RecognitionException {
 		String input = "packe 1111.111 import a.b.c.*"
 				+ " rule MyRule when Class ( property memberOf collection ) then end "
@@ -107,7 +116,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertNull(descr);
 	}
 
-	public void testIncompleteCode7() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode7() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c imrt a.b.c.*"
 				+ " rule MyRule when Class ( property memberOf collection ) then end "
@@ -118,7 +128,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertNotNull(descr);
 	}
 
-	public void testIncompleteCode8() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode8() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.1111.c.*"
 				+ " rule MyRule when Class ( property memberOf collection ) then end "
@@ -179,7 +190,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
 	}
 
-	public void testIncompleteCode12() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode12() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c " + "import a.b.c.* " + "rule MyRule"
 				+ "  when " + "    m: Message(  ) " + "    " + "  then"
@@ -193,7 +205,8 @@ public class DRLIncompleteCodeTest extends TestCase {
 				.getTarget());
 	}
 
-	public void testIncompleteCode13() throws DroolsParserException,
+    @Test
+    public void testIncompleteCode13() throws DroolsParserException,
 			RecognitionException {
 		String input = "package com.sample "
 				+ "import com.sample.DroolsTest.Message; "

@@ -32,9 +32,13 @@ package org.drools.rule;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FixedDurationTest extends TestCase {
+public class FixedDurationTest {
+    @Test
     public void testConstruct() throws Exception {
         FixedDuration dur = new FixedDuration();
 
@@ -47,6 +51,7 @@ public class FixedDurationTest extends TestCase {
                       dur.getDuration( null ) );
     }
 
+    @Test
     public void testAdd() throws Exception {
         final FixedDuration dur = new FixedDuration();
 

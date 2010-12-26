@@ -16,7 +16,10 @@
  */
 package org.drools.conf;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -27,18 +30,19 @@ import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
  * @author etirelli
  *
  */
-public class KnowledgeBaseConfigurationTest extends TestCase {
+public class KnowledgeBaseConfigurationTest {
 
     private KnowledgeBaseConfiguration config;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
     }
 
+    @Test
     public void testMaintainTMSConfiguration() {
         // setting the option using the type safe method
         config.setOption( MaintainTMSOption.YES );
@@ -62,6 +66,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( MaintainTMSOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testSequentialConfiguration() {
         // setting the option using the type safe method
         config.setOption( SequentialOption.YES );
@@ -85,6 +90,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( SequentialOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testRemoveIdentitiesConfiguration() {
         // setting the option using the type safe method
         config.setOption( RemoveIdentitiesOption.YES );
@@ -108,6 +114,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( RemoveIdentitiesOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testShareAlphaNodesConfiguration() {
         // setting the option using the type safe method
         config.setOption( ShareAlphaNodesOption.YES );
@@ -131,6 +138,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( ShareAlphaNodesOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testShareBetaNodesConfiguration() {
         // setting the option using the type safe method
         config.setOption( ShareBetaNodesOption.YES );
@@ -154,6 +162,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( ShareBetaNodesOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testIndexLeftBetaMemoryConfiguration() {
         // setting the option using the type safe method
         config.setOption( IndexLeftBetaMemoryOption.YES );
@@ -177,6 +186,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( IndexLeftBetaMemoryOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testIndexRightBetaMemoryConfiguration() {
         // setting the option using the type safe method
         config.setOption( IndexRightBetaMemoryOption.YES );
@@ -200,6 +210,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( IndexRightBetaMemoryOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testAssertBehaviorConfiguration() {
         // setting the option using the type safe method
         config.setOption( AssertBehaviorOption.EQUALITY );
@@ -223,6 +234,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( AssertBehaviorOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testLogicalOverrideConfiguration() {
         // setting the option using the type safe method
         config.setOption( LogicalOverrideOption.PRESERVE );
@@ -246,6 +258,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( LogicalOverrideOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testSequentialAgendaConfiguration() {
         // setting the option using the type safe method
         config.setOption( SequentialAgendaOption.DYNAMIC );
@@ -269,6 +282,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( SequentialAgendaOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testAlphaThresholdConfiguration() {
         // setting the option using the type safe method
         config.setOption( AlphaThresholdOption.get(5) );
@@ -292,6 +306,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( AlphaThresholdOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testCompositeKeyDepthConfiguration() {
         // setting the option using the type safe method
         config.setOption( CompositeKeyDepthOption.get(1) );
@@ -315,6 +330,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( CompositeKeyDepthOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testConsequenceExceptionHandlerConfiguration() {
         Class<? extends ConsequenceExceptionHandler> handler = DefaultConsequenceExceptionHandler.class;
         // setting the option using the type safe method
@@ -339,6 +355,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testEventProcessingConfiguration() {
         // setting the option using the type safe method
         config.setOption( EventProcessingOption.STREAM );
@@ -362,6 +379,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( EventProcessingOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testMaxThreadsConfiguration() {
         // setting the option using the type safe method
         config.setOption( MaxThreadsOption.get(5) );
@@ -385,6 +403,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( MaxThreadsOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testMultithreadEvaluationConfiguration() {
         // setting the option using the type safe method
         config.setOption( MultithreadEvaluationOption.YES );
@@ -408,6 +427,7 @@ public class KnowledgeBaseConfigurationTest extends TestCase {
                       config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
     }
     
+    @Test
     public void testRulebaseSetUpdateHandler() {
         // this test is to avoid a regression, since update handler was supposed to be disabled in Drools 5.
         // At this moment, we no longer want to expose the update handler API, so, we did not created an Option

@@ -12,12 +12,19 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.QueryResults;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Removes a query from kbase using kagent and incremental changeset build.
  * @author esteban.aliverti@gmail.com
  */
 public class QueryRemotionTest extends BaseKnowledgeAgentTest {
 
+    @Test
     public void testRemoveQueryChangeSet() throws Exception {
 
         this.fileManager.write("rules.drl", this.createCommonQuery("all the Strings", new String[]{"$strings : String()"}));

@@ -29,7 +29,10 @@ import org.drools.rule.GroupElement.Type;
 import org.drools.time.Interval;
 import org.drools.time.TemporalDependencyMatrix;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import static org.drools.time.Interval.*;
 
@@ -37,18 +40,19 @@ import static org.drools.time.Interval.*;
  * @author etirelli
  *
  */
-public class BuildUtilsTest extends TestCase {
+public class BuildUtilsTest {
     
     private BuildUtils utils;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         utils = new BuildUtils();
     }
 
     /**
      * Test method for {@link org.drools.reteoo.builder.BuildUtils#calculateTemporalDistance(org.drools.common.InternalRuleBase, org.drools.rule.GroupElement)}.
      */
+    @Test
     public void testCalculateTemporalDistance() {
         // input is here just for "documentation" purposes
         Interval[][] input = new Interval[][] {

@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Address;
 import org.drools.Person;
@@ -20,8 +23,9 @@ import org.drools.rule.Package;
  * Normally this test will be XXX'ed out, as when running it will not terminate.
  * @author Michael Neale
  */
-public class StatelessStressTest extends TestCase {
+public class StatelessStressTest {
 
+    @Test
     public void testDummy() {
         
     }

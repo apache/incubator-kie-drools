@@ -16,11 +16,15 @@
 
 package org.drools.facttemplates;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.ValueType;
 
-public class FieldTemplateTest extends TestCase {
+public class FieldTemplateTest {
+    @Test
     public void testFieldTemplate() {
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
                                                                 5,

@@ -28,16 +28,19 @@ import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ResourceHandler;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 
-public abstract class BaseKnowledgeAgentTest extends TestCase {
+public abstract class BaseKnowledgeAgentTest {
     FileManager     fileManager;
     Server           server;    
     ResourceChangeScannerImpl scanner;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
@@ -56,8 +59,8 @@ public abstract class BaseKnowledgeAgentTest extends TestCase {
         this.server.start();
     }
     
-    @Override
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         fileManager.tearDown();
         ResourceFactory.getResourceChangeNotifierService().stop();
         ((ResourceChangeNotifierImpl) ResourceFactory.getResourceChangeNotifierService()).reset();

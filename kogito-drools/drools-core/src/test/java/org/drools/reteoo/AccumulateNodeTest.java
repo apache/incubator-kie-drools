@@ -16,8 +16,6 @@
 
 package org.drools.reteoo;
 
-import junit.framework.Assert;
-
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -37,6 +35,10 @@ import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * A test case for AccumulateNode
@@ -59,8 +61,8 @@ public class AccumulateNodeTest extends DroolsTestCase {
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.rule = new Rule( "test-rule" );
         this.context = new PropagationContextImpl( 0,
                                                    PropagationContext.ASSERTION,
@@ -110,21 +112,15 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.memory.getRightTupleMemory().size() );
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     /**
      * Test method for {@link org.drools.reteoo.AccumulateNode#updateNewNode(InternalWorkingMemory, org.drools.spi.PropagationContext)}.
      */
+    @Test
     public void testUpdateSink() {
         this.node.updateSink( this.sink,
                               this.context,
                               this.workingMemory );
-        Assert.assertEquals( "No tuple should be propagated",
+        assertEquals( "No tuple should be propagated",
                              0,
                              this.sink.getAsserted().size() );
 
@@ -145,7 +141,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                    this.context,
                                    this.workingMemory );
 
-        Assert.assertEquals( "Two tuples should have been propagated",
+        assertEquals( "Two tuples should have been propagated",
                              2,
                              this.sink.getAsserted().size() );
 
@@ -156,7 +152,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                               this.context,
                               this.workingMemory );
 
-        Assert.assertEquals( "Two tuples should have been propagated",
+        assertEquals( "Two tuples should have been propagated",
                              2,
                              otherSink.getAsserted().size() );
     }
@@ -164,6 +160,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     /**
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
+    @Test
     public void testAssertTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
@@ -182,7 +179,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
                       this.memory.getRightTupleMemory().size() );
-        Assert.assertTrue( "An empty matching objects list should be propagated",
+        assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         // assert tuple, should add left memory 
@@ -199,14 +196,14 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                    this.workingMemory );
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
-        Assert.assertTrue( "An empty matching objects list should be propagated",
+        assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         final LeftTupleMemory memory = this.memory.getLeftTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 
-        Assert.assertEquals( "Two tuples should have been propagated",
+        assertEquals( "Two tuples should have been propagated",
                              2,
                              this.sink.getAsserted().size() );
     }
@@ -214,6 +211,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     /**
      * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
+    @Test
     public void testAssertTupleWithObjects() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
@@ -244,7 +242,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.memory.getLeftTupleMemory().size() );
         assertEquals( 2,
                       this.memory.getRightTupleMemory().size() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+        assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
@@ -257,7 +255,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                    this.workingMemory );
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+        assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
@@ -265,7 +263,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 
-        Assert.assertEquals( "Two tuples should have been propagated",
+        assertEquals( "Two tuples should have been propagated",
                              2,
                              this.sink.getAsserted().size() );
     }
@@ -273,6 +271,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     /**
      * Test method for {@link org.drools.reteoo.AccumulateNode#retractLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
+    @Test
     public void testRetractTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,
@@ -292,7 +291,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.memory.getLeftTupleMemory().size() );
         assertEquals( 0,
                       this.memory.getRightTupleMemory().size() );
-        Assert.assertTrue( "An empty matching objects list should be propagated",
+        assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
         this.node.retractLeftTuple( tuple0,
@@ -306,6 +305,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.sink.getAsserted().size() );
     }
 
+    @Test
     public void testMemory() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase,
@@ -337,6 +337,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
      * 
      * @throws AssertionException
      */
+    @Test
     public void testAssertTupleSequentialMode() throws Exception {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
@@ -396,7 +397,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( 2,
                       this.memory.getRightTupleMemory().size() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+        assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
@@ -412,11 +413,11 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                f1 ),
                                    this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
-        Assert.assertEquals( "Wrong number of elements in matching objects list ",
+        assertEquals( "Wrong number of elements in matching objects list ",
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
-        Assert.assertEquals( "Two tuples should have been propagated",
+        assertEquals( "Two tuples should have been propagated",
                              2,
                              this.sink.getAsserted().size() );
     }

@@ -27,7 +27,10 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Child;
@@ -64,30 +67,13 @@ import static org.mockito.Mockito.*;
  * 
  * @author etirelli
  */
-public class MultithreadTest extends TestCase {
+public class MultithreadTest {
+    @Test
     public void test() {
         
     }
     
     // FIXME
-
-//    /**
-//     * @inheritDoc
-//     *
-//     * @see junit.framework.TestCase#setUp()
-//     */
-//    protected void setUp() throws Exception {
-//        super.setUp();
-//    }
-//
-//    /**
-//     * @inheritDoc
-//     *
-//     * @see junit.framework.TestCase#tearDown()
-//     */
-//    protected void tearDown() throws Exception {
-//        super.tearDown();
-//    }
 //    
 //    public void testRuleBaseConcurrentCompilation() {
 //        final int THREAD_COUNT = 30;

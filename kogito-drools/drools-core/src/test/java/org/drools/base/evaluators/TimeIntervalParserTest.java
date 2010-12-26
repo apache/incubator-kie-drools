@@ -16,24 +16,21 @@
 
 package org.drools.base.evaluators;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author admin
  *
  */
-public class TimeIntervalParserTest extends TestCase {
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+public class TimeIntervalParserTest {
 
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse() {
         String input = "2d10h49m10s789ms";
         long expected = 211750789;
@@ -45,6 +42,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse2() {
         String input = "10h49m789ms";
         long expected = 10 * 3600000 + 49 * 60000 + 789;
@@ -56,6 +54,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse3() {
         // ms are optional
         String input = " 10h49m789 , 12h ";
@@ -70,6 +69,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse4() {
         // raw ms without the unit declared
         String input = " 15957, 3500000 ";
@@ -84,6 +84,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse5() {
         // empty input
         String input = "";
@@ -94,6 +95,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse6() {
         // null input
         String input = null;
@@ -104,6 +106,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse7() {
         // empty input
         String input = "  ";
@@ -114,6 +117,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse8() {
         // raw ms without the unit declared
         String input = " -15957, 3500000 ";
@@ -128,6 +132,7 @@ public class TimeIntervalParserTest extends TestCase {
     /**
      * Test method for {@link org.drools.base.evaluators.TimeIntervalParser#parse(java.lang.String)}.
      */
+    @Test
     public void testParse9() {
         // ms are optional
         String input = " -10h49m789 , -8h ";

@@ -16,7 +16,10 @@
 
 package org.drools.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
@@ -24,8 +27,9 @@ import org.drools.common.InternalFactHandle;
 import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.LeftTuple;
 
-public class RightTupleListTest extends TestCase {
-    public void testEmptyIterator() {                
+public class RightTupleListTest {
+    @Test
+    public void testEmptyIterator() {
         final RightTupleList map = new RightTupleList();
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );

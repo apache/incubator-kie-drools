@@ -3,7 +3,10 @@ package org.drools.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RoutingMessage;
@@ -15,9 +18,10 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class StrEvaluatorTest extends TestCase {
+public class StrEvaluatorTest {
 	
-	public void testStrStartsWith() throws Exception {
+    @Test
+    public void testStrStartsWith() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -34,7 +38,8 @@ public class StrEvaluatorTest extends TestCase {
 		
 	}
 	
-	public void testStrEndsWith() throws Exception {
+    @Test
+    public void testStrEndsWith() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -51,7 +56,8 @@ public class StrEvaluatorTest extends TestCase {
 		
 	}
 	
-	public void testStrLengthEquals() throws Exception {
+    @Test
+    public void testStrLengthEquals() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -68,7 +74,8 @@ public class StrEvaluatorTest extends TestCase {
 		
 	}
 	
-	public void testStrNotStartsWith() throws Exception {
+    @Test
+    public void testStrNotStartsWith() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -84,7 +91,8 @@ public class StrEvaluatorTest extends TestCase {
 		assertTrue( ((String) list.get(1)).equals("Message does not start with R2") );
 	}
 	
-	public void testStrNotEndsWith() throws Exception {
+    @Test
+    public void testStrNotEndsWith() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		
@@ -100,7 +108,8 @@ public class StrEvaluatorTest extends TestCase {
 		assertTrue( ((String) list.get(0)).equals("Message does not end with R1") );
 	}
 	
-	public void testStrLengthNoEquals() throws Exception {
+    @Test
+    public void testStrLengthNoEquals() throws Exception {
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 		

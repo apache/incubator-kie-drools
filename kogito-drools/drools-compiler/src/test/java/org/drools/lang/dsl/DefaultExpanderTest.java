@@ -6,16 +6,20 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.lang.ExpanderException;
 
-public class DefaultExpanderTest extends TestCase {
+public class DefaultExpanderTest {
     private DSLMappingFile  file     = null;
     private DSLTokenizedMappingFile tokenizedFile = null;
     private DefaultExpander expander = null;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         final String filename = "test_metainfo.dsl";
         final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( filename ) );
         this.file = new DSLTokenizedMappingFile();
@@ -28,30 +32,28 @@ public class DefaultExpanderTest extends TestCase {
         reader2.close();
         
         this.expander = new DefaultExpander();
-
-        super.setUp();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testAddDSLMapping() {
         this.expander.addDSLMapping( this.file.getMapping() );
         // should not raise any exception
     }
     
+    @Test
     public void testANTLRAddDSLMapping() {
         this.expander.addDSLMapping( this.tokenizedFile.getMapping() );
         // should not raise any exception
     }
 
+    @Test
     public void testRegexp() throws Exception {
         this.expander.addDSLMapping( this.file.getMapping() );
         final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.dslr" ) );
         final String result = this.expander.expand( rules );
     }
     
+    @Test
     public void testANTLRRegexp() throws Exception {
         this.expander.addDSLMapping( this.tokenizedFile.getMapping() );
         final Reader rules = new InputStreamReader( this.getClass().getResourceAsStream( "test_expansion.dslr" ) );
@@ -59,6 +61,7 @@ public class DefaultExpanderTest extends TestCase {
     }
 
     
+    @Test
     public void testExpandParts() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
@@ -71,6 +74,7 @@ public class DefaultExpanderTest extends TestCase {
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
     
+    @Test
     public void testANTLRExpandParts() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
@@ -83,6 +87,7 @@ public class DefaultExpanderTest extends TestCase {
         //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
     }
     
+    @Test
     public void testExpandFailure() throws Exception {
 
         DSLMappingFile file = new DSLTokenizedMappingFile();
@@ -109,6 +114,7 @@ public class DefaultExpanderTest extends TestCase {
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
     
+    @Test
     public void testANTLRExpandFailure() throws Exception {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -135,6 +141,7 @@ public class DefaultExpanderTest extends TestCase {
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
+    @Test
     public void testExpandWithKeywordClashes() throws Exception {
 
         DSLMappingFile file = new DSLTokenizedMappingFile();
@@ -155,6 +162,7 @@ public class DefaultExpanderTest extends TestCase {
 
     }
     
+    @Test
     public void testANTLRExpandWithKeywordClashes() throws Exception {
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -175,6 +183,7 @@ public class DefaultExpanderTest extends TestCase {
     }
 
 
+    @Test
     public void testLineNumberError() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
@@ -196,6 +205,7 @@ public class DefaultExpanderTest extends TestCase {
 
     }
     
+    @Test
     public void testANTLRLineNumberError() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
@@ -217,6 +227,7 @@ public class DefaultExpanderTest extends TestCase {
 
     }
     
+    @Test
     public void testANTLREnumExpand() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]When the credit rating is {rating:ENUM:Applicant.creditRating} = applicant:Applicant(credit=={rating})";

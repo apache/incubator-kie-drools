@@ -1,6 +1,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.base.mvel.MVELConsequence;
 import org.drools.compiler.DrlParser;
@@ -10,9 +13,10 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Package;
 import org.mvel2.compiler.CompiledExpression;
 
-public class MVELDebugTest extends TestCase {
+public class MVELDebugTest {
 	
-	public void testDebug() throws Exception {
+    @Test
+    public void testDebug() throws Exception {
 		String rule = "package com.sample; dialect \"mvel\" rule myRule when then System.out.println( \"test\" ); end";
 		PackageBuilder builder = new PackageBuilder();
 		DrlParser parser = new DrlParser();

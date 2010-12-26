@@ -6,13 +6,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 
-public class SourcePackageProviderTest extends TestCase {
+public class SourcePackageProviderTest {
 
+    @Test
     public void testSourceProvider() throws Exception {
         new SourcePackageProvider();
 

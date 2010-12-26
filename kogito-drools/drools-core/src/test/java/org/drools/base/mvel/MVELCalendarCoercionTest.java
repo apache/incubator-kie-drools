@@ -20,13 +20,17 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.DateUtils;
 import org.drools.type.DateFormatsImpl;
 
-public class MVELCalendarCoercionTest extends TestCase {
+public class MVELCalendarCoercionTest {
 
+    @Test
     public void testCalendar() {
         MVELCalendarCoercion co = new MVELCalendarCoercion();
         assertTrue(co.canConvertFrom( Calendar.class ));
@@ -36,6 +40,7 @@ public class MVELCalendarCoercionTest extends TestCase {
         assertSame(d, co.convertFrom( d ));
     }
 
+    @Test
     public void testString() throws Exception {
         MVELCalendarCoercion co = new MVELCalendarCoercion();
         assertTrue(co.canConvertFrom( Calendar.class ));

@@ -7,7 +7,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -43,11 +47,13 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
     private int              beforeResourceProcessed;
     private int              afterResourceProcessed;
     
+    @Test
     public void test_RemoveMeAfterFixedFIXMES() {
         
     }
 
-    public void FIXMEtestEventListenerWithIncrementalChangeSet() throws Exception {
+    @Test @Ignore
+    public void testEventListenerWithIncrementalChangeSet() throws Exception {
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
 

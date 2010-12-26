@@ -12,7 +12,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -25,7 +28,7 @@ import org.drools.runtime.Channel;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.mockito.exceptions.verification.NeverWantedButInvoked;
 
-public class IntegrationInterfacesTest extends TestCase {
+public class IntegrationInterfacesTest {
 
     private KnowledgeBase getKnowledgeBase(final String resourceName) throws IOException,
                                                                      ClassNotFoundException {
@@ -64,6 +67,7 @@ public class IntegrationInterfacesTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testGlobals() throws Exception {
         final KnowledgeBase kbase = getKnowledgeBase( "globals_rule_test.drl" );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -87,6 +91,7 @@ public class IntegrationInterfacesTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testGlobals2() throws Exception {
         final KnowledgeBase kbase = getKnowledgeBase( "test_globalsAsConstraints.drl" );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -123,6 +128,7 @@ public class IntegrationInterfacesTest extends TestCase {
                 times( 1 ) ).add( "not memberOf" );
     }
 
+    @Test
     public void testGlobalMerge() throws Exception {
         // from JBRULES-1512
         String rule1 = "package com.sample\n" + 
@@ -160,6 +166,7 @@ public class IntegrationInterfacesTest extends TestCase {
                       list.get( 1 ) );
     }
     
+    @Test
     public void testChannels() throws IOException, ClassNotFoundException {
         KnowledgeBase kbase = getKnowledgeBase( "test_Channels.drl" );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

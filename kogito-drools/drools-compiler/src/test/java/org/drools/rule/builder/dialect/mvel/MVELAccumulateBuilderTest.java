@@ -1,6 +1,9 @@
 package org.drools.rule.builder.dialect.mvel;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.RuleBase;
@@ -22,11 +25,9 @@ import org.drools.rule.Accumulate;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
 
-public class MVELAccumulateBuilderTest extends TestCase {
+public class MVELAccumulateBuilderTest {
 
-    public void setUp() {
-    }
-
+    @Test
     public void testSimpleExpression() {
         PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( new PackageDescr( "pkg1" ) );

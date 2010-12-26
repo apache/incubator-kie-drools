@@ -87,8 +87,15 @@ import org.drools.spi.Tuple;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class PackageBuilderTest extends DroolsTestCase {
 
+    @Test
     public void testErrors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -128,12 +135,14 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
+    @Test
     public void testErrorsInParser() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "bad_rule.drl" ) ) );
         assertTrue( builder.hasErrors() );
     }
 
+    @Test
     public void testReload() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -203,6 +212,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testSerializable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -283,6 +293,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testErrorReset() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -296,6 +307,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertTrue( builder.hasErrors() );
     }
 
+    @Test
     public void testFactTemplate() {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -349,6 +361,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -377,6 +390,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
+    @Test
     public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -416,6 +430,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors().length );
     }
 
+    @Test
     public void testReturnValueMethodCompare() {
         final PackageBuilder builder1 = new PackageBuilder();
         final PackageDescr packageDescr1 = new PackageDescr( "package1" );
@@ -447,6 +462,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( returnValue2.equals( returnValue3 ) );
     }
 
+    @Test
     public void testPredicate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -483,6 +499,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
+    @Test
     public void testPredicateMethodCompare() {
         final PackageBuilder builder1 = new PackageBuilder();
         final PackageDescr packageDescr1 = new PackageDescr( "package1" );
@@ -514,6 +531,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( predicate2.equals( predicate3 ) );
     }
 
+    @Test
     public void testEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -555,6 +573,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final List list = invoker.getMethodBytecode();
     }
 
+    @Test
     public void testEvalMethodCompare() {
         final PackageBuilder builder1 = new PackageBuilder();
         final PackageDescr packageDescr1 = new PackageDescr( "package1" );
@@ -583,6 +602,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( eval2.equals( eval3 ) );
     }
 
+    @Test
     public void testOr() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Rule rule = createRule( new OrDescr(),
@@ -603,6 +623,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
+    @Test
     public void testAnd() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         final Rule rule = createRule( new AndDescr(),
@@ -623,6 +644,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final LiteralConstraint literalConstraint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
+    @Test
     public void testNot() throws Exception {
         PackageBuilder builder = new PackageBuilder();
 
@@ -652,6 +674,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
+    @Test
     public void testExists() throws Exception {
         PackageBuilder builder = new PackageBuilder();
 
@@ -681,6 +704,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
+    @Test
     public void testNumbers() throws Exception {
         // test boolean
         FieldConstraintDescr literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
@@ -797,6 +821,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         createLiteralRule( literalDescr );
     }
 
+    @Test
     public void testNull() {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -827,6 +852,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
+    @Test
     public void testDuplicateRuleNames() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -887,6 +913,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     }
 
+    @Test
     public void testDuplicateDeclaration() {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -922,6 +949,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
+    @Test
     public void testCompilerConfiguration() throws Exception {
         // test default is eclipse jdt core
         PackageBuilder builder = new PackageBuilder();
@@ -971,6 +999,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                     compiler.getClass() );
     }
 
+    @Test
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
@@ -996,6 +1025,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       type.getTypeClass() );
     }
 
+    @Test
     public void testTypeDeclarationNewBean() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "NewBean" );
@@ -1036,6 +1066,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertNotNull( newBean );
     }
 
+    @Test
     public void testPackageMerge() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
@@ -1183,6 +1214,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         return rule;
     }
 
+    @Test
     public void testJaninoWithStaticImports() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
@@ -1195,6 +1227,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( bldr.hasErrors() );
     }
 
+    @Test
     public void testSinglePackage() throws Exception {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         cfg.setAllowMultipleNamespaces( false );
@@ -1226,6 +1259,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                       bldr.getPackages().length );
     }
 
+    @Test
     public void testTimeWindowBehavior() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 

@@ -16,7 +16,10 @@
 
 package org.drools.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.core.util.Entry;
@@ -24,7 +27,8 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
-public class ObjectHashMapTest extends TestCase {
+public class ObjectHashMapTest {
+    @Test
     public void testChechExistsFalse() {
         final ObjectHashMap map = new ObjectHashMap();
         final Cheese stilton = new Cheese( "stilton",
@@ -71,6 +75,7 @@ public class ObjectHashMapTest extends TestCase {
                       size );
     }
 
+    @Test
     public void testChechExistsTrue() {
         final ObjectHashMap map = new ObjectHashMap();
         final Cheese stilton = new Cheese( "stilton",
@@ -116,6 +121,7 @@ public class ObjectHashMapTest extends TestCase {
                       size );
     }
 
+    @Test
     public void testEmptyIterator() {
         final ObjectHashMap map = new ObjectHashMap();
         final Iterator it = map.iterator();
@@ -124,6 +130,7 @@ public class ObjectHashMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testStringData() {
         final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );
@@ -138,6 +145,7 @@ public class ObjectHashMapTest extends TestCase {
         }
     }
 
+    @Test
     public void testIntegerData() {
         final ObjectHashMap map = new ObjectHashMap();
         assertNotNull( map );

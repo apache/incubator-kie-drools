@@ -21,7 +21,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.SessionConfiguration;
@@ -30,7 +33,8 @@ import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 
 
-public class CronJobTest extends TestCase {
+public class CronJobTest {
+    @Test
     public void testCronTriggerJob() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.PSEUDO_CLOCK);

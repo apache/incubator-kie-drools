@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -19,10 +22,11 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-public class SerializedPackageMergeTest extends TestCase {
+public class SerializedPackageMergeTest {
     private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy" );
     private static final String[]   DRLs = {"HelloWorld.drl","test_Serialization1.drl"};
 
+    @Test
     public void testRuleExecutionWithoutSerialization() {
         try {
             // without serialization, it works.
@@ -33,6 +37,7 @@ public class SerializedPackageMergeTest extends TestCase {
         }
     }
 
+    @Test
     public void testRuleExecutionWithSerialization() throws Exception {
         try {
             // with serialized packages, NullPointerException

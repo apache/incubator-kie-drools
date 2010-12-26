@@ -23,7 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.Person;
@@ -53,8 +56,9 @@ import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.rule.Declaration;
 import org.drools.spi.PropagationContext;
 
-public class ReteDslTestEngineTest extends TestCase {
+public class ReteDslTestEngineTest {
 
+    @Test
     public void testDslCommandBuilder() {
         InputStream stream = getClass().getResourceAsStream( "DslTestBuilder.testCase" );
         assertNotNull( stream );
@@ -260,6 +264,7 @@ public class ReteDslTestEngineTest extends TestCase {
     }
 
     
+    @Test
     public void testObjectTypeNodeStep() throws Exception {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode :\n";
@@ -274,6 +279,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       otn1.getObjectType() );
     }
 
+    @Test
     public void testLeftInputAdapterNodeStep() throws Exception {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -291,6 +297,7 @@ public class ReteDslTestEngineTest extends TestCase {
                     otn1.getSinkPropagator().getSinks()[0] );
     }
 
+    @Test
     public void testBindingStep() throws Exception {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Binding:\n";
@@ -301,6 +308,7 @@ public class ReteDslTestEngineTest extends TestCase {
         assertNotNull( p1 );
     }
 
+    @Test
     public void testJoinNodeStep() throws Exception {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -367,6 +375,7 @@ public class ReteDslTestEngineTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testFactsStep() throws Exception {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Facts:\n";
@@ -398,6 +407,7 @@ public class ReteDslTestEngineTest extends TestCase {
     }
     
     @SuppressWarnings("unchecked")
+    @Test
     public void testWithStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "Facts:\n";
@@ -439,6 +449,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       handles.get( 4 ).getObject() );
     }    
 
+    @Test
     public void testBetaNodeAssertOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -473,6 +484,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );
     }
 
+    @Test
     public void testBetaNodeRetractOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -511,6 +523,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );
     }
 
+    @Test
     public void testBetaNodeSimpleMemoryChecks() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -555,6 +568,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );
     }
 
+    @Test
     public void testBetaNodeChainedMemoryChecks() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -612,6 +626,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );
     }
     
+    @Test
     public void testBetaNodeChainedMemoryWithIndexChecks() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -670,6 +685,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );
     }    
     
+    @Test
     public void testBetaNodeModifyOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
@@ -741,6 +757,7 @@ public class ReteDslTestEngineTest extends TestCase {
                       memory.getLeftTupleMemory().size() );         
     }
     
+    @Test
     public void testNotNodeStep() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";

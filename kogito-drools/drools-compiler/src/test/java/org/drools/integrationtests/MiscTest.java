@@ -41,8 +41,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
@@ -157,7 +159,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /** Run all the tests with the ReteOO engine implementation */
-public class MiscTest extends TestCase {
+public class MiscTest {
 
     protected RuleBase getRuleBase() throws Exception {
 
@@ -193,6 +195,7 @@ public class MiscTest extends TestCase {
         return kbase;
     }
 
+    @Test
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -226,6 +229,7 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
+    @Test
     public void testStaticFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
@@ -269,6 +273,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testMetaConsequence() throws Exception {
         final Package pkg = loadPackage( "test_MetaConsequence.drl" );
 
@@ -312,6 +317,7 @@ public class MiscTest extends TestCase {
         return pkg;
     }
 
+    @Test
     public void testEnabledExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
@@ -342,6 +348,7 @@ public class MiscTest extends TestCase {
 
     }
     
+    @Test
     public void testGetStatefulKnowledgeSessions() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("empty.drl", getClass()), ResourceType.DRL);
@@ -374,6 +381,7 @@ public class MiscTest extends TestCase {
         assertTrue(coll_3.size() == 0);
     }
 
+    @Test
     public void testPrimitiveArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_primitiveArray.drl" ) ) );
@@ -409,6 +417,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testMVELSoundex() throws Exception {
 
         // read in the source
@@ -440,6 +449,7 @@ public class MiscTest extends TestCase {
                       c.getPrice() );
     }
 
+    @Test
     public void testMVELRewrite() throws Exception {
 
         // read in the source
@@ -476,6 +486,7 @@ public class MiscTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    @Test
     public void testMissingImport() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -500,6 +511,7 @@ public class MiscTest extends TestCase {
         assertTrue( kbuilder.hasErrors() );
     }
 
+    @Test
     public void testInvalidModify1() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -525,6 +537,7 @@ public class MiscTest extends TestCase {
         assertTrue( kbuilder.hasErrors() );
     }
 
+    @Test
     public void testInvalidModify2() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -550,6 +563,7 @@ public class MiscTest extends TestCase {
         assertTrue( kbuilder.hasErrors() );
     }
 
+    @Test
     public void testIncrementOperator() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -591,6 +605,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testKnowledgeRuntimeAccess() throws Exception {
         String str = "";
         str += "package org.test\n";
@@ -621,6 +636,7 @@ public class MiscTest extends TestCase {
         ksession.dispose();
     }
 
+    @Test
     public void testEvalWithBigDecimal() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -662,6 +678,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testCustomGlobalResolver() throws Exception {
         final Package pkg = loadPackage( "test_globalCustomResolver.drl" );
 
@@ -724,6 +741,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testCustomGlobalResolverWithWorkingMemoryObject() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_globalCustomResolver.drl" ) ) );
@@ -792,11 +810,13 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testFieldBiningsAndEvalSharing() throws Exception {
         final String drl = "test_FieldBindingsAndEvalSharing.drl";
         evalSharingTest( drl );
     }
 
+    @Test
     public void testFieldBiningsAndPredicateSharing() throws Exception {
         final String drl = "test_FieldBindingsAndPredicateSharing.drl";
         evalSharingTest( drl );
@@ -830,6 +850,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
     }
 
+    @Test
     public void testGeneratedBeans1() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeans.drl" ) ),
@@ -950,6 +971,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testGeneratedBeansMVEL() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeansMVEL.drl" ) ),
@@ -986,6 +1008,7 @@ public class MiscTest extends TestCase {
         ksession.fireAllRules();
     }
 
+    @Test
     public void testGeneratedBeans2() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeans2.drl" ) ),
@@ -1114,6 +1137,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testDeclaredFactAndFunction() throws Exception {
         String rule = "package com.jboss.qa;\n";
         rule += "global java.util.List list\n";
@@ -1155,6 +1179,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
@@ -1227,6 +1252,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testEmptyPattern() throws Exception {
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -1263,7 +1289,7 @@ public class MiscTest extends TestCase {
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.err.println( parser.getErrors() );
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
@@ -1284,6 +1310,7 @@ public class MiscTest extends TestCase {
         return ruleBase;
     }
 
+    @Test
     public void testExplicitAnd() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_ExplicitAnd.drl",
@@ -1313,6 +1340,7 @@ public class MiscTest extends TestCase {
                       ((List) ksession.getGlobal( "list" )).size() );
     }
 
+    @Test
     public void testHelloWorld() throws Exception {
         // read in the source
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1344,6 +1372,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testExtends() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
@@ -1425,6 +1454,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testExtends2() {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         try {
@@ -1469,6 +1499,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testLatinLocale() throws Exception {
         Locale defaultLoc = Locale.getDefault();
 
@@ -1519,6 +1550,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
@@ -1551,6 +1583,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testLiteralWithEscapes() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_literal_with_escapes.drl" ) ) );
@@ -1578,6 +1611,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testLiteralWithBoolean() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_with_boolean.drl" ) ) );
@@ -1606,6 +1640,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
@@ -1652,6 +1687,7 @@ public class MiscTest extends TestCase {
                     event.getObject() );
     }
 
+    @Test
     public void testPropertyChangeSupportOldAPI() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PropertyChange.drl" ) ) );
@@ -1697,6 +1733,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testPropertyChangeSupportNewAPI() throws Exception {
         final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_PropertyChangeTypeDecl.drl" ) ),
@@ -1735,6 +1772,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testDisconnectedFactHandle() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -1751,6 +1789,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testBigDecimal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -1786,6 +1825,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
     }
 
+    @Test
     public void testBigDecimalIntegerLiteral() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -1815,6 +1855,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).size() );
     }
 
+    @Test
     public void testBigDecimalWithFromAndEval() throws Exception {
         String rule = "package org.test;\n";
         rule += "rule \"Test Rule\"\n";
@@ -1837,6 +1878,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testMVELConsequenceWithMapsAndArrays() throws Exception {
         String rule = "package org.test;\n";
         rule += "import java.util.ArrayList\n";
@@ -1874,6 +1916,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
@@ -1905,6 +1948,7 @@ public class MiscTest extends TestCase {
                       cell.getValue() );
     }
 
+    @Test
     public void testNesting() throws Exception {
         Person p = new Person();
         p.setName( "Michael" );
@@ -1957,6 +2001,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testOr() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "or_test.drl" ) ) );
@@ -2001,6 +2046,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test.drl" ) ) );
@@ -2028,6 +2074,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testJaninoEval() throws Exception {
         final PackageBuilderConfiguration config = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = (JavaDialectConfiguration) config.getDialectConfiguration( "java" );
@@ -2060,6 +2107,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testEvalMore() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "eval_rule_test_more.drl" ) ) );
@@ -2084,6 +2132,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
@@ -2120,6 +2169,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 1 ) );
     }
 
+    @Test
     public void testPredicate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
@@ -2156,6 +2206,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 1 ) );
     }
 
+    @Test
     public void testNullBehaviour() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_behaviour.drl" ) ) );
@@ -2180,6 +2231,7 @@ public class MiscTest extends TestCase {
         session.fireAllRules();
     }
 
+    @Test
     public void testNullConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "null_constraint.drl" ) ) );
@@ -2218,6 +2270,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testBasicFrom() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
@@ -2281,6 +2334,7 @@ public class MiscTest extends TestCase {
                       ((List) workingMemory.getGlobal( "list3" )).get( 0 ) );
     }
 
+    @Test
     public void testFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithParams.drl" ) ) );
@@ -2352,6 +2406,7 @@ public class MiscTest extends TestCase {
                       ((List) workingMemory.getGlobal( "list" )).get( 5 ) );
     }
 
+    @Test
     public void testFromWithNewConstructor() throws Exception {
         DrlParser parser = new DrlParser();
         PackageDescr descr = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_FromWithNewConstructor.drl" ) ) );
@@ -2365,6 +2420,7 @@ public class MiscTest extends TestCase {
     /**
      * @see JBRULES-1415 Certain uses of from causes NullPointerException in WorkingMemoryLogger
      */
+    @Test
     public void testFromDeclarationWithWorkingMemoryLogger() throws Exception {
         String rule = "package org.test;\n";
         rule += "import org.drools.Cheesery\n";
@@ -2406,6 +2462,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testWithInvalidRule() throws Exception {
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         final JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
@@ -2437,6 +2494,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testWithInvalidRule2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "invalid_rule2.drl" ) ) );
@@ -2445,6 +2503,7 @@ public class MiscTest extends TestCase {
         System.out.println( err );
     }
 
+    @Test
     public void testErrorLineNumbers() throws Exception {
         // this test aims to test semantic errors
         // parser errors are another test case
@@ -2478,6 +2537,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testErrorsParser() throws Exception {
         final DrlParser parser = new DrlParser();
         assertEquals( 0,
@@ -2491,6 +2551,7 @@ public class MiscTest extends TestCase {
         assertFalse( first.getMessage().equals( "" ) );
     }
 
+    @Test
     public void testFunction() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionInConsequence.drl" ) ) );
@@ -2517,6 +2578,7 @@ public class MiscTest extends TestCase {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
+    @Test
     public void testAssertRetract() throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
@@ -2553,6 +2615,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testPredicateAsFirstPattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
@@ -2572,14 +2635,15 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "The rule is being incorrectly fired",
+        assertEquals( "The rule is being incorrectly fired",
                              35,
                              mussarela.getPrice() );
-        Assert.assertEquals( "Rule is incorrectly being fired",
+        assertEquals( "Rule is incorrectly being fired",
                              20,
                              provolone.getPrice() );
     }
 
+    @Test
     public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2604,6 +2668,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testCustomConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2652,6 +2717,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testFunctionException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
@@ -2675,6 +2741,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testEvalException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalException.drl" ) ) );
@@ -2698,6 +2765,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testPredicateException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
@@ -2721,6 +2789,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testReturnValueException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ReturnValueException.drl" ) ) );
@@ -2743,6 +2812,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testMultiRestrictionFieldConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultiRestrictionFieldConstraint.drl" ) ) );
@@ -2818,6 +2888,7 @@ public class MiscTest extends TestCase {
         assertTrue( list4.contains( chili1 ) );
     }
 
+    @Test
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
@@ -2926,6 +2997,7 @@ public class MiscTest extends TestCase {
                       list.get( 2 ) );
     }
 
+    @Test
     public void testContainsCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ContainsCheese.drl" ) ) );
@@ -2962,6 +3034,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testDuplicateRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateRuleName1.drl" ) ) );
@@ -2979,6 +3052,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
@@ -3003,15 +3077,16 @@ public class MiscTest extends TestCase {
 
         workingMemory.fireAllRules();
 
-        Assert.assertEquals( "Indexing with null values is not working correctly.",
+        assertEquals( "Indexing with null values is not working correctly.",
                              "OK",
                              bob.getStatus() );
-        Assert.assertEquals( "Indexing with null values is not working correctly.",
+        assertEquals( "Indexing with null values is not working correctly.",
                              "OK",
                              pete.getStatus() );
 
     }
 
+    @Test
     public void testEmptyRule() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EmptyRule.drl" ) ) );
@@ -3032,6 +3107,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( "fired2" ) );
     }
 
+    @Test
     public void testjustEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NoPatterns.drl" ) ) );
@@ -3052,6 +3128,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( "fired3" ) );
     }
 
+    @Test
     public void testOrWithBinding() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3086,6 +3163,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testJoinNodeModifyObject() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_JoinNodeModifyObject.drl" ) );
 
@@ -3112,11 +3190,11 @@ public class MiscTest extends TestCase {
                 workingMemory.insert( n );
             }
             workingMemory.fireAllRules();
-            Assert.assertTrue( "Processing generated errors: " + errors.toString(),
+            assertTrue( "Processing generated errors: " + errors.toString(),
                                errors.isEmpty() );
             for ( int i = 1; i <= MAX; i++ ) {
                 final IndexedNumber n = (IndexedNumber) orderedFacts.get( i - 1 );
-                Assert.assertEquals( "Fact is out of order",
+                assertEquals( "Fact is out of order",
                                      i,
                                      n.getIndex() );
             }
@@ -3124,6 +3202,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testInsurancePricingExample() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "insurance_pricing_example.drl",
@@ -3148,6 +3227,7 @@ public class MiscTest extends TestCase {
                       policy.getBasePrice() );
     }
 
+    @Test
     public void testLLR() throws Exception {
 
         // read in the source
@@ -3249,6 +3329,7 @@ public class MiscTest extends TestCase {
         ksession.fireAllRules();
     }
 
+    @Test
     public void testFunctionWithPrimitives() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
@@ -3273,6 +3354,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testReturnValueAndGlobal() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3313,6 +3395,7 @@ public class MiscTest extends TestCase {
                       nonmatchlist.size() );
     }
 
+    @Test
     public void testDeclaringAndUsingBindsInSamePattern() throws Exception {
         final RuleBaseConfiguration config = new RuleBaseConfiguration();
         config.setRemoveIdentities( true );
@@ -3346,6 +3429,7 @@ public class MiscTest extends TestCase {
                       sensors.size() );
     }
 
+    @Test
     public void testMissingImports() {
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -3356,15 +3440,16 @@ public class MiscTest extends TestCase {
             ruleBase.addPackage( pkg );
             ruleBase = SerializationHelper.serializeObject( ruleBase );
 
-            Assert.fail( "Should have thrown an InvalidRulePackage" );
+            fail( "Should have thrown an InvalidRulePackage" );
         } catch ( final InvalidRulePackage e ) {
             // everything fine
         } catch ( final Exception e ) {
             e.printStackTrace();
-            Assert.fail( "Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage() );
+            fail( "Should have thrown an InvalidRulePackage Exception instead of " + e.getMessage() );
         }
     }
 
+    @Test
     public void testNestedConditionalElements() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -3401,6 +3486,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testDeclarationUsage() throws Exception {
 
         try {
@@ -3436,6 +3522,7 @@ public class MiscTest extends TestCase {
         ksession.dispose();
     }
 
+    @Test
     public void testDeclarationNonExistingField() throws Exception {
         try {
             final PackageBuilder builder = new PackageBuilder();
@@ -3454,6 +3541,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testUnbalancedTrees() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_UnbalancedTrees.drl" ) ) );
@@ -3479,12 +3567,13 @@ public class MiscTest extends TestCase {
 
         wm.fireAllRules();
 
-        Assert.assertEquals( "Rule should have fired twice, seting the price to 30",
+        assertEquals( "Rule should have fired twice, seting the price to 30",
                              30,
                              e.getPrice() );
         // success
     }
 
+    @Test
     public void testImportConflict() throws Exception {
         RuleBase ruleBase = getRuleBase();
         final PackageBuilder builder = new PackageBuilder();
@@ -3494,6 +3583,7 @@ public class MiscTest extends TestCase {
         ruleBase = SerializationHelper.serializeObject( ruleBase );
     }
 
+    @Test
     public void testEmptyIdentifier() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_emptyIdentifier.drl" ) ) );
@@ -3519,6 +3609,7 @@ public class MiscTest extends TestCase {
                       result.size() );
     }
 
+    @Test
     public void testDuplicateVariableBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
@@ -3566,6 +3657,7 @@ public class MiscTest extends TestCase {
                       ((Integer) result.get( "test3" + brie.getType() )).intValue() );
     }
 
+    @Test
     public void testDuplicateVariableBindingError() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
@@ -3577,6 +3669,7 @@ public class MiscTest extends TestCase {
                       pkg.getErrorSummary().split( "\n" ).length );
     }
 
+    @Test
     public void testShadowProxyInHirarchies() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
@@ -3592,6 +3685,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
+    @Test
     public void testSelfReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference.drl" ) ) );
@@ -3630,6 +3724,7 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( item2 ) );
     }
 
+    @Test
     public void testNumberComparisons() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NumberComparisons.drl" ) ) );
@@ -3688,6 +3783,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testSkipModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_skipModify.drl" ) ) );
@@ -3718,6 +3814,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testEventModel() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EventModel.drl" ) ) );
@@ -3836,6 +3933,7 @@ public class MiscTest extends TestCase {
         wm.insert( cheddar );
     }
 
+    @Test
     public void testImplicitDeclarations() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_implicitDeclarations.drl" ) ) );
@@ -3861,6 +3959,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testCastingInsideEvals() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_castsInsideEval.drl" ) ) );
@@ -3877,6 +3976,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
+    @Test
     public void testMemberOfAndNotMemberOf() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_memberOf.drl" ) ) );
@@ -3916,6 +4016,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testContainsInArray() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_contains_in_array.drl" ) ) );
@@ -3945,6 +4046,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testNodeSharingNotExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nodeSharingNotExists.drl" ) ) );
@@ -3979,6 +4081,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testNullBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_nullBindings.drl" ) ) );
@@ -4006,6 +4109,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testModifyRetractWithFunction() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RetractModifyWithFunction.drl" ) ) );
@@ -4038,6 +4142,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testConstraintConnectors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConstraintConnectors.drl" ) ) );
@@ -4101,6 +4206,7 @@ public class MiscTest extends TestCase {
                       results.get( 3 ) );
     }
 
+    @Test
     public void testConstraintConnectorOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ConstraintConnectorOr.drl" ) ),
@@ -4146,6 +4252,7 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( conan ) );
     }
 
+    @Test
     public void testMatchesNotMatchesCheese() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesNotMatches.drl" ) ) );
@@ -4204,6 +4311,7 @@ public class MiscTest extends TestCase {
                       list.get( 3 ) );
     }
 
+    @Test
     public void testAutomaticBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindings.drl" ) ) );
@@ -4233,6 +4341,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testMatchesMVEL() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MatchesMVEL.drl" ) ) );
@@ -4257,6 +4366,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testAutomaticBindingsErrors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindingsErrors.drl" ) ) );
@@ -4265,6 +4375,7 @@ public class MiscTest extends TestCase {
         assertNotNull( pkg.getErrorSummary() );
     }
 
+    @Test
     public void testQualifiedFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
@@ -4295,6 +4406,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testEvalRewrite() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
@@ -4366,6 +4478,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
@@ -4398,6 +4511,7 @@ public class MiscTest extends TestCase {
     }
 
     // this is an MVEL regression that we need fixed in mvel-2.0.11
+    @Test
     public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
@@ -4430,6 +4544,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( map ) );
     }
 
+    @Test
     public void testHalt() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_halt.drl" ) ) );
@@ -4455,6 +4570,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testFireLimit() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_fireLimit.drl" ) ) );
@@ -4504,6 +4620,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testEqualitySupport() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -4535,6 +4652,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testCharComparisons() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -4573,6 +4691,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testAlphaNodeSharing() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -4605,6 +4724,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testFunctionCallingFunctionWithEclipse() throws Exception {
         PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
         ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.ECLIPSE );
@@ -4632,6 +4752,7 @@ public class MiscTest extends TestCase {
                       ((Integer) list.get( 0 )).intValue() );
     }
 
+    @Test
     public void testFunctionCallingFunctionWithJanino() throws Exception {
         PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
         ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.JANINO );
@@ -4658,6 +4779,7 @@ public class MiscTest extends TestCase {
                       ((Integer) list.get( 0 )).intValue() );
     }
 
+    @Test
     public void testSelfReference2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SelfReference2.drl" ) ) );
@@ -4681,6 +4803,7 @@ public class MiscTest extends TestCase {
     }
     
 
+    @Test
     public void testSelfJoinWithIndex() {
         String drl = "";
         drl += "package org.test\n";
@@ -4727,6 +4850,7 @@ public class MiscTest extends TestCase {
         assertEquals( 0, list.size() );
     }    
 
+    @Test
     public void testMergingDifferentPackages() throws Exception {
         // using the same builder
         try {
@@ -4751,6 +4875,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testSelfJoinAndNotWithIndex() {
         String drl = "";
         drl += "package org.test\n";
@@ -4814,6 +4939,7 @@ public class MiscTest extends TestCase {
         assertSame( p3, list.get( 3 ) );        
     }
         
+    @Test
     public void testMergingDifferentPackages2() throws Exception {
         // using different builders
         try {
@@ -4862,6 +4988,7 @@ public class MiscTest extends TestCase {
         }
     }
 
+    @Test
     public void testMergePackageWithSameRuleNames() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MergePackageWithSameRuleNames1.drl" ) ) );
@@ -4891,6 +5018,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testRuleRemovalWithJoinedRootPattern() {
         String str = "";
         str += "package org.drools \n";
@@ -4937,6 +5065,7 @@ public class MiscTest extends TestCase {
     }
 
     // JBRULES-1808
+    @Test
     public void testKnowledgeHelperFixerInStrings() {
         String str = "";
         str += "package org.simple \n";
@@ -4981,6 +5110,7 @@ public class MiscTest extends TestCase {
                       list.get( 1 ) );
     }
 
+    @Test
     public void testRuleReplacement() throws Exception {
         // test rule replacement
         final PackageBuilder builder1 = new PackageBuilder();
@@ -5022,6 +5152,7 @@ public class MiscTest extends TestCase {
         assertTrue( results.contains( "p1.r3" ) );
     }
 
+    @Test
     public void testBindingsOnConnectiveExpressions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_bindings.drl" ) ) );
@@ -5049,6 +5180,7 @@ public class MiscTest extends TestCase {
                       results.get( 1 ) );
     }
 
+    @Test
     public void testMultipleFroms() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_multipleFroms.drl" ) ) );
@@ -5082,6 +5214,7 @@ public class MiscTest extends TestCase {
                       ((List) results.get( 1 )).size() );
     }
 
+    @Test
     public void testNullHashing() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHashing.drl" ) ) );
@@ -5109,6 +5242,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testDefaultBetaConstrains() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DefaultBetaConstraint.drl" ) ) );
@@ -5223,6 +5357,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testBooleanWrapper() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_BooleanWrapper.drl" ) ) );
@@ -5259,6 +5394,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testCrossProductRemovingIdentityEquals() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
@@ -5320,6 +5456,7 @@ public class MiscTest extends TestCase {
                       list2.get( 5 ) );
     }
 
+    @Test
     public void testIterateObjects() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_IterateObjects.drl" ) ) );
@@ -5348,6 +5485,7 @@ public class MiscTest extends TestCase {
                       events.next() );
     }
 
+    @Test
     public void testNotInStatelessSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NotInStatelessSession.drl" ) ) );
@@ -5368,6 +5506,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testDynamicallyAddInitialFactRule() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         String rule = "package org.drools.test\n" +
@@ -5416,6 +5555,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testEvalRewriteWithSpecialOperators() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteWithSpecialOperators.drl" ) ) );
@@ -5516,6 +5656,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testImportColision() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -5540,6 +5681,7 @@ public class MiscTest extends TestCase {
         workingMemory.fireAllRules();
     }
 
+    @Test
     public void testAutovivificationOfVariableRestrictions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoVivificationVR.drl" ) ) );
@@ -5564,6 +5706,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testShadowProxyOnCollections() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections.drl" ) ) );
@@ -5591,6 +5734,7 @@ public class MiscTest extends TestCase {
                       cheesery.getCheeses().get( 0 ) );
     }
 
+    @Test
     public void testShadowProxyOnCollections2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyOnCollections2.drl" ) ) );
@@ -5623,6 +5767,7 @@ public class MiscTest extends TestCase {
                       objectWithSet.getMessage() );
     }
 
+    @Test
     public void testNestedAccessors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NestedAccessors.drl" ) ) );
@@ -5681,6 +5826,7 @@ public class MiscTest extends TestCase {
                     list.get( 1 ) );
     }
 
+    @Test
     public void testWorkingMemoryLoggerWithUnbalancedBranches() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Logger.drl" ) ) );
@@ -5709,6 +5855,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testFromNestedAccessors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromNestedAccessors.drl" ) ) );
@@ -5745,6 +5892,7 @@ public class MiscTest extends TestCase {
                     list.get( 0 ) );
     }
 
+    @Test
     public void testFromArrayIteration() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromArrayIteration.drl" ) ) );
@@ -5773,6 +5921,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testSubNetworks() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_SubNetworks.drl" ) ) );
@@ -5789,6 +5938,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testFinalClass() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FinalClass.drl" ) ) );
@@ -5824,6 +5974,7 @@ public class MiscTest extends TestCase {
         //                      list.size() );
     }
 
+    @Test
     public void testEvalRewriteMatches() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewriteMatches.drl" ) ) );
@@ -5859,6 +6010,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( item12 ) );
     }
 
+    @Test
     public void testConsequenceBuilderException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceBuilderException.drl" ) ) );
@@ -5866,6 +6018,7 @@ public class MiscTest extends TestCase {
         assertTrue( builder.hasErrors() );
     }
 
+    @Test
     public void testRuntimeTypeCoercion() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
@@ -5911,6 +6064,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testRuntimeTypeCoercion2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion2.drl" ) ) );
@@ -5970,6 +6124,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testAlphaEvalWithOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaEvalWithOrCE.drl" ) ) );
@@ -5998,6 +6153,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testModifyRetractAndModifyInsert() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyRetractInsert.drl" ) ) );
@@ -6025,6 +6181,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testAlphaCompositeConstraints() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaCompositeConstraints.drl" ) ) );
@@ -6048,6 +6205,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
@@ -6076,6 +6234,7 @@ public class MiscTest extends TestCase {
                       bob.getStatus() );
     }
 
+    @Test
     public void testModifyBlockWithFrom() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlockWithFrom.drl" ) ) );
@@ -6108,6 +6267,7 @@ public class MiscTest extends TestCase {
     }
 
     // this test requires mvel 1.2.19. Leaving it commented until mvel is released.
+    @Test
     public void testJavaModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_JavaModifyBlock.drl" ) ) );
@@ -6142,6 +6302,7 @@ public class MiscTest extends TestCase {
                       ((OuterClass.InnerClass) list.get( 1 )).getIntAttr() );
     }
 
+    @Test
     public void testOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCE.drl" ) ) );
@@ -6169,6 +6330,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testOrWithAndUsingNestedBindings() {
         String str = "";
         str += "package org.drools\n";
@@ -6264,6 +6426,7 @@ public class MiscTest extends TestCase {
 
     }
     
+    @Test
     public void testFieldBindingOnWrongFieldName() {
         //JBRULES-2527
         
@@ -6312,6 +6475,7 @@ public class MiscTest extends TestCase {
         }      
     }    
 
+    @Test
     public void testDeepNestedConstraints() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeepNestedConstraints.drl" ) ) );
@@ -6340,6 +6504,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testGetFactHandleEqualityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.EQUALITY );
@@ -6356,6 +6521,7 @@ public class MiscTest extends TestCase {
         assertNotNull( fh );
     }
 
+    @Test
     public void testGetFactHandleIdentityBehavior() throws Exception {
         final RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setAssertBehaviour( RuleBaseConfiguration.AssertBehaviour.IDENTITY );
@@ -6374,6 +6540,7 @@ public class MiscTest extends TestCase {
         assertNotNull( fh2 );
     }
 
+    @Test
     public void testOrCEFollowedByEval() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCEFollowedByEval.drl" ) ) );
@@ -6399,6 +6566,7 @@ public class MiscTest extends TestCase {
         assertTrue( list.contains( b.getObject() ) );
     }
 
+    @Test
     public void testNPEOnMVELAlphaPredicates() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NPEOnMVELPredicate.drl" ) ) );
@@ -6441,6 +6609,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testModifyWithLockOnActive() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyWithLockOnActive.drl" ) ) );
@@ -6472,6 +6641,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testNPEOnParenthesis() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ParenthesisUsage.drl" ) ),
@@ -6510,6 +6680,7 @@ public class MiscTest extends TestCase {
                       results.get( 1 ) );
     }
 
+    @Test
     public void testEvalWithLineBreaks() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EvalWithLineBreaks.drl" ) ),
@@ -6533,6 +6704,7 @@ public class MiscTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    @Test
     public void testDRLWithoutPackageDeclaration() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_NoPackageDeclaration.drl" ) ),
@@ -6567,6 +6739,7 @@ public class MiscTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    @Test
     public void testKnowledgeContextJava() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_KnowledgeContextJava.drl",
@@ -6593,6 +6766,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testListOfMaps() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_TestMapVariableRef.drl",
@@ -6628,6 +6802,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testKnowledgeContextMVEL() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_KnowledgeContextMVEL.drl",
@@ -6654,6 +6829,7 @@ public class MiscTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testJBRules2055() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2055.drl",
@@ -6687,6 +6863,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testJBRules2369() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2369.drl",
@@ -6725,6 +6902,7 @@ public class MiscTest extends TestCase {
                       results.size() );
     }
 
+    @Test
     public void testInsertionOrder() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_InsertionOrder.drl",
@@ -6775,6 +6953,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testFireAllWhenFiringUntilHalt() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -6821,6 +7000,7 @@ public class MiscTest extends TestCase {
                      aliveT1 );
     }
 
+    @Test
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -6878,6 +7058,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testNetworkBuildErrorAcrossEntryPointsAndFroms() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -6924,6 +7105,7 @@ public class MiscTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testJBRules2140() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_JBRules2140.drl",
@@ -6950,6 +7132,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testGeneratedBeansSerializable() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_GeneratedBeansSerializable.drl" ) ),
@@ -7003,6 +7186,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testAddRemoveListeners() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_AddRemoveListeners.drl" ) ),
@@ -7035,6 +7219,7 @@ public class MiscTest extends TestCase {
                 times( 2 ) ).objectInserted( any( org.drools.event.rule.ObjectInsertedEvent.class ) );
     }
 
+    @Test
     public void testInsert() throws Exception {
         String drl = "";
         drl += "package test\n";
@@ -7074,6 +7259,7 @@ public class MiscTest extends TestCase {
         ksession.insert( new Pet( "Toni" ) );
     }
 
+    @Test
     public void testClassLoaderHits() throws Exception {
         final KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         //conf.setOption( ClassLoaderCacheOption.DISABLED );
@@ -7091,6 +7277,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testMVELConsequenceWithoutSemiColon1() throws Exception {
         String drl = "";
         drl += "package test\n";
@@ -7145,6 +7332,7 @@ public class MiscTest extends TestCase {
 
     }
 
+    @Test
     public void testRuleMetaAttributes() throws Exception {
         String drl = "";
         drl += "package test\n";
@@ -7210,6 +7398,7 @@ public class MiscTest extends TestCase {
         assertTrue( kbuilder.hasErrors() );
     }
 
+    @Test
     public void testRuleChainingWithLogicalInserts() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_RuleChaining.drl",
@@ -7252,6 +7441,7 @@ public class MiscTest extends TestCase {
         verify( wml, never() ).objectRetracted( any( org.drools.event.rule.ObjectRetractedEvent.class ) );
     }
     
+    @Test
     public void testOrWithReturnValueRestriction() throws Exception {
         String fileName = "test_OrWithReturnValue.drl";
         KnowledgeBase kbase = loadKnowledgeBase( fileName );

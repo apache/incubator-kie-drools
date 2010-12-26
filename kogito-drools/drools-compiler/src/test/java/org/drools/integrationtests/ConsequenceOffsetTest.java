@@ -3,15 +3,19 @@ package org.drools.integrationtests;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 
-public class ConsequenceOffsetTest extends TestCase {
+public class ConsequenceOffsetTest {
     
+    @Test
     public void testConsequenceOffset() throws Exception {
         int offset = -1;
         DrlParser parser = new DrlParser();
@@ -46,6 +50,7 @@ public class ConsequenceOffsetTest extends TestCase {
         fail();
     }
     
+    @Test
     public void testLargeSetOfImports() throws Exception {
         Reader reader = new InputStreamReader( ConsequenceOffsetTest.class.getResourceAsStream( "test_consequenceOffsetImports.drl" ) );
         DrlParser parser = new DrlParser();

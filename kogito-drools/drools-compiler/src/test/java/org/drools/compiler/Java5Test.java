@@ -5,8 +5,15 @@ import java.io.InputStreamReader;
 import org.drools.DroolsTestCase;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class Java5Test extends DroolsTestCase {
 
+    @Test
     public void testJava5Rule() throws Exception {
         final String javaVersion = System.getProperty( "java.specification.version" );
         //do not execute tests under JDK 1.4
@@ -25,6 +32,7 @@ public class Java5Test extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
     }
 
+    @Test
     public void testJava14Defaults() throws Exception {
         final PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) conf.getDialectConfiguration( "java" );

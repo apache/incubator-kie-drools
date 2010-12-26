@@ -11,7 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ChangeSet;
 import org.drools.KnowledgeBase;
@@ -39,8 +42,9 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
 
-public class ChangeSetTest extends TestCase {
+public class ChangeSetTest {
 
+    @Test
     public void testXmlParser() throws SAXException,
                                IOException {
 
@@ -83,6 +87,7 @@ public class ChangeSetTest extends TestCase {
                       dtConf.getInputType() );
     }
 
+    @Test
     public void testIntegregation() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml",
@@ -103,6 +108,7 @@ public class ChangeSetTest extends TestCase {
         assertTrue( list.containsAll( Arrays.asList( new String[]{"rule1", "rule2"} ) ) );
     }
 
+    @Test
     public void testBasicAuthentication() throws SAXException,
                                IOException {
 

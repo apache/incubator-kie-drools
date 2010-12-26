@@ -16,7 +16,10 @@
 
 package org.drools.rule;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.base.ClassObjectType;
@@ -29,8 +32,9 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 
-public class PatternTest extends TestCase {
+public class PatternTest {
 
+    @Test
     public void testDeclarationsObjectType() throws Exception {
         final ObjectType type = new ClassObjectType( Cheese.class );
         final Pattern col = new Pattern( 0,
@@ -49,6 +53,7 @@ public class PatternTest extends TestCase {
 
     }
 
+    @Test
     public void testDeclarationsFactTemplate() throws Exception {
 
         final Package pkg = new Package( "org.store" );

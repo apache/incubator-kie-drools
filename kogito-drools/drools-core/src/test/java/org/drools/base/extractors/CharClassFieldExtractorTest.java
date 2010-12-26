@@ -16,18 +16,21 @@
 
 package org.drools.base.extractors;
 
-import junit.framework.Assert;
-
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.TestBean;
 import org.drools.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
     InternalReadAccessor reader;
     TestBean  bean      = new TestBean();
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
@@ -36,6 +39,7 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
                                               getClass().getClassLoader() );
     }
 
+    @Test
     public void testGetBooleanValue() {
         try {
             this.reader.getBooleanValue( null,
@@ -46,57 +50,66 @@ public class CharClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         }
     }
 
+    @Test
     public void testGetByteValue() {
-            Assert.assertEquals( 'a',
-                                 this.reader.getByteValue( null,
-                                                              this.bean ) );
+            assertEquals('a',
+                    this.reader.getByteValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetCharValue() {
-            Assert.assertEquals( 'a',
-                                 this.reader.getCharValue( null,
-                                                              this.bean ) );
+            assertEquals('a',
+                    this.reader.getCharValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetDoubleValue() {
-            Assert.assertEquals( 'a',
-                                 (int) this.reader.getDoubleValue( null,
-                                                                      this.bean ) );
+            assertEquals('a',
+                    (int) this.reader.getDoubleValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetFloatValue() {
-            Assert.assertEquals( 'a',
-                                 (int) this.reader.getFloatValue( null,
-                                                                     this.bean ) );
+            assertEquals('a',
+                    (int) this.reader.getFloatValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetIntValue() {
-            Assert.assertEquals( 'a',
-                                 this.reader.getIntValue( null,
-                                                             this.bean ) );
+            assertEquals('a',
+                    this.reader.getIntValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetLongValue() {
-            Assert.assertEquals( 'a',
-                                 (int) this.reader.getLongValue( null,
-                                                                    this.bean ) );
+            assertEquals('a',
+                    (int) this.reader.getLongValue(null,
+                            this.bean));
     }
 
+    @Test
     public void testGetShortValue() {
-            Assert.assertEquals( 'a',
-                                 this.reader.getShortValue( null,
-                                                               this.bean ) );
+            assertEquals('a',
+                    this.reader.getShortValue(null,
+                            this.bean));
 
     }
 
+    @Test
     public void testGetValue() {
-            Assert.assertEquals( 'a',
-                                 ((Character) this.reader.getValue( null,
-                                                                       this.bean )).charValue() );
+            assertEquals('a',
+                    ((Character) this.reader.getValue(null,
+                            this.bean)).charValue());
     }
 
+    @Test
     public void testIsNullValue() {
-            Assert.assertFalse( this.reader.isNullValue( null,
-                                                            this.bean ) );
+            assertFalse(this.reader.isNullValue(null,
+                    this.bean));
     }
 }

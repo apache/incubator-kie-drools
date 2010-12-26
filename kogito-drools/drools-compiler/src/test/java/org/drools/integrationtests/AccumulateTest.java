@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -39,7 +41,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 
-public class AccumulateTest extends TestCase {
+public class AccumulateTest {
     protected RuleBase getRuleBase() throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
@@ -67,7 +69,7 @@ public class AccumulateTest extends TestCase {
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
@@ -104,6 +106,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
+    @Test
     public void testAccumulateModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModify.drl" ) );
@@ -134,7 +137,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -145,9 +148,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 3rd scenario
@@ -157,9 +160,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 31,
+        assertEquals( 31,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
@@ -167,11 +170,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulate() throws Exception {
 
         // read in the source
@@ -198,18 +202,19 @@ public class AccumulateTest extends TestCase {
 
         wm.fireAllRules();
 
-        Assert.assertEquals( new Integer( 165 ),
+        assertEquals( new Integer( 165 ),
                              results.get( 0 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results.get( 1 ) );
-        Assert.assertEquals( new Integer( 150 ),
+        assertEquals( new Integer( 150 ),
                              results.get( 2 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results.get( 3 ) );
-        Assert.assertEquals( new Integer( 210 ),
+        assertEquals( new Integer( 210 ),
                              results.get( 4 ) );
     }
 
+    @Test
     public void testMVELAccumulate() throws Exception {
 
         // read in the source
@@ -236,18 +241,19 @@ public class AccumulateTest extends TestCase {
 
         wm.fireAllRules();
 
-        Assert.assertEquals( new Integer( 165 ),
+        assertEquals( new Integer( 165 ),
                              results.get( 0 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results.get( 1 ) );
-        Assert.assertEquals( new Integer( 150 ),
+        assertEquals( new Integer( 150 ),
                              results.get( 2 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results.get( 3 ) );
-        Assert.assertEquals( new Integer( 210 ),
+        assertEquals( new Integer( 210 ),
                              results.get( 4 ) );
     }
 
+    @Test
     public void testAccumulateModifyMVEL() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateModifyMVEL.drl" ) );
@@ -278,7 +284,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -289,9 +295,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 3rd scenario
@@ -301,9 +307,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 31,
+        assertEquals( 31,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
@@ -311,11 +317,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateReverseModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModify.drl" ) );
@@ -346,7 +353,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -357,9 +364,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 3rd scenario
@@ -372,9 +379,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 36,
+        assertEquals( 36,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
@@ -382,11 +389,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateReverseModify2() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModify2.drl" ) );
@@ -417,7 +425,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -428,9 +436,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -443,9 +451,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 36,
+        assertEquals( 36,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -453,11 +461,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateReverseModifyMVEL() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL.drl" ) );
@@ -488,7 +497,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -499,9 +508,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 3rd scenario
@@ -511,9 +520,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 31,
+        assertEquals( 31,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
@@ -521,11 +530,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateReverseModifyMVEL2() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateReverseModifyMVEL2.drl" ) );
@@ -556,7 +566,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -567,9 +577,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 24,
+        assertEquals( 24,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -579,9 +589,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 31,
+        assertEquals( 31,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -589,11 +599,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateWithFromChaining() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateWithFromChaining.drl" ) );
@@ -629,9 +640,9 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // one fire, as per rule constraints
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 2nd scenario
@@ -642,7 +653,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // no fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
 
         // ---------------- 3rd scenario
@@ -652,9 +663,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 4th scenario
@@ -664,11 +675,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testMVELAccumulate2WM() throws Exception {
 
         // read in the source
@@ -715,29 +727,30 @@ public class AccumulateTest extends TestCase {
 
         wm2.fireAllRules();
 
-        Assert.assertEquals( new Integer( 165 ),
+        assertEquals( new Integer( 165 ),
                              results1.get( 0 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results1.get( 1 ) );
-        Assert.assertEquals( new Integer( 150 ),
+        assertEquals( new Integer( 150 ),
                              results1.get( 2 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results1.get( 3 ) );
-        Assert.assertEquals( new Integer( 210 ),
+        assertEquals( new Integer( 210 ),
                              results1.get( 4 ) );
 
-        Assert.assertEquals( new Integer( 165 ),
+        assertEquals( new Integer( 165 ),
                              results2.get( 0 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results2.get( 1 ) );
-        Assert.assertEquals( new Integer( 150 ),
+        assertEquals( new Integer( 150 ),
                              results2.get( 2 ) );
-        Assert.assertEquals( new Integer( 10 ),
+        assertEquals( new Integer( 10 ),
                              results2.get( 3 ) );
-        Assert.assertEquals( new Integer( 210 ),
+        assertEquals( new Integer( 210 ),
                              results2.get( 4 ) );
     }
 
+    @Test
     public void testAccumulateInnerClass() throws Exception {
 
         // read in the source
@@ -755,10 +768,11 @@ public class AccumulateTest extends TestCase {
 
         wm.fireAllRules();
 
-        Assert.assertEquals( new Integer( 15 ),
+        assertEquals( new Integer( 15 ),
                              results.get( 0 ) );
     }
 
+    @Test
     public void testAccumulateReturningNull() throws Exception {
 
         // read in the source
@@ -785,6 +799,7 @@ public class AccumulateTest extends TestCase {
 
     }
 
+    @Test
     public void testAccumulateReturningNullMVEL() throws Exception {
 
         // read in the source
@@ -811,74 +826,92 @@ public class AccumulateTest extends TestCase {
 
     }
 
+    @Test
     public void testAccumulateSumJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateSum.drl" );
     }
 
+    @Test
     public void testAccumulateSumMVEL() throws Exception {
         execTestAccumulateSum( "test_AccumulateSumMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateMultiPatternWithFunctionJava() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionJava.drl" );
     }
 
+    @Test
     public void testAccumulateMultiPatternWithFunctionMVEL() throws Exception {
         execTestAccumulateSum( "test_AccumulateMultiPatternFunctionMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateCountJava() throws Exception {
         execTestAccumulateCount( "test_AccumulateCount.drl" );
     }
 
+    @Test
     public void testAccumulateCountMVEL() throws Exception {
         execTestAccumulateCount( "test_AccumulateCountMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateAverageJava() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverage.drl" );
     }
 
+    @Test
     public void testAccumulateAverageMVEL() throws Exception {
         execTestAccumulateAverage( "test_AccumulateAverageMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateMinJava() throws Exception {
         execTestAccumulateMin( "test_AccumulateMin.drl" );
     }
 
+    @Test
     public void testAccumulateMinMVEL() throws Exception {
         execTestAccumulateMin( "test_AccumulateMinMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateMaxJava() throws Exception {
         execTestAccumulateMax( "test_AccumulateMax.drl" );
     }
 
+    @Test
     public void testAccumulateMaxMVEL() throws Exception {
         execTestAccumulateMax( "test_AccumulateMaxMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateMultiPatternJava() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPattern.drl" );
     }
 
+    @Test
     public void testAccumulateMultiPatternMVEL() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPatternMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateCollectListJava() throws Exception {
         execTestAccumulateCollectList( "test_AccumulateCollectList.drl" );
     }
 
+    @Test
     public void testAccumulateCollectListMVEL() throws Exception {
         execTestAccumulateCollectList( "test_AccumulateCollectListMVEL.drl" );
     }
 
+    @Test
     public void testAccumulateCollectSetJava() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSet.drl" );
     }
 
+    @Test
     public void testAccumulateCollectSetMVEL() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
     }
@@ -919,9 +952,9 @@ public class AccumulateTest extends TestCase {
 
         // ---------------- 1st scenario
         session.fireAllRules();
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              data.results.size() );
-        Assert.assertEquals( 27,
+        assertEquals( 27,
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
@@ -936,9 +969,9 @@ public class AccumulateTest extends TestCase {
                         data.cheese[index] );
         session.fireAllRules();
 
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              data.results.size() );
-        Assert.assertEquals( 20,
+        assertEquals( 20,
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -947,9 +980,9 @@ public class AccumulateTest extends TestCase {
                         data.bob );
         session.fireAllRules();
 
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              data.results.size() );
-        Assert.assertEquals( 15,
+        assertEquals( 15,
                              ((Number) data.results.get( data.results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -957,7 +990,7 @@ public class AccumulateTest extends TestCase {
         session.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              data.results.size() );
 
     }
@@ -1010,9 +1043,9 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 2nd scenario
@@ -1023,9 +1056,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -1035,9 +1068,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              results.size() );
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -1045,7 +1078,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              results.size() );
 
     }
@@ -1080,7 +1113,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -1091,9 +1124,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 10,
+        assertEquals( 10,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -1103,9 +1136,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 16,
+        assertEquals( 16,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -1114,7 +1147,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
@@ -1149,7 +1182,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -1160,9 +1193,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -1172,9 +1205,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -1183,7 +1216,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
@@ -1218,7 +1251,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -1229,9 +1262,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 9,
+        assertEquals( 9,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
@@ -1241,9 +1274,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 17,
+        assertEquals( 17,
                              ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
@@ -1252,7 +1285,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
@@ -1282,9 +1315,9 @@ public class AccumulateTest extends TestCase {
 
         // ---------------- 1st scenario
         wm.fireAllRules();
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 6,
+        assertEquals( 6,
                              ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 2nd scenario
@@ -1295,9 +1328,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // fire again
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 6,
+        assertEquals( 6,
                              ((List) results.get( results.size() - 1 )).size() );
 
         // ---------------- 3rd scenario
@@ -1306,7 +1339,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
@@ -1336,9 +1369,9 @@ public class AccumulateTest extends TestCase {
 
         // ---------------- 1st scenario
         wm.fireAllRules();
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Set) results.get( results.size() - 1 )).size() );
 
         // ---------------- 2nd scenario
@@ -1349,18 +1382,18 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // fire again
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Set) results.get( results.size() - 1 )).size() );
 
         // ---------------- 3rd scenario
         wm.retract( cheeseHandles[3] );
         wm.fireAllRules();
         // fire again
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              results.size() );
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              ((Set) results.get( results.size() - 1 )).size() );
 
         // ---------------- 4rd scenario
@@ -1368,7 +1401,7 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 3,
+        assertEquals( 3,
                              results.size() );
 
     }
@@ -1406,7 +1439,7 @@ public class AccumulateTest extends TestCase {
         // ---------------- 1st scenario
         wm.fireAllRules();
         // no fire, as per rule constraints
-        Assert.assertEquals( 0,
+        assertEquals( 0,
                              results.size() );
 
         // ---------------- 2nd scenario
@@ -1417,9 +1450,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 1 fire
-        Assert.assertEquals( 1,
+        assertEquals( 1,
                              results.size() );
-        Assert.assertEquals( 32,
+        assertEquals( 32,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 3rd scenario
@@ -1429,9 +1462,9 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // 2 fires
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
-        Assert.assertEquals( 39,
+        assertEquals( 39,
                              ((Cheesery) results.get( results.size() - 1 )).getTotalAmount() );
 
         // ---------------- 4th scenario
@@ -1439,11 +1472,12 @@ public class AccumulateTest extends TestCase {
         wm.fireAllRules();
 
         // should not have fired as per constraint
-        Assert.assertEquals( 2,
+        assertEquals( 2,
                              results.size() );
 
     }
 
+    @Test
     public void testAccumulateWithPreviouslyBoundVariables() throws Exception {
 
         // read in the source
@@ -1473,6 +1507,7 @@ public class AccumulateTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    @Test
     public void testAccumulateMVELWithModify() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_AccumulateMVELwithModify.drl" ) );
@@ -1508,9 +1543,10 @@ public class AccumulateTest extends TestCase {
         assertEquals( 15,
                       results.get( 0 ).intValue() );
         assertEquals( 15.0,
-                      order.getTotal() );
+                      order.getTotal(), 0.0 );
     }
 
+    @Test
     public void testAccumulateGlobals() throws Exception {
 
         // read in the source
@@ -1542,6 +1578,7 @@ public class AccumulateTest extends TestCase {
                       results.get( 0 ) );
     }
 
+    @Test
     public void testAccumulateNonExistingFunction() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 

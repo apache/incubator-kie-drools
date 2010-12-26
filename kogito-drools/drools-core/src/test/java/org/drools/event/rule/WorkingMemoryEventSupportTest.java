@@ -46,13 +46,17 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.WorkingMemory;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
-public class WorkingMemoryEventSupportTest extends TestCase {
+public class WorkingMemoryEventSupportTest {
 
+    @Test
     public void testAddRuleRuntimeEventListener() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -101,6 +105,7 @@ public class WorkingMemoryEventSupportTest extends TestCase {
         ksession.insert( cheddar );
     }
     
+    @Test
     public void testRemoveRuleRuntimeEventListener() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();

@@ -23,7 +23,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Properties;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -32,8 +35,9 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.Package;
 
-public class URLScannerTest extends TestCase {
+public class URLScannerTest {
 
+    @Test
     public void testFileURLCache() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -57,6 +61,7 @@ public class URLScannerTest extends TestCase {
 
     }
 
+    @Test
     public void testFileURLCacheWithKnowledgePackage() throws Exception {
         File dir = RuleBaseAssemblerTest.getTempDirectory();
 
@@ -88,6 +93,7 @@ public class URLScannerTest extends TestCase {
     //        //con.connect();
     //    }
 
+    @Test
     public void testGetFiles() throws Exception {
 
         URL u1 = new URL( "http://localhost:8080/foo/bar.bar/packages/IMINYRURL/LATEST" );
@@ -112,6 +118,7 @@ public class URLScannerTest extends TestCase {
 
     }
 
+    @Test
     public void testConfig() throws Exception {
         URLScanner scan = new URLScanner();
 
@@ -144,6 +151,7 @@ public class URLScannerTest extends TestCase {
 
     }
 
+    @Test
     public void testLastUpdatedError() {
         LastUpdatedPing ping = new LastUpdatedPing();
         assertTrue( ping.isError() );
@@ -154,6 +162,7 @@ public class URLScannerTest extends TestCase {
         assertFalse( ping.isError() );
     }
 
+    @Test
     public void testUpdateNoLocalCache() throws Exception {
         URLScanner scan = new URLScanner();
         File dir = RuleBaseAssemblerTest.getTempDirectory();
@@ -227,6 +236,7 @@ public class URLScannerTest extends TestCase {
 
     }
 
+    @Test
     public void testUpdateWithLocalCache() {
         URLScanner scan = new URLScanner();
         scan.listener = new MockListener();
@@ -340,6 +350,7 @@ public class URLScannerTest extends TestCase {
 
     }
 
+    @Test
     public void testColdStartWithError() throws Exception {
         //this will show starting up and reading packages from the dir when the remote one doesn't respond
         URLScanner scan = new URLScanner();

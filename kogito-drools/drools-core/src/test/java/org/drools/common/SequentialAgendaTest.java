@@ -16,12 +16,16 @@
 
 package org.drools.common;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 
-public class SequentialAgendaTest extends TestCase {
+public class SequentialAgendaTest {
+    @Test
     public void testgetNext() {
         SequentialAgendaGroupImpl agenda = new SequentialAgendaGroupImpl( "test", null );
         

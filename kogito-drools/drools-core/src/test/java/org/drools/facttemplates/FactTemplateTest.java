@@ -16,11 +16,15 @@
 
 package org.drools.facttemplates;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.rule.Package;
 
-public class FactTemplateTest extends TestCase {
+public class FactTemplateTest {
+    @Test
     public void testFieldsAndGetters() {
         final Package pkg = new Package( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",
@@ -61,6 +65,7 @@ public class FactTemplateTest extends TestCase {
                       cheese.getFieldTemplateIndex( "price" ) );
     }
 
+    @Test
     public void testEqualsAndHashCode() {
         final Package pkg = new Package( "org.store" );
 
@@ -114,6 +119,7 @@ public class FactTemplateTest extends TestCase {
                       cheese3.hashCode() );
     }
 
+    @Test
     public void testFacts() {
         final Package pkg = new Package( "org.store" );
         final FieldTemplate cheeseName = new FieldTemplateImpl( "name",

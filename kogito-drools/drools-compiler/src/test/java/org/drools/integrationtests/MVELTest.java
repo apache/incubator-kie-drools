@@ -12,8 +12,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.KnowledgeBase;
@@ -40,7 +42,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.type.DateFormatsImpl;
 import org.mvel2.MVEL;
 
-public class MVELTest extends TestCase {
+public class MVELTest {
+    @Test
     public void testHelloWorld() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
@@ -76,6 +79,7 @@ public class MVELTest extends TestCase {
                       c.getUsedBy() );
     }
 
+    @Test
     public void testIncrementOperator() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -114,6 +118,7 @@ public class MVELTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testEvalWithBigDecimal() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -155,6 +160,7 @@ public class MVELTest extends TestCase {
                       list.get( 0 ) );
     }
 
+    @Test
     public void testLocalVariableMVELConsequence() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LocalVariableMVELConsequence.drl" ) ) );
@@ -189,6 +195,7 @@ public class MVELTest extends TestCase {
 
     }
 
+    @Test
     public void testMVELUsingGlobalsInDebugMode() throws Exception {
         MVELDebugHandler.setDebugMode( true );
         try {
@@ -209,6 +216,7 @@ public class MVELTest extends TestCase {
 
     }
 
+    @Test
     public void testDuplicateLocalVariableMVELConsequence() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateLocalVariableMVELConsequence.drl" ) ) );
@@ -216,6 +224,7 @@ public class MVELTest extends TestCase {
         assertTrue( builder.hasErrors() );
     }
 
+    @Test
     public void testArrays() throws Exception {
         String text = "package test_mvel;\n";
         text += "import org.drools.integrationtests.TestObject;\n";
@@ -253,6 +262,7 @@ public class MVELTest extends TestCase {
         assertEquals("TestObject.applyValueAddPromo: 1|2|3|4|java", list.get(5));
     }
     
+    @Test
     public void testPackageImports() throws Exception {
         String str = "";
         str += "package org.drools \n";
@@ -312,7 +322,7 @@ public class MVELTest extends TestCase {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            Assert.fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();

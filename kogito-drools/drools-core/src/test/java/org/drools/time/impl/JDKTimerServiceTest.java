@@ -24,7 +24,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.SessionConfiguration;
@@ -35,8 +38,9 @@ import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
 import org.drools.time.Trigger;
 
-public class JDKTimerServiceTest extends TestCase {
+public class JDKTimerServiceTest {
     
+    @Test
     public void testSingleExecutionJob() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
@@ -49,6 +53,7 @@ public class JDKTimerServiceTest extends TestCase {
         assertEquals( 1, ctx.getList().size() ); 
     }    
     
+    @Test
     public void testRepeatedExecutionJob() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
@@ -62,7 +67,8 @@ public class JDKTimerServiceTest extends TestCase {
     }    
         
     
-	public void testRepeatedExecutionJobWithRemove() throws Exception {
+    @Test
+    public void testRepeatedExecutionJobWithRemove() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config ); 
