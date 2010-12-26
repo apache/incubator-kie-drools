@@ -64,6 +64,12 @@ import java.util.List;
 import javax.rules.Handle;
 import javax.rules.ObjectFilter;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the <code>StatefulRuleSession</code> implementation.
  *
@@ -73,16 +79,11 @@ import javax.rules.ObjectFilter;
  * @see javax.rules.StatefulRuleSession
  */
 public class StatefulRuleSessionTest extends RuleEngineTestBase {
-    /**
-     * Setup the test case.
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
 
     /**
      * Test containsObject.
      */
+    @Test
     public void testContainsObject() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
         final Person bob = new Person( "bob" );
@@ -94,10 +95,12 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test addObject.
      */
+    @Test
     public void testAddObject() throws Exception {
         // tested in testContainsObject
     }
 
+    @Test
     public void testJsr94FactHandleFactoryAvailable() throws ClassNotFoundException {
         this.getClass().getClassLoader().loadClass( "org.drools.jsr94.rules.Jsr94FactHandleFactory" );
     }
@@ -105,6 +108,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test addObjects.
      */
+    @Test
     public void testAddObjects() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
         final List inObjects = new ArrayList();
@@ -138,6 +142,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test getObject.
      */
+    @Test
     public void testGetObject() throws Exception {
         // tested in testAddObjects
     }
@@ -145,6 +150,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test updateObject.
      */
+    @Test
     public void testUpdateObject() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
         Person bob = new Person( "bob" );
@@ -159,6 +165,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test removeObject.
      */
+    @Test
     public void testRemoveObject() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
         final Person bob = new Person( "bob" );
@@ -174,6 +181,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test getObjects.
      */
+    @Test
     public void testGetObjects() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
@@ -211,6 +219,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test getObjects with ObjectFilter.
      */
+    @Test
     public void testGetObjectsWithFilter() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
@@ -245,6 +254,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test executeRules.
      */
+    @Test
     public void testExecuteRules() throws Exception {
         // tested in testGetObjects, testGetObjectsWithFilter
     }
@@ -252,6 +262,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test reset.
      */
+    @Test
     public void testReset() throws Exception {
         this.statefulSession = this.engine.getStatefulRuleSession( this.bindUri );
 
@@ -268,6 +279,7 @@ public class StatefulRuleSessionTest extends RuleEngineTestBase {
     /**
      * Test executeRules with globals.
      */
+    @Test
     public void testExecuteRulesGlobals() throws Exception {
         final java.util.Map map = new HashMap();
         java.util.Vector v = new java.util.Vector();

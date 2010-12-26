@@ -18,7 +18,10 @@ package org.drools.verifier.data;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.Constraint;
@@ -53,8 +56,9 @@ import org.drools.verifier.components.VerifierMethodAccessDescr;
 import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.VerifierRule;
 
-public class VerifierDataMapsTest extends TestCase {
+public class VerifierDataMapsTest {
 
+    @Test
     public void testSaveVerifierComponentAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
@@ -86,6 +90,7 @@ public class VerifierDataMapsTest extends TestCase {
                       rule2 );
     }
 
+    @Test
     public void testSaveVerifierComponentAndGetForAllComponentTypes() {
 
         RulePackage rulePackage = VerifierComponentMockFactory.createPackage1();
@@ -121,11 +126,13 @@ public class VerifierDataMapsTest extends TestCase {
         saveVerifierComponentAndGet( new PatternEval( pattern ) );
     }
 
+    @Test
     public void testSaveVerifierComponentAndGetForAllFields() {
         saveVerifierComponentAndGet( new EnumField() );
         saveVerifierComponentAndGet( new Field() );
     }
 
+    @Test
     public void testSaveVerifierComponentAndGetForAllRestrictions() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -138,6 +145,7 @@ public class VerifierDataMapsTest extends TestCase {
         saveVerifierComponentAndGet( new VariableRestriction( pattern ) );
     }
 
+    @Test
     public void testSavePatternAndGet() {
         VerifierData data = VerifierReportFactory.newVerifierData();
 

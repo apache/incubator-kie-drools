@@ -18,7 +18,10 @@ package org.drools.verifier.equivalence;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
@@ -40,8 +43,9 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  * @author Toni Rikkola
  *
  */
-public class EquivalentRulesTest extends TestCase {
+public class EquivalentRulesTest {
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

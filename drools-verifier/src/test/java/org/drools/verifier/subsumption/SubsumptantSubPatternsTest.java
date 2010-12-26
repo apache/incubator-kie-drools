@@ -18,7 +18,10 @@ package org.drools.verifier.subsumption;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
@@ -32,8 +35,9 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
 
-public class SubsumptantSubPatternsTest extends TestCase {
+public class SubsumptantSubPatternsTest {
 
+    @Test
     public void testSubpatternSubsumption1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -77,6 +81,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
      * Empty pattern
      * @throws Exception
      */
+    @Test
     public void testSubpatternSubsumption2() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -115,6 +120,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
      * Different sources
      * @throws Exception
      */
+    @Test
     public void testSubpatternSubsumption3() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -191,6 +197,7 @@ public class SubsumptantSubPatternsTest extends TestCase {
      * Different sources
      * @throws Exception
      */
+    @Test
     public void testSubpatternSubsumption5() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

@@ -22,7 +22,10 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -42,22 +45,24 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 
-public class LhsClpParserTest extends TestCase {
+public class LhsClpParserTest {
 
     private ClipsParser parser;
     
     //XFunctionRegistry registry;
     
+    @Before
     public void setUp() {
         //this.registry = new XFunctionRegistry( BuiltinFunctions.getInstance() );
     }
     
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         //this.parser = null;
     }
 
-    public void testParseFunction() throws Exception {        
+    @Test
+    public void testParseFunction() throws Exception {
 //        BuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
 //        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm2(context) );
 //        
@@ -66,6 +71,7 @@ public class LhsClpParserTest extends TestCase {
 //        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );
     }
     
+    @Test
     public void testPatternsRule() throws Exception {
         // the first pattern bellowshould generate a descriptor tree like that:
         //            Pattern[person]
@@ -200,6 +206,7 @@ public class LhsClpParserTest extends TestCase {
                       litDescr.getText() );
     }
 
+    @Test
     public void testNestedCERule() throws Exception {
         RuleDescr rule = parse( "(defrule xxx ?b <- (person (name yyy)) (or (and (hobby1 (type qqq1)) (hobby2 (type ~qqq2))) (food (veg ~shroom) ) ) => )" ).defrule();
 
@@ -268,6 +275,7 @@ public class LhsClpParserTest extends TestCase {
                       litDescr.getText() );
     }
 
+    @Test
     public void testNotExistsRule() throws Exception {
         RuleDescr rule = parse( "(defrule xxx (or (hobby1 (type qqq1)) (not (and (exists (person (name ppp))) (person (name yyy))))) => )" ).defrule();
 
@@ -327,6 +335,7 @@ public class LhsClpParserTest extends TestCase {
                       litDescr.getText() );  
     }
     
+    @Test
     public void testTestRule() throws Exception {
         RuleDescr rule = parse( "(defrule xxx (test (< 9.0 1.3) ) => )" ).defrule();
 
@@ -343,6 +352,7 @@ public class LhsClpParserTest extends TestCase {
         assertEquals("(< 9.0 1.3)", lispForm.toString() );                          
     }
 
+    @Test
     public void testRuleHeader() throws Exception {
         RuleDescr rule = parse( "(defrule MAIN::name \"docs\"(declare (salience -100) ) => )" ).defrule();
         

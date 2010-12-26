@@ -24,6 +24,10 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
@@ -38,6 +42,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class IncoherentPatternsTest extends TestBase {
 
+    @Test
     public void testIncoherentPatternsInSubRule() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -74,6 +79,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleVariables() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -111,6 +117,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesLess() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -146,6 +153,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesGreater() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -181,6 +189,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesEqualOrUnequal() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -216,6 +225,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesEqualOrUnequalVariables() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -250,6 +260,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesEqualValue() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -284,6 +295,7 @@ public class IncoherentPatternsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentPatternsInSubRuleRangesEqualVariable() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 

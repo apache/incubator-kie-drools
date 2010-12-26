@@ -79,6 +79,12 @@ import org.drools.decisiontable.Cheese;
 import org.drools.decisiontable.Person;
 import org.drools.decisiontable.SpreadsheetIntegrationTest;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the RuleRuntime implementation.
  *
@@ -95,7 +101,8 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
     /**
      * Setup the test case.
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         this.RULES_RESOURCE = this.bindUri;
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
@@ -105,6 +112,7 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
     /**
      * Test createRuleSession.
      */
+    @Test
     public void testCreateRuleStatelessRuleSession() throws Exception {
         final RuleRuntime ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
         assertNotNull( "cannot obtain RuleRuntime",
@@ -141,6 +149,7 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
     /**
      * Test createRuleSession.
      */
+    @Test
     public void testCreateRuleStatefulRuleSession() throws Exception {
         final RuleRuntime ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
         assertNotNull( "cannot obtain RuleRuntime",
@@ -177,6 +186,7 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
     /**
      * Test getRegistrations.
      */
+    @Test
     public void testGetRegistrations() throws Exception {
         final RuleRuntime ruleRuntime = this.ruleServiceProvider.getRuleRuntime();
         assertNotNull( "cannot obtain RuleRuntime",
@@ -198,6 +208,7 @@ public class RuleRuntimeTest extends RuleEngineTestBase {
                                                            null );
     }
 
+    @Test
     public void testRuleBaseConfigurationConstant() throws Exception {
         // JBRULES-1061
         

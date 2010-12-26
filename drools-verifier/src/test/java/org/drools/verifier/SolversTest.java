@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescrType;
@@ -38,7 +41,7 @@ import org.drools.verifier.solver.Solvers;
  * @author Toni Rikkola
  * 
  */
-public class SolversTest extends TestCase {
+public class SolversTest {
 
     /**
      * <pre>
@@ -52,6 +55,7 @@ public class SolversTest extends TestCase {
      * r && r2<br>
      * r3 && r4
      */
+    @Test
     public void testNotAnd() {
         RulePackage rulePackage = new RulePackage();
         rulePackage.setName( "testPackage" );
@@ -133,6 +137,7 @@ public class SolversTest extends TestCase {
      * result:<br>
      * descr && descr2
      */
+    @Test
     public void testBasicAnd() {
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();

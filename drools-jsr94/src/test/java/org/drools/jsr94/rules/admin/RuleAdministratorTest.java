@@ -24,6 +24,12 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
 
 import org.drools.jsr94.rules.RuleEngineTestBase;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the RuleRuntime implementation.
  *
@@ -36,7 +42,8 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     /**
      * Obtain an instance of <code>RuleAdministrator</code>.
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
     }
@@ -44,6 +51,7 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     /**
      * Test getRuleExecutionSetProvider.
      */
+    @Test
     public void testRuleExecutionSetProvider() throws Exception {
         final RuleExecutionSetProvider ruleExecutionSetProvider = this.ruleAdministrator.getRuleExecutionSetProvider( null );
         assertNotNull( "cannot obtain RuleExecutionSetProvider",
@@ -53,6 +61,7 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     /**
      * Test getLocalRuleExecutionSetProvider.
      */
+    @Test
     public void testLocalRuleExecutionSetProvider() throws Exception {
         final LocalRuleExecutionSetProvider localRuleExecutionSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
         assertNotNull( "cannot obtain LocalRuleExecutionSetProvider",
@@ -62,6 +71,7 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     /**
      * Test registerRuleExecutionSet.
      */
+    @Test
     public void testRegisterRuleExecutionSet() throws Exception {
         try {
             // that it works is tested elsewhere
@@ -77,6 +87,7 @@ public class RuleAdministratorTest extends RuleEngineTestBase {
     /**
      * Test deregisterRuleExecutionSet.
      */
+    @Test
     public void testDeregisterRuleExecutionSet() throws Exception {
         try {
             // that it works is tested else where

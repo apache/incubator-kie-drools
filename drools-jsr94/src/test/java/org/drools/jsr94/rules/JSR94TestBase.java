@@ -64,7 +64,11 @@ import javax.rules.RuleServiceProvider;
 import javax.rules.StatefulRuleSession;
 import javax.rules.StatelessRuleSession;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Base class for all drools JSR94 test cases.
@@ -72,7 +76,7 @@ import junit.framework.TestCase;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public abstract class JSR94TestBase extends TestCase {
+public abstract class JSR94TestBase {
     protected StatefulRuleSession     statefulSession;
 
     protected StatelessRuleSession    statelessSession;
@@ -86,8 +90,8 @@ public abstract class JSR94TestBase extends TestCase {
     /**
      * Setup the test case.
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.engine = new ExampleRuleEngineFacade();
         this.engine.addRuleExecutionSet( this.bindUri,
                                          StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri ) );

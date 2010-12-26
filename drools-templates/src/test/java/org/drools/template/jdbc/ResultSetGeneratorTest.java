@@ -1,6 +1,9 @@
 package org.drools.template.jdbc;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.RuleBaseFactory;
@@ -22,10 +25,11 @@ import java.util.ArrayList;
  * @author Michael Neale
  * @author Bill Tarr       
  */
-public class ResultSetGeneratorTest extends TestCase {
+public class ResultSetGeneratorTest {
   
 
 
+    @Test
     public void testResultSet() throws Exception {
 
         // setup the HSQL database with our rules.

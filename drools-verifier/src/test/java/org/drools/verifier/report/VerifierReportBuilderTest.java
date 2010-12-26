@@ -20,7 +20,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
@@ -28,8 +31,9 @@ import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 
-public class VerifierReportBuilderTest extends TestCase {
+public class VerifierReportBuilderTest {
 
+    @Test
     public void testHtmlReportTest() throws IOException {
 
         // Create report
@@ -61,16 +65,19 @@ public class VerifierReportBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testPlainTextReportTest() throws IOException {
         //TODO:
         assertTrue( true );
     }
 
+    @Test
     public void testXMLReportTest() throws IOException {
         //TODO:
         assertTrue( true );
     }
 
+    @Test
     public void testPDFReportTest() throws IOException {
         //TODO:
         assertTrue( true );

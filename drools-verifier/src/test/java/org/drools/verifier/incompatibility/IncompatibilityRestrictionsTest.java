@@ -26,6 +26,10 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.ObjectType;
@@ -38,6 +42,7 @@ import org.drools.verifier.report.components.Cause;
 
 public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
+    @Test
     public void testLiteralRestrictionsIncompatibilityLessOrEqual() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -99,6 +104,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         }
     }
 
+    @Test
     public void testLiteralRestrictionsIncompatibilityGreater() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -160,6 +166,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         }
     }
 
+    @Test
     public void testLiteralRestrictionsIncompatibilityImpossibleRange() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -221,6 +228,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         }
     }
 
+    @Test
     public void testVariableRestrictionsIncompatibilityImpossibleRange() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 

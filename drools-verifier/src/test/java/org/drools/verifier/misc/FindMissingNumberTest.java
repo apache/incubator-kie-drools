@@ -20,11 +20,15 @@ import java.math.BigDecimal;
 
 import org.drools.verifier.misc.FindMissingNumber;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FindMissingNumberTest extends TestCase {
+public class FindMissingNumberTest {
 
-	public void testfindSumPattern() {
+    @Test
+    public void testfindSumPattern() {
 		// Sum +2 missing number 4
 		assertTrue(FindMissingNumber.findSumPattern(
 				new BigDecimal[] { BigDecimal.valueOf(2),
@@ -93,7 +97,8 @@ public class FindMissingNumberTest extends TestCase {
 				.valueOf(2) }) == null);
 	}
 
-	public void testFindMultiplicationPattern() {
+    @Test
+    public void testFindMultiplicationPattern() {
 
 		// Multiplication
 		// *2 missing number 4

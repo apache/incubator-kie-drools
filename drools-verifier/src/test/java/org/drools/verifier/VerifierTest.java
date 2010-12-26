@@ -21,7 +21,10 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
@@ -35,8 +38,9 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class VerifierTest extends TestCase {
+public class VerifierTest {
 
+    @Test
     public void testVerifier() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -70,6 +74,7 @@ public class VerifierTest extends TestCase {
 
     }
 
+    @Test
     public void testVerifierInvalidDRLs() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -92,6 +97,7 @@ public class VerifierTest extends TestCase {
 
     }
 
+    @Test
     public void testVerifierNullPackageDescr() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -114,6 +120,7 @@ public class VerifierTest extends TestCase {
 
     }
 
+    @Test
     public void testFactTypesFromJar() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -162,6 +169,7 @@ public class VerifierTest extends TestCase {
 
     }
 
+    @Test
     public void testFactTypesFromJarAndDeclarations() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -217,6 +225,7 @@ public class VerifierTest extends TestCase {
 
     }
 
+    @Test
     public void testCustomRule() {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

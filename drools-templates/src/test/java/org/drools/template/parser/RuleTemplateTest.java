@@ -3,12 +3,16 @@ package org.drools.template.parser;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.core.util.StringUtils;
 
-public class RuleTemplateTest extends TestCase {
-	public void testSetContents() {
+public class RuleTemplateTest {
+    @Test
+    public void testSetContents() {
 		RuleTemplate rt = new RuleTemplate("rt1", getTemplateContainer());
 		rt.setContents("Test template");
 		assertEquals("Test template\n", rt.getContents());
@@ -36,7 +40,8 @@ public class RuleTemplateTest extends TestCase {
 		};
 	}
 
-	public void testAddColumn() {
+    @Test
+    public void testAddColumn() {
 		RuleTemplate rt = new RuleTemplate("rt1", getTemplateContainer());
 		rt.addColumn("StandardColumn");
 		rt.addColumn("!NotColumn");

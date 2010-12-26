@@ -19,7 +19,10 @@ package org.drools.verifier.solver;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
@@ -32,7 +35,7 @@ import org.drools.verifier.data.VerifierComponent;
  * @author Toni Rikkola
  * 
  */
-public class PatternSolverTest extends TestCase {
+public class PatternSolverTest {
 
     /**
      * <pre>
@@ -44,6 +47,7 @@ public class PatternSolverTest extends TestCase {
      * result:<br>
      * descr && descr2
      */
+    @Test
     public void testAddBasicAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -78,6 +82,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr2
      */
+    @Test
     public void testAddBasicOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -116,6 +121,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr2 && descr3
      */
+    @Test
     public void testAddOrAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -164,6 +170,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr && descr3
      */
+    @Test
     public void testAddAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -217,6 +224,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr2 && descr4
      */
+    @Test
     public void testAddAndOrOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -281,6 +289,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr3 && descr4
      */
+    @Test
     public void testAddOrAndAnd() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -337,6 +346,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr4
      */
+    @Test
     public void testAddOrAndOr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
@@ -394,6 +404,7 @@ public class PatternSolverTest extends TestCase {
      * or<br>
      * descr && descr2 && descr4 && descr5<br>
      */
+    @Test
     public void testAddOrAndOrDescr() {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 

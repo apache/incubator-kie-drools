@@ -18,10 +18,14 @@ package org.drools.verifier.components;
 
 import org.drools.verifier.VerifierComponentMockFactory;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class LiteralRestrictionTest extends TestCase {
+public class LiteralRestrictionTest {
 
+    @Test
     public void testSetValue() {
 
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();

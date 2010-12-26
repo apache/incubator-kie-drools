@@ -16,7 +16,10 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -24,7 +27,7 @@ import junit.framework.TestCase;
  * Test rendering and running a whole sample ruleset, from the model classes
  * down.
  */
-public class PackageRenderTest extends TestCase {
+public class PackageRenderTest {
 
     public Rule buildRule() {
         final Rule rule = new Rule( "myrule",
@@ -45,6 +48,7 @@ public class PackageRenderTest extends TestCase {
         return rule;
     }
 
+    @Test
     public void testRulesetRender() {
         final Package ruleSet = new Package( "my ruleset" );
         ruleSet.addFunctions( "my functions" );

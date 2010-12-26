@@ -19,7 +19,10 @@ package org.drools.verifier.report.components;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
@@ -28,8 +31,9 @@ import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 
-public class CauseTest extends TestCase {
+public class CauseTest {
 
+    @Test
     public void testCauseTrace() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

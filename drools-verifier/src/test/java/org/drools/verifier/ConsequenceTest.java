@@ -30,6 +30,12 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  *
  * @author Toni Rikkola
@@ -37,6 +43,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class ConsequenceTest extends TestBase {
 
+    @Test
     public void testMissingConsequence() throws Exception {
 
         InputStream in = getClass().getResourceAsStream( "Consequence.drl" );

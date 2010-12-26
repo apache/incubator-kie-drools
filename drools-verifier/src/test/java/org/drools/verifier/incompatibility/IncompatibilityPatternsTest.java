@@ -25,6 +25,10 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
@@ -36,6 +40,7 @@ import org.drools.verifier.report.components.Incompatibility;
 
 public class IncompatibilityPatternsTest extends IncompatibilityBase {
 
+    @Test
     public void testPatternsPossibilitiesIncompatibility() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 

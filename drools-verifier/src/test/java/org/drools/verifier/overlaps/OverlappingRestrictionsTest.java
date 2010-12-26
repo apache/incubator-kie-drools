@@ -22,6 +22,10 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -58,7 +62,8 @@ public class OverlappingRestrictionsTest extends TestBase {
 
 	}
 
-	public void testDUMMY() throws Exception {
+    @Test
+    public void testDUMMY() throws Exception {
 		assertTrue(true);
 	}
 }

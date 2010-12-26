@@ -35,7 +35,10 @@ import javax.rules.admin.RuleExecutionSet;
 import javax.rules.admin.RuleExecutionSetCreateException;
 import javax.rules.admin.RuleExecutionSetRegisterException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test the <code>StatelessRuleSession</code> implementation.
@@ -45,7 +48,7 @@ import junit.framework.TestCase;
  * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  * @see StatelessRuleSession
  */
-public class StatelessRuleSessionTest extends TestCase {
+public class StatelessRuleSessionTest {
 
     private ExampleRuleEngineFacade sessionBuilder;
 
@@ -59,8 +62,8 @@ public class StatelessRuleSessionTest extends TestCase {
      * Setup the test case.
      * normal drl, drl with dsl, drl with global
      */
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.sessionBuilder = new ExampleRuleEngineFacade();
         this.sessionBuilder.addRuleExecutionSet( this.bindUri,
                                                  StatelessRuleSessionTest.class.getResourceAsStream( this.bindUri ) );
@@ -103,6 +106,7 @@ public class StatelessRuleSessionTest extends TestCase {
         return text;
     }
 
+    @Test
     public void testCreateRuleExecutionSetFromStreamWithXml() {
 
         try {
@@ -131,6 +135,7 @@ public class StatelessRuleSessionTest extends TestCase {
         }
     }
 
+    @Test
     public void testCreateRuleExecutionSetFromStreamReaderWithXml() {
         try {
             final Map map = new HashMap();
@@ -163,6 +168,7 @@ public class StatelessRuleSessionTest extends TestCase {
     /**
      * Test executeRules with globals.
      */
+    @Test
     public void testExecuteRulesGlobals() throws Exception {
         final java.util.Map map = new HashMap();
         java.util.Vector v = new java.util.Vector();
@@ -227,6 +233,7 @@ public class StatelessRuleSessionTest extends TestCase {
     /**
      * Test executeRules with normal drl.
      */
+    @Test
     public void testExecuteRules() throws Exception {
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri );
 
@@ -271,6 +278,7 @@ public class StatelessRuleSessionTest extends TestCase {
     /**
      * Test executeRules with normal drl.
      */
+    @Test
     public void testExecuteRulesWithXml() throws Exception {
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri_xml );
 
@@ -360,6 +368,7 @@ public class StatelessRuleSessionTest extends TestCase {
     /**
      * Test executeRules with ObjectFilter.
      */
+    @Test
     public void testExecuteRulesWithFilter() throws Exception {
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri );
 
@@ -396,6 +405,7 @@ public class StatelessRuleSessionTest extends TestCase {
     /**
      * Test executeRules with ObjectFilter drl with dsl.
      */
+    @Test
     public void testExecuteRulesWithFilter_dsl() throws Exception {
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri_drl );
 
