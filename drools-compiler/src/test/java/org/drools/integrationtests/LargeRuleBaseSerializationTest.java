@@ -4,6 +4,7 @@ import java.io.StringReader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -45,7 +46,8 @@ public class LargeRuleBaseSerializationTest {
         
     }
 
-    public void FIXME_testUnmarshallingPerformance() throws Exception {
+    @Test @Ignore
+    public void testUnmarshallingPerformance() throws Exception {
         DroolsStreamUtils.streamIn(bytes);
         long    time    = System.currentTimeMillis();
 
@@ -56,7 +58,8 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time));
     }
 
-    public void FIXME_testMarshallingPerformance() throws Exception {
+    @Test @Ignore
+    public void testMarshallingPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
         for (int i = ITERATIONS; i-- > 0; ) {
             DroolsStreamUtils.streamOut(ruleBase);
@@ -65,7 +68,8 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time)+" with size of "+bytes.length+" bytes");
     }
 
-    public void FIXME_testUnmarshallWithCompressionPerformance() throws Exception {
+    @Test @Ignore
+    public void testUnmarshallWithCompressionPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
 
         for (int i = ITERATIONS; i-- > 0; ) {
@@ -75,7 +79,8 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time));
     }
 
-    public void FIXME_testMarshallWithCompressionPerformance() throws Exception {
+    @Test @Ignore
+    public void testMarshallWithCompressionPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
         for (int i = ITERATIONS; i-- > 0; ) {
             DroolsStreamUtils.streamOut(ruleBase, true);

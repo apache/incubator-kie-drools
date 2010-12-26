@@ -21,6 +21,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -297,7 +298,8 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    public void FIXMEtestDeletePackageUrl() throws Exception {
+    @Test @Ignore
+    public void testDeletePackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1",
                                                "org.drools.test1" );
 

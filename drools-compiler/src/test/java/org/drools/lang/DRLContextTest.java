@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -863,7 +864,8 @@ public class DRLContextTest {
 						.getContent()));
 	}
 
-	public void FIXME_testCheckLHSLocationDetermination_INSIDE_CONDITION_END3() {
+    @Test @Ignore
+	public void testCheckLHSLocationDetermination_INSIDE_CONDITION_END3() {
 		// FIXME for now it will be a limitation of the parser... memberOf is a
 		// soft-keyword and this sentence cannot be parsed correctly if
 		// misspelling

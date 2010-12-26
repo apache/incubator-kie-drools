@@ -7,6 +7,7 @@ import java.io.StringReader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -157,7 +158,8 @@ public class DSLMappingFileTest {
 
     }
 
-    public void FIXME_testParseFileWithEscapes() {
+    @Test @Ignore
+    public void testParseFileWithEscapes() {
         String file = "[then]TEST=System.out.println(\"DO_SOMETHING\");\n" + "[when]code {code1} occurs and sum of all digit not equal \\( {code2} \\+ {code3} \\)=AAAA( cd1 == {code1}, cd2 != ( {code2} + {code3} ))\n"
                       + "[when]code {code1} occurs=BBBB\n";
         try {
@@ -191,7 +193,8 @@ public class DSLMappingFileTest {
 
     }
 
-    public void FIXME_testParseFileWithEscaptedEquals() {
+    @Test @Ignore
+    public void testParseFileWithEscaptedEquals() {
         String file = "[when][]something:\\={value}=Attribute( something == \"{value}\" )";
         try {
             final Reader reader = new StringReader( file );
@@ -225,7 +228,8 @@ public class DSLMappingFileTest {
 
     }
 
-    public void FIXME_testEnum() {
+    @Test @Ignore
+    public void testEnum() {
         String file = "[when][]ATTRIBUTE {attr:ENUM:Attribute.value} in {list}=Attribute( {attr} in ({list}) )";
         try {
             final Reader reader = new StringReader( file );

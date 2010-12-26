@@ -222,7 +222,8 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    public void FIXMEtestEventListenerWithoutIncrementalChangeSet() throws Exception {
+    @Test @Ignore
+    public void testEventListenerWithoutIncrementalChangeSet() throws Exception {
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
 

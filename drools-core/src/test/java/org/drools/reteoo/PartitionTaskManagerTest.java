@@ -87,8 +87,8 @@ public class PartitionTaskManagerTest {
         verify( action ).execute(workingMemory);
     }
 
-    @Ignore
-    public void FIXME_testActionCallbacks() throws InterruptedException {
+    @Test @Ignore
+    public void testActionCallbacks() throws InterruptedException {
         // creates a mock action
         final PartitionTaskManager.Action action = mock( PartitionTaskManager.Action.class );
         

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -857,7 +858,8 @@ public class TruthMaintenanceTest {
                       temperatureList.size() );
     }
 
-    public void FIXME_testLogicalInsertOrder() throws Exception {
+    @Test @Ignore
+    public void testLogicalInsertOrder() throws Exception {
         // JBRULES-1602
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_LogicalInsertOrder.drl",

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -143,7 +144,8 @@ public class DRLIncompleteCodeTest {
 		assertEquals(true, parser.hasErrors());
 	}
 
-	public void FIXME_testIncompleteCode9() throws DroolsParserException,
+    @Test @Ignore
+	public void testIncompleteCode9() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.*"
 				+ " rule MyRule xxxxx Class ( property memberOf collection ) then end "
@@ -159,7 +161,8 @@ public class DRLIncompleteCodeTest {
 		assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(0)).getName());
 	}
 
-	public void FIXME_testIncompleteCode10() throws DroolsParserException,
+    @Test @Ignore
+	public void testIncompleteCode10() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.*"
 				+ " rule MyRule xxxxx Class ( property memberOf "
@@ -174,7 +177,8 @@ public class DRLIncompleteCodeTest {
 		assertEquals(0, descr.getRules().size());
 	}
 
-	public void FIXME_testIncompleteCode11() throws DroolsParserException,
+    @Test @Ignore
+	public void testIncompleteCode11() throws DroolsParserException,
 			RecognitionException {
 		String input = "package a.b.c import a.b.c.*"
 				+ " rule MyRule when Class ( property memberOf collection ) then end "

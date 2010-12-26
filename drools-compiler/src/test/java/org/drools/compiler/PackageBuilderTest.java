@@ -89,6 +89,7 @@ import org.drools.util.CompositeClassLoader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -273,7 +274,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                       map.get( "value" ) );
     }
 
-    public void FIXMEtestNoPackageName() throws Exception {
+    @Test @Ignore
+    public void testNoPackageName() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
             builder.addPackage( new PackageDescr( null ) );

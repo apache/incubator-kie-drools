@@ -37,6 +37,7 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -323,7 +324,8 @@ public class StatelessRuleSessionTest {
     /**
      * Test executeRules drl with dsl.
      */
-    public void xxxtestExecuteRules_dsl() throws Exception {
+    @Test @Ignore
+    public void testExecuteRules_dsl() throws Exception {
         // @FIXME
         final StatelessRuleSession statelessSession = this.sessionBuilder.getStatelessRuleSession( this.bindUri_drl );
 

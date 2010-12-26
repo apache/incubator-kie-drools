@@ -22,6 +22,7 @@ import org.drools.runtime.rule.QueryResultsRow;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -493,7 +494,8 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-    public void FIXME_testUpdatePackageUrlIncremental() throws Exception {
+    @Test @Ignore
+    public void testUpdatePackageUrlIncremental() throws Exception {
 
         // Add Rule1 and Rule2 in the first package
         File pkg1 = fileManager.newFile( "pkg1.pkg" );
@@ -678,7 +680,8 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-    public void FIXME_testCompleteRuleScenario() throws Exception {
+    @Test @Ignore
+    public void testCompleteRuleScenario() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createLhsRule( new String[]{"rule1", "rule2"},
                                                     "String()\n" ) );

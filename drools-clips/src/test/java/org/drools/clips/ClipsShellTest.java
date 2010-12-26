@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -246,7 +247,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testRuleCreation() {
+    @Test @Ignore
+    public void testRuleCreation() {
         this.shell.eval( "(import org.drools.Person)" );
 
         this.shell.eval( "(defrule yyy  => (printout t yy \" \" (eq 1 1) ) ) )" );
@@ -279,7 +281,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testTemplateCreation2() throws Exception {
+    @Test @Ignore
+    public void testTemplateCreation2() throws Exception {
         this.shell.eval( "(deftemplate PersonTemplate (slot name (type String) ) (slot age (type int) ) )" );
         this.shell.eval( "(defrule xxx (PersonTemplate (name ?name&bob) (age 30) ) (PersonTemplate  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
         this.shell.eval( "(assert (PersonTemplate (name 'mike') (age 34)))" );
@@ -288,7 +291,8 @@ public class ClipsShellTest {
         assertNotNull( personClass );
     }
 
-    public void FIXME_testTemplateCreation() throws Exception {
+    @Test @Ignore
+    public void testTemplateCreation() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
         this.shell.eval( "(defrule xxx (Person (name ?name&bob) (age 30) ) => (printout t hello bob ) )" );
@@ -300,7 +304,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testTemplateCreationWithJava() throws Exception {
+    @Test @Ignore
+    public void testTemplateCreationWithJava() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
         this.shell.eval( "(defrule yyy  => (printout t yy \" \" (eq 1 1) ) ) )" );
@@ -347,14 +352,16 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testEmptyLHSRule() {
+    @Test @Ignore
+    public void testEmptyLHSRule() {
         String rule1 = "(defrule testRule => (printout t hello) (printout t goodbye))";
         this.shell.eval( rule1 );
         assertEquals( "hellogoodbye",
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testSimpleLHSRule() {
+    @Test @Ignore
+    public void testSimpleLHSRule() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name))" );
         this.shell.eval( "(assert (Person (name mark) ) )" );
@@ -363,7 +370,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testRuleCallDeftemplate() {
+    @Test @Ignore
+    public void testRuleCallDeftemplate() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
 
@@ -375,7 +383,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testTwoSimpleRulesWithModify() {
+    @Test @Ignore
+    public void testTwoSimpleRulesWithModify() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
         this.shell.eval( "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))" );
@@ -385,7 +394,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testBlockEval() {
+    @Test @Ignore
+    public void testBlockEval() {
         String text = "(import org.drools.*)";
         text += "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )";
         text += "(defrule testRule2 (Person (name ?name&bob) ) => (printout t hello) (printout t \" \" ?name))";
@@ -396,7 +406,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testPredicate() {
+    @Test @Ignore
+    public void testPredicate() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (name ?name) (age ?age&:(> ?age 30)) ) => (printout t hello) (printout t \" \" ?name) )" );
         this.shell.eval( "(assert (Person (name mark) (age 27) ) )" );
@@ -406,7 +417,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testReturnValue() {
+    @Test @Ignore
+    public void testReturnValue() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age) ) (Person (name ?name) (age =(- ?age 3)) ) => (printout t hello) (printout t \" \" ?name) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
@@ -416,7 +428,8 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    public void FIXME_testTest() {
+    @Test @Ignore
+    public void testTest() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age1) ) (Person (name ?name) (age ?age2) ) (test(eq ?age1 (+ ?age2 3) )) => (printout t hello) )" );
         this.shell.eval( "(assert (Person (name mark) (age 32) ) )" );
@@ -431,7 +444,8 @@ public class ClipsShellTest {
         this.shell.eval( "(run)" );
     }
 
-    public void FIXME_testMixed() {
+    @Test @Ignore
+    public void testMixed() {
         this.shell.eval( "(import org.drools.Cheese)" );
         String str ="";
         str += "(deftemplate Person ";

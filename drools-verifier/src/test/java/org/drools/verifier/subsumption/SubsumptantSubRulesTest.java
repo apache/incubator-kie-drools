@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -153,7 +154,8 @@ public class SubsumptantSubRulesTest {
     //     * Patterns that use from
     //     * @throws Exception
     //     */
-    //    public void FIXMEtestSubpatternSubsumption4() throws Exception {
+    //    @Test @Ignore
+    //    public void testSubpatternSubsumption4() throws Exception {
     //
     //        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
     //
