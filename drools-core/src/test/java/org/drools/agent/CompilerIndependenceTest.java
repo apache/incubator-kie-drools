@@ -20,6 +20,7 @@ package org.drools.agent;
 import java.io.File;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -42,7 +43,7 @@ import org.drools.io.impl.ResourceChangeScannerImpl;
 
 public class CompilerIndependenceTest {
 
-    @Test
+    @Test @Ignore
     public void testFixme() {
         
     }

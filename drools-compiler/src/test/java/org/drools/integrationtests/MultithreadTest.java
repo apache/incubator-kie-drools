@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -68,8 +69,9 @@ import static org.mockito.Mockito.*;
  * @author etirelli
  */
 public class MultithreadTest {
-    @Test
-    public void test() {
+
+    @Test @Ignore
+    public void testDummy() {
         
     }
     

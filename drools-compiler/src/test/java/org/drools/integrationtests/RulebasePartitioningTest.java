@@ -49,11 +49,6 @@ public class RulebasePartitioningTest {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
-    @Test
-    public void testEmpty() {
-    	
-    }
 
     @Test @Ignore
     public void testRulebasePartitions1() throws Exception {
