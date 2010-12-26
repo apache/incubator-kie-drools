@@ -29,6 +29,12 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.jsr94.rules.RuleEngineTestBase;
 import org.drools.rule.Package;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the RuleExecutionSetProvider implementation.
  *
@@ -45,7 +51,8 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     /**
      * Setup the test case.
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
         this.ruleSetProvider = this.ruleAdministrator.getRuleExecutionSetProvider( null );
@@ -76,7 +83,8 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
         }
     }
 
-    protected void tearDown() {
+    @After
+    public void tearDown() {
         this.pkg = null;
     }
 
@@ -134,6 +142,7 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     /**
      * Test createRuleExecutionSet from Serializable.
      */
+    @Test
     public void testCreateFromSerializable() throws Exception {
         final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( this.pkg,
                                                                                                null );
@@ -148,6 +157,7 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     /**
      * Test createRuleExecutionSet from URI.
      */
+    @Test
     public void testCreateFromURI() throws Exception {
         final String rulesUri = RuleEngineTestBase.class.getResource( this.bindUri ).toExternalForm();
         final RuleExecutionSet testRuleSet = this.ruleSetProvider.createRuleExecutionSet( rulesUri,
@@ -160,6 +170,7 @@ public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
                       testRuleSet.getRules().size() );
     }
 
+    @Test
     public void testIncompatibleSerializableCreation() throws Exception {
         try {
             final RuleExecutionSet testRuleSet = this.ruleSetProvider.createRuleExecutionSet( new ArrayList(),

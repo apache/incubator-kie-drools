@@ -3,7 +3,10 @@ package org.drools.template.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.rule.GroupElement;
 import org.drools.rule.LiteralConstraint;
@@ -11,9 +14,10 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 
-public class DefaultTemplateRuleBaseTest extends TestCase {
+public class DefaultTemplateRuleBaseTest {
 
 	@SuppressWarnings("unchecked")
+    @Test
     public void testSimpleTemplate() throws Exception
 	{
 		TemplateContainer tc = new TemplateContainer() {

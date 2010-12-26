@@ -23,6 +23,10 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.data.VerifierReport;
@@ -34,7 +38,8 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class MissingEqualityTest extends TestBase {
 
-	public void testMissingEqualityInLiteralRestrictions() throws Exception {
+    @Test
+    public void testMissingEqualityInLiteralRestrictions() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("MissingEquality.drl"));
 
@@ -74,7 +79,8 @@ public class MissingEqualityTest extends TestBase {
 		}
 	}
 
-	public void testMissingEqualityInVariableRestrictions() throws Exception {
+    @Test
+    public void testMissingEqualityInVariableRestrictions() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("MissingEquality.drl"));
 

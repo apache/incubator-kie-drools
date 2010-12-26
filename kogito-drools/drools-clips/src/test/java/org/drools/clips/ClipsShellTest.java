@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Person;
 import org.drools.WorkingMemory;
@@ -51,11 +54,12 @@ import org.drools.common.InternalRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
-public class ClipsShellTest extends TestCase {
+public class ClipsShellTest {
     private ByteArrayOutputStream baos;
 
     ClipsShell                    shell;
 
+    @Before
     public void setUp() {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
@@ -103,6 +107,7 @@ public class ClipsShellTest extends TestCase {
     //        System.out.println( appendable );
     //    }
 
+    @Test
     public void testBind() {
         String expr = "(bind ?x (create$ 10 20 30) ) (printout t ?x)";
 
@@ -112,6 +117,7 @@ public class ClipsShellTest extends TestCase {
                       new String( baos.toByteArray() ) );
     }
 
+    @Test
     public void testProgn() {
         String expr = "(progn (?x (create$ 10 20 30) ) (printout t ?x) )";
 
@@ -121,6 +127,7 @@ public class ClipsShellTest extends TestCase {
                       new String( baos.toByteArray() ) );
     }
 
+    @Test
     public void testIf() {
         String expr = "(if (< 1 3) then (printout t hello) (printout t hello) )";
 
@@ -134,6 +141,7 @@ public class ClipsShellTest extends TestCase {
         }
     }
 
+    @Test
     public void testIfElse() {
         String expr = "(if (eq 1 3) then (printout t hello)  (printout t 1) else (printout t hello)  (printout t 2))";
 
@@ -143,6 +151,7 @@ public class ClipsShellTest extends TestCase {
                       new String( baos.toByteArray() ) );
     }
 
+    @Test
     public void testSwitch() throws IOException {
         String expr = "(switch (?x) (case a then (printout t hello)(printout t 1)) (case b then (printout t hello)(printout t 2)) (default (printout t hello)(printout t 3)) )";
 
@@ -169,6 +178,7 @@ public class ClipsShellTest extends TestCase {
     }
 
     // @FIXME - org.mvel.CompileException: unable to resolve property: unable to resolve method: org.drools.clips.Shell.max(java.lang.Integer, java.lang.Integer) [arglength=2]
+    @Test
     public void testDeffunction() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
@@ -188,6 +198,7 @@ public class ClipsShellTest extends TestCase {
                       new String( baos.toByteArray() ) );
     }
 
+    @Test
     public void testDirectImportAndNew() {
         String t = "(import org.drools.Person) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
         this.shell.eval( t );
@@ -195,6 +206,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testDynamicImportAndNew() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (printout t ?p)";
         this.shell.eval( t );
@@ -202,6 +214,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testSet() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (set ?p name bob) (printout t ?p)";
         this.shell.eval( t );
@@ -209,6 +222,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testGet() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) )(printout t (get ?p name))";
         this.shell.eval( t );
@@ -216,6 +230,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testExplicitCall() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (call ?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
         this.shell.eval( t );
@@ -223,6 +238,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testImplicitCall() {
         String t = "(import org.drools.*) (bind ?p (new Person mark cheddar) ) (?p setFields bob stilton 35)  (printout t (call ?p toLongString))";
         this.shell.eval( t );
@@ -410,6 +426,7 @@ public class ClipsShellTest extends TestCase {
                       new String( this.baos.toByteArray() ) );
     }
 
+    @Test
     public void testRun() {
         this.shell.eval( "(run)" );
     }

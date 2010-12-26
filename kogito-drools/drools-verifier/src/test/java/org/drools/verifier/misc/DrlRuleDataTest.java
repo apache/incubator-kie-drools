@@ -20,10 +20,14 @@ import java.util.List;
 
 import org.drools.verifier.misc.DrlRuleParser;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DrlRuleDataTest extends TestCase {
-	public void testHandleDrl() {
+public class DrlRuleDataTest {
+    @Test
+    public void testHandleDrl() {
 		String drl = "rule \"Something\" \n ";
 		drl += "dialect \"Java\" \n ";
 		drl += "	when \n ";
@@ -44,7 +48,8 @@ public class DrlRuleDataTest extends TestCase {
 
 	}
 
-	public void testHandleDrlNoLineBreaks() {
+    @Test
+    public void testHandleDrlNoLineBreaks() {
 		String drl = "rule \"CreditScoreApproval\" \n";
 		drl += "	dialect \"mvel\" \n";
 		drl += "	when    then";
@@ -63,7 +68,8 @@ public class DrlRuleDataTest extends TestCase {
 
 	}
 
-	public void testHandleDrlWithComment() {
+    @Test
+    public void testHandleDrlWithComment() {
 		String drl = "# Really important information about this rule \n";
 		drl += "# Another line because one was not enough \n";
 		drl += "#  \n";

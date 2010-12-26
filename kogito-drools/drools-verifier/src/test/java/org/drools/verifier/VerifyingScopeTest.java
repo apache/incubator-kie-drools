@@ -18,7 +18,10 @@ package org.drools.verifier;
 
 import java.util.Collections;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
@@ -28,8 +31,9 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 
-public class VerifyingScopeTest extends TestCase {
+public class VerifyingScopeTest {
 
+    @Test
     public void testSingleRule() {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -77,6 +81,7 @@ public class VerifyingScopeTest extends TestCase {
 
     }
 
+    @Test
     public void testNothing() {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -118,6 +123,7 @@ public class VerifyingScopeTest extends TestCase {
 
     }
 
+    @Test
     public void testDecisionTable() {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

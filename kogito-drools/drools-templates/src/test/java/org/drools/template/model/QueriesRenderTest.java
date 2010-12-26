@@ -16,13 +16,18 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /*
  * @author: salaboy
  */
-import junit.framework.TestCase;
+public class QueriesRenderTest {
 
-public class QueriesRenderTest1 extends TestCase {
-
+    @Test
     public void testQueriesRender() {
         final Queries queries = new Queries();
 

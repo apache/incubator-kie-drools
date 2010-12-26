@@ -18,7 +18,10 @@ package org.drools.verifier.subsumption;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
@@ -32,8 +35,9 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Subsumption;
 
-public class SubsumptantSubRulesTest extends TestCase {
+public class SubsumptantSubRulesTest {
 
+    @Test
     public void testSubruleSubsumption1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

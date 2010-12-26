@@ -27,7 +27,10 @@ import javax.rules.StatelessRuleSession;
 import javax.rules.admin.RuleAdministrator;
 import javax.rules.admin.RuleExecutionSet;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * A test for independent repository instances for different runtimes.
@@ -35,17 +38,14 @@ import junit.framework.TestCase;
  * @author jgilbert
  * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
-public class MultipleRepositoryTest extends TestCase {
-
-    public MultipleRepositoryTest(final String name) {
-        super( name );
-    }
+public class MultipleRepositoryTest {
 
     /**
      * Do the test.
      *
      * @throws Exception
      */
+    @Test
     public void testMultipleInstances() throws Exception {
         // create 2 different runtimes with different rulesets
         final RuleRuntime ruleRuntime1 = getServiceProvider( "engine1",

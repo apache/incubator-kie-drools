@@ -22,9 +22,13 @@ import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DrlPackageDataTest extends TestCase {
+public class DrlPackageDataTest {
+    @Test
     public void testHandleDrl() throws ParseException {
 
         String drl = "";
@@ -52,6 +56,7 @@ public class DrlPackageDataTest extends TestCase {
 
     }
 
+    @Test
     public void testHandleDrl2() throws IOException,
                                 ParseException {
         BufferedReader in = new BufferedReader( new InputStreamReader( getClass().getResourceAsStream( "DrlPackageTestData.drl" ) ) );
@@ -76,6 +81,7 @@ public class DrlPackageDataTest extends TestCase {
 
     }
 
+    @Test
     public void testHandleDrlNoPackageData() {
 
         String drl = "";
@@ -98,6 +104,7 @@ public class DrlPackageDataTest extends TestCase {
         }
     }
 
+    @Test
     public void testHandleDrlWithComments() throws ParseException {
 
         String drl = "";
@@ -143,6 +150,7 @@ public class DrlPackageDataTest extends TestCase {
                       rd2.getDescription() );
     }
 
+    @Test
     public void testfindGlobals() {
 
         String header = "global LoanApplication gg";

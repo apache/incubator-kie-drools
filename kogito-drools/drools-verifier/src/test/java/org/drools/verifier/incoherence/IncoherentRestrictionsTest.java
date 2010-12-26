@@ -28,6 +28,10 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilder;
@@ -46,6 +50,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class IncoherentRestrictionsTest extends TestBase {
 
+    @Test
     public void testApprovedTrueAndNotTrue() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
@@ -90,6 +95,7 @@ public class IncoherentRestrictionsTest extends TestBase {
 
     }
 
+    @Test
     public void testIncoherentLiteralRestrictionsInSubPattern() throws Exception {
         StatelessSession session = getStatelessSession( getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -125,6 +131,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRanges() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -159,6 +166,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityLess() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -194,6 +202,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleEqualityGreater() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -228,6 +237,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentLiteralRestrictionsInSubPatternImpossibleRange() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -262,6 +272,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentVariableRestrictionsInSubPattern() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -298,6 +309,7 @@ public class IncoherentRestrictionsTest extends TestBase {
         }
     }
 
+    @Test
     public void testIncoherentVariableRestrictionsInSubPatternImpossibleRange() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 

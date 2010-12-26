@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatelessSession;
@@ -38,16 +36,21 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * 
  * @author Toni Rikkola
  * 
  */
-abstract public class TestBase extends TestCase {
+abstract public class TestBase {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
 
         System.setProperty( "drools.dateformat",
                             "dd-MMM-yyyy" );

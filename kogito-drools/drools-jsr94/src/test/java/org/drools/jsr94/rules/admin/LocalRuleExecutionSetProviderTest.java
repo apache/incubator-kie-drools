@@ -29,6 +29,12 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.jsr94.rules.RuleEngineTestBase;
 import org.drools.rule.Package;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the LocalRuleExecutionSetProvider implementation.
  *
@@ -41,12 +47,14 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
 
     private LocalRuleExecutionSetProvider ruleSetProvider;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
         this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
     }
 
+    @Test
     public void testCreateFromInputStream() throws Exception {
         final InputStream rulesStream = RuleEngineTestBase.class.getResourceAsStream( this.bindUri );
         final RuleExecutionSet ruleSet = this.ruleSetProvider.createRuleExecutionSet( rulesStream,
@@ -59,6 +67,7 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
                       ruleSet.getRules().size() );
     }
 
+    @Test
     public void testCreateFromObject() throws Exception {
         final InputStream inputStream = null;
         try {
@@ -89,6 +98,7 @@ public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
     /**
      * Test createRuleExecutionSet from Reader.
      */
+    @Test
     public void testCreateFromReader() throws Exception {
         final Reader ruleReader = new InputStreamReader( RuleEngineTestBase.class.getResourceAsStream( this.bindUri ) );
         final RuleExecutionSet ruleSet = this.ruleSetProvider.createRuleExecutionSet( ruleReader,

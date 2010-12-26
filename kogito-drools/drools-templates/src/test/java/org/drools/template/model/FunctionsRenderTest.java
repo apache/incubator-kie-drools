@@ -16,10 +16,14 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FunctionsRenderTest extends TestCase {
+public class FunctionsRenderTest {
 
+    @Test
     public void testFunctionRender() {
         final Functions func = new Functions();
 

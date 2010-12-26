@@ -23,6 +23,10 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
@@ -38,6 +42,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class NotesTest extends TestBase {
 
+    @Test
     public void testRedundantRestrictionsInPatternPossibilities() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Notes.drl" ) );
 
@@ -86,6 +91,7 @@ public class NotesTest extends TestBase {
                       causes.next() );
     }
 
+    @Test
     public void testRedundantPatternPossibilitiesInRulePossibilities() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Notes.drl" ) );
 

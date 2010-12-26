@@ -23,6 +23,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;

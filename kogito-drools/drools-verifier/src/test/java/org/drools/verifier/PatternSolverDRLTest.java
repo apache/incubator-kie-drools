@@ -23,13 +23,19 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * 
  * @author Toni Rikkola
- * 
  */
 public class PatternSolverDRLTest extends TestBase {
 
+    @Test
     public void testOrInsidePattern() throws Exception {
 
         StringBuffer rule = new StringBuffer();

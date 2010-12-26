@@ -24,6 +24,10 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
@@ -43,6 +47,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class AlwaysTrueRuleTest extends TestBase {
 
+    @Test
     public void testPatternPossibilities() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Rules.drl" ) );
 
@@ -130,6 +135,7 @@ public class AlwaysTrueRuleTest extends TestBase {
         assertTrue( rp4true );
     }
 
+    @Test
     public void testPatterns() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Rules.drl" ) );
 

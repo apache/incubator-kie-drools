@@ -12,9 +12,12 @@ import org.drools.template.parser.Column;
 import org.drools.template.parser.DefaultTemplateContainer;
 import org.drools.template.parser.TemplateContainer;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DataProviderCompilerIntegrationTest extends TestCase {
+public class DataProviderCompilerIntegrationTest {
 
     private static final StringBuffer EXPECTED_RULES = new StringBuffer();
     
@@ -61,6 +64,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
 
     private ArrayList<String[]> rows = new ArrayList<String[]>();
     
+    @Before
     public void setUp(){
     	 rows.add( new String[]{ "1",
                  "STANDARD",
@@ -112,6 +116,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
                  "dummy" } );
     }
     
+    @Test
     public void testCompiler() throws Exception {
         TestDataProvider tdp = new TestDataProvider( rows );
         final DataProviderCompiler converter = new DataProviderCompiler();
@@ -121,6 +126,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
         assertEquals( EXPECTED_RULES.toString(), drl );
     }
 
+    @Test
     public void testCompilerMaps() throws Exception {
     	Collection<Map<String,Object>> maps = new ArrayList<Map<String,Object>>();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
@@ -191,6 +197,7 @@ public class DataProviderCompilerIntegrationTest extends TestCase {
     	}
     }
 
+    @Test
     public void testCompilerObjs() throws Exception {
     	Collection<Object> objs = new ArrayList<Object>();
         final ObjectDataCompiler converter = new ObjectDataCompiler();

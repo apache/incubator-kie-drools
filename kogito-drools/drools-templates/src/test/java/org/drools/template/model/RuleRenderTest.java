@@ -16,15 +16,19 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  * Tests how the rule parse tree renders itself to a rule XML fragment.
  */
-public class RuleRenderTest extends TestCase {
+public class RuleRenderTest {
 
+    @Test
     public void testRuleRender() {
         final Rule rule = new Rule( "myrule",
                               new Integer( 42 ),
@@ -59,6 +63,7 @@ public class RuleRenderTest extends TestCase {
 
     }
 
+    @Test
     public void testAttributes() throws Exception {
         Rule rule = new Rule("la", new Integer(42), 2);
 
@@ -78,6 +83,7 @@ public class RuleRenderTest extends TestCase {
 
     }
 
+    @Test
     public void testSalienceCalculator() {
         final int rowNumber = 2;
         final int salience = Rule.calcSalience( rowNumber );
@@ -85,6 +91,7 @@ public class RuleRenderTest extends TestCase {
                       salience );
     }
 
+    @Test
     public void testColNumToColName() {
         String colName = Rule.convertColNumToColName( 1 );
         assertEquals( "B",
@@ -108,6 +115,7 @@ public class RuleRenderTest extends TestCase {
 
     }
 
+    @Test
     public void testNotEscapeChars() {
         //bit of a legacy from the olde XML dayes of yesteryeare
         final Condition cond = new Condition();
@@ -125,6 +133,7 @@ public class RuleRenderTest extends TestCase {
      * This allows default salience to work as advertised.
      *
      */
+    @Test
     public void testNilSalience() {
         Rule rule = new Rule( "MyRule",
                               null,

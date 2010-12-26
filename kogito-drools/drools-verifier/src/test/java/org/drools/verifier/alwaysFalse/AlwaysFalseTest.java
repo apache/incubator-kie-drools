@@ -26,6 +26,14 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.VerifierError;
@@ -55,6 +63,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
  */
 public class AlwaysFalseTest extends TestBase {
 
+    @Test
     public void testPatterns() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -170,6 +179,7 @@ public class AlwaysFalseTest extends TestBase {
      * 
      * @throws Exception
      */
+    @Test
     public void testSinglePatternNoRestrictions() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Patterns.drl" ) );
 
@@ -198,6 +208,7 @@ public class AlwaysFalseTest extends TestBase {
                       result.getBySeverity( Severity.NOTE ).size() );
     }
 
+    @Test
     public void testRules() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Rules.drl" ) );
 
@@ -304,6 +315,7 @@ public class AlwaysFalseTest extends TestBase {
         assertTrue( works );
     }
 
+    @Test
     public void testAlwaysFalse() {
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 

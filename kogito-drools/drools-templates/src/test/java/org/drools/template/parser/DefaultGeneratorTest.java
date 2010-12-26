@@ -3,12 +3,16 @@ package org.drools.template.parser;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DefaultGeneratorTest extends TestCase {
+public class DefaultGeneratorTest {
 	private DefaultGenerator g;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         Map<String, RuleTemplate> t = new HashMap<String, RuleTemplate>();
         TemplateContainer tc = new TemplateContainer() {
 
@@ -43,20 +47,23 @@ public class DefaultGeneratorTest extends TestCase {
         g = new DefaultGenerator(t);
     }
     
-	public void testSelectTemplate() {
+    @Test
+    public void testSelectTemplate() {
 		g.generate("rt2", new Row());
 		String drl = g.getDrl();
 		assertEquals("Test template 2\n\n", drl);
 	}
 	
-	public void testGenerate() {
+    @Test
+    public void testGenerate() {
 		g.generate("rt2", new Row());
 		g.generate("rt1", new Row());
 		String drl = g.getDrl();
 		assertEquals("Test template 2\n\nTest template 1\n\n", drl);
 	}
 	
-	public void testAddColumns() {
+    @Test
+    public void testAddColumns() {
 		Column[] columns = {new StringColumn("col1"), new StringColumn("col2")};
 		Row r = new Row(1, columns);
 		r.getCell(0).setValue("value1");

@@ -16,38 +16,18 @@
 
 package org.drools.jsr94.rules.repository;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * TODO
- * 
+ *
  * @version $Revision$ $Date$
  * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
-public class RuleExecutionSetRepositoryLoaderTest extends TestCase
-{
-	/**
-	 * Creates a test case with the given name.
-	 * 
-	 * @param name
-	 */
-	public RuleExecutionSetRepositoryLoaderTest(String name) {
-		super(name);
-	}
-
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
-	/* (non-Javadoc)
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-	}
+public class RuleExecutionSetRepositoryLoaderTest {
 
 	/**
 	 * Test method for {@link org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryLoader#loadRuleExecutionSetRepository(java.lang.String)}.

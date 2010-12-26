@@ -27,6 +27,10 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
@@ -36,8 +40,15 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.report.components.Cause;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class OppositeRestrictionsTest extends OppositesBase {
 
+    @Test
     public void testLiteralRestrictionOpposite() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -116,6 +127,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         }
     }
 
+    @Test
     public void testLiteralRestrictionOppositeWithRangesGreaterOrEqualAndLess() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -156,6 +168,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         }
     }
 
+    @Test
     public void testLiteralRestrictionOppositeWithRangesGreaterAndLessOrEqual() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -196,6 +209,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
     }
 
 
+    @Test
     public void testLiteralRestrictionOppositeWithRangesLessOrEqualAndGreaterOrEqualForIntsAndDates() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 
@@ -236,6 +250,7 @@ public class OppositeRestrictionsTest extends OppositesBase {
         }
     }
 
+    @Test
     public void testVariableRestrictionOpposite() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "Restrictions.drl" ) );
 

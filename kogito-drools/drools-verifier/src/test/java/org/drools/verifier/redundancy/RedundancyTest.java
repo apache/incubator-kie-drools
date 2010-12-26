@@ -18,7 +18,10 @@ package org.drools.verifier.redundancy;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
@@ -35,8 +38,9 @@ import org.drools.verifier.report.components.Subsumption;
  * @author rikkola
  *
  */
-public class RedundancyTest extends TestCase {
+public class RedundancyTest {
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

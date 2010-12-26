@@ -16,14 +16,18 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
  */
-public class SnippetBuilderTest extends TestCase {
+public class SnippetBuilderTest {
 
+    @Test
     public void testBuildSnippet() {
         final String snippet = "something.param.getAnother().equals($param);";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -35,6 +39,7 @@ public class SnippetBuilderTest extends TestCase {
                       result );
     }
 
+    @Test
     public void testBuildSnippetNoPlaceHolder() {
         final String snippet = "something.getAnother().equals(blah);";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -45,6 +50,7 @@ public class SnippetBuilderTest extends TestCase {
                       result );
     }
 
+    @Test
     public void testSingleParamMultipleTimes() {
         final String snippet = "something.param.getAnother($param).equals($param);";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -57,6 +63,7 @@ public class SnippetBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testMultiPlaceHolder() {
         final String snippet = "something.getAnother($1,$2).equals($2, '$2');";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -66,6 +73,7 @@ public class SnippetBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testMultiPlaceHolderSingle() {
         final String snippet = "something.getAnother($1).equals($1);";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -75,6 +83,7 @@ public class SnippetBuilderTest extends TestCase {
 
     }
     
+    @Test
     public void testStartWithParam() {
         final String snippet = "$1 goo $2";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -84,6 +93,7 @@ public class SnippetBuilderTest extends TestCase {
         
     }
 
+    @Test
     public void testMultiPlaceHolderEscapedComma() {
         final String snippet = "rulesOutputRouting.set( $1, $2, $3, $4, $5 );";
         final SnippetBuilder snip = new SnippetBuilder( snippet );
@@ -93,28 +103,32 @@ public class SnippetBuilderTest extends TestCase {
 
     }
     
-	public void testForAllAnd() {
+    @Test
+    public void testForAllAnd() {
 		final String snippet = "forall(&&){something == $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x");
 		assertEquals("something == x", result);
 	}
 
-	public void testForAllAndCSV() {
+    @Test
+    public void testForAllAndCSV() {
 		final String snippet = "forall(&&){something == $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x, y");
 		assertEquals("something == x && something == y", result);
 	}
 
-	public void testForAllAndNone() {
+    @Test
+    public void testForAllAndNone() {
 		final String snippet = "forall(&&){something == $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("");
 		assertEquals("forall(&&){something == $}", result);
 	}
 
-	public void testForAllAndCSVMultiple() {
+    @Test
+    public void testForAllAndCSVMultiple() {
 		final String snippet = "forall(&&){something == $ || something == $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x, y");
@@ -123,14 +137,16 @@ public class SnippetBuilderTest extends TestCase {
 				result);
 	}
 
-	public void testForAllOr() {
+    @Test
+    public void testForAllOr() {
 		final String snippet = "forall(||){something == $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x");
 		assertEquals("something == x", result);
 	}
 
-	public void testForAllOrMultiple() {
+    @Test
+    public void testForAllOrMultiple() {
 		final String snippet = "forall(||){something == $} && forall(||){something < $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x, y");
@@ -139,7 +155,8 @@ public class SnippetBuilderTest extends TestCase {
 				result);
 	}
 	
-	public void testForAllOrAndMultipleWithPrefix() {
+    @Test
+    public void testForAllOrAndMultipleWithPrefix() {
 		final String snippet = "something == this && forall(||){something == $} && forall(&&){something < $}";
 		final SnippetBuilder snip = new SnippetBuilder(snippet);
 		final String result = snip.build("x, y");

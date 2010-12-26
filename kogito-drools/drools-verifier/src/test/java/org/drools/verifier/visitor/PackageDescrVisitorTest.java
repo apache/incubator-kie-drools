@@ -36,10 +36,14 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.visitor.PackageDescrVisitor;
 import org.drools.verifier.visitor.UnknownDescriptionException;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class PackageDescrVisitorTest extends TestCase {
+public class PackageDescrVisitorTest {
 
+    @Test
     public void testVisit() throws DroolsParserException,
                            UnknownDescriptionException {
         VerifierData data = VerifierReportFactory.newVerifierData();
@@ -76,6 +80,7 @@ public class PackageDescrVisitorTest extends TestCase {
 
     }
 
+    @Test
     public void testSubPatterns() throws DroolsParserException,
                                  UnknownDescriptionException {
         VerifierData data = VerifierReportFactory.newVerifierData();

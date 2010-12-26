@@ -16,16 +16,20 @@
 
 package org.drools.verifier;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * 
  * @author Toni Rikkola
  * 
  */
-public class RangeCheckCleanTest extends TestCase {
+public class RangeCheckCleanTest {
 
-	public void testDummy() {
+    @Test
+    public void testDummy() {
 		// this is needed as eclipse will try to run this and produce a failure
 		// if its not here.
 		assertTrue(true);

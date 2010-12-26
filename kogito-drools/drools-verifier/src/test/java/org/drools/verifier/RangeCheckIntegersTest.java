@@ -28,6 +28,12 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * 
  * @author Toni Rikkola
@@ -35,7 +41,8 @@ import org.drools.verifier.report.components.Gap;
  */
 public class RangeCheckIntegersTest extends TestBase {
 
-	public void testSmallerOrEqual() throws Exception {
+    @Test
+    public void testSmallerOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Integers.drl"));
 
@@ -74,7 +81,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		}
 	}
 
-	public void testGreaterOrEqual() throws Exception {
+    @Test
+    public void testGreaterOrEqual() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Integers.drl"));
 
@@ -113,7 +121,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		}
 	}
 
-	public void testEqualAndGreaterThan() throws Exception {
+    @Test
+    public void testEqualAndGreaterThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Integers.drl"));
 
@@ -152,7 +161,8 @@ public class RangeCheckIntegersTest extends TestBase {
 		}
 	}
 
-	public void testEqualAndSmallerThan() throws Exception {
+    @Test
+    public void testEqualAndSmallerThan() throws Exception {
 		StatelessSession session = getStatelessSession(this.getClass()
 				.getResourceAsStream("rangeChecks/Integers.drl"));
 

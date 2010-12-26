@@ -18,7 +18,10 @@ package org.drools.verifier.subsumption;
 
 import java.util.Collection;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
@@ -30,8 +33,9 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Subsumption;
 
-public class SubsumptantRestrictionsTest extends TestCase {
+public class SubsumptantRestrictionsTest {
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy1() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -59,6 +63,7 @@ public class SubsumptantRestrictionsTest extends TestCase {
         verifier.dispose();
     }
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy2() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -86,6 +91,7 @@ public class SubsumptantRestrictionsTest extends TestCase {
         verifier.dispose();
     }
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy3() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
@@ -113,6 +119,7 @@ public class SubsumptantRestrictionsTest extends TestCase {
         verifier.dispose();
     }
 
+    @Test
     public void testVerifierLiteralRestrictionRedundancy4() throws Exception {
 
         VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();

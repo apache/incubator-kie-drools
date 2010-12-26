@@ -30,8 +30,12 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
-import org.junit.Assert;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class NestedPatternsTest {
 
@@ -42,12 +46,12 @@ public class NestedPatternsTest {
         PackageDescrVisitor visitor = new PackageDescrVisitor( data,
                                                                Collections.EMPTY_LIST );
 
-        Assert.assertNotNull( data );
+        assertNotNull( data );
 
         Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "NestedPatterns.drl" ) );
         PackageDescr packageDescr = new DrlParser().parse( drlReader );
 
-        Assert.assertNotNull( packageDescr );
+        assertNotNull( packageDescr );
 
         visitor.visitPackageDescr( packageDescr );
 
@@ -59,7 +63,7 @@ public class NestedPatternsTest {
                 patternCount++;
             }
         }
-        Assert.assertEquals( 4,
+        assertEquals( 4,
                              patternCount );
 
         Collection<Pattern> patterns = data.getAll( VerifierComponentType.PATTERN );
@@ -68,8 +72,8 @@ public class NestedPatternsTest {
 //            System.out.println( pattern.getPath() + " " + pattern );
 //        }
 
-        Assert.assertNotNull( patterns );
-        Assert.assertEquals( 4,
+        assertNotNull( patterns );
+        assertEquals( 4,
                              patterns.size() );
 
         Collection<Restriction> restrictions = data.getAll( VerifierComponentType.RESTRICTION );
@@ -78,8 +82,8 @@ public class NestedPatternsTest {
 //            System.out.println( restriction.getPath() + " " + restriction );
 //        }
 
-        Assert.assertNotNull( restrictions );
-        Assert.assertEquals( 3,
+        assertNotNull( restrictions );
+        assertEquals( 3,
                              restrictions.size() );
 
     }

@@ -62,7 +62,10 @@ import javax.rules.RuleServiceProvider;
 import javax.rules.RuleServiceProviderManager;
 import javax.rules.admin.RuleAdministrator;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test the RuleServiceProvider implementation.
@@ -70,10 +73,11 @@ import junit.framework.TestCase;
  * @author N. Alex Rupp (n_alex <at>codehaus.org)
  * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
-public class RuleServiceProviderTest extends TestCase {
+public class RuleServiceProviderTest {
     /**
      * Test getRuleRuntime.
      */
+    @Test
     public void testRuleRuntime() throws Exception {
         Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
         RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");
@@ -88,6 +92,7 @@ public class RuleServiceProviderTest extends TestCase {
     /**
      * Test getRuleAdministrator.
      */
+    @Test
     public void testRuleAdministrator() throws Exception {
         Class.forName("org.drools.jsr94.rules.RuleServiceProviderImpl");
         RuleServiceProvider ruleServiceProvider = RuleServiceProviderManager.getRuleServiceProvider("http://drools.org/");

@@ -7,7 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.Agenda;
 import org.drools.FactException;
@@ -30,7 +33,7 @@ import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.time.SessionClock;
 
-public class ExternalSheetListenerTest extends TestCase {
+public class ExternalSheetListenerTest {
 
 	private TemplateDataListener esl;
 
@@ -38,18 +41,21 @@ public class ExternalSheetListenerTest extends TestCase {
 
 	private List<StringCell> currentRow = new ArrayList<StringCell>();
 
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		esl = new TemplateDataListener(2, 2, new TestTemplateContainer(),
 				new TestTemplateRuleBase(), new TestGenerator());
 
 	}
 
-	public void testRenderDrl() {
+    @Test
+    public void testRenderDrl() {
 		String drl = esl.renderDRL();
 		assertEquals("Test Template Header\nTest Generated DRL\n", drl);
 	}
 
-	public void testRowHandling() {
+    @Test
+    public void testRowHandling() {
 		esl.newRow(0, 3);
 		esl.newCell(0, 0, "row0col0", 0);
 		esl.newCell(0, 1, "row0col1", 0);
@@ -77,7 +83,8 @@ public class ExternalSheetListenerTest extends TestCase {
 		}
 	}
 
-	public void testRowHandlingBlankRows() {
+    @Test
+    public void testRowHandlingBlankRows() {
 		esl.newRow(0, 3);
 		esl.newCell(0, 0, "row0col0", 0);
 		esl.newCell(0, 1, "row0col1", 0);

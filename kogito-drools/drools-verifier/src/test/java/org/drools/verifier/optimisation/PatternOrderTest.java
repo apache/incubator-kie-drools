@@ -23,6 +23,10 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.verifier.TestBase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.drools.verifier.components.RuleComponent;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
@@ -32,6 +36,7 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 
 public class PatternOrderTest extends TestBase {
 
+    @Test
     public void testEvalOrderInsideOperator() throws Exception {
         StatelessSession session = getStatelessSession( this.getClass().getResourceAsStream( "PatternOrder.drl" ) );
 

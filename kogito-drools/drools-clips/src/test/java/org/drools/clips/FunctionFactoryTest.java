@@ -16,9 +16,13 @@
 
 package org.drools.clips;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class FunctionFactoryTest extends TestCase {
+public class FunctionFactoryTest {
+    @Test
     public void testInit() {
 //        XFunctionRegistry factory = new XFunctionRegistry( BuiltinFunctions.getInstance() );
 //        

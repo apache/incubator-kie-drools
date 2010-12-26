@@ -4,10 +4,14 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class DefaultTemplateContainerTest extends TestCase {
-	public void testParseTemplate() {
+public class DefaultTemplateContainerTest {
+    @Test
+    public void testParseTemplate() {
 		InputStream is = DefaultTemplateContainerTest.class
 				.getResourceAsStream("/templates/test_template_simple.drl");
 		DefaultTemplateContainer t = new DefaultTemplateContainer(is);
@@ -28,7 +32,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		assertTrue(contents.endsWith("then\nend\n"));
 	}
 
-	public void testParseTemplateConditions() {
+    @Test
+    public void testParseTemplateConditions() {
 		InputStream is = DefaultTemplateContainerTest.class
 				.getResourceAsStream("/templates/test_template_conditions.drl");
 		DefaultTemplateContainer t = new DefaultTemplateContainer(is);
@@ -50,7 +55,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		assertTrue(contents.endsWith("then\nend\n"));
 	}
 
-	public void testParseTemplateNoHeader() {
+    @Test
+    public void testParseTemplateNoHeader() {
 		try {
 			InputStream is = DefaultTemplateContainerTest.class
 					.getResourceAsStream("/templates/test_template_invalid1.drl");
@@ -61,7 +67,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testParseTemplateNoHeaderColumns() {
+    @Test
+    public void testParseTemplateNoHeaderColumns() {
 		try {
 			InputStream is = DefaultTemplateContainerTest.class
 					.getResourceAsStream("/templates/test_template_invalid2.drl");
@@ -72,7 +79,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testParseTemplateNoTemplates() {
+    @Test
+    public void testParseTemplateNoTemplates() {
 		try {
 			InputStream is = DefaultTemplateContainerTest.class
 					.getResourceAsStream("/templates/test_template_invalid3.drl");
@@ -83,7 +91,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testParseTemplateNoEndTemplate() {
+    @Test
+    public void testParseTemplateNoEndTemplate() {
 		try {
 			InputStream is = DefaultTemplateContainerTest.class
 					.getResourceAsStream("/templates/test_template_invalid4.drl");
@@ -94,7 +103,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testNullInputStream() {
+    @Test
+    public void testNullInputStream() {
 		try {
 			new DefaultTemplateContainer((InputStream) null);
 			fail("NullPointerException expected");
@@ -102,7 +112,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testInvalidTemplatePath() {
+    @Test
+    public void testInvalidTemplatePath() {
 		try {
 			new DefaultTemplateContainer("invalid path");
 			fail("NullPointerException expected");
@@ -110,7 +121,8 @@ public class DefaultTemplateContainerTest extends TestCase {
 		}
 	}
 
-	public void testParseComplexTemplate() {
+    @Test
+    public void testParseComplexTemplate() {
 		InputStream is = DefaultTemplateContainerTest.class
 				.getResourceAsStream("/templates/test_template_complex.drl");
 		DefaultTemplateContainer t = new DefaultTemplateContainer(is);

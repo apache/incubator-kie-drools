@@ -26,6 +26,12 @@ import javax.rules.admin.RuleExecutionSet;
 
 import org.drools.jsr94.rules.RuleEngineTestBase;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * Test the LocalRuleExecutionSetProvider implementation.
  *
@@ -41,7 +47,8 @@ public class RuleTest extends RuleEngineTestBase {
     /**
      * Setup the test case.
      */
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         super.setUp();
         this.ruleAdministrator = this.ruleServiceProvider.getRuleAdministrator();
         this.ruleSetProvider = this.ruleAdministrator.getLocalRuleExecutionSetProvider( null );
@@ -50,6 +57,7 @@ public class RuleTest extends RuleEngineTestBase {
     /**
      * Test rule name and description.
      */
+    @Test
     public void testRule() throws Exception {
         final InputStream in = RuleEngineTestBase.class.getResourceAsStream( this.bindUri );
         final RuleExecutionSet ruleExecutionSet = this.ruleSetProvider.createRuleExecutionSet( in,
