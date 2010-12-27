@@ -131,6 +131,8 @@ public class MapPersistenceTest {
     private StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
                                                              KnowledgeBase kbase,
                                                              AbstractStorage storage) {
+        long sessionId = ksession.getId();
+        ksession.dispose();
         AbstractStorageEnvironmentBuilder envBuilder = new AbstractStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         //FIXME temporary usage of this constants
@@ -139,7 +141,7 @@ public class MapPersistenceTest {
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  envBuilder.getPersistenceContextManager() );
         
-        return JPAKnowledgeService.loadStatefulKnowledgeSession( ksession.getId(), kbase, null, env );
+        return JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
     }
 
 }
