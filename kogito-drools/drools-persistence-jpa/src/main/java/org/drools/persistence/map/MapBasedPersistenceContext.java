@@ -46,10 +46,10 @@ public class MapBasedPersistenceContext
 
     public void close() {
         open = false;
+        entities.clear();
     }
 
     public void clear() {
-        entities.clear();
     }
 
     public List<EntityInfo> getStoredObjects() {
