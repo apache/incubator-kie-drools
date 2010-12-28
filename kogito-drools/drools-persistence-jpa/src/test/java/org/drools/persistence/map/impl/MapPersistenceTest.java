@@ -112,6 +112,44 @@ public class MapPersistenceTest {
 
     }
 
+    @Test
+    public void dontCreateMoreSessionsThanNecessary() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final Map<Long, EntityInfo> savedEntities = new HashMap<Long, EntityInfo>();
+
+        AbstractStorage storage = new AbstractStorage() {
+
+            public void saveOrUpdate(EntityInfo storedObject) {
+                storedObject.update();
+                savedEntities.put( storedObject.getId(), storedObject );
+            }
+
+            public EntityInfo find(Long id) {
+                return savedEntities.get( id );
+            }
+        };
+
+
+        StatefulKnowledgeSession crmPersistentSession = createSession(kbase, storage);
+
+        long ksessionId = crmPersistentSession.getId();
+        crmPersistentSession.fireAllRules();
+
+        crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase, storage);
+
+        Assert.assertEquals(ksessionId, crmPersistentSession.getId());
+
+        ksessionId = crmPersistentSession.getId();
+        crmPersistentSession.fireAllRules();
+
+        crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase, storage);
+
+        crmPersistentSession.fireAllRules();
+
+        Assert.assertEquals(1, savedEntities.size());
+        crmPersistentSession.dispose();
+    }
+
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase,
                                                    AbstractStorage storage) {
         
