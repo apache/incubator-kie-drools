@@ -31,11 +31,11 @@ import org.drools.runtime.StatelessKnowledgeSession;
 
 /**
  * <p>
- * The KnowlegeBase is a repository of all the application's knowledge definitions.
+ * The KnowledgeBase is a repository of all the application's knowledge definitions.
  * It will contain rules, processes, functions, type models. The KnowledgeBase itself
  * does not contain data, instead sessions are created from the KnowledgeBase in which
- * data can be inserted and process instances started. Creating the KnowlegeBase can be 
- * heavy, where as session creation is very light, so it is recommended that KnowleBase's
+ * data can be inserted and process instances started. Creating the KnowledgeBase can be
+ * heavy, where as session creation is very light, so it is recommended that KnowledgeBase's
  * be cached where possible to allow for repeated session creation. The KnowledgeAgent
  * can be used for this purpose. The KnowledgeBase is created from the KnowledgeBaseFactory,
  * and a KnowledgeBaseConfiguration can be used.
