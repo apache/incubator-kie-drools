@@ -176,8 +176,7 @@ public interface KnowledgeBase
     /**
      * Create a new StatefulKnowledgeSession using the default session configuration.
      * Don't forget to dispose() session when you are done.
-     * 
-     * @param conf
+     *
      * @return
      *     The StatefulKnowledgeSession.
      */
@@ -205,7 +204,6 @@ public interface KnowledgeBase
      * Create a new StatelessKnowledgeSession using the default session configuration.
      * You do not need to call dispose() on this.
      * 
-     * @param conf
      * @return
      *     The StatelessKnowledgeSession.
      */
