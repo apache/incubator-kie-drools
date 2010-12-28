@@ -150,6 +150,36 @@ public class MapPersistenceTest {
         crmPersistentSession.dispose();
     }
 
+    @Test
+    public void insertObjectIntoKsessionAndRetrieve() {
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        AbstractStorage storage = new AbstractStorage() {
+
+            private Map<Long, EntityInfo> savedEntities = new HashMap<Long, EntityInfo>();
+
+            public void saveOrUpdate(EntityInfo storedObject) {
+                storedObject.update();
+                savedEntities.put( storedObject.getId(), storedObject );
+            }
+
+            public EntityInfo find(Long id) {
+                return savedEntities.get( id );
+            }
+        };
+
+        StatefulKnowledgeSession crmPersistentSession = createSession(kbase, storage);
+        Buddy bestBuddy = new Buddy("john");
+        crmPersistentSession.insert(bestBuddy);
+
+        crmPersistentSession = disposeAndReloadSession(crmPersistentSession, kbase, storage);
+        Object obtainedBuddy = crmPersistentSession
+                .getObjects().iterator().next();
+        Assert.assertNotSame( bestBuddy, obtainedBuddy );
+        Assert.assertEquals(bestBuddy, obtainedBuddy);
+
+        crmPersistentSession.dispose();
+    }
+
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase,
                                                    AbstractStorage storage) {
         
