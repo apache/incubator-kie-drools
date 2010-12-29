@@ -38,11 +38,11 @@ public interface KnowledgeRuntime
 
     /**
      * Sets a global value on the internal collection
-     * @param identifer the global identifier
+     * @param identifier the global identifier
      * @param value the value assigned to the global identifier
      */
     void setGlobal(String identifier,
-                   Object object);
+                   Object value);
 
     Object getGlobal(String identifier);
 
