@@ -11,7 +11,7 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ByteArrayResource;
-import org.drools.persistence.EntityInfo;
+import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.AbstractStorage;
 import org.drools.persistence.map.AbstractStorageEnvironmentBuilder;
@@ -29,11 +29,11 @@ public class MapPersistenceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         AbstractStorage storage = new AbstractStorage() {
 
-            public void saveOrUpdate(EntityInfo storedObject) {
+            public void saveOrUpdate(SessionInfo storedObject) {
                 System.out.println( "saving" );
             }
 
-            public EntityInfo find(Long id) {
+            public SessionInfo findSessionInfo(Long id) {
                 System.out.println( "finding" );
                 return null;
             }
@@ -75,19 +75,7 @@ public class MapPersistenceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        AbstractStorage storage = new AbstractStorage() {
-
-            private Map<Long, EntityInfo> savedEntities = new HashMap<Long, EntityInfo>();
-            
-            public void saveOrUpdate(EntityInfo storedObject) {
-                storedObject.update();
-                savedEntities.put( storedObject.getId(), storedObject );
-            }
-
-            public EntityInfo find(Long id) {
-                return savedEntities.get( id );
-            }
-        };
+        AbstractStorage storage = getSimpleStorage();
         
         StatefulKnowledgeSession ksession = createSession( kbase,
                                                            storage );
@@ -115,20 +103,19 @@ public class MapPersistenceTest {
     @Test
     public void dontCreateMoreSessionsThanNecessary() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        final Map<Long, EntityInfo> savedEntities = new HashMap<Long, EntityInfo>();
+        final Map<Long, SessionInfo> savedEntities = new HashMap<Long, SessionInfo>();
 
         AbstractStorage storage = new AbstractStorage() {
 
-            public void saveOrUpdate(EntityInfo storedObject) {
+            public void saveOrUpdate(SessionInfo storedObject) {
                 storedObject.update();
                 savedEntities.put( storedObject.getId(), storedObject );
             }
 
-            public EntityInfo find(Long id) {
+            public SessionInfo findSessionInfo(Long id) {
                 return savedEntities.get( id );
             }
         };
-
 
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase, storage);
 
@@ -153,20 +140,8 @@ public class MapPersistenceTest {
     @Test
     public void insertObjectIntoKsessionAndRetrieve() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        AbstractStorage storage = new AbstractStorage() {
-
-            private Map<Long, EntityInfo> savedEntities = new HashMap<Long, EntityInfo>();
-
-            public void saveOrUpdate(EntityInfo storedObject) {
-                storedObject.update();
-                savedEntities.put( storedObject.getId(), storedObject );
-            }
-
-            public EntityInfo find(Long id) {
-                return savedEntities.get( id );
-            }
-        };
-
+        AbstractStorage storage = getSimpleStorage();
+        
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase, storage);
         Buddy bestBuddy = new Buddy("john");
         crmPersistentSession.insert(bestBuddy);
@@ -178,6 +153,22 @@ public class MapPersistenceTest {
         Assert.assertEquals(bestBuddy, obtainedBuddy);
 
         crmPersistentSession.dispose();
+    }
+
+    private AbstractStorage getSimpleStorage() {
+        return new AbstractStorage() {
+
+            private Map<Long, SessionInfo> savedEntities = new HashMap<Long, SessionInfo>();
+            
+            public SessionInfo findSessionInfo(Long id) {
+                return savedEntities.get( id );
+            }
+
+            public void saveOrUpdate(SessionInfo storedObject) {
+                storedObject.update();
+                savedEntities.put( storedObject.getId(), storedObject );
+            }
+        };
     }
 
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase,

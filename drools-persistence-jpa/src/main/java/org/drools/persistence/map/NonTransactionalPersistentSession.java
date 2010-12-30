@@ -2,11 +2,11 @@ package org.drools.persistence.map;
 
 import java.util.List;
 
-import org.drools.persistence.EntityInfo;
+import org.drools.persistence.info.SessionInfo;
 
 public interface NonTransactionalPersistentSession {
 
     void clear();
 
-    List<EntityInfo> getStoredObjects();
+    List<SessionInfo> getStoredObjects();
 }
