@@ -3,23 +3,23 @@ package org.drools.persistence.map;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.persistence.EntityInfo;
+import org.drools.persistence.info.SessionInfo;
 
 public class MapStorage
     implements
     AbstractStorage {
 
-    private Map<Long, EntityInfo> store;
+    private Map<Long, SessionInfo> store;
     
     public MapStorage() {
-        store = new HashMap<Long, EntityInfo>();
+        store = new HashMap<Long, SessionInfo>();
     }
     
-    public EntityInfo find(Long id) {
+    public SessionInfo findSessionInfo(Long id) {
         return store.get( id );
     }
 
-    public void saveOrUpdate(EntityInfo object) {
+    public void saveOrUpdate(SessionInfo object) {
         store.put( object.getId(), object );
     }
 

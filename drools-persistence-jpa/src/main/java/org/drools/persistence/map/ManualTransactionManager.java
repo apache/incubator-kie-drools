@@ -1,8 +1,8 @@
 package org.drools.persistence.map;
 
-import org.drools.persistence.EntityInfo;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.info.SessionInfo;
 
 public class ManualTransactionManager
     implements
@@ -26,7 +26,7 @@ public class ManualTransactionManager
     }
 
     public void commit() {
-        for(EntityInfo storedObject : session.getStoredObjects()){
+        for(SessionInfo storedObject : session.getStoredObjects()){
             storage.saveOrUpdate(storedObject);
         }
     }
