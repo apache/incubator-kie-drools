@@ -241,15 +241,11 @@ public class JoinNode extends BetaNode {
                                                                 workingMemory,
                                                                 true );
                         } else {
-                            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
-                            LeftTuple temp = childLeftTuple;
                             childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
                                                                                       leftTuple,
                                                                                       context,
                                                                                       workingMemory,
                                                                                       true );
-                            // we must re-add this to ensure deterministic iteration
-                            temp.reAddLeft();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
@@ -329,15 +325,11 @@ public class JoinNode extends BetaNode {
                                                                 workingMemory,
                                                                 true );
                         } else {
-                            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
-                            LeftTuple temp = childLeftTuple;
                             childLeftTuple = this.sink.propagateModifyChildLeftTuple( childLeftTuple,
                                                                                       rightTuple,
                                                                                       context,
                                                                                       workingMemory,
                                                                                       true );
-                            // we must re-add this to ensure deterministic iteration
-                            temp.reAddRight();
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
                         childLeftTuple = this.sink.propagateRetractChildLeftTuple( childLeftTuple,
