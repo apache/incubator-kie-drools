@@ -1,0 +1,50 @@
+package org.drools;
+
+declare A
+    id : int
+end
+
+declare B
+    id : int
+end
+
+declare C
+    id : int
+end
+
+rule "Setup"
+    salience 100
+then
+    insert( new A(1) );
+    insert( new A(1) );
+    insert( new B(1) );
+    insert( new C(1) );
+    insert( new B(2) );
+    insert( new C(4) );
+end
+
+rule "Trigger"
+    salience 50
+    no-loop
+when
+    $a : A()
+    $c1 : C( id == 1 )
+    $c4 : C( id == 4 )
+then
+    modify( $a ) {}
+    modify( $c1 ) { }
+    modify( $c4 ) { setId( 5 ) }
+end
+
+rule "Offending"
+when
+  A( $id : id )
+  B( )
+  C( id == $id )
+  exists( B(  ) and
+          C( id == 4 ) )
+then
+  // do something
+end
+
+

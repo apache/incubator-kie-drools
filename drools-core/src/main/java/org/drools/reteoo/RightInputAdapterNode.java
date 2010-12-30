@@ -117,7 +117,6 @@ public class RightInputAdapterNode extends ObjectSource
     public void assertLeftTuple(final LeftTuple tuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple,
                                                                                               workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
@@ -147,10 +146,9 @@ public class RightInputAdapterNode extends ObjectSource
                                  final InternalWorkingMemory workingMemory) {
 
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
-
         // retrieve handle from memory
         final InternalFactHandle factHandle = (InternalFactHandle) memory.remove( tuple );
-
+        
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
@@ -331,5 +329,13 @@ public class RightInputAdapterNode extends ObjectSource
 
         return this.tupleMemoryEnabled == other.tupleMemoryEnabled && this.tupleSource.equals( other.tupleSource );
     }
+
+    @Override
+    public String toString() {
+        return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" + tupleSource + ", source="
+               + source + ", associations=" + associations.keySet() + ", partitionId=" + partitionId + "]";
+    }
+    
+    
 
 }

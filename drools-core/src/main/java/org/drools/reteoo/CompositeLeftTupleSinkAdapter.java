@@ -276,11 +276,15 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         // iterate to find all child tuples for the shared node
         while ( childLeftTuple != null && childLeftTuple.getRightParent() == parentRightTuple ) {
             // this will iterate for each child node when the
-            // the current node is shared      
+            // the current node is shared
+
+            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
+            LeftTuple temp = childLeftTuple;
             childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                                context,
                                                                workingMemory );
             childLeftTuple = childLeftTuple.getLeftParentNext();
+            temp.reAddRight();
         }
         return childLeftTuple;
     }
@@ -294,10 +298,14 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         while ( childLeftTuple != null && childLeftTuple.getLeftParent() == parentLeftTuple ) {
             // this will iterate for each child node when the
             // the current node is shared      
+
+            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
+            LeftTuple temp = childLeftTuple;
             childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                                context,
                                                                workingMemory );
             childLeftTuple = childLeftTuple.getRightParentNext();
+            temp.reAddLeft();
         }
         return childLeftTuple;
     }
