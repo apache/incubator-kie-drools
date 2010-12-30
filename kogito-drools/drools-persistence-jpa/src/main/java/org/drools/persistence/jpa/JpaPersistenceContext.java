@@ -3,6 +3,7 @@ package org.drools.persistence.jpa;
 import javax.persistence.EntityManager;
 
 import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.info.SessionInfo;
 
 public class JpaPersistenceContext implements PersistenceContext {
     EntityManager em;
@@ -11,13 +12,12 @@ public class JpaPersistenceContext implements PersistenceContext {
         this.em = em;
     }
 
-    public void persist(Object entity) {
+    public void persist(SessionInfo entity) {
         this.em.persist( entity );
     }
 
-    public <T> T find(Class<T> entityClass, 
-                      Object primaryKey) {
-        return this.em.find( entityClass, primaryKey );
+    public SessionInfo findSessionInfo(Long id) {
+        return this.em.find( SessionInfo.class, id );
     }
 
     public boolean isOpen() {
