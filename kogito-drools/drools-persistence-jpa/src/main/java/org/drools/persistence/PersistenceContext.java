@@ -1,11 +1,12 @@
 package org.drools.persistence;
 
+import org.drools.persistence.info.SessionInfo;
+
 public interface PersistenceContext {
 
-    void persist(Object entity);
+    void persist(SessionInfo entity);
 
-    public <T> T find(Class<T> entityClass, 
-                      Object primaryKey);
+    public SessionInfo findSessionInfo(Long id);
 
     boolean isOpen();
 

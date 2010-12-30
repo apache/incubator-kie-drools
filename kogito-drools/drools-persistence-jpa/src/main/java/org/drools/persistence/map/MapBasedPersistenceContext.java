@@ -5,36 +5,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.persistence.EntityInfo;
 import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.info.SessionInfo;
 
 public class MapBasedPersistenceContext
     implements
     PersistenceContext,
     NonTransactionalPersistentSession {
     
-    private Map<Long, EntityInfo> entities;
+    private Map<Long, SessionInfo> ksessions;
     private boolean open;
     private AbstractStorage storage;
     
     public MapBasedPersistenceContext(AbstractStorage storage) {
         open = true;
         this.storage = storage;
-        this.entities = new HashMap<Long, EntityInfo>();
+        this.ksessions = new HashMap<Long, SessionInfo>();
     }
     
-    public void persist(Object entity) {
-        EntityInfo entityInfo = (EntityInfo) entity;
-        entities.put( entityInfo.getId(), entityInfo );
+    public void persist(SessionInfo entity) {
+        ksessions.put( entity.getId(), entity );
     }
 
-    public <T> T find(Class<T> entityClass,
-                      Object primaryKey) {
-        Long id = (Long) primaryKey;
-        EntityInfo entityInfo = entities.get( id );
-        if(entityInfo == null)
-            entityInfo = storage.find( id );
-        return (T) entityInfo;
+    public SessionInfo findSessionInfo(Long sessionId) {
+        SessionInfo sessionInfo = ksessions.get( sessionId );
+        if(sessionInfo == null)
+            sessionInfo = storage.findSessionInfo( sessionId );
+        return sessionInfo;
     }
 
     public boolean isOpen() {
@@ -46,14 +43,14 @@ public class MapBasedPersistenceContext
 
     public void close() {
         open = false;
-        entities.clear();
+        ksessions.clear();
     }
 
     public void clear() {
     }
 
-    public List<EntityInfo> getStoredObjects() {
-        return new ArrayList<EntityInfo>(entities.values());
+    public List<SessionInfo> getStoredObjects() {
+        return new ArrayList<SessionInfo>(ksessions.values());
     }
 
 }

@@ -1,11 +1,11 @@
 package org.drools.persistence.map;
 
-import org.drools.persistence.EntityInfo;
+import org.drools.persistence.info.SessionInfo;
 
 public interface AbstractStorage {
 
-    EntityInfo find(Long id);
+    SessionInfo findSessionInfo(Long id);
 
-    void saveOrUpdate(EntityInfo storedObject);
+    void saveOrUpdate(SessionInfo storedObject);
 
 }

@@ -171,8 +171,7 @@ public class SingleSessionCommandService
         this.doRollback = false;       
 
         try {
-            this.sessionInfo = jpm.getApplicationScopedPersistenceContext().find( SessionInfo.class,
-                                                                             sessionId );
+            this.sessionInfo = jpm.getApplicationScopedPersistenceContext().findSessionInfo( sessionId );
         } catch ( Exception e ) {
             throw new RuntimeException( "Could not find session data for id " + sessionId,
                                         e );
