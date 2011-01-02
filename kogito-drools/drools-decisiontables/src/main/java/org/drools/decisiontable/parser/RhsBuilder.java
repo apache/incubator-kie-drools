@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.template.model.SnippetBuilder;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builds up a consequence entry.
@@ -15,6 +16,8 @@ import org.drools.template.model.SnippetBuilder;
  */
 public class RhsBuilder implements SourceBuilder {
 
+	private int headerRow;
+	private int headerCol;
     private Map<Integer, String> templates;
     private String  variable;
     private List<String> values;
@@ -25,45 +28,46 @@ public class RhsBuilder implements SourceBuilder {
      * Any cells below then will be called as methods on it. 
      * Leaving it blank will make it work in "classic" mode.
      */
-    public RhsBuilder(String boundVariable) {
-        this.variable = boundVariable == null ? "" : boundVariable.trim();
+    public RhsBuilder( int row, int column, String boundVariable) {
+    	this.headerRow = row;
+    	this.headerCol = column;
+       this.variable = boundVariable == null ? "" : boundVariable.trim();
         this.templates = new HashMap<Integer, String>();
         this.values = new ArrayList<String>();
     }
 
-    public void addTemplate(int col,
-                                       String content) {
-        Integer key = new Integer( col );
+    public void addTemplate(int row, int column, String content) {
+        Integer key = new Integer( column );
         content = content.trim();
         if ( isBoundVar() ) {
             content = variable + "." + content + ";";
         }
-        this.templates.put( key,
-                            content );
+        this.templates.put( key, content );
     }
 
     private boolean isBoundVar() {
         return !("".equals( variable ));
     }
 
-    public void addCellValue(int col,
-                             String value) {
-        hasValues = true;
-        String template = (String) this.templates.get( new Integer( col ) );
-        SnippetBuilder snip = new SnippetBuilder(template);
-        
-        this.values.add(snip.build( value ));
+    public void addCellValue(int row, int column, String value) {
+    	hasValues = true;
+    	String template = (String) this.templates.get( new Integer( column ) );
+    	if( template == null ){
+    		throw new DecisionTableParseException( "No code snippet for ACTION, above cell " +
+    				RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+    	}
+    	SnippetBuilder snip = new SnippetBuilder(template);
+    	this.values.add(snip.build( value ));
+    }
 
-    }
-    
     public void clearValues() {
-        this.hasValues = false;
-        this.values.clear();
+    	this.hasValues = false;
+    	this.values.clear();
     }
-    
+
     public String getResult() {
-        StringBuffer buf = new StringBuffer();
-        for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {            
+    	StringBuffer buf = new StringBuffer();
+    	for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {            
             buf.append( iter.next() );
             if (iter.hasNext()) {
                 buf.append( '\n' );

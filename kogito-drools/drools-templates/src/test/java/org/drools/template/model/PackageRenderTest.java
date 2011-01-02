@@ -16,7 +16,8 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
@@ -24,7 +25,7 @@ import junit.framework.TestCase;
  * Test rendering and running a whole sample ruleset, from the model classes
  * down.
  */
-public class PackageRenderTest extends TestCase {
+public class PackageRenderTest {
 
     public Rule buildRule() {
         final Rule rule = new Rule( "myrule",
@@ -45,6 +46,7 @@ public class PackageRenderTest extends TestCase {
         return rule;
     }
 
+    @Test
     public void testRulesetRender() {
         final Package ruleSet = new Package( "my ruleset" );
         ruleSet.addFunctions( "my functions" );
@@ -71,7 +73,20 @@ public class PackageRenderTest extends TestCase {
         assertTrue( drl.indexOf( "my functions" ) > -1 );
         assertTrue( drl.indexOf( "package my_ruleset;" ) > -1 );
         assertTrue( drl.indexOf( "rule \"other rule\"" ) > drl.indexOf( "rule \"myrule\"" ) );
-
     }
+    
+    @Test
+    public void testRulesetAttribute() {
+        final Package ruleSet = new Package( "my ruleset" );
+        ruleSet.setAgendaGroup( "agroup" );
+        ruleSet.setNoLoop( true );
+        ruleSet.setSalience( 100 );
+        final DRLOutput out = new DRLOutput();
+        ruleSet.renderDRL( out );
 
+        final String drl = out.getDRL();
+        assertTrue( drl.contains( "agenda-group \"agroup\"") );
+        assertTrue( drl.contains( "no-loop true") );
+        assertTrue( drl.contains( "salience 100" ) );
+    }
 }
