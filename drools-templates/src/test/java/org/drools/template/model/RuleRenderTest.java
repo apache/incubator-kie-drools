@@ -63,9 +63,9 @@ public class RuleRenderTest extends TestCase {
         Rule rule = new Rule("la", new Integer(42), 2);
 
         rule.setActivationGroup( "foo" );
-        rule.setNoLoop( "true" );
+        rule.setNoLoop( true );
         rule.setRuleFlowGroup( "ruleflowgroup" );
-        rule.setDuration("42");
+        rule.setDuration( 42L );
         DRLOutput out = new DRLOutput();
         rule.renderDRL( out );
 
@@ -85,28 +85,6 @@ public class RuleRenderTest extends TestCase {
                       salience );
     }
 
-    public void testColNumToColName() {
-        String colName = Rule.convertColNumToColName( 1 );
-        assertEquals( "B",
-                      colName );
-
-        colName = Rule.convertColNumToColName( 10 );
-        assertEquals( "K",
-                      colName );
-
-        colName = Rule.convertColNumToColName( 42 );
-        assertEquals( "AQ",
-                      colName );
-
-        colName = Rule.convertColNumToColName( 27 );
-        assertEquals( "AB",
-                      colName );
-
-        colName = Rule.convertColNumToColName( 53 );
-        assertEquals( "BB",
-                      colName );
-
-    }
 
     public void testNotEscapeChars() {
         //bit of a legacy from the olde XML dayes of yesteryeare

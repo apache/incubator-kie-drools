@@ -6,6 +6,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.decisiontable.parser.ActionType;
+import static org.drools.decisiontable.parser.ActionType.Code;
 
 public class ActionTypeTest extends TestCase {
 
@@ -14,33 +15,33 @@ public class ActionTypeTest extends TestCase {
         ActionType.addNewActionType( actionTypeMap, "C", 0, 1 );
         
         ActionType type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.CONDITION, type.type);
+        assertEquals( Code.CONDITION, type.getCode() );
         
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "A", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.ACTION, type.type);
+        assertEquals(Code.ACTION, type.getCode());
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "X", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.ACTIVATIONGROUP, type.type);
+        assertEquals(Code.ACTIVATIONGROUP, type.getCode());
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "ACTIVATION-GROUP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.ACTIVATIONGROUP, type.type);
+        assertEquals(Code.ACTIVATIONGROUP, type.getCode());
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "NO-LOOP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.NOLOOP, type.type);
+        assertEquals(Code.NOLOOP, type.getCode());
         
         actionTypeMap = new HashMap<Integer, ActionType>();
         ActionType.addNewActionType( actionTypeMap, "RULEFLOW-GROUP", 0, 1 );
         type = (ActionType) actionTypeMap.get( new Integer(0) );
-        assertEquals(ActionType.RULEFLOWGROUP, type.type);
+        assertEquals(Code.RULEFLOWGROUP, type.getCode());
     }
     
 }

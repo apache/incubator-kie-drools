@@ -16,7 +16,6 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,38 +24,16 @@ import java.util.List;
  *
  * Represents a rule.
  */
-public class Rule extends DRLElement
-    implements
-    DRLJavaEmitter {
+public class Rule extends AttributedDRLElement
+    implements DRLJavaEmitter {
 
     private static final int MAX_ROWS = 65535;
 
-    private Integer           _salience;       // Integer as it may be null
-
     private String            _name;
-
-    private String            _duration;       // RIK: New variable to the Rule class (Defines
-    // a Duration tag for the rule)
-
-    private String            _description;    // RIK: New variable to the Rule class (Set
-    // the description parameter of the rule
-    // tag)
-
-    private String            _noLoop;         // RIK: New variable to the Rule class (Set the
-    // no-loop parameter of the rule tag)
-
-    private String            _activationGroup; // RIK: New variable to the Rule class (Set the
-    // activation-group parameter of the rule tag)
-
-    private String            _ruleFlowGroup;
-
-    private String            _agendaGroup;    // SJW: New variable to the Rule class (Set the
-    // agenda-group parameter of the rule tag
+    private String            _description;
 
     private List<Condition>   _lhs;
-
     private List<Consequence> _rhs;
-
     private int               _spreadsheetRow;
 
     /**
@@ -71,10 +48,9 @@ public class Rule extends DRLElement
     public Rule(final String name,
                 final Integer salience,
                 final int spreadsheetRow) {
-        this._name = name;
-        this._salience = salience;
-        this._description = "";
-
+    	super( salience );
+        this._name = asStringLiteral( name );
+        this._description = null;
         this._lhs = new LinkedList<Condition>();
         this._rhs = new LinkedList<Consequence>();
         this._spreadsheetRow = spreadsheetRow;
@@ -92,37 +68,18 @@ public class Rule extends DRLElement
         if ( isCommented() ) {
             out.writeLine( "#" + getComment() );
         }
-        out.writeLine( "rule " + "\"" + this._name + "\"" );
+        out.writeLine( "rule " + this._name );
         if ( this._description != null ) {
-            out.writeLine( "\t" + this._description );
+            out.writeLine( "\t# " + this._description );
         }
-        if ( this._salience != null ) {
-            out.writeLine( "\tsalience " + this._salience );
-        }
-        if ( this._activationGroup != null ) {
-            out.writeLine( "\tactivation-group \"" + this._activationGroup + "\"" );
-        }
-        if ( this._agendaGroup != null ) {
-            out.writeLine( "\tagenda-group " + this._agendaGroup );
-        }
-        if ( this._noLoop != null ) {
-            out.writeLine( "\tno-loop " + this._noLoop );
-        }
-        if ( this._duration != null ) {
-            out.writeLine( "\tduration " + this._duration );
-        }
-
-        if ( this._ruleFlowGroup != null ) {
-            out.writeLine( "\truleflow-group \"" + this._ruleFlowGroup + "\"" );
-        }
+        
+        // attributes
+        super.renderDRL( out );
 
         out.writeLine( "\twhen" );
-        renderDRL( this._lhs,
-                   out );
+        renderDRL( this._lhs, out );
         out.writeLine( "\tthen" );
-        renderDRL( this._rhs,
-                   out );
-
+        renderDRL( this._rhs, out );
         out.writeLine( "end\n" );
     }
 
@@ -140,46 +97,6 @@ public class Rule extends DRLElement
         return Rule.MAX_ROWS - rowNumber;
     }
 
-    /**
-     * @param col -
-     *            the column number. Start with zero.
-     * @return The spreadsheet name for this col number, such as "AA" or "AB" or
-     *         "A" and such and such.
-     */
-    public static String convertColNumToColName(final int i) {
-
-        String result;
-        final int div = i / 26;
-        final int mod = i % 26;
-
-        if ( div == 0 ) {
-            final byte[] c = new byte[1];
-            c[0] = (byte) (mod + 65);
-            result = byteToString( c );
-        } else {
-            final byte[] firstChar = new byte[1];
-            firstChar[0] = (byte) ((div - 1) + 65);
-
-            final byte[] secondChar = new byte[1];
-            secondChar[0] = (byte) (mod + 65);
-            final String first = byteToString( firstChar );
-            final String second = byteToString( secondChar );
-            result = first + second;
-        }
-        return result;
-
-    }
-
-    private static String byteToString(final byte[] secondChar) {
-        try {
-            return new String( secondChar,
-                               "UTF-8" );
-        } catch ( final UnsupportedEncodingException e ) {
-            throw new RuntimeException( "Unable to convert char to string.",
-                                        e );
-        }
-    }
-
     public List<Condition> getConditions() {
         return this._lhs;
     }
@@ -187,81 +104,25 @@ public class Rule extends DRLElement
     public List<Consequence> getConsequences() {
         return this._rhs;
     }
-
-    public void setSalience(final Integer value) // Set the salience of the rule
-    {
-        this._salience = value;
-    }
-
-    public Integer getSalience() {
-        return this._salience;
-    }
-
-    public void setName(final String value) // Set the name of the rule
-    {
-        this._name = value;
+    
+    public void setName(final String value){
+        this._name = asStringLiteral( value );
     }
 
     public String getName() {
         return this._name;
     }
 
-    public void setDescription(final String value) // Set the description of the
-    // rule
-    {
+
+    public void setDescription(final String value){
         this._description = value;
     }
 
-    public void appendDescription(final String value) // Set the description of the
-    // rule
-    {
+    public void appendDescription(final String value){
         this._description += value;
     }
 
-    public String getDescription() {
-        return this._description;
-    }
-
-    public void setDuration(final String value) // Set the duration of the rule
-    {
-        this._duration = value;
-    }
-
-    public String getDuration() {
-        return this._duration;
-    }
-
-    public void setActivationGroup(final String value) // Set the duration of the rule
-    {
-        this._activationGroup = value;
-    }
-
-    public void setRuleFlowGroup(final String value) {
-        this._ruleFlowGroup = value;
-    }
-
-    public String getRuleFlowGroup() {
-        return this._ruleFlowGroup;
-    }
-
-    public String getActivationGroup() {
-        return this._activationGroup;
-    }
-
-    public String getAgendaGroup() {
-        return _agendaGroup;
-    }
-
-    public void setAgendaGroup(String group) // Set the agenda-group of the rule
-    {
-        _agendaGroup = group;
-    }
-
-    public void setNoLoop(final String value) // Set the no-loop attribute of the rule
-    {
-        this._noLoop = value;
-    }
-
+    
     /**
      * @return The row in the spreadsheet this represents.
      * This can be handy when mapping a line error from Parser back to the rule row.

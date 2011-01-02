@@ -16,62 +16,108 @@
 
 package org.drools.decisiontable.parser;
 
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * Simple holder class identifying a condition or action column etc.
- * This is stored in a map in the main listener class, to track what type of values
- * you can expect to see in the rows directly below.
+ * Simple holder class identifying a condition, action or attribute column, also
+ * including the rule name and a comment (called "description").
+ * Its objects are stored in a map in the main listener class, to track what type of values
+ * you can expect to see in the rows directly below the column header, identified
+ * by an ActionType.Code.
  * 
- * There are five types of columns relevant to a rule table.
  * @author Michael Neale
  */
 public class ActionType {
 
-    public static final int CONDITION       = 0;
+    public enum Code {
+        CONDITION(       "CONDITION",        "C" ),
+        ACTION(          "ACTION",           "A" ),
+        NAME(            "NAME",             "N", 1 ),
+        DESCRIPTION(     "DESCRIPTION",      "I" ),
+        SALIENCE(        "PRIORITY",         "P", 1 ),
+        DURATION(        "DURATION",         "D", 1 ),
+        NOLOOP(          "NO-LOOP",          "U", 1 ),
+        LOCKONACTIVE(    "LOCK-ON-ACTIVE",   "L", 1 ),
+        AUTOFOCUS(       "AUTO-FOCUS",       "F", 1 ),
+        ACTIVATIONGROUP( "ACTIVATION-GROUP", "X", 1 ),
+        AGENDAGROUP(     "AGENDA-GROUP",     "G", 1 ),
+        RULEFLOWGROUP(   "RULEFLOW-GROUP",   "R", 1 );
+                
+        private String colHeader;
+        private String colShort;
+        private int    maxCount;
+        
+        /**
+         * Constructor.
+         * @param colHeader the column header
+         * @param colShort  a single letter, recognized as initial
+         * @param maxCount  maximum number of permitted columns
+         */
+        Code( String colHeader, String colShort, int maxCount ){
+            this.colHeader = colHeader;
+            this.colShort = colShort;
+            this.maxCount = maxCount;
+        }
+        
+        
+        Code( String colHeader, String colShort ){
+        	this( colHeader, colShort, Integer.MAX_VALUE );
+        }
+        
+        public String getColHeader(){
+            return colHeader;
+        }
+        public String getColShort(){
+            return colShort;
+        }
+		public int getMaxCount() {
+			return maxCount;
+		}
+    }
 
-    public static final int ACTION          = 1;
+    public static final EnumSet<Code> ATTRIBUTE_CODE_SET = EnumSet.range( Code.SALIENCE, Code.RULEFLOWGROUP );
 
-    // 08 - 16 - 2005 RIK: Define 3 new ActionType types
-    // PRIORITY is used to set the salience parameter of a rule tag
-    public static final int PRIORITY        = 2;
+    private static final Map<String,Code> tag2code = new HashMap<String,Code>();
+    static {
+        for( Code code: EnumSet.allOf( Code.class ) ){
+        	tag2code.put( code.colHeader, code );
+        	tag2code.put( code.colShort, code );
+        }
+    }
 
-    // DURATION is used to set a duration tag inside a rule tag
-    public static final int DURATION        = 3;
+    private Code code;
+    private SourceBuilder sourceBuilder  = null;
 
-    // NAME is used to set the name parameter of a rule tag
-    public static final int NAME            = 4;
+    /**
+     * Constructor.
+     * @param actionTypeCode code identifying the column
+     */
+    ActionType( Code actionTypeCode) {
+        this.code = actionTypeCode;
+    }
 
-    // 10 - 05 - 2005 RIK: Add 2 new AtcionType types
-    // DESCRIPTION is used to set the description parameter of a rule tag
-    public static final int DESCRIPTION     = 5;
+    public static EnumSet<Code> getAttributeCodeSet() {
+		return ATTRIBUTE_CODE_SET;
+	}
 
-    //  NOLOOP is used to set the no-loop parameter of a rule tag
-    public static final int NOLOOP          = 6;
+	public static Map<String, Code> getTag2code() {
+		return tag2code;
+	}
 
-    //  XOR-GROUP is used to set the activation-group parameter of a rule tag
-    public static final int ACTIVATIONGROUP = 7;
-
-    //  14 September 2006 SJW: Add new Agenda Group ActionType
-    //  AGENDA-GROUP is used to set the agenda-group parameter of a rule tag
-    public static final int AGENDAGROUP     = 8;
-
-    public static final int RULEFLOWGROUP   = 9;
-
-    int                     type;
-
-    private SourceBuilder   sourceBuilder   = null;
-
-    //    private String                  value;
-
-    ActionType(final int actionType) {
-        this.type = actionType;
+	/**
+     * Retrieves the code.
+     * @return an enum Code value
+     */
+    public Code getCode(){
+    	return this.code;
     }
 
     /**
-     * This is only set for LHS or RHS building. 
+     * This is only set for LHS or RHS building.
      */
     public void setSourceBuilder(SourceBuilder src) {
         this.sourceBuilder = src;
@@ -81,123 +127,63 @@ public class ActionType {
         return this.sourceBuilder;
     }
 
-    //    String getSnippet(final String cellValue) {
-    //        final SnippetBuilder builder = new SnippetBuilder( this.value );
-    //        return builder.build( cellValue );
-    //    }
-
     /**
      * Create a new action type that matches this cell, and add it to the map,
      * keyed on that column.
      */
     public static void addNewActionType(final Map<Integer, ActionType> actionTypeMap,
                                         final String value,
-                                        final int column,
-                                        final int row) {
+                                        final int column, final int row) {
+        final String ucValue = value.toUpperCase();  
 
-        if ( value.toUpperCase().startsWith( "U" ) || value.toUpperCase().equals( "NO-LOOP" ) ) // if the title cell
-        // value starts with
-        // "U" then put a
-        // ActionType.NOLOOP
-        // to the _actions  
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.NOLOOP ) );
-        } else if ( value.toUpperCase().equals( "RULEFLOW-GROUP" ) || value.toUpperCase().startsWith( "R" ) ) {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.RULEFLOWGROUP ) );
-
-        } else if ( value.toUpperCase().equals( "AGENDA-GROUP" ) ) // if the title cell
-        // value equals "AGENDA-GROUP"
-        // then put a
-        // ActionType.AGENDAGROUP
-        // to the _actions  
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.AGENDAGROUP ) );
-        } else if ( value.toUpperCase().startsWith( "X" ) || value.toUpperCase().equals( "ACTIVATION-GROUP" ) ) // if the title cell
-        // value starts with
-        // "X" then put a
-        // ActionType.XORGROUP
-        // to the _actions  
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTIVATIONGROUP ) );
-        } else if ( value.toUpperCase().startsWith( "C" ) ) {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.CONDITION ) );
-        } else if ( value.toUpperCase().startsWith( "A" ) ) {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.ACTION ) );
-        } else if ( value.toUpperCase().startsWith( "P" ) ) // if the title cell
-        // value starts with
-        // "P" then put a
-        // ActionType.PRIORITY
-        // to the _actions
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.PRIORITY ) );
-        } else if ( value.toUpperCase().startsWith( "D" ) ) // if the title cell
-        // value starts with
-        // "D" then put a
-        // ActionType.DURATION
-        // to the _actions
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.DURATION ) );
-        } else if ( value.toUpperCase().startsWith( "N" ) ) // if the title cell
-        // value starts with
-        // "N" then put a
-        // ActionType.NAME
-        // to the _actions
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.NAME ) );
-        } else if ( value.toUpperCase().startsWith( "I" ) ) // if the title cell
-        // value starts with
-        // "I" then put a
-        // ActionType.DESCRIPTION
-        // to the _actions	
-        // list
-        {
-            actionTypeMap.put( new Integer( column ),
-                               new ActionType( ActionType.DESCRIPTION ) );
+        Code code = tag2code.get( ucValue );
+        if( code == null ) code = tag2code.get( ucValue.substring( 0, 1 ) );
+        if( code != null ){
+        	
+        	int count = 0;
+        	for( ActionType at: actionTypeMap.values() ){
+        		if( at.getCode() == code ) count++;
+        	}
+        	if( count >= code.getMaxCount() ){
+        		throw new DecisionTableParseException( "Maximum number of " +
+        				code.getColHeader() + "/" + code.getColShort() + " columns is " +
+        				code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name(row, column) );
+        	}
+            actionTypeMap.put( new Integer( column ), new ActionType( code ) );
         } else {
-            throw new DecisionTableParseException( "Invalid column header (ACTION type), " + "should be CONDITION or ACTION (etc..) row number:" + (row + 1) + " cell number:" + (column + 1) + " - does not contain a leading C or A identifer." );
+            throw new DecisionTableParseException(
+                    "Invalid column header: " + value + ", should be CONDITION, ACTION or attribute, " +
+                    "in cell " + RuleSheetParserUtil.rc2name(row, column) );
         }
     }
 
     /**
      * This is where a code snippet template is added.
      */
-    public void addTemplate(int col,
-                            String content) {
-        this.sourceBuilder.addTemplate( col,
-                                        content );
+    public void addTemplate(int row, int column, String content) {
+    	if( this.sourceBuilder == null ){
+    		throw new DecisionTableParseException(
+                    "Unexpected content \"" + content + "\" in cell " +
+                    RuleSheetParserUtil.rc2name(row, column) + ", leave this cell blank" );
+    	}
+        this.sourceBuilder.addTemplate( row, column, content );
     }
 
     /**
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
      */
-    public void addCellValue(int col,
-                             String content) {
+    public void addCellValue(int row, int column, String content) {
         //Michael Neale:
-        //for single standard quotes we escape them - eg they may mean "inches" 
-        // as in "I want a stone hence replica 19" tall"
-        //for more info: http://www.imdb.com/title/tt0088258/
+        // For single standard quotes we escape them - eg they may mean "inches" 
+        // as in "I want a Stonehenge replica 19" tall"
         int idx = content.indexOf("\"");
         if (idx > 0 && content.indexOf("\"", idx) > -1) {
             content = content.replace("\"", "\\\"");
         }
-        this.sourceBuilder.addCellValue( col,
-                                         content );
+//        if( this.sourceBuilder != null ){
+        this.sourceBuilder.addCellValue( row, column, content );
+//        }
     }
 
 }

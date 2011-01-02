@@ -16,21 +16,26 @@
 
 package org.drools.decisiontable.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
 
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.parser.DecisionTableParseException;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  * 
  * Nuff said...
  */
-public class RuleSheetParserUtilTest extends TestCase {
+public class RuleSheetParserUtilTest {
 
+	@Test
     public void testRuleName() {
         final String row = "  RuleTable       This is my rule name";
         final String result = RuleSheetParserUtil.getRuleName( row );
@@ -39,8 +44,10 @@ public class RuleSheetParserUtilTest extends TestCase {
     }
 
     /**
-     * This is hear as the old way was to do this.
+     * This is here as the old way was to do this.
      */
+    @Ignore
+    @Test
     public void testInvalidRuleName() {
         final String row = "RuleTable       This is my rule name (type class)";
         try {
@@ -51,6 +58,7 @@ public class RuleSheetParserUtilTest extends TestCase {
         }
     }
 
+    @Test
     public void testIsStringMeaningTrue() {
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "true" ) );
         assertTrue( RuleSheetParserUtil.isStringMeaningTrue( "TRUE" ) );
@@ -62,30 +70,31 @@ public class RuleSheetParserUtilTest extends TestCase {
         assertFalse( RuleSheetParserUtil.isStringMeaningTrue( null ) );
     }
 
+    @Test
     public void testListImports() {
-        String cellVal = null;
-        List<Import> list = RuleSheetParserUtil.getImportList( cellVal );
+        List<String> cellVals = null;
+        
+        List<Import> list = RuleSheetParserUtil.getImportList( cellVals );
         assertNotNull( list );
-        assertEquals( 0,
-                      list.size() );
+        assertEquals( 0, list.size() );
 
-        assertEquals( 0,
-                      RuleSheetParserUtil.getImportList( "" ).size() );
+        cellVals = new ArrayList<String>();
+        cellVals.add( "" );
+        assertEquals( 0, RuleSheetParserUtil.getImportList( cellVals ).size() );
 
-        cellVal = "com.something.Yeah, com.something.No,com.something.yeah.*";
-        list = RuleSheetParserUtil.getImportList( cellVal );
-        assertEquals( 3,
-                      list.size() );
-        assertEquals( "com.something.Yeah",
-                      (list.get( 0 )).getClassName() );
-        assertEquals( "com.something.No",
-                      (list.get( 1 )).getClassName() );
-        assertEquals( "com.something.yeah.*",
-                      (list.get( 2 )).getClassName() );
+        cellVals.add( 0, "com.something.Yeah, com.something.No,com.something.yeah.*" );
+        list = RuleSheetParserUtil.getImportList( cellVals );
+        assertEquals( 3, list.size() );
+        assertEquals( "com.something.Yeah",   (list.get( 0 )).getClassName() );
+        assertEquals( "com.something.No",     (list.get( 1 )).getClassName() );
+        assertEquals( "com.something.yeah.*", (list.get( 2 )).getClassName() );
     }
 
+    @Test
     public void testListVariables() {
-        final List<Global> varList = RuleSheetParserUtil.getVariableList( "Var1 var1, Var2 var2,Var3 var3" );
+    	List<String> varCells = new ArrayList<String>();
+    	varCells.add( "Var1 var1, Var2 var2,Var3 var3" );
+        final List<Global> varList = RuleSheetParserUtil.getVariableList( varCells );
         assertNotNull( varList );
         assertEquals( 3,
                       varList.size() );
@@ -99,13 +108,33 @@ public class RuleSheetParserUtilTest extends TestCase {
                       var.getIdentifier() );
     }
 
+    @Test
     public void testBadVariableFormat() {
-        final String bad = "class1, object2";
+    	List<String> varCells = new ArrayList<String>();
+    	varCells.add( "class1, object2" );
         try {
-            RuleSheetParserUtil.getVariableList( bad );
+            RuleSheetParserUtil.getVariableList( varCells );
             fail( "should not work" );
         } catch ( final DecisionTableParseException e ) {
             assertNotNull( e.getMessage() );
         }
+    }
+    
+    @Test
+    public void testRowColumnToCellNAme() {
+        String cellName = RuleSheetParserUtil.rc2name( 0, 0 );
+        assertEquals( "A1", cellName );
+
+        cellName = RuleSheetParserUtil.rc2name( 0, 10 );
+        assertEquals( "K1", cellName );
+
+        cellName = RuleSheetParserUtil.rc2name( 0, 42 );
+        assertEquals( "AQ1", cellName );
+
+        cellName = RuleSheetParserUtil.rc2name( 9, 27 );
+        assertEquals( "AB10", cellName );
+
+        cellName = RuleSheetParserUtil.rc2name( 99, 53 );
+        assertEquals( "BB100", cellName );
     }
 }
