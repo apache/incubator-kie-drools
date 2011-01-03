@@ -7,7 +7,7 @@ import org.drools.persistence.info.SessionInfo;
 
 public class MapStorage
     implements
-    AbstractStorage {
+    KnowledgeSessionStorage {
 
     private Map<Long, SessionInfo> store;
     
