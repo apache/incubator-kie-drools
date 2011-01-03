@@ -9,10 +9,10 @@ public class ManualTransactionManager
     TransactionManager {
     
     private NonTransactionalPersistentSession session;
-    private AbstractStorage storage;
+    private KnowledgeSessionStorage storage;
     
     public ManualTransactionManager(NonTransactionalPersistentSession session,
-                                    AbstractStorage storage) {
+                                    KnowledgeSessionStorage storage) {
         this.session = session;
         this.storage = storage;
     }
@@ -26,7 +26,7 @@ public class ManualTransactionManager
     }
 
     public void commit() {
-        for(SessionInfo storedObject : session.getStoredObjects()){
+        for(SessionInfo storedObject : session.getStoredKnowledgeSessions()){
             storage.saveOrUpdate(storedObject);
         }
     }
