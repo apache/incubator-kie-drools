@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.persistence.EntityInfo;
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.info.SessionInfo;
 
@@ -15,9 +16,9 @@ public class MapBasedPersistenceContext
     
     private Map<Long, SessionInfo> ksessions;
     private boolean open;
-    private AbstractStorage storage;
+    private KnowledgeSessionStorage storage;
     
-    public MapBasedPersistenceContext(AbstractStorage storage) {
+    public MapBasedPersistenceContext(KnowledgeSessionStorage storage) {
         open = true;
         this.storage = storage;
         this.ksessions = new HashMap<Long, SessionInfo>();
@@ -49,7 +50,7 @@ public class MapBasedPersistenceContext
     public void clear() {
     }
 
-    public List<SessionInfo> getStoredObjects() {
+    public List<SessionInfo> getStoredKnowledgeSessions() {
         return new ArrayList<SessionInfo>(ksessions.values());
     }
 

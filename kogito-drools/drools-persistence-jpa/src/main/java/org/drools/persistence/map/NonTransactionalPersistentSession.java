@@ -8,5 +8,5 @@ public interface NonTransactionalPersistentSession {
 
     void clear();
 
-    List<SessionInfo> getStoredObjects();
+    List<SessionInfo> getStoredKnowledgeSessions();
 }

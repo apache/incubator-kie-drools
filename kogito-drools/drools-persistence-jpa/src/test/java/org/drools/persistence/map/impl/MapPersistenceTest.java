@@ -13,8 +13,9 @@ import org.drools.builder.ResourceType;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.map.AbstractStorage;
-import org.drools.persistence.map.AbstractStorageEnvironmentBuilder;
+import org.drools.persistence.map.EnvironmentBuilder;
+import org.drools.persistence.map.KnowledgeSessionStorage;
+import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -27,7 +28,7 @@ public class MapPersistenceTest {
     @Test
     public void createPersistentSession() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        AbstractStorage storage = new AbstractStorage() {
+        KnowledgeSessionStorage storage = new KnowledgeSessionStorage() {
 
             public void saveOrUpdate(SessionInfo storedObject) {
                 System.out.println( "saving" );
@@ -75,7 +76,7 @@ public class MapPersistenceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        AbstractStorage storage = getSimpleStorage();
+        KnowledgeSessionStorage storage = getSimpleStorage();
         
         StatefulKnowledgeSession ksession = createSession( kbase,
                                                            storage );
@@ -105,7 +106,7 @@ public class MapPersistenceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         final Map<Long, SessionInfo> savedEntities = new HashMap<Long, SessionInfo>();
 
-        AbstractStorage storage = new AbstractStorage() {
+        KnowledgeSessionStorage storage = new KnowledgeSessionStorage() {
 
             public void saveOrUpdate(SessionInfo storedObject) {
                 storedObject.update();
@@ -140,7 +141,7 @@ public class MapPersistenceTest {
     @Test
     public void insertObjectIntoKsessionAndRetrieve() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        AbstractStorage storage = getSimpleStorage();
+        KnowledgeSessionStorage storage = getSimpleStorage();
         
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase, storage);
         Buddy bestBuddy = new Buddy("john");
@@ -155,8 +156,8 @@ public class MapPersistenceTest {
         crmPersistentSession.dispose();
     }
 
-    private AbstractStorage getSimpleStorage() {
-        return new AbstractStorage() {
+    private KnowledgeSessionStorage getSimpleStorage() {
+        return new KnowledgeSessionStorage() {
 
             private Map<Long, SessionInfo> savedEntities = new HashMap<Long, SessionInfo>();
             
