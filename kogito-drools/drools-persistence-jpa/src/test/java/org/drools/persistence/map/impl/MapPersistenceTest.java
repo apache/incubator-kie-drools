@@ -172,9 +172,9 @@ public class MapPersistenceTest {
     }
 
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase,
-                                                   AbstractStorage storage) {
+                                                   KnowledgeSessionStorage storage) {
         
-        AbstractStorageEnvironmentBuilder envBuilder = new AbstractStorageEnvironmentBuilder( storage );
+        EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         //FIXME temporary usage of this constants
         env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -189,10 +189,10 @@ public class MapPersistenceTest {
 
     private StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
                                                              KnowledgeBase kbase,
-                                                             AbstractStorage storage) {
+                                                             KnowledgeSessionStorage storage) {
         long sessionId = ksession.getId();
         ksession.dispose();
-        AbstractStorageEnvironmentBuilder envBuilder = new AbstractStorageEnvironmentBuilder( storage );
+        EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         //FIXME temporary usage of this constants
         env.set( EnvironmentName.TRANSACTION_MANAGER,
