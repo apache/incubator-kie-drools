@@ -39,7 +39,7 @@ public class SessionInfo implements EntityInfo {
         this.startDate = new Date();
     }
 
-    public long getId() {
+    public Long getId() {
         return this.id;
     }
     
