@@ -18,10 +18,17 @@ package org.jbpm.integration.console;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.SystemEventListenerFactory;
 import org.jboss.bpm.console.client.model.TaskRef;
@@ -43,6 +50,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
 	private TaskClient client;
+	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -59,6 +67,45 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 					"Could not connect task client");
 			}
 		}
+		try {
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			URL url = null;
+			String propertyName = "roles.properties";
+
+			if (loader instanceof URLClassLoader) {
+				URLClassLoader ucl = (URLClassLoader) loader;
+				url = ucl.findResource(propertyName);
+			}
+			if (url == null) {
+				url = loader.getResource(propertyName);
+			}
+			if (url == null) {
+				System.out.println("No properties file: " + propertyName + " found");
+			} else {
+				Properties bundle = new Properties();
+				InputStream is = url.openStream();
+				if (is != null) {
+					bundle.load(is);
+					is.close();
+				} else {
+					throw new IOException("Properties file " + propertyName	+ " not available");
+				}
+				Enumeration<?> propertyNames = bundle.propertyNames();
+				while (propertyNames.hasMoreElements()) {
+					String key = (String) propertyNames.nextElement();
+					String value = bundle.getProperty(key);
+					groupListMap.put(key, Arrays.asList(value.split(",")));
+					System.out.print("Loaded user " + key + ":");
+					for (String role: groupListMap.get(key)) {
+						System.out.print(" " + role);
+					}
+					System.out.println();
+				}
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+
 	}
 	
 	public TaskRef getTaskById(long taskId) {
@@ -75,7 +122,12 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 		if (idRef == null) {
 			client.release(taskId, userId, responseHandler);
 		} else if (idRef.equals(userId)) {
-			client.claim(taskId, idRef, responseHandler);
+			List<String> roles = groupListMap.get(userId);
+			if (roles == null) {
+				client.claim(taskId, idRef, responseHandler);
+			} else {
+				client.claim(taskId, idRef, roles, responseHandler);
+			}
 		} else {
 			client.delegate(taskId, userId, idRef, responseHandler);
 		}
@@ -147,7 +199,12 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
 			BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-			client.getTasksAssignedAsPotentialOwner(idRef, "en-UK", responseHandler);
+			List<String> roles = groupListMap.get(idRef);
+			if (roles == null) {
+				client.getTasksAssignedAsPotentialOwner(idRef, "en-UK", responseHandler);
+			} else {
+				client.getTasksAssignedAsPotentialOwner(idRef, roles, "en-UK", responseHandler);
+			}
 	        List<TaskSummary> tasks = responseHandler.getResults();
 	        for (TaskSummary task: tasks) {
 	        	result.add(Transform.task(task));
