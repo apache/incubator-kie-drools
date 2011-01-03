@@ -26,6 +26,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Properties;
 
@@ -78,9 +79,31 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 	}
 	
 	public InputStream getTemplate(String name) {
-		return AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
+		InputStream result = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
+		if (result != null) {
+			return result;
+		}
+		StringBuffer sb = new StringBuffer();
+		Properties properties = new Properties();
+		try {
+			properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load jbpm.console.properties", e);
+		}
+		try {
+			sb.append("http://");
+			sb.append(properties.get("jbpm.console.server.host"));
+			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
+			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
+			sb.append(URLEncoder.encode(name, "UTF-8"));
+			sb.append(".drl");
+			return new URL(sb.toString()).openStream();
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return null;
 	}
-	
+
 	protected DataHandler processTemplate(final String name, InputStream src, Map<String, Object> renderContext) {
 		DataHandler merged = null;
 		try {

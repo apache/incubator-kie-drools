@@ -23,12 +23,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -94,30 +99,54 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	}
 
 	public DiagramInfo getDiagramInfo(String processId) {
+		KnowledgeBase kbase = null;
+		try {
+			KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
+			kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
+			kagent.monitorResourceChangeEvents(false);
+			kbase = kagent.getKnowledgeBase();
+			for (Process process: kbase.getProcesses()) {
+				System.out.println("Loading process from Guvnor: " + process.getId());
+			}
+		} catch (Throwable t) {
+			if (t instanceof RuntimeException
+					&& "KnowledgeAgent exception while trying to deserialize".equals(t.getMessage())) {
+				System.out.println("Could not connect to guvnor");
+				if (t.getCause() != null) {
+					System.out.println(t.getCause().getMessage());
+				}
+			}
+			System.out.println("Could not load processes from guvnor: " + t.getMessage());
+			t.printStackTrace();
+		}
+		if (kbase == null) {
+			kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		}
 		String directory = System.getProperty("jbpm.console.directory");
 		if (directory == null) {
-			throw new IllegalArgumentException("jbpm.console.directory property not found, did you set it?");
+			System.out.println("jbpm.console.directory property not found");
+		} else {
+			File file = new File(directory);
+			if (!file.exists()) {
+				throw new IllegalArgumentException("Could not find " + directory);
+			}
+			if (!file.isDirectory()) {
+				throw new IllegalArgumentException(directory + " is not a directory");
+			}
+			ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
+			ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
+			ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+			BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
+			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+			for (File subfile: file.listFiles(new FilenameFilter() {
+					public boolean accept(File dir, String name) {
+						return name.endsWith(".bpmn") || name.endsWith("bpmn2");
+					}})) {
+				System.out.println("Loading process from file system: " + subfile.getName());
+				kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
+			}
+			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		}
-		File file = new File(directory);
-		if (!file.exists()) {
-			throw new IllegalArgumentException("Could not find " + directory);
-		}
-		if (!file.isDirectory()) {
-			throw new IllegalArgumentException(directory + " is not a directory");
-		}
-		ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
-		ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
-		ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
-		BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		for (File subfile: file.listFiles(new FilenameFilter() {
-				public boolean accept(File dir, String name) {
-					return name.endsWith(".bpmn");
-				}})) {
-			System.out.println("Loading process " + subfile.getName());
-			kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
-		}
-		KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 		Process process = kbase.getProcess(processId);
 		if (process == null) {
 			return null;
@@ -139,10 +168,10 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		for (Node node: nodes) {
 			nodeInfos.add(new DiagramNodeInfo(
 				prefix + node.getId(),
-				(Integer) node.getMetaData("x"),
-				(Integer) node.getMetaData("y"),
-				(Integer) node.getMetaData("width"),
-				(Integer) node.getMetaData("height")));
+				(Integer) node.getMetaData().get("x"),
+				(Integer) node.getMetaData().get("y"),
+				(Integer) node.getMetaData().get("width"),
+				(Integer) node.getMetaData().get("height")));
 			if (node instanceof NodeContainer) {
 				addNodesInfo(nodeInfos, ((NodeContainer) node).getNodes(), prefix + node.getId() + ":");
 			}
@@ -159,6 +188,33 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 				throw new RuntimeException("Could not read process image: " + e.getMessage());
 			}
 			return os.toByteArray();
+		}
+		StringBuffer sb = new StringBuffer();
+		Properties properties = new Properties();
+		try {
+			properties.load(GraphViewerPluginImpl.class.getResourceAsStream("/jbpm.console.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load jbpm.console.properties", e);
+		}
+		try {
+			sb.append("http://");
+			sb.append(properties.get("jbpm.console.server.host"));
+			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
+			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
+			sb.append(URLEncoder.encode(processId, "UTF-8"));
+			sb.append("-image.drl");
+			is = new URL(sb.toString()).openStream();
+			if (is != null) {
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				try {
+					transfer(is, os);
+				} catch (IOException e) {
+					throw new RuntimeException("Could not read process image: " + e.getMessage());
+				}
+				return os.toByteArray();
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
 		}
 		return null;
 	}
