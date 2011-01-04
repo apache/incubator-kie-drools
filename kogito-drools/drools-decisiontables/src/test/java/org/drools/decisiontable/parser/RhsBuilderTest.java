@@ -9,36 +9,36 @@ public class RhsBuilderTest {
 
     @Test
     public void testConsBuilding() {
-        RhsBuilder builder = new RhsBuilder("foo");
-        builder.addTemplate( 1, "setFoo($param)");
-        builder.addCellValue( 1, "42" );
+        RhsBuilder builder = new RhsBuilder( 9, 1, "foo");
+        builder.addTemplate( 10, 1, "setFoo($param)");
+        builder.addCellValue( 10,1, "42" );
         
         
         assertEquals("foo.setFoo(42);", builder.getResult());
         
         builder.clearValues();
-        builder.addCellValue( 1, "33" );
+        builder.addCellValue( 10, 1, "33" );
         assertEquals("foo.setFoo(33);", builder.getResult());
     }
     
     @Test
     public void testClassicMode() {
-        RhsBuilder builder = new RhsBuilder("");
-        builder.addTemplate( 1, "p.setSomething($param);" );
-        builder.addTemplate( 2, "drools.clearAgenda();" );
+        RhsBuilder builder = new RhsBuilder( 9, 1, "");
+        builder.addTemplate( 10, 1, "p.setSomething($param);" );
+        builder.addTemplate( 10, 2, "drools.clearAgenda();" );
                 
-        builder.addCellValue( 1, "42" );       
+        builder.addCellValue( 12, 1, "42" );       
         
         assertEquals("p.setSomething(42);", builder.getResult());
                 
-        builder.addCellValue( 2, "Y" );
+        builder.addCellValue( 12, 2, "Y" );
         assertEquals("p.setSomething(42);\ndrools.clearAgenda();", builder.getResult());
     }
     
     @Test
     public void testEmptyCellData() {
-        RhsBuilder builder = new RhsBuilder("Foo");
-        builder.addTemplate( 1, "p.setSomething($param);" );        
+        RhsBuilder builder = new RhsBuilder( 9, 1, "Foo");
+        builder.addTemplate( 10, 1, "p.setSomething($param);" );        
         assertFalse(builder.hasValues());
     }
     

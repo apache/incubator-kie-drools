@@ -26,7 +26,7 @@ import java.util.List;
  * been parsed from the spreadsheet. Also is the launching point for dumping out
  * the DRL.
  */
-public class Package
+public class Package extends AttributedDRLElement
     implements
     DRLJavaEmitter {
 
@@ -98,6 +98,10 @@ public class Package
                    out );
         this._functions.renderDRL( out );
         this._queries.renderDRL(out);
+        
+        // attributes
+        super.renderDRL( out );
+        
         renderDRL( this._rules,
                    out );
 
