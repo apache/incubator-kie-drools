@@ -150,6 +150,12 @@ public class RuleBaseConfiguration
     private boolean                        advancedProcessRuleIntegration;
 
     private transient CompositeClassLoader classLoader;
+    
+    private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
+    
+    public static RuleBaseConfiguration getDefaultInstance() {
+        return defaultConf;
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );

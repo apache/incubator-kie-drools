@@ -153,13 +153,13 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-    	return newStatefulKnowledgeSession(new SessionConfiguration(), EnvironmentFactory.newEnvironment() );
+    	return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
     }
     
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
         // NOTE if you update here, you'll also need to update the JPAService
         if ( conf == null ) {
-            conf = new SessionConfiguration();
+            conf = SessionConfiguration.getDefaultInstance();
         }
         
         if ( environment == null ) {

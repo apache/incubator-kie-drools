@@ -362,7 +362,7 @@ abstract public class AbstractRuleBase
      * @see RuleBase
      */
     public StatefulSession newStatefulSession() {
-        return newStatefulSession( new SessionConfiguration(),
+        return newStatefulSession( SessionConfiguration.getDefaultInstance(),
                                    EnvironmentFactory.newEnvironment() );
     }
 

@@ -80,7 +80,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                final InternalRuleBase ruleBase) {
         this( id,
               ruleBase,
-              new SessionConfiguration(),
+              SessionConfiguration.getDefaultInstance(),
               EnvironmentFactory.newEnvironment() );
     }
 
