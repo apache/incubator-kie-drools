@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.template.model.SnippetBuilder;
+import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * This utility will build up a list of constraints for a column.
@@ -19,7 +20,9 @@ import org.drools.template.model.SnippetBuilder;
  */
 public class LhsBuilder implements SourceBuilder {
 
-    private String column;
+	private int headerRow;
+	private int headerCol;
+    private String colDefinition;
     private Map<Integer, String> constraints;
     private List<String> values;
     private boolean hasValues;
@@ -42,13 +45,15 @@ public class LhsBuilder implements SourceBuilder {
     /**
      * @param colDefinition The initial column definition that is shared via merged cells.
      */
-    public LhsBuilder(String colDefinition) {
-        this.column = colDefinition == null ? "" : colDefinition;
+    public LhsBuilder( int row, int column, String colDefinition ) {
+    	this.headerRow = row;
+    	this.headerCol = column;
+        this.colDefinition = colDefinition == null ? "" : colDefinition;
         this.constraints = new HashMap<Integer, String>();
         this.values = new ArrayList<String>();
     }
 
-    public void addTemplate(int column, String content) {
+    public void addTemplate(int row, int column, String content) {
         Integer key = new Integer( column );
         content = content.trim();
         if ( constraints.containsKey( key ) ) {
@@ -58,14 +63,12 @@ public class LhsBuilder implements SourceBuilder {
         //we can wrap all values in quotes, it all works
         FieldType fieldType = calcFieldType( content );
         if (fieldType == FieldType.NORMAL_FIELD || !isMultipleConstraints()) {
-            constraints.put( key,
-                             content );            
+            constraints.put( key, content );            
         } else if (fieldType == FieldType.SINGLE_FIELD) {
             constraints.put( key, content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
         } else if (fieldType == FieldType.OPERATOR_FIELD) {
             constraints.put( key, content + " \"" + SnippetBuilder.PARAM_STRING + "\"" );
         }
-        
     }
     
     public void clearValues() {
@@ -73,16 +76,17 @@ public class LhsBuilder implements SourceBuilder {
         this.values.clear();
     }
 
-    public void addCellValue(int col,
-                             String value) {
+    public void addCellValue(int row, int column, String value) {
         this.hasValues = true;
-        Integer key = new Integer( col );
+        Integer key = new Integer( column );
         String content = (String) this.constraints.get( key );
-
+        if( content == null ){
+        	throw new DecisionTableParseException( "No code snippet for CONDITION in cell " +
+        		RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+        }
         SnippetBuilder snip = new SnippetBuilder( content );
         String result = snip.build( value );
         this.values.add( result );
-
     }
 
     public String getResult() {
@@ -97,7 +101,7 @@ public class LhsBuilder implements SourceBuilder {
             }
             return buf.toString();
         } else {
-            buf.append( this.column );
+            buf.append( this.colDefinition );
             buf.append( '(' );
             for ( Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
                 buf.append( iter.next());
@@ -116,10 +120,10 @@ public class LhsBuilder implements SourceBuilder {
      * If not, then it it really just like the "classic" style DTs.
      */
     boolean isMultipleConstraints() {
-        if ( "".equals( column ) ) {
+        if ( "".equals( colDefinition ) ) {
             return false;
         } else {
-            if ( column.endsWith( ")" ) ) {
+            if ( colDefinition.endsWith( ")" ) ) {
                 return false;
             } else {
                 return true;
@@ -159,7 +163,6 @@ public class LhsBuilder implements SourceBuilder {
 
     public boolean hasValues() {
         return hasValues;
-        
     }
 
 }

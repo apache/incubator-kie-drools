@@ -18,12 +18,11 @@ package org.drools.decisiontable.parser;
 
 import java.util.Properties;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
+import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.parser.DataListener;
 
 public class PropertiesSheetListenerTest {
@@ -33,60 +32,49 @@ public class PropertiesSheetListenerTest {
         final PropertiesSheetListener listener = new PropertiesSheetListener();
         listener.startSheet( "test" );
 
-        listener.newRow( 0,
-                         4 );
+        listener.newRow( 0, 4 );
 
-        listener.newCell( 0,
-                          0,
+        listener.newCell( 0, 0,
                           "", DataListener.NON_MERGED );
 
-        listener.newCell( 0,
-                          1,
+        listener.newCell( 0, 1,
                           "key1", DataListener.NON_MERGED );
-        listener.newCell( 0,
-                          2,
+        listener.newCell( 0, 2,
                           "value1", DataListener.NON_MERGED );
 
-        listener.newRow( 1,
-                         4 );
-        listener.newCell( 1,
-                          1,
+        listener.newRow( 1, 4 );
+        listener.newCell( 1, 1,
                           "key2", DataListener.NON_MERGED );
-        listener.newCell( 1,
-                          3,
+        listener.newCell( 1, 3,
                           "value2", DataListener.NON_MERGED );
 
-        final Properties props = listener.getProperties();
+        final CaseInsensitiveMap props = listener.getProperties();
 
-        listener.newRow( 2,
-                         4 );
-        listener.newCell( 1,
-                          1,
+        listener.newRow( 2, 4 );
+        listener.newCell( 1, 1,
                           "key3", DataListener.NON_MERGED );
 
-        assertEquals( "value1",
-                      props.getProperty( "Key1" ) );
-        assertEquals( "value2",
-                      props.getProperty( "key2" ) );
-
+        assertEquals( "value1", props.getSingleProperty( "Key1" ) );
+        assertEquals( "value2", props.getSingleProperty( "key2" ) );
+        
     }
 
     @Test
     public void testCaseInsensitive() {
-    	Properties map = new PropertiesSheetListener.CaseInsensitiveMap();
-    	map.setProperty("x3", "hey");
-    	map.setProperty("x4", "wHee");
-    	map.setProperty("XXx", "hey2");
+    	CaseInsensitiveMap map = new PropertiesSheetListener.CaseInsensitiveMap();
+    	map.addProperty("x3", new String[]{ "hey", "B2" } );
+    	map.addProperty("x4", new String[]{ "wHee", "C3" } );
+    	map.addProperty("XXx", new String[]{ "hey2", "D4" } );
 
-    	assertNull(map.getProperty("x"));
-    	assertEquals("hey", map.getProperty("x3"));
-    	assertEquals("hey", map.getProperty("X3"));
-    	assertEquals("wHee", map.getProperty("x4"));
-    	assertEquals("hey2", map.getProperty("xxx"));
-    	assertEquals("hey2", map.getProperty("XXX"));
-    	assertEquals("hey2", map.getProperty("XXx"));
+    	assertNull( map.getProperty("x") );
+    	assertEquals("hey", map.getSingleProperty("x3"));
+    	assertEquals("hey", map.getSingleProperty("X3"));
+    	assertEquals("wHee", map.getSingleProperty("x4"));
+    	assertEquals("hey2", map.getSingleProperty("xxx"));
+    	assertEquals("hey2", map.getSingleProperty("XXX"));
+    	assertEquals("hey2", map.getSingleProperty("XXx"));
 
-    	assertEquals("Whee2", map.getProperty("x", "Whee2"));
+    	assertEquals("Whee2", map.getSingleProperty("x", "Whee2"));
 
     }
 

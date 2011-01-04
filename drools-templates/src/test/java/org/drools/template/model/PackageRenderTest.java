@@ -16,8 +16,6 @@ package org.drools.template.model;
  * limitations under the License.
  */
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -75,7 +73,20 @@ public class PackageRenderTest {
         assertTrue( drl.indexOf( "my functions" ) > -1 );
         assertTrue( drl.indexOf( "package my_ruleset;" ) > -1 );
         assertTrue( drl.indexOf( "rule \"other rule\"" ) > drl.indexOf( "rule \"myrule\"" ) );
-
     }
+    
+    @Test
+    public void testRulesetAttribute() {
+        final Package ruleSet = new Package( "my ruleset" );
+        ruleSet.setAgendaGroup( "agroup" );
+        ruleSet.setNoLoop( true );
+        ruleSet.setSalience( 100 );
+        final DRLOutput out = new DRLOutput();
+        ruleSet.renderDRL( out );
 
+        final String drl = out.getDRL();
+        assertTrue( drl.contains( "agenda-group \"agroup\"") );
+        assertTrue( drl.contains( "no-loop true") );
+        assertTrue( drl.contains( "salience 100" ) );
+    }
 }
