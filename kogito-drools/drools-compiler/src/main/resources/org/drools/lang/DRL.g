@@ -38,6 +38,9 @@ tokens {
 	VT_ACCUMULATE_ID_CLAUSE;
 	VT_FROM_SOURCE;
 	VT_EXPRESSION_CHAIN;
+	
+	VT_FOR_CE;
+	VT_FOR_FUNCTIONS;
 
 	VT_PATTERN;
 	VT_FACT_BINDING;
@@ -55,6 +58,9 @@ tokens {
 	VT_GLOBAL_ID;
 	VT_FUNCTION_ID;
 	VT_PARAM_LIST;
+	
+	VT_ARGUMENTS;
+	VT_EXPRESSION;
 
 	VK_DATE_EFFECTIVE;
 	VK_DATE_EXPIRES;
@@ -103,38 +109,38 @@ tokens {
 	VK_CLASS;
 	VK_NEW;
 	 
-  VK_FINAL;
-  VK_IF;
-  VK_ELSE;
-  VK_WHILE;
-  VK_DO;
-  VK_CASE;
-  VK_DEFAULT;
-  VK_TRY;
-  VK_CATCH;
-  VK_FINALLY;
-  VK_SWITCH;
-  VK_SYNCHRONIZED;
-  VK_RETURN;
-  VK_THROW;
-  VK_BREAK;
-  VK_CONTINUE;
-  VK_ASSERT;
-  VK_MODIFY;
-  VK_STATIC;
-  
-  VK_PUBLIC;
-  VK_PROTECTED;
-  VK_PRIVATE;
-  VK_ABSTRACT;
-  VK_NATIVE;
-  VK_TRANSIENT;
-  VK_VOLATILE;
-  VK_STRICTFP;
-  VK_THROWS;
-  VK_INTERFACE;
-  VK_ENUM;
-	
+	VK_FINAL;
+	VK_IF;
+	VK_ELSE;
+	VK_WHILE;
+	VK_DO;
+	VK_CASE;
+	VK_DEFAULT;
+	VK_TRY;
+	VK_CATCH;
+	VK_FINALLY;
+	VK_SWITCH;
+	VK_SYNCHRONIZED;
+	VK_RETURN;
+	VK_THROW;
+	VK_BREAK;
+	VK_CONTINUE;
+	VK_ASSERT;
+	VK_MODIFY;
+	VK_STATIC;
+	  
+	VK_PUBLIC;
+	VK_PROTECTED;
+	VK_PRIVATE;
+	VK_ABSTRACT;
+	VK_NATIVE;
+	VK_TRANSIENT;
+	VK_VOLATILE;
+	VK_STRICTFP;
+	VK_THROWS;
+	VK_INTERFACE;
+	VK_ENUM;
+
 	SIGNED_DECIMAL;
 	SIGNED_HEX;
 	SIGNED_FLOAT;
@@ -694,7 +700,6 @@ lhs_unary
 			RIGHT_PAREN {	helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
 		|	pattern_source
 		)
-		((SEMICOLON)=> SEMICOLON! {	helper.emit($SEMICOLON, DroolsEditorType.SYMBOL);	})?
 	;
 
 lhs_exist
@@ -752,15 +757,17 @@ lhs_for
 			for_functions
 			(SEMICOLON constraints)?
 		RIGHT_PAREN {	helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL);	}
-		-> ^(for_key lhs_or for_functions constraints?)
+		-> ^(VT_FOR_CE lhs_or for_functions constraints?)
 	;
 	
 for_functions
-	:	for_function (COMMA for_function)*
+	:	for_function ( COMMA for_function )*
+		-> ^(VT_FOR_FUNCTIONS for_function+ )
 	;
 	
 for_function 
 	: 	label ID arguments
+		-> ^(ID label arguments)
 	;	
 
 pattern_source
@@ -1554,19 +1561,13 @@ modifyStatement
 	;	
 
 
-
-
-
-
-
-
-
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
 expression
 options { backtrack=true; memoize=true; }
 	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)?
+	->	^(VT_EXPRESSION conditionalExpression (assignmentOperator expression)? )
 	;
 
 conditionalExpression
@@ -1774,11 +1775,11 @@ superSuffix
 arguments
 options { backtrack=true; memoize=true; }
 	:	LEFT_PAREN expressionList? RIGHT_PAREN
+		-> ^(VT_ARGUMENTS expressionList? RIGHT_PAREN)
 	;
 
 expressionList
-//options { backtrack=true; memoize=true; }
-    :   expression (COMMA expression)*
+    :   expression (COMMA! expression)*
     ;
 
 assignmentOperator
@@ -3609,7 +3610,7 @@ IdentifierPart
     |   '\u1772'..'\u1773'
     |   '\u1780'..'\u17d3'
     |   '\u17d7'
-    |   '\u17db'..'\u17dd'
+        |   '\u17db'..'\u17dd'
     |   '\u17e0'..'\u17e9'
     |   '\u180b'..'\u180d'
     |   '\u1810'..'\u1819'

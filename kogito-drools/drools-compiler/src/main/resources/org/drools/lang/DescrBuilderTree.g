@@ -13,28 +13,7 @@ options{
 	import java.util.Map;
 	import java.util.Hashtable;
 	import java.util.LinkedList;
-	import org.drools.lang.descr.AccessorDescr;
-	import org.drools.lang.descr.AccumulateDescr;
-	import org.drools.lang.descr.AndDescr;
-	import org.drools.lang.descr.AttributeDescr;
-	import org.drools.lang.descr.BaseDescr;
-	import org.drools.lang.descr.BehaviorDescr;
-	import org.drools.lang.descr.DeclarativeInvokerDescr;
-	import org.drools.lang.descr.DescrFactory;
-	import org.drools.lang.descr.FactTemplateDescr;
-	import org.drools.lang.descr.FieldConstraintDescr;
-	import org.drools.lang.descr.FieldTemplateDescr;
-	import org.drools.lang.descr.FromDescr;
-	import org.drools.lang.descr.FunctionDescr;
-	import org.drools.lang.descr.FunctionImportDescr;
-	import org.drools.lang.descr.GlobalDescr;
-	import org.drools.lang.descr.ImportDescr;
-	import org.drools.lang.descr.PackageDescr;
-	import org.drools.lang.descr.PatternSourceDescr;
-	import org.drools.lang.descr.QueryDescr;
-	import org.drools.lang.descr.RuleDescr;
-	import org.drools.lang.descr.TypeDeclarationDescr;
-	import org.drools.lang.descr.TypeFieldDescr;
+	import org.drools.lang.descr.*;
 }
 
 @members {
@@ -243,12 +222,14 @@ lhs	returns [BaseDescr baseDescr]
 	{	$baseDescr = factory.createEval($start, $pc);	}
 	|	^(start=VK_FORALL (dt=lhs {	lhsList.add($dt.baseDescr);	})+)
 	{	$baseDescr = factory.createForAll($start, lhsList);	}
+	|	^(start=VT_FOR_CE dt=lhs for_functions fact_expression? )
+	//{	/*$baseDescr = factory.createFor($start, ff, cc );*/	}
 	|	^(FROM pn=lhs_pattern fe=from_elements)
 	{	$baseDescr = factory.setupFrom($pn.baseDescr, $fe.patternSourceDescr);	}
 	|	pn=lhs_pattern
 	{	$baseDescr = $pn.baseDescr;	}
 	;
-
+	
 from_elements returns [PatternSourceDescr patternSourceDescr]
 	:	^(start=ACCUMULATE dt=lhs
 	{	$patternSourceDescr = factory.createAccumulate($start, $dt.baseDescr);	} 
@@ -337,6 +318,19 @@ over_element returns [BehaviorDescr behavior]
 	:	^(VT_BEHAVIOR ID id2=ID pc=VT_PAREN_CHUNK)
 	{	$behavior = factory.createBehavior($id2,$pc);	}
 	;
+	
+for_functions
+	:	^(VT_FOR_FUNCTIONS for_function+ )
+	;
+	
+for_function returns [ForFunctionDescr func]
+	: 	^(ID VT_LABEL args=arguments)	
+	{	$func = factory.createForFunction( $ID, $VT_LABEL, $args ); 	}
+	;
+	
+arguments returns [List params_list]
+	:	^(VT_ARGUMENTS params+=VT_EXPRESSION* RIGHT_PAREN)
+	;	
 
 fact_expression returns [BaseDescr descr]
 @init{
