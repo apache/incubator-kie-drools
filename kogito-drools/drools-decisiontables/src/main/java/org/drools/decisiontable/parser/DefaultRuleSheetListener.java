@@ -383,10 +383,11 @@ implements RuleSheetListener {
 			final int column,
 			final String value,
 			final int mergedColStart) {
-		String testVal = value.trim().toLowerCase();
+		String trimVal = value.trim();
+		String testVal = trimVal.toLowerCase();
 		if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
 			finishRuleTable();
-			initRuleTable( row, column, value.trim() );
+			initRuleTable( row, column, trimVal );
 			return;
 		}
 
@@ -402,23 +403,23 @@ implements RuleSheetListener {
 
 		switch ( row - this._ruleStartRow ) {
 		case ACTION_ROW :
-			ActionType.addNewActionType( this._actions, value, column, row );
+			ActionType.addNewActionType( this._actions, trimVal, column, row );
 			break;
 
 		case OBJECT_TYPE_ROW :
-			objectTypeRow( row, column, value, mergedColStart );
+			objectTypeRow( row, column, trimVal, mergedColStart );
 			break;
 
 		case CODE_ROW :
-			codeRow( row, column, value );
+			codeRow( row, column, trimVal );
 			break;
 
 		case LABEL_ROW :
-			labelRow( row, column, value );
+			labelRow( row, column, trimVal );
 			break;
 
 		default :
-			nextDataCell( row, column, value );
+			nextDataCell( row, column, trimVal );
 			break;
 		}
 	}
