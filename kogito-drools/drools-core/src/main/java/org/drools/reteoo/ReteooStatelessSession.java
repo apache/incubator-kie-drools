@@ -75,7 +75,7 @@ public class ReteooStatelessSession
 
     public ReteooStatelessSession(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
-        this.sessionConf = new SessionConfiguration(); // create one of these and re-use
+        this.sessionConf = SessionConfiguration.getDefaultInstance(); // create one of these and re-use
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -84,7 +84,7 @@ public class ReteooStatelessSession
         agendaFilter = (AgendaFilter) in.readObject();
         globalResolver = (GlobalResolver) in.readObject();
         globalExporter = (GlobalExporter) in.readObject();
-        this.sessionConf = new SessionConfiguration(); // create one of these and re-use
+        this.sessionConf = SessionConfiguration.getDefaultInstance(); // create one of these and re-use
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

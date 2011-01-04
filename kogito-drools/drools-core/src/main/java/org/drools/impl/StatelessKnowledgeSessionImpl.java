@@ -74,7 +74,7 @@ public class StatelessKnowledgeSessionImpl
 
     private KnowledgeSessionConfiguration                                     conf;
     private Environment                                                       environment;
-
+    
     public StatelessKnowledgeSessionImpl() {
     }
 
@@ -83,7 +83,7 @@ public class StatelessKnowledgeSessionImpl
                                          final KnowledgeSessionConfiguration conf) {
         this.ruleBase = ruleBase;
         this.kagent = kagent;
-        this.conf = (conf != null) ? conf : new SessionConfiguration();
+        this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();
         this.environment = EnvironmentFactory.newEnvironment();
 
         if ( this.ruleBase != null ) {

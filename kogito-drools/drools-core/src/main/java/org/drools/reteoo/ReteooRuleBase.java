@@ -331,7 +331,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
                 Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ) );
                 StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
-                                                                           new SessionConfiguration(),
+                                                                           SessionConfiguration.getDefaultInstance(),
                                                                            EnvironmentFactory.newEnvironment() );
                 session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
     
@@ -363,7 +363,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     public StatefulSession newStatefulSession(SessionConfiguration sessionConfig,
                                               Environment environment) {
         if ( sessionConfig == null ) {
-            sessionConfig = ( SessionConfiguration ) KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            sessionConfig = SessionConfiguration.getDefaultInstance();
         }
         if ( environment == null ) {
             environment = EnvironmentFactory.newEnvironment();
