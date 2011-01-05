@@ -483,7 +483,7 @@ public class RuleAgent {
 
     RuleAgent(RuleBaseConfiguration ruleBaseConf) {
         if ( ruleBaseConf == null ) {
-            this.ruleBaseConf = new RuleBaseConfiguration();
+            this.ruleBaseConf = RuleBaseConfiguration.getDefaultInstance();
         } else {
             this.ruleBaseConf = ruleBaseConf;
         }

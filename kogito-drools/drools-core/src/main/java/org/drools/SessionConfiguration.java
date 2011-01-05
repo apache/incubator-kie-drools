@@ -94,6 +94,12 @@ public class SessionConfiguration
         out.writeObject( clockType );
         out.writeObject( queryListener );
     }
+    
+    private static final SessionConfiguration defaultInstance = new SessionConfiguration();
+    
+    public static SessionConfiguration getDefaultInstance() {
+        return defaultInstance;
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
