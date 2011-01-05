@@ -68,7 +68,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         this( id,
               ruleBase,
               executorService,
-              new SessionConfiguration(),
+              SessionConfiguration.getDefaultInstance(),
               EnvironmentFactory.newEnvironment() );
     }
 

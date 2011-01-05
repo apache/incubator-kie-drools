@@ -168,7 +168,7 @@ public class InputMarshaller {
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
-        return readSession( context, id, executor, EnvironmentFactory.newEnvironment(), new SessionConfiguration() );
+        return readSession( context, id, executor, EnvironmentFactory.newEnvironment(), new SessionConfiguration().getDefaultInstance() );
     }
     
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
