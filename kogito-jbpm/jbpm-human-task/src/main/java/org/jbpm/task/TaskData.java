@@ -54,6 +54,8 @@ public class TaskData
     private boolean skipable;
 
     private long workItemId = -1;
+    
+    private long processInstanceId = -1;
 
     private AccessType documentAccessType;
 
@@ -459,6 +461,14 @@ public class TaskData
 
     public long getWorkItemId() {
         return workItemId;
+    }
+    
+    public void setProcessInstanceId(long processInstanceId) {
+    	this.processInstanceId = processInstanceId;
+    }
+    
+    public long getProcessInstanceId() {
+    	return processInstanceId;
     }
 
     /**

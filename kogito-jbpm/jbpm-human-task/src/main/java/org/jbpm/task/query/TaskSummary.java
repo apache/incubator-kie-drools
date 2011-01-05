@@ -51,8 +51,11 @@ public class TaskSummary
     private Date    activationTime;
 
     private Date    expirationTime;
+    
+    private long    processInstanceId;
 
     public TaskSummary(long id,
+    		           long processInstanceId,
                        String name,
                        String subject,
                        String description,
@@ -66,6 +69,7 @@ public class TaskSummary
                        Date expirationTime) {
         super();
         this.id = id;
+        this.processInstanceId = processInstanceId;
         this.name = name;
         this.subject = subject;
         this.description = description;
@@ -84,6 +88,8 @@ public class TaskSummary
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( id );
+        
+        out.writeLong( processInstanceId );
 
         if ( name != null ) {
             out.writeBoolean( true );
@@ -153,6 +159,8 @@ public class TaskSummary
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         id = in.readLong();
+        
+        processInstanceId = in.readLong();
 
         if ( in.readBoolean() ) {
             name = in.readUTF();
@@ -202,6 +210,14 @@ public class TaskSummary
 
     public void setId(long id) {
         this.id = id;
+    }
+    
+    public long getProcessInstanceId() {
+    	return processInstanceId;
+    }
+    
+    public void setProcessInstanceId(long processInstanceId) {
+    	this.processInstanceId = processInstanceId;
     }
 
     public String getName() {
@@ -303,6 +319,7 @@ public class TaskSummary
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((expirationTime == null) ? 0 : expirationTime.hashCode());
         result = prime * result + (int) (id ^ (id >>> 32));
+        result = prime * result + (int) (processInstanceId ^ (processInstanceId >>> 32));
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + priority;
         result = prime * result + (skipable ? 1231 : 1237);
@@ -317,6 +334,7 @@ public class TaskSummary
         if ( obj == null ) return false;
         if ( !(obj instanceof TaskSummary) ) return false;
         TaskSummary other = (TaskSummary) obj;
+        if ( processInstanceId != other.processInstanceId) return false;
         if ( activationTime == null ) {
             if ( other.activationTime != null ) return false;
         } else if ( activationTime.getTime() != other.activationTime.getTime() ) return false;

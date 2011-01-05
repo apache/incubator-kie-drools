@@ -58,8 +58,7 @@ public class Transform {
 	public static TaskRef task(TaskSummary task) {
 		return new TaskRef(
 			task.getId(),
-			// TODO: fixme
-			"",
+			Long.toString(task.getProcessInstanceId()),
 			"",
 			task.getName(),
 			task.getActualOwner() == null ? null : task.getActualOwner().getId(),
@@ -76,8 +75,7 @@ public class Transform {
 		}
 		return new TaskRef(
 			task.getId(),
-			// TODO: fixme
-			"",
+			Long.toString(task.getTaskData().getProcessInstanceId()),
 			"",
 			name,
 			task.getTaskData().getActualOwner() == null ? null : task.getTaskData().getActualOwner().getId(),

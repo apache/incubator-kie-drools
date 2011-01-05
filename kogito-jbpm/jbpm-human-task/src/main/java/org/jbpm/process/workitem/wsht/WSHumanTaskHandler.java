@@ -117,6 +117,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		
 		TaskData taskData = new TaskData();
 		taskData.setWorkItemId(workItem.getId());
+		taskData.setProcessInstanceId(workItem.getProcessInstanceId());
 		taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
         Long parentId = (Long) workItem.getParameter("ParentId");
