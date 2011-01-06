@@ -3,6 +3,7 @@ package org.drools.persistence.map;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
 
 public class ManualTransactionManager
     implements
@@ -26,8 +27,12 @@ public class ManualTransactionManager
     }
 
     public void commit() {
-        for(SessionInfo storedObject : session.getStoredKnowledgeSessions()){
-            storage.saveOrUpdate(storedObject);
+        for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
+            storage.saveOrUpdate(sessionInfo);
+        }
+        
+        for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
+            storage.saveOrUpdate( workItemInfo );
         }
     }
 
