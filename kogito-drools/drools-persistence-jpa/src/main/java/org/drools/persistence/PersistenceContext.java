@@ -1,6 +1,7 @@
 package org.drools.persistence;
 
 import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
 
 public interface PersistenceContext {
 
@@ -13,5 +14,13 @@ public interface PersistenceContext {
     void joinTransaction();
 
     void close();
+
+    void persist(WorkItemInfo workItemInfo);
+
+    WorkItemInfo findWorkItemInfo(Long id);
+
+    void remove(WorkItemInfo workItemInfo);
+
+    WorkItemInfo merge(WorkItemInfo workItemInfo);
 
 }
