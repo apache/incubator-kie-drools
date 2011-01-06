@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
 
 public class JpaPersistenceContext implements PersistenceContext {
     EntityManager em;
@@ -30,6 +31,22 @@ public class JpaPersistenceContext implements PersistenceContext {
 
     public void close() {
         this.em.close();
+    }
+
+    public void persist(WorkItemInfo workItemInfo) {
+        em.persist( workItemInfo );
+    }
+
+    public WorkItemInfo findWorkItemInfo(Long id) {
+        return em.find( WorkItemInfo.class, id );
+    }
+
+    public void remove(WorkItemInfo workItemInfo) {
+        em.remove( workItemInfo );
+    }
+
+    public WorkItemInfo merge(WorkItemInfo workItemInfo) {
+        return em.merge( workItemInfo );
     }
 
 }

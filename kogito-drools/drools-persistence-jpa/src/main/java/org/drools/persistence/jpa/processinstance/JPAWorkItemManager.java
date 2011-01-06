@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.persistence.PersistenceContext;
+import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
@@ -30,10 +32,14 @@ public class JPAWorkItemManager implements WorkItemManager {
     
 	public void internalExecuteWorkItem(WorkItem workItem) {
         Environment env = this.kruntime.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
 	    
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
-        em.persist(workItemInfo);
+//        em.persist(workItemInfo);
+        
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+        context.persist( workItemInfo );
+
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
         
@@ -57,9 +63,11 @@ public class JPAWorkItemManager implements WorkItemManager {
 
 	public void internalAbortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-	    
-        WorkItemInfo workItemInfo = em.find(WorkItemInfo.class, id);
+        //EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+
+        
+        WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
         // work item may have been aborted
         if (workItemInfo != null) {
             WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
@@ -75,7 +83,7 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (workItems != null) {
             	workItems.remove(id);
             }
-            em.remove(workItemInfo);
+            context.remove(workItemInfo);
         }
 	}
 
@@ -84,18 +92,20 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void completeWorkItem(long id, Map<String, Object> results) {
         Environment env = this.kruntime.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
 	    	workItemInfo = this.workItems.get(id);
 	    	if (workItemInfo != null) {
-	    		workItemInfo = em.merge(workItemInfo);
+	    		workItemInfo = context.merge(workItemInfo);
 	    	}
     	}
         
         if (workItemInfo == null) {
-        	workItemInfo = em.find(WorkItemInfo.class, id);
+        	workItemInfo = context.findWorkItemInfo( id );
         }
         
     	// work item may have been aborted
@@ -108,7 +118,7 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemCompleted", workItem);
             }
-            em.remove(workItemInfo);
+            context.remove(workItemInfo);
             if (workItems != null) {
             	this.workItems.remove(workItem.getId());
             }
@@ -117,16 +127,17 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void abortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-        
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
 	    	workItemInfo = this.workItems.get(id);
-	    	em.merge(workItemInfo);
+	    	context.merge(workItemInfo);
     	}
         
         if (workItemInfo == null) {
-        	workItemInfo = em.find(WorkItemInfo.class, id);
+        	workItemInfo = context.findWorkItemInfo( id );
         }
         
     	// work item may have been aborted
@@ -138,7 +149,7 @@ public class JPAWorkItemManager implements WorkItemManager {
             if (processInstance != null) {
                 processInstance.signalEvent("workItemAborted", workItem);
             }
-            em.remove(workItemInfo);
+            context.remove(workItemInfo);
             if (workItems != null) {
             	workItems.remove(workItem.getId());
             }
@@ -147,16 +158,18 @@ public class JPAWorkItemManager implements WorkItemManager {
 
 	public WorkItem getWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
 
+        
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
 	    	workItemInfo = this.workItems.get(id);
     	}
         
-        if (workItemInfo == null && em != null) {
+        if (workItemInfo == null && context != null) {
 
-        	workItemInfo = em.find(WorkItemInfo.class, id);
+        	workItemInfo = context.findWorkItemInfo( id );
         }
 
         if (workItemInfo == null) {
