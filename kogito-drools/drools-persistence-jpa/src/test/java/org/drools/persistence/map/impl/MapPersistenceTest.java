@@ -12,6 +12,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.EnvironmentBuilder;
 import org.drools.persistence.map.KnowledgeSessionStorage;
@@ -31,12 +32,29 @@ public class MapPersistenceTest {
         KnowledgeSessionStorage storage = new KnowledgeSessionStorage() {
 
             public void saveOrUpdate(SessionInfo storedObject) {
-                System.out.println( "saving" );
+                System.out.println( "saving sessionInfo" );
             }
 
             public SessionInfo findSessionInfo(Long id) {
-                System.out.println( "finding" );
+                System.out.println( "finding sessionInfo" );
                 return null;
+            }
+
+            public void saveOrUpdate(WorkItemInfo workItemInfo) {
+                System.out.println( "saving workItemInfo" );
+            }
+
+            public Long getNextWorkItemId() {
+                return null;
+            }
+
+            public WorkItemInfo findWorkItemInfo(Long id) {
+                System.out.println( "finding workItemInfo" );
+                return null;
+            }
+
+            public void remove(WorkItemInfo workItemInfo) {
+                System.out.println( "removing workItemInfo" );
             }
         };
         
@@ -108,6 +126,8 @@ public class MapPersistenceTest {
 
         KnowledgeSessionStorage storage = new KnowledgeSessionStorage() {
 
+            private Map<Long, WorkItemInfo> workItems = new HashMap<Long, WorkItemInfo>();
+            
             public void saveOrUpdate(SessionInfo storedObject) {
                 storedObject.update();
                 savedEntities.put( storedObject.getId(), storedObject );
@@ -115,6 +135,22 @@ public class MapPersistenceTest {
 
             public SessionInfo findSessionInfo(Long id) {
                 return savedEntities.get( id );
+            }
+
+            public void saveOrUpdate(WorkItemInfo workItemInfo) {
+                workItems.put( workItemInfo.getId(), workItemInfo );
+            }
+
+            public Long getNextWorkItemId() {
+                return new Long(workItems.size() + 1);
+            }
+
+            public WorkItemInfo findWorkItemInfo(Long id) {
+                return workItems.get( id );
+            }
+
+            public void remove(WorkItemInfo workItemInfo) {
+                workItems.remove( workItemInfo.getId() );
             }
         };
 
@@ -159,15 +195,32 @@ public class MapPersistenceTest {
     private KnowledgeSessionStorage getSimpleStorage() {
         return new KnowledgeSessionStorage() {
 
-            private Map<Long, SessionInfo> savedEntities = new HashMap<Long, SessionInfo>();
+            private Map<Long, SessionInfo> ksessions = new HashMap<Long, SessionInfo>();
+            private Map<Long, WorkItemInfo> workItems = new HashMap<Long, WorkItemInfo>();
             
             public SessionInfo findSessionInfo(Long id) {
-                return savedEntities.get( id );
+                return ksessions.get( id );
             }
 
             public void saveOrUpdate(SessionInfo storedObject) {
                 storedObject.update();
-                savedEntities.put( storedObject.getId(), storedObject );
+                ksessions.put( storedObject.getId(), storedObject );
+            }
+
+            public void saveOrUpdate(WorkItemInfo workItemInfo) {
+                workItems.put( workItemInfo.getId(), workItemInfo );
+            }
+
+            public Long getNextWorkItemId() {
+                return new Long(workItems.size() + 1);
+            }
+
+            public WorkItemInfo findWorkItemInfo(Long id) {
+                return workItems.get( id );
+            }
+
+            public void remove(WorkItemInfo workItemInfo) {
+                workItems.remove( workItemInfo.getId() );
             }
         };
     }
