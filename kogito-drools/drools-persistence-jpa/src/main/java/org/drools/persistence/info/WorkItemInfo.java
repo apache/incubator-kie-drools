@@ -124,4 +124,8 @@ public class WorkItemInfo implements EntityInfo  {
             throw new IllegalArgumentException( "IOException while storing workItem " + workItem.getId() + ": " + e.getMessage() );
         }
     }
+    
+    public void setId(Long id){
+        this.workItemId = id;
+    }
 }
