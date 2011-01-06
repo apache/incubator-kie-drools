@@ -19,6 +19,7 @@ package org.drools.command.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.KnowledgeBase;
 import org.drools.command.Command;
@@ -46,6 +47,7 @@ import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.GetProcessEventListenersCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
+import org.drools.command.runtime.process.GetWorkItemCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
@@ -72,6 +74,8 @@ import org.drools.command.runtime.rule.UpdateCommand;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.process.instance.WorkItem;
+import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
@@ -83,7 +87,6 @@ import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemHandler;
-import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.ActivationGroup;
 import org.drools.runtime.rule.Agenda;
 import org.drools.runtime.rule.AgendaFilter;
@@ -100,7 +103,7 @@ public class CommandBasedStatefulKnowledgeSession
     implements
     StatefulKnowledgeSession {
 
-    private CommandService           commandService;
+    private CommandService            commandService;
     private transient WorkItemManager workItemManager;
     private transient Agenda          agenda;
 
@@ -156,6 +159,32 @@ public class CommandBasedStatefulKnowledgeSession
                     command.setHandler( handler );
                     commandService.execute( command );
                 }
+
+				public WorkItem getWorkItem(long id) {
+					GetWorkItemCommand command = new GetWorkItemCommand();
+					command.setWorkItemId( id );
+                    return commandService.execute( command );
+				}
+
+				public void clear() {
+					throw new UnsupportedOperationException();
+				}
+
+				public Set<WorkItem> getWorkItems() {
+					throw new UnsupportedOperationException();
+				}
+
+				public void internalAbortWorkItem(long id) {
+					throw new UnsupportedOperationException();
+				}
+
+				public void internalAddWorkItem(WorkItem workItem) {
+					throw new UnsupportedOperationException();
+				}
+
+				public void internalExecuteWorkItem(WorkItem workItem) {
+					throw new UnsupportedOperationException();
+				}
             };
         }
         return workItemManager;
