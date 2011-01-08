@@ -202,7 +202,7 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
 			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
 			sb.append(URLEncoder.encode(processId, "UTF-8"));
-			sb.append("-image.drl");
+			sb.append("-image.png");
 			is = new URL(sb.toString()).openStream();
 			if (is != null) {
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
