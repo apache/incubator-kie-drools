@@ -189,4 +189,10 @@ public class PropagationContextImpl
         this.originOffset = originOffset;
     }
 
+    @Override
+    public String toString() {
+        return "PropagationContextImpl [activeActivations=" + activeActivations + ", dormantActivations=" + dormantActivations + ", entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
+               + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
+    }
+
 }
