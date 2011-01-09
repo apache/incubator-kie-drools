@@ -133,7 +133,7 @@ public class SessionInspector {
                                nodeStack,
                                info );
             } else {
-                throw new RuntimeException( "No visitor found for node: " + parent );
+                throw new RuntimeException( "No visitor found for node class: " + parent.getClass()+" node: "+parent );
             }
             visitChildren( parent,
                            nodeStack,

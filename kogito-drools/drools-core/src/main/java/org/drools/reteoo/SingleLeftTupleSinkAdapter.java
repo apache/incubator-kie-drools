@@ -239,6 +239,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                            context,
                                                            workingMemory );
+        // re-order right to keep order consistency
+        childLeftTuple.reAddRight();
         return childLeftTuple.getLeftParentNext();
     }
 
@@ -250,6 +252,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                            context,
                                                            workingMemory );
+        // re-order right to keep order consistency
+        childLeftTuple.reAddLeft();
         return childLeftTuple.getRightParentNext();
     }
 
