@@ -24,7 +24,6 @@ import org.jbpm.process.builder.dialect.ProcessDialect;
 
 public class XPATHProcessDialect implements ProcessDialect {
 
-//	private static final ActionBuilder actionBuilder = new XPATHActionBuilder();
 	private static final ReturnValueEvaluatorBuilder returnValueBuilder = new XPATHReturnValueEvaluatorBuilder();
 	
 	public void addProcess(final ProcessBuildContext context) {
@@ -32,7 +31,6 @@ public class XPATHProcessDialect implements ProcessDialect {
 	}
 
 	public ActionBuilder getActionBuilder() {
-//		return actionBuilder;
 		throw new UnsupportedOperationException( "XPATHProcessDialect.getActionBuilder is not supported" );
 	}
 

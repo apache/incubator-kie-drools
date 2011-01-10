@@ -913,18 +913,17 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
 
-    public void testXpathExpression() throws Exception {
-                KnowledgeBase kbase = createKnowledgeBase("BPMN2-XpathExpression.bpmn2");
-                StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-            .parse(new ByteArrayInputStream(
-                "<instanceMetadata><user approved=\"false\" id=\"58735964413\"/></instanceMetadata>".getBytes()));
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("instanceMetadata", document);
-
-                ProcessInstance processInstance = ksession.startProcess("594975243920585248", params);
-                assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-    }
+	public void testXpathExpression() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-XPathExpression.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		Document document = DocumentBuilderFactory.newInstance()
+			.newDocumentBuilder().parse(new ByteArrayInputStream(
+				"<instanceMetadata><user approved=\"false\" /></instanceMetadata>".getBytes()));
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("instanceMetadata", document);
+		ProcessInstance processInstance = ksession.startProcess("XPathProcess", params);
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
 
     
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {

@@ -25,5 +25,4 @@ public class ProcessDialectRegistry {
 	public static void setDialect(String dialectName, ProcessDialect dialect) {
 		dialects.put(dialectName, dialect);
 	}
-
 }

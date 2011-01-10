@@ -24,12 +24,9 @@ import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.process.instance.impl.XPATHReturnValueEvaluator;
 import org.drools.rule.builder.PackageBuildContext;
 
-public class XPATHReturnValueEvaluatorBuilder
-    implements
-    ReturnValueEvaluatorBuilder {
+public class XPATHReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
 
     public XPATHReturnValueEvaluatorBuilder() {
-
     }
 
     public void build(final PackageBuildContext context,
@@ -40,10 +37,7 @@ public class XPATHReturnValueEvaluatorBuilder
         String text = descr.getText();
 
         try {
-//            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text,
-//                                                                          context.getDialect( "XPath" ).getId() );
-            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text,
-                    null );
+            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text, null );
 
             constraintNode.setEvaluator( expr );
             

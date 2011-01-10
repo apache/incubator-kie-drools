@@ -1,32 +1,95 @@
-<bpmn2:definitions xmlns:bpmn2='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xrm='http://www.intalio.com/cloud/xrm' typeLanguage='http://www.java.com/javaTypes' expressionLanguage='http://www.mvel.org/2.0' id='594975243920585248' targetNamespace=''>
-   <bpmn2:import importType='xrm' namespace='http://www.intalio.com/cloud/xrm'/>
-   <bpmn2:itemDefinition id='objectType' structureRef='java.lang.Object'/>
-  <bpmn2:process id='594975243920585248'>
-  <bpmn2:property id='instanceMetadata' itemSubjectRef='objectType'/>
-<bpmn2:property id='processsMetadata' itemSubjectRef='objectType'/>
-<bpmn2:startEvent id='_5DF6C746-EEDF-4D39-A953-B529A0320D24' name=''/>
-<bpmn2:exclusiveGateway id='_81070F07-C929-4C93-8B08-18FF6D319F6A' name='' gatewayDirection='Diverging'/>
-<bpmn2:sequenceFlow id='_036CFFA5-945F-4597-BD74-DBFBA5553D7D' sourceRef='_5DF6C746-EEDF-4D39-A953-B529A0320D24' targetRef='_81070F07-C929-4C93-8B08-18FF6D319F6A'/>
-  <bpmn2:scriptTask id='_BF09B923-BE11-4447-BECB-609BD86C59EF' name=''>
-  <bpmn2:ioSpecification><bpmn2:inputSet/>
-<bpmn2:outputSet/>
-</bpmn2:ioSpecification>
-<bpmn2:script>System.out.println("Task 1");</bpmn2:script>
-</bpmn2:scriptTask>
-<bpmn2:sequenceFlow id='_E6BD9F03-8580-4AD8-A5CC-6D1F416E514C' sourceRef='_81070F07-C929-4C93-8B08-18FF6D319F6A' targetRef='_BF09B923-BE11-4447-BECB-609BD86C59EF'>    <conditionExpression language='http://www.w3.org/1999/XPath'>count($instanceMetadata/user[@approved='true']) = 1</conditionExpression>
-</bpmn2:sequenceFlow>
-  <bpmn2:scriptTask id='_7CA18647-714B-44D5-8DEB-544709C4221A' name=''>
-  <bpmn2:ioSpecification><bpmn2:inputSet/>
-<bpmn2:outputSet/>
-</bpmn2:ioSpecification>
-<bpmn2:script>System.out.println("Task 2");</bpmn2:script>
-</bpmn2:scriptTask>
-<bpmn2:sequenceFlow id='_ED6FD301-F8C0-4241-A8FF-A1F7756652B7' sourceRef='_81070F07-C929-4C93-8B08-18FF6D319F6A' targetRef='_7CA18647-714B-44D5-8DEB-544709C4221A'>    <conditionExpression language='http://www.w3.org/1999/XPath'>count($instanceMetadata/user[@approved='false']) = 1</conditionExpression>
-</bpmn2:sequenceFlow>
-<bpmn2:sequenceFlow id='_2BF3E89A-B28F-40E3-9A9B-A982206BF500' sourceRef='_7CA18647-714B-44D5-8DEB-544709C4221A' targetRef='_FB90F2CD-5CA2-4F85-88C0-022B03130BAE'/>
-<bpmn2:endEvent id='_C1D067D7-3596-45F7-9B75-69F60C3442F1' name=''/>
-<bpmn2:sequenceFlow id='_119E4948-40CF-4C76-9988-22C706C1AB1A' sourceRef='_FB90F2CD-5CA2-4F85-88C0-022B03130BAE' targetRef='_C1D067D7-3596-45F7-9B75-69F60C3442F1'/>
-<bpmn2:exclusiveGateway id='_FB90F2CD-5CA2-4F85-88C0-022B03130BAE' name='' gatewayDirection='Converging'/>
-<bpmn2:sequenceFlow id='_0849EEE3-09A2-4E99-A232-E1EA8B8C4121' sourceRef='_BF09B923-BE11-4447-BECB-609BD86C59EF' targetRef='_FB90F2CD-5CA2-4F85-88C0-022B03130BAE'/>
-</bpmn2:process>
-</bpmn2:definitions>
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace=""
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_instanceMetadataItem" structureRef="java.lang.Object" />
+
+  <process processType="Private" isExecutable="true" id="XPathProcess" name="XPathProcess" >
+
+    <!-- process variables -->
+    <property id="instanceMetadata" itemSubjectRef="_instanceMetadataItem"/>
+
+    <!-- nodes -->
+    <startEvent id="_1" name="" />
+    <exclusiveGateway id="_2" name="" gatewayDirection="Diverging" />
+    <scriptTask id="_3" name="Task1" >
+      <script>System.out.println("Task 1");</script>
+    </scriptTask>
+    <scriptTask id="_4" name="Task2" >
+      <script>System.out.println("Task 2");</script>
+    </scriptTask>
+    <exclusiveGateway id="_5" name="" gatewayDirection="Converging" />
+    <endEvent id="_6" name="" />
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
+      <conditionExpression xs:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='true']) = 1</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
+      <conditionExpression xs:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='false']) = 1</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="XPathProcess" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="176" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="176" y="96" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="288" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="368" y="56" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="80" />
+        <di:waypoint x="120" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="120" y="80" />
+        <di:waypoint x="216" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_4" >
+        <di:waypoint x="120" y="80" />
+        <di:waypoint x="216" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_3-_5" >
+        <di:waypoint x="216" y="40" />
+        <di:waypoint x="312" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="216" y="120" />
+        <di:waypoint x="312" y="80" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_6" >
+        <di:waypoint x="312" y="80" />
+        <di:waypoint x="392" y="80" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

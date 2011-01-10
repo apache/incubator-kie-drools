@@ -32,10 +32,8 @@ import javax.xml.xpath.XPathVariableResolver;
 
 import org.drools.runtime.process.ProcessContext;
 
-public class XPATHReturnValueEvaluator
-    implements
-    ReturnValueEvaluator,
-    Externalizable {
+public class XPATHReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
+
     private static final long   serialVersionUID = 510l;
 
     private String              xpath;
