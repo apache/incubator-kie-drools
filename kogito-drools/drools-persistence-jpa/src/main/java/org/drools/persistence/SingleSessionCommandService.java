@@ -1,6 +1,7 @@
 package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.IdentityHashMap;
@@ -27,6 +28,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.InternalProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +55,10 @@ public class SingleSessionCommandService
     public static Map<Object, Object> txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
     public void checkEnvironment(Environment env) {
-        if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null ) {
-            throw new IllegalArgumentException( "Environment must have an EntityManagerFactory" );
+        if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
+             env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null  ) {
+            throw new IllegalArgumentException( "Environment must have an EntityManagerFactory " +
+            		                            "or a PersistenceContextManager instance" );
         }
 
         // @TODO log a warning that all transactions will be locally scoped using the EntityTransaction
@@ -214,35 +218,37 @@ public class SingleSessionCommandService
     }
     
     public void initTransactionManager(Environment env) {
-        this.txm = (TransactionManager) env.get( EnvironmentName.TRANSACTION_MANAGER );
-        this.jpm = (PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
-//        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
-//        if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
-//            try {
-//                Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
-//                Constructor<?> con = cls.getConstructors()[0];
-//                this.txm = (TransactionManager) con.newInstance( tm );
-//                logger.debug( "Instantiating  DroolsSpringTransactionManager" );
-//                                
-//                if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
-//                    // configure spring for JPA and local transactions
-//                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
-//                    con = cls.getConstructors()[0];
-//                    this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
-//                } else {
-//                    // configure spring for JPA and distributed transactions 
-//                }
-//            } catch ( Exception e ) {
-//                logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
-//                throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
-//            }
-//        } else {
-//            logger.debug( "Instantiating  JtaTransactionManager" );
-//            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-//                                                  env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-//                                                  tm ); 
-//            this.jpm = new JpaPersistenceContextManager(this.env);
-//        }
+        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
+        if ( env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) != null &&
+             env.get( EnvironmentName.TRANSACTION_MANAGER ) != null ) {
+            this.txm = (TransactionManager) tm;
+            this.jpm = (PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
+        } else if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
+            try {
+                Class<?> cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
+                Constructor<?> con = cls.getConstructors()[0];
+                this.txm = (TransactionManager) con.newInstance( tm );
+                logger.debug( "Instantiating  DroolsSpringTransactionManager" );
+                
+                if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
+                    // configure spring for JPA and local transactions
+                    cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
+                    con = cls.getConstructors()[0];
+                    this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
+                } else {
+                    // configure spring for JPA and distributed transactions 
+                }
+            } catch ( Exception e ) {
+                logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
+                throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
+            }
+        } else {
+            logger.debug( "Instantiating  JtaTransactionManager" );
+            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
+                                                  env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
+                                                  tm ); 
+            this.jpm = new JpaPersistenceContextManager(this.env);
+        }
     }
 
     public static class EndOperationListenerImpl
