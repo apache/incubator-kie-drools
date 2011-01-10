@@ -11,6 +11,7 @@ public class ManualTransactionManager
     
     private NonTransactionalPersistentSession session;
     private KnowledgeSessionStorage storage;
+    private TransactionSynchronization transactionSynchronization;
     
     public ManualTransactionManager(NonTransactionalPersistentSession session,
                                     KnowledgeSessionStorage storage) {
@@ -23,16 +24,26 @@ public class ManualTransactionManager
     }
 
     public void begin() {
-        session.clear();
+        //session.clear();
     }
 
     public void commit() {
-        for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
-            storage.saveOrUpdate(sessionInfo);
-        }
-        
-        for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
-            storage.saveOrUpdate( workItemInfo );
+        try{
+            for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
+                storage.saveOrUpdate(sessionInfo);
+            }
+            
+            for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
+                storage.saveOrUpdate( workItemInfo );
+            }
+            //session.clear();
+            try{
+            transactionSynchronization.afterCompletion(TransactionManager.STATUS_COMMITTED);
+            } catch (RuntimeException re){
+                //FIXME log error
+            }
+        } catch (RuntimeException re) {
+            transactionSynchronization.afterCompletion(TransactionManager.STATUS_ROLLEDBACK);
         }
     }
 
@@ -40,6 +51,6 @@ public class ManualTransactionManager
     }
 
     public void registerTransactionSynchronization(TransactionSynchronization ts) {
-
+        this.transactionSynchronization = ts;
     }
 }
