@@ -914,7 +914,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 
 	public void testXpathExpression() throws Exception {
-		KnowledgeBase kbase = createKnowledgeBase("BPMN2-XPathExpression.bpmn2");
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-XpathExpression.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		Document document = DocumentBuilderFactory.newInstance()
 			.newDocumentBuilder().parse(new ByteArrayInputStream(
