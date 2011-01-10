@@ -62,6 +62,8 @@ import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
  * @author Kris Verlaenen
  */
 public class GraphViewerPluginImpl implements GraphViewerPlugin {
+	
+	private KnowledgeBase kbase;
 
 	public List<ActiveNodeInfo> getActiveNodeInfo(String instanceId) {
 		ProcessInstanceLog processInstance = ProcessInstanceDbLog.findProcessInstance(new Long(instanceId));
@@ -99,53 +101,50 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	}
 
 	public DiagramInfo getDiagramInfo(String processId) {
-		KnowledgeBase kbase = null;
-		try {
-			KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
-			kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
-			kagent.monitorResourceChangeEvents(false);
-			kbase = kagent.getKnowledgeBase();
-			for (Process process: kbase.getProcesses()) {
-				System.out.println("Loading process from Guvnor: " + process.getId());
-			}
-		} catch (Throwable t) {
-			if (t instanceof RuntimeException
-					&& "KnowledgeAgent exception while trying to deserialize".equals(t.getMessage())) {
-				System.out.println("Could not connect to guvnor");
-				if (t.getCause() != null) {
-					System.out.println(t.getCause().getMessage());
-				}
-			}
-			System.out.println("Could not load processes from guvnor: " + t.getMessage());
-			t.printStackTrace();
-		}
 		if (kbase == null) {
-			kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		}
-		String directory = System.getProperty("jbpm.console.directory");
-		if (directory == null) {
-			System.out.println("jbpm.console.directory property not found");
-		} else {
-			File file = new File(directory);
-			if (!file.exists()) {
-				throw new IllegalArgumentException("Could not find " + directory);
+			try {
+				KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
+				kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
+				kagent.monitorResourceChangeEvents(false);
+				kbase = kagent.getKnowledgeBase();
+			} catch (Throwable t) {
+				if (t instanceof RuntimeException
+						&& "KnowledgeAgent exception while trying to deserialize".equals(t.getMessage())) {
+					System.out.println("Could not connect to guvnor");
+					if (t.getCause() != null) {
+						System.out.println(t.getCause().getMessage());
+					}
+				}
+				System.out.println("Could not load processes from guvnor: " + t.getMessage());
+				t.printStackTrace();
 			}
-			if (!file.isDirectory()) {
-				throw new IllegalArgumentException(directory + " is not a directory");
+			if (kbase == null) {
+				kbase = KnowledgeBaseFactory.newKnowledgeBase();
 			}
-			ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
-			ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
-			ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
-			BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
-			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-			for (File subfile: file.listFiles(new FilenameFilter() {
-					public boolean accept(File dir, String name) {
-						return name.endsWith(".bpmn") || name.endsWith("bpmn2");
-					}})) {
-				System.out.println("Loading process from file system: " + subfile.getName());
-				kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
+			String directory = System.getProperty("jbpm.console.directory");
+			if (directory == null) {
+				System.out.println("jbpm.console.directory property not found");
+			} else {
+				File file = new File(directory);
+				if (!file.exists()) {
+					throw new IllegalArgumentException("Could not find " + directory);
+				}
+				if (!file.isDirectory()) {
+					throw new IllegalArgumentException(directory + " is not a directory");
+				}
+				ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());
+				ProcessMarshallerFactory.setProcessMarshallerFactoryService(new ProcessMarshallerFactoryServiceImpl());
+				ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
+				BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
+				KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+				for (File subfile: file.listFiles(new FilenameFilter() {
+						public boolean accept(File dir, String name) {
+							return name.endsWith(".bpmn") || name.endsWith("bpmn2");
+						}})) {
+					kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
+				}
+				kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 			}
-			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		}
 		Process process = kbase.getProcess(processId);
 		if (process == null) {
@@ -234,7 +233,33 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	}
 
 	public URL getDiagramURL(String id) {
-		return GraphViewerPluginImpl.class.getResource("/" + id + ".png");
+		URL result = GraphViewerPluginImpl.class.getResource("/" + id + ".png");
+		if (result != null) {
+			return result;
+		}
+		StringBuffer sb = new StringBuffer();
+		Properties properties = new Properties();
+		try {
+			properties.load(GraphViewerPluginImpl.class.getResourceAsStream("/jbpm.console.properties"));
+		} catch (IOException e) {
+			throw new RuntimeException("Could not load jbpm.console.properties", e);
+		}
+		try {
+			sb.append("http://");
+			sb.append(properties.get("jbpm.console.server.host"));
+			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
+			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
+			sb.append(URLEncoder.encode(id, "UTF-8"));
+			sb.append("-image.png");
+			URL url = new URL(sb.toString());
+			InputStream is = url.openStream();
+			if (is != null) {
+				return url;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+		return null;
 	}
 
 	public List<ActiveNodeInfo> getNodeInfoForActivities(
