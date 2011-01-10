@@ -49,10 +49,16 @@ public class MapBasedPersistenceContext
 
     public void close() {
         open = false;
-        ksessions.clear();
+        clearAll();
     }
 
     public void clear() {
+        clearAll();
+    }
+
+    private void clearAll() {
+        ksessions.clear();
+        workItems.clear();
     }
 
     public List<SessionInfo> getStoredKnowledgeSessions() {
