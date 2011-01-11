@@ -37,7 +37,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
 //        em.persist(workItemInfo);
         
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
         context.persist( workItemInfo );
 
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
