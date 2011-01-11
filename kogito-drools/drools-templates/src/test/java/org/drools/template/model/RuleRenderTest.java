@@ -87,6 +87,21 @@ public class RuleRenderTest {
     }
 
     @Test
+    public void testMetadata() throws Exception {
+        Rule rule = new Rule( "la", new Integer( 42 ), 2 );
+
+        rule.addMetadata( "Author( A. U. Thor )" );
+        rule.addMetadata( "Revision( 42 )" );
+        DRLOutput out = new DRLOutput();
+        rule.renderDRL( out );
+
+        String result = out.toString();
+        assertTrue( result.contains( "@Author( A. U. Thor )" ) );
+        assertTrue( result.contains( "@Revision( 42 )" ) );
+
+    }
+
+    @Test
     public void testSalienceCalculator() {
         final int rowNumber = 2;
         final int salience = Rule.calcSalience( rowNumber );

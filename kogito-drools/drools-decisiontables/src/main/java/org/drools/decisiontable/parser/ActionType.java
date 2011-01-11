@@ -45,7 +45,8 @@ public class ActionType {
         AUTOFOCUS(       "AUTO-FOCUS",       "F", 1 ),
         ACTIVATIONGROUP( "ACTIVATION-GROUP", "X", 1 ),
         AGENDAGROUP(     "AGENDA-GROUP",     "G", 1 ),
-        RULEFLOWGROUP(   "RULEFLOW-GROUP",   "R", 1 );
+        RULEFLOWGROUP(   "RULEFLOW-GROUP",   "R", 1 ),
+        METADATA(        "METADATA",         "@" );
                 
         private String colHeader;
         private String colShort;
