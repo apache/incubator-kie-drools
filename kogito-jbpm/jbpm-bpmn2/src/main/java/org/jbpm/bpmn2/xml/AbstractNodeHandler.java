@@ -16,8 +16,13 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import org.drools.compiler.xml.XmlDumper;
+import org.drools.rule.builder.dialect.java.JavaDialect;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -25,9 +30,13 @@ import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -171,6 +180,89 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     protected void endNode(final String name, final StringBuilder xmlDump) {
         xmlDump.append("    </" + name + ">" + EOL);
+    }
+    
+    protected void handleScript(final ExtendedNodeImpl node, final Element element, String type) {
+        NodeList nodeList = element.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+        	Element xmlNode = (Element) nodeList.item(i);
+        	String nodeName = xmlNode.getNodeName();
+        	if (nodeName.equals("extensionElements")) {
+                NodeList subNodeList = xmlNode.getChildNodes();
+                for (int j = 0; j < subNodeList.getLength(); j++) {
+                	org.w3c.dom.Node subXmlNode = subNodeList.item(j);
+                	if ((type + "-script").equals(subXmlNode.getNodeName())) {
+			    		List<DroolsAction> actions = node.getActions(type);
+			    		if (actions == null) {
+			    			actions = new ArrayList<DroolsAction>();
+			            	node.setActions(type, actions);
+			    		}
+			        	DroolsAction action = extractScript((Element) subXmlNode);
+			        	actions.add(action);
+                	}
+		    	}
+            }
+        }
+    }
+
+    public static DroolsAction extractScript(Element xmlNode) {
+    	String dialect = "mvel";
+    	if ("http://www.java.com/java".equals(xmlNode.getAttribute("scriptFormat"))) {
+    		dialect = "java";
+    	}
+		NodeList subNodeList = xmlNode.getChildNodes();
+        for (int j = 0; j < subNodeList.getLength(); j++) {
+        	Element subXmlNode = (Element) subNodeList.item(j);
+        	if ("script".equals(subXmlNode.getNodeName())) {
+        		String consequence = subXmlNode.getTextContent();
+        		DroolsConsequenceAction action = new DroolsConsequenceAction(dialect, consequence);
+        		return action;
+        	}
+    	}
+		return new DroolsConsequenceAction("mvel", "");
+    }
+    
+    protected void writeScripts(ExtendedNodeImpl node, final StringBuilder xmlDump) {
+    	if (node.containsActions()) {
+    		xmlDump.append("      <extensionElements>" + EOL);
+    		writeScripts("onEntry", node.getActions("onEntry"), xmlDump);
+    		writeScripts("onExit", node.getActions("onExit"), xmlDump);
+    		xmlDump.append("      </extensionElements>" + EOL);
+    	}
+    }
+    
+    protected void writeScripts(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {
+    	if (actions != null && actions.size() > 0) {
+	    	for (DroolsAction action: actions) {
+	    		writeScript(action, type, xmlDump);
+	    	}
+    	}
+    }
+    
+    public static void writeScript(final DroolsAction action, String type, final StringBuilder xmlDump) {
+    	if (action instanceof DroolsConsequenceAction) {
+    		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
+    		xmlDump.append("        <tns:" + type + "-script");
+            String name = consequenceAction.getName();
+            if (name != null) {
+                xmlDump.append(" name=\"" + name + "\"");
+            }
+            String dialect = consequenceAction.getDialect();
+            if (JavaDialect.ID.equals(dialect)) {
+                xmlDump.append(" scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\"");
+            }
+            String consequence = consequenceAction.getConsequence();
+            if (consequence != null) {
+                xmlDump.append(">" + EOL + 
+                    "          <script>" + XmlDumper.replaceIllegalChars(consequence.trim()) + "</script>" + EOL);
+                xmlDump.append("        </tns:" + type + "-script>" + EOL);
+            } else {
+            	xmlDump.append("/>" + EOL);
+            }
+    	} else {
+    		throw new IllegalArgumentException(
+				"Unknown action " + action);
+    	}
     }
     
 }

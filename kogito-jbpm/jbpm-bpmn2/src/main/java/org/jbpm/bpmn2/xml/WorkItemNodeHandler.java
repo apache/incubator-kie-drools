@@ -39,14 +39,17 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
 		String type = workItemNode.getWork().getName();
 		if ("Manual Task".equals(type)) {
 		    writeNode("manualTask", workItemNode, xmlDump, metaDataType);
-	        endNode(xmlDump);
+		    xmlDump.append(">" + EOL);
+			writeScripts(workItemNode, xmlDump);
+	        endNode("manualTask", xmlDump);
 	        return;
 		} 
         if ("Service Task".equals(type)) {
             writeNode("serviceTask", workItemNode, xmlDump, metaDataType);
             xmlDump.append("operationRef=\"" + 
                 XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_ServiceOperation\" implementation=\"Other\" >" + EOL);
-            xmlDump.append(
+    		writeScripts(workItemNode, xmlDump);
+    		xmlDump.append(
                 "      <ioSpecification>" + EOL +
                 "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Parameter\" />" + EOL +
                 "        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Result\" />" + EOL +
@@ -79,23 +82,24 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
         if ("Send Task".equals(type)) {
             writeNode("sendTask", workItemNode, xmlDump, metaDataType);
             xmlDump.append("messageRef=\"" + 
-                    XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
+                XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_Message\" implementation=\"Other\" >" + EOL);
+    		writeScripts(workItemNode, xmlDump);
+    		xmlDump.append(
+                "      <ioSpecification>" + EOL +
+                "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Message\" />" + EOL +
+                "        <inputSet>" + EOL +
+                "          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</dataInputRefs>" + EOL +
+                "        </inputSet>" + EOL +
+                "        <outputSet/>" + EOL +
+                "      </ioSpecification>" + EOL);
+            String inMapping = workItemNode.getInMapping("Message");
+            if (inMapping != null) {
                 xmlDump.append(
-                    "      <ioSpecification>" + EOL +
-                    "        <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param\" name=\"Message\" />" + EOL +
-                    "        <inputSet>" + EOL +
-                    "          <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</dataInputRefs>" + EOL +
-                    "        </inputSet>" + EOL +
-                    "        <outputSet/>" + EOL +
-                    "      </ioSpecification>" + EOL);
-                String inMapping = workItemNode.getInMapping("Message");
-                if (inMapping != null) {
-                    xmlDump.append(
-                        "      <dataInputAssociation>" + EOL +
-                        "        <sourceRef>" + XmlDumper.replaceIllegalChars(inMapping) + "</sourceRef>" + EOL +
-                        "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</targetRef>" + EOL +
-                        "      </dataInputAssociation>" + EOL);
-                }
+                    "      <dataInputAssociation>" + EOL +
+                    "        <sourceRef>" + XmlDumper.replaceIllegalChars(inMapping) + "</sourceRef>" + EOL +
+                    "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_param</targetRef>" + EOL +
+                    "      </dataInputAssociation>" + EOL);
+            }
             endNode("sendTask", xmlDump);
             return;
         } 
@@ -103,28 +107,30 @@ public class WorkItemNodeHandler extends AbstractNodeHandler {
             writeNode("receiveTask", workItemNode, xmlDump, metaDataType);
             String messageId = (String) workItemNode.getWork().getParameter("MessageId");
             xmlDump.append("messageRef=\"" + 
-                    messageId + "\" implementation=\"Other\" >" + EOL);
+                messageId + "\" implementation=\"Other\" >" + EOL);
+    		writeScripts(workItemNode, xmlDump);
+    		xmlDump.append(
+                "      <ioSpecification>" + EOL +
+                "        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Message\" />" + EOL +
+                "        <inputSet/>" + EOL +
+                "        <outputSet>" + EOL +
+                "          <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</dataOutputRefs>" + EOL +
+                "        </outputSet>" + EOL +
+                "      </ioSpecification>" + EOL);
+            String outMapping = workItemNode.getOutMapping("Message");
+            if (outMapping != null) {
                 xmlDump.append(
-                    "      <ioSpecification>" + EOL +
-                    "        <dataOutput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result\" name=\"Message\" />" + EOL +
-                    "        <inputSet/>" + EOL +
-                    "        <outputSet>" + EOL +
-                    "          <dataOutputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</dataOutputRefs>" + EOL +
-                    "        </outputSet>" + EOL +
-                    "      </ioSpecification>" + EOL);
-                String outMapping = workItemNode.getOutMapping("Message");
-                if (outMapping != null) {
-                    xmlDump.append(
-                        "      <dataOutputAssociation>" + EOL +
-                        "        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</sourceRef>" + EOL +
-                        "        <targetRef>" + XmlDumper.replaceIllegalChars(outMapping) + "</targetRef>" + EOL +
-                        "      </dataOutputAssociation>" + EOL);
-                }
+                    "      <dataOutputAssociation>" + EOL +
+                    "        <sourceRef>" + XmlBPMNProcessDumper.getUniqueNodeId(workItemNode) + "_result</sourceRef>" + EOL +
+                    "        <targetRef>" + XmlDumper.replaceIllegalChars(outMapping) + "</targetRef>" + EOL +
+                    "      </dataOutputAssociation>" + EOL);
+            }
             endNode("receiveTask", xmlDump);
             return;
         } 
 		writeNode("task", workItemNode, xmlDump, metaDataType);
 		xmlDump.append("tns:taskName=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\" >" + EOL);
+		writeScripts(workItemNode, xmlDump);
 		writeIO(workItemNode, xmlDump);
 		endNode("task", xmlDump);
 	}

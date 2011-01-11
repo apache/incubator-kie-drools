@@ -84,6 +84,7 @@ public class UserTaskHandler extends TaskHandler {
 		HumanTaskNode humanTaskNode = (HumanTaskNode) node;
 		writeNode("userTask", humanTaskNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
+		writeScripts(humanTaskNode, xmlDump);
 		writeIO(humanTaskNode, xmlDump);
 		String ownerString = (String) humanTaskNode.getWork().getParameter("ActorId");
 		if (ownerString != null) {

@@ -925,6 +925,16 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+	public void testOnEntryExitScript() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-OnEntryExitScriptProcess.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new SystemOutWorkItemHandler());
+		List<String> myList = new ArrayList<String>();
+		ksession.setGlobal("list", myList);
+		ProcessInstance processInstance = ksession.startProcess("OnEntryExitScriptProcess");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+		assertEquals(4, myList.size());
+	}
     
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
@@ -939,10 +949,10 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
 		for (Process p : processes) {
 		    RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)p;
+//			System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
 		    kbuilder.add(ResourceFactory.newReaderResource(
 		            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
 		}
-//		System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
 				System.err.println(error);
