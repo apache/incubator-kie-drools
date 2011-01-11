@@ -49,7 +49,7 @@ public class MapBasedPersistenceContext
 
     public void close() {
         open = false;
-        clearAll();
+        clear();
     }
 
     public void clear() {
