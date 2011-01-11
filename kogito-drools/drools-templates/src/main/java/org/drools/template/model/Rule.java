@@ -32,6 +32,7 @@ public class Rule extends AttributedDRLElement
     private String            _name;
     private String            _description;
 
+    private List<String>      _metadata;
     private List<Condition>   _lhs;
     private List<Consequence> _rhs;
     private int               _spreadsheetRow;
@@ -51,9 +52,14 @@ public class Rule extends AttributedDRLElement
     	super( salience );
         this._name = asStringLiteral( name );
         this._description = null;
+        this._metadata = new LinkedList<String>();
         this._lhs = new LinkedList<Condition>();
         this._rhs = new LinkedList<Consequence>();
         this._spreadsheetRow = spreadsheetRow;
+    }
+
+    public void addMetadata(final String meta) {
+        this._metadata.add( meta );
     }
 
     public void addCondition(final Condition con) {
@@ -71,6 +77,11 @@ public class Rule extends AttributedDRLElement
         out.writeLine( "rule " + this._name );
         if ( this._description != null ) {
             out.writeLine( "\t# " + this._description );
+        }
+        
+        // metadata
+        for(String ms: this._metadata ){
+        	out.writeLine( "\t@" + ms );
         }
         
         // attributes
@@ -97,6 +108,10 @@ public class Rule extends AttributedDRLElement
         return Rule.MAX_ROWS - rowNumber;
     }
 
+    public List<String> getMetadata() {
+        return this._metadata;
+    }
+    
     public List<Condition> getConditions() {
         return this._lhs;
     }
