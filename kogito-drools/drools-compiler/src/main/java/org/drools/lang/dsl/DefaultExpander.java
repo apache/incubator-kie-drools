@@ -416,6 +416,7 @@ Expander {
                     }
                     sb.append( ")" ).append( funcPatStr ).append( "\\}" );                    
                     Pattern allkeyPat = Pattern.compile( sb.toString() );
+                    vp = entry.getValuePattern();
                     Matcher allkeyMat = allkeyPat.matcher( vp );
 
                     // While the pattern matches, get the actual key and replace by '$' + index
