@@ -53,6 +53,10 @@ public class LhsBuilder implements SourceBuilder {
         this.values = new ArrayList<String>();
     }
 
+	public ActionType.Code getActionTypeCode(){
+		return ActionType.Code.CONDITION;
+	}
+
     public void addTemplate(int row, int column, String content) {
         Integer key = new Integer( column );
         content = content.trim();

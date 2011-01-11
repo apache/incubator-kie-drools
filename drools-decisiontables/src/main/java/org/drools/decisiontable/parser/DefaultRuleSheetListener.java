@@ -224,7 +224,6 @@ implements RuleSheetListener {
 			}
 		}
 
-
 		return ruleset;
 	}
 
@@ -268,14 +267,20 @@ implements RuleSheetListener {
 		for ( Iterator<SourceBuilder> iter = sourceBuilders.iterator(); iter.hasNext(); ) {
 			SourceBuilder src = iter.next();
 			if ( src.hasValues() ) {
-				if ( src instanceof LhsBuilder ) {
-					Condition con = new Condition();
-					con.setSnippet( src.getResult() );
-					_currentRule.addCondition( con );
-				} else if ( src instanceof RhsBuilder ) {
-					Consequence con = new Consequence();
-					con.setSnippet( src.getResult() );
-					_currentRule.addConsequence( con );
+				switch( src.getActionTypeCode() ){
+				case CONDITION:
+					Condition cond = new Condition();
+					cond.setSnippet( src.getResult() );
+					_currentRule.addCondition( cond );
+					break;
+				case ACTION:
+					Consequence cons = new Consequence();
+					cons.setSnippet( src.getResult() );
+					_currentRule.addConsequence( cons );
+					break;
+				case METADATA:
+					_currentRule.addMetadata( src.getResult() );
+					break;
 				}
 				src.clearValues();
 			}
@@ -449,7 +454,7 @@ implements RuleSheetListener {
 				this.sourceBuilders.add( src );
 
 			} else if ( action.getCode() == Code.ACTION ) {
-				SourceBuilder src = new RhsBuilder( row-1, column, value );
+				SourceBuilder src = new RhsBuilder( Code.ACTION, row-1, column, value );
 				action.setSourceBuilder( src );
 				this.sourceBuilders.add( src );
 			}
@@ -459,7 +464,7 @@ implements RuleSheetListener {
 					action.setSourceBuilder( new LhsBuilder( row-1, column, value ) );
 					this.sourceBuilders.add( action.getSourceBuilder() );
 				} else if ( action.getCode() == Code.ACTION ) {
-					action.setSourceBuilder( new RhsBuilder( row-1, column, value ) );
+					action.setSourceBuilder( new RhsBuilder( Code.ACTION, row-1, column, value ) );
 					this.sourceBuilders.add( action.getSourceBuilder() );
 				}
 			} else {
@@ -478,19 +483,24 @@ implements RuleSheetListener {
 				actionType.setSourceBuilder( new LhsBuilder( row-2, column, null ) );
 				this.sourceBuilders.add( actionType.getSourceBuilder() );
 			} else if ( actionType.getCode() == Code.ACTION ) {
-				actionType.setSourceBuilder( new RhsBuilder( row-2, column, null ) );
+				actionType.setSourceBuilder( new RhsBuilder( Code.ACTION, row-2, column, null ) );
 				this.sourceBuilders.add( actionType.getSourceBuilder() );
 			} else if ( actionType.getCode() == Code.SALIENCE ) {
 				actionType.setSourceBuilder( new LhsBuilder( row-2, column, null ) );
 				this.sourceBuilders.add( actionType.getSourceBuilder() );
+			} else if ( actionType.getCode() == Code.METADATA ) {
+				actionType.setSourceBuilder( new RhsBuilder( Code.METADATA, row-2, column, null ) );
+				this.sourceBuilders.add( actionType.getSourceBuilder() );
 			}
 		}
 
-		if ( value.trim().equals( "" ) && (actionType.getCode() == Code.ACTION ||
-				actionType.getCode() == Code.CONDITION) ) {
+		if ( value.trim().equals( "" ) &&
+			(actionType.getCode() == Code.ACTION ||
+			 actionType.getCode() == Code.CONDITION ||
+			 actionType.getCode() == Code.METADATA) ) {
 			throw new DecisionTableParseException( "Code description in cell " +
 					RuleSheetParserUtil.rc2name( row, column ) +
-			" does not contain any code specification. It should !" );
+			" does not contain any code specification. It should!" );
 		}
 
 		actionType.addTemplate( row, column, value );
@@ -499,13 +509,11 @@ implements RuleSheetListener {
 	private void labelRow(final int row,
 			final int column,
 			final String value) {
-		final ActionType actionType = getActionForColumn( row,
-				column );
+		final ActionType actionType = getActionForColumn( row, column );
 
 		if ( ! value.trim().equals( "" ) && (actionType.getCode() == Code.ACTION ||
 				actionType.getCode() == Code.CONDITION) ) {
-			this._cellComments.put( new Integer( column ),
-					value );
+			this._cellComments.put( new Integer( column ), value );
 		} else {
 			this._cellComments.put( new Integer( column ),
 					"From cell: " + RuleSheetParserUtil.rc2name( row, column ) );
@@ -550,6 +558,7 @@ implements RuleSheetListener {
 		switch( actionType.getCode() ){
 		case CONDITION:
 		case ACTION:
+		case METADATA:
 			actionType.addCellValue( row, column, value );
 			break;        
 		case SALIENCE:

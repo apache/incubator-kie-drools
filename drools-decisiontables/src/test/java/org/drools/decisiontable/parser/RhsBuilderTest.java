@@ -9,7 +9,7 @@ public class RhsBuilderTest {
 
     @Test
     public void testConsBuilding() {
-        RhsBuilder builder = new RhsBuilder( 9, 1, "foo");
+        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "foo");
         builder.addTemplate( 10, 1, "setFoo($param)");
         builder.addCellValue( 10,1, "42" );
         
@@ -23,7 +23,7 @@ public class RhsBuilderTest {
     
     @Test
     public void testClassicMode() {
-        RhsBuilder builder = new RhsBuilder( 9, 1, "");
+        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "");
         builder.addTemplate( 10, 1, "p.setSomething($param);" );
         builder.addTemplate( 10, 2, "drools.clearAgenda();" );
                 
@@ -34,10 +34,23 @@ public class RhsBuilderTest {
         builder.addCellValue( 12, 2, "Y" );
         assertEquals("p.setSomething(42);\ndrools.clearAgenda();", builder.getResult());
     }
-    
+
+    @Test
+    public void testMetadata() {
+        RhsBuilder builder = new RhsBuilder( ActionType.Code.METADATA, 9, 1, "");
+        builder.addTemplate( 10, 1, "Author($param)" );
+                
+        builder.addCellValue( 12, 1, "A. U. Thor" );       
+        assertEquals("Author(A. U. Thor)", builder.getResult());
+        builder.clearValues();
+        
+        builder.addCellValue( 13, 1, "P. G. Wodehouse" );
+        assertEquals("Author(P. G. Wodehouse)", builder.getResult());
+    }
+
     @Test
     public void testEmptyCellData() {
-        RhsBuilder builder = new RhsBuilder( 9, 1, "Foo");
+        RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "Foo");
         builder.addTemplate( 10, 1, "p.setSomething($param);" );        
         assertFalse(builder.hasValues());
     }
