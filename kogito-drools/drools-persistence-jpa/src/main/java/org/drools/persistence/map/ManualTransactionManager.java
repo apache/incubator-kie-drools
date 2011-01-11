@@ -38,7 +38,7 @@ public class ManualTransactionManager
             }
             //session.clear();
             try{
-            transactionSynchronization.afterCompletion(TransactionManager.STATUS_COMMITTED);
+                transactionSynchronization.afterCompletion(TransactionManager.STATUS_COMMITTED);
             } catch (RuntimeException re){
                 //FIXME log error
             }
