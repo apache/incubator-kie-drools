@@ -7,7 +7,7 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 
 public class JpaPersistenceContext implements PersistenceContext {
-    EntityManager em;
+    protected EntityManager em;
     
     public JpaPersistenceContext(EntityManager em) {
         this.em = em;

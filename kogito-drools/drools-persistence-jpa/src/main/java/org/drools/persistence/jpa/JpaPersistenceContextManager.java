@@ -16,7 +16,7 @@ public class JpaPersistenceContextManager
     private EntityManagerFactory emf;
 
     private EntityManager        appScopedEntityManager;
-    private EntityManager        cmdScopedEntityManager;
+    protected EntityManager        cmdScopedEntityManager;
 
     private boolean              internalAppScopedEntityManager;
     private boolean              internalCmdScopedEntityManager;
