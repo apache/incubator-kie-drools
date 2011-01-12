@@ -93,7 +93,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void completeWorkItem(long id, Map<String, Object> results) {
         Environment env = this.kruntime.getEnvironment();
 //        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
 
         
         WorkItemInfo workItemInfo = null;
