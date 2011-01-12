@@ -1,7 +1,6 @@
 package org.drools.persistence;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.IdentityHashMap;
@@ -28,7 +27,6 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.InternalProcessRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -248,7 +246,15 @@ public class SingleSessionCommandService
                 this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                                                       env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
                                                       tm ); 
-                this.jpm = new JpaPersistenceContextManager(this.env);
+                try {
+                    Class<?> jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
+                    Constructor<?> jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
+                    this.jpm =  ( PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( new Object[] { this.env } );
+                } catch ( ClassNotFoundException e ) {
+                    this.jpm = new JpaPersistenceContextManager(this.env);
+                } catch ( Exception e ) {
+                    throw new RuntimeException("Error creating JpaProcessPersistenceContextManager", e);
+                }
             }
             env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, this.jpm );
             env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
