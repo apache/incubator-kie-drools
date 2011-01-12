@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g 2010-12-23 17:15:59
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMapWalker.g 2011-01-11 15:22:29
 
 	package org.drools.lang.dsl;
 	
@@ -15,37 +15,37 @@ public class DSLMapWalker extends TreeParser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_DSL_GRAMMAR", "VT_ENTRY", "VT_SCOPE", "VT_CONDITION", "VT_CONSEQUENCE", "VT_KEYWORD", "VT_ANY", "VT_META", "VT_ENTRY_KEY", "VT_ENTRY_VAL", "VT_VAR_DEF", "VT_VAR_REF", "VT_LITERAL", "VT_PATTERN", "VT_QUAL", "VT_SPACE", "EOL", "EQUALS", "LEFT_SQUARE", "RIGHT_SQUARE", "LITERAL", "COMMA", "COLON", "LEFT_CURLY", "RIGHT_CURLY", "WS", "EscapeSequence", "DOT", "IdentifierPart", "MISC"
     };
-    public static final int RIGHT_SQUARE=23;
-    public static final int VT_ENTRY_KEY=12;
-    public static final int VT_KEYWORD=9;
-    public static final int RIGHT_CURLY=28;
-    public static final int VT_ENTRY=5;
-    public static final int VT_QUAL=18;
-    public static final int VT_DSL_GRAMMAR=4;
-    public static final int LITERAL=24;
-    public static final int EQUALS=21;
     public static final int EOF=-1;
+    public static final int VT_DSL_GRAMMAR=4;
+    public static final int VT_ENTRY=5;
     public static final int VT_SCOPE=6;
-    public static final int VT_ANY=10;
-    public static final int VT_VAR_DEF=14;
     public static final int VT_CONDITION=7;
-    public static final int COLON=26;
-    public static final int VT_LITERAL=16;
-    public static final int EOL=20;
-    public static final int WS=29;
-    public static final int COMMA=25;
-    public static final int VT_ENTRY_VAL=13;
-    public static final int VT_META=11;
-    public static final int VT_VAR_REF=15;
-    public static final int LEFT_CURLY=27;
-    public static final int VT_SPACE=19;
-    public static final int VT_PATTERN=17;
-    public static final int DOT=31;
-    public static final int MISC=33;
-    public static final int LEFT_SQUARE=22;
     public static final int VT_CONSEQUENCE=8;
+    public static final int VT_KEYWORD=9;
+    public static final int VT_ANY=10;
+    public static final int VT_META=11;
+    public static final int VT_ENTRY_KEY=12;
+    public static final int VT_ENTRY_VAL=13;
+    public static final int VT_VAR_DEF=14;
+    public static final int VT_VAR_REF=15;
+    public static final int VT_LITERAL=16;
+    public static final int VT_PATTERN=17;
+    public static final int VT_QUAL=18;
+    public static final int VT_SPACE=19;
+    public static final int EOL=20;
+    public static final int EQUALS=21;
+    public static final int LEFT_SQUARE=22;
+    public static final int RIGHT_SQUARE=23;
+    public static final int LITERAL=24;
+    public static final int COMMA=25;
+    public static final int COLON=26;
+    public static final int LEFT_CURLY=27;
+    public static final int RIGHT_CURLY=28;
+    public static final int WS=29;
     public static final int EscapeSequence=30;
+    public static final int DOT=31;
     public static final int IdentifierPart=32;
+    public static final int MISC=33;
 
     // delegates
     // delegators
@@ -61,7 +61,7 @@ public class DSLMapWalker extends TreeParser {
         
 
     public String[] getTokenNames() { return DSLMapWalker.tokenNames; }
-    public String getGrammarFileName() { return "drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g"; }
+    public String getGrammarFileName() { return "src/main/resources/org/drools/lang/dsl/DSLMapWalker.g"; }
 
 
     protected static class mapping_file_scope {
@@ -71,7 +71,7 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "mapping_file"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:16:1: mapping_file returns [DSLMapping mapping] : ^( VT_DSL_GRAMMAR ( valid_entry )* ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:16:1: mapping_file returns [DSLMapping mapping] : ^( VT_DSL_GRAMMAR ( valid_entry )* ) ;
     public final DSLMapping mapping_file() throws RecognitionException {
         mapping_file_stack.push(new mapping_file_scope());
         DSLMapping mapping = null;
@@ -80,14 +80,14 @@ public class DSLMapWalker extends TreeParser {
         	((mapping_file_scope)mapping_file_stack.peek()).retval = new DefaultDSLMapping() ;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:2: ( ^( VT_DSL_GRAMMAR ( valid_entry )* ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:4: ^( VT_DSL_GRAMMAR ( valid_entry )* )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:2: ( ^( VT_DSL_GRAMMAR ( valid_entry )* ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:4: ^( VT_DSL_GRAMMAR ( valid_entry )* )
             {
             match(input,VT_DSL_GRAMMAR,FOLLOW_VT_DSL_GRAMMAR_in_mapping_file54); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: ( valid_entry )*
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: ( valid_entry )*
                 loop1:
                 do {
                     int alt1=2;
@@ -100,7 +100,7 @@ public class DSLMapWalker extends TreeParser {
 
                     switch (alt1) {
                 	case 1 :
-                	    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: valid_entry
+                	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: valid_entry
                 	    {
                 	    pushFollow(FOLLOW_valid_entry_in_mapping_file56);
                 	    valid_entry();
@@ -139,7 +139,7 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "valid_entry"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:29:1: valid_entry returns [DSLMappingEntry mappingEntry] : ent= entry ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:29:1: valid_entry returns [DSLMappingEntry mappingEntry] : ent= entry ;
     public final DSLMappingEntry valid_entry() throws RecognitionException {
         DSLMappingEntry mappingEntry = null;
 
@@ -147,8 +147,8 @@ public class DSLMapWalker extends TreeParser {
 
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:30:2: (ent= entry )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:30:4: ent= entry
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:30:2: (ent= entry )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:30:4: ent= entry
             {
             pushFollow(FOLLOW_entry_in_valid_entry78);
             ent=entry();
@@ -182,7 +182,7 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "entry"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:34:1: entry returns [DSLMappingEntry mappingEntry] : ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:34:1: entry returns [DSLMappingEntry mappingEntry] : ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) ;
     public final DSLMappingEntry entry() throws RecognitionException {
         entry_stack.push(new entry_scope());
         DSLMappingEntry mappingEntry = null;
@@ -196,8 +196,8 @@ public class DSLMapWalker extends TreeParser {
         	((entry_scope)entry_stack.peek()).sentenceValueBuffer = new StringBuilder();
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:4: ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:4: ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
             {
             match(input,VT_ENTRY,FOLLOW_VT_ENTRY_in_entry106); 
 
@@ -207,7 +207,7 @@ public class DSLMapWalker extends TreeParser {
 
             state._fsp--;
 
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:29: ( meta_section )?
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:29: ( meta_section )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -216,7 +216,7 @@ public class DSLMapWalker extends TreeParser {
             }
             switch (alt2) {
                 case 1 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:29: meta_section
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:29: meta_section
                     {
                     pushFollow(FOLLOW_meta_section_in_entry110);
                     meta_section();
@@ -238,7 +238,7 @@ public class DSLMapWalker extends TreeParser {
             	             ((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).sentenceKeyBuffer.toString());
             	             ((entry_scope)entry_stack.peek()).retval.setKeyPattern(((entry_scope)entry_stack.peek()).keybuffer.toString());
             	        
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:56:3: ( value_section )?
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:56:3: ( value_section )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -247,7 +247,7 @@ public class DSLMapWalker extends TreeParser {
             }
             switch (alt3) {
                 case 1 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:56:3: value_section
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:56:3: value_section
                     {
                     pushFollow(FOLLOW_value_section_in_entry129);
                     value_section();
@@ -285,19 +285,19 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "scope_section"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:66:1: scope_section : ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:66:1: scope_section : ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) ;
     public final void scope_section() throws RecognitionException {
         CommonTree thescope=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:2: ( ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:4: ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:2: ( ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:4: ^(thescope= VT_SCOPE ( condition_key )? ( consequence_key )? ( keyword_key )? ( any_key )? )
             {
             thescope=(CommonTree)match(input,VT_SCOPE,FOLLOW_VT_SCOPE_in_scope_section150); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:24: ( condition_key )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:24: ( condition_key )?
                 int alt4=2;
                 int LA4_0 = input.LA(1);
 
@@ -306,7 +306,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt4) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:24: condition_key
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:24: condition_key
                         {
                         pushFollow(FOLLOW_condition_key_in_scope_section152);
                         condition_key();
@@ -319,7 +319,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:39: ( consequence_key )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:39: ( consequence_key )?
                 int alt5=2;
                 int LA5_0 = input.LA(1);
 
@@ -328,7 +328,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt5) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:39: consequence_key
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:39: consequence_key
                         {
                         pushFollow(FOLLOW_consequence_key_in_scope_section155);
                         consequence_key();
@@ -341,7 +341,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:56: ( keyword_key )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:56: ( keyword_key )?
                 int alt6=2;
                 int LA6_0 = input.LA(1);
 
@@ -350,7 +350,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt6) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:56: keyword_key
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:56: keyword_key
                         {
                         pushFollow(FOLLOW_keyword_key_in_scope_section158);
                         keyword_key();
@@ -363,7 +363,7 @@ public class DSLMapWalker extends TreeParser {
 
                 }
 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:69: ( any_key )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:69: ( any_key )?
                 int alt7=2;
                 int LA7_0 = input.LA(1);
 
@@ -372,7 +372,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt7) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:69: any_key
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:67:69: any_key
                         {
                         pushFollow(FOLLOW_any_key_in_scope_section161);
                         any_key();
@@ -404,19 +404,19 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "meta_section"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:72:1: meta_section : ^( VT_META (metalit= LITERAL )? ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:72:1: meta_section : ^( VT_META (metalit= LITERAL )? ) ;
     public final void meta_section() throws RecognitionException {
         CommonTree metalit=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:2: ( ^( VT_META (metalit= LITERAL )? ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:4: ^( VT_META (metalit= LITERAL )? )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:2: ( ^( VT_META (metalit= LITERAL )? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:4: ^( VT_META (metalit= LITERAL )? )
             {
             match(input,VT_META,FOLLOW_VT_META_in_meta_section178); 
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:21: (metalit= LITERAL )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:21: (metalit= LITERAL )?
                 int alt8=2;
                 int LA8_0 = input.LA(1);
 
@@ -425,7 +425,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt8) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:21: metalit= LITERAL
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:73:21: metalit= LITERAL
                         {
                         metalit=(CommonTree)match(input,LITERAL,FOLLOW_LITERAL_in_meta_section182); 
 
@@ -460,16 +460,16 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "key_section"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:83:1: key_section : ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:83:1: key_section : ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
     public final void key_section() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:2: ( ^( VT_ENTRY_KEY ( key_sentence )+ ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:4: ^( VT_ENTRY_KEY ( key_sentence )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:2: ( ^( VT_ENTRY_KEY ( key_sentence )+ ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:4: ^( VT_ENTRY_KEY ( key_sentence )+ )
             {
             match(input,VT_ENTRY_KEY,FOLLOW_VT_ENTRY_KEY_in_key_section199); 
 
             match(input, Token.DOWN, null); 
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: ( key_sentence )+
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: ( key_sentence )+
             int cnt9=0;
             loop9:
             do {
@@ -483,7 +483,7 @@ public class DSLMapWalker extends TreeParser {
 
                 switch (alt9) {
             	case 1 :
-            	    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: key_sentence
+            	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: key_sentence
             	    {
             	    pushFollow(FOLLOW_key_sentence_in_key_section201);
             	    key_sentence();
@@ -521,12 +521,12 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "key_sentence"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:87:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:87:1: key_sentence : ( variable_definition | vtl= VT_LITERAL | VT_SPACE );
     public final void key_sentence() throws RecognitionException {
         CommonTree vtl=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:88:2: ( variable_definition | vtl= VT_LITERAL | VT_SPACE )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:88:2: ( variable_definition | vtl= VT_LITERAL | VT_SPACE )
             int alt10=3;
             switch ( input.LA(1) ) {
             case VT_VAR_DEF:
@@ -553,7 +553,7 @@ public class DSLMapWalker extends TreeParser {
 
             switch (alt10) {
                 case 1 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:88:4: variable_definition
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:88:4: variable_definition
                     {
                     pushFollow(FOLLOW_variable_definition_in_key_sentence216);
                     variable_definition();
@@ -564,7 +564,7 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:89:4: vtl= VT_LITERAL
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:89:4: vtl= VT_LITERAL
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_key_sentence223); 
 
@@ -575,7 +575,7 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:94:4: VT_SPACE
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:94:4: VT_SPACE
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_key_sentence232); 
 
@@ -600,16 +600,16 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "value_section"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:101:1: value_section : ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:101:1: value_section : ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
     public final void value_section() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:2: ( ^( VT_ENTRY_VAL ( value_sentence )+ ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:4: ^( VT_ENTRY_VAL ( value_sentence )+ )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:2: ( ^( VT_ENTRY_VAL ( value_sentence )+ ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:4: ^( VT_ENTRY_VAL ( value_sentence )+ )
             {
             match(input,VT_ENTRY_VAL,FOLLOW_VT_ENTRY_VAL_in_value_section253); 
 
             match(input, Token.DOWN, null); 
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: ( value_sentence )+
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: ( value_sentence )+
             int cnt11=0;
             loop11:
             do {
@@ -623,7 +623,7 @@ public class DSLMapWalker extends TreeParser {
 
                 switch (alt11) {
             	case 1 :
-            	    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: value_sentence
+            	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: value_sentence
             	    {
             	    pushFollow(FOLLOW_value_sentence_in_value_section255);
             	    value_sentence();
@@ -664,12 +664,12 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "value_sentence"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:108:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:108:1: value_sentence : ( variable_reference | vtl= VT_LITERAL | VT_SPACE );
     public final void value_sentence() throws RecognitionException {
         CommonTree vtl=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:109:2: ( variable_reference | vtl= VT_LITERAL | VT_SPACE )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:109:2: ( variable_reference | vtl= VT_LITERAL | VT_SPACE )
             int alt12=3;
             switch ( input.LA(1) ) {
             case VT_VAR_REF:
@@ -696,7 +696,7 @@ public class DSLMapWalker extends TreeParser {
 
             switch (alt12) {
                 case 1 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:109:4: variable_reference
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:109:4: variable_reference
                     {
                     pushFollow(FOLLOW_variable_reference_in_value_sentence272);
                     variable_reference();
@@ -707,7 +707,7 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:110:4: vtl= VT_LITERAL
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:110:4: vtl= VT_LITERAL
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence279); 
 
@@ -718,7 +718,7 @@ public class DSLMapWalker extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:115:4: VT_SPACE
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:115:4: VT_SPACE
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_value_sentence287); 
 
@@ -743,13 +743,13 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "literal"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:122:1: literal : theliteral= VT_LITERAL ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:122:1: literal : theliteral= VT_LITERAL ;
     public final void literal() throws RecognitionException {
         CommonTree theliteral=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:123:2: (theliteral= VT_LITERAL )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:123:4: theliteral= VT_LITERAL
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:123:2: (theliteral= VT_LITERAL )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:123:4: theliteral= VT_LITERAL
             {
             theliteral=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_literal305); 
 
@@ -768,15 +768,15 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "variable_definition"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:126:1: variable_definition : ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:126:1: variable_definition : ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? ) ;
     public final void variable_definition() throws RecognitionException {
         CommonTree varname=null;
         CommonTree q=null;
         CommonTree pattern=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:2: ( ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:6: ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:2: ( ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:6: ^( VT_VAR_DEF varname= LITERAL ^( VT_QUAL (q= LITERAL )? ) (pattern= VT_PATTERN )? )
             {
             match(input,VT_VAR_DEF,FOLLOW_VT_VAR_DEF_in_variable_definition321); 
 
@@ -786,7 +786,7 @@ public class DSLMapWalker extends TreeParser {
 
             if ( input.LA(1)==Token.DOWN ) {
                 match(input, Token.DOWN, null); 
-                // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:46: (q= LITERAL )?
+                // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:46: (q= LITERAL )?
                 int alt13=2;
                 int LA13_0 = input.LA(1);
 
@@ -795,7 +795,7 @@ public class DSLMapWalker extends TreeParser {
                 }
                 switch (alt13) {
                     case 1 :
-                        // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:46: q= LITERAL
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:46: q= LITERAL
                         {
                         q=(CommonTree)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition332); 
 
@@ -807,7 +807,7 @@ public class DSLMapWalker extends TreeParser {
 
                 match(input, Token.UP, null); 
             }
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:64: (pattern= VT_PATTERN )?
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:64: (pattern= VT_PATTERN )?
             int alt14=2;
             int LA14_0 = input.LA(1);
 
@@ -816,7 +816,7 @@ public class DSLMapWalker extends TreeParser {
             }
             switch (alt14) {
                 case 1 :
-                    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:64: pattern= VT_PATTERN
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:127:64: pattern= VT_PATTERN
                     {
                     pattern=(CommonTree)match(input,VT_PATTERN,FOLLOW_VT_PATTERN_in_variable_definition338); 
 
@@ -860,14 +860,14 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "variable_reference"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:148:1: variable_reference : ^(varref= VT_VAR_REF lit= LITERAL ) ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:148:1: variable_reference : ^(varref= VT_VAR_REF lit= LITERAL ) ;
     public final void variable_reference() throws RecognitionException {
         CommonTree varref=null;
         CommonTree lit=null;
 
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:149:2: ( ^(varref= VT_VAR_REF lit= LITERAL ) )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:149:4: ^(varref= VT_VAR_REF lit= LITERAL )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:149:2: ( ^(varref= VT_VAR_REF lit= LITERAL ) )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:149:4: ^(varref= VT_VAR_REF lit= LITERAL )
             {
             varref=(CommonTree)match(input,VT_VAR_REF,FOLLOW_VT_VAR_REF_in_variable_reference360); 
 
@@ -895,11 +895,11 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "condition_key"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:156:1: condition_key : VT_CONDITION ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:156:1: condition_key : VT_CONDITION ;
     public final void condition_key() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:157:2: ( VT_CONDITION )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:157:4: VT_CONDITION
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:157:2: ( VT_CONDITION )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:157:4: VT_CONDITION
             {
             match(input,VT_CONDITION,FOLLOW_VT_CONDITION_in_condition_key382); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.CONDITION);
@@ -919,11 +919,11 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "consequence_key"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:161:1: consequence_key : VT_CONSEQUENCE ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:161:1: consequence_key : VT_CONSEQUENCE ;
     public final void consequence_key() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:162:2: ( VT_CONSEQUENCE )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:162:4: VT_CONSEQUENCE
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:162:2: ( VT_CONSEQUENCE )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:162:4: VT_CONSEQUENCE
             {
             match(input,VT_CONSEQUENCE,FOLLOW_VT_CONSEQUENCE_in_consequence_key397); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.CONSEQUENCE);
@@ -943,11 +943,11 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "keyword_key"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:166:1: keyword_key : VT_KEYWORD ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:166:1: keyword_key : VT_KEYWORD ;
     public final void keyword_key() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:167:2: ( VT_KEYWORD )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:167:4: VT_KEYWORD
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:167:2: ( VT_KEYWORD )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:167:4: VT_KEYWORD
             {
             match(input,VT_KEYWORD,FOLLOW_VT_KEYWORD_in_keyword_key412); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.KEYWORD);
@@ -967,11 +967,11 @@ public class DSLMapWalker extends TreeParser {
 
 
     // $ANTLR start "any_key"
-    // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:171:1: any_key : VT_ANY ;
+    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:171:1: any_key : VT_ANY ;
     public final void any_key() throws RecognitionException {
         try {
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:172:2: ( VT_ANY )
-            // drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:172:4: VT_ANY
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:172:2: ( VT_ANY )
+            // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:172:4: VT_ANY
             {
             match(input,VT_ANY,FOLLOW_VT_ANY_in_any_key427); 
             ((entry_scope)entry_stack.peek()).retval.setSection(DSLMappingEntry.ANY);

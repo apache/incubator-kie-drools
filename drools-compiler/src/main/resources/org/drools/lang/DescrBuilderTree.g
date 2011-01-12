@@ -324,11 +324,11 @@ for_functions
 	;
 	
 for_function returns [ForFunctionDescr func]
-	: 	^(ID VT_LABEL args=arguments)	
-	{	$func = factory.createForFunction( $ID, $VT_LABEL, $args ); 	}
+	: 	^(ID VT_LABEL args=arguments)
+	{  $func = factory.createForFunction( $ID, $VT_LABEL, null );   }
 	;
 	
-arguments returns [List params_list]
+arguments
 	:	^(VT_ARGUMENTS params+=VT_EXPRESSION* RIGHT_PAREN)
 	;	
 

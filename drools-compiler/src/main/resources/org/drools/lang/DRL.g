@@ -188,7 +188,8 @@ tokens {
 	}
 }
 
-@parser::header {
+// can't use @parser::header because antlrIDE does not understand it
+@header {
 	package org.drools.lang;
 	
 	import java.util.List;
@@ -408,7 +409,7 @@ type_declaration
 	:	declare_key  type_declare_id type_decl_extends? type_decl_implements?
 		decl_metadata*
 		decl_field*
-		decl_method*
+//		decl_method*
 		end_key
 		-> ^(declare_key type_declare_id type_decl_extends? type_decl_implements? decl_metadata* decl_field* end_key)
 	;
@@ -433,18 +434,18 @@ type_decl_implements
 
 
 //sotty: TODO: replace with annotation
-decl_metadata
-	: annotation
-	;
-
 //decl_metadata
-//	:	AT 
-//	{	helper.emit($AT, DroolsEditorType.SYMBOL);	}
-//		ID
-//	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
-//		paren_chunk?
-//		-> ^(AT ID paren_chunk?)
+//	: annotation
 //	;
+
+decl_metadata
+	:	AT 
+	{	helper.emit($AT, DroolsEditorType.SYMBOL);	}
+		ID
+	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
+		paren_chunk?
+		-> ^(AT ID paren_chunk?)
+	;
 
 decl_field
 	:	ID	{	helper.emit($ID, DroolsEditorType.IDENTIFIER);	}
@@ -461,13 +462,13 @@ decl_field_initialization
 	-> ^(EQUALS_ASSIGN paren_chunk)
 	;
 
-decl_method
+/* decl_method
 options{ backtrack=true; memoize=true; }
 	:	methodDeclaration
 	|	void_key ID voidMethodDeclaratorRest
 	|	ID constructorDeclaratorRest
 	;
-
+*/
 // --------------------------------------------------------
 //                      RULE STATEMENT
 // --------------------------------------------------------
@@ -1409,19 +1410,10 @@ string_list
 	-> STRING[$first,buf.toString()+" ]"]
 	;
 
-
-
-
-
-
-
-
-
-
 // --------------------------------------------------------
 //                      STATEMENTS
 // --------------------------------------------------------
-
+/*
 
 block   
 	:	LEFT_CURLY blockStatement* RIGHT_CURLY
@@ -1481,7 +1473,7 @@ options{ backtrack=true; memoize=true; }
       | catches
       | finally_key block
       )
-    | switch_key parExpression LEFT_CURLY switchBlockStatementGroups RIGHT_CURLY
+    | switch_key parExpression LEFT_CURLY switchBlockStatementGroups* RIGHT_CURLY
     | synchronized_key parExpression block
     | return_key expression? SEMICOLON
     | throw_key expression SEMICOLON
@@ -1536,30 +1528,22 @@ formalParameter
 
 
 switchBlockStatementGroups
-	:	(switchBlockStatementGroup)*
-	;
-	
-switchBlockStatementGroup
-	:	switchLabel blockStatement*
+	:	switchLabel 
+	| blockStatement
 	;
 	
 switchLabel
 //	:	'case' constantExpression ':'				//constantExpression is actually an expression
+//  |   'case' enumConstantName ':'       //enumConstantName is actually an ID
 	: case_key expression COLON
-//	|   'case' enumConstantName ':'			  //enumConstantName is actually an ID
-	| case_key ID COLON
 	| default_key COLON
 	;
-	
-	
-	
-	
 	
 modifyStatement
 	: s=modify_key parExpression 
 	LEFT_CURLY ( e = expression (COMMA e=expression  )* )? RIGHT_CURLY
 	;	
-
+*/
 
 // --------------------------------------------------------
 //                      EXPRESSIONS
@@ -1604,9 +1588,6 @@ instanceOfExpression
 relationalExpression
     :   shiftExpression ( (LESS)=> relationalOp shiftExpression )*
     ;
-    
-    
-    
 	
 relationalOp
 	:	(LESS_EQUALS| GREATER_EQUALS | LESS | GREATER)
@@ -1742,7 +1723,7 @@ arrayInitializer
 	;
 
 classCreatorRest
-	:	arguments classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
+	:	arguments //classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
 	;
 	
 explicitGenericInvocation
@@ -1798,17 +1779,10 @@ options { k=1; }
         |   SHIFT_RIGHT_UNSIG EQUALS_ASSIGN
 	;
 
-
-
-
-
-
 // --------------------------------------------------------
 //                      (ANON) CLASS_BODY
 // --------------------------------------------------------
-
-
-	
+/*	
 classDeclaration
 	:	normalClassDeclaration
     |   enumDeclaration
@@ -1932,12 +1906,6 @@ typeParameter
 bound
 	:	type (AMPER type)*
 	;
-
-
-
-
-
-
 	
 interfaceDeclaration
 	:	normalInterfaceDeclaration
@@ -1995,8 +1963,6 @@ voidInterfaceMethodDeclaratorRest
 	:	formalParameters (throws_key typeNameList)? SEMICOLON
 	;
 
-
-
 constantDeclarator
 	:	ID constantDeclaratorRest
 	;
@@ -2008,13 +1974,6 @@ constantDeclaratorsRest
 constantDeclaratorRest
 	:	(LEFT_SQUARE RIGHT_SQUARE)* EQUALS variableInitializer
 	;
-
-
-
-
-
-
-
 
 enumDeclaration
 	:	enum_key ID (implements_key typeList)? enumBody
@@ -2036,12 +1995,9 @@ enumBodyDeclarations
 	:	SEMICOLON (classBodyDeclaration)*
 	;
 
-
 // --------------------------------------------------------
 //                      (JAVA) ANNOTATIONS
 // --------------------------------------------------------
-
-
 
 annotations
 	:	annotation+
@@ -2126,14 +2082,7 @@ annotationConstantRest
 defaultValue
  	:	default_key elementValue
  	;
-
-
-
-
-
-
-
-
+*/
 
 // --------------------------------------------------------
 //                      KEYWORDS
