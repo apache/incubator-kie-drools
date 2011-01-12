@@ -56,6 +56,7 @@ public class JpaPersistenceContextManager
         if ( cmdScopedEntityManager == null || !cmdScopedEntityManager.isOpen() ) {
             internalCmdScopedEntityManager = true;
             cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            this.cmdScopedEntityManager = cmdScopedEntityManager;
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
                           cmdScopedEntityManager );
         } else {
