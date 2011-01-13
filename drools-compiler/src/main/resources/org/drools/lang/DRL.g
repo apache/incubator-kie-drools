@@ -4,7 +4,7 @@ options {
 	output=AST;
 	language = Java;
 }
- 
+  
 tokens {
 	VT_COMPILATION_UNIT; 
 	VT_FUNCTION_IMPORT;
@@ -767,9 +767,20 @@ for_functions
 	;
 	
 for_function 
-	: 	label ID arguments
-		-> ^(ID label arguments)
+	: 	label ID arguments_as_string
+	-> ^(ID label arguments_as_string )
 	;	
+	
+arguments_as_string
+options { backtrack=true; memoize=true; }
+  : LEFT_PAREN (expression_as_string (COMMA expression_as_string)*)? RIGHT_PAREN
+  -> ^(VT_ARGUMENTS expression_as_string*)
+  ;
+  
+expression_as_string
+  : ex=expression
+  -> VT_EXPRESSION[$ex.start, $ex.text]
+  ;  
 
 pattern_source
 @init { boolean isFailed = true;	}
@@ -1551,7 +1562,6 @@ modifyStatement
 expression
 options { backtrack=true; memoize=true; }
 	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)?
-	->	^(VT_EXPRESSION conditionalExpression (assignmentOperator expression)? )
 	;
 
 conditionalExpression
@@ -1756,7 +1766,6 @@ superSuffix
 arguments
 options { backtrack=true; memoize=true; }
 	:	LEFT_PAREN expressionList? RIGHT_PAREN
-		-> ^(VT_ARGUMENTS expressionList? RIGHT_PAREN)
 	;
 
 expressionList

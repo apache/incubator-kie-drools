@@ -129,7 +129,7 @@ argument returns [BaseDescr arg]
 	:	id=ID (LEFT_SQUARE rightList+=RIGHT_SQUARE)*
 	{	$arg = factory.createArgument($id, $rightList);	}
 	;
- 
+	
 type_declaration returns [TypeDeclarationDescr declaration]
 @init {	List<Map> declMetadaList = new LinkedList<Map>();
 		List<TypeFieldDescr> declFieldList = new LinkedList<TypeFieldDescr>(); 
@@ -319,17 +319,21 @@ over_element returns [BehaviorDescr behavior]
 	{	$behavior = factory.createBehavior($id2,$pc);	}
 	;
 	
-for_functions
-	:	^(VT_FOR_FUNCTIONS for_function+ )
+for_functions returns [List<ForFunctionDescr> list]
+@init{ List<ForFunctionDescr> fors = new ArrayList<ForFunctionDescr>(); }
+@end{ $list = fors; }
+	:	^(VT_FOR_FUNCTIONS (ff=for_function { fors.add( $ff.func ); })+ )
 	;
-	
+	 
 for_function returns [ForFunctionDescr func]
-	: 	^(ID VT_LABEL args=arguments)
-	{  $func = factory.createForFunction( $ID, $VT_LABEL, null );   }
+	: 	^(ID VT_LABEL arguments)
+	{  $func = factory.createForFunction( $ID, $VT_LABEL, $arguments.args );   }
 	;
 	
-arguments
-	:	^(VT_ARGUMENTS params+=VT_EXPRESSION* RIGHT_PAREN)
+arguments returns [List<String> args]
+@init{ List<String> params = new ArrayList<String>(); }
+@end{ $args = params; }
+	:	^(VT_ARGUMENTS (param=VT_EXPRESSION { params.add($param.text); })*)
 	;	
 
 fact_expression returns [BaseDescr descr]

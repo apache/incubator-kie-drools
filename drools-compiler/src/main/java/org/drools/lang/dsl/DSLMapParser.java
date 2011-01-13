@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-01-11 15:22:28
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-01-12 16:44:44
 
 	package org.drools.lang.dsl;
 	import java.util.List;
@@ -472,7 +472,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: key_section, value_section, scope_section, meta_section
+            // elements: key_section, meta_section, scope_section, value_section
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -667,7 +667,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: value1, value2, value4, value3
+            // elements: value3, value1, value4, value2
             // token labels: 
             // rule labels: retval, value3, value4, value1, value2
             // token list labels: 
@@ -1724,7 +1724,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: name, name, name, q, name, name, name, name, q, q, q, q, q, name, q, q, name, q
+            // elements: name, q, q, name, q, name, q, q, name, q, q, q, name, q, name, name, name, name
             // token labels: q, name
             // rule labels: retval
             // token list labels: 
