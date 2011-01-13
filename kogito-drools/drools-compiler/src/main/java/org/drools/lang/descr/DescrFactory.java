@@ -1,11 +1,13 @@
 package org.drools.lang.descr;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsTree;
 
 /**
@@ -757,25 +759,25 @@ public class DescrFactory {
      * @see ForFunctionDescr
      */
     @SuppressWarnings("unchecked")
-    public ForFunctionDescr createForFunction( DroolsTree id,
-                                               DroolsTree label,
-                                               DroolsTree arguments ) {
+    public ForFunctionDescr createForFunction(DroolsTree id,
+                                              DroolsTree label,
+                                              List<String> arguments) {
         ForFunctionDescr ff = new ForFunctionDescr();
         ff.setId( id.getText() );
         ff.setLabel( label.getText() );
         ff.setStartCharacter( getStartOffsetLocation( label ) );
         ff.setLocation( getColumnLocation( label ),
                         getColumnLocation( label ) );
-        ff.setArguments( new ArrayList<String>() );
-        for( DroolsTree arg : (List<DroolsTree>) arguments.getChildren() ) {
-            if( arg.getType() == DRLParser.RIGHT_PAREN ) {
-                ff.setEndCharacter( getEndOffsetLocation( arg ) );
-                ff.setEndLocation( getColumnLocation( arg ),
-                                   getColumnLocation( arg ) );
-            } else {
-                ff.getArguments().add( arg.getText() );
-            }
-        }
+        ff.setArguments( arguments );
+        // for( DroolsTree arg : (List<DroolsTree>) arguments.getChildren() ) {
+        // if( arg.getType() == DRLParser.RIGHT_PAREN ) {
+        // ff.setEndCharacter( getEndOffsetLocation( arg ) );
+        // ff.setEndLocation( getColumnLocation( arg ),
+        // getColumnLocation( arg ) );
+        // } else {
+        // ff.getArguments().add( arg.getText() );
+        // }
+        // }
         return ff;
     }
 

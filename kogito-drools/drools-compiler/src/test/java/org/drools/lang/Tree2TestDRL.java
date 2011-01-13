@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/Tree2TestDRL.g 2011-01-11 15:22:26
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/Tree2TestDRL.g 2011-01-12 16:44:42
 
 	package org.drools.lang;
 

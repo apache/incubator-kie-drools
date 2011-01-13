@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DescrBuilderTree.g 2011-01-11 15:22:15
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/DescrBuilderTree.g 2011-01-12 16:44:31
 
 	package org.drools.lang;
 
@@ -3467,16 +3467,22 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "for_functions"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:322:1: for_functions : ^( VT_FOR_FUNCTIONS ( for_function )+ ) ;
-    public final void for_functions() throws RecognitionException {
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:322:1: for_functions returns [List<ForFunctionDescr> list] : ^( VT_FOR_FUNCTIONS (ff= for_function )+ ) ;
+    public final List<ForFunctionDescr> for_functions() throws RecognitionException {
+        List<ForFunctionDescr> list = null;
+
+        ForFunctionDescr ff = null;
+
+
+         List<ForFunctionDescr> fors = new ArrayList<ForFunctionDescr>(); 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:2: ( ^( VT_FOR_FUNCTIONS ( for_function )+ ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:4: ^( VT_FOR_FUNCTIONS ( for_function )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:325:2: ( ^( VT_FOR_FUNCTIONS (ff= for_function )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:325:4: ^( VT_FOR_FUNCTIONS (ff= for_function )+ )
             {
-            match(input,VT_FOR_FUNCTIONS,FOLLOW_VT_FOR_FUNCTIONS_in_for_functions1758); 
+            match(input,VT_FOR_FUNCTIONS,FOLLOW_VT_FOR_FUNCTIONS_in_for_functions1770); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:23: ( for_function )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:325:23: (ff= for_function )+
             int cnt49=0;
             loop49:
             do {
@@ -3490,13 +3496,14 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt49) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:323:23: for_function
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:325:24: ff= for_function
             	    {
-            	    pushFollow(FOLLOW_for_function_in_for_functions1760);
-            	    for_function();
+            	    pushFollow(FOLLOW_for_function_in_for_functions1775);
+            	    ff=for_function();
 
             	    state._fsp--;
 
+            	     fors.add( ff ); 
 
             	    }
             	    break;
@@ -3522,35 +3529,37 @@ public class DescrBuilderTree extends TreeParser {
         }
         finally {
         }
-        return ;
+        return list;
     }
     // $ANTLR end "for_functions"
 
 
     // $ANTLR start "for_function"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:326:1: for_function returns [ForFunctionDescr func] : ^( ID VT_LABEL args= arguments ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:328:1: for_function returns [ForFunctionDescr func] : ^( ID VT_LABEL arguments ) ;
     public final ForFunctionDescr for_function() throws RecognitionException {
         ForFunctionDescr func = null;
 
         DroolsTree ID1=null;
         DroolsTree VT_LABEL2=null;
+        List<String> arguments3 = null;
+
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:2: ( ^( ID VT_LABEL args= arguments ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:327:5: ^( ID VT_LABEL args= arguments )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:329:2: ( ^( ID VT_LABEL arguments ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:329:5: ^( ID VT_LABEL arguments )
             {
-            ID1=(DroolsTree)match(input,ID,FOLLOW_ID_in_for_function1781); 
+            ID1=(DroolsTree)match(input,ID,FOLLOW_ID_in_for_function1800); 
 
             match(input, Token.DOWN, null); 
-            VT_LABEL2=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_for_function1783); 
-            pushFollow(FOLLOW_arguments_in_for_function1787);
-            arguments();
+            VT_LABEL2=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_for_function1802); 
+            pushFollow(FOLLOW_arguments_in_for_function1804);
+            arguments3=arguments();
 
             state._fsp--;
 
 
             match(input, Token.UP, null); 
-              func = factory.createForFunction( ID1, VT_LABEL2, null );   
+              func = factory.createForFunction( ID1, VT_LABEL2, arguments3 );   
 
             }
 
@@ -3567,49 +3576,50 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "arguments"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:331:1: arguments : ^( VT_ARGUMENTS (params+= VT_EXPRESSION )* RIGHT_PAREN ) ;
-    public final void arguments() throws RecognitionException {
-        DroolsTree params=null;
-        List list_params=null;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:333:1: arguments returns [List<String> args] : ^( VT_ARGUMENTS (param= VT_EXPRESSION )* ) ;
+    public final List<String> arguments() throws RecognitionException {
+        List<String> args = null;
 
+        DroolsTree param=null;
+
+         List<String> params = new ArrayList<String>(); 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:332:2: ( ^( VT_ARGUMENTS (params+= VT_EXPRESSION )* RIGHT_PAREN ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:332:4: ^( VT_ARGUMENTS (params+= VT_EXPRESSION )* RIGHT_PAREN )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:2: ( ^( VT_ARGUMENTS (param= VT_EXPRESSION )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:4: ^( VT_ARGUMENTS (param= VT_EXPRESSION )* )
             {
-            match(input,VT_ARGUMENTS,FOLLOW_VT_ARGUMENTS_in_arguments1804); 
+            match(input,VT_ARGUMENTS,FOLLOW_VT_ARGUMENTS_in_arguments1833); 
 
-            match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:332:25: (params+= VT_EXPRESSION )*
-            loop50:
-            do {
-                int alt50=2;
-                int LA50_0 = input.LA(1);
+            if ( input.LA(1)==Token.DOWN ) {
+                match(input, Token.DOWN, null); 
+                // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:19: (param= VT_EXPRESSION )*
+                loop50:
+                do {
+                    int alt50=2;
+                    int LA50_0 = input.LA(1);
 
-                if ( (LA50_0==VT_EXPRESSION) ) {
-                    alt50=1;
-                }
-
-
-                switch (alt50) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:332:25: params+= VT_EXPRESSION
-            	    {
-            	    params=(DroolsTree)match(input,VT_EXPRESSION,FOLLOW_VT_EXPRESSION_in_arguments1808); 
-            	    if (list_params==null) list_params=new ArrayList();
-            	    list_params.add(params);
+                    if ( (LA50_0==VT_EXPRESSION) ) {
+                        alt50=1;
+                    }
 
 
-            	    }
-            	    break;
+                    switch (alt50) {
+                	case 1 :
+                	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:336:20: param= VT_EXPRESSION
+                	    {
+                	    param=(DroolsTree)match(input,VT_EXPRESSION,FOLLOW_VT_EXPRESSION_in_arguments1838); 
+                	     params.add((param!=null?param.getText():null)); 
 
-            	default :
-            	    break loop50;
-                }
-            } while (true);
+                	    }
+                	    break;
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_arguments1811); 
+                	default :
+                	    break loop50;
+                    }
+                } while (true);
 
-            match(input, Token.UP, null); 
+
+                match(input, Token.UP, null); 
+            }
 
             }
 
@@ -3620,7 +3630,7 @@ public class DescrBuilderTree extends TreeParser {
         }
         finally {
         }
-        return ;
+        return args;
     }
     // $ANTLR end "arguments"
 
@@ -3629,7 +3639,7 @@ public class DescrBuilderTree extends TreeParser {
     };
 
     // $ANTLR start "fact_expression"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:335:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:339:1: fact_expression returns [BaseDescr descr] : ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK );
     public final DescrBuilderTree.fact_expression_return fact_expression() throws RecognitionException {
         DescrBuilderTree.fact_expression_return retval = new DescrBuilderTree.fact_expression_return();
         retval.start = input.LT(1);
@@ -3666,7 +3676,7 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> exprList = new LinkedList<BaseDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:338:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:3: ( ^( VT_FACT pt= pattern_type (fe= fact_expression )* ) | ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression ) | ^(start= VT_FACT_OR left= fact_expression right= fact_expression ) | ^( VT_FIELD field= field_element (fe= fact_expression )? ) | ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression ) | ^( VK_EVAL pc= VT_PAREN_CHUNK ) | ^(op= EQUALS fe= fact_expression ) | ^(op= NOT_EQUALS fe= fact_expression ) | ^(op= GREATER fe= fact_expression ) | ^(op= GREATER_EQUALS fe= fact_expression ) | ^(op= LESS fe= fact_expression ) | ^(op= LESS_EQUALS fe= fact_expression ) | ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression ) | ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ ) | ^( DOUBLE_PIPE left= fact_expression right= fact_expression ) | ^( DOUBLE_AMPER left= fact_expression right= fact_expression ) | ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) | s= STRING | ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) ) | b= BOOL | n= NULL | pc= VT_PAREN_CHUNK )
             int alt63=22;
             switch ( input.LA(1) ) {
             case VT_FACT:
@@ -3795,17 +3805,17 @@ public class DescrBuilderTree extends TreeParser {
 
             switch (alt63) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:338:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:5: ^( VT_FACT pt= pattern_type (fe= fact_expression )* )
                     {
-                    match(input,VT_FACT,FOLLOW_VT_FACT_in_fact_expression1832); 
+                    match(input,VT_FACT,FOLLOW_VT_FACT_in_fact_expression1863); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_pattern_type_in_fact_expression1836);
+                    pushFollow(FOLLOW_pattern_type_in_fact_expression1867);
                     pt=pattern_type();
 
                     state._fsp--;
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:338:31: (fe= fact_expression )*
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:31: (fe= fact_expression )*
                     loop51:
                     do {
                         int alt51=2;
@@ -3818,9 +3828,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt51) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:338:32: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:32: fe= fact_expression
                     	    {
-                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression1841);
+                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression1872);
                     	    fe=fact_expression();
 
                     	    state._fsp--;
@@ -3842,13 +3852,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:340:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:344:4: ^( VT_FACT_BINDING label= VT_LABEL fact= fact_expression )
                     {
-                    match(input,VT_FACT_BINDING,FOLLOW_VT_FACT_BINDING_in_fact_expression1855); 
+                    match(input,VT_FACT_BINDING,FOLLOW_VT_FACT_BINDING_in_fact_expression1886); 
 
                     match(input, Token.DOWN, null); 
-                    label=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1859); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1863);
+                    label=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1890); 
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1894);
                     fact=fact_expression();
 
                     state._fsp--;
@@ -3860,17 +3870,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:342:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:346:4: ^(start= VT_FACT_OR left= fact_expression right= fact_expression )
                     {
-                    start=(DroolsTree)match(input,VT_FACT_OR,FOLLOW_VT_FACT_OR_in_fact_expression1875); 
+                    start=(DroolsTree)match(input,VT_FACT_OR,FOLLOW_VT_FACT_OR_in_fact_expression1906); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1879);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1910);
                     left=fact_expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1883);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1914);
                     right=fact_expression();
 
                     state._fsp--;
@@ -3882,17 +3892,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:345:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:349:4: ^( VT_FIELD field= field_element (fe= fact_expression )? )
                     {
-                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1894); 
+                    match(input,VT_FIELD,FOLLOW_VT_FIELD_in_fact_expression1925); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_field_element_in_fact_expression1898);
+                    pushFollow(FOLLOW_field_element_in_fact_expression1929);
                     field=field_element();
 
                     state._fsp--;
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:345:37: (fe= fact_expression )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:349:37: (fe= fact_expression )?
                     int alt52=2;
                     int LA52_0 = input.LA(1);
 
@@ -3901,9 +3911,9 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt52) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:345:37: fe= fact_expression
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:349:37: fe= fact_expression
                             {
-                            pushFollow(FOLLOW_fact_expression_in_fact_expression1902);
+                            pushFollow(FOLLOW_fact_expression_in_fact_expression1933);
                             fe=fact_expression();
 
                             state._fsp--;
@@ -3925,13 +3935,13 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:351:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:355:4: ^( VT_BIND_FIELD label= VT_LABEL fe= fact_expression )
                     {
-                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1913); 
+                    match(input,VT_BIND_FIELD,FOLLOW_VT_BIND_FIELD_in_fact_expression1944); 
 
                     match(input, Token.DOWN, null); 
-                    label=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1917); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1921);
+                    label=(DroolsTree)match(input,VT_LABEL,FOLLOW_VT_LABEL_in_fact_expression1948); 
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1952);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -3943,12 +3953,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:354:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:358:4: ^( VK_EVAL pc= VT_PAREN_CHUNK )
                     {
-                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_fact_expression1932); 
+                    match(input,VK_EVAL,FOLLOW_VK_EVAL_in_fact_expression1963); 
 
                     match(input, Token.DOWN, null); 
-                    pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1936); 
+                    pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression1967); 
 
                     match(input, Token.UP, null); 
                     	retval.descr = factory.createPredicate(pc);	
@@ -3956,12 +3966,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:357:4: ^(op= EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:361:4: ^(op= EQUALS fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,EQUALS,FOLLOW_EQUALS_in_fact_expression1949); 
+                    op=(DroolsTree)match(input,EQUALS,FOLLOW_EQUALS_in_fact_expression1980); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1953);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression1984);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -3973,12 +3983,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:359:4: ^(op= NOT_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:4: ^(op= NOT_EQUALS fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,NOT_EQUALS,FOLLOW_NOT_EQUALS_in_fact_expression1965); 
+                    op=(DroolsTree)match(input,NOT_EQUALS,FOLLOW_NOT_EQUALS_in_fact_expression1996); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1969);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2000);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -3990,12 +4000,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:361:4: ^(op= GREATER fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:4: ^(op= GREATER fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,GREATER,FOLLOW_GREATER_in_fact_expression1981); 
+                    op=(DroolsTree)match(input,GREATER,FOLLOW_GREATER_in_fact_expression2012); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression1985);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2016);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -4007,12 +4017,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:363:4: ^(op= GREATER_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:4: ^(op= GREATER_EQUALS fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,GREATER_EQUALS,FOLLOW_GREATER_EQUALS_in_fact_expression1997); 
+                    op=(DroolsTree)match(input,GREATER_EQUALS,FOLLOW_GREATER_EQUALS_in_fact_expression2028); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2001);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2032);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -4024,12 +4034,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:365:4: ^(op= LESS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:4: ^(op= LESS fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,LESS,FOLLOW_LESS_in_fact_expression2013); 
+                    op=(DroolsTree)match(input,LESS,FOLLOW_LESS_in_fact_expression2044); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2017);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2048);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -4041,12 +4051,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:367:4: ^(op= LESS_EQUALS fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:371:4: ^(op= LESS_EQUALS fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,LESS_EQUALS,FOLLOW_LESS_EQUALS_in_fact_expression2029); 
+                    op=(DroolsTree)match(input,LESS_EQUALS,FOLLOW_LESS_EQUALS_in_fact_expression2060); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2033);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2064);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -4058,12 +4068,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:4: ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:4: ^(op= VK_OPERATOR (not= VK_NOT )? (param= VT_SQUARE_CHUNK )? fe= fact_expression )
                     {
-                    op=(DroolsTree)match(input,VK_OPERATOR,FOLLOW_VK_OPERATOR_in_fact_expression2045); 
+                    op=(DroolsTree)match(input,VK_OPERATOR,FOLLOW_VK_OPERATOR_in_fact_expression2076); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:24: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:24: (not= VK_NOT )?
                     int alt53=2;
                     int LA53_0 = input.LA(1);
 
@@ -4072,16 +4082,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt53) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:24: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:24: not= VK_NOT
                             {
-                            not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2049); 
+                            not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2080); 
 
                             }
                             break;
 
                     }
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:38: (param= VT_SQUARE_CHUNK )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:38: (param= VT_SQUARE_CHUNK )?
                     int alt54=2;
                     int LA54_0 = input.LA(1);
 
@@ -4090,16 +4100,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt54) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:369:38: param= VT_SQUARE_CHUNK
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:373:38: param= VT_SQUARE_CHUNK
                             {
-                            param=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2054); 
+                            param=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2085); 
 
                             }
                             break;
 
                     }
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2059);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2090);
                     fe=fact_expression();
 
                     state._fsp--;
@@ -4111,12 +4121,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:4: ^( VK_IN (not= VK_NOT )? (fe= fact_expression )+ )
                     {
-                    match(input,VK_IN,FOLLOW_VK_IN_in_fact_expression2070); 
+                    match(input,VK_IN,FOLLOW_VK_IN_in_fact_expression2101); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:15: (not= VK_NOT )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:15: (not= VK_NOT )?
                     int alt55=2;
                     int LA55_0 = input.LA(1);
 
@@ -4125,16 +4135,16 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt55) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:15: not= VK_NOT
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:15: not= VK_NOT
                             {
-                            not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2074); 
+                            not=(DroolsTree)match(input,VK_NOT,FOLLOW_VK_NOT_in_fact_expression2105); 
 
                             }
                             break;
 
                     }
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:24: (fe= fact_expression )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:24: (fe= fact_expression )+
                     int cnt56=0;
                     loop56:
                     do {
@@ -4148,9 +4158,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt56) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:372:25: fe= fact_expression
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:376:25: fe= fact_expression
                     	    {
-                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression2080);
+                    	    pushFollow(FOLLOW_fact_expression_in_fact_expression2111);
                     	    fe=fact_expression();
 
                     	    state._fsp--;
@@ -4176,17 +4186,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:375:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:379:4: ^( DOUBLE_PIPE left= fact_expression right= fact_expression )
                     {
-                    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_expression2095); 
+                    match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_fact_expression2126); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2099);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2130);
                     left=fact_expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2103);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2134);
                     right=fact_expression();
 
                     state._fsp--;
@@ -4198,17 +4208,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:377:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:381:4: ^( DOUBLE_AMPER left= fact_expression right= fact_expression )
                     {
-                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_fact_expression2113); 
+                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_fact_expression2144); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2117);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2148);
                     left=fact_expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_fact_expression_in_fact_expression2121);
+                    pushFollow(FOLLOW_fact_expression_in_fact_expression2152);
                     right=fact_expression();
 
                     state._fsp--;
@@ -4220,12 +4230,12 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 17 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:380:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:4: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
                     {
-                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2132); 
+                    match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2163); 
 
                     match(input, Token.DOWN, null); 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:380:23: (ae= accessor_element )+
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:23: (ae= accessor_element )+
                     int cnt57=0;
                     loop57:
                     do {
@@ -4239,9 +4249,9 @@ public class DescrBuilderTree extends TreeParser {
 
                         switch (alt57) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:380:24: ae= accessor_element
+                    	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:24: ae= accessor_element
                     	    {
-                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression2137);
+                    	    pushFollow(FOLLOW_accessor_element_in_fact_expression2168);
                     	    ae=accessor_element();
 
                     	    state._fsp--;
@@ -4267,17 +4277,17 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 18 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:382:4: s= STRING
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:4: s= STRING
                     {
-                    s=(DroolsTree)match(input,STRING,FOLLOW_STRING_in_fact_expression2152); 
+                    s=(DroolsTree)match(input,STRING,FOLLOW_STRING_in_fact_expression2183); 
                     	retval.descr = factory.createStringLiteralRestriction(s);	
 
                     }
                     break;
                 case 19 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:4: ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:4: ( PLUS | m= MINUS )? ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
                     {
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:4: ( PLUS | m= MINUS )?
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:4: ( PLUS | m= MINUS )?
                     int alt58=3;
                     int LA58_0 = input.LA(1);
 
@@ -4289,23 +4299,23 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     switch (alt58) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:5: PLUS
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:5: PLUS
                             {
-                            match(input,PLUS,FOLLOW_PLUS_in_fact_expression2161); 
+                            match(input,PLUS,FOLLOW_PLUS_in_fact_expression2192); 
 
                             }
                             break;
                         case 2 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:384:10: m= MINUS
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:388:10: m= MINUS
                             {
-                            m=(DroolsTree)match(input,MINUS,FOLLOW_MINUS_in_fact_expression2165); 
+                            m=(DroolsTree)match(input,MINUS,FOLLOW_MINUS_in_fact_expression2196); 
 
                             }
                             break;
 
                     }
 
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:10: ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:10: ( (i= DECIMAL | i= SIGNED_DECIMAL ) | (h= HEX | h= SIGNED_HEX ) | (f= FLOAT | f= SIGNED_FLOAT ) )
                     int alt62=3;
                     switch ( input.LA(1) ) {
                     case SIGNED_DECIMAL:
@@ -4335,9 +4345,9 @@ public class DescrBuilderTree extends TreeParser {
 
                     switch (alt62) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:12: (i= DECIMAL | i= SIGNED_DECIMAL )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:12: (i= DECIMAL | i= SIGNED_DECIMAL )
                             {
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:12: (i= DECIMAL | i= SIGNED_DECIMAL )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:12: (i= DECIMAL | i= SIGNED_DECIMAL )
                             int alt59=2;
                             int LA59_0 = input.LA(1);
 
@@ -4355,16 +4365,16 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt59) {
                                 case 1 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:13: i= DECIMAL
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:13: i= DECIMAL
                                     {
-                                    i=(DroolsTree)match(input,DECIMAL,FOLLOW_DECIMAL_in_fact_expression2184); 
+                                    i=(DroolsTree)match(input,DECIMAL,FOLLOW_DECIMAL_in_fact_expression2215); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:385:23: i= SIGNED_DECIMAL
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:23: i= SIGNED_DECIMAL
                                     {
-                                    i=(DroolsTree)match(input,SIGNED_DECIMAL,FOLLOW_SIGNED_DECIMAL_in_fact_expression2188); 
+                                    i=(DroolsTree)match(input,SIGNED_DECIMAL,FOLLOW_SIGNED_DECIMAL_in_fact_expression2219); 
 
                                     }
                                     break;
@@ -4376,9 +4386,9 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             break;
                         case 2 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:5: (h= HEX | h= SIGNED_HEX )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:5: (h= HEX | h= SIGNED_HEX )
                             {
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:5: (h= HEX | h= SIGNED_HEX )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:5: (h= HEX | h= SIGNED_HEX )
                             int alt60=2;
                             int LA60_0 = input.LA(1);
 
@@ -4396,16 +4406,16 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt60) {
                                 case 1 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:6: h= HEX
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:6: h= HEX
                                     {
-                                    h=(DroolsTree)match(input,HEX,FOLLOW_HEX_in_fact_expression2200); 
+                                    h=(DroolsTree)match(input,HEX,FOLLOW_HEX_in_fact_expression2231); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:386:12: h= SIGNED_HEX
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:390:12: h= SIGNED_HEX
                                     {
-                                    h=(DroolsTree)match(input,SIGNED_HEX,FOLLOW_SIGNED_HEX_in_fact_expression2204); 
+                                    h=(DroolsTree)match(input,SIGNED_HEX,FOLLOW_SIGNED_HEX_in_fact_expression2235); 
 
                                     }
                                     break;
@@ -4417,9 +4427,9 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             break;
                         case 3 :
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:387:5: (f= FLOAT | f= SIGNED_FLOAT )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:5: (f= FLOAT | f= SIGNED_FLOAT )
                             {
-                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:387:5: (f= FLOAT | f= SIGNED_FLOAT )
+                            // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:5: (f= FLOAT | f= SIGNED_FLOAT )
                             int alt61=2;
                             int LA61_0 = input.LA(1);
 
@@ -4437,16 +4447,16 @@ public class DescrBuilderTree extends TreeParser {
                             }
                             switch (alt61) {
                                 case 1 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:387:6: f= FLOAT
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:6: f= FLOAT
                                     {
-                                    f=(DroolsTree)match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression2218); 
+                                    f=(DroolsTree)match(input,FLOAT,FOLLOW_FLOAT_in_fact_expression2249); 
 
                                     }
                                     break;
                                 case 2 :
-                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:387:14: f= SIGNED_FLOAT
+                                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:14: f= SIGNED_FLOAT
                                     {
-                                    f=(DroolsTree)match(input,SIGNED_FLOAT,FOLLOW_SIGNED_FLOAT_in_fact_expression2222); 
+                                    f=(DroolsTree)match(input,SIGNED_FLOAT,FOLLOW_SIGNED_FLOAT_in_fact_expression2253); 
 
                                     }
                                     break;
@@ -4464,25 +4474,25 @@ public class DescrBuilderTree extends TreeParser {
                     }
                     break;
                 case 20 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:389:4: b= BOOL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:4: b= BOOL
                     {
-                    b=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_fact_expression2238); 
+                    b=(DroolsTree)match(input,BOOL,FOLLOW_BOOL_in_fact_expression2269); 
                     	retval.descr = factory.createBoolLiteralRestriction(b);	
 
                     }
                     break;
                 case 21 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:391:4: n= NULL
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:395:4: n= NULL
                     {
-                    n=(DroolsTree)match(input,NULL,FOLLOW_NULL_in_fact_expression2248); 
+                    n=(DroolsTree)match(input,NULL,FOLLOW_NULL_in_fact_expression2279); 
                     	retval.descr = factory.createNullLiteralRestriction(n);	
 
                     }
                     break;
                 case 22 :
-                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:393:4: pc= VT_PAREN_CHUNK
+                    // src/main/resources/org/drools/lang/DescrBuilderTree.g:397:4: pc= VT_PAREN_CHUNK
                     {
-                    pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression2258); 
+                    pc=(DroolsTree)match(input,VT_PAREN_CHUNK,FOLLOW_VT_PAREN_CHUNK_in_fact_expression2289); 
                     	retval.descr = factory.createReturnValue(pc);	
 
                     }
@@ -4502,7 +4512,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "field_element"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:397:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:401:1: field_element returns [FieldConstraintDescr element] : ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) ;
     public final FieldConstraintDescr field_element() throws RecognitionException {
         FieldConstraintDescr element = null;
 
@@ -4513,13 +4523,13 @@ public class DescrBuilderTree extends TreeParser {
         	List<BaseDescr> aeList = new LinkedList<BaseDescr>();
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:3: ( ^( VT_ACCESSOR_PATH (ae= accessor_element )+ ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:5: ^( VT_ACCESSOR_PATH (ae= accessor_element )+ )
             {
-            match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_field_element2280); 
+            match(input,VT_ACCESSOR_PATH,FOLLOW_VT_ACCESSOR_PATH_in_field_element2311); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:24: (ae= accessor_element )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:24: (ae= accessor_element )+
             int cnt64=0;
             loop64:
             do {
@@ -4533,9 +4543,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt64) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:400:25: ae= accessor_element
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:25: ae= accessor_element
             	    {
-            	    pushFollow(FOLLOW_accessor_element_in_field_element2285);
+            	    pushFollow(FOLLOW_accessor_element_in_field_element2316);
             	    ae=accessor_element();
 
             	    state._fsp--;
@@ -4573,7 +4583,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "accessor_element"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:404:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:408:1: accessor_element returns [BaseDescr element] : ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) ;
     public final BaseDescr accessor_element() throws RecognitionException {
         BaseDescr element = null;
 
@@ -4582,14 +4592,14 @@ public class DescrBuilderTree extends TreeParser {
         List list_sc=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:2: ( ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:4: ^( VT_ACCESSOR_ELEMENT id= ID (sc+= VT_SQUARE_CHUNK )* )
             {
-            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2309); 
+            match(input,VT_ACCESSOR_ELEMENT,FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2340); 
 
             match(input, Token.DOWN, null); 
-            id=(DroolsTree)match(input,ID,FOLLOW_ID_in_accessor_element2313); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:34: (sc+= VT_SQUARE_CHUNK )*
+            id=(DroolsTree)match(input,ID,FOLLOW_ID_in_accessor_element2344); 
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:34: (sc+= VT_SQUARE_CHUNK )*
             loop65:
             do {
                 int alt65=2;
@@ -4602,9 +4612,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt65) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:405:34: sc+= VT_SQUARE_CHUNK
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:34: sc+= VT_SQUARE_CHUNK
             	    {
-            	    sc=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2317); 
+            	    sc=(DroolsTree)match(input,VT_SQUARE_CHUNK,FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2348); 
             	    if (list_sc==null) list_sc=new ArrayList();
             	    list_sc.add(sc);
 
@@ -4636,7 +4646,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "pattern_type"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:409:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:413:1: pattern_type returns [BaseDescr dataType] : ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr pattern_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4646,13 +4656,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:2: ( ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:4: ^( VT_PATTERN_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
-            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type2338); 
+            match(input,VT_PATTERN_TYPE,FOLLOW_VT_PATTERN_TYPE_in_pattern_type2369); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:28: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:28: (idList+= ID )+
             int cnt66=0;
             loop66:
             do {
@@ -4666,9 +4676,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt66) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:28: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:28: idList+= ID
             	    {
-            	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_pattern_type2342); 
+            	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_pattern_type2373); 
             	    if (list_idList==null) list_idList=new ArrayList();
             	    list_idList.add(idList);
 
@@ -4685,7 +4695,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt66++;
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:34: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop67:
             do {
                 int alt67=2;
@@ -4698,10 +4708,10 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt67) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:410:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:35: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern_type2346); 
-            	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern_type2350); 
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern_type2377); 
+            	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern_type2381); 
             	    if (list_rightList==null) list_rightList=new ArrayList();
             	    list_rightList.add(rightList);
 
@@ -4733,7 +4743,7 @@ public class DescrBuilderTree extends TreeParser {
 
 
     // $ANTLR start "data_type"
-    // src/main/resources/org/drools/lang/DescrBuilderTree.g:414:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
+    // src/main/resources/org/drools/lang/DescrBuilderTree.g:418:1: data_type returns [BaseDescr dataType] : ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) ;
     public final BaseDescr data_type() throws RecognitionException {
         BaseDescr dataType = null;
 
@@ -4743,13 +4753,13 @@ public class DescrBuilderTree extends TreeParser {
         List list_rightList=null;
 
         try {
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:2: ( ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* ) )
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:4: ^( VT_DATA_TYPE (idList+= ID )+ ( LEFT_SQUARE rightList+= RIGHT_SQUARE )* )
             {
-            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type2372); 
+            match(input,VT_DATA_TYPE,FOLLOW_VT_DATA_TYPE_in_data_type2403); 
 
             match(input, Token.DOWN, null); 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:25: (idList+= ID )+
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:25: (idList+= ID )+
             int cnt68=0;
             loop68:
             do {
@@ -4763,9 +4773,9 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt68) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:25: idList+= ID
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:25: idList+= ID
             	    {
-            	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_data_type2376); 
+            	    idList=(DroolsTree)match(input,ID,FOLLOW_ID_in_data_type2407); 
             	    if (list_idList==null) list_idList=new ArrayList();
             	    list_idList.add(idList);
 
@@ -4782,7 +4792,7 @@ public class DescrBuilderTree extends TreeParser {
                 cnt68++;
             } while (true);
 
-            // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
+            // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:31: ( LEFT_SQUARE rightList+= RIGHT_SQUARE )*
             loop69:
             do {
                 int alt69=2;
@@ -4795,10 +4805,10 @@ public class DescrBuilderTree extends TreeParser {
 
                 switch (alt69) {
             	case 1 :
-            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:415:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
+            	    // src/main/resources/org/drools/lang/DescrBuilderTree.g:419:32: LEFT_SQUARE rightList+= RIGHT_SQUARE
             	    {
-            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_data_type2380); 
-            	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_data_type2384); 
+            	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_data_type2411); 
+            	    rightList=(DroolsTree)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_data_type2415); 
             	    if (list_rightList==null) list_rightList=new ArrayList();
             	    list_rightList.add(rightList);
 
@@ -5004,82 +5014,81 @@ public class DescrBuilderTree extends TreeParser {
     public static final BitSet FOLLOW_ID_in_over_element1733 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000000000004L});
     public static final BitSet FOLLOW_ID_in_over_element1737 = new BitSet(new long[]{0x0000000000080000L});
     public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_over_element1741 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FOR_FUNCTIONS_in_for_functions1758 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_for_function_in_for_functions1760 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_for_function1781 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_for_function1783 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_arguments_in_for_function1787 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ARGUMENTS_in_arguments1804 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_EXPRESSION_in_arguments1808 = new BitSet(new long[]{0x0000800000000000L,0x0000000000000000L,0x0000000000002000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_arguments1811 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FACT_in_fact_expression1832 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_pattern_type_in_fact_expression1836 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1841 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1855 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1859 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1863 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1875 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1879 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1883 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1894 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_field_element_in_fact_expression1898 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1902 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1913 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1917 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1921 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1932 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1936 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_EQUALS_in_fact_expression1949 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1953 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_NOT_EQUALS_in_fact_expression1965 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1969 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_in_fact_expression1981 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression1985 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_EQUALS_in_fact_expression1997 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2001 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_in_fact_expression2013 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2017 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_EQUALS_in_fact_expression2029 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2033 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_OPERATOR_in_fact_expression2045 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2049 = new BitSet(new long[]{0x0000003E000C0040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2054 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2059 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VK_IN_in_fact_expression2070 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2074 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2080 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2095 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2099 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2103 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2113 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2117 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
-    public static final BitSet FOLLOW_fact_expression_in_fact_expression2121 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2132 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_accessor_element_in_fact_expression2137 = new BitSet(new long[]{0x0000004000000008L});
-    public static final BitSet FOLLOW_STRING_in_fact_expression2152 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PLUS_in_fact_expression2161 = new BitSet(new long[]{0x0000000000000000L,0x7000000000000000L,0x0000000C00020000L});
-    public static final BitSet FOLLOW_MINUS_in_fact_expression2165 = new BitSet(new long[]{0x0000000000000000L,0x7000000000000000L,0x0000000C00020000L});
-    public static final BitSet FOLLOW_DECIMAL_in_fact_expression2184 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SIGNED_DECIMAL_in_fact_expression2188 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_HEX_in_fact_expression2200 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SIGNED_HEX_in_fact_expression2204 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_FLOAT_in_fact_expression2218 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_SIGNED_FLOAT_in_fact_expression2222 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_BOOL_in_fact_expression2238 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NULL_in_fact_expression2248 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression2258 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_field_element2280 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_accessor_element_in_field_element2285 = new BitSet(new long[]{0x0000004000000008L});
-    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2309 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_accessor_element2313 = new BitSet(new long[]{0x0000000000040008L});
-    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2317 = new BitSet(new long[]{0x0000000000040008L});
-    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type2338 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_pattern_type2342 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000004L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern_type2346 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000040000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern_type2350 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000000L});
-    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type2372 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_data_type2376 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000004L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_data_type2380 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000040000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_data_type2384 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000000L});
+    public static final BitSet FOLLOW_VT_FOR_FUNCTIONS_in_for_functions1770 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_for_function_in_for_functions1775 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_for_function1800 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_for_function1802 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_arguments_in_for_function1804 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ARGUMENTS_in_arguments1833 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_EXPRESSION_in_arguments1838 = new BitSet(new long[]{0x0000800000000008L});
+    public static final BitSet FOLLOW_VT_FACT_in_fact_expression1863 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_pattern_type_in_fact_expression1867 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1872 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_VT_FACT_BINDING_in_fact_expression1886 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1890 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1894 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FACT_OR_in_fact_expression1906 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1910 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1914 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_FIELD_in_fact_expression1925 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_field_element_in_fact_expression1929 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1933 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_BIND_FIELD_in_fact_expression1944 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_LABEL_in_fact_expression1948 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1952 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_EVAL_in_fact_expression1963 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression1967 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_EQUALS_in_fact_expression1980 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression1984 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_NOT_EQUALS_in_fact_expression1996 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2000 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_in_fact_expression2012 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2016 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_EQUALS_in_fact_expression2028 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2032 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_in_fact_expression2044 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2048 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_EQUALS_in_fact_expression2060 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2064 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_OPERATOR_in_fact_expression2076 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2080 = new BitSet(new long[]{0x0000003E000C0040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_fact_expression2085 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2090 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VK_IN_in_fact_expression2101 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_VK_NOT_in_fact_expression2105 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2111 = new BitSet(new long[]{0x0000003E00080048L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_fact_expression2126 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2130 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2134 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_fact_expression2144 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2148 = new BitSet(new long[]{0x0000003E00080040L,0x7000000000080480L,0x0000000F9FB20820L});
+    public static final BitSet FOLLOW_fact_expression_in_fact_expression2152 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_fact_expression2163 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accessor_element_in_fact_expression2168 = new BitSet(new long[]{0x0000004000000008L});
+    public static final BitSet FOLLOW_STRING_in_fact_expression2183 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PLUS_in_fact_expression2192 = new BitSet(new long[]{0x0000000000000000L,0x7000000000000000L,0x0000000C00020000L});
+    public static final BitSet FOLLOW_MINUS_in_fact_expression2196 = new BitSet(new long[]{0x0000000000000000L,0x7000000000000000L,0x0000000C00020000L});
+    public static final BitSet FOLLOW_DECIMAL_in_fact_expression2215 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SIGNED_DECIMAL_in_fact_expression2219 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_HEX_in_fact_expression2231 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SIGNED_HEX_in_fact_expression2235 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_FLOAT_in_fact_expression2249 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_SIGNED_FLOAT_in_fact_expression2253 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_BOOL_in_fact_expression2269 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NULL_in_fact_expression2279 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_PAREN_CHUNK_in_fact_expression2289 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_PATH_in_field_element2311 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_accessor_element_in_field_element2316 = new BitSet(new long[]{0x0000004000000008L});
+    public static final BitSet FOLLOW_VT_ACCESSOR_ELEMENT_in_accessor_element2340 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_accessor_element2344 = new BitSet(new long[]{0x0000000000040008L});
+    public static final BitSet FOLLOW_VT_SQUARE_CHUNK_in_accessor_element2348 = new BitSet(new long[]{0x0000000000040008L});
+    public static final BitSet FOLLOW_VT_PATTERN_TYPE_in_pattern_type2369 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_pattern_type2373 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000004L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern_type2377 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000040000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern_type2381 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000000L});
+    public static final BitSet FOLLOW_VT_DATA_TYPE_in_data_type2403 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_data_type2407 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000004L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_data_type2411 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000000L,0x0000000040000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_data_type2415 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000020000000L});
 
 }
