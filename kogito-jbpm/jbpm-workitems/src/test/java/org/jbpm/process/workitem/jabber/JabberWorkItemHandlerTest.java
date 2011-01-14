@@ -22,8 +22,8 @@ import junit.framework.TestCase;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.process.workitem.jabber.JabberWorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.jbpm.process.workitem.jabber.JabberWorkItemHandler;
 
 // @Author: salaboy@gmail.com
 public class JabberWorkItemHandlerTest extends TestCase {

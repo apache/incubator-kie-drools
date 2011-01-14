@@ -27,10 +27,10 @@ import junit.framework.TestCase;
 
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.process.workitem.email.EmailWorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
+import org.jbpm.process.workitem.email.EmailWorkItemHandler;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 

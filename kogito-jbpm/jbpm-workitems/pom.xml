@@ -25,6 +25,11 @@
       <artifactId>jbpm-flow-builder</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Email -->
     <dependency>
       <groupId>javax.mail</groupId>
