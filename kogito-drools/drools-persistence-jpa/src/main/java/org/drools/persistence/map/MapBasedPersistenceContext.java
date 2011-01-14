@@ -3,10 +3,8 @@ package org.drools.persistence.map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.info.SessionInfo;
