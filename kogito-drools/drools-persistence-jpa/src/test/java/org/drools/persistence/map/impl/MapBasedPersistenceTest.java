@@ -72,7 +72,6 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
         }
 
         public void saveOrUpdate(SessionInfo storedObject) {
-            storedObject.update();
             ksessions.put( storedObject.getId(),
                            storedObject );
         }
@@ -92,6 +91,10 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
 
         public void remove(WorkItemInfo workItemInfo) {
             workItems.remove( workItemInfo.getId() );
+        }
+
+        public Long getNextStatefulKnowledgeSessionId() {
+            return new Long( ksessions.size() + 1 );
         }
     }
 }
