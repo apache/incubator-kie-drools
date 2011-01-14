@@ -20,7 +20,7 @@ import org.drools.persistence.SessionMarshallingHelper;
 public class SessionInfo implements EntityInfo {
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    long                        id;
+    Long                        id;
 
     @Version
     @Column(name = "OPTLOCK")     
@@ -80,6 +80,10 @@ public class SessionInfo implements EntityInfo {
     @PreUpdate 
     public void update() {
         this.rulesByteArray  = this.helper.getSnapshot();
+    }
+
+    public void setId(Long ksessionId) {
+        this.id = ksessionId;
     }
 
 }
