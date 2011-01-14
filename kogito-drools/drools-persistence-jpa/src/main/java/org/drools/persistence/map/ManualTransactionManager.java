@@ -24,19 +24,19 @@ public class ManualTransactionManager
     }
 
     public void begin() {
-        //session.clear();
     }
 
     public void commit() {
         try{
             for(SessionInfo sessionInfo : session.getStoredKnowledgeSessions()){
+                sessionInfo.update();
                 storage.saveOrUpdate(sessionInfo);
             }
             
             for(WorkItemInfo workItemInfo : session.getStoredWorkItems()){
+                workItemInfo.update();
                 storage.saveOrUpdate( workItemInfo );
             }
-            //session.clear();
             try{
                 transactionSynchronization.afterCompletion(TransactionManager.STATUS_COMMITTED);
             } catch (RuntimeException re){
@@ -45,6 +45,8 @@ public class ManualTransactionManager
         } catch (RuntimeException re) {
             transactionSynchronization.afterCompletion(TransactionManager.STATUS_ROLLEDBACK);
         }
+        //we shouldn't clear session here b/c doing so we lose the track of this objects on successive
+        //interactions
     }
 
     public void rollback() {
