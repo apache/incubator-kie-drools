@@ -35,8 +35,10 @@ public class MapBasedPersistenceContext
 
     public SessionInfo findSessionInfo(Long sessionId) {
         SessionInfo sessionInfo = ksessions.get( sessionId );
-        if(sessionInfo == null)
+        if(sessionInfo == null){
             sessionInfo = storage.findSessionInfo( sessionId );
+            ksessions.put( sessionId, sessionInfo );
+        }
         return sessionInfo;
     }
 
