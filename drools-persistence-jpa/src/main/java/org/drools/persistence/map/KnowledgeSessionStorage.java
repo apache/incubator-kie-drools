@@ -17,4 +17,6 @@ public interface KnowledgeSessionStorage {
 
     void remove(WorkItemInfo workItemInfo);
 
+    Long getNextStatefulKnowledgeSessionId();
+
 }

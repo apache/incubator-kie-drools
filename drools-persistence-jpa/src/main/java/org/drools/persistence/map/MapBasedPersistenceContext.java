@@ -28,6 +28,9 @@ public class MapBasedPersistenceContext
     }
     
     public void persist(SessionInfo entity) {
+        if( entity.getId() == null ) {
+            entity.setId(storage.getNextStatefulKnowledgeSessionId());
+        }
         ksessions.put( entity.getId(), entity );
     }
 
