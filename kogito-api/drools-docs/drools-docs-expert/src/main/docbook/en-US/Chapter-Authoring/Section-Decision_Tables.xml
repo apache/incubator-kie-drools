@@ -449,6 +449,14 @@ end
               <entry>At least one per rule table</entry>
             </row>
 
+            <row>
+              <entry>METADATA</entry>
+              <entry>@</entry>
+              <entry>Code snippet and interpolated values for constructing a metadata entry
+              for the rule.</entry>
+              <entry>Optional, any number of columns</entry>
+            </row>
+
           </tbody>
         </tgroup>
       </table>
@@ -554,6 +562,31 @@ end
         Use this "abbreviation" judiciously.</para>
       </note>
 
+
+      <para>Given a column headed METADATA, the cells in successive lines result in a metadata annotation
+      for the generated rules.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Text in the first cell below METADATA is ignored.</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the second cell below METADATA is subject to interpolation, as described above,
+          using values from the cells in the rule rows. The metadata marker character <code>@</code>
+          is prefixed automatically, and thus it should not be included in the text for this cell.</para>
+        </listitem>
+
+        <listitem>
+          <para>Text in the third cell below METADATA is for documentation only. It should be used to
+          indicate the column's purpose to a human reader.</para>
+        </listitem>
+
+        <listitem>
+          <para>From the fourth row on, non-blank entries provide data for interpolation as described
+          above. A blank cell results in the omission of the metadata annotation for this rule.</para>
+        </listitem>
+      </itemizedlist>
 
     </section>
 
