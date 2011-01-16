@@ -185,23 +185,25 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void handleScript(final ExtendedNodeImpl node, final Element element, String type) {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
-        	Element xmlNode = (Element) nodeList.item(i);
-        	String nodeName = xmlNode.getNodeName();
-        	if (nodeName.equals("extensionElements")) {
-                NodeList subNodeList = xmlNode.getChildNodes();
-                for (int j = 0; j < subNodeList.getLength(); j++) {
-                	org.w3c.dom.Node subXmlNode = subNodeList.item(j);
-                	if ((type + "-script").equals(subXmlNode.getNodeName())) {
-			    		List<DroolsAction> actions = node.getActions(type);
-			    		if (actions == null) {
-			    			actions = new ArrayList<DroolsAction>();
-			            	node.setActions(type, actions);
-			    		}
-			        	DroolsAction action = extractScript((Element) subXmlNode);
-			        	actions.add(action);
-                	}
-		    	}
-            }
+        	if (nodeList.item(i) instanceof Element) {
+	        	Element xmlNode = (Element) nodeList.item(i);
+	        	String nodeName = xmlNode.getNodeName();
+	        	if (nodeName.equals("extensionElements")) {
+	                NodeList subNodeList = xmlNode.getChildNodes();
+	                for (int j = 0; j < subNodeList.getLength(); j++) {
+	                	org.w3c.dom.Node subXmlNode = subNodeList.item(j);
+	                	if ((type + "-script").equals(subXmlNode.getNodeName())) {
+				    		List<DroolsAction> actions = node.getActions(type);
+				    		if (actions == null) {
+				    			actions = new ArrayList<DroolsAction>();
+				            	node.setActions(type, actions);
+				    		}
+				        	DroolsAction action = extractScript((Element) subXmlNode);
+				        	actions.add(action);
+	                	}
+			    	}
+	            }
+        	}
         }
     }
 
@@ -212,11 +214,13 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
 		NodeList subNodeList = xmlNode.getChildNodes();
         for (int j = 0; j < subNodeList.getLength(); j++) {
-        	Element subXmlNode = (Element) subNodeList.item(j);
-        	if ("script".equals(subXmlNode.getNodeName())) {
-        		String consequence = subXmlNode.getTextContent();
-        		DroolsConsequenceAction action = new DroolsConsequenceAction(dialect, consequence);
-        		return action;
+        	if (subNodeList.item(j) instanceof Element) {
+	        	Element subXmlNode = (Element) subNodeList.item(j);
+	        	if ("script".equals(subXmlNode.getNodeName())) {
+	        		String consequence = subXmlNode.getTextContent();
+	        		DroolsConsequenceAction action = new DroolsConsequenceAction(dialect, consequence);
+	        		return action;
+	        	}
         	}
     	}
 		return new DroolsConsequenceAction("mvel", "");
