@@ -309,7 +309,7 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
     <itemizedlist>
       <listitem>
         <para>A scope definition, written as one of the keywords
-        "when" or "condition", "then" or "consequence", "both" or "*"
+        "when" or "condition", "then" or "consequence", "*"
         and "keyword", enclosed in brackets ("[" and "]"). This indicates
         whether the DSL entry is valid for the condition or the
         consequence of a rule, or both. A scope indication of "keyword"
@@ -386,12 +386,12 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
           <row>
             <entry>when</entry>
             <entry>Dumps the internal representation of all DSL entries with
-            scope "when" or "both".</entry>
+            scope "when" or "*".</entry>
           </row>
           <row>
             <entry>then</entry>
             <entry>Dumps the internal representation of all DSL entries with
-            scope "then" or "both".</entry>
+            scope "then" or "*".</entry>
           </row>
           <row>
             <entry>usage</entry>
