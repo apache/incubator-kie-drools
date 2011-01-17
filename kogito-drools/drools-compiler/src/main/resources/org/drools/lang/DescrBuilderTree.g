@@ -222,7 +222,7 @@ lhs	returns [BaseDescr baseDescr]
 	{	$baseDescr = factory.createEval($start, $pc);	}
 	|	^(start=VK_FORALL (dt=lhs {	lhsList.add($dt.baseDescr);	})+)
 	{	$baseDescr = factory.createForAll($start, lhsList);	}
-	|	^(start=VT_FOR_CE dt=lhs for_functions fact_expression? )
+	|	^(start=VT_FOR_CE dt=lhs for_functions constraints? )
 	//{	/*$baseDescr = factory.createFor($start, ff, cc );*/	}
 	|	^(FROM pn=lhs_pattern fe=from_elements)
 	{	$baseDescr = factory.setupFrom($pn.baseDescr, $fe.patternSourceDescr);	}
