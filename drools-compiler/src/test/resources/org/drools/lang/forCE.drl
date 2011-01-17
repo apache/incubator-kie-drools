@@ -1,6 +1,6 @@
 rule "For CE test"
 when
-     for( $cheese : Cheese( $price : price );
+     for( $cheese : Cheese( $price : price, type == "stilton" );
           $sum : sum( $price ),
           $cnt : count(),
           $lst : collectList( $cheese, "price" );

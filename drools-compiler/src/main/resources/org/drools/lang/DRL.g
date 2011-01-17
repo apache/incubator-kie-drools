@@ -334,10 +334,10 @@ function_import_statement
 	;
 
 import_name [DroolsParaphraseTypes importType]
-	:	id+=ID ( id+=DOT id+=ID )* id+=DOT_STAR?
+	:	id+=ID ( id+=DOT id+=ID )* (id+=DOT id+=STAR)?
 	{	helper.emit($id, DroolsEditorType.IDENTIFIER);
 		helper.setParaphrasesValue($importType, helper.buildStringFromTokens($id));	}
-		-> ^(VT_IMPORT_ID ID+ DOT_STAR?)
+		-> ^(VT_IMPORT_ID ID+ STAR?)
 	;
 
 // --------------------------------------------------------
@@ -2851,10 +2851,6 @@ ARROW
 
 SEMICOLON
 	:	';'
-	;
-
-DOT_STAR
-	:	'.*'
 	;
 
 COLON

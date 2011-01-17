@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/Tree2TestDRL.g 2011-01-12 16:44:42
+// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/Tree2TestDRL.g 2011-01-17 16:59:48
 
 	package org.drools.lang;
 
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Tree2TestDRL extends TreeParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TYPE_DECLARE_ID", "VT_TYPE_NAME", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_RULE_ATTRIBUTES", "VT_PKG_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_FOR_CE", "VT_FOR_FUNCTIONS", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VT_ARGUMENTS", "VT_EXPRESSION", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_TIMER", "VK_CALENDARS", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPLEMENTS", "VK_IMPORT", "VK_PACKAGE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_FOR", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "VK_INSTANCEOF", "VK_EXTENDS", "VK_SUPER", "VK_PRIMITIVE_TYPE", "VK_THIS", "VK_VOID", "VK_CLASS", "VK_NEW", "VK_FINAL", "VK_IF", "VK_ELSE", "VK_WHILE", "VK_DO", "VK_CASE", "VK_DEFAULT", "VK_TRY", "VK_CATCH", "VK_FINALLY", "VK_SWITCH", "VK_SYNCHRONIZED", "VK_RETURN", "VK_THROW", "VK_BREAK", "VK_CONTINUE", "VK_ASSERT", "VK_MODIFY", "VK_STATIC", "VK_PUBLIC", "VK_PROTECTED", "VK_PRIVATE", "VK_ABSTRACT", "VK_NATIVE", "VK_TRANSIENT", "VK_VOLATILE", "VK_STRICTFP", "VK_THROWS", "VK_INTERFACE", "VK_ENUM", "SIGNED_DECIMAL", "SIGNED_HEX", "SIGNED_FLOAT", "VT_PROP_KEY", "VT_PROP_VALUE", "SEMICOLON", "ID", "DOT", "DOT_STAR", "STRING", "AT", "COLON", "EQUALS_ASSIGN", "WHEN", "COMMA", "BOOL", "LEFT_PAREN", "RIGHT_PAREN", "FROM", "OVER", "TimePeriod", "DECIMAL", "ACCUMULATE", "COLLECT", "DOUBLE_PIPE", "DOUBLE_AMPER", "ARROW", "EQUALS", "GREATER", "GREATER_EQUALS", "LESS", "LESS_EQUALS", "NOT_EQUALS", "LEFT_SQUARE", "RIGHT_SQUARE", "NULL", "PLUS", "MINUS", "HEX", "FLOAT", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "QUESTION", "PIPE", "XOR", "AMPER", "SHIFT_LEFT", "SHIFT_RIGHT_UNSIG", "SHIFT_RIGHT", "STAR", "DIV", "MOD", "INCR", "DECR", "TILDE", "NEGATION", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "EOL", "WS", "Exponent", "FloatTypeSuffix", "HexDigit", "IntegerTypeSuffix", "EscapeSequence", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "MISC", "VK_TEMPLATE", "VT_TEMPLATE_ID", "VT_SLOT", "VT_SLOT_ID", "INT", "VK_DURATION", "EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "NOT_EQUAL"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "VT_COMPILATION_UNIT", "VT_FUNCTION_IMPORT", "VT_FACT", "VT_CONSTRAINTS", "VT_LABEL", "VT_QUERY_ID", "VT_TYPE_DECLARE_ID", "VT_TYPE_NAME", "VT_RULE_ID", "VT_ENTRYPOINT_ID", "VT_RULE_ATTRIBUTES", "VT_PKG_ATTRIBUTES", "VT_RHS_CHUNK", "VT_CURLY_CHUNK", "VT_SQUARE_CHUNK", "VT_PAREN_CHUNK", "VT_BEHAVIOR", "VT_AND_IMPLICIT", "VT_AND_PREFIX", "VT_OR_PREFIX", "VT_AND_INFIX", "VT_OR_INFIX", "VT_ACCUMULATE_INIT_CLAUSE", "VT_ACCUMULATE_ID_CLAUSE", "VT_FROM_SOURCE", "VT_EXPRESSION_CHAIN", "VT_FOR_CE", "VT_FOR_FUNCTIONS", "VT_PATTERN", "VT_FACT_BINDING", "VT_FACT_OR", "VT_BIND_FIELD", "VT_FIELD", "VT_ACCESSOR_PATH", "VT_ACCESSOR_ELEMENT", "VT_DATA_TYPE", "VT_PATTERN_TYPE", "VT_PACKAGE_ID", "VT_IMPORT_ID", "VT_GLOBAL_ID", "VT_FUNCTION_ID", "VT_PARAM_LIST", "VT_ARGUMENTS", "VT_EXPRESSION", "VK_DATE_EFFECTIVE", "VK_DATE_EXPIRES", "VK_LOCK_ON_ACTIVE", "VK_NO_LOOP", "VK_AUTO_FOCUS", "VK_ACTIVATION_GROUP", "VK_AGENDA_GROUP", "VK_RULEFLOW_GROUP", "VK_TIMER", "VK_CALENDARS", "VK_DIALECT", "VK_SALIENCE", "VK_ENABLED", "VK_ATTRIBUTES", "VK_RULE", "VK_EXTEND", "VK_IMPLEMENTS", "VK_IMPORT", "VK_PACKAGE", "VK_QUERY", "VK_DECLARE", "VK_FUNCTION", "VK_GLOBAL", "VK_EVAL", "VK_ENTRY_POINT", "VK_NOT", "VK_IN", "VK_OR", "VK_AND", "VK_EXISTS", "VK_FORALL", "VK_FOR", "VK_ACTION", "VK_REVERSE", "VK_RESULT", "VK_OPERATOR", "VK_END", "VK_INIT", "VK_INSTANCEOF", "VK_EXTENDS", "VK_SUPER", "VK_PRIMITIVE_TYPE", "VK_THIS", "VK_VOID", "VK_CLASS", "VK_NEW", "VK_FINAL", "VK_IF", "VK_ELSE", "VK_WHILE", "VK_DO", "VK_CASE", "VK_DEFAULT", "VK_TRY", "VK_CATCH", "VK_FINALLY", "VK_SWITCH", "VK_SYNCHRONIZED", "VK_RETURN", "VK_THROW", "VK_BREAK", "VK_CONTINUE", "VK_ASSERT", "VK_MODIFY", "VK_STATIC", "VK_PUBLIC", "VK_PROTECTED", "VK_PRIVATE", "VK_ABSTRACT", "VK_NATIVE", "VK_TRANSIENT", "VK_VOLATILE", "VK_STRICTFP", "VK_THROWS", "VK_INTERFACE", "VK_ENUM", "SIGNED_DECIMAL", "SIGNED_HEX", "SIGNED_FLOAT", "VT_PROP_KEY", "VT_PROP_VALUE", "SEMICOLON", "ID", "DOT", "STAR", "STRING", "AT", "COLON", "EQUALS_ASSIGN", "WHEN", "COMMA", "BOOL", "LEFT_PAREN", "RIGHT_PAREN", "FROM", "OVER", "TimePeriod", "DECIMAL", "ACCUMULATE", "COLLECT", "DOUBLE_PIPE", "DOUBLE_AMPER", "ARROW", "EQUALS", "GREATER", "GREATER_EQUALS", "LESS", "LESS_EQUALS", "NOT_EQUALS", "LEFT_SQUARE", "RIGHT_SQUARE", "NULL", "PLUS", "MINUS", "HEX", "FLOAT", "THEN", "LEFT_CURLY", "RIGHT_CURLY", "QUESTION", "PIPE", "XOR", "AMPER", "SHIFT_LEFT", "SHIFT_RIGHT_UNSIG", "SHIFT_RIGHT", "DIV", "MOD", "INCR", "DECR", "TILDE", "NEGATION", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "EOL", "WS", "Exponent", "FloatTypeSuffix", "HexDigit", "IntegerTypeSuffix", "EscapeSequence", "UnicodeEscape", "OctalEscape", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "MISC", "DOT_STAR", "VK_TEMPLATE", "VT_TEMPLATE_ID", "VT_SLOT", "VT_SLOT_ID", "INT", "VK_DURATION", "EQUAL", "GREATER_EQUAL", "LESS_EQUAL", "NOT_EQUAL"
     };
     public static final int EOF=-1;
     public static final int VT_COMPILATION_UNIT=4;
@@ -141,7 +141,7 @@ public class Tree2TestDRL extends TreeParser {
     public static final int SEMICOLON=129;
     public static final int ID=130;
     public static final int DOT=131;
-    public static final int DOT_STAR=132;
+    public static final int STAR=132;
     public static final int STRING=133;
     public static final int AT=134;
     public static final int COLON=135;
@@ -183,36 +183,36 @@ public class Tree2TestDRL extends TreeParser {
     public static final int SHIFT_LEFT=171;
     public static final int SHIFT_RIGHT_UNSIG=172;
     public static final int SHIFT_RIGHT=173;
-    public static final int STAR=174;
-    public static final int DIV=175;
-    public static final int MOD=176;
-    public static final int INCR=177;
-    public static final int DECR=178;
-    public static final int TILDE=179;
-    public static final int NEGATION=180;
-    public static final int PLUS_ASSIGN=181;
-    public static final int MINUS_ASSIGN=182;
-    public static final int MULT_ASSIGN=183;
-    public static final int DIV_ASSIGN=184;
-    public static final int AND_ASSIGN=185;
-    public static final int OR_ASSIGN=186;
-    public static final int XOR_ASSIGN=187;
-    public static final int MOD_ASSIGN=188;
-    public static final int EOL=189;
-    public static final int WS=190;
-    public static final int Exponent=191;
-    public static final int FloatTypeSuffix=192;
-    public static final int HexDigit=193;
-    public static final int IntegerTypeSuffix=194;
-    public static final int EscapeSequence=195;
-    public static final int UnicodeEscape=196;
-    public static final int OctalEscape=197;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=198;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=199;
-    public static final int MULTI_LINE_COMMENT=200;
-    public static final int IdentifierStart=201;
-    public static final int IdentifierPart=202;
-    public static final int MISC=203;
+    public static final int DIV=174;
+    public static final int MOD=175;
+    public static final int INCR=176;
+    public static final int DECR=177;
+    public static final int TILDE=178;
+    public static final int NEGATION=179;
+    public static final int PLUS_ASSIGN=180;
+    public static final int MINUS_ASSIGN=181;
+    public static final int MULT_ASSIGN=182;
+    public static final int DIV_ASSIGN=183;
+    public static final int AND_ASSIGN=184;
+    public static final int OR_ASSIGN=185;
+    public static final int XOR_ASSIGN=186;
+    public static final int MOD_ASSIGN=187;
+    public static final int EOL=188;
+    public static final int WS=189;
+    public static final int Exponent=190;
+    public static final int FloatTypeSuffix=191;
+    public static final int HexDigit=192;
+    public static final int IntegerTypeSuffix=193;
+    public static final int EscapeSequence=194;
+    public static final int UnicodeEscape=195;
+    public static final int OctalEscape=196;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=197;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=198;
+    public static final int MULTI_LINE_COMMENT=199;
+    public static final int IdentifierStart=200;
+    public static final int IdentifierPart=201;
+    public static final int MISC=202;
+    public static final int DOT_STAR=203;
     public static final int VK_TEMPLATE=204;
     public static final int VT_TEMPLATE_ID=205;
     public static final int VT_SLOT=206;
@@ -3782,7 +3782,7 @@ public class Tree2TestDRL extends TreeParser {
     public static final BitSet FOLLOW_VK_FUNCTION_in_function_import_statement165 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_import_name_in_function_import_statement167 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VT_IMPORT_ID_in_import_name180 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_import_name182 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000000000014L});
+    public static final BitSet FOLLOW_ID_in_import_name182 = new BitSet(new long[]{0x0000000000000008L,0x0000000000000000L,0x0000000000000004L,0x0000000000000800L});
     public static final BitSet FOLLOW_DOT_STAR_in_import_name185 = new BitSet(new long[]{0x0000000000000008L});
     public static final BitSet FOLLOW_VK_GLOBAL_in_global199 = new BitSet(new long[]{0x0000000000000004L});
     public static final BitSet FOLLOW_data_type_in_global201 = new BitSet(new long[]{0x0000080000000000L});
