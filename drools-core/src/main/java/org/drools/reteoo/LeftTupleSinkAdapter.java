@@ -1,5 +1,3 @@
-package org.drools.reteoo;
-
 /*
  * Copyright 2010 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.reteoo;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.reteoo;
 
 /**
  * Interface implemented by all sink adapters to allow

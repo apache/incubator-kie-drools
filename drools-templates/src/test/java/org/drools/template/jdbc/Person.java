@@ -1,5 +1,3 @@
-package org.drools.template.jdbc;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.template.jdbc;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.template.jdbc;
 
 public class Person {
     private String name;

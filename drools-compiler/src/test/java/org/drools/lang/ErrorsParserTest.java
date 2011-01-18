@@ -1,5 +1,3 @@
-package org.drools.lang;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.lang;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.lang;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

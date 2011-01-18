@@ -1,5 +1,3 @@
-package org.drools.event;
-
 /*
  * Copyright 2010 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.event;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.event;
 
 
 import java.util.List;
