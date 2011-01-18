@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  * @author Damon
  * 
  */
-public class TestQuery {
+public class Query2Test {
 
     private KnowledgeBase knowledgeBase;
 
@@ -31,9 +31,9 @@ public class TestQuery {
     public void setUp() throws Exception {
         String text = "";
         text += "package org.drools.integrationtests\n";
-        text += "import org.drools.integrationtests.TestQuery.Bar\n";
-        text += "import org.drools.integrationtests.TestQuery.Foo\n";
-        text += "import org.drools.integrationtests.TestQuery.Foo2\n";
+        text += "import org.drools.integrationtests.Query2Test.Bar\n";
+        text += "import org.drools.integrationtests.Query2Test.Foo\n";
+        text += "import org.drools.integrationtests.Query2Test.Foo2\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";
