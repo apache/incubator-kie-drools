@@ -472,6 +472,12 @@ end
 
           <para>To include a pattern without constraints, you can write the pattern in front of the text
           for another pattern.</para>
+
+          <para>The pattern may be written with or without an empty pair of parentheses. A "from" clause may be
+          appended to the pattern.</para>
+
+          <para>If the pattern ends with "eval", code snippets are supposed to produce boolean expressions
+          for inclusion into a pair of parentheses after "eval".</para>
         </listitem>
 
         <listitem>
