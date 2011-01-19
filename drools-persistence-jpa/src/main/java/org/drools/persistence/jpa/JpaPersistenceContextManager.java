@@ -81,6 +81,7 @@ public class JpaPersistenceContextManager
             }
             this.internalAppScopedEntityManager = false;
             this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER, null );
+            this.appScopedEntityManager = null;
         }
         
         if ( this.internalCmdScopedEntityManager ) {
@@ -89,7 +90,8 @@ public class JpaPersistenceContextManager
             }
             this.internalCmdScopedEntityManager = false;
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );            
-        }        
+            this.cmdScopedEntityManager = null;
+        }
     }
 
 }
