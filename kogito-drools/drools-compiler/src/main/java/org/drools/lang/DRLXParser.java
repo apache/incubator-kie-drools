@@ -362,7 +362,7 @@ public class DRLXParser {
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
-                metadata();
+                //metadata();
                 if ( state.failed ) return declare.getDescr();
             }
 
