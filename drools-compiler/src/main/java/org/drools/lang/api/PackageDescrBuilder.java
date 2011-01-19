@@ -14,4 +14,6 @@ public interface PackageDescrBuilder
 
     public ImportDescrBuilder newFunctionImportDescr();
 
+    public GlobalDescrBuilder newGlobalDescr();
+
 }

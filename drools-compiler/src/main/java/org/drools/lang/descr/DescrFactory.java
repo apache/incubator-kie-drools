@@ -26,7 +26,7 @@ public class DescrFactory {
      * @return PackageDescr filled
      * @see PackageDescr
      */
-    public PackageDescr createPackage(List<DroolsTree> idList) {
+    public PackageDescr createPackage( List<DroolsTree> idList ) {
         PackageDescr packageDescr = new PackageDescr(
                                                       createDotedIdFromList( idList ) );
 
@@ -56,8 +56,8 @@ public class DescrFactory {
      * @return AttributeDescr filled
      * @see AttributeDescr
      */
-    public AttributeDescr createAttribute(DroolsTree attributeName,
-                                          DroolsTree value) {
+    public AttributeDescr createAttribute( DroolsTree attributeName,
+                                           DroolsTree value ) {
         AttributeDescr attributeDescr = new AttributeDescr( attributeName
                 .getText() );
         attributeDescr.setLocation( getLineLocation( attributeName ),
@@ -92,9 +92,9 @@ public class DescrFactory {
      * @return FunctionImportDescr filled
      * @see FunctionImportDescr
      */
-    public FunctionImportDescr createFunctionImport(DroolsTree importStart,
-                                                    List<DroolsTree> idList,
-                                                    DroolsTree dotStar) {
+    public FunctionImportDescr createFunctionImport( DroolsTree importStart,
+                                                     List<DroolsTree> idList,
+                                                     DroolsTree dotStar ) {
 
         return (FunctionImportDescr) createGenericImport(
                                                           new FunctionImportDescr(),
@@ -115,9 +115,9 @@ public class DescrFactory {
      * @return ImportDescr filled
      * @see ImportDescr
      */
-    public ImportDescr createImport(DroolsTree importStart,
-                                    List<DroolsTree> idList,
-                                    DroolsTree dotStar) {
+    public ImportDescr createImport( DroolsTree importStart,
+                                     List<DroolsTree> idList,
+                                     DroolsTree dotStar ) {
 
         return createGenericImport( new ImportDescr(),
                                     importStart,
@@ -140,10 +140,10 @@ public class DescrFactory {
      * @see FunctionImportDescr
      * @see ImportDescr
      */
-    private ImportDescr createGenericImport(ImportDescr importDescr,
-                                            DroolsTree importStart,
-                                            List<DroolsTree> idList,
-                                            DroolsTree dotStar) {
+    private ImportDescr createGenericImport( ImportDescr importDescr,
+                                             DroolsTree importStart,
+                                             List<DroolsTree> idList,
+                                             DroolsTree dotStar ) {
         ImportDescr genericImport = importDescr;
 
         genericImport.setLocation( getLineLocation( importStart ),
@@ -183,9 +183,9 @@ public class DescrFactory {
      * @return GlobalDescr filled
      * @see GlobalDescr
      */
-    public GlobalDescr createGlobal(DroolsTree start,
-                                    BaseDescr dataType,
-                                    DroolsTree globalId) {
+    public GlobalDescr createGlobal( DroolsTree start,
+                                     BaseDescr dataType,
+                                     DroolsTree globalId ) {
         GlobalDescr globalDescr = new GlobalDescr();
 
         globalDescr.setIdentifier( globalId.getText() );
@@ -217,11 +217,11 @@ public class DescrFactory {
      * @return FunctionDescr filled
      * @see FunctionDescr
      */
-    public FunctionDescr createFunction(DroolsTree start,
-                                        BaseDescr dataType,
-                                        DroolsTree functionId,
-                                        List<Map<BaseDescr, BaseDescr>> params,
-                                        DroolsTree content) {
+    public FunctionDescr createFunction( DroolsTree start,
+                                         BaseDescr dataType,
+                                         DroolsTree functionId,
+                                         List<Map<BaseDescr, BaseDescr>> params,
+                                         DroolsTree content ) {
         String type = null;
         if ( null != dataType ) {
             type = dataType.getText();
@@ -262,10 +262,10 @@ public class DescrFactory {
      * @return FactTemplateDescr filled
      * @see FactTemplateDescr
      */
-    public FactTemplateDescr createFactTemplate(DroolsTree start,
-                                                DroolsTree id,
-                                                List<FieldTemplateDescr> slotList,
-                                                DroolsTree end) {
+    public FactTemplateDescr createFactTemplate( DroolsTree start,
+                                                 DroolsTree id,
+                                                 List<FieldTemplateDescr> slotList,
+                                                 DroolsTree end ) {
         FactTemplateDescr factTemplateDescr = new FactTemplateDescr(
                                                                      getCleanId( id ) );
         for ( FieldTemplateDescr fieldTemplateDescr : slotList ) {
@@ -291,8 +291,8 @@ public class DescrFactory {
      * @return FieldTemplateDescr filled
      * @see FieldTemplateDescr
      */
-    public FieldTemplateDescr createFieldTemplate(BaseDescr dataType,
-                                                  DroolsTree id) {
+    public FieldTemplateDescr createFieldTemplate( BaseDescr dataType,
+                                                   DroolsTree id ) {
         FieldTemplateDescr fieldTemplateDescr = new FieldTemplateDescr();
         fieldTemplateDescr.setClassType( dataType.getText() );
         fieldTemplateDescr.setName( id.getText() );
@@ -325,11 +325,11 @@ public class DescrFactory {
      * @see QueryDescr
      * @see AndDescr
      */
-    public QueryDescr createQuery(DroolsTree start,
-                                  DroolsTree id,
-                                  List<Map<BaseDescr, BaseDescr>> params,
-                                  AndDescr andDescr,
-                                  DroolsTree end) {
+    public QueryDescr createQuery( DroolsTree start,
+                                   DroolsTree id,
+                                   List<Map<BaseDescr, BaseDescr>> params,
+                                   AndDescr andDescr,
+                                   DroolsTree end ) {
 
         QueryDescr queryDescr = new QueryDescr( getCleanId( id ),
                                                 "" );
@@ -377,26 +377,21 @@ public class DescrFactory {
      * @return TypeDeclarationDescr filled
      */
     @SuppressWarnings("unchecked")
-    public TypeDeclarationDescr createTypeDeclr(DroolsTree id,
-                                                String superType,
-                                                Collection<String> interfaces,
-                                                List<Map> declMetadaList,
-                                                List<TypeFieldDescr> declFieldList) {
+    public TypeDeclarationDescr createTypeDeclr( DroolsTree id,
+                                                 String superType,
+                                                 Collection<String> interfaces,
+                                                 List<Map> declMetadaList,
+                                                 List<TypeFieldDescr> declFieldList ) {
         TypeDeclarationDescr typeDeclr = new TypeDeclarationDescr();
         typeDeclr.setTypeName( id.getText() );
 
         typeDeclr.setSuperTypeName( superType );
-        typeDeclr.setInterfaceNames( interfaces );
 
         for ( Map activeMetadata : declMetadaList ) {
             Entry activeEntry = (Entry) activeMetadata.entrySet().iterator().next();
 
-            typeDeclr.addMetaAttribute( (String) activeEntry.getKey(),
-                                        (Map<String, String>) activeEntry.getValue() );
-            //String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
-            //typeDeclr.addMetaAttribute(((DroolsTree) activeEntry.getKey())
-            //		.getText(), chunkData.substring(1, chunkData.length() - 1)
-            //		.trim());
+            typeDeclr.addAnnotation( (String) activeEntry.getKey(),
+                                     (String) activeEntry.getValue() );
         }
 
         for ( TypeFieldDescr typeFieldDescr : declFieldList ) {
@@ -406,9 +401,9 @@ public class DescrFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public TypeDeclarationDescr createTypeDeclr(DroolsTree id,
-                                                List<Map> declMetadaList,
-                                                List<TypeFieldDescr> declFieldList) {
+    public TypeDeclarationDescr createTypeDeclr( DroolsTree id,
+                                                 List<Map> declMetadaList,
+                                                 List<TypeFieldDescr> declFieldList ) {
         return createTypeDeclr( id,
                                 null,
                                 Collections.<String> emptyList(),
@@ -430,10 +425,10 @@ public class DescrFactory {
      * @return TypeFieldDescr filled
      */
     @SuppressWarnings("unchecked")
-    public TypeFieldDescr createTypeField(DroolsTree id,
-                                          String initExpr,
-                                          BaseDescr dt,
-                                          List<Map> declMetadaList) {
+    public TypeFieldDescr createTypeField( DroolsTree id,
+                                           String initExpr,
+                                           BaseDescr dt,
+                                           List<Map> declMetadaList ) {
         TypeFieldDescr field = new TypeFieldDescr( id.getText() );
         if ( null != initExpr ) {
             field.setInitExpr( initExpr );
@@ -469,13 +464,13 @@ public class DescrFactory {
      * @return RuleDescr filled
      * @see RuleDescr
      */
-    public RuleDescr createRule(DroolsTree start,
-                                DroolsTree id,
-                                DroolsTree parentId,
-                                List<AttributeDescr> attributeList,
-                                AndDescr andDescr,
-                                DroolsTree content,
-                                List<Map> metadata) {
+    public RuleDescr createRule( DroolsTree start,
+                                 DroolsTree id,
+                                 DroolsTree parentId,
+                                 List<AttributeDescr> attributeList,
+                                 AndDescr andDescr,
+                                 DroolsTree content,
+                                 List<Map> metadata ) {
 
         RuleDescr ruleDescr = new RuleDescr( getCleanId( id ),
                                              null );
@@ -545,8 +540,8 @@ public class DescrFactory {
      *            right square list
      * @return BaseDescr (argument info) filled.
      */
-    public BaseDescr createArgument(DroolsTree id,
-                                    List<DroolsTree> rightList) {
+    public BaseDescr createArgument( DroolsTree id,
+                                     List<DroolsTree> rightList ) {
         List<DroolsTree> idList = new ArrayList<DroolsTree>( 1 );
         idList.add( id );
         return createGenericBaseDescr( idList,
@@ -565,8 +560,8 @@ public class DescrFactory {
      * @return OrDescr filled.
      * @see OrDescr
      */
-    public OrDescr createOr(DroolsTree start,
-                            List<BaseDescr> lhsList) {
+    public OrDescr createOr( DroolsTree start,
+                             List<BaseDescr> lhsList ) {
         OrDescr or = new OrDescr();
         or.setLocation( getColumnLocation( start ),
                         getColumnLocation( start ) );
@@ -592,8 +587,8 @@ public class DescrFactory {
      * @return AndDescr filled.
      * @see AndDescr
      */
-    public AndDescr createAnd(DroolsTree start,
-                              List<BaseDescr> lhsList) {
+    public AndDescr createAnd( DroolsTree start,
+                               List<BaseDescr> lhsList ) {
         AndDescr and = new AndDescr();
         and.setLocation( getColumnLocation( start ),
                          getColumnLocation( start ) );
@@ -617,8 +612,8 @@ public class DescrFactory {
      * @return ExistsDescr filled.
      * @see ExistsDescr
      */
-    public ExistsDescr createExists(DroolsTree start,
-                                    BaseDescr baseDescr) {
+    public ExistsDescr createExists( DroolsTree start,
+                                     BaseDescr baseDescr ) {
         ExistsDescr exists = new ExistsDescr();
         exists.setLocation( getColumnLocation( start ),
                             getColumnLocation( start ) );
@@ -640,8 +635,8 @@ public class DescrFactory {
      * @return NotDescr filled.
      * @see NotDescr
      */
-    public NotDescr createNot(DroolsTree start,
-                              BaseDescr baseDescr) {
+    public NotDescr createNot( DroolsTree start,
+                               BaseDescr baseDescr ) {
         NotDescr not = new NotDescr();
         not.setLocation( getColumnLocation( start ),
                          getColumnLocation( start ) );
@@ -663,8 +658,8 @@ public class DescrFactory {
      * @return EvalDescr filled.
      * @see EvalDescr
      */
-    public EvalDescr createEval(DroolsTree start,
-                                DroolsTree content) {
+    public EvalDescr createEval( DroolsTree start,
+                                 DroolsTree content ) {
         EvalDescr eval = new EvalDescr();
         eval.setLocation( getColumnLocation( start ),
                           getColumnLocation( start ) );
@@ -685,8 +680,8 @@ public class DescrFactory {
      * @return ForallDescr filled.
      * @see ForallDescr
      */
-    public ForallDescr createForAll(DroolsTree start,
-                                    List<BaseDescr> lhsList) {
+    public ForallDescr createForAll( DroolsTree start,
+                                     List<BaseDescr> lhsList ) {
         ForallDescr forAll = new ForallDescr();
         forAll.setLocation( getColumnLocation( start ),
                             getColumnLocation( start ) );
@@ -711,8 +706,8 @@ public class DescrFactory {
      * @return PatternDescr filled.
      * @see PatternDescr
      */
-    public PatternDescr setupFrom(BaseDescr from,
-                                  PatternSourceDescr fromSource) {
+    public PatternDescr setupFrom( BaseDescr from,
+                                   PatternSourceDescr fromSource ) {
         PatternDescr tempFrom = (PatternDescr) from;
         tempFrom.setSource( fromSource );
         return tempFrom;
@@ -735,8 +730,8 @@ public class DescrFactory {
      * @return AccumulateDescr filled.
      * @see AccumulateDescr
      */
-    public AccumulateDescr createAccumulate(DroolsTree start,
-                                            BaseDescr baseDescr) {
+    public AccumulateDescr createAccumulate( DroolsTree start,
+                                             BaseDescr baseDescr ) {
         AccumulateDescr accumulate = new AccumulateDescr();
         accumulate.setLocation( getColumnLocation( start ),
                                 getColumnLocation( start ) );
@@ -759,9 +754,9 @@ public class DescrFactory {
      * @see ForFunctionDescr
      */
     @SuppressWarnings("unchecked")
-    public ForFunctionDescr createForFunction(DroolsTree id,
-                                              DroolsTree label,
-                                              List<String> arguments) {
+    public ForFunctionDescr createForFunction( DroolsTree id,
+                                               DroolsTree label,
+                                               List<String> arguments ) {
         ForFunctionDescr ff = new ForFunctionDescr();
         ff.setId( id.getText() );
         ff.setLabel( label.getText() );
@@ -791,8 +786,8 @@ public class DescrFactory {
      * @return CollectDescr filled.
      * @see CollectDescr
      */
-    public CollectDescr createCollect(DroolsTree start,
-                                      BaseDescr baseDescr) {
+    public CollectDescr createCollect( DroolsTree start,
+                                       BaseDescr baseDescr ) {
         CollectDescr collect = new CollectDescr();
         collect.setLocation( getColumnLocation( start ),
                              getColumnLocation( start ) );
@@ -816,8 +811,8 @@ public class DescrFactory {
      * @return EntryPointDescr filled.
      * @see EntryPointDescr
      */
-    public EntryPointDescr createEntryPoint(DroolsTree start,
-                                            DroolsTree entryId) {
+    public EntryPointDescr createEntryPoint( DroolsTree start,
+                                             DroolsTree entryId ) {
         EntryPointDescr entryPoint = new EntryPointDescr();
         entryPoint.setLocation( getColumnLocation( start ),
                                 getColumnLocation( start ) );
@@ -848,12 +843,12 @@ public class DescrFactory {
      * @see AccumulateDescr
      */
     public AccumulateDescr setupAccumulateInit(
-                                               PatternSourceDescr accumulateParam,
-                                               DroolsTree start,
-                                               DroolsTree initChunk,
-                                               DroolsTree actionChunk,
-                                               DroolsTree resultChunk,
-                                               DroolsTree reverseChunk) {
+                                                PatternSourceDescr accumulateParam,
+                                                DroolsTree start,
+                                                DroolsTree initChunk,
+                                                DroolsTree actionChunk,
+                                                DroolsTree resultChunk,
+                                                DroolsTree reverseChunk ) {
         AccumulateDescr accumulate = (AccumulateDescr) accumulateParam;
         accumulate.setEndCharacter( getEndOffsetLocation( resultChunk ) );
         accumulate.setInitCode( initChunk.getText().substring( 1,
@@ -884,9 +879,9 @@ public class DescrFactory {
      * @see AccumulateDescr
      */
     public AccumulateDescr setupAccumulateId(
-                                             PatternSourceDescr accumulateParam,
-                                             DroolsTree id,
-                                             DroolsTree expressionChunk) {
+                                              PatternSourceDescr accumulateParam,
+                                              DroolsTree id,
+                                              DroolsTree expressionChunk ) {
         AccumulateDescr accumulate = (AccumulateDescr) accumulateParam;
         accumulate.setEndCharacter( getEndOffsetLocation( expressionChunk ) );
 
@@ -907,8 +902,8 @@ public class DescrFactory {
      * @return AccessorDescr filled
      * @see AccessorDescr
      */
-    public AccessorDescr createAccessor(DroolsTree id,
-                                        DroolsTree chunk) {
+    public AccessorDescr createAccessor( DroolsTree id,
+                                         DroolsTree chunk ) {
         AccessorDescr accessor = new AccessorDescr( id.getText() );
         accessor.setLocation( getLineLocation( id ),
                               getColumnLocation( id ) );
@@ -936,7 +931,7 @@ public class DescrFactory {
      * @return AccessorDescr filled
      * @see AccessorDescr
      */
-    public AccessorDescr createAccessor(String text) {
+    public AccessorDescr createAccessor( String text ) {
         AccessorDescr accessor = new AccessorDescr( null );
         //        accessor.setLocation(getLineLocation(start), getColumnLocation(start));
         //        accessor.setStartCharacter(getStartOffsetLocation(start));
@@ -953,7 +948,7 @@ public class DescrFactory {
      *            descriptor
      * @return AccessorDescr with char offset filled
      */
-    public AccessorDescr setupAccessorOffset(AccessorDescr accessorDescr) {
+    public AccessorDescr setupAccessorOffset( AccessorDescr accessorDescr ) {
         if ( null != accessorDescr.getInvokers()
                 && accessorDescr.getInvokers().size() > 0 ) {
             BaseDescr desc = (BaseDescr) accessorDescr.getInvokers().get(
@@ -980,10 +975,10 @@ public class DescrFactory {
      * @see FieldAccessDescr
      * @see MethodAccessDescr
      */
-    public DeclarativeInvokerDescr createExpressionChain(DroolsTree start,
-                                                         DroolsTree id,
-                                                         DroolsTree squareChunk,
-                                                         DroolsTree parenChunk) {
+    public DeclarativeInvokerDescr createExpressionChain( DroolsTree start,
+                                                          DroolsTree id,
+                                                          DroolsTree squareChunk,
+                                                          DroolsTree parenChunk ) {
         DeclarativeInvokerDescr declarativeInvoker = null;
         if ( null == parenChunk ) {
             FieldAccessDescr field = new FieldAccessDescr( id.getText() );
@@ -1018,8 +1013,8 @@ public class DescrFactory {
      *            list of behaviors
      * @return BaseDescr setted
      */
-    public BaseDescr setupBehavior(BaseDescr descr,
-                                   List<BehaviorDescr> behaviorList) {
+    public BaseDescr setupBehavior( BaseDescr descr,
+                                    List<BehaviorDescr> behaviorList ) {
         if ( null != behaviorList && descr instanceof PatternDescr ) {
             for ( BehaviorDescr activeBehavior : behaviorList ) {
                 ((PatternDescr) descr).addBehavior( activeBehavior );
@@ -1037,8 +1032,8 @@ public class DescrFactory {
      *            chunk data
      * @return BehaviorDescr filled
      */
-    public BehaviorDescr createBehavior(DroolsTree type,
-                                        DroolsTree param) {
+    public BehaviorDescr createBehavior( DroolsTree type,
+                                         DroolsTree param ) {
         //return new SlidingWindowDescr(type.getText(), param.getText()
         //		.substring(1, param.getText().length() - 1));
         return new SlidingWindowDescr( type.getText(),
@@ -1052,7 +1047,7 @@ public class DescrFactory {
      *            binded accessor descriptor
      * @return FromDescr filled
      */
-    public FromDescr createFromSource(AccessorDescr accessor) {
+    public FromDescr createFromSource( AccessorDescr accessor ) {
         FromDescr from = new FromDescr();
         from.setDataSource( accessor );
         from.setEndCharacter( accessor.getEndCharacter() );
@@ -1071,8 +1066,8 @@ public class DescrFactory {
      *            binded expression list, may be null or empty
      * @return
      */
-    public PatternDescr createPattern(BaseDescr dataType,
-                                      List<BaseDescr> exprList) {
+    public PatternDescr createPattern( BaseDescr dataType,
+                                       List<BaseDescr> exprList ) {
         PatternDescr pattern = new PatternDescr();
         pattern.setLocation( dataType.getEndLine(),
                              dataType.getEndColumn() );
@@ -1112,8 +1107,8 @@ public class DescrFactory {
      * @see PatternDescr
      * @see OrDescr
      */
-    public BaseDescr setupPatternBiding(DroolsTree label,
-                                        BaseDescr fact) {
+    public BaseDescr setupPatternBiding( DroolsTree label,
+                                         BaseDescr fact ) {
         fact.setStartCharacter( getStartOffsetLocation( label ) );
         if ( fact instanceof OrDescr ) {
             OrDescr or = (OrDescr) fact;
@@ -1141,9 +1136,9 @@ public class DescrFactory {
      * @return OrDescr filled.
      * @see OrDescr
      */
-    public OrDescr createFactOr(DroolsTree start,
-                                BaseDescr left,
-                                BaseDescr right) {
+    public OrDescr createFactOr( DroolsTree start,
+                                 BaseDescr left,
+                                 BaseDescr right ) {
         OrDescr or = new OrDescr();
         or.addDescr( left );
         or.addDescr( right );
@@ -1161,8 +1156,8 @@ public class DescrFactory {
      * @see FieldConstraintDescr
      */
     public FieldConstraintDescr setupFieldConstraint(
-                                                     FieldConstraintDescr field,
-                                                     BaseDescr descr) {
+                                                      FieldConstraintDescr field,
+                                                      BaseDescr descr ) {
         if ( null != descr && descr instanceof RestrictionDescr ) {
             field.getRestriction().addOrMerge( (RestrictionDescr) descr );
         }
@@ -1179,8 +1174,8 @@ public class DescrFactory {
      * @return FieldBindingDescr filled
      * @see FieldBindingDescr
      */
-    public FieldBindingDescr createFieldBinding(DroolsTree label,
-                                                BaseDescr descr) {
+    public FieldBindingDescr createFieldBinding( DroolsTree label,
+                                                 BaseDescr descr ) {
         FieldBindingDescr fieldBiding = new FieldBindingDescr();
         fieldBiding.setLocation( getLineLocation( label ),
                                  getColumnLocation( label ) );
@@ -1202,7 +1197,7 @@ public class DescrFactory {
      * @return PredicateDescr filled
      * @see PredicateDescr
      */
-    public PredicateDescr createPredicate(DroolsTree pc) {
+    public PredicateDescr createPredicate( DroolsTree pc ) {
         PredicateDescr predicate = new PredicateDescr();
         predicate.setContent( pc.getText().subSequence( 1,
                                                         pc.getText().length() - 1 ) );
@@ -1224,9 +1219,9 @@ public class DescrFactory {
      * @return descriptor setted.
      * @see EvaluatorBasedRestrictionDescr
      */
-    public BaseDescr setupRestriction(DroolsTree operator,
-                                      DroolsTree not,
-                                      BaseDescr descr) {
+    public BaseDescr setupRestriction( DroolsTree operator,
+                                       DroolsTree not,
+                                       BaseDescr descr ) {
         if ( descr instanceof EvaluatorBasedRestrictionDescr ) {
             EvaluatorBasedRestrictionDescr evaluator = (EvaluatorBasedRestrictionDescr) descr;
             evaluator.setEvaluator( operator.getText() );
@@ -1255,10 +1250,10 @@ public class DescrFactory {
      * @return descriptor setted.
      * @see EvaluatorBasedRestrictionDescr
      */
-    public BaseDescr setupRestriction(DroolsTree operator,
-                                      DroolsTree not,
-                                      BaseDescr descr,
-                                      DroolsTree param) {
+    public BaseDescr setupRestriction( DroolsTree operator,
+                                       DroolsTree not,
+                                       BaseDescr descr,
+                                       DroolsTree param ) {
         BaseDescr retDescr = setupRestriction( operator,
                                                not,
                                                descr );
@@ -1284,8 +1279,8 @@ public class DescrFactory {
      * @see RestrictionConnectiveDescr
      */
     public RestrictionConnectiveDescr createRestrictionConnective(
-                                                                  DroolsTree not,
-                                                                  List<BaseDescr> exprList) {
+                                                                   DroolsTree not,
+                                                                   List<BaseDescr> exprList ) {
 
         RestrictionConnectiveDescr group;
         String op = null;
@@ -1328,8 +1323,8 @@ public class DescrFactory {
      * @see RestrictionConnectiveDescr
      * @see OrDescr
      */
-    public BaseDescr createOrRestrictionConnective(BaseDescr left,
-                                                   BaseDescr right) {
+    public BaseDescr createOrRestrictionConnective( BaseDescr left,
+                                                    BaseDescr right ) {
         BaseDescr or = null;
         if ( left instanceof RestrictionDescr
                 && !(left instanceof PredicateDescr) ) {
@@ -1365,8 +1360,8 @@ public class DescrFactory {
      * @see RestrictionConnectiveDescr
      * @see AndDescr
      */
-    public BaseDescr createAndRestrictionConnective(BaseDescr left,
-                                                    BaseDescr right) {
+    public BaseDescr createAndRestrictionConnective( BaseDescr left,
+                                                     BaseDescr right ) {
         BaseDescr and = null;
         if ( left instanceof RestrictionDescr
                 && !(left instanceof PredicateDescr) ) {
@@ -1393,7 +1388,7 @@ public class DescrFactory {
      * @return EvaluatorBasedRestrictionDescr filled.
      * @see EvaluatorBasedRestrictionDescr
      */
-    public BaseDescr createAccessorPath(List<BaseDescr> aeList) {
+    public BaseDescr createAccessorPath( List<BaseDescr> aeList ) {
         StringBuilder sb = new StringBuilder();
         sb.append( aeList.get( 0 ).getText() );
         if ( aeList.size() > 1 ) {
@@ -1424,7 +1419,7 @@ public class DescrFactory {
      * @return LiteralRestrictionDescr filled
      * @see LiteralRestrictionDescr
      */
-    public LiteralRestrictionDescr createStringLiteralRestriction(DroolsTree s) {
+    public LiteralRestrictionDescr createStringLiteralRestriction( DroolsTree s ) {
         LiteralRestrictionDescr stringLit = new LiteralRestrictionDescr();
         stringLit.setType( LiteralRestrictionDescr.TYPE_STRING );
         stringLit.setText( s.getText().substring( 1,
@@ -1440,8 +1435,8 @@ public class DescrFactory {
      * @return LiteralRestrictionDescr filled
      * @see LiteralRestrictionDescr
      */
-    public LiteralRestrictionDescr createIntLiteralRestriction(DroolsTree i,
-                                                               boolean negative) {
+    public LiteralRestrictionDescr createIntLiteralRestriction( DroolsTree i,
+                                                                boolean negative ) {
         LiteralRestrictionDescr intLit = new LiteralRestrictionDescr();
         intLit.setType( LiteralRestrictionDescr.TYPE_NUMBER );
         intLit.setText( (negative ? "-" : "") + i.getText() );
@@ -1456,8 +1451,8 @@ public class DescrFactory {
      * @return LiteralRestrictionDescr filled
      * @see LiteralRestrictionDescr
      */
-    public LiteralRestrictionDescr createFloatLiteralRestriction(DroolsTree f,
-                                                                 boolean negative) {
+    public LiteralRestrictionDescr createFloatLiteralRestriction( DroolsTree f,
+                                                                  boolean negative ) {
         LiteralRestrictionDescr floatLit = new LiteralRestrictionDescr();
         floatLit.setType( LiteralRestrictionDescr.TYPE_NUMBER );
         floatLit.setText( (negative ? "-" : "") + f.getText() );
@@ -1472,7 +1467,7 @@ public class DescrFactory {
      * @return LiteralRestrictionDescr filled
      * @see LiteralRestrictionDescr
      */
-    public LiteralRestrictionDescr createBoolLiteralRestriction(DroolsTree b) {
+    public LiteralRestrictionDescr createBoolLiteralRestriction( DroolsTree b ) {
         LiteralRestrictionDescr boolLit = new LiteralRestrictionDescr();
         boolLit.setType( LiteralRestrictionDescr.TYPE_BOOLEAN );
         boolLit.setText( b.getText() );
@@ -1487,7 +1482,7 @@ public class DescrFactory {
      * @return LiteralRestrictionDescr filled
      * @see LiteralRestrictionDescr
      */
-    public LiteralRestrictionDescr createNullLiteralRestriction(DroolsTree n) {
+    public LiteralRestrictionDescr createNullLiteralRestriction( DroolsTree n ) {
         LiteralRestrictionDescr nullLit = new LiteralRestrictionDescr();
         nullLit.setType( LiteralRestrictionDescr.TYPE_NULL );
         nullLit.setText( null );
@@ -1502,7 +1497,7 @@ public class DescrFactory {
      * @return ReturnValueRestrictionDescr filled
      * @see ReturnValueRestrictionDescr
      */
-    public ReturnValueRestrictionDescr createReturnValue(DroolsTree pc) {
+    public ReturnValueRestrictionDescr createReturnValue( DroolsTree pc ) {
         ReturnValueRestrictionDescr returnValue = new ReturnValueRestrictionDescr();
         returnValue.setContent( pc.getText().substring( 1,
                                                         pc.getText().length() - 1 ) );
@@ -1520,7 +1515,7 @@ public class DescrFactory {
      *            accessor element descriptor list
      * @return FieldConstraintDescr filled.
      */
-    public FieldConstraintDescr createFieldConstraint(List<BaseDescr> aeList) {
+    public FieldConstraintDescr createFieldConstraint( List<BaseDescr> aeList ) {
         StringBuilder sb = new StringBuilder();
         sb.append( aeList.get( 0 ).getText() );
         if ( aeList.size() > 1 ) {
@@ -1550,8 +1545,8 @@ public class DescrFactory {
      *            chunk data
      * @return BaseDescr accessor descriptor filled.
      */
-    public BaseDescr createAccessorElement(DroolsTree id,
-                                           List<DroolsTree> squareChunk) {
+    public BaseDescr createAccessorElement( DroolsTree id,
+                                            List<DroolsTree> squareChunk ) {
         BaseDescr element = new BaseDescr();
         element.setLocation( getLineLocation( id ),
                              getColumnLocation( id ) );
@@ -1579,8 +1574,8 @@ public class DescrFactory {
      *            right square list, may be null
      * @return BaseDescr data type filled.
      */
-    public BaseDescr createDataType(List<DroolsTree> idList,
-                                    List<DroolsTree> rightList) {
+    public BaseDescr createDataType( List<DroolsTree> idList,
+                                     List<DroolsTree> rightList ) {
         return createGenericBaseDescr( idList,
                                        rightList );
     }
@@ -1595,8 +1590,8 @@ public class DescrFactory {
      *            right square list, may be null
      * @return BaseDescr filled.
      */
-    private BaseDescr createGenericBaseDescr(List<DroolsTree> idList,
-                                             List<DroolsTree> rightList) {
+    private BaseDescr createGenericBaseDescr( List<DroolsTree> idList,
+                                              List<DroolsTree> rightList ) {
         int endLine = getLineLocation( idList.get( idList.size() - 1 ) );
         int endColumn = getEndOffsetLocation( idList.get( idList.size() - 1 ) );
         int endChar = getEndOffsetLocation( idList.get( idList.size() - 1 ) );
@@ -1632,7 +1627,7 @@ public class DescrFactory {
      *            identifiers
      * @return dotted identifier
      */
-    private String createDotedIdFromList(List<DroolsTree> idList) {
+    private String createDotedIdFromList( List<DroolsTree> idList ) {
         StringBuilder sb = new StringBuilder();
 
         if ( null != idList && idList.size() > 0 ) {
@@ -1654,7 +1649,7 @@ public class DescrFactory {
      *            id
      * @return text without quotes
      */
-    private String getCleanId(DroolsTree id) {
+    private String getCleanId( DroolsTree id ) {
         String cleanedId = id.getText();
         if ( cleanedId.startsWith( "\"" ) || cleanedId.startsWith( "'" ) ) {
             cleanedId = cleanedId.substring( 1,
@@ -1670,7 +1665,7 @@ public class DescrFactory {
      *            tree
      * @return line location
      */
-    private int getLineLocation(DroolsTree tree) {
+    private int getLineLocation( DroolsTree tree ) {
         return tree.getLine();
     }
 
@@ -1681,7 +1676,7 @@ public class DescrFactory {
      *            tree
      * @return column location
      */
-    private int getColumnLocation(DroolsTree tree) {
+    private int getColumnLocation( DroolsTree tree ) {
         return tree.getCharPositionInLine();
     }
 
@@ -1692,7 +1687,7 @@ public class DescrFactory {
      *            tree
      * @return start char offset
      */
-    private int getStartOffsetLocation(DroolsTree tree) {
+    private int getStartOffsetLocation( DroolsTree tree ) {
         return tree.getStartCharOffset();
     }
 
@@ -1703,7 +1698,7 @@ public class DescrFactory {
      *            tree
      * @return end char offset
      */
-    private int getEndOffsetLocation(DroolsTree tree) {
+    private int getEndOffsetLocation( DroolsTree tree ) {
         return tree.getEndCharOffset();
     }
 }

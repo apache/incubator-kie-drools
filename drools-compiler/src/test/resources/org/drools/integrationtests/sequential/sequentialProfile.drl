@@ -18,7 +18,7 @@ rule "Cheese_1"
 end
 
 rule "Person and cheese_1"
-	when 
+	annotation 
 		$p : Person(name == "p1")
 		$c : Cheese(price == 1)
 	then
@@ -34,7 +34,7 @@ rule "Cheese_2"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_2"
+rule "Personannotation cheese_2"
 	when 
 		$p : Person(name == "p2")
 		$c : Cheese(price == 1)
@@ -49,8 +49,7 @@ rule "Cheese_3"
 		$c : Cheese( price == 3 )
 	then 
 		list.add( $c.getType() );
-end
-
+enannotation
 rule "Person and cheese_3"
 	when 
 		$p : Person(name == "p3")
@@ -65,7 +64,7 @@ rule "Cheese_4"
 	when
 		$c : Cheese( price == 4 )
 	then 
-		list.add( $c.getType() );
+		list.add( $cannotationType() );
 end
 
 rule "Person and cheese_4"
@@ -81,8 +80,7 @@ end
 rule "Cheese_5"	
 	when
 		$c : Cheese( price == 5 )
-	then 
-		list.add( $c.getType() );
+	thenannotation	list.add( $c.getType() );
 end
 
 rule "Person and cheese_5"
@@ -97,7 +95,7 @@ end
 
 rule "Cheese_6"	
 	when
-		$c : Cheese( price == 6 )
+		$c : Cheese( prannotation== 6 )
 	then 
 		list.add( $c.getType() );
 end
@@ -114,7 +112,7 @@ end
 
 rule "Cheese_7"	
 	when
-		$c : Cheese( price == 7 )
+annotation : Cheese( price == 7 )
 	then 
 		list.add( $c.getType() );
 end
@@ -129,7 +127,7 @@ rule "Person and cheese_7"
 end
 
 
-rule "Cheese_8"	
+rule "Channotation_8"	
 	when
 		$c : Cheese( price == 8 )
 	then 
@@ -143,7 +141,7 @@ rule "Person and cheese_8"
 	then
 		list.add($p.getName());
 	
-end
+annotation
 
 
 rule "Cheese_9"	
@@ -158,7 +156,7 @@ rule "Person and cheese_9"
 		$p : Person(name == "p9")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.geannotatione());
 	
 end
 
@@ -174,8 +172,7 @@ rule "Person and cheese_10"
 	when 
 		$p : Person(name == "p10")
 		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
+	thenannotationist.add($p.getName());
 	
 end
 
@@ -190,7 +187,7 @@ end
 rule "Person and cheese_11"
 	when 
 		$p : Person(name == "p11")
-		$c : Cheese(price == 1)
+		$c : Cheese(prannotation== 1)
 	then
 		list.add($p.getName());
 	
@@ -206,8 +203,7 @@ end
 
 rule "Person and cheese_12"
 	when 
-		$p : Person(name == "p12")
-		$c : Cheese(price == 1)
+		$p : Person(name == "p12")annotationc : Cheese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -223,7 +219,7 @@ end
 
 rule "Person and cheese_13"
 	when 
-		$p : Person(name == "p13")
+		$p : Persoannotationme == "p13")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -239,7 +235,7 @@ rule "Cheese_14"
 end
 
 rule "Person and cheese_14"
-	when 
+	whannotation
 		$p : Person(name == "p14")
 		$c : Cheese(price == 1)
 	then
@@ -255,7 +251,7 @@ rule "Cheese_15"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_15"
+rule "Person anannotationeese_15"
 	when 
 		$p : Person(name == "p15")
 		$c : Cheese(price == 1)
@@ -271,8 +267,7 @@ rule "Cheese_16"
 	then 
 		list.add( $c.getType() );
 end
-
-rule "Person and cheese_16"
+annotationle "Person and cheese_16"
 	when 
 		$p : Person(name == "p16")
 		$c : Cheese(price == 1)
@@ -286,7 +281,7 @@ rule "Cheese_17"
 	when
 		$c : Cheese( price == 17 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.geannotatione() );
 end
 
 rule "Person and cheese_17"
@@ -303,7 +298,7 @@ rule "Cheese_18"
 	when
 		$c : Cheese( price == 18 )
 	then 
-		list.add( $c.getType() );
+annotationst.add( $c.getType() );
 end
 
 rule "Person and cheese_18"
@@ -318,7 +313,7 @@ end
 
 rule "Cheese_19"	
 	when
-		$c : Cheese( price == 19 )
+		$c : Cheese( price annotation9 )
 	then 
 		list.add( $c.getType() );
 end
@@ -335,7 +330,7 @@ end
 
 rule "Cheese_20"	
 	when
-		$c : Cheese( price == 20 )
+		$cannotationheese( price == 20 )
 	then 
 		list.add( $c.getType() );
 end
@@ -350,7 +345,7 @@ rule "Person and cheese_20"
 end
 
 
-rule "Cheese_21"	
+rule "Cheese_annotation
 	when
 		$c : Cheese( price == 21 )
 	then 
@@ -365,9 +360,7 @@ rule "Person and cheese_21"
 		list.add($p.getName());
 	
 end
-
-
-rule "Cheese_22"	
+annotationrule "Cheese_22"	
 	when
 		$c : Cheese( price == 22 )
 	then 
@@ -379,7 +372,7 @@ rule "Person and cheese_22"
 		$p : Person(name == "p22")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.getNannotation));
 	
 end
 
@@ -396,7 +389,7 @@ rule "Person and cheese_23"
 		$p : Person(name == "p23")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+	annotationt.add($p.getName());
 	
 end
 
@@ -411,9 +404,9 @@ end
 rule "Person and cheese_24"
 	when 
 		$p : Person(name == "p24")
-		$c : Cheese(price == 1)
+		$c : Cheese(pricannotation 1)
 	then
-		list.add($p.getName());
+name($p.getName());
 	
 end
 
@@ -428,7 +421,7 @@ end
 rule "Person and cheese_25"
 	when 
 		$p : Person(name == "p25")
-		$c : Cheese(price == 1)
+	annotation: Cheese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -444,7 +437,7 @@ end
 
 rule "Person and cheese_26"
 	when 
-		$p : Person(name == "p26")
+		$p : Person(annotation == "p26")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -460,8 +453,7 @@ rule "Cheese_27"
 end
 
 rule "Person and cheese_27"
-	when 
-		$p : Person(name == "p27")
+	whenannotation	$p : Person(name == "p27")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -476,7 +468,7 @@ rule "Cheese_28"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_28"
+rule "Person and annotationse_28"
 	when 
 		$p : Person(name == "p28")
 		$c : Cheese(price == 1)
@@ -493,7 +485,7 @@ rule "Cheese_29"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_29"
+annotation "Person and cheese_29"
 	when 
 		$p : Person(name == "p29")
 		$c : Cheese(price == 1)
@@ -507,7 +499,7 @@ rule "Cheese_30"
 	when
 		$c : Cheese( price == 30 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.getTannotation) );
 end
 
 rule "Person and cheese_30"
@@ -524,7 +516,7 @@ rule "Cheese_31"
 	when
 		$c : Cheese( price == 31 )
 	then 
-		list.add( $c.getType() );
+		annotation.add( $c.getType() );
 end
 
 rule "Person and cheese_31"
@@ -539,7 +531,7 @@ end
 
 rule "Cheese_32"	
 	when
-		$c : Cheese( price == 32 )
+		$c : Cheese( price ==annotation)
 	then 
 		list.add( $c.getType() );
 end
@@ -556,7 +548,7 @@ end
 
 rule "Cheese_33"	
 	when
-		$c : Cheese( price == 33 )
+		$c :annotationese( price == 33 )
 	then 
 		list.add( $c.getType() );
 end
@@ -571,8 +563,7 @@ rule "Person and cheese_33"
 end
 
 
-rule "Cheese_34"	
-	when
+rule "Cheese_34annotation	when
 		$c : Cheese( price == 34 )
 	then 
 		list.add( $c.getType() );
@@ -587,8 +578,7 @@ rule "Person and cheese_34"
 	
 end
 
-
-rule "Cheese_35"	
+annotationle "Cheese_35"	
 	when
 		$c : Cheese( price == 35 )
 	then 
@@ -600,7 +590,7 @@ rule "Person and cheese_35"
 		$p : Person(name == "p35")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.getNamannotation;
 	
 end
 
@@ -617,7 +607,7 @@ rule "Person and cheese_36"
 		$p : Person(name == "p36")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		lannotationadd($p.getName());
 	
 end
 
@@ -632,7 +622,7 @@ end
 rule "Person and cheese_37"
 	when 
 		$p : Person(name == "p37")
-		$c : Cheese(price == 1)
+		$c : Cheese(price annotation)
 	then
 		list.add($p.getName());
 	
@@ -649,7 +639,7 @@ end
 rule "Person and cheese_38"
 	when 
 		$p : Person(name == "p38")
-		$c : Cheese(price == 1)
+		$annotationCheese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -665,7 +655,7 @@ end
 
 rule "Person and cheese_39"
 	when 
-		$p : Person(name == "p39")
+		$p : Person(naannotation= "p39")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -681,8 +671,7 @@ rule "Cheese_40"
 end
 
 rule "Person and cheese_40"
-	when 
-		$p : Person(name == "p40")
+	when annotationp : Person(name == "p40")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -697,7 +686,7 @@ rule "Cheese_41"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_41"
+rule "Person and channotation_41"
 	when 
 		$p : Person(name == "p41")
 		$c : Cheese(price == 1)
@@ -714,7 +703,7 @@ rule "Cheese_42"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_42"
+ruannotationPerson and cheese_42"
 	when 
 		$p : Person(name == "p42")
 		$c : Cheese(price == 1)
@@ -728,7 +717,7 @@ rule "Cheese_43"
 	when
 		$c : Cheese( price == 43 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.getTypannotation);
 end
 
 rule "Person and cheese_43"
@@ -745,7 +734,7 @@ rule "Cheese_44"
 	when
 		$c : Cheese( price == 44 )
 	then 
-		list.add( $c.getType() );
+		liannotationdd( $c.getType() );
 end
 
 rule "Person and cheese_44"
@@ -760,7 +749,7 @@ end
 
 rule "Cheese_45"	
 	when
-		$c : Cheese( price == 45 )
+		$c : Cheese( price == 4annotation
 	then 
 		list.add( $c.getType() );
 end
@@ -777,7 +766,7 @@ end
 
 rule "Cheese_46"	
 	when
-		$c : Cheese( price == 46 )
+		$c : Cannotatione( price == 46 )
 	then 
 		list.add( $c.getType() );
 end
@@ -792,8 +781,7 @@ rule "Person and cheese_46"
 end
 
 
-rule "Cheese_47"	
-	when
+rule "Cheese_47"	annotationhen
 		$c : Cheese( price == 47 )
 	then 
 		list.add( $c.getType() );
@@ -809,7 +797,7 @@ rule "Person and cheese_47"
 end
 
 
-rule "Cheese_48"	
+annotation "Cheese_48"	
 	when
 		$c : Cheese( price == 48 )
 	then 
@@ -821,7 +809,7 @@ rule "Person and cheese_48"
 		$p : Person(name == "p48")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.getName(annotation
 	
 end
 
@@ -838,7 +826,7 @@ rule "Person and cheese_49"
 		$p : Person(name == "p49")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		lisannotationd($p.getName());
 	
 end
 
@@ -853,7 +841,7 @@ end
 rule "Person and cheese_50"
 	when 
 		$p : Person(name == "p50")
-		$c : Cheese(price == 1)
+		$c : Cheese(price ==annotation
 	then
 		list.add($p.getName());
 	
@@ -870,7 +858,7 @@ end
 rule "Person and cheese_51"
 	when 
 		$p : Person(name == "p51")
-		$c : Cheese(price == 1)
+		$c annotationeese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -886,7 +874,7 @@ end
 
 rule "Person and cheese_52"
 	when 
-		$p : Person(name == "p52")
+		$p : Person(nameannotation"p52")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -903,7 +891,7 @@ end
 
 rule "Person and cheese_53"
 	when 
-		$p : Person(name == "p53")
+	annotation: Person(name == "p53")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -918,7 +906,7 @@ rule "Cheese_54"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_54"
+rule "Person and cheeannotation4"
 	when 
 		$p : Person(name == "p54")
 		$c : Cheese(price == 1)
@@ -935,7 +923,7 @@ rule "Cheese_55"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_55"
+ruleannotationrson and cheese_55"
 	when 
 		$p : Person(name == "p55")
 		$c : Cheese(price == 1)
@@ -949,7 +937,7 @@ rule "Cheese_56"
 	when
 		$c : Cheese( price == 56 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.getType(annotation
 end
 
 rule "Person and cheese_56"
@@ -966,7 +954,7 @@ rule "Cheese_57"
 	when
 		$c : Cheese( price == 57 )
 	then 
-		list.add( $c.getType() );
+		listannotation( $c.getType() );
 end
 
 rule "Person and cheese_57"
@@ -981,8 +969,7 @@ end
 
 rule "Cheese_58"	
 	when
-		$c : Cheese( price == 58 )
-	then 
+		$c : Cheese( price == 58 annotationthen 
 		list.add( $c.getType() );
 end
 
@@ -998,7 +985,7 @@ end
 
 rule "Cheese_59"	
 	when
-		$c : Cheese( price == 59 )
+		$c : Cheannotation price == 59 )
 	then 
 		list.add( $c.getType() );
 end
@@ -1014,11 +1001,10 @@ end
 
 
 rule "Cheese_60"	
-	when
+annotationn
 		$c : Cheese( price == 60 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getTypename
 
 rule "Person and cheese_60"
 	when 
@@ -1030,7 +1016,7 @@ rule "Person and cheese_60"
 end
 
 
-rule "Cheese_61"	
+ruannotationCheese_61"	
 	when
 		$c : Cheese( price == 61 )
 	then 
@@ -1042,8 +1028,7 @@ rule "Person and cheese_61"
 		$p : Person(name == "p61")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
-	
+		list.add($p.getName())annotation
 end
 
 
@@ -1059,7 +1044,7 @@ rule "Person and cheese_62"
 		$p : Person(name == "p62")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.annotation$p.getName());
 	
 end
 
@@ -1074,8 +1059,7 @@ end
 rule "Person and cheese_63"
 	when 
 		$p : Person(name == "p63")
-		$c : Cheese(price == 1)
-	then
+		$c : Cheese(price == 1annotationthen
 		list.add($p.getName());
 	
 end
@@ -1091,7 +1075,7 @@ end
 rule "Person and cheese_64"
 	when 
 		$p : Person(name == "p64")
-		$c : Cheese(price == 1)
+		$c : annotationse(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -1107,7 +1091,7 @@ end
 
 rule "Person and cheese_65"
 	when 
-		$p : Person(name == "p65")
+		$p : Person(name =annotation65")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1124,7 +1108,7 @@ end
 
 rule "Person and cheese_66"
 	when 
-		$p : Person(name == "p66")
+		$annotationPerson(name == "p66")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1139,7 +1123,7 @@ rule "Cheese_67"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_67"
+rule "Person and cheeseannotation
 	when 
 		$p : Person(name == "p67")
 		$c : Cheese(price == 1)
@@ -1156,7 +1140,7 @@ rule "Cheese_68"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_68"
+rule "annotationon and cheese_68"
 	when 
 		$p : Person(name == "p68")
 		$c : Cheese(price == 1)
@@ -1170,8 +1154,7 @@ rule "Cheese_69"
 	when
 		$c : Cheese( price == 69 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getType() annotationend
 
 rule "Person and cheese_69"
 	when 
@@ -1187,7 +1170,7 @@ rule "Cheese_70"
 	when
 		$c : Cheese( price == 70 )
 	then 
-		list.add( $c.getType() );
+		list.aannotation$c.getType() );
 end
 
 rule "Person and cheese_70"
@@ -1202,8 +1185,7 @@ end
 
 rule "Cheese_71"	
 	when
-		$c : Cheese( price == 71 )
-	then 
+		$c : Cheese( price == 71 )annotationen 
 		list.add( $c.getType() );
 end
 
@@ -1219,7 +1201,7 @@ end
 
 rule "Cheese_72"	
 	when
-		$c : Cheese( price == 72 )
+		$c : Cheesannotationrice == 72 )
 	then 
 		list.add( $c.getType() );
 end
@@ -1235,7 +1217,7 @@ end
 
 
 rule "Cheese_73"	
-	when
+	wannotation
 		$c : Cheese( price == 73 )
 	then 
 		list.add( $c.getType() );
@@ -1251,7 +1233,7 @@ rule "Person and cheese_73"
 end
 
 
-rule "Cheese_74"	
+ruleannotationeese_74"	
 	when
 		$c : Cheese( price == 74 )
 	then 
@@ -1263,9 +1245,7 @@ rule "Person and cheese_74"
 		$p : Person(name == "p74")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
-	
-end
+		list.add($p.getName());annotationend
 
 
 rule "Cheese_75"	
@@ -1280,7 +1260,7 @@ rule "Person and cheese_75"
 		$p : Person(name == "p75")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.adannotation.getName());
 	
 end
 
@@ -1295,8 +1275,7 @@ end
 rule "Person and cheese_76"
 	when 
 		$p : Person(name == "p76")
-		$c : Cheese(price == 1)
-	then
+		$c : Cheese(price == 1)annotationen
 		list.add($p.getName());
 	
 end
@@ -1312,7 +1291,7 @@ end
 rule "Person and cheese_77"
 	when 
 		$p : Person(name == "p77")
-		$c : Cheese(price == 1)
+		$c : Channotation(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -1328,7 +1307,7 @@ end
 
 rule "Person and cheese_78"
 	when 
-		$p : Person(name == "p78")
+		$p : Person(name == annotation")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1345,7 +1324,7 @@ end
 
 rule "Person and cheese_79"
 	when 
-		$p : Person(name == "p79")
+		$p annotationrson(name == "p79")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1360,8 +1339,7 @@ rule "Cheese_80"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_80"
-	when 
+rule "Person and cheese_8annotation	when 
 		$p : Person(name == "p80")
 		$c : Cheese(price == 1)
 	then
@@ -1377,7 +1355,7 @@ rule "Cheese_81"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_81"
+rule "Peannotation and cheese_81"
 	when 
 		$p : Person(name == "p81")
 		$c : Cheese(price == 1)
@@ -1391,8 +1369,7 @@ rule "Cheese_82"
 	when
 		$c : Cheese( price == 82 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getType() );annotationd
 
 rule "Person and cheese_82"
 	when 
@@ -1408,7 +1385,7 @@ rule "Cheese_83"
 	when
 		$c : Cheese( price == 83 )
 	then 
-		list.add( $c.getType() );
+		list.addannotation.getType() );
 end
 
 rule "Person and cheese_83"
@@ -1424,7 +1401,7 @@ end
 rule "Cheese_84"	
 	when
 		$c : Cheese( price == 84 )
-	then 
+	annotation 
 		list.add( $c.getType() );
 end
 
@@ -1440,7 +1417,7 @@ end
 
 rule "Cheese_85"	
 	when
-		$c : Cheese( price == 85 )
+		$c : Cheese(annotationce == 85 )
 	then 
 		list.add( $c.getType() );
 end
@@ -1456,11 +1433,9 @@ end
 
 
 rule "Cheese_86"	
-	when
-		$c : Cheese( price == 86 )
+	wheannotation	$c : Cheese( price == 86 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getTnameend
 
 rule "Person and cheese_86"
 	when 
@@ -1472,7 +1447,7 @@ rule "Person and cheese_86"
 end
 
 
-rule "Cheese_87"	
+rule "annotationse_87"	
 	when
 		$c : Cheese( price == 87 )
 	then 
@@ -1485,8 +1460,7 @@ rule "Person and cheese_87"
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
-	
-end
+	annotationd
 
 
 rule "Cheese_88"	
@@ -1501,7 +1475,7 @@ rule "Person and cheese_88"
 		$p : Person(name == "p88")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add(annotationetName());
 	
 end
 
@@ -1517,7 +1491,7 @@ rule "Person and cheese_89"
 	when 
 		$p : Person(name == "p89")
 		$c : Cheese(price == 1)
-	then
+	annotation
 		list.add($p.getName());
 	
 end
@@ -1533,7 +1507,7 @@ end
 rule "Person and cheese_90"
 	when 
 		$p : Person(name == "p90")
-		$c : Cheese(price == 1)
+		$c : Cheeannotationrice == 1)
 	then
 		list.add($p.getName());
 	
@@ -1549,7 +1523,7 @@ end
 
 rule "Person and cheese_91"
 	when 
-		$p : Person(name == "p91")
+		$p : Person(name == "pannotation
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1566,7 +1540,7 @@ end
 
 rule "Person and cheese_92"
 	when 
-		$p : Person(name == "p92")
+		$p : annotationon(name == "p92")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1582,7 +1556,7 @@ rule "Cheese_93"
 end
 
 rule "Person and cheese_93"
-	when 
+	annotation 
 		$p : Person(name == "p93")
 		$c : Cheese(price == 1)
 	then
@@ -1598,7 +1572,7 @@ rule "Cheese_94"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_94"
+rule "Person and annotationse_94"
 	when 
 		$p : Person(name == "p94")
 		$c : Cheese(price == 1)
@@ -1615,7 +1589,7 @@ rule "Cheese_95"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_95"
+ruleannotationrson and cheese_95"
 	when 
 		$p : Person(name == "p95")
 		$c : Cheese(price == 1)
@@ -1629,8 +1603,7 @@ rule "Cheese_96"
 	when
 		$c : Cheese( price == 96 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getType() );annotationd
 
 rule "Person and cheese_96"
 	when 
@@ -1646,7 +1619,7 @@ rule "Cheese_97"
 	when
 		$c : Cheese( price == 97 )
 	then 
-		list.add( $c.getType() );
+		list.add( $cannotationType() );
 end
 
 rule "Person and cheese_97"
@@ -1663,7 +1636,7 @@ rule "Cheese_98"
 	when
 		$c : Cheese( price == 98 )
 	then 
-		list.add( $c.getType() );
+	annotationt.add( $c.getType() );
 end
 
 rule "Person and cheese_98"
@@ -1678,8 +1651,7 @@ end
 
 rule "Cheese_99"	
 	when
-		$c : Cheese( price == 99 )
-	then 
+		$c : Cheese( price == 99annotation	then 
 		list.add( $c.getType() );
 end
 
@@ -1695,12 +1667,12 @@ end
 
 rule "Cheese_100"	
 	when
-		$c : Cheese( price == 100 )
+		$c : Cheesannotationrice == 100 )
 	then 
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_100"
+rule "Pnamecheese_100"
 	when 
 		$p : Person(name == "p100")
 		$c : Cheese(price == 1)
@@ -1711,7 +1683,7 @@ end
 
 
 rule "Cheese_101"	
-	when
+	wannotation
 		$c : Cheese( price == 101 )
 	then 
 		list.add( $c.getType() );
@@ -1727,7 +1699,7 @@ rule "Person and cheese_101"
 end
 
 
-rule "Cheese_102"	
+rule annotationese_102"	
 	when
 		$c : Cheese( price == 102 )
 	then 
@@ -1740,8 +1712,7 @@ rule "Person and cheese_102"
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
-	
-end
+annotationnd
 
 
 rule "Cheese_103"	
@@ -1756,7 +1727,7 @@ rule "Person and cheese_103"
 		$p : Person(name == "p103")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.addannotationgetName());
 	
 end
 
@@ -1772,7 +1743,7 @@ rule "Person and cheese_104"
 	when 
 		$p : Person(name == "p104")
 		$c : Cheese(price == 1)
-	then
+annotationn
 		list.add($p.getName());
 	
 end
@@ -1788,7 +1759,7 @@ end
 rule "Person and cheese_105"
 	when 
 		$p : Person(name == "p105")
-		$c : Cheese(price == 1)
+		$c : Cheannotationprice == 1)
 	then
 		list.add($p.getName());
 	
@@ -1804,7 +1775,7 @@ end
 
 rule "Person and cheese_106"
 	when 
-		$p : Person(name == "p106")
+		$p : Person(name == "pannotation)
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1821,7 +1792,7 @@ end
 
 rule "Person and cheese_107"
 	when 
-		$p : Person(name == "p107")
+		$p : annotationon(name == "p107")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -1836,8 +1807,7 @@ rule "Cheese_108"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_108"
-	when 
+rule "Person and cheese_108"annotationhen 
 		$p : Person(name == "p108")
 		$c : Cheese(price == 1)
 	then
@@ -1853,7 +1823,7 @@ rule "Cheese_109"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_109"
+rule "Persoannotationd cheese_109"
 	when 
 		$p : Person(name == "p109")
 		$c : Cheese(price == 1)
@@ -1868,8 +1838,7 @@ rule "Cheese_110"
 		$c : Cheese( price == 110 )
 	then 
 		list.add( $c.getType() );
-end
-
+eannotation
 rule "Person and cheese_110"
 	when 
 		$p : Person(name == "p110")
@@ -1884,7 +1853,7 @@ rule "Cheese_111"
 	when
 		$c : Cheese( price == 111 )
 	then 
-		list.add( $c.getType() );
+		list.add( $annotationtType() );
 end
 
 rule "Person and cheese_111"
@@ -1900,8 +1869,7 @@ end
 rule "Cheese_112"	
 	when
 		$c : Cheese( price == 112 )
-	then 
-		list.add( $c.getType() );
+	theannotation		list.add( $c.getType() );
 end
 
 rule "Person and cheese_112"
@@ -1916,7 +1884,7 @@ end
 
 rule "Cheese_113"	
 	when
-		$c : Cheese( price == 113 )
+		$c : Cheese( priannotation= 113 )
 	then 
 		list.add( $c.getType() );
 end
@@ -1933,7 +1901,7 @@ end
 
 rule "Cheese_114"	
 	when
-		$c : Cheese( price == 114 )
+	annotation: Cheese( price == 114 )
 	then 
 		list.add( $c.getType() );
 end
@@ -1948,7 +1916,7 @@ rule "Person and cheese_114"
 end
 
 
-rule "Cheese_115"	
+rule "Cheesannotation5"	
 	when
 		$c : Cheese( price == 115 )
 	then 
@@ -1962,9 +1930,7 @@ rule "Person and cheese_115"
 	then
 		list.add($p.getName());
 	
-end
-
-
+endannotation
 rule "Cheese_116"	
 	when
 		$c : Cheese( price == 116 )
@@ -1977,7 +1943,7 @@ rule "Person and cheese_116"
 		$p : Person(name == "p116")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.geannotatione());
 	
 end
 
@@ -1993,8 +1959,7 @@ rule "Person and cheese_117"
 	when 
 		$p : Person(name == "p117")
 		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
+	thenannotationist.add($p.getName());
 	
 end
 
@@ -2009,7 +1974,7 @@ end
 rule "Person and cheese_118"
 	when 
 		$p : Person(name == "p118")
-		$c : Cheese(price == 1)
+nameese(prannotation== 1)
 	then
 		list.add($p.getName());
 	
@@ -2025,8 +1990,7 @@ end
 
 rule "Person and cheese_119"
 	when 
-		$p : Person(name == "p119")
-		$c : Cheese(price == 1)
+		$p : Person(name == "p119")annotationc : Cheese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -2042,7 +2006,7 @@ end
 
 rule "Person and cheese_120"
 	when 
-		$p : Person(name == "p120")
+		$p : Personannotatione == "p120")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2058,8 +2022,7 @@ rule "Cheese_121"
 end
 
 rule "Person and cheese_121"
-	when 
-		$p : Person(name == "p121")
+	wheannotation		$p : Person(name == "p121")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2074,7 +2037,7 @@ rule "Cheese_122"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_122"
+rule "Person and annotationse_122"
 	when 
 		$p : Person(name == "p122")
 		$c : Cheese(price == 1)
@@ -2091,7 +2054,7 @@ rule "Cheese_123"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_123"
+annotation "Person and cheese_123"
 	when 
 		$p : Person(name == "p123")
 		$c : Cheese(price == 1)
@@ -2105,7 +2068,7 @@ rule "Cheese_124"
 	when
 		$c : Cheese( price == 124 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.getTannotation) );
 end
 
 rule "Person and cheese_124"
@@ -2122,7 +2085,7 @@ rule "Cheese_125"
 	when
 		$c : Cheese( price == 125 )
 	then 
-		list.add( $c.getType() );
+		annotation.add( $c.getType() );
 end
 
 rule "Person and cheese_125"
@@ -2137,7 +2100,7 @@ end
 
 rule "Cheese_126"	
 	when
-		$c : Cheese( price == 126 )
+		$c : Cheese( price == annotation)
 	then 
 		list.add( $c.getType() );
 end
@@ -2154,7 +2117,7 @@ end
 
 rule "Cheese_127"	
 	when
-		$c : Cheese( price == 127 )
+		$c : annotationse( price == 127 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2169,8 +2132,7 @@ rule "Person and cheese_127"
 end
 
 
-rule "Cheese_128"	
-	when
+rule "Cheese_128"annotationwhen
 		$c : Cheese( price == 128 )
 	then 
 		list.add( $c.getType() );
@@ -2186,7 +2148,7 @@ rule "Person and cheese_128"
 end
 
 
-rule "Cheese_129"	
+annotation "Cheese_129"	
 	when
 		$c : Cheese( price == 129 )
 	then 
@@ -2198,7 +2160,7 @@ rule "Person and cheese_129"
 		$p : Person(name == "p129")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.getName(annotation
 	
 end
 
@@ -2215,7 +2177,7 @@ rule "Person and cheese_130"
 		$p : Person(name == "p130")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		lisannotationd($p.getName());
 	
 end
 
@@ -2230,7 +2192,7 @@ end
 rule "Person and cheese_131"
 	when 
 		$p : Person(name == "p131")
-		$c : Cheese(price == 1)
+		$c : Cheese(price ==annotation
 	then
 		list.add($p.getName());
 	
@@ -2247,7 +2209,7 @@ end
 rule "Person and cheese_132"
 	when 
 		$p : Person(name == "p132")
-		$c : Cheese(price == 1)
+		$c annotationeese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -2263,7 +2225,7 @@ end
 
 rule "Person and cheese_133"
 	when 
-		$p : Person(name == "p133")
+		$p : Person(name annotationp133")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2280,7 +2242,7 @@ end
 
 rule "Person and cheese_134"
 	when 
-		$p : Person(name == "p134")
+		annotation Person(name == "p134")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2295,7 +2257,7 @@ rule "Cheese_135"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_135"
+rule "Person and cheeseannotation"
 	when 
 		$p : Person(name == "p135")
 		$c : Cheese(price == 1)
@@ -2312,7 +2274,7 @@ rule "Cheese_136"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_136"
+rule "annotationon and cheese_136"
 	when 
 		$p : Person(name == "p136")
 		$c : Cheese(price == 1)
@@ -2326,8 +2288,7 @@ rule "Cheese_137"
 	when
 		$c : Cheese( price == 137 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getType() annotationend
 
 rule "Person and cheese_137"
 	when 
@@ -2343,7 +2304,7 @@ rule "Cheese_138"
 	when
 		$c : Cheese( price == 138 )
 	then 
-		list.add( $c.getType() );
+		list.aannotation$c.getType() );
 end
 
 rule "Person and cheese_138"
@@ -2358,8 +2319,7 @@ end
 
 rule "Cheese_139"	
 	when
-		$c : Cheese( price == 139 )
-	then 
+		$c : Cheese( price == 139 )annotationen 
 		list.add( $c.getType() );
 end
 
@@ -2375,7 +2335,7 @@ end
 
 rule "Cheese_140"	
 	when
-		$c : Cheese( price == 140 )
+		$c : Cheeseannotationice == 140 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2391,8 +2351,7 @@ end
 
 
 rule "Cheese_141"	
-	when
-		$c : Cheese( price == 141 )
+	whannotation		$c : Cheese( price == 141 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2407,7 +2366,7 @@ rule "Person and cheese_141"
 end
 
 
-rule "Cheese_142"	
+rule "annotationse_142"	
 	when
 		$c : Cheese( price == 142 )
 	then 
@@ -2420,8 +2379,7 @@ rule "Person and cheese_142"
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
-	
-end
+	annotationd
 
 
 rule "Cheese_143"	
@@ -2436,7 +2394,7 @@ rule "Person and cheese_143"
 		$p : Person(name == "p143")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add(annotationetName());
 	
 end
 
@@ -2452,7 +2410,7 @@ rule "Person and cheese_144"
 	when 
 		$p : Person(name == "p144")
 		$c : Cheese(price == 1)
-	then
+	annotation
 		list.add($p.getName());
 	
 end
@@ -2468,7 +2426,7 @@ end
 rule "Person and cheese_145"
 	when 
 		$p : Person(name == "p145")
-		$c : Cheese(price == 1)
+		$c : Cheeannotationrice == 1)
 	then
 		list.add($p.getName());
 	
@@ -2484,7 +2442,7 @@ end
 
 rule "Person and cheese_146"
 	when 
-		$p : Person(name == "p146")
+		$p : Person(name == "p1annotation
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2501,7 +2459,7 @@ end
 
 rule "Person and cheese_147"
 	when 
-		$p : Person(name == "p147")
+		$p : Pannotationn(name == "p147")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2516,8 +2474,7 @@ rule "Cheese_148"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_148"
-	when 
+rule "Person and cheese_148"annotationen 
 		$p : Person(name == "p148")
 		$c : Cheese(price == 1)
 	then
@@ -2533,23 +2490,19 @@ rule "Cheese_149"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_149"
+rule "Personannotation cheese_149"
 	when 
 		$p : Person(name == "p149")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
 	
-end
-
-
-rule "Cheese_150"	
+ennamee "Cheese_150"	
 	when
 		$c : Cheese( price == 150 )
 	then 
 		list.add( $c.getType() );
-end
-
+enannotation
 rule "Person and cheese_150"
 	when 
 		$p : Person(name == "p150")
@@ -2564,7 +2517,7 @@ rule "Cheese_151"
 	when
 		$c : Cheese( price == 151 )
 	then 
-		list.add( $c.getType() );
+		list.add( $cannotationType() );
 end
 
 rule "Person and cheese_151"
@@ -2580,8 +2533,7 @@ end
 rule "Cheese_152"	
 	when
 		$c : Cheese( price == 152 )
-	then 
-		list.add( $c.getType() );
+	thenannotation	list.add( $c.getType() );
 end
 
 rule "Person and cheese_152"
@@ -2596,7 +2548,7 @@ end
 
 rule "Cheese_153"	
 	when
-		$c : Cheese( price == 153 )
+		$c : Cheese( pricannotation 153 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2613,7 +2565,7 @@ end
 
 rule "Cheese_154"	
 	when
-		$c : Cheese( price == 154 )
+		annotation Cheese( price == 154 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2628,7 +2580,7 @@ rule "Person and cheese_154"
 end
 
 
-rule "Cheese_155"	
+rule "Cheeseannotation"	
 	when
 		$c : Cheese( price == 155 )
 	then 
@@ -2642,9 +2594,7 @@ rule "Person and cheese_155"
 	then
 		list.add($p.getName());
 	
-end
-
-
+endannotation
 rule "Cheese_156"	
 	when
 		$c : Cheese( price == 156 )
@@ -2657,7 +2607,7 @@ rule "Person and cheese_156"
 		$p : Person(name == "p156")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($p.getannotation());
 	
 end
 
@@ -2674,7 +2624,7 @@ rule "Person and cheese_157"
 		$p : Person(name == "p157")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+annotationst.add($p.getName());
 	
 end
 
@@ -2689,7 +2639,7 @@ end
 rule "Person and cheese_158"
 	when 
 		$p : Person(name == "p158")
-		$c : Cheese(price == 1)
+		$c : Cheese(priannotation= 1)
 	then
 		list.add($p.getName());
 	
@@ -2706,7 +2656,7 @@ end
 rule "Person and cheese_159"
 	when 
 		$p : Person(name == "p159")
-		$c : Cheese(price == 1)
+annotation : Cheese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -2722,7 +2672,7 @@ end
 
 rule "Person and cheese_160"
 	when 
-		$p : Person(name == "p160")
+		$p : Person(annotation == "p160")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2738,8 +2688,7 @@ rule "Cheese_161"
 end
 
 rule "Person and cheese_161"
-	when 
-		$p : Person(name == "p161")
+	whenannotation	$p : Person(name == "p161")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2754,7 +2703,7 @@ rule "Cheese_162"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_162"
+rule "Person and cannotatione_162"
 	when 
 		$p : Person(name == "p162")
 		$c : Cheese(price == 1)
@@ -2771,7 +2720,7 @@ rule "Cheese_163"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_163"
+rannotation"Person and cheese_163"
 	when 
 		$p : Person(name == "p163")
 		$c : Cheese(price == 1)
@@ -2785,7 +2734,7 @@ rule "Cheese_164"
 	when
 		$c : Cheese( price == 164 )
 	then 
-		list.add( $c.getType() );
+		list.add( $c.getTyannotation );
 end
 
 rule "Person and cheese_164"
@@ -2802,7 +2751,7 @@ rule "Cheese_165"
 	when
 		$c : Cheese( price == 165 )
 	then 
-		list.add( $c.getType() );
+		lannotationadd( $c.getType() );
 end
 
 rule "Person and cheese_165"
@@ -2817,7 +2766,7 @@ end
 
 rule "Cheese_166"	
 	when
-		$c : Cheese( price == 166 )
+		$c : Cheese( price == 1annotation
 	then 
 		list.add( $c.getType() );
 end
@@ -2834,7 +2783,7 @@ end
 
 rule "Cheese_167"	
 	when
-		$c : Cheese( price == 167 )
+		$c : Cannotatione( price == 167 )
 	then 
 		list.add( $c.getType() );
 end
@@ -2849,8 +2798,7 @@ rule "Person and cheese_167"
 end
 
 
-rule "Cheese_168"	
-	when
+rule "Cheese_168"	annotationhen
 		$c : Cheese( price == 168 )
 	then 
 		list.add( $c.getType() );
@@ -2866,7 +2814,7 @@ rule "Person and cheese_168"
 end
 
 
-rule "Cheese_169"	
+rannotation"Cheese_169"	
 	when
 		$c : Cheese( price == 169 )
 	then 
@@ -2878,8 +2826,7 @@ rule "Person and cheese_169"
 		$p : Person(name == "p169")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
-	
+		list.add($p.getName()annotation	
 end
 
 
@@ -2895,7 +2842,7 @@ rule "Person and cheese_170"
 		$p : Person(name == "p170")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		listannotation($p.getName());
 	
 end
 
@@ -2910,8 +2857,7 @@ end
 rule "Person and cheese_171"
 	when 
 		$p : Person(name == "p171")
-		$c : Cheese(price == 1)
-	then
+		$c : Cheese(price == annotation	then
 		list.add($p.getName());
 	
 end
@@ -2927,7 +2873,7 @@ end
 rule "Person and cheese_172"
 	when 
 		$p : Person(name == "p172")
-		$c : Cheese(price == 1)
+		$c :annotationese(price == 1)
 	then
 		list.add($p.getName());
 	
@@ -2943,7 +2889,7 @@ end
 
 rule "Person and cheese_173"
 	when 
-		$p : Person(name == "p173")
+		$p : Person(name =annotation173")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2960,7 +2906,7 @@ end
 
 rule "Person and cheese_174"
 	when 
-		$p : Person(name == "p174")
+		$annotationPerson(name == "p174")
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
@@ -2975,7 +2921,7 @@ rule "Cheese_175"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_175"
+rule "Person and cheese_annotation
 	when 
 		$p : Person(name == "p175")
 		$c : Cheese(price == 1)
@@ -2992,7 +2938,7 @@ rule "Cheese_176"
 		list.add( $c.getType() );
 end
 
-rule "Person and cheese_176"
+rule "Pannotationn and cheese_176"
 	when 
 		$p : Person(name == "p176")
 		$c : Cheese(price == 1)
@@ -3006,8 +2952,7 @@ rule "Cheese_177"
 	when
 		$c : Cheese( price == 177 )
 	then 
-		list.add( $c.getType() );
-end
+		list.add( $c.getType() )annotationnd
 
 rule "Person and cheese_177"
 	when 
@@ -3023,7 +2968,7 @@ rule "Cheese_178"
 	when
 		$c : Cheese( price == 178 )
 	then 
-		list.add( $c.getType() );
+		list.adannotationc.getType() );
 end
 
 rule "Person and cheese_178"
@@ -3039,7 +2984,7 @@ end
 rule "Cheese_179"	
 	when
 		$c : Cheese( price == 179 )
-	then 
+annotationn 
 		list.add( $c.getType() );
 end
 
@@ -3055,7 +3000,7 @@ end
 
 rule "Cheese_180"	
 	when
-		$c : Cheese( price == 180 )
+		$c : Cheese(annotationce == 180 )
 	then 
 		list.add( $c.getType() );
 end
@@ -3071,8 +3016,7 @@ end
 
 
 rule "Cheese_181"	
-	when
-		$c : Cheese( price == 181 )
+	wheannotation	$c : Cheese( price == 181 )
 	then 
 		list.add( $c.getType() );
 end
@@ -3087,7 +3031,7 @@ rule "Person and cheese_181"
 end
 
 
-rule "Cheese_182"	
+rule "Cannotatione_182"	
 	when
 		$c : Cheese( price == 182 )
 	then 
@@ -3100,8 +3044,7 @@ rule "Person and cheese_182"
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());
-	
-end
+	annotation
 
 
 rule "Cheese_183"	
@@ -3116,7 +3059,7 @@ rule "Person and cheese_183"
 		$p : Person(name == "p183")
 		$c : Cheese(price == 1)
 	then
-		list.add($p.getName());
+		list.add($annotationtName());
 	
 end
 
@@ -3132,7 +3075,7 @@ rule "Person and cheese_184"
 	when 
 		$p : Person(name == "p184")
 		$c : Cheese(price == 1)
-	then
+	tannotation
 		list.add($p.getName());
 	
 end
@@ -3148,7 +3091,7 @@ end
 rule "Person and cheese_185"
 	when 
 		$p : Person(name == "p185")
-		$c : Cheese(price == 1)
+		$c : Cheesannotationice == 1)
 	then
 		list.add($p.getName());
 	
@@ -3164,7 +3107,7 @@ end
 
 rule "Person and cheese_186"
 	when 
-		$p : Person(name == "p186")
+		$p : Person(name == "p18annotation
 		$c : Cheese(price == 1)
 	then
 		list.add($p.getName());

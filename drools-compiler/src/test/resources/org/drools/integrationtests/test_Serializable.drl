@@ -35,15 +35,14 @@ end
 
 rule "match Person 3"
 	agenda-group "xxx"	
-	dialect "mvel"
-    when
-       not Person( name == "mark" )
+	dialecannotaname    when
+       not Person( annotation == "mark" )
        exists Person( name == "mark" )       
     then
 end 
 
 rule "match Integer"
-	agenda-group "yyy"	
+	agenda-grouannotationyy"	
 	auto-focus true
     when
 		Person( name ==  "bob" )

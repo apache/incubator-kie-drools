@@ -16,37 +16,41 @@
 
 package org.drools.lang.descr;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.rule.Namespaceable;
 
-public class TypeDeclarationDescr extends BaseDescr implements Namespaceable {
+public class TypeDeclarationDescr extends BaseDescr
+    implements
+    Namespaceable {
 
-    private static final long   serialVersionUID = 510l;
-    private String              namespace;
-    private String              typeName;
-    private Map<String, Map<String, String>> metaAttributes;
-    private Map<String, TypeFieldDescr> fields;
-    private String              superTypeName;
-    private Vector<String>      interfaceNames;
+    private static final long            serialVersionUID = 510l;
+    private String                       namespace;
+    private String                       typeName;
+    private Map<String, AnnotationDescr> annotations;
+    private Map<String, TypeFieldDescr>  fields;
+    private String                       superTypeName;
 
     public TypeDeclarationDescr() {
-        this(null);
+        this( null );
     }
 
     public TypeDeclarationDescr(final String typeName) {
         this.typeName = typeName;
-        this.metaAttributes = new HashMap<String, Map<String, String>>();
-        this.interfaceNames = new Vector<String>();
+        this.annotations = new HashMap<String, AnnotationDescr>();
     }
-    
-    public void setNamespace(String namespace) {
+
+    public void setNamespace( String namespace ) {
         this.namespace = namespace;
     }
-    
+
     public String getNamespace() {
         return this.namespace;
-    }  
+    }
 
     /**
      * @return the identifier
@@ -58,126 +62,89 @@ public class TypeDeclarationDescr extends BaseDescr implements Namespaceable {
     /**
      * @param typeName the identifier to set
      */
-    public void setTypeName(String typeName) {
+    public void setTypeName( String typeName ) {
         this.typeName = typeName;
     }
 
     /**
-     * Adds a new attribute
-     * @param attr
-     * @param values
+     * Assigns a new annotation to this type
+     * @param annotation
+     * @return returns the previous value of this annotation
      */
-    public void addMetaAttribute( String attr, Map<String, String> values ) {
-        if( this.metaAttributes == null ) {
-            this.metaAttributes = new HashMap<String, Map<String, String>>();
+    public AnnotationDescr addAnnotation( AnnotationDescr annotation ) {
+        if ( this.annotations == null ) {
+            this.annotations = new HashMap<String, AnnotationDescr>();
         }
-        this.metaAttributes.put( attr, values );
+        return this.annotations.put( annotation.getName(),
+                                     annotation );
     }
 
-
     /**
-     * Adds a new attribute
-     * @param attr
+     * Assigns a new annotation to this type with the respective name and value
+     * @param name
      * @param value
+     * @return returns the previous value of this annotation
      */
-    public void addMetaAttribute( String attr, String value) {
-        if( this.metaAttributes == null ) {
-            this.metaAttributes = new HashMap<String, Map<String, String>>();
+    public AnnotationDescr addAnnotation( String name,
+                                          String value ) {
+        if ( this.annotations == null ) {
+            this.annotations = new HashMap<String, AnnotationDescr>();
         }
-        Hashtable<String, String> attrMap = new Hashtable<String, String>();
-            attrMap.put(value,value);
-        this.metaAttributes.put( attr, attrMap );
+        AnnotationDescr annotation = new AnnotationDescr( name,
+                                                          value );
+        return this.annotations.put( annotation.getName(),
+                                     annotation );
     }
 
     /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the first key, assuming that the annotation has structure @attr(key)
-     * @param attr
-     * @return key1
+     * Returns the annotation with the given name
+     * @param name
      */
-    public String getMetaAttribute( String attr ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet().iterator().next();
+    public AnnotationDescr getAnnotation( String name ) {
+        return annotations == null ? null : annotations.get( name );
     }
-
-     /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the set of keys, assuming that the annotation has structure @attr(key1,key2,...)
-     * @param attr
-     * @return set of attribute keys
-     */
-    public Set<String> getMetaAttributes(String attr) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet();
-    }
-
-      /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns a mapped value, given the attribute and the key
-     * @param attr
-     * @param key
-     * @return value
-     */
-     public String getMetaAttributeValue( String attr, String key ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.get(key);
-     }
-
 
     /**
-     * Returns the attribute map
-     * @return
-     */
-    public Map<String, Map<String, String>> getMetaAttributes() {
-        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
+    * Returns the set of annotation names for this type
+    * @return
+    */
+    public Set<String> getAnnotationNames() {
+        return annotations == null ? null : annotations.keySet();
     }
 
-     /**
-     * @return the fields
-     */
+    /**
+    * @return the fields
+    */
+    @SuppressWarnings("unchecked")
     public Map<String, TypeFieldDescr> getFields() {
-        return this.fields != null ? this.fields : Collections.EMPTY_MAP;
+        return (Map<String, TypeFieldDescr>) (this.fields != null ? this.fields : Collections.emptyMap());
     }
 
     /**
      * @param fields the fields to set
      */
-    public void setFields(Map<String, TypeFieldDescr> fields) {
+    public void setFields( Map<String, TypeFieldDescr> fields ) {
         this.fields = fields;
     }
 
     public void addField( TypeFieldDescr field ) {
-        if( this.fields == null ) {
+        if ( this.fields == null ) {
             this.fields = new LinkedHashMap<String, TypeFieldDescr>();
         }
-        this.fields.put( field.getFieldName(), field );
+        this.fields.put( field.getFieldName(),
+                         field );
     }
 
     public String toString() {
-        return "TypeDeclaration[ "+this.getTypeName()+" ]";
+        return "TypeDeclaration[ " + this.getTypeName() + " ]";
     }
-
-
 
     public String getSuperTypeName() {
         return superTypeName;
     }
 
-    public void setSuperTypeName(String type) {
+    public void setSuperTypeName( String type ) {
         this.superTypeName = type;
     }
-
-    public Collection<String> getInterfaceNames() {
-        return interfaceNames;
-    }
-
-    public void setInterfaceNames(Collection<String> interfaces) {
-        this.interfaceNames.addAll(interfaceNames);
-    }
-
-
 
 }

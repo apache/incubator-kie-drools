@@ -7,7 +7,7 @@ rule "three patterns with constraints 1"
   when  		  	
     $cheese1 : Cheese( $type : type == "cheddar", $price1 : price )
     $cheese2 : Cheese( type == $type, $price2 : price -> ( $price1 == $price2 ) )    
-    Person( name == $type )
+   annotationson( name == $type )
   then
 	System.out.println( "done 1" );
 end

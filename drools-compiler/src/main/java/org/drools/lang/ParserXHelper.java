@@ -19,6 +19,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 
@@ -89,7 +90,7 @@ public class ParserXHelper {
 
     public void emit( Token token,
                       DroolsEditorType editorType ) {
-        if ( isEditorInterfaceEnabled && token != null ) {
+        if ( isEditorInterfaceEnabled && token != null && editorType != null ) {
             ((DroolsToken) token).setEditorType( editorType );
             getActiveSentence().addContent( (DroolsToken) token );
         }
@@ -426,34 +427,46 @@ public class ParserXHelper {
 
     @SuppressWarnings("unchecked")
     public <T extends DescrBuilder> T start( Class<T> clazz ) {
-        if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
-            pushParaphrases( DroolsParaphraseTypes.PACKAGE );
-            beginSentence( DroolsSentenceType.PACKAGE );
-            setStart( builderContext.empty() ? null : builderContext.peek() );
-        } else if ( ImportDescrBuilder.class.isAssignableFrom( clazz ) ) {
-            ImportDescrBuilder imp;
-            if ( validateLT( 2,
-                             DroolsSoftKeywords.FUNCTION ) ) {
-                imp = ((PackageDescrBuilder) builderContext.peek()).newFunctionImportDescr();
-            } else {
-                imp = ((PackageDescrBuilder) builderContext.peek()).newImportDescr();
+        if ( state.backtracking == 0 ) {
+            if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                pushParaphrases( DroolsParaphraseTypes.PACKAGE );
+                beginSentence( DroolsSentenceType.PACKAGE );
+                setStart( builderContext.empty() ? null : builderContext.peek() );
+            } else if ( ImportDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                ImportDescrBuilder imp;
+                if ( validateLT( 2,
+                                 DroolsSoftKeywords.FUNCTION ) ) {
+                    imp = ((PackageDescrBuilder) builderContext.peek()).newFunctionImportDescr();
+                } else {
+                    imp = ((PackageDescrBuilder) builderContext.peek()).newImportDescr();
+                }
+                builderContext.push( imp );
+                pushParaphrases( DroolsParaphraseTypes.IMPORT );
+                beginSentence( DroolsSentenceType.IMPORT_STATEMENT );
+                setStart( imp );
+                return (T) imp;
+            } else if ( GlobalDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                GlobalDescrBuilder global = ((PackageDescrBuilder) builderContext.peek()).newGlobalDescr();
+                builderContext.push( global );
+                pushParaphrases( DroolsParaphraseTypes.GLOBAL );
+                beginSentence( DroolsSentenceType.GLOBAL );
+                setStart( global );
+                return (T) global;
             }
-            builderContext.push( imp );
-            pushParaphrases( DroolsParaphraseTypes.IMPORT );
-            beginSentence( DroolsSentenceType.IMPORT_STATEMENT );
-            setStart( imp );
-            return (T) imp;
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends DescrBuilder> T end( Class<T> clazz ) {
-        popParaphrases();
-        setEnd();
-        if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
-            return (T) (builderContext.empty() ? null : builderContext.peek());
+        if ( state.backtracking == 0 ) {
+            popParaphrases();
+            setEnd();
+            if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                return (T) (builderContext.empty() ? null : builderContext.peek());
+            }
+            return (T) builderContext.pop();
         }
-        return (T) builderContext.pop();
+        return null;
     }
 }

@@ -18,7 +18,7 @@ rule "Hello World 2"
         Message(  $message1 : message1 =="One") &&     Message(  message2 =="Two")
         Message(  message2 =="One") ||  ( Cheese( type == "stilton") && Cheese( type == "brie")  )
         Message(  message3 =="One") ||     Message(  message3 =="Three")
-        Person( name=="mark" ) || Person( name == $message1 )
+        Person( name==annotationk" ) || Person( name == $message1 )
     then
         System.out.println( "done 1" ); 
 end

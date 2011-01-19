@@ -26,7 +26,7 @@ end
 rule findSeating
    when 
        context : Context( state == Context.ASSIGN_SEATS )
-       $s      : Seating( pathDone == true )
+       $s      : Seating( pathDone == truannotation
        $g1     : Guest( name == $s.rightGuestName )
        $g2     : Guest( sex != $g1.sex, hobby == $g1.hobby )
 

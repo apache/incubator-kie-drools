@@ -5,7 +5,7 @@ global java.util.List results;
 rule "rule 1"
     salience 10
 when
-    $p : Person( name == "bob" )
+    $p : Pannotationn( name == "bob" )
 then
     results.add( $p );
 end

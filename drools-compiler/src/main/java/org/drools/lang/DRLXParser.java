@@ -11,6 +11,8 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.DeclareDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -19,6 +21,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 
 public class DRLXParser {
 
@@ -34,6 +37,9 @@ public class DRLXParser {
                                          state );
     }
 
+    /* ------------------------------------------------------------------------------------------------
+     *                         GENERAL INTERFACING METHODS
+     * ------------------------------------------------------------------------------------------------ */
     public String[] getTokenNames() {
         return DRLXTokens.tokenNames;
     }
@@ -67,8 +73,14 @@ public class DRLXParser {
     }
 
     public void reportError( RecognitionException ex ) {
-        helper.reportError( ex );
+        if ( state.backtracking == 0 ) {
+            helper.reportError( ex );
+        }
     }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         GRAMMAR RULES
+     * ------------------------------------------------------------------------------------------------ */
 
     /**
      * Entry point method of a DRL compilation unit
@@ -93,6 +105,7 @@ public class DRLXParser {
                     if ( helper.validateIdentifierKey( DroolsSoftKeywords.PACKAGE ) ) {
                         String pkgName = packageStatement();
                         pkg.name( pkgName );
+                        if ( state.failed ) return pkg.getDescr();
                     }
 
                     // statements
@@ -100,6 +113,7 @@ public class DRLXParser {
                     do {
                         index = input.index();
                         statement();
+                        if ( state.failed ) return pkg.getDescr();
                         // TODO: error handling and recovery
                     } while ( input.LA( 1 ) == DRLLexer.ID && index != input.index() );
                     break;
@@ -137,10 +151,12 @@ public class DRLXParser {
                    DroolsSoftKeywords.PACKAGE,
                    null,
                    DroolsEditorType.KEYWORD );
+            if ( state.failed ) return pkgName;
 
             pkgName = qualifiedIdentifier();
             helper.setParaphrasesValue( DroolsParaphraseTypes.PACKAGE,
                                         pkgName );
+            if ( state.failed ) return pkgName;
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -148,6 +164,7 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
+                if ( state.failed ) return pkgName;
             }
 
         } catch ( RecognitionException re ) {
@@ -160,9 +177,9 @@ public class DRLXParser {
 
     /**
      * statement := importStatement
-     *           |  global 
+     *           |  globalStatement
+     *           |  declare
      *           |  function
-     *           |  typeDeclaration
      *           |  rule
      *           |  query
      *           |  ruleAttribute
@@ -175,8 +192,10 @@ public class DRLXParser {
         try {
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.IMPORT ) ) {
                 descr = importStatement();
+                if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.GLOBAL ) ) {
                 descr = globalStatement();
+                if ( state.failed ) return descr;
             }
         } catch ( RecognitionException e ) {
             helper.reportError( e );
@@ -185,6 +204,10 @@ public class DRLXParser {
         }
         return descr;
     }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         IMPORT STATEMENT
+     * ------------------------------------------------------------------------------------------------ */
 
     /**
      * importStatement := IMPORT FUNCTION? qualifiedIdentifier (DOT STAR)? SEMICOLON?
@@ -203,6 +226,7 @@ public class DRLXParser {
                    DroolsSoftKeywords.IMPORT,
                    null,
                    DroolsEditorType.KEYWORD );
+            if ( state.failed ) return imp.getDescr();
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.FUNCTION ) ) {
                 // function
@@ -211,6 +235,7 @@ public class DRLXParser {
                        DroolsSoftKeywords.FUNCTION,
                        null,
                        DroolsEditorType.KEYWORD );
+                if ( state.failed ) return imp.getDescr();
             }
 
             // qualifiedIdentifier
@@ -223,11 +248,13 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return imp.getDescr();
                 match( input,
                        DRLLexer.STAR,
                        null,
                        null,
                        DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return imp.getDescr();
                 target += ".*";
             }
             imp.target( target );
@@ -238,6 +265,7 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
+                if ( state.failed ) return imp.getDescr();
             }
 
         } catch ( RecognitionException re ) {
@@ -247,6 +275,10 @@ public class DRLXParser {
         }
         return (imp != null) ? imp.getDescr() : null;
     }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         GLOBAL STATEMENT
+     * ------------------------------------------------------------------------------------------------ */
 
     /**
      * globalStatement := GLOBAL type ID SEMICOLON?
@@ -265,17 +297,23 @@ public class DRLXParser {
                    DroolsSoftKeywords.GLOBAL,
                    null,
                    DroolsEditorType.KEYWORD );
+            if ( state.failed ) return global.getDescr();
 
             // type
             String type = type();
             global.type( type );
+            if ( state.failed ) return global.getDescr();
 
-            // name
-            match( input,
-                   DRLLexer.ID,
-                   null,
-                   null,
-                   DroolsEditorType.IDENTIFIER_TYPE );
+            // identifier
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER_TYPE );
+            global.identifier( id.getText() );
+            helper.setParaphrasesValue( DroolsParaphraseTypes.GLOBAL,
+                                        id.getText() );
+            if ( state.failed ) return global.getDescr();
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -283,6 +321,7 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
+                if ( state.failed ) return global.getDescr();
             }
 
         } catch ( RecognitionException re ) {
@@ -293,6 +332,87 @@ public class DRLXParser {
         return (global != null) ? global.getDescr() : null;
     }
 
+    /* ------------------------------------------------------------------------------------------------
+     *                         DECLARE STATEMENT
+     * ------------------------------------------------------------------------------------------------ */
+
+    /**
+     * declare := DECLARE type metadata* field* END SEMICOLON?
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public TypeDeclarationDescr declare() throws RecognitionException {
+        DeclareDescrBuilder declare = null;
+        try {
+            declare = helper.start( DeclareDescrBuilder.class );
+
+            // 'declare'
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.DECLARE,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return declare.getDescr();
+
+            // type
+            String type = type();
+            declare.type( type );
+            if ( state.failed ) return declare.getDescr();
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // metadata*
+                metadata();
+                if ( state.failed ) return declare.getDescr();
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+                // field*
+                field();
+                if ( state.failed ) return declare.getDescr();
+            }
+
+            // 'end'
+            Token id = match( input,
+                              DRLLexer.ID,
+                              DroolsSoftKeywords.END,
+                              null,
+                              DroolsEditorType.KEYWORD );
+            if ( state.failed ) return declare.getDescr();
+
+            if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+                match( input,
+                       DRLLexer.SEMICOLON,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return declare.getDescr();
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( DeclareDescrBuilder.class );
+        }
+        return (declare != null) ? declare.getDescr() : null;
+    }
+
+    /**
+     * metadata := AT ID parenChunk?
+     */
+    private void metadata( DescrBuilder declare ) {
+
+    }
+
+    private void field() {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         UTILITY RULES
+     * ------------------------------------------------------------------------------------------------ */
+
     /**
      * Matches a type name
      * 
@@ -302,57 +422,86 @@ public class DRLXParser {
      * @throws RecognitionException
      */
     public String type() throws RecognitionException {
-        StringBuilder type = new StringBuilder();
+        String type = "";
         try {
-            Token token = match( input,
-                                 DRLLexer.ID,
-                                 null,
-                                 new int[]{DRLLexer.DOT, DRLLexer.LESS},
-                                 DroolsEditorType.IDENTIFIER );
-            type.append( token.getText() );
+            int first = input.index(), last = first;
+            match( input,
+                   DRLLexer.ID,
+                   null,
+                   new int[]{DRLLexer.DOT, DRLLexer.LESS},
+                   DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return type;
 
             if ( input.LA( 1 ) == DRLLexer.LESS ) {
-                type.append( typeArguments() );
+                typeArguments();
+                if ( state.failed ) return type;
             }
 
             while ( input.LA( 1 ) == DRLLexer.DOT && input.LA( 2 ) == DRLLexer.ID ) {
-                token = match( input,
-                               DRLLexer.DOT,
-                               null,
-                               new int[]{DRLLexer.ID},
-                               DroolsEditorType.IDENTIFIER );
-                type.append( token.getText() );
-                token = match( input,
-                               DRLLexer.ID,
-                               null,
-                               new int[]{DRLLexer.DOT},
-                               DroolsEditorType.IDENTIFIER );
-                type.append( token.getText() );
+                match( input,
+                       DRLLexer.DOT,
+                       null,
+                       new int[]{DRLLexer.ID},
+                       DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return type;
+                match( input,
+                       DRLLexer.ID,
+                       null,
+                       new int[]{DRLLexer.DOT},
+                       DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return type;
 
                 if ( input.LA( 1 ) == DRLLexer.LESS ) {
-                    type.append( typeArguments() );
+                    typeArguments();
+                    if ( state.failed ) return type;
                 }
             }
 
             while ( input.LA( 1 ) == DRLLexer.LEFT_SQUARE && input.LA( 2 ) == DRLLexer.RIGHT_SQUARE ) {
-                token = match( input,
+                match( input,
                                DRLLexer.LEFT_SQUARE,
                                null,
                                new int[]{DRLLexer.RIGHT_SQUARE},
                                DroolsEditorType.IDENTIFIER );
-                type.append( token.getText() );
-                token = match( input,
+                if ( state.failed ) return type;
+                match( input,
                                DRLLexer.RIGHT_SQUARE,
                                null,
                                null,
                                DroolsEditorType.IDENTIFIER );
-                type.append( token.getText() );
+                if ( state.failed ) return type;
             }
-
+            last = input.LT( -1 ).getTokenIndex();
+            type = input.toString( first,
+                                   last );
         } catch ( RecognitionException re ) {
             reportError( re );
         }
-        return type.toString();
+        return type;
+    }
+
+    /**
+     * Invokes typeArguments() rule with backtracking
+     * to check if the next token sequence are typeArguments
+     * or not.
+     * 
+     * @return true if the sequence of tokens will match the
+     *         typeArguments syntax. false otherwise.
+     */
+    private boolean speculateTypeArguments() {
+        state.backtracking++;
+        int start = input.mark();
+        try {
+            typeArguments(); // can never throw exception
+        } catch ( RecognitionException re ) {
+            System.err.println( "impossible: " + re );
+            re.printStackTrace();
+        }
+        boolean success = !state.failed;
+        input.rewind( start );
+        state.backtracking--;
+        state.failed = false;
+        return success;
     }
 
     /**
@@ -364,16 +513,18 @@ public class DRLXParser {
      * @throws RecognitionException
      */
     public String typeArguments() throws RecognitionException {
-        StringBuilder typeArguments = new StringBuilder();
+        String typeArguments = "";
         try {
+            int first = input.index();
             Token token = match( input,
                                  DRLLexer.LESS,
                                  null,
                                  new int[]{DRLLexer.QUESTION, DRLLexer.ID},
                                  DroolsEditorType.SYMBOL );
-            typeArguments.append( token.getText() );
+            if ( state.failed ) return typeArguments;
 
-            typeArguments.append( typeArgument() );
+            typeArgument();
+            if ( state.failed ) return typeArguments;
 
             while ( input.LA( 1 ) == DRLLexer.COMMA ) {
                 token = match( input,
@@ -381,10 +532,10 @@ public class DRLXParser {
                                null,
                                new int[]{DRLLexer.QUESTION, DRLLexer.ID},
                                DroolsEditorType.IDENTIFIER );
-                typeArguments.append( token.getText() );
+                if ( state.failed ) return typeArguments;
 
-                typeArguments.append( typeArgument() );
-
+                typeArgument();
+                if ( state.failed ) return typeArguments;
             }
 
             token = match( input,
@@ -392,12 +543,14 @@ public class DRLXParser {
                            null,
                            null,
                            DroolsEditorType.SYMBOL );
-            typeArguments.append( token.getText() );
+            if ( state.failed ) return typeArguments;
+            typeArguments = input.toString( first,
+                                            token.getTokenIndex() );
 
         } catch ( RecognitionException re ) {
             reportError( re );
         }
-        return typeArguments.toString();
+        return typeArguments;
     }
 
     /**
@@ -411,52 +564,54 @@ public class DRLXParser {
      * @throws RecognitionException
      */
     public String typeArgument() throws RecognitionException {
-        StringBuilder typeArgument = new StringBuilder();
+        String typeArgument = "";
         try {
+            int first = input.index(), last = first;
             int next = input.LA( 1 );
             switch ( next ) {
                 case DRLLexer.QUESTION :
-                    Token token = match( input,
-                                         DRLLexer.QUESTION,
-                                         null,
-                                         null,
-                                         DroolsEditorType.SYMBOL );
-                    typeArgument.append( token.getText() );
+                    match( input,
+                           DRLLexer.QUESTION,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return typeArgument;
 
                     if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
-                        token = match( input,
-                                       DRLLexer.ID,
-                                       DroolsSoftKeywords.EXTENDS,
-                                       null,
-                                       DroolsEditorType.SYMBOL );
-                        typeArgument.append( " " );
-                        typeArgument.append( token.getText() );
-                        typeArgument.append( " " );
+                        match( input,
+                               DRLLexer.ID,
+                               DroolsSoftKeywords.EXTENDS,
+                               null,
+                               DroolsEditorType.SYMBOL );
+                        if ( state.failed ) return typeArgument;
 
-                        typeArgument.append( type() );
+                        type();
+                        if ( state.failed ) return typeArgument;
                     } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.SUPER ) ) {
-                        token = match( input,
-                                       DRLLexer.ID,
-                                       DroolsSoftKeywords.SUPER,
-                                       null,
-                                       DroolsEditorType.SYMBOL );
-                        typeArgument.append( " " );
-                        typeArgument.append( token.getText() );
-                        typeArgument.append( " " );
-
-                        typeArgument.append( type() );
+                        match( input,
+                               DRLLexer.ID,
+                               DroolsSoftKeywords.SUPER,
+                               null,
+                               DroolsEditorType.SYMBOL );
+                        if ( state.failed ) return typeArgument;
+                        type();
+                        if ( state.failed ) return typeArgument;
                     }
                     break;
                 case DRLLexer.ID :
-                    typeArgument.append( type() );
+                    type();
+                    if ( state.failed ) return typeArgument;
                     break;
                 default :
                     // TODO: raise error
             }
+            last = input.LT( -1 ).getTokenIndex();
+            typeArgument = input.toString( first,
+                                           last );
         } catch ( RecognitionException re ) {
             reportError( re );
         }
-        return typeArgument.toString();
+        return typeArgument;
     }
 
     /**
@@ -468,34 +623,41 @@ public class DRLXParser {
      * @throws RecognitionException
      */
     public String qualifiedIdentifier() throws RecognitionException {
-        StringBuilder qi = new StringBuilder();
+        String qi = "";
         try {
-            Token token = match( input,
+            Token first = match( input,
                                  DRLLexer.ID,
                                  null,
                                  new int[]{DRLLexer.DOT},
                                  DroolsEditorType.IDENTIFIER );
-            qi.append( token.getText() );
+            if ( state.failed ) return qi;
+
+            Token last = first;
             while ( input.LA( 1 ) == DRLLexer.DOT && input.LA( 2 ) == DRLLexer.ID ) {
-                token = match( input,
+                last = match( input,
                                DRLLexer.DOT,
                                null,
                                new int[]{DRLLexer.ID},
                                DroolsEditorType.IDENTIFIER );
-                qi.append( token.getText() );
-                token = match( input,
+                if ( state.failed ) return qi;
+                last = match( input,
                                DRLLexer.ID,
                                null,
                                new int[]{DRLLexer.DOT},
                                DroolsEditorType.IDENTIFIER );
-                qi.append( token.getText() );
+                if ( state.failed ) return qi;
             }
+            qi = input.toString( first,
+                                 last );
         } catch ( RecognitionException re ) {
             reportError( re );
         }
-        return qi.toString();
+        return qi;
     }
 
+    /* ------------------------------------------------------------------------------------------------
+     *                         GENERAL UTILITY METHODS
+     * ------------------------------------------------------------------------------------------------ */
     /** 
      *  Match current input symbol against ttype and optionally
      *  check the text of the token against text.  Attempt
@@ -508,27 +670,26 @@ public class DRLXParser {
                          int[] follow,
                          DroolsEditorType etype ) throws RecognitionException {
         Token matchedSymbol = null;
-        try {
-            matchedSymbol = input.LT( 1 );
-            if ( input.LA( 1 ) == ttype && (text == null || text.equals( matchedSymbol.getText() )) ) {
-                input.consume();
-                state.errorRecovery = false;
-                state.failed = false;
-                return matchedSymbol;
-            }
-            matchedSymbol = recoverFromMismatchedToken( input,
-                                                        ttype,
-                                                        text,
-                                                        follow );
-            return matchedSymbol;
-        } catch ( RecognitionException re ) {
-            state.failed = true;
+        matchedSymbol = input.LT( 1 );
+        if ( input.LA( 1 ) == ttype && (text == null || text.equals( matchedSymbol.getText() )) ) {
+            input.consume();
             state.errorRecovery = false;
-            throw re;
-        } finally {
+            state.failed = false;
             helper.emit( matchedSymbol,
                          etype );
+            return matchedSymbol;
         }
+        if ( state.backtracking > 0 ) {
+            state.failed = true;
+            return matchedSymbol;
+        }
+        matchedSymbol = recoverFromMismatchedToken( input,
+                                                    ttype,
+                                                    text,
+                                                    follow );
+        helper.emit( matchedSymbol,
+                     etype );
+        return matchedSymbol;
     }
 
     /** Attempt to recover from a single missing or extra token.
