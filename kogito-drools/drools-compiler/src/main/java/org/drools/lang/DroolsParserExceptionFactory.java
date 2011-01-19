@@ -342,8 +342,6 @@ public class DroolsParserExceptionFactory {
                 return defaultValue == null ? "boolean" : defaultValue;
             case DRLLexer.NULL :
                 return "null";
-            case DRLLexer.THEN :
-                return "then";
             case DRLLexer.SEMICOLON :
                 return ";";
             case DRLLexer.COLON :

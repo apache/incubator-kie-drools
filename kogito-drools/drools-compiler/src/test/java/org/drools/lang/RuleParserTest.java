@@ -16,11 +16,14 @@
 
 package org.drools.lang;
 
-import src.main.java.org.drools.compiler.DrlParser;
-import src.main.java.org.drools.lang.DRLLexer;
-import src.main.java.org.drools.lang.DRLXParser;
-import src.main.java.org.drools.lang.descr.ImportDescr;
-import src.main.java.org.drools.lang.descr.PackageDescr;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.drools.base.evaluators.EvaluatorRegistry;
+import org.drools.compiler.DrlParser;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
 
 public class RuleParserTest extends TestCase {
 
@@ -151,6 +154,80 @@ public class RuleParserTest extends TestCase {
                       impdescr.getEndCharacter() );
 
     }
+
+    public void testGlobal1() throws Exception {
+        final String source = "package foo.bar.baz\n" +
+                              "import com.foo.Bar\n" +
+                              "global java.util.List<java.util.Map<String,Integer>> aList;\n" +
+                              "global Integer aNumber";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        assertEquals( "foo.bar.baz",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getImports().size() );
+
+        ImportDescr impdescr = pkg.getImports().get( 0 );
+        assertEquals( "com.foo.Bar",
+                      impdescr.getTarget() );
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ),
+                      impdescr.getStartCharacter() );
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length(),
+                      impdescr.getEndCharacter() );
+
+        assertEquals( 2,
+                      pkg.getGlobals().size() );
+
+        GlobalDescr global = pkg.getGlobals().get( 0 );
+        assertEquals( "java.util.List<java.util.Map<String,Integer>>",
+                      global.getType() );
+        assertEquals( "aList",
+                      global.getIdentifier() );
+        assertEquals( source.indexOf( "global " + global.getType() ),
+                      global.getStartCharacter() );
+        assertEquals( source.indexOf( "global " + global.getType() + " " + global.getIdentifier() ) +
+                              ("global " + global.getType() + " " + global.getIdentifier()).length() + 1,
+                      global.getEndCharacter() );
+
+        global = pkg.getGlobals().get( 1 );
+        assertEquals( "Integer",
+                      global.getType() );
+        assertEquals( "aNumber",
+                      global.getIdentifier() );
+        assertEquals( source.indexOf( "global " + global.getType() ),
+                      global.getStartCharacter() );
+        assertEquals( source.indexOf( "global " + global.getType() + " " + global.getIdentifier() ) +
+                              ("global " + global.getType() + " " + global.getIdentifier()).length(),
+                      global.getEndCharacter() );
+    }
+
+    //    public void testGlobal() throws Exception {
+    //        PackageDescr pack = (PackageDescr) parseResource( "compilationUnit",
+    //                                                          "globals.drl" );
+    //
+    //        assertEquals( 1,
+    //                          pack.getRules().size() );
+    //
+    //        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+    //        assertEquals( 1,
+    //                          rule.getLhs().getDescrs().size() );
+    //
+    //        assertEquals( 1,
+    //                          pack.getImports().size() );
+    //        assertEquals( 2,
+    //                          pack.getGlobals().size() );
+    //
+    //        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
+    //        assertEquals( "java.lang.String",
+    //                          foo.getType() );
+    //        assertEquals( "foo",
+    //                          foo.getIdentifier() );
+    //        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
+    //        assertEquals( "java.lang.Integer",
+    //                          bar.getType() );
+    //        assertEquals( "bar",
+    //                          bar.getIdentifier() );
+    //    }
 
     //    public void testFunctionImport() throws Exception {
     //        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -2034,36 +2111,6 @@ public class RuleParserTest extends TestCase {
     //                      boundVariable.getEvaluator() );
     //        assertEquals( "$likes",
     //                      boundVariable.getIdentifier() );
-    //    }
-    //
-    //    public void testGlobal() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "globals.drl" );
-    //
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //        assertEquals( 1,
-    //                      pack.getRules().size() );
-    //
-    //        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //
-    //        assertEquals( 1,
-    //                      pack.getImports().size() );
-    //        assertEquals( 2,
-    //                      pack.getGlobals().size() );
-    //
-    //        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
-    //        assertEquals( "java.lang.String",
-    //                      foo.getType() );
-    //        assertEquals( "foo",
-    //                      foo.getIdentifier() );
-    //        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
-    //        assertEquals( "java.lang.Integer",
-    //                      bar.getType() );
-    //        assertEquals( "bar",
-    //                      bar.getIdentifier() );
     //    }
     //
     //    public void testFunctions() throws Exception {

@@ -15,6 +15,12 @@
  */
 
 package org.drools.compiler;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -87,13 +93,8 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PackageBuilderTest extends DroolsTestCase {
 
@@ -275,7 +276,8 @@ public class PackageBuilderTest extends DroolsTestCase {
                       map.get( "value" ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testNoPackageName() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         try {
@@ -1006,9 +1008,9 @@ public class PackageBuilderTest extends DroolsTestCase {
     public void testTypeDeclaration() throws Exception {
         PackageDescr pkgDescr = new PackageDescr( "org.test" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
-        typeDescr.addMetaAttribute( TypeDeclaration.Role.ID,
+        typeDescr.addAnnotation( TypeDeclaration.Role.ID,
                                     "event" );
-        typeDescr.addMetaAttribute( TypeDeclaration.ATTR_CLASS,
+        typeDescr.addAnnotation( TypeDeclaration.ATTR_CLASS,
                                     "org.drools.StockTick" );
         pkgDescr.addTypeDeclaration( typeDescr );
 
@@ -1060,7 +1062,9 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertFalse( builder.hasErrors() );
 
         Package bp = builder.getPackage();
-        CompositeClassLoader rootClassloader = ClassLoaderUtil.getClassLoader( new ClassLoader[] { Thread.currentThread().getContextClassLoader() } , getClass(), false );
+        CompositeClassLoader rootClassloader = ClassLoaderUtil.getClassLoader( new ClassLoader[]{Thread.currentThread().getContextClassLoader()},
+                                                                               getClass(),
+                                                                               false );
         JavaDialectRuntimeData dialectData = (JavaDialectRuntimeData) bp.getDialectRuntimeRegistry().getDialectData( "java" );
         dialectData.onAdd( bp.getDialectRuntimeRegistry(),
                            rootClassloader );
@@ -1081,8 +1085,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         }
     }
 
-    private void createReturnValueRule(final PackageDescr packageDescr,
-                                       final String expression) {
+    private void createReturnValueRule( final PackageDescr packageDescr,
+                                        final String expression ) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
 
@@ -1112,8 +1116,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "update(stilton);" );
     }
 
-    private void createPredicateRule(final PackageDescr packageDescr,
-                                     final String expression) {
+    private void createPredicateRule( final PackageDescr packageDescr,
+                                      final String expression ) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
 
@@ -1141,8 +1145,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "update(stilton);" );
     }
 
-    private void createEvalRule(final PackageDescr packageDescr,
-                                final String expression) {
+    private void createEvalRule( final PackageDescr packageDescr,
+                                 final String expression ) {
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
 
@@ -1158,7 +1162,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "" );
     }
 
-    private void createLiteralRule(final FieldConstraintDescr literalDescr) {
+    private void createLiteralRule( final FieldConstraintDescr literalDescr ) {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -1181,9 +1185,9 @@ public class PackageBuilderTest extends DroolsTestCase {
                       builder.getErrors().getErrors() );
     }
 
-    private Rule createRule(final ConditionalElementDescr ceDescr,
-                            final PackageBuilder builder,
-                            final String consequence) throws Exception {
+    private Rule createRule( final ConditionalElementDescr ceDescr,
+                             final PackageBuilder builder,
+                             final String consequence ) throws Exception {
         final PackageDescr packageDescr = new PackageDescr( "p1" );
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -1268,8 +1272,8 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
         final TypeDeclarationDescr typeDeclDescr = new TypeDeclarationDescr( StockTick.class.getName() );
-        typeDeclDescr.addMetaAttribute( "role",
-                                        "event" );
+        typeDeclDescr.addAnnotation( "role",
+                                     "event" );
         packageDescr.addTypeDeclaration( typeDeclDescr );
         final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -1347,7 +1351,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         public void remove() {
         }
 
-        public void addLogicalDependency(final LogicalDependency node) {
+        public void addLogicalDependency( final LogicalDependency node ) {
         }
 
         public LinkedList getLogicalDependencies() {
@@ -1358,7 +1362,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return false;
         }
 
-        public void setActivated(final boolean activated) {
+        public void setActivated( final boolean activated ) {
         }
 
         public ActivationGroupNode getActivationGroupNode() {
@@ -1366,7 +1370,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public void setActivationGroupNode(final ActivationGroupNode activationGroupNode) {
+        public void setActivationGroupNode( final ActivationGroupNode activationGroupNode ) {
             // TODO Auto-generated method stub
 
         }
@@ -1385,12 +1389,12 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public void setActivationNode(final ActivationNode ruleFlowGroupNode) {
+        public void setActivationNode( final ActivationNode ruleFlowGroupNode ) {
             // TODO Auto-generated method stub
 
         }
 
-        public void setLogicalDependencies(LinkedList justified) {
+        public void setLogicalDependencies( LinkedList justified ) {
             // TODO Auto-generated method stub
 
         }
@@ -1405,7 +1409,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public Object getDeclarationValue(String variableName) {
+        public Object getDeclarationValue( String variableName ) {
             // TODO Auto-generated method stub
             return null;
         }
@@ -1425,11 +1429,11 @@ public class PackageBuilderTest extends DroolsTestCase {
             this.declarations = declarations;
         }
 
-        public InternalFactHandle get(final int patern) {
+        public InternalFactHandle get( final int patern ) {
             return null;
         }
 
-        public InternalFactHandle get(final Declaration declaration) {
+        public InternalFactHandle get( final Declaration declaration ) {
             return (InternalFactHandle) this.declarations.get( declaration );
         }
 
@@ -1437,11 +1441,11 @@ public class PackageBuilderTest extends DroolsTestCase {
             return (InternalFactHandle[]) this.declarations.values().toArray( new FactHandle[0] );
         }
 
-        public boolean dependsOn(final FactHandle handle) {
+        public boolean dependsOn( final FactHandle handle ) {
             return false;
         }
 
-        public void setActivation(final Activation activation) {
+        public void setActivation( final Activation activation ) {
         }
 
         public long getRecency() {

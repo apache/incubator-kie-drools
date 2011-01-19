@@ -23,7 +23,15 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -44,7 +52,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.process.Process;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
-import org.drools.factmodel.Field;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
@@ -80,8 +87,6 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
-import org.drools.runtime.process.InternalProcessRuntime;
-import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
@@ -121,7 +126,7 @@ public class PackageBuilder {
      */
     private final String                      defaultDialect;
 
-    private CompositeClassLoader        rootClassLoader;
+    private CompositeClassLoader              rootClassLoader;
 
     private Map<String, Class>           globals;
 
@@ -187,7 +192,7 @@ public class PackageBuilder {
         }
 
         this.rootClassLoader = this.configuration.getClassLoader();
-        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );        
+        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -200,8 +205,8 @@ public class PackageBuilder {
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
 
-        globals = new HashMap<String, Class>();
-        
+        globals = new HashMap<String, Class< ? >>();
+
         processBuilder = createProcessBuilder();
     }
 
@@ -218,8 +223,8 @@ public class PackageBuilder {
         } else {
             this.rootClassLoader = this.configuration.getClassLoader();
         }
-        
-        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );        
+
+        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
 
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if ( this.dateFormats == null ) {
@@ -236,17 +241,17 @@ public class PackageBuilder {
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
-        globals = new HashMap<String, Class>();
-        
+        globals = new HashMap<String, Class< ? >>();
+
         processBuilder = createProcessBuilder();
     }
-    
+
     private ProcessBuilder createProcessBuilder() {
-		try {
-			return ProcessBuilderFactory.newProcessBuilder(this);
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+        try {
+            return ProcessBuilderFactory.newProcessBuilder( this );
+        } catch ( IllegalArgumentException e ) {
+            return null;
+        }
     }
 
     /**
@@ -256,8 +261,8 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
-                                                      IOException {
+    public void addPackageFromDrl( final Reader reader ) throws DroolsParserException,
+                                                        IOException {
         this.resource = new ReaderResource( reader );
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
@@ -268,8 +273,8 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDrl(Resource resource) throws DroolsParserException,
-                                                    IOException {
+    public void addPackageFromDrl( Resource resource ) throws DroolsParserException,
+                                                      IOException {
         this.resource = resource;
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( resource.getInputStream() );
@@ -287,8 +292,8 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromXml(final Reader reader) throws DroolsParserException,
-                                                      IOException {
+    public void addPackageFromXml( final Reader reader ) throws DroolsParserException,
+                                                        IOException {
         this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
 
@@ -303,8 +308,8 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromXml(final Resource resource) throws DroolsParserException,
-                                                          IOException {
+    public void addPackageFromXml( final Resource resource ) throws DroolsParserException,
+                                                            IOException {
         this.resource = resource;
 
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
@@ -330,9 +335,9 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl(final Reader source,
-                                  final Reader dsl) throws DroolsParserException,
-                                                   IOException {
+    public void addPackageFromDrl( final Reader source,
+                                   final Reader dsl ) throws DroolsParserException,
+                                                     IOException {
         this.resource = new ReaderResource( source );
 
         final DrlParser parser = new DrlParser();
@@ -345,8 +350,8 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
-                                                           IOException {
+    public void addPackageFromDslr( final Resource resource ) throws DroolsParserException,
+                                                             IOException {
         this.resource = resource;
 
         final DrlParser parser = new DrlParser();
@@ -372,40 +377,39 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-	public void addPackageFromBrl(final Resource resource) throws DroolsParserException {
-		this.resource = resource;
-		try {
-	        BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
-	        Reader knowledge = provider.getKnowledgeReader(resource);
+    public void addPackageFromBrl( final Resource resource ) throws DroolsParserException {
+        this.resource = resource;
+        try {
+            BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
+            Reader knowledge = provider.getKnowledgeReader( resource );
 
-			DrlParser parser = new DrlParser();
-	        DefaultExpander expander = getDslExpander();
+            DrlParser parser = new DrlParser();
+            DefaultExpander expander = getDslExpander();
 
-	        if (null != expander) {
-	        	knowledge = new StringReader(expander.expand(knowledge));
-	        	if (expander.hasErrors())
-	        		this.results.addAll(expander.getErrors());
-	        }
+            if ( null != expander ) {
+                knowledge = new StringReader( expander.expand( knowledge ) );
+                if ( expander.hasErrors() ) this.results.addAll( expander.getErrors() );
+            }
 
-	        PackageDescr pkg = parser.parse(knowledge);
-	        if (parser.hasErrors()) {
-	        	this.results.addAll(parser.getErrors());
-	        } else {
-	        	addPackage(pkg);
-	        }
+            PackageDescr pkg = parser.parse( knowledge );
+            if ( parser.hasErrors() ) {
+                this.results.addAll( parser.getErrors() );
+            } else {
+                addPackage( pkg );
+            }
 
-		} catch (Exception e) {
-			throw new DroolsParserException(e);
-		} finally {
-			this.resource = null;
+        } catch ( Exception e ) {
+            throw new DroolsParserException( e );
+        } finally {
+            this.resource = null;
         }
     }
 
-    public void addDsl(Resource resource) throws IOException {
+    public void addDsl( Resource resource ) throws IOException {
         this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        if( ! file.parseAndLoad( resource.getReader() ) ){
+        if ( !file.parseAndLoad( resource.getReader() ) ) {
             this.results.addAll( file.getErrors() );
         }
         if ( this.dslFiles == null ) {
@@ -419,32 +423,33 @@ public class PackageBuilder {
     /**
      * Add a ruleflow (.rfm) asset to this package.
      */
-    public void addRuleFlow(Reader processSource) {
+    public void addRuleFlow( Reader processSource ) {
         addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml(Resource resource) {
+    public void addProcessFromXml( Resource resource ) {
         this.resource = resource;
 
         try {
-        	this.results.addAll(processBuilder.addProcessFromXml(resource));
+            this.results.addAll( processBuilder.addProcessFromXml( resource ) );
         } catch ( Exception e ) {
             if ( e instanceof RuntimeException ) {
                 throw (RuntimeException) e;
             }
-            this.results.add( new ProcessLoadError( "Unable to load process.", e ) );
+            this.results.add( new ProcessLoadError( "Unable to load process.",
+                                                    e ) );
         }
         this.results = getResults( this.results );
         this.resource = null;
     }
 
-    public void addProcessFromXml(Reader processSource) {
-    	addProcessFromXml( new ReaderResource( processSource ) );
+    public void addProcessFromXml( Reader processSource ) {
+        addProcessFromXml( new ReaderResource( processSource ) );
     }
 
-    public void addKnowledgeResource(Resource resource,
-                                     ResourceType type,
-                                     ResourceConfiguration configuration) {
+    public void addKnowledgeResource( Resource resource,
+                                      ResourceType type,
+                                      ResourceConfiguration configuration ) {
         try {
             if ( ResourceType.DRL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
@@ -514,9 +519,12 @@ public class PackageBuilder {
                                               iNestedResourceResource.getConfiguration() );
                     }
                 }
-            }  else if ( ResourceType.XSD.equals( type ) ) {
-                JaxbConfigurationImpl confImpl = ( JaxbConfigurationImpl ) configuration;
-                String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel( resource, this, confImpl.getXjcOpts(), confImpl.getSystemId() );
+            } else if ( ResourceType.XSD.equals( type ) ) {
+                JaxbConfigurationImpl confImpl = (JaxbConfigurationImpl) configuration;
+                String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel( resource,
+                                                                             this,
+                                                                             confImpl.getXjcOpts(),
+                                                                             confImpl.getSystemId() );
                 for ( String cls : classes ) {
                     confImpl.getClasses().add( cls );
                 }
@@ -544,7 +552,7 @@ public class PackageBuilder {
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
-    public void addPackage(final PackageDescr packageDescr) {
+    public void addPackage( final PackageDescr packageDescr ) {
         validateUniqueRuleNames( packageDescr );
 
         String dialectName = this.defaultDialect;
@@ -632,9 +640,9 @@ public class PackageBuilder {
 
         compileAll();
         try {
-        	reloadAll();
-        } catch ( Exception e) {
-        	this.results.add( new DialectError( "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
+            reloadAll();
+        } catch ( Exception e ) {
+            this.results.add( new DialectError( "Unable to wire compiled classes, probably related to compilation failures:" + e.getMessage() ) );
         }
         updateResults();
 
@@ -652,7 +660,7 @@ public class PackageBuilder {
     /**
      * This checks to see if it should all be in the one namespace.
      */
-    private boolean checkNamespace(String newName) {
+    private boolean checkNamespace( String newName ) {
         if ( this.configuration == null ) return true;
         if ( (!this.pkgRegistryMap.isEmpty()) && (!this.pkgRegistryMap.containsKey( newName )) ) {
             return this.configuration.isAllowMultipleNamespaces();
@@ -660,7 +668,7 @@ public class PackageBuilder {
         return true;
     }
 
-    public boolean isEmpty(String string) {
+    public boolean isEmpty( String string ) {
         return (string == null || string.trim().length() == 0);
     }
 
@@ -681,14 +689,14 @@ public class PackageBuilder {
         }
     }
 
-    private List getResults(List results) {
+    private List getResults( List results ) {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             results = pkgRegistry.getDialectCompiletimeRegistry().addResults( results );
         }
         return results;
     }
 
-    public synchronized void addPackage(final Package newPkg) {
+    public synchronized void addPackage( final Package newPkg ) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( newPkg.getName() );
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -750,8 +758,8 @@ public class PackageBuilder {
      * but this class does some work (including combining imports, compilation data, globals,
      * and the actual Rule objects into the package).
      */
-    private void mergePackage(final Package pkg,
-                              final Package newPkg) {
+    private void mergePackage( final Package pkg,
+                               final Package newPkg ) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
@@ -822,7 +830,7 @@ public class PackageBuilder {
     //        return;
     //    }
 
-    private void validateUniqueRuleNames(final PackageDescr packageDescr) {
+    private void validateUniqueRuleNames( final PackageDescr packageDescr ) {
         final Set<String> names = new HashSet<String>();
         for ( final RuleDescr rule : packageDescr.getRules() ) {
             final String name = rule.getName();
@@ -835,9 +843,9 @@ public class PackageBuilder {
         }
     }
 
-    private PackageRegistry newPackage(final PackageDescr packageDescr) {
+    private PackageRegistry newPackage( final PackageDescr packageDescr ) {
         Package pkg;
-        if ( this.ruleBase == null || ( pkg = this.ruleBase.getPackage( packageDescr.getName() ) ) == null ) {
+        if ( this.ruleBase == null || (pkg = this.ruleBase.getPackage( packageDescr.getName() )) == null ) {
             // there is no rulebase or it does not define this package so define it
             pkg = new Package( packageDescr.getName() );
             pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( this.rootClassLoader ) );
@@ -872,7 +880,7 @@ public class PackageBuilder {
         return pkgRegistry;
     }
 
-    private void mergePackage(final PackageDescr packageDescr) {
+    private void mergePackage( final PackageDescr packageDescr ) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         for ( final ImportDescr importEntry : packageDescr.getImports() ) {
@@ -910,7 +918,7 @@ public class PackageBuilder {
     /**
      * @param packageDescr
      */
-    private void processTypeDeclarations(final PackageDescr packageDescr) {
+    private void processTypeDeclarations( final PackageDescr packageDescr ) {
         PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         PackageRegistry pkgRegistry = null;
@@ -927,7 +935,7 @@ public class PackageBuilder {
             }
 
             // is it a regular fact or an event?
-            String role = typeDescr.getMetaAttribute( TypeDeclaration.Role.ID );
+            String role = typeDescr.getAnnotation( TypeDeclaration.Role.ID ).getValue();
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
             }
@@ -936,28 +944,28 @@ public class PackageBuilder {
 
             //Super Type, if defined by a simple name:
             String sup = typeDescr.getSuperTypeName();
-            if (sup != null && ! sup.contains(".")) {
+            if ( sup != null && !sup.contains( "." ) ) {
                 //may be a local name for an import
-                for (ImportDescr id : packageDescr.getImports()) {
-                    if (id.getTarget().endsWith("."+sup)) {
+                for ( ImportDescr id : packageDescr.getImports() ) {
+                    if ( id.getTarget().endsWith( "." + sup ) ) {
                         //System.out.println("Replace supertype " + sup + " with full name " + id.getTarget());
-                        typeDescr.setSuperTypeName(id.getTarget());
+                        typeDescr.setSuperTypeName( id.getTarget() );
                         break;
                     }
                 }
             }
             //refresh the name, may have been just set
-            if ((sup = typeDescr.getSuperTypeName()) != null && ! sup.contains(".")) {
+            if ( (sup = typeDescr.getSuperTypeName()) != null && !sup.contains( "." ) ) {
                 //or a local declaration
-                for (TypeDeclarationDescr td : packageDescr.getTypeDeclarations()) {
-                    if (sup.equals(td.getTypeName()))
-                        //System.out.println("Replace supertype " + sup + " with full name " + (packageDescr.getNamespace()+"."+sup));
-                        typeDescr.setSuperTypeName(packageDescr.getNamespace()+"."+sup);
+                for ( TypeDeclarationDescr td : packageDescr.getTypeDeclarations() ) {
+                    if ( sup.equals( td.getTypeName() ) )
+                    //System.out.println("Replace supertype " + sup + " with full name " + (packageDescr.getNamespace()+"."+sup));
+                    typeDescr.setSuperTypeName( packageDescr.getNamespace() + "." + sup );
                 }
             }
 
             // is it a POJO or a template?
-            String templateName = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TEMPLATE );
+            String templateName = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE ).getValue();
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -969,7 +977,7 @@ public class PackageBuilder {
                     continue;
                 }
             } else {
-                String className = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_CLASS );
+                String className = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS ).getValue();
                 if ( className == null ) {
                     className = type.getTypeName();
                 }
@@ -1002,7 +1010,7 @@ public class PackageBuilder {
                 }
             }
 
-            String timestamp = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_TIMESTAMP );
+            String timestamp = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP ).getValue();
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1011,7 +1019,7 @@ public class PackageBuilder {
                                                                   timestamp,
                                                                   type.new TimestampAccessorSetter() );
             }
-            String duration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_DURATION );
+            String duration = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION ).getValue();
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1020,7 +1028,7 @@ public class PackageBuilder {
                                                                   duration,
                                                                   type.new DurationAccessorSetter() );
             }
-            String expiration = typeDescr.getMetaAttribute( TypeDeclaration.ATTR_EXPIRE );
+            String expiration = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE ).getValue();
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
@@ -1028,7 +1036,7 @@ public class PackageBuilder {
                 type.setExpirationOffset( timeParser.parse( expiration )[0].longValue() );
             }
 
-            boolean dynamic = typeDescr.getMetaAttributes().containsKey( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
+            boolean dynamic = typeDescr.getAnnotationNames().contains( TypeDeclaration.ATTR_PROP_CHANGE_SUPPORT );
             type.setDynamic( dynamic );
 
             pkgRegistry.getPackage().addTypeDeclaration( type );
@@ -1049,17 +1057,17 @@ public class PackageBuilder {
      * @throws InvocationTargetException
      * @throws NoSuchFieldException
      */
-    private final void buildFieldAccessors(final TypeDeclaration type,
-                                           final PackageRegistry pkgRegistry) throws SecurityException,
-                                                                             IllegalArgumentException,
-                                                                             InstantiationException,
-                                                                             IllegalAccessException,
-                                                                             IOException,
-                                                                             IntrospectionException,
-                                                                             ClassNotFoundException,
-                                                                             NoSuchMethodException,
-                                                                             InvocationTargetException,
-                                                                             NoSuchFieldException {
+    private final void buildFieldAccessors( final TypeDeclaration type,
+                                            final PackageRegistry pkgRegistry ) throws SecurityException,
+                                                                               IllegalArgumentException,
+                                                                               InstantiationException,
+                                                                               IllegalAccessException,
+                                                                               IOException,
+                                                                               IntrospectionException,
+                                                                               ClassNotFoundException,
+                                                                               NoSuchMethodException,
+                                                                               InvocationTargetException,
+                                                                               NoSuchFieldException {
         ClassDefinition cd = type.getTypeClassDef();
         ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
         for ( FieldDefinition attrDef : cd.getFieldsDefinitions() ) {
@@ -1074,44 +1082,35 @@ public class PackageBuilder {
      * everything is using.
      * 
      */
-    private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
-                                      TypeDeclaration type,
-                                      PackageRegistry pkgRegistry) {
+    private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
+                                       TypeDeclaration type,
+                                       PackageRegistry pkgRegistry ) {
         // need to fix classloader?
-        ClassBuilder cb = new ClassBuilder( );
+        ClassBuilder cb = new ClassBuilder();
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
         // generated beans should be serializable
 
         String superType = typeDescr.getSuperTypeName() == null ? Object.class.getName() : typeDescr.getSuperTypeName();
 
-
-        String[] interfaces = new String[1 + typeDescr.getInterfaceNames().size()];
-        int j = 0;
-        Iterator<String> intfIter = typeDescr.getInterfaceNames().iterator();
-        while (intfIter.hasNext())
-           interfaces[j++] = intfIter.next();
-        interfaces[typeDescr.getInterfaceNames().size()] = Serializable.class.getName();
-
-        //ClassDefinition def = new ClassDefinition( fullName,
-        //                                           Object.class.getName(),
-        //                                           new String[]{Serializable.class.getName()} );
-        ClassDefinition def = new ClassDefinition( fullName, superType, interfaces);
+        ClassDefinition def = new ClassDefinition( fullName,
+                                                   superType,
+                                                   new String[]{Serializable.class.getName()} );
 
         Map<String, TypeFieldDescr> flds = typeDescr.getFields();
         try {
 
             PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
-                String idx = field.getMetaAttribute(TypeDeclaration.ATTR_FIELD_POSITION);
-                if (idx != null) {
-                    field.setIndex(Integer.valueOf(idx));
+                String idx = field.getMetaAttribute( TypeDeclaration.ATTR_FIELD_POSITION );
+                if ( idx != null ) {
+                    field.setIndex( Integer.valueOf( idx ) );
                 }
 
-                queue.add(field);
+                queue.add( field );
             }
 
             TypeFieldDescr field = queue.poll();
-            while ( field != null) {
+            while ( field != null ) {
                 String fullFieldType = pkgRegistry.getTypeResolver().resolveType( field.getPattern().getObjectType() ).getName();
                 FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
                                                                 fullFieldType );
@@ -1124,7 +1123,7 @@ public class PackageBuilder {
                 field = queue.poll();
             }
 
-            byte[] d = cb.buildClass(def);
+            byte[] d = cb.buildClass( def );
 
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
 
@@ -1139,7 +1138,7 @@ public class PackageBuilder {
         }
     }
 
-    private void addFunction(final FunctionDescr functionDescr) {
+    private void addFunction( final FunctionDescr functionDescr ) {
         functionDescr.setResource( this.resource );
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
@@ -1148,22 +1147,22 @@ public class PackageBuilder {
                              this.resource );
     }
 
-    private void preCompileAddFunction(final FunctionDescr functionDescr) {
+    private void preCompileAddFunction( final FunctionDescr functionDescr ) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.preCompileAddFunction( functionDescr,
                                        pkgRegistry.getTypeResolver() );
     }
 
-    private void postCompileAddFunction(final FunctionDescr functionDescr) {
+    private void postCompileAddFunction( final FunctionDescr functionDescr ) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.postCompileAddFunction( functionDescr,
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate(final PackageDescr pkgDescr,
-                                 final FactTemplateDescr factTemplateDescr) {
+    private void addFactTemplate( final PackageDescr pkgDescr,
+                                  final FactTemplateDescr factTemplateDescr ) {
         final List fields = new ArrayList();
         int index = 0;
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
@@ -1188,7 +1187,7 @@ public class PackageBuilder {
                                                                 (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
-    private void addRule(final RuleDescr ruleDescr) {
+    private void addRule( final RuleDescr ruleDescr ) {
         ruleDescr.setResource( resource );
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
@@ -1277,7 +1276,7 @@ public class PackageBuilder {
         return this.configuration;
     }
 
-    public PackageRegistry getPackageRegistry(String name) {
+    public PackageRegistry getPackageRegistry( String name ) {
         return this.pkgRegistryMap.get( name );
     }
 
@@ -1378,7 +1377,7 @@ public class PackageBuilder {
             return this.inError;
         }
 
-        public void addError(final CompilationProblem err) {
+        public void addError( final CompilationProblem err ) {
             this.errors.add( err );
             this.inError = true;
         }
@@ -1516,7 +1515,7 @@ public class PackageBuilder {
         }
     }
 
-    private String ucFirst(final String name) {
+    private String ucFirst( final String name ) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 

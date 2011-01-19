@@ -6,7 +6,7 @@ import org.drools.Person;
 rule "Who likes Stilton"
     when
         Cheese($type : type == "stilton")
-        $person : Person($name : name == "bob", likes == $type)        
+        $person : Person(annotatione : name == "bob", likes == $type)        
     then
         System.out.println( $name + " likes " + $type);
 end    

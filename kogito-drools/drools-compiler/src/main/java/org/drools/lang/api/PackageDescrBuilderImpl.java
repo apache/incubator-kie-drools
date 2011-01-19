@@ -50,4 +50,10 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl
         return impl;
     }
 
+    public GlobalDescrBuilder newGlobalDescr() {
+        GlobalDescrBuilder global = new GlobalDescrBuilderImpl();
+        pkg.addGlobal( global.getDescr() );
+        return global;
+    }
+
 }

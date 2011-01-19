@@ -1,7 +1,7 @@
-grammar DRL;
+lexer grammar DRL;
               
 options { 
-	output=AST;
+//	output=AST;
 	language = Java;
 }
   
@@ -212,7 +212,6 @@ tokens {
     public void disableEditorInterface()                      {        helper.disableEditorInterface(); }
     public LinkedList<DroolsSentence> getEditorInterface()    { return helper.getEditorInterface(); }
     public void reportError(RecognitionException ex)          {        helper.reportError( ex ); }
-    /** Overrided this method to not output mesages */
     public void emitErrorMessage(String msg)                  {}
 
 }
@@ -468,7 +467,7 @@ options{ backtrack=true; memoize=true; }
 	|	void_key ID voidMethodDeclaratorRest
 	|	ID constructorDeclaratorRest
 	;
-*/
+* /
 // --------------------------------------------------------
 //                      RULE STATEMENT
 // --------------------------------------------------------
@@ -1554,7 +1553,7 @@ modifyStatement
 	: s=modify_key parExpression 
 	LEFT_CURLY ( e = expression (COMMA e=expression  )* )? RIGHT_CURLY
 	;	
-*/
+* /
 
 // --------------------------------------------------------
 //                      EXPRESSIONS
@@ -1608,7 +1607,7 @@ shiftExpression
 	;
 
 shiftOp
-	:	(SHIFT_LEFT | SHIFT_RIGHT_UNSIG | SHIFT_RIGHT )
+	:	(LESS LESS | GREATER GREATER GREATER | GREATER GREATER )
 	;
 
 additiveExpression
@@ -1783,9 +1782,9 @@ options { k=1; }
         |   OR_ASSIGN
         |   XOR_ASSIGN
         |   MOD_ASSIGN
-        |   SHIFT_LEFT EQUALS_ASSIGN
-        |   SHIFT_RIGHT EQUALS_ASSIGN
-        |   SHIFT_RIGHT_UNSIG EQUALS_ASSIGN
+        |   LESS LESS EQUALS_ASSIGN
+        |   GREATER GREATER EQUALS_ASSIGN
+        |   GREATER GREATER GREATER EQUALS_ASSIGN
 	;
 
 // --------------------------------------------------------
@@ -2091,7 +2090,7 @@ annotationConstantRest
 defaultValue
  	:	default_key elementValue
  	;
-*/
+* /
 
 // --------------------------------------------------------
 //                      KEYWORDS
@@ -2676,7 +2675,7 @@ enum_key
 	-> VK_ENUM[$id]
 ;
 	
-
+*/
 
 
 // --------------------------------------------------------
@@ -2793,18 +2792,6 @@ WHEN
 	;
 
 AT	:	'@'
-	;
-
-SHIFT_RIGHT
-	:	'>>'
-	;
-
-SHIFT_LEFT
-	:	'<<'
-	;
-
-SHIFT_RIGHT_UNSIG
-	:	'>>>'
 	;
 
 PLUS_ASSIGN

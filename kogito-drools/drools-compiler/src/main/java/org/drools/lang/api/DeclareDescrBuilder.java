@@ -16,19 +16,19 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 
 /**
  *  A descriptor builder for Globals
  */
-public interface GlobalDescrBuilder
+public interface DeclareDescrBuilder
     extends
-    DescrBuilder {
+    AnnotatedDescrBuilder {
 
-    public GlobalDescr getDescr();
+    public TypeDeclarationDescr getDescr();
 
-    public GlobalDescrBuilder type( String type );
+    public DeclareDescrBuilder type( String type );
 
-    public GlobalDescrBuilder identifier( String identifier );
+    public DeclareDescrBuilder identifier( String identifier );
 
 }

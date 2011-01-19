@@ -3,8 +3,8 @@ package org.drools;
 rule "subnetworks with not"
 	when
 		not( 
-		    not( Person( name == "bob") ) and 
-		    not( Person( name == "mark" ) ) 
+		    not( Perannotation name == "bob") ) and 
+		    not( Peannotation( name == "mark" ) ) 
 		) 
 	then
 	    // do something
