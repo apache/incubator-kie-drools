@@ -53,12 +53,13 @@ public class JpaPersistenceContextManager
 
     public void beginCommandScopedEntityManager() {
         EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
-        if ( cmdScopedEntityManager == null || !cmdScopedEntityManager.isOpen() ) {
+        if ( cmdScopedEntityManager == null || 
+           ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
             internalCmdScopedEntityManager = true;
-            cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
-            this.cmdScopedEntityManager = cmdScopedEntityManager;
+            this.cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
-                          cmdScopedEntityManager );
+                          this.cmdScopedEntityManager );
+            cmdScopedEntityManager = this.cmdScopedEntityManager;
         } else {
             internalCmdScopedEntityManager = false;
         }
