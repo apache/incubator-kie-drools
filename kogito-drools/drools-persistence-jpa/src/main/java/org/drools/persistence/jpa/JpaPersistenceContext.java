@@ -7,7 +7,7 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 
 public class JpaPersistenceContext implements PersistenceContext {
-    protected EntityManager em;
+    private EntityManager em;
     
     public JpaPersistenceContext(EntityManager em) {
         this.em = em;
@@ -48,5 +48,8 @@ public class JpaPersistenceContext implements PersistenceContext {
     public WorkItemInfo merge(WorkItemInfo workItemInfo) {
         return em.merge( workItemInfo );
     }
-
+    
+    protected EntityManager getEntityManager() {
+        return this.em;
+    }
 }
