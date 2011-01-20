@@ -1181,7 +1181,7 @@ public class KnowledgeAgentImpl
 
         public void run() {
             if ( this.monitor ) {
-                this.listener.info( "KnowledegAgent has started listening for ChangeSet notifications" );
+                this.listener.info( "KnowledgeAgent has started listening for ChangeSet notifications" );
             }
             while ( this.monitor ) {
                 Exception exception = null;
@@ -1198,7 +1198,7 @@ public class KnowledgeAgentImpl
                 }
             }
 
-            this.listener.info( "KnowledegAgent has stopped listening for ChangeSet notifications" );
+            this.listener.info( "KnowledgeAgent has stopped listening for ChangeSet notifications" );
         }
     }
 
