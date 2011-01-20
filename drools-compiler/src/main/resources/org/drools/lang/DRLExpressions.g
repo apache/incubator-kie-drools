@@ -300,51 +300,6 @@ options { k=1; }
 	;
 
 // --------------------------------------------------------
-//                      (JAVA) ANNOTATIONS
-// --------------------------------------------------------
-
-annotations
-	:	annotation+
-	;
-
-annotation
-	:	AT {	helper.emit($AT, DroolsEditorType.SYMBOL);	}
-		ann=annotationName 
-			(
-				LEFT_PAREN RIGHT_PAREN
-				| LEFT_PAREN elementValuePairs RIGHT_PAREN
-				| 
-			)
-	;
-
-	
-annotationName returns [String name]
-@init{ $name=""; }
-	: id=ID 	{	$name += $id.text; helper.emit($id, DroolsEditorType.IDENTIFIER);	}
-		(DOT mid=ID { $name += $mid.text; } )*
-	;
-	
-elementValuePairs
-	: elementValuePair (COMMA elementValuePair)*
-	;
-	
-elementValuePair
-	: (ID EQUALS_ASSIGN)=> key=ID EQUALS_ASSIGN val=elementValue 
-	| value=elementValue 
-	;
-	
-elementValue
-	:	TimePeriod
-	|	conditionalExpression
-	|   annotation
-	|   elementValueArrayInitializer
-	;
-
-elementValueArrayInitializer
-	:	LEFT_CURLY (elementValue (COMMA elementValue )*)? RIGHT_CURLY
-	;
-
-// --------------------------------------------------------
 //                      KEYWORDS
 // --------------------------------------------------------
 extends_key
@@ -389,6 +344,10 @@ long_key
 
 double_key
 	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID
+	;
+
+void_key
+	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID
 	;
 
 this_key

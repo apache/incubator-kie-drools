@@ -6,3 +6,13 @@ end
 declare AnotherFact
 
 end
+
+declare Person
+    @role( fact )
+    @doc( descr="Models a person",
+          author="Bob",
+          date=Calendar.getInstance().getDate() )
+    
+    name : String = "John Doe" @key @length( max = 50 )
+    age  : int    = -1         @ranged( min = 0, max = 150, unknown = -1 )
+end

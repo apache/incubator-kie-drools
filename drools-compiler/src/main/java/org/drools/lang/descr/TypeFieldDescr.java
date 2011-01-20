@@ -16,18 +16,20 @@
 
 package org.drools.lang.descr;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 
+public class TypeFieldDescr extends AnnotatedBaseDescr
+    implements
+    Comparable<TypeFieldDescr> {
 
-public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDescr> {
-
-    private static final long   serialVersionUID = 510l;
-    private String              fieldName;
-    private String              initExpr;
-    private PatternDescr        pattern;
-    private Map<String, Map<String, String>> metaAttributes;
-    private int                 index = -1;
+    private static final long            serialVersionUID = 510l;
+    private int                          index            = -1;
+    private String                       fieldName;
+    private String                       initExpr;
+    private PatternDescr                 pattern;
 
     public TypeFieldDescr() {
         this( null );
@@ -35,12 +37,31 @@ public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDes
 
     public TypeFieldDescr(final String fieldName) {
         this.fieldName = fieldName;
-        this.metaAttributes = new HashMap<String, Map<String, String>>();
     }
 
-    public TypeFieldDescr(final String fieldName, final PatternDescr pat) {
-    	this(fieldName);
-    	this.pattern = pat;
+    public TypeFieldDescr(final String fieldName,
+                          final PatternDescr pat) {
+        this( fieldName );
+        this.pattern = pat;
+    }
+    
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
+        super.readExternal( in );
+        index = in.readInt();
+        fieldName = (String) in.readObject();
+        initExpr = (String) in.readObject();
+        pattern = (PatternDescr) in.readObject();
+    }
+    
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeInt( index );
+        out.writeObject( fieldName );
+        out.writeObject( initExpr );
+        out.writeObject( pattern );
     }
 
     /**
@@ -53,94 +74,10 @@ public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDes
     /**
      * @param fieldName the identifier to set
      */
-    public void setFieldName(String fieldName) {
+    public void setFieldName( String fieldName ) {
         this.fieldName = fieldName;
     }
 
-    /**
-     * Adds a new attribute
-     * @param attr
-     * @param value
-     */
-    public void addMetaAttribute(String attr,
-                                 Map<String, String> value) {
-        this.metaAttributes.put( attr,
-                                 value );
-    }
-
-
-
-    /**
-     * Adds a new attribute
-     * @param attr
-     * @param value
-     */
-    public void addMetaAttribute( String attr, String value) {
-        if( this.metaAttributes == null ) {
-            this.metaAttributes = new HashMap<String, Map<String, String>>();
-        }
-        Hashtable<String, String> attrMap = new Hashtable<String, String>();
-            attrMap.put(value,value);
-        this.metaAttributes.put( attr, attrMap );
-    }
-
-
-    /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the first key, assuming that the annotation has structure @attr(key)
-     * @param attr
-     * @return key1
-     */
-    public String getMetaAttribute( String attr ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet().iterator().next();
-    }
-
-     /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the set of keys, assuming that the annotation has structure @attr(key1,key2,...)
-     * @param attr
-     * @return set of attribute keys
-     */
-    public Set<String> getMetaAttributes(String attr) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet();
-    }
-
-      /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns a mapped value, given the attribute and the key
-     * @param attr
-     * @param key
-     * @return value
-     */
-     public String getMetaAttributeValue( String attr, String key ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.get(key);
-     }
-
-
-     /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the map {key->value}
-     * @param attr
-     * @return key/value map
-     */
-     public Map<String, String> getMetaAttributeValues( String attr ) {
-        if (this.metaAttributes == null) return null;
-        return this.metaAttributes.get(attr);
-     }
-
-    /**
-     * Returns the attribute map
-     * @return
-     */
-    public Map<String, Map<String, String>> getMetaAttributes() {
-        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
-    }
     /**
     * @return the initExpr
     */
@@ -151,7 +88,7 @@ public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDes
     /**
      * @param initExpr the initExpr to set
      */
-    public void setInitExpr(String initExpr) {
+    public void setInitExpr( String initExpr ) {
         this.initExpr = initExpr;
     }
 
@@ -165,28 +102,24 @@ public class TypeFieldDescr extends BaseDescr implements Comparable<TypeFieldDes
     /**
      * @param pattern the pattern to set
      */
-    public void setPattern(PatternDescr pattern) {
+    public void setPattern( PatternDescr pattern ) {
         this.pattern = pattern;
     }
 
     public String toString() {
-        return "TypeField[ " + this.getFieldName() + " = (" + this.initExpr + ") : " + this.pattern + " ]";
+        return "TypeField[ " + this.getFieldName() + " : " + this.pattern + " = " + this.initExpr +  " ]";
     }
 
-
-    public int compareTo(TypeFieldDescr other) {
+    public int compareTo( TypeFieldDescr other ) {
         return (this.index - other.index);
     }
-
 
     public int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
+    public void setIndex( int index ) {
         this.index = index;
     }
-
-
 
 }

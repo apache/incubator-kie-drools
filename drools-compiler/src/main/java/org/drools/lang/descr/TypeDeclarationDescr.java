@@ -16,22 +16,22 @@
 
 package org.drools.lang.descr;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.rule.Namespaceable;
-
-public class TypeDeclarationDescr extends BaseDescr
+ 
+public class TypeDeclarationDescr extends AnnotatedBaseDescr
     implements
     Namespaceable {
 
     private static final long            serialVersionUID = 510l;
     private String                       namespace;
     private String                       typeName;
-    private Map<String, AnnotationDescr> annotations;
     private Map<String, TypeFieldDescr>  fields;
     private String                       superTypeName;
 
@@ -41,7 +41,26 @@ public class TypeDeclarationDescr extends BaseDescr
 
     public TypeDeclarationDescr(final String typeName) {
         this.typeName = typeName;
-        this.annotations = new HashMap<String, AnnotationDescr>();
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
+        super.readExternal( in );
+        this.namespace = (String) in.readObject();
+        this.typeName = (String) in.readObject();
+        this.superTypeName = (String) in.readObject();
+        this.fields = (Map<String, TypeFieldDescr>) in.readObject();
+    }
+    
+    @Override
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( namespace );
+        out.writeObject( typeName );
+        out.writeObject( superTypeName );
+        out.writeObject( fields );
     }
 
     public void setNamespace( String namespace ) {
@@ -66,51 +85,6 @@ public class TypeDeclarationDescr extends BaseDescr
         this.typeName = typeName;
     }
 
-    /**
-     * Assigns a new annotation to this type
-     * @param annotation
-     * @return returns the previous value of this annotation
-     */
-    public AnnotationDescr addAnnotation( AnnotationDescr annotation ) {
-        if ( this.annotations == null ) {
-            this.annotations = new HashMap<String, AnnotationDescr>();
-        }
-        return this.annotations.put( annotation.getName(),
-                                     annotation );
-    }
-
-    /**
-     * Assigns a new annotation to this type with the respective name and value
-     * @param name
-     * @param value
-     * @return returns the previous value of this annotation
-     */
-    public AnnotationDescr addAnnotation( String name,
-                                          String value ) {
-        if ( this.annotations == null ) {
-            this.annotations = new HashMap<String, AnnotationDescr>();
-        }
-        AnnotationDescr annotation = new AnnotationDescr( name,
-                                                          value );
-        return this.annotations.put( annotation.getName(),
-                                     annotation );
-    }
-
-    /**
-     * Returns the annotation with the given name
-     * @param name
-     */
-    public AnnotationDescr getAnnotation( String name ) {
-        return annotations == null ? null : annotations.get( name );
-    }
-
-    /**
-    * Returns the set of annotation names for this type
-    * @return
-    */
-    public Set<String> getAnnotationNames() {
-        return annotations == null ? null : annotations.keySet();
-    }
 
     /**
     * @return the fields

@@ -1,6 +1,5 @@
 package org.drools.lang.api;
 
-import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 
 public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl
@@ -24,6 +23,12 @@ public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl
     public DeclareDescrBuilder type( String type ) {
         ((TypeDeclarationDescr) descr).setTypeName( type );
         return this;
+    }
+
+    public FieldDescrBuilder newField( String name ) {
+        FieldDescrBuilder field = new FieldDescrBuilderImpl( name );
+        ((TypeDeclarationDescr) descr).addField( field.getDescr() );
+        return field;
     }
 
 }
