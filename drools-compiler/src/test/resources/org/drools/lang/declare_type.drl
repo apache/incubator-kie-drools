@@ -6,3 +6,11 @@ declare CallEvent
     @duration( duration )
     @timestamp( timestamp )
 end
+
+declare some.pkg.Type
+    @name1
+    @name2( "value" )
+    @name3( k1 = 10 )
+    @name4( k1 = "a", formula = ( 10 + 25 ) % 2, array = { a, b, c } )
+    @name5( backward compatible value )
+end

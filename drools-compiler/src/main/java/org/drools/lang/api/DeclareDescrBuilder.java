@@ -29,6 +29,4 @@ public interface DeclareDescrBuilder
 
     public DeclareDescrBuilder type( String type );
 
-    public DeclareDescrBuilder identifier( String identifier );
-
 }

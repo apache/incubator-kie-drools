@@ -18,6 +18,7 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -407,13 +408,14 @@ public class ParserXHelper {
     // END COPIED FROM: http://www.antlr.org/wiki/display/ANTLR3/Custom+Syntax+Error+Recovery
     // ---------------------------------------------------------------------------------
 
-    void setStart( DescrBuilder pkg ) {
-        if ( pkg != null ) {
-            Token first = input.LT( 1 );
-            if ( first != null ) {
-                pkg.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
+    void setStart( DescrBuilder db ) {
+        setStart( db, input.LT( 1 ) );
+    }
+
+    void setStart( DescrBuilder db, Token first ) {
+        if ( db != null && first != null ) {
+            db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
                                                                                            first.getCharPositionInLine() );
-            }
         }
     }
 
@@ -452,6 +454,13 @@ public class ParserXHelper {
                 beginSentence( DroolsSentenceType.GLOBAL );
                 setStart( global );
                 return (T) global;
+            } else if ( DeclareDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                DeclareDescrBuilder declare = ((PackageDescrBuilder) builderContext.peek()).newDeclareDescr();
+                builderContext.push( declare );
+                pushParaphrases( DroolsParaphraseTypes.TYPE_DECLARE );
+                beginSentence( DroolsSentenceType.TYPE_DECLARATION );
+                setStart( declare );
+                return (T) declare;
             }
         }
         return null;

@@ -8,19 +8,23 @@ options {
 @header {
 	package org.drools.lang;
 	
-	import java.util.List;
 	import java.util.LinkedList;
 	import org.drools.compiler.DroolsParserException;
 	import org.drools.lang.ParserHelper;
 }
 
 @members {
-    private ParserHelper helper = new ParserHelper( this,
-                                                    tokenNames,
-                                                    input,
-                                                    state );
+    private ParserXHelper helper = null;
                                                     
-    public ParserHelper getHelper()                           { return helper; }
+    public DRLExpressions(TokenStream input,
+                          RecognizerSharedState state,
+                          ParserXHelper helper ) {
+        this( input,
+              state );
+        this.helper = helper;
+    }
+
+    public ParserXHelper getHelper()                          { return helper; }
     public boolean hasErrors()                                { return helper.hasErrors(); }
     public List<DroolsParserException> getErrors()            { return helper.getErrors(); }
     public List<String> getErrorMessages()                    { return helper.getErrorMessages(); }

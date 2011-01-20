@@ -5,6 +5,7 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 
 /**
  * A builder implementation for PackageDescrs using a fluent API.
@@ -54,6 +55,12 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl
         GlobalDescrBuilder global = new GlobalDescrBuilderImpl();
         pkg.addGlobal( global.getDescr() );
         return global;
+    }
+
+    public DeclareDescrBuilder newDeclareDescr() {
+        DeclareDescrBuilder declare = new DeclareDescrBuilderImpl();
+        pkg.addTypeDeclaration( declare.getDescr() );
+        return declare;
     }
 
 }
