@@ -16,4 +16,6 @@ public interface PackageDescrBuilder
 
     public GlobalDescrBuilder newGlobalDescr();
 
+    public DeclareDescrBuilder newDeclareDescr();
+
 }

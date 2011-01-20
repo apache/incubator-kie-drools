@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -31,6 +32,7 @@ import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 
 public class RuleParserTest extends TestCase {
 
@@ -3931,28 +3933,51 @@ public class RuleParserTest extends TestCase {
     //        assertFalse( re.isNegated() );
     //    }
     //
-    //    public void testTypeDeclaration() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "declare_type.drl" );
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //
-    //        final List<TypeDeclarationDescr> declarations = pack.getTypeDeclarations();
-    //
-    //        assertEquals( 1,
-    //                      declarations.size() );
-    //
-    //        final TypeDeclarationDescr descr = declarations.get( 0 );
-    //        assertEquals( "event",
-    //                      descr.getMetaAttribute( "role" ) );
-    //        assertEquals( "org.drools.events.Call",
-    //                      descr.getMetaAttribute( "class" ) );
-    //        assertEquals( "duration",
-    //                      descr.getMetaAttribute( "duration" ) );
-    //        assertEquals( "timestamp",
-    //                      descr.getMetaAttribute( "timestamp" ) );
-    //    }
-    //
+    
+    public void testTypeDeclaration() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "declare_type.drl" );
+
+        final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
+
+        assertEquals( 2,
+                      declarations.size() );
+
+        TypeDeclarationDescr descr = declarations.get( 0 );
+        assertEquals( "CallEvent",
+                      descr.getTypeName() );
+        assertEquals( 4,
+                      descr.getAnnotationNames().size() );
+        assertEquals( "event",
+                          descr.getAnnotation( "role" ).getValue() );
+        assertEquals( "org.drools.events.Call",
+                          descr.getAnnotation( "class" ).getValue() );
+        assertEquals( "duration",
+                          descr.getAnnotation( "duration" ).getValue() );
+        assertEquals( "timestamp",
+                          descr.getAnnotation( "timestamp" ).getValue() );
+        assertNull( descr.getAnnotation( "FOO" ) );
+        
+        descr = declarations.get( 1 );
+        assertEquals( "some.pkg.Type",
+                      descr.getTypeName() );
+        assertEquals( 5,
+                      descr.getAnnotationNames().size() );
+        assertNotNull( descr.getAnnotation( "name1" ) );
+        assertEquals( "value",
+                          descr.getAnnotation( "name2" ).getValue() );
+        assertEquals( "10",
+                          descr.getAnnotation( "name3" ).getValue( "k1" ) );
+        assertEquals( "a",
+                      descr.getAnnotation( "name4" ).getValue( "k1" ) );
+        assertEquals( "( 10 + 25 ) % 2",
+                      descr.getAnnotation( "name4" ).getValue( "formula" ) );
+        assertEquals( "{ a, b, c }",
+                      descr.getAnnotation( "name4" ).getValue( "array" ) );
+        assertEquals( "backward compatible value",
+                      descr.getAnnotation( "name5" ).getValue() );
+    }
+
     //    public void testRuleMetadata() throws Exception {
     //        parseResource( "compilation_unit",
     //                       "compilation_unit",

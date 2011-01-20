@@ -11,8 +11,9 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.AnnotatedDescrBuilder;
+import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
-import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -28,6 +29,7 @@ public class DRLXParser {
     private TokenStream           input;
     private RecognizerSharedState state;
     private ParserXHelper         helper;
+    private DRLExpressions        exprParser;
 
     public DRLXParser(TokenStream input) {
         this.input = input;
@@ -35,6 +37,9 @@ public class DRLXParser {
         this.helper = new ParserXHelper( DRLXTokens.tokenNames,
                                          input,
                                          state );
+        this.exprParser = new DRLExpressions( input,
+                                              state,
+                                              helper );
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -196,6 +201,9 @@ public class DRLXParser {
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.GLOBAL ) ) {
                 descr = globalStatement();
                 if ( state.failed ) return descr;
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DECLARE ) ) {
+                descr = declare();
+                if ( state.failed ) return descr;
             }
         } catch ( RecognitionException e ) {
             helper.reportError( e );
@@ -337,7 +345,7 @@ public class DRLXParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * declare := DECLARE type metadata* field* END SEMICOLON?
+     * declare := DECLARE type annotation* field* END SEMICOLON?
      * 
      * @return
      * @throws RecognitionException
@@ -362,7 +370,7 @@ public class DRLXParser {
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
-                //metadata();
+                annotation( declare );
                 if ( state.failed ) return declare.getDescr();
             }
 
@@ -398,15 +406,239 @@ public class DRLXParser {
     }
 
     /**
-     * metadata := AT ID parenChunk?
+     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation*
      */
-    private void metadata( DescrBuilder declare ) {
+    private void field() {
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         ANNOTATION
+     * ------------------------------------------------------------------------------------------------ */
+
+    /**
+     * annotation := AT ID (elementValuePairs | parenChunk )?
+     */
+    private void annotation( AnnotatedDescrBuilder adb ) {
+        try {
+            // '@'
+            Token at = match( input,
+                              DRLLexer.AT,
+                              null,
+                              null,
+                              DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            // identifier
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return;
+
+            AnnotationDescrBuilder annotation = null;
+            if ( state.backtracking == 0 ) {
+                annotation = adb.newAnnotation( id.getText() );
+                helper.setStart( annotation,
+                                 at );
+                helper.builderContext.push( annotation );
+            }
+
+            try {
+                if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+                    if ( speculateElementValuePairs() ) {
+                        elementValuePairs( annotation );
+                        if ( state.failed ) return;
+                    } else {
+                        String value = parenChunk( annotation );
+                        if ( state.failed ) return;
+                        if ( state.backtracking == 0 ) {
+                            annotation.value( value );
+                        }
+                    }
+                }
+            } finally {
+                if ( state.backtracking == 0 ) {
+                    helper.setEnd();
+                    helper.builderContext.pop();
+                }
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+    }
+
+    /**
+     * Invokes elementValuePairs() rule with backtracking
+     * to check if the next token sequence matches it or not.
+     * 
+     * @return true if the sequence of tokens will match the
+     *         elementValuePairs() syntax. false otherwise.
+     */
+    private boolean speculateElementValuePairs() {
+        state.backtracking++;
+        int start = input.mark();
+        try {
+            elementValuePairs( null ); // can never throw exception
+        } catch ( RecognitionException re ) {
+            System.err.println( "impossible: " + re );
+            re.printStackTrace();
+        }
+        boolean success = !state.failed;
+        input.rewind( start );
+        state.backtracking--;
+        state.failed = false;
+        return success;
 
     }
 
-    private void field() {
-        // TODO Auto-generated method stub
+    /**
+     * elementValuePairs := LEFT_PAREN elementValuePair (COMMA elementValuePair)* RIGHT_PAREN
+     * @param annotation
+     */
+    private void elementValuePairs( AnnotationDescrBuilder annotation ) throws RecognitionException {
+        try {
+            match( input,
+                   DRLLexer.LEFT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
 
+            elementValuePair( annotation );
+            if ( state.failed ) return;
+
+            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                match( input,
+                       DRLLexer.COMMA,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+
+                elementValuePair( annotation );
+                if ( state.failed ) return;
+            }
+
+            match( input,
+                   DRLLexer.RIGHT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+    }
+
+    /**
+     * elementValuePair := (ID EQUALS)? elementValue
+     * @param annotation
+     */
+    private void elementValuePair( AnnotationDescrBuilder annotation ) {
+        try {
+            String key = null;
+            if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.EQUALS_ASSIGN ) {
+                Token id = match( input,
+                                  DRLLexer.ID,
+                                  null,
+                                  null,
+                                  DroolsEditorType.IDENTIFIER );
+                if ( state.failed ) return;
+                key = id.getText();
+
+                match( input,
+                       DRLLexer.EQUALS_ASSIGN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+            }
+
+            String value = safeStripDelimiters( elementValue(), "\"" );
+            if ( state.failed ) return;
+
+            if ( state.backtracking == 0 ) {
+                annotation.keyValue( key != null ? key : "value",
+                                     value );
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+    }
+
+    /**
+     * elementValue := elementValueArrayInitializer | conditionalExpression 
+     * @return
+     */
+    private String elementValue() {
+        String value = "";
+        try {
+            int first = input.index();
+
+            if ( input.LA( 1 ) == DRLLexer.LEFT_CURLY ) {
+                elementValueArrayInitializer();
+                if ( state.failed ) return value;
+            } else {
+                exprParser.conditionalExpression();
+                if ( state.failed ) return value;
+            }
+            value = input.toString( first,
+                                    input.LT( -1 ).getTokenIndex() );
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+        return value;
+    }
+
+    /**
+     * elementValueArrayInitializer := LEFT_CURLY (elementValue (COMMA elementValue )*)? RIGHT_CURLY
+     * @return
+     */
+    private String elementValueArrayInitializer() {
+        String value = "";
+        int first = input.index();
+        try {
+            match( input,
+                   DRLLexer.LEFT_CURLY,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return value;
+
+            if ( input.LA( 1 ) != DRLLexer.RIGHT_CURLY ) {
+                elementValue();
+                if ( state.failed ) return value;
+
+                while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return value;
+
+                    elementValue();
+                    if ( state.failed ) return value;
+                }
+            }
+            match( input,
+                   DRLLexer.RIGHT_CURLY,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return value;
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            value = input.toString( first,
+                                    input.index() );
+        }
+        return value;
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -655,9 +887,53 @@ public class DRLXParser {
         return qi;
     }
 
+    private String parenChunk( AnnotationDescrBuilder annotation ) {
+        String chunk = "";
+        int first = -1, last = first;
+        try {
+            match( input,
+                   DRLLexer.LEFT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return chunk;
+            int nests = 0;
+            first = input.index();
+
+            while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN || nests > 0 ) {
+                switch ( input.LA( 1 ) ) {
+                    case DRLLexer.RIGHT_PAREN :
+                        nests--;
+                        break;
+                    case DRLLexer.LEFT_PAREN :
+                        nests++;
+                        break;
+                }
+                input.consume();
+            }
+            last = input.LT( -1 ).getTokenIndex();
+
+            match( input,
+                   DRLLexer.RIGHT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return chunk;
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            if ( last >= first ) {
+                chunk = input.toString( first,
+                                        last );
+            }
+        }
+        return chunk;
+    }
+
     /* ------------------------------------------------------------------------------------------------
-     *                         GENERAL UTILITY METHODS
-     * ------------------------------------------------------------------------------------------------ */
+      *                         GENERAL UTILITY METHODS
+      * ------------------------------------------------------------------------------------------------ */
     /** 
      *  Match current input symbol against ttype and optionally
      *  check the text of the token against text.  Attempt
@@ -770,6 +1046,16 @@ public class DRLXParser {
         }
         // TODO: implement this error recovery strategy
         return false;
+    }
+
+    private String safeStripDelimiters( String value, String delimiter ) {
+        if( value != null ) {
+            value = value.trim();
+            if( value.length() > 1 && value.startsWith( delimiter ) && value.endsWith( delimiter )) {
+                value = value.substring( 1, value.length()-1 );
+            }
+        }
+        return value;
     }
 
 }
