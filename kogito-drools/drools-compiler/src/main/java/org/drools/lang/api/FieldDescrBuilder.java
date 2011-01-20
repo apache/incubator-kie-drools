@@ -16,19 +16,23 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 
 /**
  *  A descriptor builder for Globals
  */
-public interface DeclareDescrBuilder
+public interface FieldDescrBuilder
     extends
     AnnotatedDescrBuilder {
 
-    public TypeDeclarationDescr getDescr();
+    public TypeFieldDescr getDescr();
 
-    public DeclareDescrBuilder type( String type );
+    public FieldDescrBuilder index( int index );
+
+    public FieldDescrBuilder name( String name );
+
+    public FieldDescrBuilder type( String type );
+
+    public FieldDescrBuilder initialValue( String value );
     
-    public FieldDescrBuilder newField( String name );
-
 }

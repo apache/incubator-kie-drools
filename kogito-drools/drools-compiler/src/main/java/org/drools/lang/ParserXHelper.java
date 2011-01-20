@@ -20,6 +20,7 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
@@ -428,7 +429,7 @@ public class ParserXHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder> T start( Class<T> clazz ) {
+    public <T extends DescrBuilder> T start( Class<T> clazz, String param ) {
         if ( state.backtracking == 0 ) {
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 pushParaphrases( DroolsParaphraseTypes.PACKAGE );
@@ -461,6 +462,11 @@ public class ParserXHelper {
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
                 setStart( declare );
                 return (T) declare;
+            } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                FieldDescrBuilder field = ((DeclareDescrBuilder) builderContext.peek()).newField( param );
+                builderContext.push( field );
+                setStart( field );
+                return (T) field;
             }
         }
         return null;
@@ -469,7 +475,9 @@ public class ParserXHelper {
     @SuppressWarnings("unchecked")
     public <T extends DescrBuilder> T end( Class<T> clazz ) {
         if ( state.backtracking == 0 ) {
-            popParaphrases();
+            if( ! FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                popParaphrases();
+            }
             setEnd();
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 return (T) (builderContext.empty() ? null : builderContext.peek());

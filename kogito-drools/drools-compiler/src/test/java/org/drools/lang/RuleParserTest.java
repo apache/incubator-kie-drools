@@ -29,10 +29,12 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 
 public class RuleParserTest extends TestCase {
 
@@ -95,6 +97,8 @@ public class RuleParserTest extends TestCase {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
         assertEquals( "foo",
                       pkg.getName() );
         assertEquals( 2,
@@ -124,6 +128,8 @@ public class RuleParserTest extends TestCase {
                               "import baz.Baz";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
         assertEquals( "foo",
                       pkg.getName() );
         assertEquals( 2,
@@ -171,6 +177,8 @@ public class RuleParserTest extends TestCase {
                               "global Integer aNumber";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  source );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
         assertEquals( "foo.bar.baz",
                       pkg.getName() );
         assertEquals( 1,
@@ -3933,10 +3941,12 @@ public class RuleParserTest extends TestCase {
     //        assertFalse( re.isNegated() );
     //    }
     //
-    
+
     public void testTypeDeclaration() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "declare_type.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
 
         final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
 
@@ -3957,7 +3967,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "timestamp",
                           descr.getAnnotation( "timestamp" ).getValue() );
         assertNull( descr.getAnnotation( "FOO" ) );
-        
+
         descr = declarations.get( 1 );
         assertEquals( "some.pkg.Type",
                       descr.getTypeName() );
@@ -3970,7 +3980,7 @@ public class RuleParserTest extends TestCase {
                           descr.getAnnotation( "name3" ).getValue( "k1" ) );
         assertEquals( "a",
                       descr.getAnnotation( "name4" ).getValue( "k1" ) );
-        assertEquals( "( 10 + 25 ) % 2",
+        assertEquals( "Math.max( 10 + 25, 22 ) % 2 + someVariable",
                       descr.getAnnotation( "name4" ).getValue( "formula" ) );
         assertEquals( "{ a, b, c }",
                       descr.getAnnotation( "name4" ).getValue( "array" ) );
@@ -4008,38 +4018,79 @@ public class RuleParserTest extends TestCase {
     //
     //    }
     //
-    //    public void testTypeDeclarationWithFields() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "declare_type_with_fields.drl" );
-    //
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //
-    //        List<TypeDeclarationDescr> td = pack.getTypeDeclarations();
-    //        assertEquals( 2,
-    //                      td.size() );
-    //
-    //        TypeDeclarationDescr d = td.get( 0 );
-    //        assertEquals( "SomeFact",
-    //                      d.getTypeName() );
-    //        assertEquals( 2,
-    //                      d.getFields().size() );
-    //        assertTrue( d.getFields().containsKey( "name" ) );
-    //        assertTrue( d.getFields().containsKey( "age" ) );
-    //
-    //        TypeFieldDescr f = d.getFields().get( "name" );
-    //        assertEquals( "String",
-    //                      f.getPattern().getObjectType() );
-    //
-    //        f = d.getFields().get( "age" );
-    //        assertEquals( "Integer",
-    //                      f.getPattern().getObjectType() );
-    //
-    //        d = td.get( 1 );
-    //        assertEquals( "AnotherFact",
-    //                      d.getTypeName() );
-    //
-    //    }
+
+    public void testTypeDeclarationWithFields() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "declare_type_with_fields.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        List<TypeDeclarationDescr> td = pkg.getTypeDeclarations();
+        assertEquals( 3,
+                      td.size() );
+
+        TypeDeclarationDescr d = td.get( 0 );
+        assertEquals( "SomeFact",
+                          d.getTypeName() );
+        assertEquals( 2,
+                          d.getFields().size() );
+        assertTrue( d.getFields().containsKey( "name" ) );
+        assertTrue( d.getFields().containsKey( "age" ) );
+
+        TypeFieldDescr f = d.getFields().get( "name" );
+        assertEquals( "String",
+                          f.getPattern().getObjectType() );
+
+        f = d.getFields().get( "age" );
+        assertEquals( "Integer",
+                          f.getPattern().getObjectType() );
+
+        d = td.get( 1 );
+        assertEquals( "AnotherFact",
+                          d.getTypeName() );
+
+        TypeDeclarationDescr type = td.get( 2 );
+        assertEquals( "Person",
+                       type.getTypeName() );
+
+        assertEquals( "fact",
+                      type.getAnnotation( "role" ).getValue() );
+        assertEquals( "Models a person",
+                      type.getAnnotation( "doc" ).getValue( "descr" ) );
+        assertEquals( "Bob",
+                      type.getAnnotation( "doc" ).getValue( "author" ) );
+        assertEquals( "Calendar.getInstance().getDate()",
+                      type.getAnnotation( "doc" ).getValue( "date" ) );
+
+        assertEquals( 2,
+                      type.getFields().size() );
+        TypeFieldDescr field = type.getFields().get( "name" );
+        assertEquals( "name",
+                      field.getFieldName() );
+        assertEquals( "String",
+                      field.getPattern().getObjectType() );
+        assertEquals( "\"John Doe\"",
+                      field.getInitExpr() );
+        assertEquals( "50",
+                      field.getAnnotation( "length" ).getValue( "max" ) );
+        assertNotNull( field.getAnnotation( "key" ) );
+
+        field = type.getFields().get( "age" );
+        assertEquals( "age",
+                      field.getFieldName() );
+        assertEquals( "int",
+                      field.getPattern().getObjectType() );
+        assertEquals( "-1",
+                      field.getInitExpr() );
+        assertEquals( "0",
+                      field.getAnnotation( "ranged" ).getValue( "min" ) );
+        assertEquals( "150",
+                      field.getAnnotation( "ranged" ).getValue( "max" ) );
+        assertEquals( "-1",
+                      field.getAnnotation( "ranged" ).getValue( "unknown" ) );
+
+    }
+
     //
     //    public void testEntryPoint() throws Exception {
     //        final String text = "StockTick( symbol==\"ACME\") from entry-point StreamA";

@@ -1101,7 +1101,7 @@ public class PackageBuilder {
 
             PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
-                String idx = field.getMetaAttribute( TypeDeclaration.ATTR_FIELD_POSITION );
+                String idx = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getValue();
                 if ( idx != null ) {
                     field.setIndex( Integer.valueOf( idx ) );
                 }
@@ -1115,7 +1115,7 @@ public class PackageBuilder {
                 FieldDefinition fieldDef = new FieldDefinition( field.getFieldName(),
                                                                 fullFieldType );
                 // field is marked as PK
-                boolean isKey = field.getMetaAttributes().containsKey( "key" );
+                boolean isKey = field.getAnnotationNames().contains( "key" );
                 fieldDef.setKey( isKey );
 
                 def.addField( fieldDef );

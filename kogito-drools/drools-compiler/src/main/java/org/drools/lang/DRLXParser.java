@@ -15,6 +15,7 @@ import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrFactory;
+import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
@@ -149,7 +150,7 @@ public class DRLXParser {
         String pkgName = null;
 
         try {
-            helper.start( PackageDescrBuilder.class );
+            helper.start( PackageDescrBuilder.class, null );
 
             match( input,
                    DRLLexer.ID,
@@ -226,7 +227,7 @@ public class DRLXParser {
     public ImportDescr importStatement() throws RecognitionException {
         ImportDescrBuilder imp = null;
         try {
-            imp = helper.start( ImportDescrBuilder.class );
+            imp = helper.start( ImportDescrBuilder.class, null );
 
             // import
             match( input,
@@ -297,7 +298,7 @@ public class DRLXParser {
     public GlobalDescr globalStatement() throws RecognitionException {
         GlobalDescrBuilder global = null;
         try {
-            global = helper.start( GlobalDescrBuilder.class );
+            global = helper.start( GlobalDescrBuilder.class, null );
 
             // 'global'
             match( input,
@@ -353,7 +354,7 @@ public class DRLXParser {
     public TypeDeclarationDescr declare() throws RecognitionException {
         DeclareDescrBuilder declare = null;
         try {
-            declare = helper.start( DeclareDescrBuilder.class );
+            declare = helper.start( DeclareDescrBuilder.class, null );
 
             // 'declare'
             match( input,
@@ -376,16 +377,15 @@ public class DRLXParser {
 
             while ( input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
-                field();
+                field( declare );
                 if ( state.failed ) return declare.getDescr();
             }
 
-            // 'end'
-            Token id = match( input,
-                              DRLLexer.ID,
-                              DroolsSoftKeywords.END,
-                              null,
-                              DroolsEditorType.KEYWORD );
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.END,
+                   null,
+                   DroolsEditorType.KEYWORD );
             if ( state.failed ) return declare.getDescr();
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
@@ -406,9 +406,71 @@ public class DRLXParser {
     }
 
     /**
-     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation*
+     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation* SEMICOLON
      */
-    private void field() {
+    private void field( DeclareDescrBuilder declare ) {
+        FieldDescrBuilder field = null;
+        try {
+            // ID
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return;
+
+            field = helper.start( FieldDescrBuilder.class,
+                                  id.getText() );
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            // type
+            String type = type();
+            if ( state.failed ) return;
+            if ( state.backtracking == 0 ) field.type( type );
+
+            if ( input.LA( 1 ) == DRLLexer.EQUALS_ASSIGN ) {
+                // EQUALS_ASSIGN
+                match( input,
+                       DRLLexer.EQUALS_ASSIGN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+
+                int first = input.index();
+                exprParser.conditionalExpression();
+                if ( state.failed ) return;
+                String value = input.toString( first,
+                                               input.LT( -1 ).getTokenIndex() );
+                if ( state.backtracking == 0 ) field.initialValue( value );
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( field );
+                if ( state.failed ) return;
+            }
+
+            if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+                match( input,
+                       DRLLexer.SEMICOLON,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( FieldDescrBuilder.class );
+        }
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -557,7 +619,8 @@ public class DRLXParser {
                 if ( state.failed ) return;
             }
 
-            String value = safeStripDelimiters( elementValue(), "\"" );
+            String value = safeStripDelimiters( elementValue(),
+                                                "\"" );
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
@@ -710,30 +773,6 @@ public class DRLXParser {
             reportError( re );
         }
         return type;
-    }
-
-    /**
-     * Invokes typeArguments() rule with backtracking
-     * to check if the next token sequence are typeArguments
-     * or not.
-     * 
-     * @return true if the sequence of tokens will match the
-     *         typeArguments syntax. false otherwise.
-     */
-    private boolean speculateTypeArguments() {
-        state.backtracking++;
-        int start = input.mark();
-        try {
-            typeArguments(); // can never throw exception
-        } catch ( RecognitionException re ) {
-            System.err.println( "impossible: " + re );
-            re.printStackTrace();
-        }
-        boolean success = !state.failed;
-        input.rewind( start );
-        state.backtracking--;
-        state.failed = false;
-        return success;
     }
 
     /**
@@ -1048,11 +1087,13 @@ public class DRLXParser {
         return false;
     }
 
-    private String safeStripDelimiters( String value, String delimiter ) {
-        if( value != null ) {
+    private String safeStripDelimiters( String value,
+                                        String delimiter ) {
+        if ( value != null ) {
             value = value.trim();
-            if( value.length() > 1 && value.startsWith( delimiter ) && value.endsWith( delimiter )) {
-                value = value.substring( 1, value.length()-1 );
+            if ( value.length() > 1 && value.startsWith( delimiter ) && value.endsWith( delimiter ) ) {
+                value = value.substring( 1,
+                                         value.length() - 1 );
             }
         }
         return value;

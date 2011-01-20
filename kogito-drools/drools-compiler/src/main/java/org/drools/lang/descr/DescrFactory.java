@@ -438,8 +438,8 @@ public class DescrFactory {
             Entry activeEntry = (Entry) activeMetadata.entrySet().iterator()
                     .next();
 
-            field.addMetaAttribute( (String) activeEntry.getKey(),
-                                    (Map<String, String>) activeEntry.getValue() );
+            field.addAnnotation( (String) activeEntry.getKey(),
+                                 (String) activeEntry.getValue() );
             //String chunkData = ((DroolsTree) activeEntry.getValue() != null ) ?((DroolsTree) activeEntry.getValue()).getText() : "()";
             //field.addMetaAttribute(((DroolsTree) activeEntry.getKey())
             //		.getText(), chunkData.substring(1, chunkData.length() - 1));

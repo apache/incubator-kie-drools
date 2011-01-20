@@ -107,7 +107,7 @@ public class DroolsParserExceptionFactory {
     /**
      * This will take a RecognitionException, and create a sensible error
      * message out of it
-     */
+     */ 
     private List<String> createErrorMessage( RecognitionException e ) {
         List<String> codeAndMessage = new ArrayList<String>( 2 );
         String message = "";
@@ -387,8 +387,7 @@ public class DroolsParserExceptionFactory {
             case DRLLexer.EOF :
                 return "<eof>";
             default :
-                return tokenType > tokenNames.length ? "unknown"
-                    : tokenNames[tokenType];
+                return defaultValue;
         }
     }
 }
