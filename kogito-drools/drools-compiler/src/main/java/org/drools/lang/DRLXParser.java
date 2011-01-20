@@ -84,6 +84,12 @@ public class DRLXParser {
         }
     }
 
+    public void reportError( Exception ex ) {
+        if ( state.backtracking == 0 ) {
+            helper.reportError( ex );
+        }
+    }
+
     /* ------------------------------------------------------------------------------------------------
      *                         GRAMMAR RULES
      * ------------------------------------------------------------------------------------------------ */
@@ -444,11 +450,16 @@ public class DRLXParser {
                 if ( state.failed ) return;
 
                 int first = input.index();
-                exprParser.conditionalExpression();
+                try{ 
+                    exprParser.conditionalExpression();
+                } catch( RecognitionException re ) {
+                    // this should be fine, as there are more tokens in the input stream
+                }
                 if ( state.failed ) return;
                 String value = input.toString( first,
                                                input.LT( -1 ).getTokenIndex() );
                 if ( state.backtracking == 0 ) field.initialValue( value );
+                
             }
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
@@ -646,12 +657,16 @@ public class DRLXParser {
                 elementValueArrayInitializer();
                 if ( state.failed ) return value;
             } else {
-                exprParser.conditionalExpression();
+                try{ 
+                    exprParser.conditionalExpression();
+                } catch( RecognitionException re ) {
+                    // this should be fine, as there are more tokens in the input stream
+                }
                 if ( state.failed ) return value;
             }
             value = input.toString( first,
                                     input.LT( -1 ).getTokenIndex() );
-        } catch ( RecognitionException re ) {
+        } catch ( Exception re ) {
             reportError( re );
         }
         return value;

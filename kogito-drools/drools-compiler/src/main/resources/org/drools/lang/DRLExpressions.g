@@ -36,6 +36,14 @@ options {
 
 }
 
+// Alter code generation so catch-clauses get replace with
+// this action.
+@rulecatch {
+catch (RecognitionException re) {
+    throw re;
+}
+}
+
 // --------------------------------------------------------
 //                      GENERAL RULES
 // --------------------------------------------------------
@@ -53,7 +61,6 @@ typeList
 	;
 	
 type
-options { backtrack=true; memoize=true; }
 	: 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
 	|	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
 	;
@@ -71,7 +78,6 @@ typeArgument
 //                      EXPRESSIONS
 // --------------------------------------------------------
 expression
-options { backtrack=true; memoize=true; }
 	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)?
 	;
 
@@ -139,22 +145,19 @@ unaryExpression
     ;
 
 unaryExpressionNotPlusMinus
-options{ backtrack=true; memoize=true; }
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
-    |   castExpression
-    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
+    |   (castExpression)=>castExpression
+    |   primary ({helper.validateLT(1,".")||helper.validateLT(1,"[")}?=>selector)* ((INCR|DECR)=> (INCR|DECR))?
     ;
     
 castExpression
-options { backtrack=true; memoize=true; }
     :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN unaryExpression
     |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
     |  LEFT_PAREN expression RIGHT_PAREN unaryExpressionNotPlusMinus
     ;
     
 primitiveType
-options { backtrack=true; memoize=true; }
     :   boolean_key
     |	char_key
     |	byte_key
@@ -166,7 +169,6 @@ options { backtrack=true; memoize=true; }
     ;
 
 primary
-//options{ backtrack=true; memoize=true; }
     :	(parExpression)=> parExpression
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
     |   (literal)=> literal
@@ -201,8 +203,7 @@ parExpression
 	;
 	
 identifierSuffix
-options { backtrack=true; memoize=true; }
-    :	(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
+    :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
     |	((LEFT_SQUARE) => LEFT_SQUARE expression RIGHT_SQUARE)+ // can also be matched by selector, but do here
     |   arguments 
 //    |   DOT class_key
@@ -261,11 +262,10 @@ explicitGenericInvocationSuffix
 	;
 
 selector
-options { backtrack=true; memoize=true; }
-	:   DOT ID ((LEFT_PAREN) => arguments)?
+	:   (DOT super_key)=>DOT super_key superSuffix
+	|   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
+	|   DOT ID ((LEFT_PAREN) => arguments)?
 	//|   DOT this_key
-	|   DOT super_key superSuffix
-	|   DOT new_key (nonWildcardTypeArguments)? innerCreator
 	|   LEFT_SQUARE expression RIGHT_SQUARE
 	;
 	
@@ -275,7 +275,6 @@ superSuffix
         ;
 
 arguments
-options { backtrack=true; memoize=true; }
 	:	LEFT_PAREN expressionList? RIGHT_PAREN
 	;
 
@@ -284,7 +283,6 @@ expressionList
     ;
 
 assignmentOperator
-options { k=1; }
 	:   EQUALS_ASSIGN
         |   PLUS_ASSIGN
         |   MINUS_ASSIGN
