@@ -1,0 +1,173 @@
+package org.drools.examples.sudoku
+
+rule "halt after setup"
+when
+    $ctr: Counter( count == 0 )
+then
+    drools.halt();
+end
+
+# A Setting object is inserted to define the value of a Cell.
+# Rule "set a value" updates the cell and all cell groups containing it.
+rule "set a value"
+when
+    # a Setting with row and column number, and a value
+    $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
+    
+    # a matching Cell, with no value set
+    $c: Cell( rowNo == $rn, colNo == $cn, value == null,
+              $cr: cellRow, $cc: cellCol, $cs: cellSqr )
+    
+    # count down
+    $ctr: Counter( $count: count )
+then
+#   System.out.println( "cell[" + $rn + "," + $cn + "] = " + $v );
+    # modify the Cell by setting its value
+    modify( $c ){ setValue( $v ) }
+    modify( $cr ){ blockValue( $v ) }
+    modify( $cc ){ blockValue( $v ) }
+    modify( $cs ){ blockValue( $v ) }
+    modify( $ctr ){ setCount( $count - 1 ) }
+end
+
+# Rule for removing a value from all cells that are siblings
+# in one of the three cell groups.
+rule "eliminate a value from Cell"
+when
+    # a Setting with row and column number, and a value
+    $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
+
+    # the matching Cell, with the value already set
+    Cell( rowNo == $rn, colNo == $cn, value == $v, $exCells: exCells )
+    
+    # for all Cells that are in cahoots with the updated cell
+    $c: Cell( free contains $v ) from $exCells
+then
+#   System.out.println( "clear " + $v + " from cell[" + $c.getRowNo() + "," + $c.getColNo() + "]"  );
+    # modify a related Cell by blocking the assigned value
+    modify( $c ){ blockValue( $v ) }
+end
+
+# Rule for elimination the Setting fact.
+rule "retract setting"
+when
+    # a Setting with row and column number, and a value
+    $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
+
+    # the matching Cell, with the value already set
+    $c: Cell( rowNo == $rn, colNo == $cn, value == $v )
+
+    # This is the negation of the last pattern in the previous rule.
+    # Now the Setting fact can be safely retracted.
+    not( $x: Cell( free contains $v )
+         and
+         Cell( this == $c, exCells contains $x ) )
+then
+#   System.out.println( "done setting cell[" + $rn + "," + $cn + "]" );
+    # Discard the Setter fact.
+    retract( $s );
+end
+
+# Detect a set of candidate values with cardinality 1 for some Cell.
+# This is the value to be set.
+rule "single"
+when
+    # There is currently no setting under way.
+    not Setting()
+    
+    # One element in the "free" set.
+    $c: Cell( $rn: rowNo, $cn: colNo, freeCount == 1 )
+then
+#   System.out.println( "single" );
+    # Insert another Setter fact.
+    insert( new Setting( $rn, $cn, $c.getFreeValue() ) );
+end
+
+# A "naked pair" is two cells in some cell group with their sets of
+# permissible values being equal with cardinality 2. These two values
+# can be removed from all other candidate lists in the group.
+rule "naked pair"
+when
+    # There is currently no setting under way.
+    not Setting()
+
+    # One cell with two candidates.
+    $c1: Cell( freeCount == 2, $f1: free, $r1: cellRow, $b1: cellSqr )
+    
+    # The containing cell group.
+    $cg: CellGroup( freeCount > 2, cells contains $c1 )
+    
+    # Another cell with two candidates, not the one we already have.
+    $c2: Cell( this != $c1, free == $f1 ) from $cg.cells
+    
+    # Get one of the "naked pair".
+    Integer( $v: intValue ) from $c1.getFree()
+    
+    # Get some other cell with a candidate equal to one from the pair.
+    $c3: Cell(  this != $c1 && != $c2, free contains $v ) from $cg.cells
+then
+#   System.out.println( "naked pair" );
+    # Remove the value.
+    modify( $c3 ){ blockValue( $v ) }
+end
+
+# If two cells within the same cell group contain candidate sets with more than
+# two values, with two values being in both of them but in none of the other
+# cells, then we have a "hidden pair". We can remove all other candidates from
+# these two cells.
+#
+rule "hidden pair in row"
+when
+    # There is currently no setting under way.
+    not Setting()
+    
+    # Establish a pair of Integer facts
+    $i1: Integer()
+    $i2: Integer( this > $i1 )
+    
+    # Look for a Cell with these two among its candidates. (The upper bound on
+    # the number of candidates avoids a lot of useless work during startup.)
+    $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2, $cellRow: cellRow )
+
+    # Get another one from the same row, with the same pair among its candidates,
+    $c2: Cell( this != $c1, cellRow == $cellRow, freeCount > 2, free contains $i1 && contains $i2 )
+    
+    # Assertain that no other cell in the group has one of these two values.
+    not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellRow.getCells() ) 
+then
+#   System.out.println( "hidden pair in row" );
+    # Set the candidate lists of these two Cells to the "hidden pair".
+    modify( $c1 ){ blockExcept( $i1, $i2 ) }
+    modify( $c2 ){ blockExcept( $i1, $i2 ) }
+end
+
+/**/
+rule "hidden pair in column"
+when
+    not Setting()
+    $i1: Integer()
+    $i2: Integer( this > $i1 )
+    $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2, $cellCol: cellCol )
+    $c2: Cell( this != $c1, cellCol == $cellCol, freeCount > 2, free contains $i1 && contains $i2 )
+    not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellCol.getCells() ) 
+then
+#   System.out.println( "hidden pair in column" );
+    modify( $c1 ){ blockExcept( $i1, $i2 ) }
+    modify( $c2 ){ blockExcept( $i1, $i2 ) }
+end
+
+rule "hidden pair in square"
+when
+    not Setting()
+    $i1: Integer()
+    $i2: Integer( this > $i1 )
+    $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2,
+               $cellSqr: cellSqr )
+    $c2: Cell( this != $c1, cellSqr == $cellSqr, freeCount > 2, free contains $i1 && contains $i2 )
+    not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellSqr.getCells() ) 
+then
+#   System.out.println( "hidden pair in column" );
+    modify( $c1 ){ blockExcept( $i1, $i2 ) }
+    modify( $c2 ){ blockExcept( $i1, $i2 ) }
+end
+/**/

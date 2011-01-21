@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/*
- * JBoss, the OpenSource J2EE webOS
- * 
- * Distributable under LGPL license.
- * See terms of license at gnu.org.
  */
 package org.drools.examples.sudoku.swing;
 
@@ -37,27 +30,22 @@ import javax.swing.JTextField;
 
 public class SudokuGridView
    extends JComponent
-   implements SudokuGridListener, ComponentListener
-{
+   implements SudokuGridListener, ComponentListener {
    /** The serialVersionUID */
    private static final long serialVersionUID = 510l;
    private SudokuGridModel model;
    private GridLayout gridLayout;
    private JTextField textFields[][];
    
-   public SudokuGridView()
-   {
+   public SudokuGridView(){
       gridLayout = new GridLayout(SudokuGridModel.NUM_ROWS, SudokuGridModel.NUM_COLS);
       setLayout(gridLayout);
       textFields = new JTextField[SudokuGridModel.NUM_ROWS][SudokuGridModel.NUM_COLS];
-      for (int row=0; row<textFields.length; row++)
-      {
-         for (int col=0; col<textFields[row].length; col++)
-         {
+      for (int row=0; row<textFields.length; row++) {
+         for (int col=0; col<textFields[row].length; col++){
             JTextField textField = new JTextField("");
             textField.setEditable(false);
-            if (row==0 && col==0)
-            {
+            if (row==0 && col==0) {
                textField.addComponentListener(this);
             }
             JPanel panel = new JPanel();
@@ -82,117 +70,83 @@ public class SudokuGridView
       }
    }
    
-   public SudokuGridView(SudokuGridModel model)
-   {
+   public SudokuGridView(SudokuGridModel model){
       this();
       setModel(model);
    }
    
-   public void setModel(SudokuGridModel model)
-   {
-      if (this.model != null  && this.model instanceof AbstractSudokuGridModel)
-      {
+   public void setModel(SudokuGridModel model){
+      if (this.model != null  && this.model instanceof AbstractSudokuGridModel){
          ((AbstractSudokuGridModel) this.model).removeSudokuGridListener(this);
       }
       
       this.model = model;
       refreshValues();
       
-      if (this.model != null  && this.model instanceof AbstractSudokuGridModel)
-      {
+      if (this.model != null  && this.model instanceof AbstractSudokuGridModel){
          ((AbstractSudokuGridModel) this.model).addSudokuGridListener(this);
       }
    }
    
-   public SudokuGridModel getModel()
-   {
-      return model;
-   }
-   
-   private void refreshValues()
-   {
-      for (int row=0; row<textFields.length; row++)
-      {
-         for (int col=0; col<textFields[row].length; col++)
-         {
+   private void refreshValues() {
+      for (int row=0; row<textFields.length; row++) {
+         for (int col=0; col<textFields[row].length; col++) {
             refreshValue(row, col);
          }
       }      
    }
    
-   private void refreshValue(int row, int col)
-   {
-      if(getModel().isCellResolved(row, col))
-      {
-         textFields[row][col].setText(""+getModel().getPossibleCellValues(row, col).iterator().next());
-      }
-      else
-      {
-         textFields[row][col].setText("");
-      }      
+   private void refreshValue(int row, int col){
+      String contents = model.getCellValue( row, col );
+      textFields[row][col].setText( contents );
    }
 
-   public void cellResolved(SudokuGridEvent ev)
-   {
-      refreshValue(ev.getRow(), ev.getCol());
+   public void restart(SudokuGridEvent ev){
+       refreshValues();
    }
-
-   public void cellModified(SudokuGridEvent ev)
-   {
+   
+   public void cellModified(SudokuGridEvent ev){       
       refreshValue(ev.getRow(), ev.getCol());
    }
    
-   public void componentHidden(ComponentEvent ev)
-   {
+   public void componentHidden(ComponentEvent ev){
       // FIXME componentHidden
-      
    }
 
-   public void componentMoved(ComponentEvent ev)
-   {
-      // FIXME componentMoved
-      
+   public void componentMoved(ComponentEvent ev){
+      // FIXME componentMoved   
    }
 
-   public void componentResized(ComponentEvent ev)
-   {
+   public void componentResized(ComponentEvent ev){
       JTextField textField = (JTextField) ev.getComponent();
       int height = textField.getHeight();
       Font font = textField.getFont();
       
       FontMetrics fontMetrics = textField.getGraphics().getFontMetrics(font);
-      if (fontMetrics.getAscent() < height)
-      {
-         while (fontMetrics.getAscent() < height)
-         {
+      if (fontMetrics.getAscent() < height){
+         while (fontMetrics.getAscent() < height){
             font = new Font(font.getName(), font.getStyle(), font.getSize()+2);
             fontMetrics = textField.getGraphics().getFontMetrics(font);
          }
       }
-      else if (fontMetrics.getAscent() > height)
-      {
-         while (fontMetrics.getAscent() > height)
-         {
+      else if (fontMetrics.getAscent() > height){
+         while (fontMetrics.getAscent() > height){
             font = new Font(font.getName(), font.getStyle(), font.getSize()-2);
             fontMetrics = textField.getGraphics().getFontMetrics(font);
          }         
       }
-      else
-      {
+      else{
          //
       }
       
-      for (int row=0; row<textFields.length; row++)
-      {
-         for (int col=0; col<textFields[row].length; col++)
-         {
+      for (int row=0; row<textFields.length; row++){
+         for (int col=0; col<textFields[row].length; col++){
             textFields[row][col].setFont(font);
          }
       }
    }
 
-   public void componentShown(ComponentEvent ev)
-   {
+   public void componentShown(ComponentEvent ev){
       // FIXME componentShown
    }
 }
