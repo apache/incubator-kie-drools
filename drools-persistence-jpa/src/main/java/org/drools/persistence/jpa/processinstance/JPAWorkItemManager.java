@@ -159,7 +159,11 @@ public class JPAWorkItemManager implements WorkItemManager {
 	public WorkItem getWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
 //        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+<<<<<<< HEAD:drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/processinstance/JPAWorkItemManager.java
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+=======
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+>>>>>>> 8c1418236a4c6a8aaa05dbb25b6240ee2bb8382a:drools-persistence-jpa/src/main/java/org/drools/persistence/jpa/processinstance/JPAWorkItemManager.java
 
         
         WorkItemInfo workItemInfo = null;
