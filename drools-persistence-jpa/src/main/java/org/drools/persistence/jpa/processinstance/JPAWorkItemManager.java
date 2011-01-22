@@ -128,7 +128,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void abortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
 //        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -159,7 +159,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 	public WorkItem getWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
 //        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY )).getCommandScopedPersistenceContext();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
 
         
         WorkItemInfo workItemInfo = null;
