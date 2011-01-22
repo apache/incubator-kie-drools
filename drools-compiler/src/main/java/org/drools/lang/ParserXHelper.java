@@ -172,7 +172,17 @@ public class ParserXHelper {
                            DroolsSoftKeywords.NEW ) ||
                validateLT( index,
                            DroolsSoftKeywords.CLASS );
+    }
 
+    public boolean validateAttribute( int index ) {
+        return validateLT( index,
+                           DroolsSoftKeywords.THIS ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.SUPER ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.NEW ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.CLASS );
     }
 
     public boolean validateIdentifierSufix() {

@@ -491,9 +491,9 @@ public class DescrFactory {
             for ( Map activeMetadata : metadata ) {
                 Entry activeEntry = (Entry) activeMetadata.entrySet().iterator().next();
 
-                ruleDescr.addMetaAttribute(
+                ruleDescr.addAnnotation(
                                             (String) activeEntry.getKey(),
-                                            (Map<String, String>) activeEntry.getValue() );
+                                            (String) activeEntry.getValue() );
                 //for (Map<DroolsTree,DroolsTree> map : metadata){
                 //	for (Map.Entry<DroolsTree,DroolsTree> entry : map.entrySet() ){
                 //		String chunkData = entry.getValue().getText();

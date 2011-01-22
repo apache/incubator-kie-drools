@@ -210,11 +210,11 @@ public class RuleBuilderTest {
 
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
-        ruleDescr.addMetaAttribute( "ruleId",
+        ruleDescr.addAnnotation( "ruleId",
                                     "123" );
-        ruleDescr.addMetaAttribute( "author",
+        ruleDescr.addAnnotation( "author",
                                     "Bob Doe" );
-        ruleDescr.addMetaAttribute( "text",
+        ruleDescr.addAnnotation( "text",
                                     "\"It's a quoted\\\" string\"" );
 
         // creates expected results
