@@ -10,7 +10,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>jdbc/testDS1</jta-data-source>        
         <class>org.drools.persistence.info.SessionInfo</class>
-<!--        <class>org.drools.persistence.processinstance.WorkItemInfo</class>-->
+        <class>org.drools.persistence.info.WorkItemInfo</class>
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
 	        <property name="hibernate.max_fetch_depth" value="3"/>
