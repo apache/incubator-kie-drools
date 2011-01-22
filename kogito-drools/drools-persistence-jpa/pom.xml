@@ -176,7 +176,21 @@
         <artifactId>com.springsource.javax.resource</artifactId>
         <version>1.5.0</version>
     </dependency-->
-
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr-runtime</artifactId>
+      <scope>test</scope>
+    </dependency>    
   </dependencies>
 
 </project>
