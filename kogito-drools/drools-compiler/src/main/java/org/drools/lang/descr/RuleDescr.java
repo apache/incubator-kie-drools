@@ -25,7 +25,7 @@ import org.drools.io.Resource;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Namespaceable;
 
-public class RuleDescr extends BaseDescr
+public class RuleDescr extends AnnotatedBaseDescr
     implements
     Dialectable,
     Namespaceable {
@@ -35,7 +35,6 @@ public class RuleDescr extends BaseDescr
     private String                      name;
     private String                      parentName;
     private String                      documentation;
-    private Map<String, Map<String,String>>         metaAttributes;
     private Map<String, AttributeDescr> attributes;
 
     private AndDescr                    lhs;
@@ -61,7 +60,6 @@ public class RuleDescr extends BaseDescr
                      final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
-        this.metaAttributes = new LinkedHashMap<String, Map<String,String>>();
         this.attributes = new LinkedHashMap<String, AttributeDescr>();
         this.namedConsequence = new HashMap<String, Object>();
     }
@@ -142,90 +140,6 @@ public class RuleDescr extends BaseDescr
 
     public String getDocumentation() {
         return this.documentation;
-    }
-
-
-     /**
-     * Adds a new attribute
-     * @param attr
-     * @param values
-     */
-    public void addMetaAttribute( String attr, Map<String, String> values ) {
-        if( this.metaAttributes == null ) {
-            this.metaAttributes = new HashMap<String, Map<String, String>>();
-        }
-        this.metaAttributes.put( attr, values );
-    }
-
-
-/**
-     * Adds a new attribute
-     * @param attr
-     * @param value
-     */
-    public void addMetaAttribute( String attr, String value) {
-        if( this.metaAttributes == null ) {
-            this.metaAttributes = new HashMap<String, Map<String, String>>();
-        }
-        Hashtable<String, String> attrMap = new Hashtable<String, String>();
-            attrMap.put(value,value);
-        this.metaAttributes.put( attr, attrMap );
-    }
-
-
-    /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the first key, assuming that the annotation has structure @attr(key)
-     * @param attr
-     * @return key1
-     */
-    public String getMetaAttribute( String attr ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet().iterator().next();
-    }
-
-     /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns the set of keys, assuming that the annotation has structure @attr(key1,key2,...)
-     * @param attr
-     * @return set of attribute keys
-     */
-    public Set<String> getMetaAttributes(String attr) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.keySet();
-    }
-
-      /**
-     * Given the general attribute structure : @attr( key1=value1, key2=value2, ...)
-     * Returns a mapped value, given the attribute and the key
-     * @param attr
-     * @param key
-     * @return value
-     */
-     public String getMetaAttributeValue( String attr, String key ) {
-        if (this.metaAttributes == null) return null;
-        Map<String, String> meta = this.metaAttributes.get(attr);
-        return meta == null ? null : meta.get(key);
-     }
-
-
-
-
-
-
-
-
-
-
-    /**
-     * Returns the attribute map
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public Map<String, Map<String,String>> getMetaAttributes() {
-        return this.metaAttributes != null ? this.metaAttributes : Collections.EMPTY_MAP;
     }
 
     public Map<String, AttributeDescr> getAttributes() {

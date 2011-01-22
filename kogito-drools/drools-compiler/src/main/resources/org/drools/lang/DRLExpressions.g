@@ -14,15 +14,17 @@ options {
 }
 
 @members {
-    private ParserXHelper helper = null;
+    private ParserXHelper helper = new ParserXHelper( tokenNames,
+                                         input,
+                                         state );
                                                     
-    public DRLExpressions(TokenStream input,
+/*    public DRLExpressions(TokenStream input,
                           RecognizerSharedState state,
                           ParserXHelper helper ) {
         this( input,
               state );
         this.helper = helper;
-    }
+    }*/
 
     public ParserXHelper getHelper()                          { return helper; }
     public boolean hasErrors()                                { return helper.hasErrors(); }
@@ -78,7 +80,7 @@ typeArgument
 //                      EXPRESSIONS
 // --------------------------------------------------------
 expression
-	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)?
+	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)? 
 	;
 
 conditionalExpression
@@ -148,7 +150,7 @@ unaryExpressionNotPlusMinus
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
-    |   primary ({helper.validateLT(1,".")||helper.validateLT(1,"[")}?=>selector)* ((INCR|DECR)=> (INCR|DECR))?
+    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))? 
     ;
     
 castExpression
@@ -264,9 +266,9 @@ explicitGenericInvocationSuffix
 selector
 	:   (DOT super_key)=>DOT super_key superSuffix
 	|   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
-	|   DOT ID ((LEFT_PAREN) => arguments)?
+	|   (DOT ID)=>DOT ID ((LEFT_PAREN) => arguments)?
 	//|   DOT this_key
-	|   LEFT_SQUARE expression RIGHT_SQUARE
+	|   (LEFT_SQUARE)=>LEFT_SQUARE expression RIGHT_SQUARE
 	;
 	
 superSuffix

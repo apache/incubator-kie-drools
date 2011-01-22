@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;

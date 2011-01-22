@@ -13,16 +13,20 @@ import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
+import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
+import org.drools.lang.api.RuleDescrBuilder;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 
 public class DRLXParser {
@@ -156,7 +160,8 @@ public class DRLXParser {
         String pkgName = null;
 
         try {
-            helper.start( PackageDescrBuilder.class, null );
+            helper.start( PackageDescrBuilder.class,
+                          null );
 
             match( input,
                    DRLLexer.ID,
@@ -166,9 +171,11 @@ public class DRLXParser {
             if ( state.failed ) return pkgName;
 
             pkgName = qualifiedIdentifier();
-            helper.setParaphrasesValue( DroolsParaphraseTypes.PACKAGE,
-                                        pkgName );
             if ( state.failed ) return pkgName;
+            if ( state.backtracking == 0 ) {
+                helper.setParaphrasesValue( DroolsParaphraseTypes.PACKAGE,
+                                            pkgName );
+            }
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -233,7 +240,8 @@ public class DRLXParser {
     public ImportDescr importStatement() throws RecognitionException {
         ImportDescrBuilder imp = null;
         try {
-            imp = helper.start( ImportDescrBuilder.class, null );
+            imp = helper.start( ImportDescrBuilder.class,
+                                null );
 
             // import
             match( input,
@@ -241,7 +249,7 @@ public class DRLXParser {
                    DroolsSoftKeywords.IMPORT,
                    null,
                    DroolsEditorType.KEYWORD );
-            if ( state.failed ) return imp.getDescr();
+            if ( state.failed ) return null;
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.FUNCTION ) ) {
                 // function
@@ -250,11 +258,12 @@ public class DRLXParser {
                        DroolsSoftKeywords.FUNCTION,
                        null,
                        DroolsEditorType.KEYWORD );
-                if ( state.failed ) return imp.getDescr();
+                if ( state.failed ) return null;
             }
 
             // qualifiedIdentifier
             String target = qualifiedIdentifier();
+            if ( state.failed ) return null;
 
             if ( input.LA( 1 ) == DRLLexer.DOT && input.LA( 2 ) == DRLLexer.STAR ) {
                 // .*
@@ -263,16 +272,16 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.IDENTIFIER );
-                if ( state.failed ) return imp.getDescr();
+                if ( state.failed ) return null;
                 match( input,
                        DRLLexer.STAR,
                        null,
                        null,
                        DroolsEditorType.IDENTIFIER );
-                if ( state.failed ) return imp.getDescr();
+                if ( state.failed ) return null;
                 target += ".*";
             }
-            imp.target( target );
+            if ( state.backtracking == 0 ) imp.target( target );
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -304,7 +313,8 @@ public class DRLXParser {
     public GlobalDescr globalStatement() throws RecognitionException {
         GlobalDescrBuilder global = null;
         try {
-            global = helper.start( GlobalDescrBuilder.class, null );
+            global = helper.start( GlobalDescrBuilder.class,
+                                   null );
 
             // 'global'
             match( input,
@@ -312,12 +322,12 @@ public class DRLXParser {
                    DroolsSoftKeywords.GLOBAL,
                    null,
                    DroolsEditorType.KEYWORD );
-            if ( state.failed ) return global.getDescr();
+            if ( state.failed ) return null;
 
             // type
             String type = type();
-            global.type( type );
-            if ( state.failed ) return global.getDescr();
+            if ( state.backtracking == 0 ) global.type( type );
+            if ( state.failed ) return null;
 
             // identifier
             Token id = match( input,
@@ -325,10 +335,12 @@ public class DRLXParser {
                               null,
                               null,
                               DroolsEditorType.IDENTIFIER_TYPE );
-            global.identifier( id.getText() );
-            helper.setParaphrasesValue( DroolsParaphraseTypes.GLOBAL,
-                                        id.getText() );
-            if ( state.failed ) return global.getDescr();
+            if ( state.failed ) return null;
+            if ( state.backtracking == 0 ) {
+                global.identifier( id.getText() );
+                helper.setParaphrasesValue( DroolsParaphraseTypes.GLOBAL,
+                                            id.getText() );
+            }
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -360,7 +372,8 @@ public class DRLXParser {
     public TypeDeclarationDescr declare() throws RecognitionException {
         DeclareDescrBuilder declare = null;
         try {
-            declare = helper.start( DeclareDescrBuilder.class, null );
+            declare = helper.start( DeclareDescrBuilder.class,
+                                    null );
 
             // 'declare'
             match( input,
@@ -368,23 +381,23 @@ public class DRLXParser {
                    DroolsSoftKeywords.DECLARE,
                    null,
                    DroolsEditorType.KEYWORD );
-            if ( state.failed ) return declare.getDescr();
+            if ( state.failed ) return null;
 
             // type
             String type = type();
-            declare.type( type );
-            if ( state.failed ) return declare.getDescr();
+            if ( state.failed ) return null;
+            if ( state.backtracking == 0 ) declare.type( type );
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
                 annotation( declare );
-                if ( state.failed ) return declare.getDescr();
+                if ( state.failed ) return null;
             }
 
             while ( input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
                 field( declare );
-                if ( state.failed ) return declare.getDescr();
+                if ( state.failed ) return null;
             }
 
             match( input,
@@ -392,7 +405,7 @@ public class DRLXParser {
                    DroolsSoftKeywords.END,
                    null,
                    DroolsEditorType.KEYWORD );
-            if ( state.failed ) return declare.getDescr();
+            if ( state.failed ) return null;
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -400,7 +413,7 @@ public class DRLXParser {
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
-                if ( state.failed ) return declare.getDescr();
+                if ( state.failed ) return null;
             }
 
         } catch ( RecognitionException re ) {
@@ -450,16 +463,18 @@ public class DRLXParser {
                 if ( state.failed ) return;
 
                 int first = input.index();
-                try{ 
-                    exprParser.conditionalExpression();
-                } catch( RecognitionException re ) {
+                //try {
+                    exprParser.embeddedExpression();
+                //} catch ( RecognitionException re ) {
                     // this should be fine, as there are more tokens in the input stream
-                }
+                //}
                 if ( state.failed ) return;
-                String value = input.toString( first,
-                                               input.LT( -1 ).getTokenIndex() );
-                if ( state.backtracking == 0 ) field.initialValue( value );
-                
+                if ( state.backtracking == 0 && input.index() > first ) {
+                    // expression consumed something
+                    String value = input.toString( first,
+                                                   input.LT( -1 ).getTokenIndex() );
+                    field.initialValue( value );
+                }
             }
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
@@ -485,9 +500,423 @@ public class DRLXParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     *                         ANNOTATION
+     *                         RULE STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
+    /**
+     * rule := RULE ruleId (EXTENDS ruleId)? annotation* attributes? lhs? rhs
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public RuleDescr rule() throws RecognitionException {
+        RuleDescrBuilder rule = null;
+        try {
+            rule = helper.start( RuleDescrBuilder.class,
+                                 null );
+
+            // 'rule'
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.RULE,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            String name = ruleId();
+            if ( state.backtracking == 0 ) rule.name( name );
+            if ( state.failed ) return null;
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
+                // 'extends'
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.EXTENDS,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                String parent = ruleId();
+                if ( state.backtracking == 0 ) rule.extendsRule( parent );
+                if ( state.failed ) return null;
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( rule );
+                if ( state.failed ) return null;
+            }
+
+            while ( helper.validateAttribute( 1 ) ) {
+
+            }
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.END,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+                match( input,
+                       DRLLexer.SEMICOLON,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( DeclareDescrBuilder.class );
+        }
+        return (rule != null) ? rule.getDescr() : null;
+    }
+
+    /**
+     * ruleId := ( ID | STRING )
+     * @return
+     * @throws RecognitionException
+     */
+    private String ruleId() throws RecognitionException {
+        if ( input.LA( 1 ) == DRLLexer.ID ) {
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            return id.getText();
+        } else if ( input.LA( 1 ) == DRLLexer.STRING ) {
+            Token id = match( input,
+                              DRLLexer.STRING,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            return safeStripStringDelimiters( id.getText() );
+        } else {
+            throw new MismatchedTokenException( DRLLexer.ID,
+                                                input );
+        }
+    }
+
+    /**
+     * attribute :=
+     *       salience 
+     *   |   enabled 
+     *   |   noLoop
+     *   |   autoFocus 
+     *   |   lockOnActive
+     *   |   agendaGroup  
+     *   |   activationGroup 
+     *   |   ruleflowGroup 
+     *   |   dateEffective 
+     *   |   dateExpires 
+     *   |   dialect 
+     *   |   calendars    
+     *   |   timer  
+     * 
+     * @return
+     */
+    public AttributeDescr attribute() {
+        AttributeDescrBuilder attribute = null;
+        try {
+            attribute = helper.start( AttributeDescrBuilder.class,
+                                      null );
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.SALIENCE ) ) {
+                salience( attribute );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENABLED ) ) {
+                enabled( attribute );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NO ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.LOOP ) ) {
+                booleanAttribute( attribute,
+                                  new String[]{DroolsSoftKeywords.NO, "-", DroolsSoftKeywords.LOOP} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AUTO ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.FOCUS ) ) {
+                booleanAttribute( attribute,
+                                  new String[]{DroolsSoftKeywords.AUTO, "-", DroolsSoftKeywords.FOCUS} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.LOCK ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.ON ) &&
+                        helper.validateLT( 4,
+                                           "-" ) &&
+                        helper.validateLT( 5,
+                                           DroolsSoftKeywords.ACTIVE ) ) {
+                booleanAttribute( attribute,
+                                  new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.GROUP ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACTIVATION ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.GROUP ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.ACTIVATION, "-", DroolsSoftKeywords.GROUP} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.RULEFLOW ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.GROUP ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.RULEFLOW, "-", DroolsSoftKeywords.GROUP} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.EFFECTIVE ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
+                        helper.validateLT( 2,
+                                           "-" ) &&
+                        helper.validateLT( 3,
+                                           DroolsSoftKeywords.EXPIRES ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIALECT ) ) {
+                stringAttribute( attribute,
+                                 new String[]{DroolsSoftKeywords.DIALECT} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.CALENDARS ) ) {
+                stringListAttribute( attribute,
+                                     new String[]{DroolsSoftKeywords.CALENDARS} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TIMER ) ) {
+                intOrChunkAttribute( attribute,
+                                     new String[]{DroolsSoftKeywords.TIMER} );
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( AttributeDescrBuilder.class );
+        }
+        return (attribute != null) ? attribute.getDescr() : null;
+    }
+
+    /**
+     * salience := SALIENCE conditionalExpression
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void salience( AttributeDescrBuilder attribute ) throws RecognitionException {
+        // 'salience'
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.SALIENCE,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 ) attribute.name( DroolsSoftKeywords.SALIENCE );
+
+        int first = input.index();
+        try {
+            exprParser.conditionalExpression();
+        } catch ( RecognitionException re ) {
+            // this should be fine, as there are more tokens in the input stream
+        }
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 && input.index() > first ) {
+            // expression consumed something
+            String value = input.toString( first,
+                                           input.LT( -1 ).getTokenIndex() );
+            attribute.value( value );
+        }
+    }
+
+    /**
+     * enabled := ENABLED conditionalExpression
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void enabled( AttributeDescrBuilder attribute ) throws RecognitionException {
+        // 'enabled'
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.ENABLED,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 ) attribute.name( DroolsSoftKeywords.ENABLED );
+
+        int first = input.index();
+        try {
+            exprParser.conditionalExpression();
+        } catch ( RecognitionException re ) {
+            // this should be fine, as there are more tokens in the input stream
+        }
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 && input.index() > first ) {
+            // expression consumed something
+            String value = input.toString( first,
+                                           input.LT( -1 ).getTokenIndex() );
+            attribute.value( value );
+        }
+    }
+
+    /**
+     * booleanAttribute := attributeKey (BOOLEAN)?
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void booleanAttribute( AttributeDescrBuilder attribute,
+                                   String[] key ) throws RecognitionException {
+        StringBuilder builder = new StringBuilder();
+        for ( String k : key ) {
+            match( input,
+                   DRLLexer.ID,
+                   k,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return;
+            builder.append( k );
+        }
+        if ( state.backtracking == 0 ) attribute.name( builder.toString() );
+
+        String value = "true";
+        if ( input.LA( 1 ) == DRLLexer.BOOL ) {
+            Token bool = match( input,
+                                DRLLexer.BOOL,
+                                null,
+                                null,
+                                DroolsEditorType.KEYWORD );
+            if ( state.failed ) return;
+            value = bool.getText();
+        }
+        if ( state.backtracking == 0 ) {
+            attribute.value( value );
+        }
+    }
+
+    /**
+     * stringAttribute := attributeKey STRING
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void stringAttribute( AttributeDescrBuilder attribute,
+                                  String[] key ) throws RecognitionException {
+        StringBuilder builder = new StringBuilder();
+        for ( String k : key ) {
+            match( input,
+                   DRLLexer.ID,
+                   k,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return;
+            builder.append( k );
+        }
+        if ( state.backtracking == 0 ) attribute.name( builder.toString() );
+
+        Token value = match( input,
+                             DRLLexer.STRING,
+                             null,
+                             null,
+                             DroolsEditorType.STRING_CONST );
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 ) {
+            attribute.value( value.getText() );
+        }
+    }
+
+    /**
+     * stringListAttribute := attributeKey STRING (COMMA STRING)*
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void stringListAttribute( AttributeDescrBuilder attribute,
+                                      String[] key ) throws RecognitionException {
+        StringBuilder builder = new StringBuilder();
+        for ( String k : key ) {
+            match( input,
+                   DRLLexer.ID,
+                   k,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return;
+            builder.append( k );
+        }
+        if ( state.backtracking == 0 ) attribute.name( builder.toString() );
+
+        builder = new StringBuilder();
+        builder.append( "[ " );
+        Token value = match( input,
+                             DRLLexer.STRING,
+                             null,
+                             null,
+                             DroolsEditorType.STRING_CONST );
+        if ( state.failed ) return;
+        builder.append( value.getText() );
+
+        if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+            match( input,
+                   DRLLexer.COMMA,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+            builder.append( ", " );
+            value = match( input,
+                           DRLLexer.STRING,
+                           null,
+                           null,
+                           DroolsEditorType.STRING_CONST );
+            if ( state.failed ) return;
+            builder.append( value.getText() );
+        }
+        builder.append( " ]" );
+        if ( state.backtracking == 0 ) {
+            attribute.value( builder.toString() );
+        }
+    }
+
+    /**
+     * intOrChunkAttribute := attributeKey (DECIMAL | parenChunk)
+     * @param attribute
+     * @throws RecognitionException
+     */
+    private void intOrChunkAttribute( AttributeDescrBuilder attribute,
+                                      String[] key ) throws RecognitionException {
+        StringBuilder builder = new StringBuilder();
+        for ( String k : key ) {
+            match( input,
+                   DRLLexer.ID,
+                   k,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return;
+            builder.append( k );
+        }
+        if ( state.backtracking == 0 ) attribute.name( builder.toString() );
+
+        if( input.LA( 1 ) == DRLLexer.DECIMAL ) { }
+        Token value = match( input,
+                             DRLLexer.STRING,
+                             null,
+                             null,
+                             DroolsEditorType.STRING_CONST );
+        if ( state.failed ) return;
+        if ( state.backtracking == 0 ) {
+            attribute.value( value.getText() );
+        }
+    } 
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         ANNOTATION
+     * ------------------------------------------------------------------------------------------------ */
     /**
      * annotation := AT ID (elementValuePairs | parenChunk )?
      */
@@ -630,8 +1059,7 @@ public class DRLXParser {
                 if ( state.failed ) return;
             }
 
-            String value = safeStripDelimiters( elementValue(),
-                                                "\"" );
+            String value = safeStripStringDelimiters( elementValue() );
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
@@ -657,9 +1085,9 @@ public class DRLXParser {
                 elementValueArrayInitializer();
                 if ( state.failed ) return value;
             } else {
-                try{ 
+                try {
                     exprParser.conditionalExpression();
-                } catch( RecognitionException re ) {
+                } catch ( RecognitionException re ) {
                     // this should be fine, as there are more tokens in the input stream
                 }
                 if ( state.failed ) return value;
@@ -1107,6 +1535,19 @@ public class DRLXParser {
         if ( value != null ) {
             value = value.trim();
             if ( value.length() > 1 && value.startsWith( delimiter ) && value.endsWith( delimiter ) ) {
+                value = value.substring( 1,
+                                         value.length() - 1 );
+            }
+        }
+        return value;
+    }
+
+    private String safeStripStringDelimiters( String value ) {
+        if ( value != null ) {
+            value = value.trim();
+            if ( value.length() > 1 &&
+                    ((value.startsWith( "\"" ) && value.endsWith( "\"" )) ||
+                            (value.startsWith( "'" ) && value.endsWith( "'" ))) ) {
                 value = value.substring( 1,
                                          value.length() - 1 );
             }

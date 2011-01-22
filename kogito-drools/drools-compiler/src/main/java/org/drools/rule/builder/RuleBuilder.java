@@ -107,8 +107,8 @@ public class RuleBuilder {
     public void buildMetaAttributes(final RuleBuildContext context ) {
         Rule rule = context.getRule();
         //for( Entry<String, String> meta : context.getRuleDescr().getMetaAttributes().entrySet() ) {
-        for ( String metaAttr : context.getRuleDescr().getMetaAttributes().keySet() ) {
-            String value = context.getRuleDescr().getMetaAttribute(metaAttr);
+        for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
+            String value = context.getRuleDescr().getAnnotation(metaAttr).getValue();
             if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
                 value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) ); 
             }
