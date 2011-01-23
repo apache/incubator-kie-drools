@@ -463,11 +463,7 @@ public class DRLXParser {
                 if ( state.failed ) return;
 
                 int first = input.index();
-                //try {
-                    exprParser.embeddedExpression();
-                //} catch ( RecognitionException re ) {
-                    // this should be fine, as there are more tokens in the input stream
-                //}
+                exprParser.conditionalAndExpression();
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 && input.index() > first ) {
                     // expression consumed something
@@ -546,10 +542,12 @@ public class DRLXParser {
                 annotation( rule );
                 if ( state.failed ) return null;
             }
-
-            while ( helper.validateAttribute( 1 ) ) {
-
-            }
+            
+            attributes( rule );
+            
+            lhs();
+            
+            rhs();
 
             match( input,
                    DRLLexer.ID,
@@ -587,6 +585,7 @@ public class DRLXParser {
                               null,
                               null,
                               DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return null;
             return id.getText();
         } else if ( input.LA( 1 ) == DRLLexer.STRING ) {
             Token id = match( input,
@@ -594,10 +593,52 @@ public class DRLXParser {
                               null,
                               null,
                               DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return null;
             return safeStripStringDelimiters( id.getText() );
         } else {
             throw new MismatchedTokenException( DRLLexer.ID,
                                                 input );
+        }
+    }
+
+    /**
+     * attributes := (ATTRIBUTES COMMA)? attribute ( COMMA? attribute )*
+     * @param rule
+     * @throws RecognitionException
+     */
+    private void attributes( RuleDescrBuilder rule ) throws RecognitionException {
+        if( helper.validateIdentifierKey( DroolsSoftKeywords.ATTRIBUTES ) ) {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.ATTRIBUTES,
+                   null,
+                   DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return;
+            
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+        }
+        
+        if( helper.validateAttribute( 1 ) ) {
+            attribute();
+            if ( state.failed ) return;
+            
+            if( input.LA( 1 ) == DRLLexer.COMMA) {
+                match( input,
+                       DRLLexer.COMMA,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+            }
+            while( helper.validateAttribute( 1 ) ) {
+                attribute();
+                if ( state.failed ) return;
+            }
         }
     }
 
@@ -619,7 +660,7 @@ public class DRLXParser {
      * 
      * @return
      */
-    public AttributeDescr attribute() {
+    private AttributeDescr attribute() {
         AttributeDescrBuilder attribute = null;
         try {
             attribute = helper.start( AttributeDescrBuilder.class,
@@ -698,8 +739,10 @@ public class DRLXParser {
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TIMER ) ) {
                 intOrChunkAttribute( attribute,
                                      new String[]{DroolsSoftKeywords.TIMER} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DURATION ) ) {
+                intOrChunkAttribute( attribute,
+                                     new String[]{DroolsSoftKeywords.DURATION} );
             }
-
         } catch ( RecognitionException re ) {
             reportError( re );
         } finally {
@@ -724,11 +767,7 @@ public class DRLXParser {
         if ( state.backtracking == 0 ) attribute.name( DroolsSoftKeywords.SALIENCE );
 
         int first = input.index();
-        try {
-            exprParser.conditionalExpression();
-        } catch ( RecognitionException re ) {
-            // this should be fine, as there are more tokens in the input stream
-        }
+        exprParser.conditionalExpression();
         if ( state.failed ) return;
         if ( state.backtracking == 0 && input.index() > first ) {
             // expression consumed something
@@ -754,11 +793,7 @@ public class DRLXParser {
         if ( state.backtracking == 0 ) attribute.name( DroolsSoftKeywords.ENABLED );
 
         int first = input.index();
-        try {
-            exprParser.conditionalExpression();
-        } catch ( RecognitionException re ) {
-            // this should be fine, as there are more tokens in the input stream
-        }
+        exprParser.conditionalExpression();
         if ( state.failed ) return;
         if ( state.backtracking == 0 && input.index() > first ) {
             // expression consumed something
@@ -902,17 +937,39 @@ public class DRLXParser {
         }
         if ( state.backtracking == 0 ) attribute.name( builder.toString() );
 
-        if( input.LA( 1 ) == DRLLexer.DECIMAL ) { }
-        Token value = match( input,
-                             DRLLexer.STRING,
-                             null,
-                             null,
-                             DroolsEditorType.STRING_CONST );
-        if ( state.failed ) return;
-        if ( state.backtracking == 0 ) {
-            attribute.value( value.getText() );
+        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+            String value = chunk( DRLLexer.LEFT_PAREN, DRLLexer.RIGHT_PAREN );
+            if ( state.failed ) return;
+            if ( state.backtracking == 0 ) attribute.value( safeStripDelimiters( value, new String[] { "(", ")" } ) );
+        } else {
+            String value = "";
+            if( input.LA( 1 ) == DRLLexer.PLUS ) {
+                Token sign = match( input,
+                                     DRLLexer.PLUS,
+                                     null,
+                                     null,
+                                     DroolsEditorType.NUMERIC_CONST );
+                if ( state.failed ) return;
+                value += sign.getText();
+            } else if( input.LA( 1 ) == DRLLexer.MINUS ) {
+                Token sign = match( input,
+                                     DRLLexer.MINUS,
+                                     null,
+                                     null,
+                                     DroolsEditorType.NUMERIC_CONST );
+                if ( state.failed ) return;
+                value += sign.getText();
+            }
+            Token nbr = match( input,
+                                DRLLexer.DECIMAL,
+                                null,
+                                null,
+                                DroolsEditorType.NUMERIC_CONST );
+            if ( state.failed ) return;
+            value += nbr.getText();
+            if ( state.backtracking == 0 ) attribute.value( value );
         }
-    } 
+    }
 
     /* ------------------------------------------------------------------------------------------------
      *                         ANNOTATION
@@ -952,7 +1009,7 @@ public class DRLXParser {
                         elementValuePairs( annotation );
                         if ( state.failed ) return;
                     } else {
-                        String value = parenChunk( annotation );
+                        String value = chunk( DRLLexer.LEFT_PAREN, DRLLexer.RIGHT_PAREN );
                         if ( state.failed ) return;
                         if ( state.backtracking == 0 ) {
                             annotation.value( value );
@@ -1085,11 +1142,7 @@ public class DRLXParser {
                 elementValueArrayInitializer();
                 if ( state.failed ) return value;
             } else {
-                try {
-                    exprParser.conditionalExpression();
-                } catch ( RecognitionException re ) {
-                    // this should be fine, as there are more tokens in the input stream
-                }
+                exprParser.conditionalExpression();
                 if ( state.failed ) return value;
             }
             value = input.toString( first,
@@ -1369,12 +1422,13 @@ public class DRLXParser {
         return qi;
     }
 
-    private String parenChunk( AnnotationDescrBuilder annotation ) {
+    private String chunk( final int leftDelimiter,
+                          final int rightDelimiter ) {
         String chunk = "";
         int first = -1, last = first;
         try {
             match( input,
-                   DRLLexer.LEFT_PAREN,
+                   leftDelimiter,
                    null,
                    null,
                    DroolsEditorType.SYMBOL );
@@ -1382,21 +1436,18 @@ public class DRLXParser {
             int nests = 0;
             first = input.index();
 
-            while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN || nests > 0 ) {
-                switch ( input.LA( 1 ) ) {
-                    case DRLLexer.RIGHT_PAREN :
-                        nests--;
-                        break;
-                    case DRLLexer.LEFT_PAREN :
-                        nests++;
-                        break;
+            while ( input.LA( 1 ) != rightDelimiter || nests > 0 ) {
+                if ( input.LA( 1 ) == rightDelimiter ) {
+                    nests--;
+                } else if ( input.LA( 1 ) == leftDelimiter ) {
+                    nests++;
                 }
                 input.consume();
             }
             last = input.LT( -1 ).getTokenIndex();
 
             match( input,
-                   DRLLexer.RIGHT_PAREN,
+                   rightDelimiter,
                    null,
                    null,
                    DroolsEditorType.SYMBOL );
@@ -1531,10 +1582,10 @@ public class DRLXParser {
     }
 
     private String safeStripDelimiters( String value,
-                                        String delimiter ) {
+                                        String[] delimiters ) {
         if ( value != null ) {
             value = value.trim();
-            if ( value.length() > 1 && value.startsWith( delimiter ) && value.endsWith( delimiter ) ) {
+            if ( value.length() > 1 && value.startsWith( delimiters[0] ) && value.endsWith( delimiters[1] ) ) {
                 value = value.substring( 1,
                                          value.length() - 1 );
             }

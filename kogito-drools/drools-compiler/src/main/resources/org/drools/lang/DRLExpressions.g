@@ -14,17 +14,17 @@ options {
 }
 
 @members {
-    private ParserXHelper helper = new ParserXHelper( tokenNames,
+    private ParserXHelper helper /*= new ParserXHelper( tokenNames,
                                          input,
-                                         state );
+                                         state )*/;
                                                     
-/*    public DRLExpressions(TokenStream input,
+    public DRLExpressions(TokenStream input,
                           RecognizerSharedState state,
                           ParserXHelper helper ) {
         this( input,
               state );
         this.helper = helper;
-    }*/
+    }
 
     public ParserXHelper getHelper()                          { return helper; }
     public boolean hasErrors()                                { return helper.hasErrors(); }
@@ -150,7 +150,7 @@ unaryExpressionNotPlusMinus
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
-    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))? 
+    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
     ;
     
 castExpression
@@ -297,6 +297,7 @@ assignmentOperator
         |   LESS LESS EQUALS_ASSIGN
         |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
         |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
+        |   AT
 	;
 
 // --------------------------------------------------------
