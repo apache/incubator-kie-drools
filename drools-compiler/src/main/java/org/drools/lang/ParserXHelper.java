@@ -176,13 +176,69 @@ public class ParserXHelper {
 
     public boolean validateAttribute( int index ) {
         return validateLT( index,
-                           DroolsSoftKeywords.THIS ) ||
+                           DroolsSoftKeywords.SALIENCE ) ||
                validateLT( index,
-                           DroolsSoftKeywords.SUPER ) ||
+                           DroolsSoftKeywords.ENABLED ) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.NO ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.LOOP )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.AUTO ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.FOCUS )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.LOCK ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.ON ) &&
+                 validateLT( index + 3,
+                             "-" ) &&
+                 validateLT( index + 4,
+                             DroolsSoftKeywords.ACTIVE )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.AGENDA ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.GROUP )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.ACTIVATION ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.GROUP )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.RULEFLOW ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.GROUP )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.DATE ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.EFFECTIVE )) ||
+               (validateLT( index,
+                            DroolsSoftKeywords.DATE ) &&
+                 validateLT( index + 1,
+                             "-" ) &&
+                 validateLT( index + 2,
+                             DroolsSoftKeywords.EXPIRES )) ||
                validateLT( index,
-                           DroolsSoftKeywords.NEW ) ||
+                           DroolsSoftKeywords.DIALECT ) ||
                validateLT( index,
-                           DroolsSoftKeywords.CLASS );
+                           DroolsSoftKeywords.CALENDARS ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.TIMER ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.DURATION );
     }
 
     public boolean validateIdentifierSufix() {
@@ -420,10 +476,12 @@ public class ParserXHelper {
     // ---------------------------------------------------------------------------------
 
     void setStart( DescrBuilder db ) {
-        setStart( db, input.LT( 1 ) );
+        setStart( db,
+                  input.LT( 1 ) );
     }
 
-    void setStart( DescrBuilder db, Token first ) {
+    void setStart( DescrBuilder db,
+                   Token first ) {
         if ( db != null && first != null ) {
             db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
                                                                                            first.getCharPositionInLine() );
@@ -439,7 +497,8 @@ public class ParserXHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder> T start( Class<T> clazz, String param ) {
+    public <T extends DescrBuilder> T start( Class<T> clazz,
+                                             String param ) {
         if ( state.backtracking == 0 ) {
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 pushParaphrases( DroolsParaphraseTypes.PACKAGE );
@@ -485,7 +544,7 @@ public class ParserXHelper {
     @SuppressWarnings("unchecked")
     public <T extends DescrBuilder> T end( Class<T> clazz ) {
         if ( state.backtracking == 0 ) {
-            if( ! FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
+            if ( !FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 popParaphrases();
             }
             setEnd();
