@@ -87,10 +87,14 @@ public class ConsequenceExceptionHandlerOption implements SingleValueKnowledgeBa
         if ( getClass() != obj.getClass() ) return false;
         ConsequenceExceptionHandlerOption other = (ConsequenceExceptionHandlerOption) obj;
         if ( handler == null ) {
-            if ( other.handler != null ) return false;
-        } else if( other.handler == null ) {
+            if ( other.handler != null ) {
+                return false;
+            }
+        } else if ( other.handler == null ) {
             return false;
-        } else if ( !handler.getClass().getName().equals( other.handler.getClass().getName() ) ) return false;
+        } else if ( !handler.getClass().getName().equals( other.handler.getClass().getName() ) ) {
+            return false;
+        }
         return true;
     }
 
