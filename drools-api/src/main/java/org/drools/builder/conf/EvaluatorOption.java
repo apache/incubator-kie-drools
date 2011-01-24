@@ -113,10 +113,14 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
         if ( getClass() != obj.getClass() ) return false;
         EvaluatorOption other = (EvaluatorOption) obj;
         if ( evaluator == null ) {
-            if ( other.evaluator != null ) return false;
+            if ( other.evaluator != null ) {
+                return false;
+            }
         } else if ( other.evaluator == null ) {
             return false; 
-        } else if( !evaluator.getClass().getName().equals( other.evaluator.getClass().getName() ) ) return false;
+        } else if ( !evaluator.getClass().getName().equals( other.evaluator.getClass().getName() ) ) {
+            return false;
+        }
         if ( key == null ) {
             if ( other.key != null ) return false;
         } else if ( !key.equals( other.key ) ) return false;
