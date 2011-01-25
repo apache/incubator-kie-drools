@@ -75,6 +75,24 @@ public class DefaultExpanderTest {
     }
     
     @Test
+    public void testExpandKeyword() throws Exception {
+        DSLMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[keyword]key {param}=Foo( attr=={param} )";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0, file.getErrors().size() );
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+        
+        String source = "rule x\nwhen\n key 1 \n key 2 \nthen\nend";
+        String drl = ex.expand( source );
+        System.out.println( drl );
+        
+        assertTrue( drl.contains( "attr==1" ) );
+        assertTrue( drl.contains( "attr==2" ) );
+        //System.err.println(ex.expand( "rule 'x' \n when \n foo \n then \n end" ));
+    }
+    
+    @Test
     public void testANTLRExpandParts() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
         String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";

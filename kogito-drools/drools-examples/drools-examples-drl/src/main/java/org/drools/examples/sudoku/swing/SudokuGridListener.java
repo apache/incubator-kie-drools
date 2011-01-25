@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
-
-/*
- * JBoss, the OpenSource J2EE webOS
- * 
- * Distributable under LGPL license.
- * See terms of license at gnu.org.
  */
 package org.drools.examples.sudoku.swing;
 
@@ -39,7 +32,7 @@ public interface SudokuGridListener
     * 
     * @param ev an event containing the cell which is resolved along with the value it now has
     */
-   public void cellResolved(SudokuGridEvent ev);
+   public void restart(SudokuGridEvent ev);
 
    /**
     * Fired when a cell in the Sudoku grid is updated to a new value

@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.template.model.SnippetBuilder;
 import org.drools.template.parser.DecisionTableParseException;
@@ -22,7 +24,10 @@ public class LhsBuilder implements SourceBuilder {
 
 	private int headerRow;
 	private int headerCol;
-    private String colDefinition;
+    private String colDefPrefix;
+    private String colDefSuffix;
+    private boolean multiple;
+    private String andop;
     private Map<Integer, String> constraints;
     private List<String> values;
     private boolean hasValues;
@@ -39,7 +44,16 @@ public class LhsBuilder implements SourceBuilder {
         operators.add( ">=" );
         operators.add( "contains" );
         operators.add( "matches" );
+        operators.add( "memberOf" );
+        operators.add( "str[startsWith]" );
+        operators.add( "str[endsWith]" );
+        operators.add( "str[length]" );
     }
+    
+    private static final Pattern patParFrm = Pattern.compile( "\\(\\s*\\)\\s*from\\b" );
+    private static final Pattern patFrm    = Pattern.compile( "\\s+from\\s+" );
+    private static final Pattern patPar    = Pattern.compile( "\\(\\s*\\)" );
+    private static final Pattern patEval   = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
     
     
     /**
@@ -48,10 +62,60 @@ public class LhsBuilder implements SourceBuilder {
     public LhsBuilder( int row, int column, String colDefinition ) {
     	this.headerRow = row;
     	this.headerCol = column;
-        this.colDefinition = colDefinition == null ? "" : colDefinition;
         this.constraints = new HashMap<Integer, String>();
         this.values = new ArrayList<String>();
+
+        String colDef = colDefinition == null ? "" : colDefinition;
+        if( "".equals( colDef ) ){
+        	colDefPrefix = colDefSuffix = "";
+        	multiple = false;
+        	andop = "";
+        	return;
+        }
+        multiple = true;
+        
+        // ...eval
+        Matcher matEval = patEval.matcher( colDef );
+        if( matEval.find() ){
+            colDefPrefix = colDef.substring( 0, matEval.start() ) + "eval(";
+        	colDefSuffix = ")";
+        	andop = " && ";
+        	return;
+        }
+    	andop = ", ";
+
+        // ...(<b> ) from...
+        Matcher matParFrm = patParFrm.matcher( colDef );
+        if( matParFrm.find() ){
+        	colDefPrefix = colDef.substring( 0, matParFrm.start() ) + '(';
+        	colDefSuffix = ") from" + colDef.substring( matParFrm.end() );
+        	return;
+        }
+
+        // ...from...
+        Matcher matFrm = patFrm.matcher( colDef );
+        if( matFrm.find() ){
+        	colDefPrefix = colDef.substring( 0, matFrm.start() ) + "(";
+        	colDefSuffix = ") from " + colDef.substring( matFrm.end() );
+        	return;
+        }
+        
+        // ...(<b> )...
+        Matcher matPar = patPar.matcher( colDef );
+        if( matPar.find() ){
+        	colDefPrefix = colDef.substring( 0, matPar.start() ) + '(';
+        	colDefSuffix = ")" + colDef.substring( matPar.end() );
+        	return;
+        }
+        
+        // <a>
+        colDefPrefix = colDef + '(';
+        colDefSuffix = ")";
     }
+
+	public ActionType.Code getActionTypeCode(){
+		return ActionType.Code.CONDITION;
+	}
 
     public void addTemplate(int row, int column, String content) {
         Integer key = new Integer( column );
@@ -62,7 +126,7 @@ public class LhsBuilder implements SourceBuilder {
         
         //we can wrap all values in quotes, it all works
         FieldType fieldType = calcFieldType( content );
-        if (fieldType == FieldType.NORMAL_FIELD || !isMultipleConstraints()) {
+        if (fieldType == FieldType.NORMAL_FIELD || ! isMultipleConstraints()) {
             constraints.put( key, content );            
         } else if (fieldType == FieldType.SINGLE_FIELD) {
             constraints.put( key, content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
@@ -91,26 +155,21 @@ public class LhsBuilder implements SourceBuilder {
 
     public String getResult() {
         StringBuffer buf = new StringBuffer();
-        if ( !isMultipleConstraints() ) {
-            for ( Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
-                String content = iter.next();
-                buf.append( content );
-                if (iter.hasNext()) {
-                    buf.append( '\n' );
-                }
+        if ( ! isMultipleConstraints() ) {
+        	String nl = "";
+        	for( String content: values ){
+                buf.append( nl ).append( content );
+                nl = "\n";
             }
             return buf.toString();
         } else {
-            buf.append( this.colDefinition );
-            buf.append( '(' );
-            for ( Iterator<String> iter = values.iterator(); iter.hasNext(); ) {
-                buf.append( iter.next());
-                if (iter.hasNext()) {
-                    buf.append( ", " );
-                }
-                
+            buf.append( this.colDefPrefix );
+            String sep = "";
+            for( String constraint: values ) {
+                buf.append( sep ).append( constraint );
+                sep = this.andop;
             }
-            buf.append( ')' );
+            buf.append( colDefSuffix );
             return buf.toString();
         }
     }
@@ -120,15 +179,7 @@ public class LhsBuilder implements SourceBuilder {
      * If not, then it it really just like the "classic" style DTs.
      */
     boolean isMultipleConstraints() {
-        if ( "".equals( colDefinition ) ) {
-            return false;
-        } else {
-            if ( colDefinition.endsWith( ")" ) ) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+    	return multiple;
     }
 
     /**

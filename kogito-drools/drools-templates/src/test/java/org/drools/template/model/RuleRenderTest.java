@@ -1,5 +1,3 @@
-package org.drools.template.model;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.template.model;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.template.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -83,6 +83,21 @@ public class RuleRenderTest {
         assertTrue( result.indexOf( "no-loop true" ) > -1 );
         assertTrue( result.indexOf( "activation-group \"foo\"" ) > -1 );
         assertTrue( result.indexOf( "duration 42" ) > -1 );
+
+    }
+
+    @Test
+    public void testMetadata() throws Exception {
+        Rule rule = new Rule( "la", new Integer( 42 ), 2 );
+
+        rule.addMetadata( "Author( A. U. Thor )" );
+        rule.addMetadata( "Revision( 42 )" );
+        DRLOutput out = new DRLOutput();
+        rule.renderDRL( out );
+
+        String result = out.toString();
+        assertTrue( result.contains( "@Author( A. U. Thor )" ) );
+        assertTrue( result.contains( "@Revision( 42 )" ) );
 
     }
 

@@ -1,5 +1,3 @@
-package org.drools.template.model;
-
 /*
  * Copyright 2011 JBoss Inc
  *
@@ -15,6 +13,8 @@ package org.drools.template.model;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.template.model;
 
 import java.util.HashMap;
 import java.util.Map;
