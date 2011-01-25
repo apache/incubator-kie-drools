@@ -548,11 +548,13 @@
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
     </exec>
+  	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
+    <exec executable="./generate.mac.eclipse.preferences.sh" os="Mac OS X"/>
     <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" os="Mac OS X">
       <arg value="-data" />
-      <arg value="${eclipse.workspace.dir}" />
+      <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
-      <arg value="./eclipse.preferences.ini" />
+      <arg value="../../../../mac.eclipse.preferences.ini" />
     </exec>
   </target>
 
