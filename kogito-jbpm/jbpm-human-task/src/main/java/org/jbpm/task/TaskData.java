@@ -146,6 +146,13 @@ public class TaskData
             out.writeBoolean(false);
         }
 
+        if (processInstanceId != -1) {
+            out.writeBoolean(true);
+            out.writeLong(processInstanceId);
+        } else {
+            out.writeBoolean(false);
+        }
+
         if (documentAccessType != null) {
             out.writeBoolean(true);
             out.writeObject(documentAccessType);
@@ -265,6 +272,10 @@ public class TaskData
 
         if (in.readBoolean()) {
             workItemId = in.readLong();
+        }
+
+        if (in.readBoolean()) {
+            processInstanceId = in.readLong();
         }
 
         if (in.readBoolean()) {
