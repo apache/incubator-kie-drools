@@ -83,6 +83,24 @@
         <os family="mac" />
       </not>
       <os family="unix" />
+      <not>
+        <or>
+          <os arch="x86_64" />
+          <os arch="amd64" />
+        </or>
+      </not>
+    </and>
+  </condition>
+  <condition property="download.type" value="linux-gtk-x86_64">
+    <and>
+      <not>
+        <os family="mac" />
+      </not>
+      <os family="unix" />
+      <or>
+        <os arch="x86_64" />
+        <os arch="amd64" />
+      </or>
     </and>
   </condition>		
   <condition property="download.extension" value="zip">
