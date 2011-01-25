@@ -77,16 +77,6 @@
     </section>
 
     <section>
-      <title>BRMS or Guvnor?</title>
-
-      <para>In previous versions of Drools "BRMS" was often used to refer to
-      the web interface to the drools management features. Nowadays we use
-      BRMS to refer to the "whole package" - the runtime, the web tools and so
-      on - but in some cases you can read "BRMS" as meaning the Guvnor web
-      console and associated tools.</para>
-    </section>
-
-    <section>
       <title>Initial configuration</title>
 
       <para>Some initial setup is required the first time. The first time the
@@ -149,7 +139,7 @@
         </listitem>
 
         <listitem>
-          <para>There are multiple rule "formats", but from the BRMS point of
+          <para>There are multiple rule "formats", but from the Guvnor point of
           view, they are all "assets".</para>
         </listitem>
 
@@ -232,12 +222,12 @@
   </section>
 
   <section>
-    <title>BRMS concepts</title>
+    <title>Guvnor concepts</title>
 
     <section>
       <title>Rules are assets</title>
 
-      <para>As the BRMS can manage many different types of rules (and more),
+      <para>As the Guvnor can manage many different types of rules (and more),
       they are all classed as "assets". An asset is anything that can be
       stored as a version in the repository. This includes decision tables,
       models, DSLs and more. Sometimes the word "rule" will be used to really
@@ -267,7 +257,7 @@
       a list of rules that match a specific category. Rules can belong to any
       number of categories. In the above diagram, you can see this can in
       effect create a folder/explorer like view of assets. The names can be
-      anything you want, and are defined by the BRMS administrator (you can
+      anything you want, and are defined by the Guvnor administrator (you can
       also remove/add new categories - you can only remove them if they are
       not currently in use).</para>
 
@@ -436,7 +426,7 @@
     <section>
       <title>Rule authoring</title>
 
-      <para>The BRMS supports a (growing) list of formats of assets (rules).
+      <para>The Guvnor supports a (growing) list of formats of assets (rules).
       Here the key ones are described. Some of these are covered in other
       parts of the manual, and the detail will not be repeated here.</para>
 
@@ -923,9 +913,9 @@
 
         <para>Rule flows: Rule flows allow you to visually describe the steps
         taken - so not all rules are evaluated at once, but there is a flow of
-        logic. Rule flows are not covered in this chapter on the BRMS, but you
+        logic. Rule flows are not covered in this chapter on the Guvnor, but you
         can use the IDE to graphically draw ruleflows, and upload the .rfm
-        file to the BRMS.</para>
+        file to the Guvnor.</para>
 
         <para>Similar to spreadsheets, you upload/download ruleflow files (the
         eclipse IDE has a graphical editor for them). The details of Rule
@@ -936,7 +926,7 @@
         <title>Technical rules (drl)</title>
 
         <para>Technical (drl) rules are stored as text - they can be managed
-        in the BRMS. A DRL can either be a whole chunk of rules, or an
+        in the Guvnor. A DRL can either be a whole chunk of rules, or an
         individual rule. if its an individual rule, no package statement or
         imports are required (in fact, you can skip the "rule" statement
         altogether, just use "when" and "then" to mark the condition and
@@ -1013,10 +1003,10 @@
         used in the rule, yet "Mini Mal" will be displayed in the GUI.</para>
 
         <para>Getting data lists from external data sources: It is possible to
-        have the BRMS call a piece of code which will load a list of Strings.
+        have the Guvnor call a piece of code which will load a list of Strings.
         To do this, you will need a bit of code that returns a java.util.List
-        (of String's) to be on the classpath of the BRMS. Instead of
-        specifying a list of values in the BRMS itself - the code can return
+        (of String's) to be on the classpath of the Guvnor. Instead of
+        specifying a list of values in the Guvnor itself - the code can return
         the list of Strings (you can use the "=" inside the strings if you
         want to use a different display value to the rule value, as normal).
         For example, in the 'Person.age' line above, you could change it to:
@@ -1127,7 +1117,7 @@ public class SampleDataSource2 {
 
       <para>Each asset (and also package) in Guvnor has a status flag set. The
       values of the status flag are set in the Administration section of the
-      BRMS. (you can add your own status names). Similar to Categories,
+      Guvnor. (you can add your own status names). Similar to Categories,
       Statuses do NOT effect the execution in any way, and are purely
       informational. Unlike categories, assets only have one status AT A
       TIME.</para>
@@ -1180,7 +1170,7 @@ public class SampleDataSource2 {
       is most definitely a technical task that requires the appropriate
       expertise.</para>
 
-      <para>All assets live in "packages" in the BRMS - a package is like a
+      <para>All assets live in "packages" in the Guvnor - a package is like a
       folder (it also serves as a "namespace"). A home folder for rule assets
       to live in. Rules in particular need to know what the fact model is,
       what the namespace is etc.</para>
@@ -1201,7 +1191,7 @@ public class SampleDataSource2 {
       of using categories to help you find your way around).</para>
 
       <para>So while rules (and assets in general) can appear in any number
-      of categories, they only live in one package. If you think of the BRMS
+      of categories, they only live in one package. If you think of the Guvnor
       as a file system, then each package is a folder, and the assets live in
       that folder - as one big happy list of files. When you create a
       deployment snapshot of a package, you are effectively copying all the
@@ -1225,7 +1215,7 @@ public class SampleDataSource2 {
           </listitem>
 
           <listitem>
-            <para>Functions: In the BRMS you can also have functions defined
+            <para>Functions: In the Guvnor you can also have functions defined
             (optionally of course).</para>
           </listitem>
 
@@ -1307,7 +1297,7 @@ public class SampleDataSource2 {
 
         <para>It is also possible to create a package by importing an existing
         "drl" file. When you choose to create a new package, you can choose an
-        option to upload a .drl file. The BRMS will then attempt to understand
+        option to upload a .drl file. The Guvnor will then attempt to understand
         that drl, break create a package for you. The rules in it will be
         stored as individual assets (but still as drl text content). Note that
         to actually build the package, you will need to upload an appropriate
@@ -1319,7 +1309,7 @@ public class SampleDataSource2 {
       <title>Version management</title>
 
       <para>Both assets and whole packages of assets are "versioned" in the
-      BRMS, but the mechanism is slightly different. Individual assets are
+      Guvnor, but the mechanism is slightly different. Individual assets are
       saved a bit like a version of a file in a source control system.
       However, packages of assets are versioned "on demand" by taking a
       snapshot (typically which is used for deployment). The next section
@@ -1348,7 +1338,7 @@ public class SampleDataSource2 {
 
       <para>Snapshots, URLS and binary packages:</para>
 
-      <para>URLs are central to how built packages are provided. The BRMS
+      <para>URLs are central to how built packages are provided. The Guvnor
       provides packages via URLs (for download and use by the Knowledge
       Agent). These URLs take the form of:
       http://&lt;server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
