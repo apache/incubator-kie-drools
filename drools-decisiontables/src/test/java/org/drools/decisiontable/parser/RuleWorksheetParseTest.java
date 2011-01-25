@@ -404,6 +404,27 @@ public class RuleWorksheetParseTest {
 			assertTrue( e.getMessage().contains( badCell ) );
 		}
 	}
+	
+	@Test
+	public void testMetadata() {
+		makeRuleSet();
+		makeRuleTable();
+		makeRow( 11, "C",              "A",              "@",              "@"  );
+		makeRow( 12, "foo: Foo",       "foo"          );
+		makeRow( 13, "attr == $param", "goaway($param)", "Author($param)", "Version($1-$2)" );
+		makeRow( 15, "1",              "1",              "J.W.Goethe",     "3,14"       );
+		makeRow( 16, "2",              "2",              "",               ""       );
+		listener.finishSheet();
+		Package p = listener.getRuleSet();
+		DRLOutput dout = new DRLOutput();
+		p.renderDRL(dout);
+		String drl = dout.getDRL();
+
+		assertTrue( drl.contains( "@Author(J.W.Goethe)" ) );
+		assertTrue( drl.contains( "@Version(3-14)" ) );
+		assertFalse( drl.contains( "@Author()" ) );
+		assertFalse( drl.contains( "@Version(-)" ) );
+	}
 
 
 	/**

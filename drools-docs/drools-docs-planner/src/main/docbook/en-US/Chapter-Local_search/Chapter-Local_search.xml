@@ -347,14 +347,11 @@
     <para>If we turn on INFO logging, this is reflected into the logging:</para>
 
     <programlisting>INFO  Solving with random seed (0).
-INFO  Initial score (-6) is starting best score. Updating best solution and best score.
-INFO  Step (0), time spend (0) doing next step ([Queen-1] 1 @ 0 =&gt; 3).
-INFO  New score (-3) is better then last best score (-6). Updating best solution and best score.
-INFO  Step (1), time spend (0) doing next step ([Queen-3] 3 @ 0 =&gt; 2).
-INFO  New score (-1) is better then last best score (-3). Updating best solution and best score.
-INFO  Step (2), time spend (15) doing next step ([Queen-0] 0 @ 0 =&gt; 1).
-INFO  New score (0) is better then last best score (-1). Updating best solution and best score.
-INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
+INFO  Initialization time spend (0) for score (-6). Updating best solution and best score.
+INFO  Step index (0), time spend (4), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
+INFO  Step index (1), time spend (7), score (-1), new best score (-1), accepted move size (12) for picked step ([Queen-0] 0 @ 0 =&gt; 1).
+INFO  Step index (2), time spend (10), score (0), new best score (0), accepted move size (12) for picked step ([Queen-3] 3 @ 0 =&gt; 2).
+INFO  Solved at step index (2) with time spend (10) for best score (0) with average calculate count per second (7300).</programlisting>
 
     <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
     implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>
@@ -424,18 +421,22 @@ INFO  Solved in 3 steps and 15 time millis spend.</programlisting>
 
     <para>If we turn on DEBUG logging, we can see the decision making in the log:</para>
 
-    <programlisting>INFO  Solving with random seed (0).
-INFO  Initial score (-6) is starting best score. Updating best solution and best score.
-DEBUG     Move ([Queen-0] 0 @ 0 =&gt; 0) ignored because not doable.
-DEBUG     Move ([Queen-0] 0 @ 1 =&gt; 1) with score (-4) and acceptChance (1.0).
-DEBUG     Move ([Queen-0] 0 @ 2 =&gt; 2) with score (-4) and acceptChance (1.0).
+    <programlisting>
+INFO  Solving with random seed (0).
+INFO  Initialization time spend (0) for score (-6). Updating best solution and best score.
+DEBUG     Ignoring not doable move ([Queen-0] 0 @ 0 =&gt; 0).
+DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 1).
+DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 2).
+DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 3).
 ...
-DEBUG     Move ([Queen-1] 1 @ 3 =&gt; 3) with score (-3) and acceptChance (1.0).
+DEBUG     Move score (-3), accept chance (1.0) for move ([Queen-1] 1 @ 0 =&gt; 3).
 ...
-DEBUG     Move ([Queen-3] 3 @ 3 =&gt; 3) with score (-4) and acceptChance (1.0).
-INFO  Step (0), time spend (0) doing next step ([Queen-1] 1 @ 0 =&gt; 3).
-INFO  New score (-3) is better then last best score (-6). Updating best solution and best score.
+DEBUG     Move score (-3), accept chance (1.0) for move ([Queen-2] 2 @ 0 =&gt; 3).
+...
+DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-3] 3 @ 0 =&gt; 3).
+INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
 ...</programlisting>
+
 
     <section>
       <title>Selector</title>

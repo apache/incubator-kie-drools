@@ -90,7 +90,7 @@
       <plugin>
         <groupId>org.jboss.maven.plugins</groupId>
         <artifactId>maven-jdocbook-plugin</artifactId>
-        <version>2.2.3</version><!-- Upgrade to 2.3.0 failed because of https://jira.jboss.org/browse/MPJDOCBOOK-67 -->
+        <version>2.3.4</version>
         <extensions>true</extensions>
 
         <dependencies>
@@ -98,14 +98,12 @@
             <groupId>org.jboss</groupId>
             <artifactId>jbossorg-docbook-xslt-ns</artifactId>
             <version>1.1.2</version>
-            <scope>runtime</scope><!-- Workaround for http://jira.codehaus.org/browse/MNG-4761 -->
           </dependency>
           <dependency>
             <groupId>org.jboss</groupId>
             <artifactId>jbossorg-jdocbook-style</artifactId>
             <version>1.1.1</version>
             <type>jdocbook-style</type>
-            <scope>runtime</scope><!-- Workaround for http://jira.codehaus.org/browse/MNG-4761 -->
           </dependency>
         </dependencies>
 

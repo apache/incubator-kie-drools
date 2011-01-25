@@ -52,7 +52,6 @@ public class LhsBuilderTest {
 		assertEquals("Foo(bar == 42)\neval(true)", builder.getResult());
 	}
 
-
 	@Test
 	public void testForAllAndFucntion() {
 		LhsBuilder builder = new LhsBuilder( 9, 1, "" );
@@ -159,10 +158,66 @@ public class LhsBuilderTest {
 		builder = new LhsBuilder( 9, 1, "f:Foo() eval  " );
 		assertTrue(builder.isMultipleConstraints());
 
-		//will just be verbatim
+		// will just be verbatim
 		builder = new LhsBuilder( 9, 1, "f: Foo()" );
-		assertFalse(builder.isMultipleConstraints());
-
+		assertTrue(builder.isMultipleConstraints());
+	}
+	
+	@Test
+	public void testTypeConst3() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, "Type" );
+		builder.addTemplate( 10, 1, "flda");
+		builder.addTemplate( 10, 2, "fldb >");
+		builder.addTemplate( 10, 3, "fldc str[startsWith]");
+		builder.addCellValue( 11, 1, "good");
+		builder.addCellValue( 11, 2, "42");
+		builder.addCellValue( 11, 3, "abc");
+		assertEquals("Type(flda == \"good\", fldb > \"42\", fldc str[startsWith] \"abc\")", builder.getResult());
 	}
 
+	@Test
+	public void testTypeParConst2() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, "Type()" );
+		builder.addTemplate( 10, 1, "flda");
+		builder.addTemplate( 10, 2, "fldb >");
+		builder.addCellValue( 11, 1, "good");
+		builder.addCellValue( 11, 2, "42");
+		assertEquals("Type(flda == \"good\", fldb > \"42\")", builder.getResult());
+	}
+
+	@Test
+	public void testTypeConstFrom() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, "Type from $west" );
+		builder.addTemplate( 10, 1, "flda");
+		builder.addCellValue( 11, 1, "good");
+		assertEquals("Type(flda == \"good\") from $west", builder.getResult());
+	}
+
+	@Test
+	public void testTypeEvalExp2() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, "Type($a:a,$b:b) eval" );
+		builder.addTemplate( 10, 1, "$a > $param");
+		builder.addTemplate( 10, 2, "$b < $param");
+		builder.addCellValue( 11, 1, "1");
+		builder.addCellValue( 11, 2, "99");
+		assertEquals("Type($a:a,$b:b) eval($a > 1 && $b < 99)", builder.getResult());
+	}
+	
+	@Test
+	public void testEvalExp2() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, "eval()" );
+		builder.addTemplate( 10, 1, "$a > $param");
+		builder.addTemplate( 10, 2, "$b < $param");
+		builder.addCellValue( 11, 1, "1");
+		builder.addCellValue( 11, 2, "99");
+		assertEquals("eval($a > 1 && $b < 99)", builder.getResult());
+	}
+	
+	@Test
+	public void testTypeParPlain() {
+		LhsBuilder builder = new LhsBuilder( 9, 1, null );
+		builder.addTemplate( 10, 1, "Type()");
+		builder.addCellValue( 11, 1, "x");
+		assertEquals("Type()", builder.getResult());
+	}
 }

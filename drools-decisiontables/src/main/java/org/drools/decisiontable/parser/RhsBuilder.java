@@ -18,8 +18,9 @@ public class RhsBuilder implements SourceBuilder {
 
 	private int headerRow;
 	private int headerCol;
+	private ActionType.Code actionTypeCode;
     private Map<Integer, String> templates;
-    private String  variable;
+    private String variable;
     private List<String> values;
     private boolean hasValues;
 
@@ -28,14 +29,21 @@ public class RhsBuilder implements SourceBuilder {
      * Any cells below then will be called as methods on it. 
      * Leaving it blank will make it work in "classic" mode.
      */
-    public RhsBuilder( int row, int column, String boundVariable) {
+    public RhsBuilder( ActionType.Code code, int row, int column, String boundVariable ) {
+    	this.actionTypeCode = code;
     	this.headerRow = row;
     	this.headerCol = column;
-       this.variable = boundVariable == null ? "" : boundVariable.trim();
+        this.variable = boundVariable == null ? "" : boundVariable.trim();
         this.templates = new HashMap<Integer, String>();
         this.values = new ArrayList<String>();
     }
 
+    
+	public ActionType.Code getActionTypeCode(){
+		return this.actionTypeCode;
+	}
+
+    
     public void addTemplate(int row, int column, String content) {
         Integer key = new Integer( column );
         content = content.trim();
@@ -53,7 +61,8 @@ public class RhsBuilder implements SourceBuilder {
     	hasValues = true;
     	String template = (String) this.templates.get( new Integer( column ) );
     	if( template == null ){
-    		throw new DecisionTableParseException( "No code snippet for ACTION, above cell " +
+    		throw new DecisionTableParseException( "No code snippet for " + 
+    				this.actionTypeCode + ", above cell " +
     				RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
     	}
     	SnippetBuilder snip = new SnippetBuilder(template);
@@ -77,7 +86,6 @@ public class RhsBuilder implements SourceBuilder {
     }
 
     public boolean hasValues() {
-        
         return hasValues;
     }
 
