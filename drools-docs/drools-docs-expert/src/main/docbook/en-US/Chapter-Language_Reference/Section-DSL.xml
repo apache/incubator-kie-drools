@@ -6,273 +6,214 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Domain Specific Languages</title>
 
-  <para>As mentioned previously, <indexterm>
+  <para><indexterm>
       <primary>Domain Specific Languages</primary>
-    </indexterm>(or DSLs) are a way of extending the rule language to your
-  problem domain. They are wired in to the rule language for you, and can make
-  use of all the underlying rule language and engine features.</para>
+    </indexterm>Domain Specific Languages (or DSLs) are a way of creating a rule
+  language that is dedicated to your problem domain. A set of DSL definitions
+  consists of transformations from DSL "sentences" to DRL constructs, which lets
+  you use of all the underlying rule language and engine features. Given a
+  DSL, you write rules in DSL rule (or DSLR) files, which will be translated
+  into DRL files.</para>
 
-  <para>DSLs are used both in the IDE, as well as the web based BRMS. Of
-  course as rules are text, you can use them even without this tooling.</para>
+  <para>DSL and DSLR files are plain text files, and you can use any text
+  editor to create and modify them. But there are also DSL and DSLR editors,
+  both in the IDE as well as in the web based BRMS, and you can use those
+  as well, although they may not provide you with the full DSL functionality.
+  </para>
 
   <section>
-    <title>When to use a DSL</title>
+    <title>When to Use a DSL</title>
 
     <para>DSLs can serve as a layer of separation between rule authoring (and
-    rule authors) and the domain objects that the engine operates on. DSLs can
-    also act as "templates" of conditions or actions that are used over and
-    over in your rules, perhaps only with parameters changing each time. If
-    your rules need to be read and validated by less technical folk, (such as
-    Business Analysts) the DSLs are definitely for you. If the conditions or
-    consequences of your rules follow similar patterns which you can express
-    in a template. You wish to hide away your implementation details, and
-    focus on the business rule. You want to provide a controlled means of
-    editing rules based on pre-defined templates.</para>
+    rule authors) and the technical intricacies resulting from the modelling
+    of domain object and the rule engine's native language and methods. If your
+    rules need to be read and validated by domain experts (such as business
+    analysts, for instance) who are not programmers, you should consider 
+    using a DSL; it hides implementation details and focuses on the rule logic
+    proper. DSL sentences can also act as "templates" for conditional elements and
+    consequence actions that are used repeatedly in your rules, possibly with
+    minor variations. You may define DSL sentences as being mapped to these
+    repeated phrases, with parameters providing a means for accomodating those
+    variations.</para>
 
-    <para>DSLs have no impact on the rules at runtime, they are just a
-    parse/compile time feature.</para>
-
-    <para>Note that Drools 4 DSLs are quite different from Drools 2 XML based
-    DSLs. It is still possible to do Drools 2 style XML languages - if you
-    require this, then take a look at the Drools 4 XML rule language, and
-    consider using XSLT to map from your XML language to the Drools 4 XML
-    language.</para>
+    <para>DSLs have no impact on the rule engine at runtime, they are just a
+    compile time feature, requiring a special parser and transformer.</para>
   </section>
 
   <section>
-    <title>Editing and managing a DSL</title>
+    <title>DSL Basics</title>
 
-    <para>A DSL's configuration like most things is stored in plain text. If
-    you use the IDE, you get a nice graphical editor (with some validation),
-    but the format of the file is quite simple, and is basically a properties
-    file.</para>
-
-    <para>Note that since Drools 4.0, DSLs have become more powerful in
-    allowing you to customise almost any part of the language, including
-    keywords. Regular expressions can also be used to match words/sentences if
-    needed (this is provided for enhanced localisation). However, not all
-    features are supported by all the tools (although you can use them, the
-    content assistance just may not be 100% accurate in certain cases).</para>
+    <para>The Drools DSL mechanism allows you to customise conditional
+    expressions and consequence actions. A global substitution mechanism
+    ("keyword") is also available.</para>
 
     <example>
       <title>Example <indexterm>
-          <primary>DSL</primary>
-        </indexterm> mapping</title>
+          <primary>DSL</primary>b
+        </indexterm>DSL mapping</title>
 
-      <programlisting>[when]This is {something}=Something(something=={something})</programlisting>
+      <programlisting>[when]Something is {colour}=Something(colour=="{colour}")</programlisting>
     </example>
 
-    <para>Referring to the above example, the [when] refers to the scope of
-    the expression: ie does it belong on the LHS or the RHS of a rule. The
-    part after the [scope] is the expression that you use in the rule
-    (typically a natural language expression, but it doesn't have to be). The
-    part on the right of the "=" is the mapping into the rule language (of
-    course the form of this depends on if you are talking about the RHS or the
-    LHS - if its the LHS, then its the normal LHS syntax, if its the RHS then
-    its fragments of Java code for instance).</para>
+    <para>In the preceding example, <code>[when]</code> indicates the scope of
+    the expression, i.e., whether it is valid for the LHS or the RHS of a rule. The
+    part after the bracketed keyword is the expression that you use in the rule;
+    typically a natural language expression, but it doesn't have to be. The
+    part to the right of the equal sign ("=") is the mapping of the expression into
+    the rule language. The form of this string depends on its destination, RHS or 
+    LHS. If it is for the LHS, then it ought to be a term according to the regular
+    LHS syntax; if it is for the RHS then it might be a Java statement.</para>
 
-    <para>The parser will take the expression you specify, and extract the
-    values that match where the {something} (named Tokens) appear in the
-    input. The values that match the tokens are then interpolated with the
-    corresponding {something} (named Tokens) on the right hand side of the
-    mapping (the target expression that the rule engine actually uses).</para>
+    <para>Whenever the DSL parser matches a line from the rule file written in the
+    DSL with an expression in the DSL definition, it performs three steps of
+    string manipulation. First, it extracts the string values appearing where the
+    expression contains variable names in braces (here: <code>{colour}</code>). Then,
+    the values obtained from these captures are then interpolated wherever that name,
+    again enclosed in braces, occurs on the right hand side of the mapping. Finally, the
+    interpolated string replaces whatever was matched by the entire expression
+    in the line of the DSL rule file.</para>
 
-    <para>Note also that the "sentences" above can be regular expressions.
-    This means the parser will match the sentence fragements that match the
-    expressions. This means you can use (for instance) the '?' to indicate the
-    character before it is optional (think of each sentence as a regular
-    expression pattern - this means if you want to use regex characters - you
-    will need to escape them with a '\' of course.</para>
+    <para>Note that the expressions (i.e., the strings on the left hand side of the
+    equal sign) are used as regular expressions in a pattern matching operation
+    against a line of the DSL rule file, matching all or part of a line. This means
+    you can use (for instance) a '?' to indicate that the preceding character is
+    optional. One good reason to use this is to overcome variations in natural language
+    phrases of your DSL. But, given that these expressions are regular
+    expression patterns, this also means that all "magic" characters of Java's
+    pattern syntax have to be escaped with a preceding backslash ('\').</para>
 
-    <para>It is important to note that the DSL expressions are processed one
-    line at a time. This means that in the above example, all the text after
-    "This is " to the end of the line will be included as the value for
-    "{something}" when it is interpolated into the target string. This may not
-    be exactly what you want, as you may want to "chain" together different
-    DSL expressions to generate a target expression. The best way around this
-    is to make sure that the {tokens} are enclosed with characters or words.
-    This means that the parser will scan along the sentence, and pluck out the
-    value BETWEEN the characters (in the example below they are
-    double-quotes). Note that the characters that surround the token are not
-    included in when interpolating, just the contents between them (rather
-    then all the way to the end of the line, as would otherwise be the
-    case).</para>
+    <para>It is important to note that the compiler transforms DSL rule files
+    line by line. In the above example, all the text after "Something is " to
+    the end of the line is captured as the replacement value for "{colour}",
+    and this is used for interpolating the target string. This may not be exactly
+    what you want. For instance, when you intend to merge different DSL
+    expressions to generate a composite DRL pattern, you need to transform a DSLR
+    line in several independent operations. The best way to achieve this is to
+    ensure that the captures are surrounded by characteristic text - words or 
+    even single characters. As a result,
+    the matching operation done by the parser plucks out a substring from 
+    somewhere within the line. In the example below, quotes are used as 
+    distinctive characters. Note that the characters that surround the capture
+    are not included during interpolation, just the contents between them.</para>
 
     <para>As a rule of thumb, use quotes for textual data that a rule editor
-    may want to enter. You can also wrap words around the {tokens} to make
-    sure you enclose the data you want to capture (see other example).</para>
+    may want to enter. You can also enclose the capture with words to ensure
+    that the text is correctly matched. Both is illustrated by the following
+    example. Note that a single line such as <code>Something is "green" and
+    another solid thing</code> is now correctly expanded.</para>
 
     <example>
       <title>Example with quotes</title>
 
-      <programlisting>[when]This is "{something}" and "{another}"=Something(something=="{something}", another=="{another}")
-[when]This is {also} valid=Another(something=="{also}")</programlisting>
+      <programlisting>[when]something is "{colour}"=Something(colour=="{colour}")
+[when]another {state} thing=OtherThing(state=="{state}"</programlisting>
     </example>
 
-    <para>It is a good idea to try and avoid punctuation in your DSL
-    expressions where possible, other then quotes and the like - keep it
-    simple and things will be easier. Using a DSL can make debugging slightly
-    harder when you are first building rules, but it can make the maintenance
-    easier (and of course the readability of the rules).</para>
+    <para>It is a good idea to avoid punctuation (other than quotes or
+    apostrophes) in your DSL expressions as much as possible. The main reason
+    is that punctuation is easy to forget for rule authors using your DSL.
+    Another reason is that parentheses, the period and the question mark are magic
+    characters, requiring escaping in the DSL definition.</para>
 
-    <para>The "{" and "}" characters should only be used on the left hand side
-    of the mapping (the expression) to mark tokens. On the right hand side you
-    can use "{" and "}" on their own if needed - such as</para>
-    <programlisting>if (foo) \{
-    doSomething();\ }</programlisting>
-    <para> as well as with the token names as shown above.</para>
+    <para>In a DSL mapping, the braces "{" and "}" should only be used to
+    enclose a variable definition or reference, resulting in a capture. If they
+    should occur literally, either in the expression or within the replacement
+    text on the right hand side, they must be escaped with a preceding backslash
+    ("\"):</para>
+    <programlisting>[then]do something= if (foo) \{ doSomething(); \}
+    </programlisting>
 
-    <para>PLEASE NOTE that if you want curly braces to appear literally as
-    curly braces, then escape them with a backslack (\). Otherwise it may
-    think it is a token to be replaced.</para>
-
-    <para>Don't forget that if you are capturing strings from users, you will
-    also need the quotes on the right hand side of the mapping, just like a
-    normal rule, as the result of the mapping must be a valid expression in
-    the rule language.</para>
+    <note>
+    <para>If braces "{" and "}" should appear in the replacement string of a
+    DSL definition, escape them with a backslash ('\').</para>
+    </note>
 
     <example>
-      <title>Some more examples</title>
+      <title>Examples of DSL mapping entries</title>
 
-      <programlisting>#This is a comment to be ignored.
-[when]There is a Person with name of "{name}"=Person(name=="{name}")
-[when]Person is at least {age} years old and lives in "{location}"=Person(age &gt; {age}, location=="{location}")
+      <programlisting># This is a comment to be ignored.
+[when]There is a person with name of "{name}"=Person(name=="{name}")
+[when]Person is at least {age} years old and lives in "{location}"=
+      Person(age &gt;= {age}, location=="{location}")
 [then]Log "{message}"=System.out.println("{message}");
 [when]And = and</programlisting>
     </example>
 
-    <para>Referring to the above examples, this would render the following
-    input as shown below:</para>
+    <para>Given the above DSL examples, the following examples show the expansion of various
+    DSLR snippets:</para>
     <example>
-        <title>Some examples as processed</title>
+        <title>Examples of DSL expansions </title>
 
-        <programlisting>There is a Person with name of "kitty" ---&gt; Person(name="kitty")
-Person is at least 42 years old and lives in "atlanta" ---&gt; Person(age &gt; 42, location="atlanta")
-Log "boo" ---&gt; System.out.println("boo");
-There is a Person with name of "bob" and Person is at least 30 years old and lives in "atlanta" 
-          ---&gt; Person(name="kitty") and Person(age &gt; 30, location="atlanta")</programlisting>
+        <programlisting>There is a person with name of "Kitty"
+   ==&gt; Person(name="Kitty")
+Person is at least 42 years old and lives in "Atlanta"
+   ==&gt; Person(age &gt;= 42, location="Atlanta")
+Log "boo"
+   ==&gt; System.out.println("boo");
+There is a person with name of "Bob" and Person is at least 30 years old and lives in "Utah"
+   ==&gt; Person(name="Bob") and Person(age &gt;= 30, location="Utah")</programlisting>
       </example>
-  </section>
 
-  <section>
-    <title>Using a DSL in your rules</title>
-
-    <para>A good way to get started if you are new to Rules (and DSLs) is just
-    write the rules as you normally would against your object model. You can
-    unit test as you go (like a good agile citizen!). Once you feel
-    comfortable, you can look at extracting a domain language to express what
-    you are doing in the rules. Note that once you have started using the
-    "expander" keyword, you will get errors if the parser does not recognize
-    expressions you have in there - you need to move everything to the DSL. As
-    a way around this, you can prefix each line with "&gt;" and it will tell
-    the parser to take that line literally, and not try and expand it (this is
-    handy also if you are debugging why something isn't working).</para>
-
-    <para>Also, it is better to rename the extension of your rules file from
-    ".drl" to ".dslr" when you start using DSLs, as that will allow the IDE to
-    correctly recognize and work with your rules file.</para>
-
-    <para>As you work through building up your DSL, you will find that the DSL
-    configuration stabilizes pretty quickly, and that as you add new rules and
-    edit rules you are reusing the same DSL expressions over and over. The aim
-    is to make things as fluent as possible.</para>
-
-    <para>To use the DSL when you want to compile and run the rules, you will
-    need to pass the DSL configuration source along with the rule source.</para>
-    <programlisting>PackageBuilder builder = new PackageBuilder();
-builder.addPackageFromDrl( source, dsl );
-//source is a reader for the rule source, dsl is a reader for the DSL configuration
-</programlisting>
-    <para>You will also need to specify the expander by name in the
-    rule source file:</para>
-    <programlisting>expander your-expander.dsl
-</programlisting>
-    <para>Typically you keep the DSL in the same directory as the rule,
-    but this is not required if you are using the above API (you only need to
-    pass a reader). Otherwise everything is just the same.</para>
+    <note>
+    <para>Don't forget that if you are capturing plain text from a DSL rule line
+    and want to use it as a string literal in the expansion, you must provide
+    the quotes on the right hand side of the mapping.</para>
+    </note>
 
     <para>You can chain DSL expressions together on one line, as long as it is
-    clear to the parser what the {tokens} are (otherwise you risk reading in
-    too much text until the end of the line). The DSL expressions are
-    processed according to the mapping file, top to bottom in order. You can
-    also have the resulting rule expressions span lines - this means that you
-    can do things like:</para>
+    clear to the parser where one ends and the next one begins and where the
+    text representing a parameter ends. (Otherwise you risk getting all the
+    text until the end of the line as a parameter value.) The DSL expressions are
+    tried, one after the other, according to their order in the DSL definition
+    file. After any match, all remaining DSL expressions are investigated,
+    too.</para>
 
-    <example>
-      <title>Chaining DSL Expressions</title>
-
-      <programlisting>There is a person called Bob who is happy
-  Or
-There is a person called Mike who is sad
-</programlisting>
-    </example>
-
-    <para>Of course this assumes that "Or" is mapped to the "or" conditional
-    element (which is a sensible thing to do).</para>
+    <para>The resulting DRL text may consist of more than one line. Line ends
+    are in the replacement text are written as <code>\n</code>.</para>
   </section>
 
   <section>
-    <title>Adding constraints to facts</title>
+    <title>Adding Constraints to Facts</title>
 
     <para>A common requirement when writing rule conditions is to be able to
-    add many constraints to fact declarations. A fact may have many (dozens)
-    of fields, all of which could be used or not used at various times. To
-    come up with every combination as separate DSL statements would in many
-    cases not be feasible.</para>
+    add an arbitrary combination of constraints to a pattern. Given that a
+    fact type may have many fields, having to provide an individual DSL
+    statement for each combination would be plain folly.</para>
 
-    <para>The DSL facility allows you to achieve this however, with a simple
-    convention. If your DSL expression starts with a "-", then it will be
-    assumed to be a field constraint, which will be added to the declaration
-    that is above it (one per line).</para>
+    <para>The DSL facility allows you to add constraints to a pattern by a
+    simple convention: if your DSL expression starts with a hyphen
+    (minus character, "-") it is assumed to be a field constraint and,
+    consequently, is is added to the last pattern line preceding it.</para>
 
-    <para>This is easier to explain with an example. Lets take look at Cheese
-    class, with the following fields: type, price, age, country. We can
+    <para>For an example, lets take look at class <code>Cheese</code>,
+    with the following fields: type, price, age and country. We can
     express some LHS condition in normal DRL like the following</para>
+
     <programlisting>Cheese(age &lt; 5, price == 20, type=="stilton", country=="ch")</programlisting>
-    <para>If you know ahead of time that you will use all the fields, all the time,
-    it is easy to do a mapping using the above techniques. However, chances
-    are that you will have many fields, and many combinations. If this is the
-    case, you can setup your mappings like so:</para>
+
+    <para>The DSL definitions given below result in three DSL phrases which
+    may be used to create any combination of constraint involving these fields.</para>
     <programlisting>[when]There is a Cheese with=Cheese()
 [when]- age is less than {age}=age&lt;{age}
 [when]- type is '{type}'=type=='{type}'
 [when]- country equal to '{country}'=country=='{country}'</programlisting>
 
-    <para><emphasis role="bold">IMPORTANT:</emphasis> It is NOT possible to
-    use the "-" feature after an <emphasis role="bold">accumulate</emphasis>
-    statement to add constraints to the accumulate pattern. This limitation
-    will be removed in the future.</para>
-
     <para>You can then write rules with conditions like the following:
     <programlisting>There is a Cheese with
         - age is less than 42
-        - type is 'stilton'</programlisting> The parser will pick up the "-"
-    lines (they have to be on their own line) and add them as constraints to
-    the declaration above. So in this specific case, using the above mappings,
-    is the equivalent to doing (in DRL): <programlisting>Cheese(age&lt;42, type=='stilton')</programlisting>
-    The parser will do all the work for you, meaning you just define mappings
-    for individual constraints, and can combine them how you like (if you are
-    using context assistant, if you press "-" followed by CTRL+space it will
-    conveniently provide you with a filtered list of field constraints to
-    choose from.</para>
+        - type is 'stilton'</programlisting> The parser will pick up a line
+    beginning with "-" and add it as a constraint to  the preceding pattern,
+    inserting a comma when it is required. For the preceding example, the
+    resulting DRL is: <programlisting>Cheese(age&lt;42, type=='stilton')</programlisting>
+    </para>
 
-    <para>To take this further, after alter the DSL to have
-    [when][org.drools.Cheese]- age is less than {age} ... (and similar to all
-    the items in the example above).</para>
-
-    <para>The extra [org.drools.Cheese] indicates that the sentence only
-    applies for the main constraint sentence above it (in this case "There is
-    a Cheese with"). For example, if you have a class called "Cheese" - then
-    if you are adding contraints to the rule (by typing "-" and waiting for
-    content assistance) then it will know that only items marked as having an
-    object-scope of "com.yourcompany.Something" are valid, and suggest only
-    them. This is entirely optional (you can leave out that section if needed
-    - OR it can be left blank).</para>
-
-    <para>Now, if the Cheese object has several int attributes such as age,
-    rating, etc, in this case, one can create a common operator that can be
-    used by any attribute. NOTE: The order of the entries in the DSL is
-    important. </para>
+    <para>Combining all all numeric fields with all relational operators
+    (according to the DSL expression "age is less than..." in the preceding
+    example) produces an unwieldy amount of DSL entries. But you can define
+    DSL phrases for the various operators and even a generic expression
+    that handles any field constraint, as shown below. (Notice that
+    the expression definition contains a regular expression in addition
+    to the variable name.)</para> 
 
     <programlisting>[when][]is less than or equal to=&lt;=
 [when][]is less than=&lt;
@@ -280,149 +221,348 @@ There is a person called Mike who is sad
 [when][]is greater than=&gt;
 [when][]is equal to===
 [when][]equals===
+[when][]There is a Cheese with=Cheese()</programlisting>
 [when][]- {field:\w*} {operator} {value:\d*}={field} {operator} {value} 
-[when]There is a Cheese with=Cheese()</programlisting>
-    <para>Now, you can then write
-    rules with conditions like the following:</para>
+
+    <para>Given these DSL definitions, you can write rules with conditions
+    such as:</para>
     <programlisting>There is a Cheese with
-        - age is less than 42
-        - rating is greater than 50
-        - type equals 'stilton'</programlisting>
-    <para>The parser will pick up the
-    "-" lines (they have to be on their own line) and add them as constraints
-    to the declaration above. So in this specific case, using the above
-    mappings, is the equivalent to doing (in DRL):</para>
+   - age is less than 42
+   - rating is greater than 50
+   - type equals 'stilton'</programlisting>
+    <para>In this specific case, a phrase such as "is less than" is replaced by
+    <code>&lt;</code>, and then the line matches the last DSL entry. This
+    removes the hyphen, but the final result is still added as a constraint
+    to the preceding pattern. After processing all of the lines, the resulting
+    DRL text is:</para>
     <programlisting>Cheese(age&lt;42, rating &gt; 50, type=='stilton')</programlisting>
+
+    <note>
+    <para>The order of the entries in the DSL is important if separate DSL
+    expressions are intended to match the same line, one after the other.</para>
+    </note>
+
   </section>
+
 
   <section>
-    <title>How it works</title>
+    <title>Developing a DSL</title>
 
-    <para>DSLs kick in when the rule is parsed. The DSL configuration is read
-    and supplied to the parser, so the parser can "expand" the DSL expressions
-    into the real rule language expressions.</para>
+    <para>A good way to get started is to write representative samples of the
+    rules your application requires, and to test them as you develop. This will
+    provide you with a stable framework of conditional elements and their
+    constraints. Rules, both in DRL and in DSLR, refer to entities according
+    to the data model representing the application data that should be subject
+    to the reasoning process defined in rules. Notice that writing rules
+    is generally easier if most of the data model's types are facts.</para>
 
-    <para>When the parser is processing the rules, it will check if an
-    "expander" representing a DSL is enabled, if it is, it will try to expand
-    the expression based on the context of where it is the rule. If an
-    expression can not be expanded, then an error will be added to the
-    results, and the line number recorded (this insures against typos when
-    editing the rules with a DSL). At present, the DSL expander is fairly
-    space sensitive, but this will be made more tolerant in future releases
-    (including tolerance for a wide range of punctuation).</para>
+    <para>Given an initial set of rules, it should be possible to identify
+    recurring or similar code snippets and to mark variable parts as
+    parameters. This provides reliable leads as to what might be a handy
+    DSL entry. Also, make sure you have a full grasp of the jargon the 
+    domain experts are using, and base your DSL phrases on this vocabulary.</para>
 
-    <para>The expansion itself works by trying to match a line against the
-    expression in the DSL configuration. The values that correspond to the
-    token place holders are stored in a map based on the name of the token,
-    and then interpolated to the target mapping. The values that match the
-    token placeholders are extracted by either searching until the end of the
-    line, or until a character or word after the token place holder is
-    matched. The "{" and "}" are not included in the values that are
-    extracted, they are only used to demarcate the tokens - you should not use
-    these characters in the DSL expression (but you can in the target).</para>
+    <para>You may postpone implementation decisions concerning conditions
+    and actions during this first design phase by leaving certain conditional
+    elements and actions in their DRL form by prefixing a line with a
+    greater sign ("&gt;"). (This is also handy for inserting debugging
+    statements.)</para>
+
+    <para>During the next development phase, you should find that the DSL
+    configuration stabilizes pretty quickly. New rules can be written by
+    reusing the existing DSL definitions, or by adding a parameter to an
+    existing condition or consequence entry.</para>
+
+    <para>Try to keep the number of DSL entries small. Using parameters
+    lets you apply the same DSL sentence for similar rule patterns or
+    constraints. But do not exaggerate: authors using the DSL should still
+    be able to identify DSL phrases by some fixed text.</para>
   </section>
+
 
   <section>
-    <title>Creating a DSL from scratch</title>
+    <title>DSL and DSLR Reference</title>
 
-    <para>DSLs can be aid with capturing rules if the rules are well known,
-    just not in any technically usable format (ie. sitting around in people
-    brains). Until we are able to have those little sockets in our necks like
-    in the Matrix, our means of getting stuff into computers is still the old
-    fashioned way.</para>
+    <para>A DSL file is a text file in a line-oriented format. Its
+    entries are used for transforming a DSLR file into a file according
+    to DRL syntax.</para>
 
-    <para>Rules engines require an object or a data model to operate on - in
-    many cases you may know this up front. In other cases the model will be
-    discovered with the rules. In any case, rules generally work better with
-    simpler flatter object models. In some cases, this may mean having a rule
-    object model which is a subset of the main applications model (perhaps
-    mapped from it). Object models can often have complex relationships and
-    hierarchies in them - for rules you will want to simplify and flatten the
-    model where possible, and let the rule engine infer relationships (as it
-    provides future flexibility). As stated previously, DSLs can have an
-    advantage of providing some insulation between the object model and the
-    rule language.</para>
-
-    <para>Coming up with a DSL is a collaborative approach for both technical
-    and domain experts. Historically there was a role called "knowledge
-    engineer" which is someone skilled in both the rule technology, and in
-    capturing rules. Over a short period of time, your DSL should stabilize,
-    which means that changes to rules are done entirely using the DSL. A
-    suggested approach if you are starting from scratch is the following
-    workflow: <itemizedlist>
-        <listitem>
-          <para>Capture rules as loose "if then" statements - this is really
-          to get an idea of size and complexity (possibly in a text
-          document).</para>
+    <itemizedlist>
+      <listitem>
+        <para>A line starting with "#" or "//"
+        (with or without preceding white space) is treated as a comment.
+        A comment line starting with "#/" is scanned for
+        words requesting a debug option, see below.</para>
+      </listitem>
+      <listitem>
+        <para>Any line starting with an opening bracket ("[") is assumed to
+        be the first line of a DSL entry definition.</para>
+      </listitem>
+      <listitem>
+        <para>Any other line is appended to the preceding DSL entry
+        definition, with the line end replaced by a space.</para>
         </listitem>
+      </itemizedlist>
 
-        <listitem>
-          <para>Look for recurring statements in the rules captured. Also look
-          for the rule objects/fields (and match them up with what may already
-          be known of the object model).</para>
-        </listitem>
+    <para>A DSL entry consists of the following four parts:</para>
 
-        <listitem>
-          <para>Create a new DSL, and start adding statements from the above
-          steps. Provide the "holes" for data to be edited (as many statements
-          will be similar, with only some data changing).</para>
-        </listitem>
+    <itemizedlist>
+      <listitem>
+        <para>A scope definition, written as one of the keywords
+        "when" or "condition", "then" or "consequence", "*"
+        and "keyword", enclosed in brackets ("[" and "]"). This indicates
+        whether the DSL entry is valid for the condition or the
+        consequence of a rule, or both. A scope indication of "keyword"
+        means that the entry has global significance, i.e., it is
+        recognized anywhere in a DSLR file.</para>
+      </listitem>
+      <listitem>
+        <para>A type definition, written as a Java class name,
+        enclosed in brackets. This part is optional unless the
+        the next part begins with an opening bracket. An empty
+        pair of brackets is valid, too.</para>
+      </listitem>
+      <listitem>
+        <para>A DSL expression consists of a (Java) regular expression,
+        with any number of embedded <emphasis>variable definitions,</emphasis>
+        terminated by an equal sign ("="). A variable definition is enclosed
+        in braces ("{" and "}"). It
+        consists of a variable name and two optional attachements, separated
+        by colons (":"). If there is one attachment, it is a regular expression
+        for matching text that is to be assigned to the variable; if there
+        are two attachments, the first one is a hint for the GUI
+        editor and the second one the regular expression.</para>
 
-        <listitem>
-          <para>Use the above DSL, and try to write the rules just like that
-          appear in the "if then" statements from the first and second steps.
-          Iterate this process until patterns appear and things stabilize. At
-          this stage, you are not so worried about the rule language
-          underneath, just the DSL.</para>
-        </listitem>
+        <para>Note that all characters that are "magic" in regular
+        expressions must be escaped with a preceding backslash ("\")
+        if they should occur literally within the expression.</para>
+      </listitem>
+      <listitem>
+        <para>The remaining part of the line after the delimiting equal
+        sign is the replacement text for any DSLR text matching the
+        regular expression. It may contain variable references, i.e.,
+        a variable name enclosed in braces. Optionally, the variable name
+        may be followed by an exclamation mark ("!") and a transformation
+        function, see below.</para>
 
-        <listitem>
-          <para>At this stage you will need to look at the Objects, and the
-          Fields that are needed for the rules, reconcile this with the
-          datamodel so far.</para>
-        </listitem>
+        <para>Note that braces ("{" and "}") must be escaped with a
+        preceding backslash ("\") if they should occur literally
+        within the replacement string.</para>
+      </listitem>
+    </itemizedlist>
 
-        <listitem>
-          <para>Map the DSL statements to the rule language, based on the
-          object model. Then repeat the process. Obviously this is best done
-          in small steps, to make sure that things are on the right
-          track.</para>
-        </listitem>
-      </itemizedlist></para>
+
+    <para>Debugging of DSL expansion can be turned on, selectively,
+    by using a comment line starting with "#/" which
+    may contain one or more words from the table presented below.
+    The resulting output is written to standard output.</para>
+
+    <table>
+      <title>Debug options for DSL expansion</title>
+
+      <tgroup cols="2">
+        <thead>
+          <row>
+            <entry>Word</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>result</entry>
+            <entry>Prints the resulting DRL text, with line numbers.</entry>
+          </row>
+          <row>
+            <entry>steps</entry>
+            <entry>Prints each expansion step of condition and consequence
+            lines.</entry>
+          </row>
+          <row>
+            <entry>keyword</entry>
+            <entry>Dumps the internal representation of all DSL entries with
+            scope "keyword".</entry>
+          </row>
+          <row>
+            <entry>when</entry>
+            <entry>Dumps the internal representation of all DSL entries with
+            scope "when" or "*".</entry>
+          </row>
+          <row>
+            <entry>then</entry>
+            <entry>Dumps the internal representation of all DSL entries with
+            scope "then" or "*".</entry>
+          </row>
+          <row>
+            <entry>usage</entry>
+            <entry>Displays a usage statistic of all DSL entries.</entry>
+          </row>
+
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>Below are some sample DSL definitions, with comments describing the
+    language features they illustrate.</para>
+
+    <programlisting># Comment: DSL examples
+
+#/ debug: display result and usage
+
+# keyword definition: replaces "regula" by "rule"
+[keyword][]regula=rule
+
+# conditional element: "T" or "t", "a" or "an", convert matched word
+[when][][Tt]here is an? {entity:\w+}=
+        ${entity!lc}: ${entity!ucfirst} ()
+
+# consequence statement: convert matched word, literal braces
+[then][]update {entity:\w+}=modify( ${entity!lc} )\{ \}
+</programlisting>
+
+
+    <para>The transformation of a DSLR file proceeds as follows:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>The text is read into memory.</para>
+      </listitem>
+      <listitem>
+        <para>Each of the "keyword" entries is applied to the entire text.
+        First, the regular expression from the keyword definition is modified
+        by replacing white space sequences with a pattern matching any number
+        of white space characters, and by replacing variable definitions with
+        a capture made from the regular expression provided with the definition,
+        or with the default (".*?"). Then, the DSLR text is searched exhaustively
+        for occurrences of strings matching the modified regular expression.
+        Substrings of a matching string corresponding to variable captures are
+        extracted and replace variable references in the corresponding
+        replacement text, and this text replaces the matching string in the
+        DSLR text.</para>
+      </listitem>
+      <listitem>
+        <para>Sections of the DSLR text between "when" and "then", and
+        "then" and "end", respectively, are located and processed in a
+        uniform manner, line by line, as described below.</para>
+
+        <para>For a line, each DSL entry pertaining to the line's section
+        is taken in turn, in the order it appears in the DSL file. Its
+        regular expression part is modified: white space is replaced by
+        a pattern matching any number of white space characters; variable
+        definitions with a regular expression are replaced by a capture
+        with this regular expression, its default being ".*?".
+        If the resulting regular expression matches all or part of the
+        line, the matched part is replaced by the suitably modified
+        replacement text.</para>
+
+        <para>Modification of the replacement text is done by replacing
+        variable references with the text corresponding to the regular
+        expression capture. This text may be modified according to the
+        string transformation function given in the variable reference;
+        see below for details.</para>
+
+        <para>If there is a variable reference naming a variable that is not
+        defined in the same entry, the expander substitutes a value bound to
+        a variable of that name, provided it was defined in one of the
+        preceding lines of the current rule.</para>
+      </listitem>
+      <listitem>
+        <para>If a DSLR line in a condition is written with a leading
+        hyphen, the expanded result is inserted into the last line, which
+        should contain a pattern CE, i.e., a type name followed by a pair
+        of parentheses. if this pair is empty, the expanded line (which
+        should contain a valid constraint) is simply inserted, otherwise
+        a comma (",") is inserted beforehand.  </para>
+        <para>If a DSLR line in a consequence is written with a leading
+        hyphen, the expanded result is inserted into the last line, which
+        should contain a "modify" statement, ending in a pair of braces
+        ("{" and "}"). If this pair is empty, the expanded line (which
+        should contain a valid method call) is simply inserted, otherwise
+        a comma (",") is inserted beforehand.
+        </para>
+      </listitem>
+    </orderedlist>
+   
+    <note>
+    <para>It is currently <emphasis>not</emphasis> possible to use a line
+    with a leading hyphen to insert text into other conditional element
+    forms (e.g., "accumulate") or it may only work for the first insertion
+    (e.g., "eval").</para>
+    </note>
+
+
+    <para>All string transformation functions are described in the following
+    table.</para>
+
+    <table>
+      <title>String transformation functions</title>
+
+      <tgroup cols="2">
+        <thead>
+          <row>
+            <entry>Name</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+
+        <tbody>
+          <row>
+            <entry>uc</entry>
+            <entry>Converts all letters to upper case.</entry>
+          </row>
+          <row>
+            <entry>lc</entry>
+            <entry>Converts all letters to lower case.</entry>
+          </row>
+          <row>
+            <entry>ucfirst</entry>
+            <entry>Converts the first letter to upper case, and
+            all other letters to lower case.</entry>
+          </row>
+          <row>
+            <entry>num</entry>
+            <entry>Extracts all digits and "-" from the string. If the
+            last two digits in the original string are preceded by "." or
+            ",", a decimal period is inserted in the corresponding position.</entry>
+          </row>
+          <row>
+            <entry><emphasis>a</emphasis>?<emphasis>b</emphasis>/<emphasis>c</emphasis></entry>
+            <entry>Compares the string with string <emphasis>a</emphasis>, and if they
+            are equal, replaces it with <emphasis>b</emphasis>, otherwise with
+            <emphasis>c</emphasis>. But <emphasis>c</emphasis> can be another triplet
+            <emphasis>a</emphasis>, <emphasis>b</emphasis>, <emphasis>c</emphasis>, so
+            that the entire structure is, in fact, a translation table.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>The following DSL examples show how to use string transformation functions.</para>
+
+    <programlisting># definitions for conditions
+[when][]There is an? {entity}=${entity!lc}: {entity!ucfirst}()
+[when][]- with an? {attr} greater than {amount}={attr} &lt;= {amount!num}
+[when][]- with a {what} {attr}={attr} {what!positive?&gt;0/negative?%lt;0/zero?==0/ERROR}</programlisting>
+
+    <para>A file containing a DSL definition is customarily given the extension
+    <code>.dsl</code>. It is passed to the Knowledge Builder with 
+    <code>ResourceType.DSL</code>. For a file using DSL definition, the extension
+    <code>.dslr</code> should be used. The Knowledge Builder expects
+    <code>ResourceType.DSLR</code>. The IDE, however, relies on file extensions
+    to correctly recognize and work with your rules file.</para>
+
+    <para>The DSL must be passed to the Knowledge Builder ahead of any rules
+    file using the DSL.</para>
+    <programlisting>KnowledgeBuilder kBuilder = new KnowledgeBuilder();
+Resource dsl = ResourceFactory.newClassPathResource( dslPath, getClass() );
+kBuilder.add( dsl, ResourceType.DSL );
+Resource dslr = ResourceFactory.newClassPathResource( dslrPath, getClass() );
+kBuilder.add( dslr, ResourceType.DSLR );
+</programlisting>
+
+    <para>For parsing and expanding a DSLR file the DSL configuration is read
+    and supplied to the parser. Thus, the parser can "recognize" the DSL
+    expressions and transform them into native rule language expressions.</para>
   </section>
 
-  <section>
-    <title>Scope and keywords</title>
-
-    <para>If you are editing the DSL with the GUI, or as text, you will notice
-    there is a [scope] item at the start of each mapping line. This indicates
-    if the sentence/word applies to the LHS, RHS or is a keyword. Valid values
-    for this are [condition], [consequence] and [keyword] (with [when] and
-    [then] being the same as [condition] and [consequence] respectively). When
-    [keyword] is used, it means you can map any keyword of the language like
-    "rule" or "end" to something else. Generally this is only used when you
-    want to have a non English rule language (and you would ideally map it to
-    a single word).</para>
-  </section>
-
-  <section>
-    <title>DSLs in the BRMS and IDE</title>
-
-    <para>You can use DSLs in the BRMS in both guided editor rules, and
-    textual rules that use a dsl. (In fact, the same applies to the
-    IDE).</para>
-
-    <para>In the guided editor - the DSLs generally have to be simpler - what
-    you are doing is defining little "forms" to capture data from users in
-    text fields (ie as you pick a DSL expression - it will add an item to the
-    GUI which only allows you enter data in the {token} parts of a DSL
-    expression). You can not use sophisticated regular expressions to match
-    text. However, in textual rules (which have a .dslr extension in the IDE)
-    you are free to use the full power as needed.</para>
-
-    <para>In the BRMS - when you build a package the DSLs are already included
-    and all the work is done for you. In the IDE (or in any IDE) - you will
-    either need to use the drools-ant task, or otherwise use the code shown in
-    sections above.</para>
-  </section>
 </section>
