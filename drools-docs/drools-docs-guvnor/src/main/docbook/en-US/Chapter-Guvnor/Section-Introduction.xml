@@ -6,11 +6,11 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Introduction</title>
 
-  <para>This section introduces the BRMS. See the other relevant sections for
+  <para>This section introduces the Guvnor. See the other relevant sections for
   installation, usage and administration.</para>
 
   <figure>
-    <title>The BRMS main screen</title>
+    <title>The Guvnor main screen</title>
 
     <mediaobject>
       <imageobject>
@@ -22,17 +22,15 @@
   </figure>
 
   <section>
-    <title>What is a BRMS?</title>
+    <title>What is a Business Rules Manager?</title>
 
-    <para>BRMS stands for Business Rules Management System.</para>
-
-    <para>A BRMS allows people to manage rules in a multi user environment, it
+    <para>A business rules manager allows people to manage rules in a multi user environment, it
     is a single point of truth for your business rules, allowing change in a
     controlled fashion, with user friendly interfaces.</para>
 
     <para>Guvnor is the name of the web and network related components for
     managing rules with drools. This combined with the core drools engine and
-    other tools forms "a BRMS". </para>
+    other tools forms the business rules manager. </para>
 
     <section>
       <title>When to use Guvnor</title>
@@ -74,7 +72,7 @@
     <section>
       <title>Who uses Guvnor</title>
 
-      <para>The main roles of people who would use a BRMS are: Business
+      <para>The main roles of people who would use Guvnor are: Business
       Analyst, Rule expert, Developer, Administrators (rule administrators
       etc).</para>
 
