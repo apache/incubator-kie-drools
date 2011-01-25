@@ -154,16 +154,17 @@ end</programlisting>
         <term><literal>salience</literal></term>
 
         <listitem>
-          <para>default value : 0</para>
+          <para>default value: 0</para>
 
-          <para>type : integer</para>
+          <para>type: integer</para>
 
           <para>Each rule has a salience attribute that can be assigned an
           integer number, which defaults to zero and can be negative or
           positive. Salience is a form of priority where rules with higher
           salience values are given higher priority when ordered in the
           Activation queue.</para>
-          <para>Drools also supports dynamic salience where you can use andexpression involving bound variables.</para>
+          <para>Drools also supports dynamic salience where you can use
+          an expression involving bound variables.</para>
           
           <example>
     		<title>Dynamic Salience</title>
@@ -328,7 +329,7 @@ then
 end</programlisting>
     </example>
 
-    <para>Calendars can now controll when rules can fire. The Calendar api is
+    <para>Calendars may now be used to control when rules can fire. The Calendar API is
     modelled on <link xlink:href="http://www.quartz-scheduler.org/">Quartz
     http://www.quartz-scheduler.org/</link> :</para>
 
@@ -1539,8 +1540,7 @@ not ( Bus(color == "red") and
 
       <para>The keyword <literal>exists</literal> must be followed by
       parentheses around the CEs that it applies to. In the simplest case of a
-      single pattern (like below) you may optionally omit the
-      parentheses.</para>
+      single pattern (like below) you may omit the parentheses.</para>
 
       <example>
         <title>At least one Bus</title>
@@ -1629,11 +1629,11 @@ end
 </programlisting>
       </example>
 
-      <para>Forall can be nested inside other CEs for complete expressiveness.
+      <para>Forall can be nested inside other CEs.
       For instance, <literal>forall</literal> can be used inside a
       <literal>not</literal> CE. Note that only single patterns have optional
-      parentheses, so that with a nested forall parentheses must be
-      used:</para>
+      parentheses, so that with a nested <literal>forall</literal>
+      parentheses must be used:</para>
 
       <example>
         <title>Combining Forall with Not CE</title>
@@ -1650,7 +1650,7 @@ end
 </programlisting>
       </example>
 
-      <para>As a side note, <code>not( forall( p1 p2 p3...))</code> is
+      <para>As a side note, <code>forall( p1 p2 p3...)</code> is
       equivalent to writing:</para>
 
       <programlisting>not(p1 and not(and p2 p3...))</programlisting>
