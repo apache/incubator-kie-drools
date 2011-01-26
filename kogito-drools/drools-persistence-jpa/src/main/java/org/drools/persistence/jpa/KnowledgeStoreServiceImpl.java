@@ -81,7 +81,7 @@ public class KnowledgeStoreServiceImpl
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
-            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( long.class,
+            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( int.class,
                                                                                               KnowledgeBase.class,
                                                                                               KnowledgeSessionConfiguration.class,
                                                                                               Environment.class );
