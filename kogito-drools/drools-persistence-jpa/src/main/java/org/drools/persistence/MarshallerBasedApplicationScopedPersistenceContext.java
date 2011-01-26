@@ -64,7 +64,7 @@ public abstract class MarshallerBasedApplicationScopedPersistenceContext
                                              e );
         }
 
-        long ksessionId = internalSaveStatefulKnowledgeSession( baos.toByteArray() );
+        int ksessionId = internalSaveStatefulKnowledgeSession( baos.toByteArray() );
         ((StatefulKnowledgeSessionImpl) ksession).setId( ksessionId );
 
     }
@@ -102,7 +102,7 @@ public abstract class MarshallerBasedApplicationScopedPersistenceContext
 
     protected abstract byte[] internalLoadStatefulKnowledgeSession(long sessionId);
 
-    protected abstract long internalSaveStatefulKnowledgeSession(byte[] byteArray);
+    protected abstract int internalSaveStatefulKnowledgeSession(byte[] byteArray);
     
     protected abstract void internalUpdateStatefulKnowledgeSession(long id,
                                                                    byte[] byteArray);
