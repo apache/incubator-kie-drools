@@ -57,7 +57,7 @@ public class WorkItemInfo implements EntityInfo  {
         this.env = env;
     }
 
-    public Long getId() {
+    public long getId() {
         return workItemId;
     }
     

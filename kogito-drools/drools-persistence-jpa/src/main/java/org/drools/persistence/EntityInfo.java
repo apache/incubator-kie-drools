@@ -1,7 +1,7 @@
 package org.drools.persistence;
 
 public interface EntityInfo {
-    Long getId();
+    long getId();
     int getVersion();
     void update();
 }
