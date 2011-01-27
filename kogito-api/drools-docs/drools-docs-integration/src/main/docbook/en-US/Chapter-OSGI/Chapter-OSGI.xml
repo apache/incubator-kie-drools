@@ -54,10 +54,6 @@
     <listitem>
       <para>drools-decisiontables</para>
     </listitem>
-
-    <listitem>
-      <para>drools-bpmn2 (no persistence)</para>
-    </listitem>
   </itemizedlist>
 
   <para>The following Services can be located as OSGi Bundles</para>
