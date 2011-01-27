@@ -42,29 +42,29 @@ public class ExcelParser
     DecisionTableParser {
 
     public static final String              DEFAULT_RULESHEET_NAME = "Decision Tables";
-    private Map<String, List<DataListener>> _listners              = new HashMap<String, List<DataListener>>();
+    private Map<String, List<DataListener>> _listeners = new HashMap<String, List<DataListener>>();
     private boolean                         _useFirstSheet;
 
     /**
      * Define a map of sheet name to listner handlers.
      * 
-     * @param sheetListners
+     * @param sheetListeners
      *            map of String to SheetListener
      */
-    public ExcelParser(final Map<String, List<DataListener>> sheetListners) {
-        this._listners = sheetListners;
+    public ExcelParser(final Map<String, List<DataListener>> sheetListeners) {
+        this._listeners = sheetListeners;
     }
 
-    public ExcelParser(final List<DataListener> sheetListners) {
-        this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
-                            sheetListners );
+    public ExcelParser(final List<DataListener> sheetListeners) {
+        this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
+                            sheetListeners );
         this._useFirstSheet = true;
     }
 
     public ExcelParser(final DataListener listener) {
         List<DataListener> listeners = new ArrayList<DataListener>();
         listeners.add( listener );
-        this._listners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
+        this._listeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                             listeners );
         this._useFirstSheet = true;
     }
@@ -76,12 +76,12 @@ public class ExcelParser
             if ( _useFirstSheet ) {
                 Sheet sheet = workbook.getSheet( 0 );
                 processSheet( sheet,
-                              _listners.get( DEFAULT_RULESHEET_NAME ) );
+                              _listeners.get( DEFAULT_RULESHEET_NAME ) );
             } else {
-                for ( String sheetName : _listners.keySet() ) {
+                for ( String sheetName : _listeners.keySet() ) {
                     Sheet sheet = workbook.getSheet( sheetName );
                     processSheet( sheet,
-                                  _listners.get( sheetName ) );
+                                  _listeners.get( sheetName ) );
 
                 }
             }
