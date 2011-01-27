@@ -7,7 +7,7 @@ public interface PersistenceContext {
 
     void persist(SessionInfo entity);
 
-    public SessionInfo findSessionInfo(Long id);
+    public SessionInfo findSessionInfo(Integer id);
 
     boolean isOpen();
 

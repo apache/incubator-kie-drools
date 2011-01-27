@@ -19,6 +19,6 @@ package org.drools.command;
 import org.drools.runtime.CommandExecutor;
 
 public interface SingleSessionCommandService extends CommandService {
-	long getSessionId();
+	int getSessionId();
 	void dispose();
 }

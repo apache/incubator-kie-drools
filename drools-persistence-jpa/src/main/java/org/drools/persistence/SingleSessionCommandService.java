@@ -73,7 +73,7 @@ public class SingleSessionCommandService
               env );
     }
 
-    public SingleSessionCommandService(long sessionId,
+    public SingleSessionCommandService(Integer sessionId,
                                        RuleBase ruleBase,
                                        SessionConfiguration conf,
                                        Environment env) {
@@ -142,7 +142,7 @@ public class SingleSessionCommandService
 
     }
 
-    public SingleSessionCommandService(long sessionId,
+    public SingleSessionCommandService(Integer sessionId,
                                        KnowledgeBase kbase,
                                        KnowledgeSessionConfiguration conf,
                                        Environment env) {
@@ -162,7 +162,7 @@ public class SingleSessionCommandService
                       conf );
     }
 
-    public void initKsession(long sessionId,
+    public void initKsession(Integer sessionId,
                              KnowledgeBase kbase,
                              KnowledgeSessionConfiguration conf) {
         if ( !doRollback && this.ksession != null ) {
@@ -327,7 +327,7 @@ public class SingleSessionCommandService
         }
     }
 
-    public long getSessionId() {
+    public int getSessionId() {
         return sessionInfo.getId();
     }
 

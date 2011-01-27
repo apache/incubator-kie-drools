@@ -27,7 +27,7 @@ public class WorkItemInfo  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long   workItemId;
+    private Long   workItemId;
 
     @Version
     @Column(name = "OPTLOCK")
@@ -56,7 +56,7 @@ public class WorkItemInfo  {
         this.env = env;
     }
 
-    public long getId() {
+    public Long getId() {
         return workItemId;
     }
     

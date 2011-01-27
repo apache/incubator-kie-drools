@@ -55,7 +55,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     @Override
     protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
                                                                KnowledgeBase kbase) {
-        long ksessionId = ksession.getId();
+        int ksessionId = ksession.getId();
         ksession.dispose();
         return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, createEnvironment() );
     }

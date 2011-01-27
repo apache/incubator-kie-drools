@@ -17,7 +17,7 @@ public class JpaPersistenceContext implements PersistenceContext {
         this.em.persist( entity );
     }
 
-    public SessionInfo findSessionInfo(Long id) {
+    public SessionInfo findSessionInfo(Integer id) {
         return this.em.find( SessionInfo.class, id );
     }
 
