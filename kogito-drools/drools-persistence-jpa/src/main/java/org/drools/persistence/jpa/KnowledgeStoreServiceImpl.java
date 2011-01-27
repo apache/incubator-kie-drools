@@ -56,7 +56,7 @@ public class KnowledgeStoreServiceImpl
                                                                              environment ) );
     }
 
-    public StatefulKnowledgeSession loadStatefulKnowledgeSession(long id,
+    public StatefulKnowledgeSession loadStatefulKnowledgeSession(int id,
                                                                  KnowledgeBase kbase,
                                                                  KnowledgeSessionConfiguration configuration,
                                                                  Environment environment) {
@@ -74,14 +74,14 @@ public class KnowledgeStoreServiceImpl
                                                                                               environment ) );
     }
 
-    private CommandExecutor buildCommanService(long sessionId,
+    private CommandExecutor buildCommanService(Integer sessionId,
                                               KnowledgeBase kbase,
                                               KnowledgeSessionConfiguration conf,
                                               Environment env) {
 
         try {
             Class< ? extends CommandExecutor> serviceClass = getCommandServiceClass();
-            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( int.class,
+            Constructor< ? extends CommandExecutor> constructor = serviceClass.getConstructor( Integer.class,
                                                                                               KnowledgeBase.class,
                                                                                               KnowledgeSessionConfiguration.class,
                                                                                               Environment.class );

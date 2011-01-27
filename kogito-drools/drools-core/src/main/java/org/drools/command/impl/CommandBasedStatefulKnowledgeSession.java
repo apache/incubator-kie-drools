@@ -111,7 +111,7 @@ public class CommandBasedStatefulKnowledgeSession
         this.commandService = commandService;
     }
 
-    public long getId() {
+    public int getId() {
         return commandService.execute( new GetIdCommand() );
     }
 

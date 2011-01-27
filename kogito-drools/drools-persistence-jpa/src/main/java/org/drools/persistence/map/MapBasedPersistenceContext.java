@@ -15,7 +15,7 @@ public class MapBasedPersistenceContext
     PersistenceContext,
     NonTransactionalPersistentSession {
     
-    private Map<Long, SessionInfo> ksessions;
+    private Map<Integer, SessionInfo> ksessions;
     private Map<Long, WorkItemInfo> workItems;
     private boolean open;
     private KnowledgeSessionStorage storage;
@@ -23,7 +23,7 @@ public class MapBasedPersistenceContext
     public MapBasedPersistenceContext(KnowledgeSessionStorage storage) {
         open = true;
         this.storage = storage;
-        this.ksessions = new HashMap<Long, SessionInfo>();
+        this.ksessions = new HashMap<Integer, SessionInfo>();
         this.workItems = new HashMap<Long, WorkItemInfo>();
     }
     
@@ -34,7 +34,7 @@ public class MapBasedPersistenceContext
         ksessions.put( entity.getId(), entity );
     }
 
-    public SessionInfo findSessionInfo(Long sessionId) {
+    public SessionInfo findSessionInfo(Integer sessionId) {
         SessionInfo sessionInfo = ksessions.get( sessionId );
         if(sessionInfo == null){
             sessionInfo = storage.findSessionInfo( sessionId );
@@ -69,7 +69,7 @@ public class MapBasedPersistenceContext
     }
     
     public void persist(WorkItemInfo workItemInfo) {
-        if( workItemInfo.getId() != null){
+        if( workItemInfo.getId() == null){
             workItemInfo.setId( storage.getNextWorkItemId() );
         }
         workItems.put( workItemInfo.getId(), workItemInfo );

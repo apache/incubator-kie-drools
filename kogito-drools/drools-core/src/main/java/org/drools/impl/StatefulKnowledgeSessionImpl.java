@@ -129,7 +129,7 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getEntryPointNode();
     }    
 
-    public long getId() {
+    public int getId() {
         return this.session.getId();
     }
 
@@ -844,7 +844,7 @@ public class StatefulKnowledgeSessionImpl
 		this.session.queueWorkingMemoryAction(action);
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.session.setId(id);
 	}
 

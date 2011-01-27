@@ -19,7 +19,7 @@ import org.drools.persistence.SessionMarshallingHelper;
 public class SessionInfo {
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    Long                        id;
+    Integer                        id;
 
     @Version
     @Column(name = "OPTLOCK")     
@@ -38,7 +38,7 @@ public class SessionInfo {
         this.startDate = new Date();
     }
 
-    public long getId() {
+    public Integer getId() {
         return this.id;
     }
     
@@ -81,7 +81,7 @@ public class SessionInfo {
         this.rulesByteArray  = this.helper.getSnapshot();
     }
 
-    public void setId(Long ksessionId) {
+    public void setId(Integer ksessionId) {
         this.id = ksessionId;
     }
 
