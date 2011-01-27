@@ -116,7 +116,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
     /* (non-Javadoc)
      * @see org.drools.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
      */
-    public long getKnowledgeSessionId() {
+    public int getKnowledgeSessionId() {
         return ksession.getId();
     }
 
