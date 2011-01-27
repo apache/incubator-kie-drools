@@ -109,13 +109,21 @@ public class WorkItemHandlerOption implements MultiValueKnowledgeSessionOption {
         if ( getClass() != obj.getClass() ) return false;
         WorkItemHandlerOption other = (WorkItemHandlerOption) obj;
         if ( handler == null ) {
-            if ( other.handler != null ) return false;
+            if ( other.handler != null ) {
+                return false;
+            }
         } else if ( other.handler == null ) {
             return false; 
-        } else if( !handler.getClass().getName().equals( other.handler.getClass().getName() ) ) return false;
+        } else if ( !handler.getClass().equals( other.handler.getClass() ) ) {
+            return false;
+        }
         if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
+            if ( other.name != null ) {
+                return false;
+            }
+        } else if ( !name.equals( other.name ) ) {
+            return false;
+        }
         return true;
     }
 }

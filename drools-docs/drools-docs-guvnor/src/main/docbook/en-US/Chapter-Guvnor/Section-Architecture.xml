@@ -6,9 +6,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Architecture</title>
 
-  <para>This section covers the technical aspects of Guvnor (previously known
-  as the Business Rules Management System or BRMS), it is not necessary to use
-  this if you are integrating or an end user of the BRMS application. However,
+  <para>This section covers the technical aspects of Guvnor, it is not necessary to use
+  this if you are integrating or an end user of the application. However,
   Drools is open source, so build instructions form part of the manual.</para>
 
   <para>You may want to build from source if you want to re-use components, or
@@ -30,7 +29,7 @@
   they integrate and are deployed. The User Guide has more details on the
   parts that are highly configurable (eg database).</para>
 
-  <para>The BRMS is deployed as a war, which provides user interfaces over the
+  <para>Guvnor is deployed as a war, which provides user interfaces over the
   web, and provides binary packages via URLs (or files). It utilized the
   JSR-170 standard for data storage (JCR). JBoss Seam is used as the component
   framework, and GWT is used as the widget toolkit for constructing the ajax
@@ -59,7 +58,7 @@
       <para>Maven 2 is used as the build system. To get started, the WHOLE of
       the source tree for JBoss Rules will need to be checked out. This
       includes the other modules, and the top level lib and repository
-      directories (which are needed by the build); as the BRMS build is part
+      directories (which are needed by the build); as the Guvnor build is part
       of the main drools build.</para>
 
       <para>Initially, go into the root of the jboss-rules checked out source
@@ -71,7 +70,7 @@
       <para>When wishing to build Guvnor, go into the drools-guvnor
       directory, and run <command>mvn package</command>. This will run the tests,
       and then build a deployable war.
-      Once the war file is in the target directory, the BRMS is ready to
+      Once the war file is in the target directory, the Guvnor is ready to
       go.</para>
     </section>
 
@@ -108,12 +107,12 @@
       <filename>Guvnor.launch</filename> file in in the drools-guvnor
       directory. To launch Guvnor in debug mode, open the Run dialog
       (Run-&gt;Run), and then choose <emphasis>Guvnor</emphasis> from the list.
-      Launching this will open a new window, with the BRMS in debug mode,
+      Launching this will open a new window, with Guvnor in debug mode,
       ready to go</para>
 
       <para>Normally</para>
 
-      <para>Downloading and debugging the BRMS with GWT is optional, so if
+      <para>Downloading and debugging Guvnor with GWT is optional, so if
       there are no GUI issues being worked on then this step can be safely
       skipped.</para>
     </section>
@@ -122,7 +121,7 @@
   <section>
     <title>Re-usable components</title>
 
-    <para>The BRMS uses a service interface to separate the GUI from the back
+    <para>Guvnor uses a service interface to separate the GUI from the back
     end functionality. In this case the back end both includes the asset
     repository (drools-repository and JCR) as well as the compiler specifics
     to deal with rules.</para>
@@ -146,7 +145,7 @@
     recommended).</para>
 
     <para>The <filename>Guvnor.html</filename> file can be customized. For
-    example to change logos or embed the BRMS in another page. Take a look at
+    example to change logos or embed Guvnor in another page. Take a look at
     the <filename>Guvnor.html</filename> file for details.</para>
   </section>
 
