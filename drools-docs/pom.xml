@@ -17,7 +17,6 @@
     <!-- These are just the soa modules -->
     <module>drools-docs-introduction</module>
     <module>drools-docs-expert</module>
-    <!--module>drools-docs-flow</module-->
     <module>drools-docs-fusion</module>
     <module>drools-docs-guvnor</module>
     <!-- Other modules are defined in the not-soa profile -->
@@ -49,12 +48,6 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-docs-expert</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-flow</artifactId>
         <type>jdocbook</type>
         <version>${project.version}</version>
       </dependency>
