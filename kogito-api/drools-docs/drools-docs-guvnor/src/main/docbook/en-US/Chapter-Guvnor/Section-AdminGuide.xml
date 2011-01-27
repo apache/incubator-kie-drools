@@ -7,9 +7,9 @@
   <title>Administration guide</title>
 
   <para>This chapter covers installation and administration issues of the
-  BRMS.</para>
+  Guvnor.</para>
 
-  <para>The BRMS is a web application that can run in multiple environments,
+  <para>The Guvnor is a web application that can run in multiple environments,
   and be configured to suit most situations. There is also some initial setup
   of data, and export/import functions covered.</para>
 
