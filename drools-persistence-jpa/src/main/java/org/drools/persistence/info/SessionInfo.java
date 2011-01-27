@@ -13,11 +13,10 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.drools.persistence.EntityInfo;
 import org.drools.persistence.SessionMarshallingHelper;
 
 @Entity
-public class SessionInfo implements EntityInfo {
+public class SessionInfo {
     private @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long                        id;
