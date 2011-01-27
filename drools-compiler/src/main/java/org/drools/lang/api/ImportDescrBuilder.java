@@ -19,14 +19,11 @@ package org.drools.lang.api;
 import org.drools.lang.descr.ImportDescr;
 
 /**
- * @author etirelli
  *
  */
 public interface ImportDescrBuilder
     extends
-    DescrBuilder {
-
-    public ImportDescr getDescr();
+    DescrBuilder<ImportDescr> {
 
     public ImportDescrBuilder target( String target );
 

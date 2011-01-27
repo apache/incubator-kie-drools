@@ -1,5 +1,7 @@
 package org.drools.lang;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class DroolsParserExceptionFactory {
     public final static String                        TRAILING_SEMI_COLON_NOT_ALLOWED_MESSAGE = "Line %1$d:%2$d trailing semi-colon not allowed%3$s";
     public final static String                        PARSER_LOCATION_MESSAGE_COMPLETE        = " in %1$s %2$s";
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
+    public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. Stack trace:\n %5$s";
 
     private String[]                                  tokenNames                              = null;
     private Stack<Map<DroolsParaphraseTypes, String>> paraphrases                             = null;
@@ -107,12 +110,13 @@ public class DroolsParserExceptionFactory {
     /**
      * This will take a RecognitionException, and create a sensible error
      * message out of it
-     */ 
+     */
     private List<String> createErrorMessage( RecognitionException e ) {
         List<String> codeAndMessage = new ArrayList<String>( 2 );
         String message = "";
         if ( e instanceof MismatchedTokenException ) {
             MismatchedTokenException mte = (MismatchedTokenException) e;
+            String expecting = mte instanceof DroolsMismatchedTokenException ? ((DroolsMismatchedTokenException)mte).getTokenText() : getBetterToken( mte.expecting );
             if ( tokenNames != null && mte.expecting >= 0 && mte.expecting < tokenNames.length ) {
                 message = String
                         .format(
@@ -120,7 +124,7 @@ public class DroolsParserExceptionFactory {
                                  e.line,
                                  e.charPositionInLine,
                                  getBetterToken( e.token ),
-                                 getBetterToken( mte.expecting ),
+                                 expecting,
                                  formatParserLocation() );
                 codeAndMessage.add( message );
                 codeAndMessage.add( "ERR 102" );
@@ -219,6 +223,21 @@ public class DroolsParserExceptionFactory {
             codeAndMessage.add( "?????" );
         }
         return codeAndMessage;
+    }
+
+    public DroolsParserException createDroolsException( Exception e,
+                                                        Token token ) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace( new PrintWriter(sw) );
+        return new DroolsParserException( String.format(
+                                                         DroolsParserExceptionFactory.UNEXPECTED_EXCEPTION,
+                                                         token.getLine(),
+                                                         token.getCharPositionInLine(),
+                                                         getBetterToken( token ),
+                                                         e.toString(),
+                                                         sw.toString() ),
+                                          e );
+
     }
 
     private String expectedTokensAsString( BitSet set ) {
@@ -390,4 +409,5 @@ public class DroolsParserExceptionFactory {
                 return defaultValue;
         }
     }
+
 }

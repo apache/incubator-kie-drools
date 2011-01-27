@@ -23,11 +23,7 @@ import org.drools.lang.descr.AttributeDescr;
  */
 public interface AttributeDescrBuilder
     extends
-    DescrBuilder {
-
-    public AttributeDescr getDescr();
-
-    public AttributeDescrBuilder name( String name );
+    DescrBuilder<AttributeDescr> {
 
     public AttributeDescrBuilder value( String value );
 

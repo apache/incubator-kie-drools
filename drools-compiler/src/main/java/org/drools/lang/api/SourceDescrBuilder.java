@@ -16,17 +16,14 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.BaseDescr;
+
 
 /**
- *  A descriptor builder for Globals
+ *  A descriptor builder for Pattern sources
  */
-public interface AnnotationDescrBuilder
+public interface SourceDescrBuilder<T extends BaseDescr>
     extends
-    DescrBuilder<AnnotationDescr> {
+    DescrBuilder<T> {
 
-    public AnnotationDescrBuilder value( String value );
-
-    public AnnotationDescrBuilder keyValue( String key,
-                                            String value );
 }

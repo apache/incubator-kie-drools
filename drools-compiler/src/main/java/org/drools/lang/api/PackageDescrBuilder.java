@@ -4,18 +4,19 @@ import org.drools.lang.descr.PackageDescr;
 
 public interface PackageDescrBuilder
     extends
-    DescrBuilder {
-
-    public PackageDescr getDescr();
+    DescrBuilder<PackageDescr>,
+    AttributeSupportBuilder {
 
     public PackageDescrBuilder name( String name );
 
-    public ImportDescrBuilder newImportDescr();
+    public ImportDescrBuilder newImport();
 
-    public ImportDescrBuilder newFunctionImportDescr();
+    public ImportDescrBuilder newFunctionImport();
 
-    public GlobalDescrBuilder newGlobalDescr();
+    public GlobalDescrBuilder newGlobal();
 
-    public DeclareDescrBuilder newDeclareDescr();
+    public DeclareDescrBuilder newDeclare();
+
+    public RuleDescrBuilder newRule();
 
 }

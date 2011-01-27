@@ -23,9 +23,7 @@ import org.drools.lang.descr.GlobalDescr;
  */
 public interface GlobalDescrBuilder
     extends
-    DescrBuilder {
-
-    public GlobalDescr getDescr();
+    DescrBuilder<GlobalDescr> {
 
     public GlobalDescrBuilder type( String type );
 

@@ -2,7 +2,7 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.GlobalDescr;
 
-public class GlobalDescrBuilderImpl extends BaseDescrBuilderImpl
+public class GlobalDescrBuilderImpl extends BaseDescrBuilderImpl<GlobalDescr>
     implements
     GlobalDescrBuilder {
 
@@ -10,17 +10,13 @@ public class GlobalDescrBuilderImpl extends BaseDescrBuilderImpl
         super( new GlobalDescr() );
     }
 
-    public GlobalDescr getDescr() {
-        return (GlobalDescr) descr;
-    }
-
     public GlobalDescrBuilder type( String type ) {
-        ((GlobalDescr) descr).setType( type );
+        descr.setType( type );
         return this;
     }
 
     public GlobalDescrBuilder identifier( String identifier ) {
-        ((GlobalDescr) descr).setIdentifier( identifier );
+        descr.setIdentifier( identifier );
         return this;
     }
 

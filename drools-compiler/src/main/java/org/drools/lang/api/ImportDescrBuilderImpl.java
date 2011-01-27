@@ -3,7 +3,7 @@ package org.drools.lang.api;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.ImportDescr;
 
-public class ImportDescrBuilderImpl extends BaseDescrBuilderImpl
+public class ImportDescrBuilderImpl extends BaseDescrBuilderImpl<ImportDescr>
     implements
     ImportDescrBuilder {
 
@@ -11,12 +11,8 @@ public class ImportDescrBuilderImpl extends BaseDescrBuilderImpl
         super( function ? new FunctionImportDescr() : new ImportDescr() );
     }
 
-    public ImportDescr getDescr() {
-        return (ImportDescr) descr;
-    }
-
     public ImportDescrBuilder target( String target ) {
-        ((ImportDescr) descr).setTarget( target );
+        descr.setTarget( target );
         return this;
     }
 

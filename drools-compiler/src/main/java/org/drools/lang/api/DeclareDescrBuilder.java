@@ -23,9 +23,7 @@ import org.drools.lang.descr.TypeDeclarationDescr;
  */
 public interface DeclareDescrBuilder
     extends
-    AnnotatedDescrBuilder {
-
-    public TypeDeclarationDescr getDescr();
+    AnnotatedDescrBuilder<TypeDeclarationDescr> {
 
     public DeclareDescrBuilder type( String type );
     
