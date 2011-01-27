@@ -21,41 +21,41 @@ import org.drools.lang.descr.BaseDescr;
 /**
  * A base class for all DescrBuilders
  */
-public class BaseDescrBuilderImpl
+public class BaseDescrBuilderImpl<T extends BaseDescr>
     implements
-    DescrBuilder {
+    DescrBuilder<T> {
 
-    protected BaseDescr descr;
+    protected T descr;
 
-    protected BaseDescrBuilderImpl(final BaseDescr descr) {
+    protected BaseDescrBuilderImpl(final T descr) {
         this.descr = descr;
     }
 
-    public DescrBuilder startLocation( int line,
+    public DescrBuilder<T> startLocation( int line,
                                        int column ) {
         descr.setLocation( line,
                            column );
         return this;
     }
 
-    public DescrBuilder endLocation( int line,
+    public DescrBuilder<T> endLocation( int line,
                                      int column ) {
         descr.setEndLocation( line,
                               column );
         return this;
     }
 
-    public DescrBuilder startCharacter( int offset ) {
+    public DescrBuilder<T> startCharacter( int offset ) {
         descr.setStartCharacter( offset );
         return this;
     }
 
-    public DescrBuilder endCharacter( int offset ) {
+    public DescrBuilder<T> endCharacter( int offset ) {
         descr.setEndCharacter( offset );
         return this;
     }
 
-    public BaseDescr getDescr() {
+    public T getDescr() {
         return descr;
     }
 

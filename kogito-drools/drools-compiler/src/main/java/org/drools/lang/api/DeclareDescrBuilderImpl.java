@@ -2,7 +2,7 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.TypeDeclarationDescr;
 
-public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl
+public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<TypeDeclarationDescr>
     implements
     DeclareDescrBuilder {
 
@@ -10,24 +10,20 @@ public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl
         super( new TypeDeclarationDescr() );
     }
 
-    public TypeDeclarationDescr getDescr() {
-        return (TypeDeclarationDescr) descr;
+    public DeclareDescrBuilder type( String type ) {
+        descr.setTypeName( type );
+        return this;
     }
 
     public AnnotationDescrBuilder newAnnotation( String name ) {
         AnnotationDescrBuilder annotation = new AnnotationDescrBuilderImpl( name );
-        ((TypeDeclarationDescr) descr).addAnnotation( annotation.getDescr() );
+        descr.addAnnotation( annotation.getDescr() );
         return annotation;
-    }
-
-    public DeclareDescrBuilder type( String type ) {
-        ((TypeDeclarationDescr) descr).setTypeName( type );
-        return this;
     }
 
     public FieldDescrBuilder newField( String name ) {
         FieldDescrBuilder field = new FieldDescrBuilderImpl( name );
-        ((TypeDeclarationDescr) descr).addField( field.getDescr() );
+        descr.addField( field.getDescr() );
         return field;
     }
 

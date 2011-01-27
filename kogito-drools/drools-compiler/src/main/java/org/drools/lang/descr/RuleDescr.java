@@ -120,6 +120,10 @@ public class RuleDescr extends AnnotatedBaseDescr
         return this.name;
     }
 
+    public void setName( String name ) {
+        this.name = name;
+    }
+
     public String getDialect() {
         AttributeDescr dialect = this.attributes.get( "dialect" );
         return dialect != null ? dialect.getValue() : null;

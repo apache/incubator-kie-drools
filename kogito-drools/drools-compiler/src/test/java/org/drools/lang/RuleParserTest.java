@@ -20,7 +20,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -30,10 +29,14 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
-import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 
@@ -219,50 +222,50 @@ public class RuleParserTest extends TestCase {
                       global.getEndCharacter() );
     }
 
-    //    public void testGlobal() throws Exception {
-    //        PackageDescr pack = (PackageDescr) parseResource( "compilationUnit",
-    //                                                          "globals.drl" );
-    //
-    //        assertEquals( 1,
-    //                          pack.getRules().size() );
-    //
-    //        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
-    //        assertEquals( 1,
-    //                          rule.getLhs().getDescrs().size() );
-    //
-    //        assertEquals( 1,
-    //                          pack.getImports().size() );
-    //        assertEquals( 2,
-    //                          pack.getGlobals().size() );
-    //
-    //        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
-    //        assertEquals( "java.lang.String",
-    //                          foo.getType() );
-    //        assertEquals( "foo",
-    //                          foo.getIdentifier() );
-    //        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
-    //        assertEquals( "java.lang.Integer",
-    //                          bar.getType() );
-    //        assertEquals( "bar",
-    //                          bar.getIdentifier() );
-    //    }
+    public void testGlobal() throws Exception {
+        PackageDescr pack = (PackageDescr) parseResource( "compilationUnit",
+                                                          "globals.drl" );
 
-    //    public void testFunctionImport() throws Exception {
-    //        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
-    //                                                         "test_FunctionImport.drl" );
-    //
-    //        assertEquals( 2,
-    //                          pkg.getFunctionImports().size() );
-    //
-    //        assertEquals( "abd.def.x",
-    //                          ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getTarget() );
-    //        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getStartCharacter() == -1 );
-    //        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getEndCharacter() == -1 );
-    //        assertEquals( "qed.wah.*",
-    //                          ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getTarget() );
-    //        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getStartCharacter() == -1 );
-    //        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getEndCharacter() == -1 );
-    //    }
+        assertEquals( 1,
+                      pack.getRules().size() );
+
+        final RuleDescr rule = (RuleDescr) pack.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        assertEquals( 1,
+                      pack.getImports().size() );
+        assertEquals( 2,
+                      pack.getGlobals().size() );
+
+        final GlobalDescr foo = (GlobalDescr) pack.getGlobals().get( 0 );
+        assertEquals( "java.lang.String",
+                      foo.getType() );
+        assertEquals( "foo",
+                      foo.getIdentifier() );
+        final GlobalDescr bar = (GlobalDescr) pack.getGlobals().get( 1 );
+        assertEquals( "java.lang.Integer",
+                      bar.getType() );
+        assertEquals( "bar",
+                      bar.getIdentifier() );
+    }
+
+    public void testFunctionImport2() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "test_FunctionImport.drl" );
+
+        assertEquals( 2,
+                      pkg.getFunctionImports().size() );
+
+        assertEquals( "abd.def.x",
+                      ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getTarget() );
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getStartCharacter() == -1 );
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 0 )).getEndCharacter() == -1 );
+        assertEquals( "qed.wah.*",
+                      ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getTarget() );
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getStartCharacter() == -1 );
+        assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getEndCharacter() == -1 );
+    }
 
     //    public void testFromComplexAcessor() throws Exception {
     //        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
@@ -397,31 +400,56 @@ public class RuleParserTest extends TestCase {
     //
     //    public void testSimpleRestriction() throws Exception {
     //        String source = "package com.sample  rule test  when  Test( ( text == null || matches \"\" ) )  then  end";
-    //        parse( "compilation_unit",
-    //               "compilation_unit",
-    //               source );
+    //        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+    //                                                 source );
     //        assertEquals( "com.sample",
-    //                      this.walker.getPackageDescr().getName() );
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
+    //                          pkg.getName() );
+    //        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
     //        assertEquals( "test",
-    //                      rule.getName() );
+    //                          rule.getName() );
+    //
     //        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) ((PatternDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
     //        RestrictionConnectiveDescr restConnective = (RestrictionConnectiveDescr) fieldConstr.getRestrictions().get( 0 );
     //        assertEquals( 2,
-    //                      restConnective.getRestrictions().size() );
+    //                          restConnective.getRestrictions().size() );
     //    }
-    //
-    //    public void testDialect() throws Exception {
-    //        final String source = "dialect 'mvel'";
-    //        parse( "compilation_unit",
-    //               "compilation_unit",
-    //               source );
-    //        AttributeDescr attr = (AttributeDescr) this.walker.getPackageDescr().getAttributes().get( 0 );
-    //        assertEquals( "dialect",
-    //                      attr.getName() );
-    //        assertEquals( "mvel",
-    //                      attr.getValue() );
-    //    }
+
+    public void testSimpleConstraint() throws Exception {
+        String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        assertEquals( "com.sample",
+                          pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                          rule.getName() );
+
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        
+        AndDescr constraint = (AndDescr) pattern.getConstraint();
+        assertEquals( 2, 
+                      constraint.getDescrs().size() );
+        assertEquals( "type == stilton",
+                      constraint.getDescrs().get( 0 ).getText() );
+        assertEquals( "price > 10",
+                      constraint.getDescrs().get( 1 ).getText() );
+        
+
+    }
+
+    public void testDialect() throws Exception {
+        final String source = "dialect 'mvel'";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        AttributeDescr attr = (AttributeDescr) pkg.getAttributes().get( 0 );
+        assertEquals( "dialect",
+                      attr.getName() );
+        assertEquals( "mvel",
+                      attr.getValue() );
+    }
+
     //
     //    public void testDialect2() throws Exception {
     //        final String source = "dialect \"mvel\"";
@@ -3989,36 +4017,49 @@ public class RuleParserTest extends TestCase {
                       descr.getAnnotation( "name5" ).getValue() );
     }
 
-    //    public void testRuleMetadata() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "Rule_with_Metadata.drl" );
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //        // @fooAttribute(barValue)
-    //        // @fooAtt2(barVal2)
-    //        RuleDescr rule = pack.getRules().get( 0 );
-    //        assertTrue( rule.getMetaAttributes().containsKey( "fooMeta1" ) );
-    //        assertEquals( "barVal1",
-    //                      rule.getMetaAttribute( "fooMeta1" ) );
-    //        assertTrue( rule.getMetaAttributes().containsKey( "fooMeta2" ) );
-    //        assertEquals( "barVal2",
-    //                      rule.getMetaAttribute( "fooMeta2" ) );
-    //    }
-    //
-    //    public void testRuleExtends() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "Rule_with_Extends.drl" );
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //        // @fooAttribute(barValue)
-    //        // @fooAtt2(barVal2)
-    //        RuleDescr rule = pack.getRules().get( 0 );
-    //        assertTrue( rule.getParentName() != null );
-    //        assertEquals( "rule1",
-    //                      rule.getParentName() );
-    //
-    //    }
-    //
+    public void testRuleMetadata() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "Rule_with_Metadata.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        // @fooAttribute(barValue)
+        // @fooAtt2(barVal2)
+        RuleDescr rule = pkg.getRules().get( 0 );
+        assertTrue( rule.getAnnotationNames().contains( "fooMeta1" ) );
+        assertEquals( "barVal1",
+                      rule.getAnnotation( "fooMeta1" ).getValue() );
+        assertTrue( rule.getAnnotationNames().contains( "fooMeta2" ) );
+        assertEquals( "barVal2",
+                      rule.getAnnotation( "fooMeta2" ).getValue() );
+        assertEqualsIgnoreWhitespace( "System.out.println(\"Consequence\");",
+                                      (String) rule.getConsequence() );
+    }
+
+    public void testRuleExtends() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "Rule_with_Extends.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        assertTrue( rule.getParentName() != null );
+        assertEquals( "rule1",
+                      rule.getParentName() );
+
+        AndDescr lhs = rule.getLhs();
+        assertNotNull( lhs );
+        assertEquals( 1,
+                      lhs.getDescrs().size() );
+
+        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "foo",
+                      pattern.getObjectType() );
+        assertEquals( "$foo",
+                      pattern.getIdentifier() );
+
+    }
 
     public void testTypeDeclarationWithFields() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",

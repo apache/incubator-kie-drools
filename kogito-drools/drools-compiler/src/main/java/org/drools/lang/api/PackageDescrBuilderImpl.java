@@ -5,19 +5,16 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
 
 /**
  * A builder implementation for PackageDescrs using a fluent API.
  */
-public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl
+public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
     implements
     PackageDescrBuilder {
-    private PackageDescr pkg;
 
     private PackageDescrBuilderImpl() {
         super( new PackageDescr() );
-        pkg = (PackageDescr) descr;
     }
 
     public static PackageDescrBuilder newPackage() {
@@ -28,39 +25,51 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl
      * {@inheritDoc}
      */
     public PackageDescr getDescr() {
-        return pkg;
+        return descr;
     }
 
     /**
      * {@inheritDoc}
      */
     public PackageDescrBuilder name( String name ) {
-        pkg.setNamespace( name );
+        descr.setNamespace( name );
         return this;
     }
 
-    public ImportDescrBuilder newImportDescr() {
+    public ImportDescrBuilder newImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( false );
-        pkg.addImport( impl.getDescr() );
+        descr.addImport( impl.getDescr() );
         return impl;
     }
 
-    public ImportDescrBuilder newFunctionImportDescr() {
+    public ImportDescrBuilder newFunctionImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( true );
-        pkg.addFunctionImport( (FunctionImportDescr) impl.getDescr() );
+        descr.addFunctionImport( (FunctionImportDescr) impl.getDescr() );
         return impl;
     }
 
-    public GlobalDescrBuilder newGlobalDescr() {
+    public GlobalDescrBuilder newGlobal() {
         GlobalDescrBuilder global = new GlobalDescrBuilderImpl();
-        pkg.addGlobal( global.getDescr() );
+        descr.addGlobal( global.getDescr() );
         return global;
     }
 
-    public DeclareDescrBuilder newDeclareDescr() {
+    public DeclareDescrBuilder newDeclare() {
         DeclareDescrBuilder declare = new DeclareDescrBuilderImpl();
-        pkg.addTypeDeclaration( declare.getDescr() );
+        descr.addTypeDeclaration( declare.getDescr() );
         return declare;
+    }
+
+    public RuleDescrBuilder newRule() {
+        RuleDescrBuilder rule = new RuleDescrBuilderImpl();
+        descr.addRule( rule.getDescr() );
+        return rule;
+    }
+
+    public AttributeDescrBuilder attribute( String name ) {
+        AttributeDescrBuilder attribute = new AttributeDescrBuilderImpl( name );
+        descr.addAttribute( attribute.getDescr() );
+        return attribute;
     }
 
 }

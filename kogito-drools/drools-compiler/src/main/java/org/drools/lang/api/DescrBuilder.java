@@ -21,18 +21,18 @@ import org.drools.lang.descr.BaseDescr;
 /**
  * A super interface for all DescrBuilders
  */
-public interface DescrBuilder {
+public interface DescrBuilder<T extends BaseDescr> {
 
-    public DescrBuilder startLocation( int line,
+    public DescrBuilder<T> startLocation( int line,
                                        int column );
 
-    public DescrBuilder endLocation( int line,
+    public DescrBuilder<T> endLocation( int line,
                                      int column );
 
-    public DescrBuilder startCharacter( int offset );
+    public DescrBuilder<T> startCharacter( int offset );
 
-    public DescrBuilder endCharacter( int offset );
+    public DescrBuilder<T> endCharacter( int offset );
 
-    public BaseDescr getDescr();
+    public T getDescr();
 
 }

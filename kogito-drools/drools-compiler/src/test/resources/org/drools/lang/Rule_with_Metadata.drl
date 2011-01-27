@@ -5,7 +5,6 @@ rule test_rule
 	@fooMeta1(barVal1)
 	@fooMeta2(barVal2)
 	when
-		foo()
 	then
-		
+	    System.out.println("Consequence");
 end

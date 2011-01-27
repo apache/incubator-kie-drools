@@ -16,6 +16,7 @@
 
 package org.drools.lang.api;
 
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
 
 /**
@@ -23,18 +24,15 @@ import org.drools.lang.descr.RuleDescr;
  */
 public interface RuleDescrBuilder
     extends
-    AnnotatedDescrBuilder {
-
-    public RuleDescr getDescr();
+    AnnotatedDescrBuilder<RuleDescr>,
+    AttributeSupportBuilder {
 
     public RuleDescrBuilder name( String name );
-    
+
     public RuleDescrBuilder extendsRule( String name );
-    
+
     public RuleDescrBuilder rhs( String rhs );
-    
-    public AttributeDescrBuilder newAttribute( String name );
-    
-    //public AndDescrBuilder lhs();
-    
+
+    public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs();
+
 }

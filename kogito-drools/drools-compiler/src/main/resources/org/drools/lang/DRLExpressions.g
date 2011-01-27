@@ -79,6 +79,12 @@ typeArgument
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
+// the following dymmy rule is to force the AT symbol to be
+// included in the follow set of the expression on the DFAs
+dummy
+	:	expression AT
+	;
+
 expression
 	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)? 
 	;
@@ -297,7 +303,6 @@ assignmentOperator
         |   LESS LESS EQUALS_ASSIGN
         |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
         |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
-        |   AT
 	;
 
 // --------------------------------------------------------
