@@ -43,7 +43,11 @@ public class RulesheetUtil {
         sheetListeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,
                       listeners );
         final ExcelParser parser = new ExcelParser( sheetListeners );
-        parser.parseFile( stream );
+        try {
+            parser.parseFile( stream );
+        } finally {
+            stream.close();
+        }
         stream.close();
         return listener;
     }

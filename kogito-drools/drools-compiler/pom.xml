@@ -20,6 +20,7 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
       <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <!-- External dependencies -->
     <dependency>
