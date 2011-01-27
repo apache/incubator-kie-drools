@@ -85,7 +85,7 @@ public interface StatefulKnowledgeSession
     CommandExecutor,
     KnowledgeRuntime {
 
-    long getId();
+    int getId();
     
     /**
      * Releases all the current session resources, setting up the session for garbage collection.
