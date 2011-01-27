@@ -1104,7 +1104,7 @@ ut.commit();</programlisting>
           <listitem>
             <para>The history log - that keeps the history of all executed
             process instances in a database - has been extended so it is now
-            caable of storing more detailed information for one specfic
+            capable of storing more detailed information for one specific
             process instance. It is now possible to find out exactly which
             nodes were triggered during the execution of the process
             instance.</para>
