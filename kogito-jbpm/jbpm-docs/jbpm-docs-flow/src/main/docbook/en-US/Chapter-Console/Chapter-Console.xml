@@ -222,5 +222,23 @@ Check any that apply:&lt;br/&gt;
   <para>Forms should be included in the jbpm-gwt-form.jar in the server war.</para>
 
   </section>
+  
+  <section>
+    <title>REST interface</title>
+
+    <para>The console also offers a REST interface for the functionality it exposes.  This
+    for example allows easy integration with the process engine for features like starting
+    process instances, retrieving task lists, etc.</para>
+    
+    <para>The list URLS that the REST interface exposes can be inspected if you navigate
+    to the following URL (after installing and starting the console):</para>
+    <para><ulink url="http://localhost:8080/gwt-console-server/rs/server/resources">http://localhost:8080/gwt-console-server/rs/server/resources</ulink></para>
+    
+    <para>For example, this allows you to close a task using</para>
+    <para>/gwt-console-server/rs/task/{taskId}/close</para>
+    <para>or starting a new process instances using</para>
+    <para>/gwt-console-server/rs/process/definition/{id}/new_instance</para>
+
+  </section>
 
 </chapter>
