@@ -14,6 +14,7 @@
         <include>org.jbpm:jbpm-bpmn2</include>
         <include>org.jbpm:jbpm-bam</include>
         <include>org.jbpm:jbpm-human-task</include>
+        <include>org.jbpm:jbpm-workitems</include>
       </includes>      <binaries>
         <outputDirectory></outputDirectory>
         <unpack>false</unpack>         

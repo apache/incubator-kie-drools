@@ -39,6 +39,13 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 
 	private Connection connection;
 	
+	public EmailWorkItemHandler() {
+	}
+	
+	public EmailWorkItemHandler(String host, String port, String userName, String password) {
+		setConnection(host, port, userName, password);
+	}
+	
 	public void setConnection(String host, String port, String userName, String password) {
 		connection = new Connection();
 		connection.setHost(host);
