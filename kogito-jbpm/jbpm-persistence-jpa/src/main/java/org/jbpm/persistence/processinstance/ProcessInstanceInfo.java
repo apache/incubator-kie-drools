@@ -36,7 +36,7 @@ import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 
 @Entity
-public class ProcessInstanceInfo {
+public class ProcessInstanceInfo{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -80,14 +80,16 @@ public class ProcessInstanceInfo {
 
     public ProcessInstanceInfo(ProcessInstance processInstance,
                                Environment env) {
-        this.processInstance = processInstance;
-        this.processId = processInstance.getProcessId();
-        startDate = new Date();
+        this(processInstance);
         this.env = env;
     }
 
-    public long getId() {
+    public Long getId() {
         return processInstanceId;
+    }
+    
+    public void setId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public String getProcessId() {
@@ -257,4 +259,15 @@ public class ProcessInstanceInfo {
         return hash;
     }
 
+    public int getVersion() {
+        return version;
+    }
+    
+    public Set<String> getEventTypes() {
+        return eventTypes;
+    }
+    
+    public void clearProcessInstance(){
+        processInstance = null;
+    }
 }

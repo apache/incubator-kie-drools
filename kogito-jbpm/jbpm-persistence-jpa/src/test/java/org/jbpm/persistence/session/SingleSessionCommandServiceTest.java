@@ -23,7 +23,9 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.persistence.session.SingleSessionCommandService;
+import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.jpa.JpaJDKTimerService;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.rule.Package;
@@ -36,6 +38,8 @@ import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.compiler.ProcessBuilderImpl;
+import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
+import org.jbpm.persistence.processinstance.JPASignalManagerFactory;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -125,15 +129,15 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
+                                SingleSessionCommandService.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+                                JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
+                                JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.drools.persistence.processinstance.JPASignalManagerFactory" );
+                                JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
-        						"org.drools.persistence.session.JpaJDKTimerService" );
+                                JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
@@ -241,15 +245,15 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
+                                SingleSessionCommandService.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+                                JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
+                                JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.drools.persistence.processinstance.JPASignalManagerFactory" );
+                                JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
-								"org.drools.persistence.session.JpaJDKTimerService" );
+                                JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
@@ -443,15 +447,15 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
+                                SingleSessionCommandService.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+                                JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
+                                JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
+                                JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
-								"org.drools.persistence.session.JpaJDKTimerService" );
+                                JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
@@ -617,15 +621,15 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
+                                SingleSessionCommandService.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+                                JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
+                                JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.drools.persistence.processinstance.JPASignalManagerFactory" );
+                                JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
-								"org.drools.persistence.session.JpaJDKTimerService" );
+                                JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -723,15 +727,15 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                "org.drools.persistence.session.SingleSessionCommandService" );
+                                SingleSessionCommandService.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
-                                "org.drools.persistence.processinstance.JPAProcessInstanceManagerFactory" );
+                                JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
-                                "org.drools.persistence.processinstance.JPAWorkItemManagerFactory" );
+                                JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
-                                "org.drools.persistence.processinstance.JPASignalManagerFactory" );
+                                JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
-								"org.drools.persistence.session.JpaJDKTimerService" );
+								JpaJDKTimerService.class.getName() );
         SessionConfiguration config = new SessionConfiguration( properties );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

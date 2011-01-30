@@ -296,6 +296,12 @@
         <version>${drools.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-persistence-jpa</artifactId>
+        <type>test-jar</type>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
         <version>2.0.19</version>
