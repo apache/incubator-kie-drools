@@ -140,6 +140,8 @@ public class CommandDelegate {
 				        cause = cause.getCause();
 	                    if (cause != null && "Could not find session data for id 1".equals(cause.getMessage())) {
 	                        System.out.println("Creating new session data ...");
+	            	        env = KnowledgeBaseFactory.newEnvironment();
+	            	        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 	                        ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
 	                            kbase, config, env);
 	                    } else {
