@@ -148,14 +148,14 @@ public class StartEventHandler extends AbstractNodeHandler {
 		    	ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
 		    	if (constraintTrigger.getHeader() == null) {
 			        xmlDump.append("      <conditionalEventDefinition>" + EOL);
-	                xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
+	                xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + constraintTrigger.getConstraint() + "</condition>" + EOL);
 	                xmlDump.append("      </conditionalEventDefinition>" + EOL);
 		    	} else {
 		    		String header = constraintTrigger.getHeader();
 		    		int lenght = (header.length() - 13)/2;
 		    		String period = header.substring(11, 11 + lenght);
 			        xmlDump.append("      <timerEventDefinition>" + EOL);
-	                xmlDump.append("        <timeCycle xs:type=\"tFormalExpression\">" + period + "</timeCycle>" + EOL);
+	                xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + period + "</timeCycle>" + EOL);
 	                xmlDump.append("      </timerEventDefinition>" + EOL);
 		    	}
 		    } else if (trigger instanceof EventTrigger) {

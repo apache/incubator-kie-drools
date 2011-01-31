@@ -22,7 +22,7 @@ public class ProcessRuleFlowGroupTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.ruleset\" package-name=\"org.drools\" version=\"1\" >\n" +
+            "         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.ruleset\" package-name=\"org.jbpm\" version=\"1\" >\n" +
             "\n" +
             "  <header>\n" +
             "  </header>\n" +
@@ -41,7 +41,7 @@ public class ProcessRuleFlowGroupTest extends JbpmTestCase {
             "\n" +
             "</process>");
         Reader source2 = new StringReader(
-            "package org.drools;\n" +
+            "package org.jbpm;\n" +
             "\n" +
             "import org.jbpm.Person;\n" +
             "import org.drools.runtime.process.ProcessContext;\n" +

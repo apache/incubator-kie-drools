@@ -89,7 +89,7 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
         	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, metaDataType);
         }
         if (dynamicNode.isAutoComplete()) {
-        	xmlDump.append("    <completionCondition xs:type=\"tFormalExpression\">getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0</completionCondition>" + EOL);
+        	xmlDump.append("    <completionCondition xsi:type=\"tFormalExpression\">getActivityInstanceAttribute(\"numberOfActiveInstances\") == 0</completionCondition>" + EOL);
         }
 		endNode("adHocSubProcess", xmlDump);
 	}

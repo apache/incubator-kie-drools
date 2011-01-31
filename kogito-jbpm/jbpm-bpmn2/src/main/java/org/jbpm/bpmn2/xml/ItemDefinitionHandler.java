@@ -62,6 +62,9 @@ public class ItemDefinitionHandler extends BaseAbstractHandler implements Handle
 
 		String id = attrs.getValue("id");
 		String type = attrs.getValue("structureRef");
+		if (type == null || type.trim().length() == 0) {
+			type = "java.lang.Object";
+		}
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
 		Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
