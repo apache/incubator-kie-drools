@@ -4,15 +4,15 @@
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:g="http://www.jboss.org/drools/flow/gpd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_instanceMetadataItem" structureRef="java.lang.Object" />
+  <itemDefinition id="_instanceMetadataItem" />
 
   <process processType="Private" isExecutable="true" id="XPathProcess" name="XPathProcess" >
 
@@ -34,10 +34,10 @@
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
-      <conditionExpression xs:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='true']) = 1</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='true']) = 1</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
-      <conditionExpression xs:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='false']) = 1</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.w3.org/1999/XPath" >count($instanceMetadata/instanceMetadata/user[@approved='false']) = 1</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />

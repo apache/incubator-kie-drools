@@ -4,15 +4,15 @@
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" structureRef="java.lang.Object" />
-  <itemDefinition id="_yItem" structureRef="java.lang.Object" />
+  <itemDefinition id="_xItem" />
+  <itemDefinition id="_yItem" />
 
   <process processType="Private" isExecutable="true" id="com.sample.test" name="Test" >
 
@@ -48,29 +48,29 @@
       <dataInputAssociation>
         <targetRef>_6_BodyInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">This is an urgent email #{x}</from>
-          <to xs:type="tFormalExpression">_6_BodyInput</to>
+          <from xsi:type="tFormalExpression">This is an urgent email #{x}</from>
+          <to xsi:type="tFormalExpression">_6_BodyInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_SubjectInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Urgent email !</from>
-          <to xs:type="tFormalExpression">_6_SubjectInput</to>
+          <from xsi:type="tFormalExpression">Urgent email !</from>
+          <to xsi:type="tFormalExpression">_6_SubjectInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_ToInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">you@mail.com</from>
-          <to xs:type="tFormalExpression">_6_ToInput</to>
+          <from xsi:type="tFormalExpression">you@mail.com</from>
+          <to xsi:type="tFormalExpression">_6_ToInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_6_FromInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">me@mail.com</from>
-          <to xs:type="tFormalExpression">_6_FromInput</to>
+          <from xsi:type="tFormalExpression">me@mail.com</from>
+          <to xsi:type="tFormalExpression">_6_FromInput</to>
         </assignment>
       </dataInputAssociation>
     </task>
@@ -81,10 +81,10 @@
     <!-- connections -->
     <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" >
-      <conditionExpression xs:type="tFormalExpression" >return x == "First";</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" >return x == "First";</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" >
-      <conditionExpression xs:type="tFormalExpression" ></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" ></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_3-_5" sourceRef="_3" targetRef="_5" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
