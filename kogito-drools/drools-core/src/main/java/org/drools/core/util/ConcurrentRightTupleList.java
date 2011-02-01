@@ -60,7 +60,7 @@ public class ConcurrentRightTupleList
         this.hashCode = hashCode;
     }
 
-    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle ) {
+    public RightTuple getFirst(LeftTuple leftTuple ) {
         return this.first.get();
     }
     

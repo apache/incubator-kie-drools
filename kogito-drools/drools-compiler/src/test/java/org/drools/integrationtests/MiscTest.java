@@ -7400,6 +7400,39 @@ public class MiscTest {
         }
         assertTrue( kbuilder.hasErrors() );
     }
+    
+    // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
+    public void testRightMemoryBadIndexIterator() throws Exception {
+        String drl = "";
+        drl += "package test\n";
+        drl += "import org.drools.Person\n";
+        drl += "import org.drools.Cheese\n";
+        drl += "rule test dialect 'mvel'\n";
+        drl += "when\n";
+        drl += "       String() \n";
+        drl += "    $p:Person(  )\n";
+        drl += "    $c:Cheese( type == $p.name )\n";        
+        drl += "then\n";
+        drl +=  "    System.out.println( $p );\n ";
+        drl += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( errors.size() > 0 ) {
+            fail( errors.toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();        
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new Person( "stilton") );
+        ksession.insert( new Cheese( "stilton") );
+        ksession.insert( "I'm fonna fcsk you up!" );
+        
+        ksession.fireAllRules();
+    }    
 
     @Test
     public void testRuleChainingWithLogicalInserts() throws Exception {
