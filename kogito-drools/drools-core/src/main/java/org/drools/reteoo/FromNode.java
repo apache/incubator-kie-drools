@@ -31,8 +31,10 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleList;
+import org.drools.core.util.LinkedList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
@@ -206,6 +208,7 @@ public class FromNode extends LeftTupleSource
                                               workingMemory,
                                               leftTuple );
 
+        FastIterator rightIt = LinkedList.fastIterator;
         for ( final java.util.Iterator< ? > it = this.dataProvider.getResults( leftTuple,
                                                                                workingMemory,
                                                                                context,
@@ -223,10 +226,10 @@ public class FromNode extends LeftTupleSource
                                              null );
             } else {
                 // previous match, so reevaluate and propagate modify
-                if ( rightTuple.getNext() != null ) {
+                if ( rightIt.next( rightTuple ) != null ) {
                     // handle the odd case where more than one object has the same hashcode/equals value
                     previousMatches.put( object,
-                                         (RightTuple) rightTuple.getNext() );
+                                         (RightTuple) rightIt.next( rightTuple ) );
                     rightTuple.setNext( null );
                 }
             }
@@ -243,7 +246,7 @@ public class FromNode extends LeftTupleSource
         this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
 
         for ( RightTuple rightTuple : previousMatches.values() ) {
-            for ( RightTuple current = rightTuple; current != null; current = (RightTuple) current.getNext() ) {
+            for ( RightTuple current = rightTuple; current != null; current = (RightTuple) rightIt.next( current ) ) {
                 retractMatchAndDestroyHandle( leftTuple,
                                               current,
                                               context,
@@ -333,9 +336,10 @@ public class FromNode extends LeftTupleSource
                                        final FromMemory memory,
                                        final LeftTuple leftTuple) {
         Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
+        FastIterator rightIt = LinkedList.fastIterator;
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
-                RightTuple next = (RightTuple) current.getNext();
+                RightTuple next = (RightTuple) rightIt.next( current );
                 workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
                 current.unlinkFromRightParent();
                 current = next;
@@ -404,11 +408,12 @@ public class FromNode extends LeftTupleSource
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
+        FastIterator rightIter = LinkedList.fastIterator;
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
             for ( RightTuple rightTuples : matches.values() ) {
-                for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightTuples.getNext() ) {
+                for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,
                                                          rightTuple,
                                                          null,

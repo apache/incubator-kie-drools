@@ -143,4 +143,8 @@ public class EmptyBetaConstraints
         return EMPTY;
     }
 
+    public BetaConstraints getOriginalConstraint() {
+        throw new UnsupportedOperationException();
+    }
+
 }

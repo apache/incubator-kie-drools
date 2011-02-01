@@ -77,7 +77,12 @@ public class QuadroupleBetaConstraints
             this.indexed2 = false;
             this.indexed3 = false;
         } else {
-            final int depth = conf.getCompositeKeyDepth();
+            int depth = conf.getCompositeKeyDepth();
+            if ( !DefaultBetaConstraints.compositeAllowed(constraints) ) {
+            	// UnificationRestrictions cannot be allowed in composite indexes
+            	// We also ensure that if there is a mixture that standard restriction is first
+            	depth = 1;
+            }            
 
             // Determine  if this constraints are indexable
             final boolean i0 = isIndexable( constraints[0] );
@@ -177,7 +182,7 @@ public class QuadroupleBetaConstraints
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        return SingleBetaConstraints.isIndexable( constraint );
+        return DefaultBetaConstraints.isIndexable( constraint );
     }
 
     /* (non-Javadoc)
@@ -231,11 +236,6 @@ public class QuadroupleBetaConstraints
      */
     public boolean isAllowedCachedLeft(final ContextEntry[] context,
                                        final InternalFactHandle handle) {
-        //        return ( this.indexed0 || this.constraint0.isAllowedCachedLeft( context[0],
-        //                                                                       object ) ) && this.constraint1.isAllowedCachedLeft( context[1],
-        //                                                                                                       object ) && this.constraint2.isAllowedCachedLeft( context[2],
-        //                                                                                                                                                         object );
-
         return (this.indexed0 || this.constraint0.isAllowedCachedLeft( context[0],
                                                                        handle )) && (this.indexed1 || this.constraint1.isAllowedCachedLeft( context[1],
                                                                                                                                             handle )) && (this.indexed2 || this.constraint2.isAllowedCachedLeft( context[2],
@@ -406,4 +406,8 @@ public class QuadroupleBetaConstraints
         return new ContextEntry[]{this.constraint0.createContextEntry(), this.constraint1.createContextEntry(), this.constraint2.createContextEntry(), this.constraint3.createContextEntry()};
     }
 
+    public BetaConstraints getOriginalConstraint() {
+        throw new UnsupportedOperationException();
+    }    
+    
 }

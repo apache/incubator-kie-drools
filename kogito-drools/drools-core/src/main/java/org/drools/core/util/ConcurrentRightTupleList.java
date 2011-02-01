@@ -156,6 +156,15 @@ public class ConcurrentRightTupleList
     public Iterator iterator() {
         throw new UnsupportedOperationException();
     }
+    
+	public FastIterator fastIterator() {
+		return LinkedList.fastIterator;
+	}      
+	
+	public FastIterator fullFastIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}    	
 
     public boolean matches(final Object object,
                            final int objectHashCode) {
@@ -201,5 +210,5 @@ public class ConcurrentRightTupleList
     
     public Entry[] toArray() {
         throw new UnsupportedOperationException( "method is not implemented yet" );
-    }    
+    }
 }

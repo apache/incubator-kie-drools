@@ -56,6 +56,8 @@ public class LinkedList
     private int                size;
 
     private LinkedListIterator iterator;
+    
+    public static FastIterator fastIterator = new LinkedListFastIterator(); // contains no state, so ok to be static    
 
     /**
      * Construct an empty <code>LinkedList</code>
@@ -272,6 +274,16 @@ public class LinkedList
     public Iterator iterator() {
         this.iterator.reset( this );
         return this.iterator;
+    }
+    
+    public FastIterator fastIterator() {
+    	return fastIterator;
+    }
+    
+    public static class LinkedListFastIterator implements FastIterator {
+		public Entry next(Entry object) {
+			return object.getNext();
+		}    	
     }
 
     public java.util.Iterator javaUtilIterator() {

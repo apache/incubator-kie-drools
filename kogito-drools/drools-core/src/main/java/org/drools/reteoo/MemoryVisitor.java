@@ -25,6 +25,8 @@ import java.lang.reflect.Field;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.core.util.RightTupleIndexHashTable;
@@ -203,6 +205,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     //    }
 
     private void checkObjectHashSet(ObjectHashSet memory) {
+    	FastIterator it = LinkedList.fastIterator;
         final Entry[] entries = memory.getTable();
         int factCount = 0;
         int bucketCount = 0;
@@ -210,7 +213,7 @@ public class MemoryVisitor extends ReflectiveVisitor
             if ( entries[i] != null ) {
                 Entry  entry = (Entry ) entries[i];
                 while ( entry != null ) {
-                  entry = entry.getNext();
+                  entry = it.next( entry );
                   factCount++;                    
                 }
             }
@@ -234,7 +237,8 @@ public class MemoryVisitor extends ReflectiveVisitor
 
     private void checkRightTupleList(final RightTupleList memory) {
         int count = 0;
-        for ( RightTuple rightTuple = memory.getFirst( ( RightTuple ) null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        FastIterator rightIt = memory.fastIterator();
+        for ( RightTuple rightTuple = memory.getFirst( ( RightTuple ) null ); rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
                     count++;
         }
 
@@ -248,6 +252,7 @@ public class MemoryVisitor extends ReflectiveVisitor
         final Entry[] entries = memory.getTable();
         int factCount = 0;
         int bucketCount = 0;
+        FastIterator it = LinkedList.fastIterator;
         for ( int i = 0, length = entries.length; i < length; i++ ) {
             if ( entries[i] != null ) {
                 RightTupleList rightTupleList = (RightTupleList) entries[i];
@@ -255,7 +260,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                     if ( rightTupleList.first != null ) {
                         Entry entry = rightTupleList.first;
                         while ( entry != null ) {
-                            entry = entry.getNext();
+                            entry = it.next( entry );
                             factCount++;
                         }
                     } else {

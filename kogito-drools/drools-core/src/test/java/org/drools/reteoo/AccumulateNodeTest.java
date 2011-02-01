@@ -180,7 +180,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertEquals( 0,
                       this.memory.getRightTupleMemory().size() );
         assertTrue( "An empty matching objects list should be propagated",
-                           this.accumulator.getMatchingObjects().isEmpty() );
+                    this.accumulator.getMatchingObjects().isEmpty() );
 
         // assert tuple, should add left memory 
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",

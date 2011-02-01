@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.Address;
 import org.drools.Cheese;
 import org.drools.FactHandle;
 import org.drools.InsertedObject;
@@ -67,7 +68,6 @@ public class QueryTest {
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
-    
 
     @Test
     public void testQuery() throws Exception {
@@ -84,14 +84,13 @@ public class QueryTest {
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         session.insert( stilton );
-                session = SerializationHelper.getSerialisedStatefulSession( session,
+        session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                             ruleBase );
         final QueryResults results = session.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
 
     }
-    
 
     @Test
     public void testQueryRemoval() throws Exception {
@@ -108,24 +107,25 @@ public class QueryTest {
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
         session.insert( stilton );
-                session = SerializationHelper.getSerialisedStatefulSession( session,
+        session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                             ruleBase );
         QueryResults results = session.getQueryResults( "simple query" );
         assertEquals( 1,
                       results.size() );
 
         assertNotNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
-        
-        ruleBase.removeQuery( "org.drools.test", "simple query" );
-       
+
+        ruleBase.removeQuery( "org.drools.test",
+                              "simple query" );
+
         assertNull( ruleBase.getPackage( "org.drools.test" ).getRule( "simple query" ) );
-       
+
         results = session.getQueryResults( "simple query" );
         assertEquals( 0,
-                      results.size() );       
+                      results.size() );
 
-    }    
-    
+    }
+
     @Test
     public void testQuery2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -144,11 +144,13 @@ public class QueryTest {
         assertEquals( new InsertedObject( "value1" ),
                       results.get( 0 ).get( 0 ) );
     }
-    
+
     @Test
     public void testQuery2KnowledgeBuilder() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_Query.drl", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_Query.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
 
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
         kbase.addKnowledgePackages( kbase.getKnowledgePackages() );
@@ -162,7 +164,7 @@ public class QueryTest {
                       results.size() );
         assertEquals( new InsertedObject( "value1" ),
                       results.iterator().next().get( "assertedobj" ) );
-    }    
+    }
 
     @Test
     public void testQueryWithParams() throws Exception {
@@ -376,7 +378,7 @@ public class QueryTest {
         assertEquals( 1,
                       results.size() );
     }
-    
+
     @Test
     public void testDoubleQueryWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -463,7 +465,7 @@ public class QueryTest {
         assertEquals( 2,
                       queryResults.size() );
     }
-    
+
     @Test
     public void testQueryWithCollect() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -486,7 +488,7 @@ public class QueryTest {
         assertEquals( 2,
                       list.size() );
     }
-    
+
     @Test
     public void testDroolsQueryCleanup() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -556,85 +558,270 @@ public class QueryTest {
                 assertNull( factHandle.getObject() );
             }
         }
-    }    
-    
+    }
+
     @Test
     public void testQueriesWithVariableUnification() throws Exception {
-            String str = "";
-            str += "package org.drools.test  \n";
-            str += "import org.drools.Person \n";
-            str += "query peeps( String $name, String $likes, int $age ) \n";
-            str += "    $p : Person(name == $name, likes == $likes, age == $age) \n";
-            str += "end\n";
+        String str = "";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
+        str += "query peeps( String $name, String $likes, int $age ) \n";
+        str += "    $p : Person( $name : name, $likes : likes, $age : age ) \n";
+        str += "end\n";
 
-            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-            kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                           ResourceType.DRL );
 
-            if ( kbuilder.hasErrors() ) {
-                fail( kbuilder.getErrors().toString() );
-            }
-
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-            kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-            kbase = SerializationHelper.serializeObject( kbase );
-
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-            Person p1 = new Person( "darth", "stilton", 100 );
-            Person p2 = new Person( "yoda", "stilton", 300 );
-            Person p3 = new Person( "luke", "brie", 300 );
-            Person p4 = new Person( "bobba", "cheddar", 300 );
-            
-
-            ksession.insert( p1 );
-            ksession.insert( p2 );
-            ksession.insert( p3 );
-            ksession.insert( p4 );
-
-
-            //org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps", new Object[] {"darth", "stilton", 100} );
-            //org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps", new Object[] { new Variable(), "stilton", 300 } );
-            org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps", new Object[] { new Variable(),new Variable(), 300 } );
-            System.out.println( Arrays.asList( results.getIdentifiers() ) );
-//            assertEquals( 4,
-//                          results.size() );
-            for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-                for ( String id : results.getIdentifiers() ) {
-                    System.out.print( row.get( id ) + ", " );
-                }
-                System.out.println();
-            }
-//            assertEquals( 1,
-//                          results.getIdentifiers().length );
-            
-            
-//            Set newSet = new HashSet();
-//            for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
-//                list = new ArrayList();
-//                list.add( result.get( "stilton" ) );
-//                list.add( result.get( "cheddar" ) );
-//                newSet.add( list );
-//            }
-//            assertEquals( set,
-//                          newSet );
-//
-//            FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) ksession).session.getQueryResults( "cheeses" ) );
-//            assertEquals( 3,
-//                          flatResults.size() );
-//            assertEquals( 2,
-//                          flatResults.getIdentifiers().length );
-//            newSet = new HashSet();
-//            for ( org.drools.runtime.rule.QueryResultsRow result : flatResults ) {
-//                list = new ArrayList();
-//                list.add( result.get( "stilton" ) );
-//                list.add( result.get( "cheddar" ) );
-//                newSet.add( list );
-//            }
-//            assertEquals( set,
-//                          newSet );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
         }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Person p1 = new Person( "darth",
+                                "stilton",
+                                100 );
+        Person p2 = new Person( "yoda",
+                                "stilton",
+                                300 );
+        Person p3 = new Person( "luke",
+                                "brie",
+                                300 );
+        Person p4 = new Person( "bobba",
+                                "cheddar",
+                                300 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.insert( p3 );
+        ksession.insert( p4 );
+
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+                                                                                 new Object[]{new Variable(), new Variable(), new Variable()} );
+        assertEquals( 4,
+                          results.size() );
+        List names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 4,
+                      names.size() );
+        assertTrue( names.contains( "luke" ) );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "bobba" ) );
+        assertTrue( names.contains( "darth" ) );
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{new Variable(), new Variable(), 300} );
+        assertEquals( 3,
+                          results.size() );
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 3,
+                      names.size() );
+        assertTrue( names.contains( "luke" ) );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "bobba" ) );
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{new Variable(), "stilton", 300} );
+        assertEquals( 1,
+                          results.size() );
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 1,
+                      names.size() );
+        assertTrue( names.contains( "yoda" ) );
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{new Variable(), "stilton", new Variable()} );
+        assertEquals( 2,
+                          results.size() );
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 2,
+                      names.size() );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "darth" ) );
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{"darth", new Variable(), new Variable()} );
+        assertEquals( 1,
+                          results.size() );
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 1,
+                      names.size() );
+        assertTrue( names.contains( "darth" ) );
+    }
+
+    @Test
+    public void testQueriesWithVariableUnificationOnPatterns() throws Exception {
+        String str = "";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
+        str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
+        str += "    $p : Person( $name : name, $likes : likes, $age : age ) \n";
+        str += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Person p1 = new Person( "darth",
+                                "stilton",
+                                100 );
+        Person p2 = new Person( "yoda",
+                                "stilton",
+                                300 );
+        Person p3 = new Person( "luke",
+                                "brie",
+                                300 );
+        Person p4 = new Person( "bobba",
+                                "cheddar",
+                                300 );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+        ksession.insert( p3 );
+        ksession.insert( p4 );
+
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+                                                                                 new Object[]{new Variable(), new Variable(), new Variable(), new Variable()} );
+        assertEquals( 4,
+                          results.size() );
+        List names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 4,
+                      names.size() );
+        assertTrue( names.contains( "luke" ) );
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "bobba" ) );
+        assertTrue( names.contains( "darth" ) );
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{p1, new Variable(), new Variable(), new Variable()} );
+        assertEquals( 1,
+                          results.size() );
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertEquals( 1,
+                      names.size() );
+        assertTrue( names.contains( "darth" ) );
+    }
     
+//    @Test
+//    public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
+////        String str = "";
+////        str += "package org.drools.test  \n";
+////        str += "import org.drools.Person \n";
+////        str += "query peeps( String $name, int $age) \n";
+////        str += "    $p : Person( $name : name, $likes : likes, $age : age, $street : address.street == \"s1\"  ) \n";
+////        str += "end\n";
+//
+//        String str = "";
+//        str += "package org.drools.test  \n";
+//        str += "import org.drools.Person \n";
+//        str += "query peeps( String $name ) \n";
+//        str += "    $p1 : Person( $address : address )\n ";
+//        str += "    $p2 : Person( this != $p1, name != $p1.address.street  ) \n";
+//        str += "end\n";        
+//        
+//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+//        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+//                          ResourceType.DRL );
+//
+//        if ( kbuilder.hasErrors() ) {
+//            fail( kbuilder.getErrors().toString() );
+//        }
+//
+//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+//
+//        kbase = SerializationHelper.serializeObject( kbase );
+//
+//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//        Person p1 = new Person( "darth",
+//                                "stilton",
+//                                100 );
+//        p1.setAddress( new Address("s1") );
+//        
+//        Person p2 = new Person( "yoda",
+//                                "stilton",
+//                                300 );
+//        p2.setAddress( new Address("s1") );
+////        
+////        Person p3 = new Person( "luke",
+////                                "brie",
+////                                300 );
+////        p3.setAddress( new Address("s3") );  
+////        
+////        Person p4 = new Person( "bobba",
+////                                "cheddar",
+////                                300 );
+////        p4.setAddress( new Address("s4") );
+//
+//        ksession.insert( p1 );
+//        ksession.insert( p2 );
+////        ksession.insert( p3 );
+////        ksession.insert( p4 );
+//
+////        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+////                                                                                 new Object[]{new Variable(), new Variable()} );
+//////        assertEquals( 4,
+////                          results.size() );
+////        List names = new ArrayList();
+////        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+////            System.out.println( row.get( "$street" ) );
+////            //names.add( ((Person) row.get( "$street" )).getName() );
+////        }
+////        assertEquals( 4,
+////                      names.size() );
+////        assertTrue( names.contains( "luke" ) );
+////        assertTrue( names.contains( "yoda" ) );
+////        assertTrue( names.contains( "bobba" ) );
+////        assertTrue( names.contains( "darth" ) );
+////
+////        results = ksession.getQueryResults( "peeps",
+////                                            new Object[]{p1, new Variable(), new Variable(), new Variable()} );
+////        assertEquals( 1,
+////                          results.size() );
+////        names = new ArrayList();
+////        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+////            names.add( ((Person) row.get( "$p" )).getName() );
+////        }
+////        assertEquals( 1,
+////                      names.size() );
+////        assertTrue( names.contains( "darth" ) );
+//    }    
+
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
@@ -678,135 +865,176 @@ public class QueryTest {
         ksession.insert( cheddar1 );
         ksession.insert( cheddar2 );
         org.drools.runtime.rule.FactHandle c3Fh = ksession.insert( cheddar3 );
-        
+
         final List<Object[]> updated = new ArrayList<Object[]>();
         final List<Object[]> removed = new ArrayList<Object[]>();
         final List<Object[]> added = new ArrayList<Object[]>();
-        
-        ViewChangedEventListener listener = new ViewChangedEventListener() {            
+
+        ViewChangedEventListener listener = new ViewChangedEventListener() {
             public void rowUpdated(Row row) {
                 Object[] array = new Object[6];
-                array[0] = row.get("stilton");
-                array[1] = row.get("cheddar");
-                array[2] = row.get("$sprice");
-                array[3] = row.get("$cprice");
-                array[4] = row.get("$type1");
-                array[5] = row.get("$type2");
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                array[2] = row.get( "$sprice" );
+                array[3] = row.get( "$cprice" );
+                array[4] = row.get( "$type1" );
+                array[5] = row.get( "$type2" );
                 updated.add( array );
             }
-            
+
             public void rowRemoved(Row row) {
                 Object[] array = new Object[6];
-                array[0] = row.get("stilton");
-                array[1] = row.get("cheddar");
-                array[2] = row.get("$sprice");
-                array[3] = row.get("$cprice");
-                array[4] = row.get("$type1");
-                array[5] = row.get("$type2");
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                array[2] = row.get( "$sprice" );
+                array[3] = row.get( "$cprice" );
+                array[4] = row.get( "$type1" );
+                array[5] = row.get( "$type2" );
                 removed.add( array );
             }
-            
+
             public void rowAdded(Row row) {
                 Object[] array = new Object[6];
-                array[0] = row.get("stilton");
-                array[1] = row.get("cheddar");
-                array[2] = row.get("$sprice");
-                array[3] = row.get("$cprice");
-                array[4] = row.get("$type1");
-                array[5] = row.get("$type2");
+                array[0] = row.get( "stilton" );
+                array[1] = row.get( "cheddar" );
+                array[2] = row.get( "$sprice" );
+                array[3] = row.get( "$cprice" );
+                array[4] = row.get( "$type1" );
+                array[5] = row.get( "$type2" );
                 added.add( array );
             }
-        };        
-        
+        };
+
         // Open the LiveQuery
-        LiveQuery query = ksession.openLiveQuery( "cheeses", new Object[] { "stilton", "cheddar" } , listener );
-        
+        LiveQuery query = ksession.openLiveQuery( "cheeses",
+                                                  new Object[]{"stilton", "cheddar"},
+                                                  listener );
+
         // Assert that on opening we have three rows added
-        assertEquals( 3, added.size() );
-        assertEquals( 0, removed.size() );
-        assertEquals( 0, updated.size() );
-        
+        assertEquals( 3,
+                      added.size() );
+        assertEquals( 0,
+                      removed.size() );
+        assertEquals( 0,
+                      updated.size() );
+
         // Assert that the identifiers where retrievable
-        assertSame(stilton1, added.get( 0 )[0] );
-        assertSame(cheddar1, added.get( 0 )[1] );
-        assertEquals(1, added.get( 0 )[2] );
-        assertEquals(1, added.get( 0 )[3] );
-        assertEquals("stilton", added.get( 0 )[4] );
-        assertEquals("cheddar", added.get( 0 )[5] );
-        
+        assertSame( stilton1,
+                    added.get( 0 )[0] );
+        assertSame( cheddar1,
+                    added.get( 0 )[1] );
+        assertEquals( 1,
+                      added.get( 0 )[2] );
+        assertEquals( 1,
+                      added.get( 0 )[3] );
+        assertEquals( "stilton",
+                      added.get( 0 )[4] );
+        assertEquals( "cheddar",
+                      added.get( 0 )[5] );
+
         // And that we have correct values from those rows
-        assertEquals( 1, added.get( 0 )[3] );
-        assertEquals( 2, added.get( 1 )[3] );
-        assertEquals( 3, added.get( 2 )[3] );
-        
+        assertEquals( 1,
+                      added.get( 0 )[3] );
+        assertEquals( 2,
+                      added.get( 1 )[3] );
+        assertEquals( 3,
+                      added.get( 2 )[3] );
+
         // Do an update that causes a match to become untrue, thus triggering a removed
         cheddar3.setPrice( 4 );
-        ksession.update(  c3Fh, cheddar3 );
-        
-        assertEquals( 3, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 0, updated.size() );
-        
-        assertEquals( 4, removed.get( 0 )[3] );
-                
+        ksession.update( c3Fh,
+                         cheddar3 );
+
+        assertEquals( 3,
+                      added.size() );
+        assertEquals( 1,
+                      removed.size() );
+        assertEquals( 0,
+                      updated.size() );
+
+        assertEquals( 4,
+                      removed.get( 0 )[3] );
+
         // Now make that partial true again, and thus another added
         cheddar3.setPrice( 3 );
-        ksession.update(  c3Fh, cheddar3 );
-        
-        
-        assertEquals( 4, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 0, updated.size() );  
-        
-        assertEquals( 3, added.get( 3 )[3] );        
-        
+        ksession.update( c3Fh,
+                         cheddar3 );
+
+        assertEquals( 4,
+                      added.size() );
+        assertEquals( 1,
+                      removed.size() );
+        assertEquals( 0,
+                      updated.size() );
+
+        assertEquals( 3,
+                      added.get( 3 )[3] );
+
         // check a standard update
         cheddar3.setOldPrice( 0 );
-        ksession.update(  c3Fh, cheddar3 ); 
-        
-        assertEquals( 4, added.size() );
-        assertEquals( 1, removed.size() );
-        assertEquals( 1, updated.size() );         
-        
-        assertEquals( 3, updated.get( 0 )[3] );      
-        
+        ksession.update( c3Fh,
+                         cheddar3 );
+
+        assertEquals( 4,
+                      added.size() );
+        assertEquals( 1,
+                      removed.size() );
+        assertEquals( 1,
+                      updated.size() );
+
+        assertEquals( 3,
+                      updated.get( 0 )[3] );
+
         // Check a standard retract
         ksession.retract( s1Fh );
-                
-        assertEquals( 4, added.size() );
-        assertEquals( 2, removed.size() );
-        assertEquals( 1, updated.size() );    
-        
-        assertEquals( 1, removed.get( 1 )[3] );          
-        
+
+        assertEquals( 4,
+                      added.size() );
+        assertEquals( 2,
+                      removed.size() );
+        assertEquals( 1,
+                      updated.size() );
+
+        assertEquals( 1,
+                      removed.get( 1 )[3] );
+
         // Close the query, we should get removed events for each row
         query.close();
-        
-        assertEquals( 4, added.size() );
-        assertEquals( 4, removed.size() );
-        assertEquals( 1, updated.size() );         
-     
-        assertEquals( 2, removed.get( 2 )[3] );
-        assertEquals( 3, removed.get( 3 )[3] );
-        
+
+        assertEquals( 4,
+                      added.size() );
+        assertEquals( 4,
+                      removed.size() );
+        assertEquals( 1,
+                      updated.size() );
+
+        assertEquals( 2,
+                      removed.get( 2 )[3] );
+        assertEquals( 3,
+                      removed.get( 3 )[3] );
+
         // Check that updates no longer have any impact.
-        ksession.update(  c3Fh, cheddar3 ); 
-        assertEquals( 4, added.size() );
-        assertEquals( 4, removed.size() );
-        assertEquals( 1, updated.size() );           
+        ksession.update( c3Fh,
+                         cheddar3 );
+        assertEquals( 4,
+                      added.size() );
+        assertEquals( 4,
+                      removed.size() );
+        assertEquals( 1,
+                      updated.size() );
     }
-    
+
     @Test
     public void testStandardQueryListener() {
         runQueryListenerTest( QueryListenerOption.STANDARD );
     }
-    
+
     @Test
     public void testNonCloningQueryListener() {
         runQueryListenerTest( QueryListenerOption.LIGHTWEIGHT );
     }
-    
-    public void runQueryListenerTest( QueryListenerOption option ) {
+
+    public void runQueryListenerTest(QueryListenerOption option) {
         String str = "";
         str += "package org.drools\n";
         str += "query cheeses(String $type) \n";
@@ -826,13 +1054,14 @@ public class QueryTest {
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( option );
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf,
+                                                                               null );
 
         // insert some data into the session
-        for( int i = 0; i < 10000; i++ ) {
-            ksession.insert( new Cheese( i%2==0 ? "stilton" : "brie") );
+        for ( int i = 0; i < 10000; i++ ) {
+            ksession.insert( new Cheese( i % 2 == 0 ? "stilton" : "brie" ) );
         }
-        
+
         // query the session
         List<Cheese> cheeses;
         for ( int i = 0; i < 100; i++ ) {
@@ -842,10 +1071,11 @@ public class QueryTest {
             for ( QueryResultsRow row : queryResults ) {
                 cheeses.add( (Cheese) row.get( "$cheese" ) );
             }
-            
-            assertEquals( 5000, cheeses.size() );
+
+            assertEquals( 5000,
+                          cheeses.size() );
         }
-        
+
     }
 
 }

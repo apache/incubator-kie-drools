@@ -71,7 +71,12 @@ public class DoubleBetaConstraints
             this.indexed0 = false;
             this.indexed1 = false;
         } else {
-            final int depth = conf.getCompositeKeyDepth();
+            int depth = conf.getCompositeKeyDepth();
+            if ( !DefaultBetaConstraints.compositeAllowed(constraints) ) {
+            	// UnificationRestrictions cannot be allowed in composite indexes
+            	// We also ensure that if there is a mixture that standard restriction is first
+            	depth = 1;
+            }
 
             // Determine  if this constraints are indexable
             final boolean i0 = isIndexable( constraints[0] );
@@ -121,7 +126,7 @@ public class DoubleBetaConstraints
     }
 
     private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        return SingleBetaConstraints.isIndexable( constraint );
+        return DefaultBetaConstraints.isIndexable( constraint );
     }
 
     /* (non-Javadoc)
@@ -294,5 +299,12 @@ public class DoubleBetaConstraints
     public ContextEntry[] createContext() {
         return new ContextEntry[]{this.constraint0.createContextEntry(), this.constraint1.createContextEntry()};
     }
+    
+    public BetaConstraints getOriginalConstraint() {
+        throw new UnsupportedOperationException();
+    }
+
+    
+    
 
 }
