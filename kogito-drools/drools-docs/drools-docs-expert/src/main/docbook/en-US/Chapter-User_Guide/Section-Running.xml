@@ -303,8 +303,8 @@ query.dispose() // make sure you call dispose when you want the query to close</
 
       <para>The <code>KnowledgeRuntime</code> provides further methods that
       are applicable to both rules and processes, such as setting globals and
-      registering <code>Channels (previously exit points, some references may
-      remain in docs for a while)</code>.</para>
+      registering <code>Channels</code> (previously exit points, some 
+      references may remain in docs for a while).</para>
 
       <figure>
         <title>KnowledgeRuntime</title>
