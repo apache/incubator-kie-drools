@@ -21,7 +21,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
-import org.drools.base.evaluators.Operator;
 import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
@@ -47,7 +46,7 @@ public class SingleBetaConstraints
      */
     private static final long             serialVersionUID = 510l;
 
-    private BetaNodeFieldConstraint constraint;
+    protected BetaNodeFieldConstraint     constraint;
 
     private boolean                       indexed;
 
@@ -80,7 +79,7 @@ public class SingleBetaConstraints
         } else {
             final int depth = conf.getCompositeKeyDepth();
             // Determine  if this constraint is indexable
-            this.indexed = depth >= 1 && isIndexable( constraint );
+            this.indexed = depth >= 1 && DefaultBetaConstraints.isIndexable( constraint );
         }
 
         this.constraint = constraint;
@@ -97,17 +96,6 @@ public class SingleBetaConstraints
         out.writeObject(constraint);
         out.writeBoolean(indexed);
         out.writeObject(conf);
-    }
-
-    public  static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
-        if ( constraint instanceof VariableConstraint  ) {
-            final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            if ( (!(variableConstraint.getRestriction() instanceof UnificationRestriction )) ) {
-                return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
-            }
-        } 
-        
-        return false;
     }
 
     public ContextEntry[] createContext() {
@@ -199,6 +187,10 @@ public class SingleBetaConstraints
     public int hashCode() {
         return this.constraint.hashCode();
     }
+    
+    public BetaNodeFieldConstraint getConstraint() {
+        return this.constraint;
+    }
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#getConstraints()
@@ -239,5 +231,9 @@ public class SingleBetaConstraints
     public void resetTuple(ContextEntry[] context) {
         context[0].resetTuple();
     }
+    
+    public BetaConstraints getOriginalConstraint() {
+        throw new UnsupportedOperationException();
+    }    
 
 }

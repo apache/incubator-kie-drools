@@ -108,7 +108,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
     
     public void writeExternal(ObjectOutput out) throws IOException {
         // all we do is create marshall to a byte[] and write to the stream
-    	StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) getKnowledgeRuntime();
+        StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) getKnowledgeRuntime();
         Marshaller marshaller = MarshallerFactory.newMarshaller( ksession.getKnowledgeBase() );
         
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

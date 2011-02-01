@@ -36,9 +36,11 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
+
 
 public class DefaultBetaConstraints
     implements
@@ -63,13 +65,57 @@ public class DefaultBetaConstraints
               false );
 
     }
+    
+    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints) {
+    	// Makes sure the first indexable constraint is not a UnificationRestriction, if possible.
+    	// If a UnificationRestriction is involved, then we cannot have a composite index
+    	int firstUnification = -1;
+    	int indexable = 0;
+    	for ( int i = 0, length = constraints.length; i < length; i++ ) {
+    	    if ( DefaultBetaConstraints.isIndexable( constraints[i] ) ) {
+    	    	indexable++;
+	    		final boolean isUnification = ((VariableConstraint) constraints[i]).getRestriction() instanceof UnificationRestriction ;
+	    		if ( isUnification ) {
+	    			if (  firstUnification == -1 ) {
+	    				// Finds the first unification constraint
+	    				firstUnification = i;
+	    			}
+	    		} else {
+	    			if ( firstUnification != -1 ) {
+		    			// We have a unification constraint before a normal constraint, so swap
+		    			swap(constraints, i, firstUnification);
+		    			break; 				
+	    			} else {
+	    				// The first constraint is not a unification, do nothing
+	    				break;
+	    			}
+	    		}
+    	    }
+    	}
+    	
+    	return (firstUnification == -1);
+    }
+    
+    public static void swap(final BetaNodeFieldConstraint[] constraints,
+            	      final int p1,
+            	      final int p2) {
+		final BetaNodeFieldConstraint temp = constraints[p2];
+		constraints[p2] = constraints[p1];
+		constraints[p1] = temp;
+    }    
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf,
                                   final boolean disableIndexing) {
         this.indexed = -1;
         this.constraints = new LinkedList();
-        final int depth = conf.getCompositeKeyDepth();
+        int depth = conf.getCompositeKeyDepth();
+        
+        if ( !compositeAllowed(constraints) ) {
+        	// UnificationRestrictions cannot be allowed in composite indexes
+        	// We also ensure that if there is a mixture that standard restriction is first
+        	depth = 1;
+        }
 
         // First create a LinkedList of constraints, with the indexed constraints first.
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
@@ -122,7 +168,7 @@ public class DefaultBetaConstraints
         return current;
     }
 
-    private boolean isIndexable(final BetaNodeFieldConstraint constraint) {
+    public static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
             return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
@@ -130,6 +176,7 @@ public class DefaultBetaConstraints
             return false;
         }
     }
+    
 
     /* (non-Javadoc)
      * @see org.drools.common.BetaNodeConstraints#updateFromTuple(org.drools.reteoo.ReteTuple)
@@ -303,5 +350,9 @@ public class DefaultBetaConstraints
 
         return this.constraints.equals( other.constraints );
     }
+    public BetaConstraints getOriginalConstraint() {
+        throw new UnsupportedOperationException();
+    }
+    
 
 }

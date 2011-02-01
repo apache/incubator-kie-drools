@@ -20,9 +20,17 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.SingleBetaConstraints;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.MutableTypeConstraint;
+import org.drools.rule.UnificationRestriction;
+import org.drools.rule.VariableConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -59,6 +67,7 @@ public class JoinNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
         boolean useLeftMemory = true;
         if ( this.tupleMemoryEnabled ) {
@@ -77,8 +86,11 @@ public class JoinNode extends BetaNode {
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
-        for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple,
-                                                                             (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        
+                
+        FastIterator it = getRightIterator( rightMemory); 
+        
+        for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             final InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        handle ) ) {
@@ -94,6 +106,7 @@ public class JoinNode extends BetaNode {
 
         this.constraints.resetTuple( memory.getContext() );
     }
+  
 
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
@@ -120,8 +133,9 @@ public class JoinNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                factHandle );
-        int i = 0;
-        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+        
+        FastIterator it = memory.getLeftTupleMemory().fastIterator();                  
+        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
                 // wm.marshaller.write( i, leftTuple )
@@ -133,7 +147,6 @@ public class JoinNode extends BetaNode {
                                                     workingMemory,
                                                     true );
             }
-            i++;
         }
         this.constraints.resetFactHandle( memory.getContext() );
     }
@@ -194,6 +207,7 @@ public class JoinNode extends BetaNode {
 
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
+        FastIterator it = leftMemory.fastIterator();  
         LeftTuple leftTuple = leftMemory.getFirst( rightTuple );
 
         this.constraints.updateFromFactHandle( memory.getContext(),
@@ -215,7 +229,7 @@ public class JoinNode extends BetaNode {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                                 leftTuple ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
@@ -229,7 +243,7 @@ public class JoinNode extends BetaNode {
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                                 leftTuple ) ) {
                         if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
@@ -278,6 +292,7 @@ public class JoinNode extends BetaNode {
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
+        FastIterator it = rightMemory.fastIterator();
         RightTuple rightTuple = rightMemory.getFirst( leftTuple,
                                                       (InternalFactHandle) context.getFactHandle() );
 
@@ -296,7 +311,7 @@ public class JoinNode extends BetaNode {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
                     if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                handle ) ) {
@@ -311,7 +326,7 @@ public class JoinNode extends BetaNode {
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple )  ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
 
                     if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
@@ -354,13 +369,15 @@ public class JoinNode extends BetaNode {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
+        FastIterator it = memory.getLeftTupleMemory().fastIterator();
+        
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             this.constraints.updateFromTuple( memory.getContext(),
                                               workingMemory,
                                               leftTuple );
             for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple,
-                                                                                 (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                                                                                 (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            rightTuple.getFactHandle() ) ) {
                     sink.assertLeftTuple( new LeftTuple( leftTuple,

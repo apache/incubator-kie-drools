@@ -21,6 +21,7 @@ package org.drools.core.util;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.core.util.LinkedList.LinkedListFastIterator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
@@ -163,6 +164,14 @@ public class RightTupleList
         return i;
     }
 
+    public FastIterator fastIterator() {
+    	return LinkedList.fastIterator; // contains no state, so ok to be static   
+    }
+    
+	public FastIterator fullFastIterator() {
+    	return LinkedList.fastIterator; // contains no state, so ok to be static
+	}    
+    
     public Iterator iterator() {
         if ( this.iterator == null ) {
             this.iterator = new TupleHashTableIterator();

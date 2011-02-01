@@ -142,6 +142,10 @@ public class LeftTupleList
     public Entry getBucket(final Object object) {
         return this.first;
     }
+    
+    public FastIterator fastIterator() {
+    	return LinkedList.fastIterator; // contains no state, so ok to be static   
+    }    
 
     public Iterator iterator() {
         if ( this.iterator == null ) {

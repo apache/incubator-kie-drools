@@ -251,7 +251,7 @@ public class ArrayElementReader
     }
 
     public int getIndex() {
-        return -1;
+        return this.index;
     }
 
     public int getIntValue(Object object) {
