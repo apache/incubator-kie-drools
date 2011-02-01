@@ -12,7 +12,7 @@
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
   <properties>
-    <drools.version>5.2.0-SNAPSHOT</drools.version>
+    <drools.version>5.2.0-M1</drools.version>
     <drools.osgi.version>5.2.0</drools.osgi.version>
     <jbpm.osgi.version>5.0.0.SNAPSHOT</jbpm.osgi.version>
   </properties>
@@ -92,20 +92,6 @@
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Maven Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>Public Maven Repository</id>
-      <name>Public Maven Repository</name>
-      <url>http://repo2.maven.org/maven2</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -318,7 +304,7 @@
       <dependency>
         <groupId>org.mvel</groupId>
         <artifactId>mvel2</artifactId>
-        <version>2.0.19</version>
+        <version>2.0.20-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>org.eclipse.jdt.core.compiler</groupId>
