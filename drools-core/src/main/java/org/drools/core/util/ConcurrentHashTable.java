@@ -363,8 +363,7 @@ public class ConcurrentHashTable {
 
                 while ( entry != null ) {
                     if ( entry.matches( tuple,
-                                        hashCode ,
-                                        factHandle ) ) {
+                                        hashCode ) ) {
                         return entry;
                     }
                     entry = (RightTupleList) entry.getNext();

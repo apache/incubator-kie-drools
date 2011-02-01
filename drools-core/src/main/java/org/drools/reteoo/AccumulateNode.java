@@ -158,8 +158,7 @@ public class AccumulateNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
-        for ( RightTuple rightTuple = memory.betaMemory.getRightTupleMemory().getFirst( leftTuple,
-                                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = memory.betaMemory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
@@ -332,8 +331,7 @@ public class AccumulateNode extends BetaNode {
 
         RightTupleMemory rightMemory = memory.betaMemory.getRightTupleMemory();
 
-        RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-                                                      (InternalFactHandle) context.getFactHandle() );
+        RightTuple rightTuple = rightMemory.getFirst( leftTuple );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
         if ( childLeftTuple != null && rightMemory.isIndexed() && rightTuple != rightMemory.getFirst( childLeftTuple.getRightParent() ) ) {
