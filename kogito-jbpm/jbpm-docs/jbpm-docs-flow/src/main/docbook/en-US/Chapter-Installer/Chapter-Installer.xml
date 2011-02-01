@@ -104,29 +104,58 @@
         <listitem>How to generate reports to monitor your process execution</listitem>
       </itemizedlist>
     </para>
+    
+    <para>To manage your process instances, click on the "Processes" tab at the left an select "Process Overview".  
+After a slight delay (if you are using the application for the first time, due to session initalization
+etc.), the "Process" list should show all the known processes.  The jbpm-console in the demo setup 
+currently loads all the process in the "src/main/resources" folder of the evaluation sample in 
+"jbpm-installer/sample/evaluation".  If you click the process, it will show you all current running 
+instances.  Since there are no running instances at this point, the "Instance" table will remain 
+empty.</para>
+
+  <para>You can start a new process instance by click on the "Start" button.  After confirming that you want to 
+start a new execution of this process, you will see a process form where you need to fill in the 
+necessary information to start the process.  In this case, you need to fill in your username "krisv",
+after which you can complete the form and close the window.  A new instance should show up in the 
+"Instance" table.  If you click the process instance, you can check its details below and the diagram 
+and instance data by click on the "Diagram" and "Instance Data" buttons respectively.  The process 
+instance that you just started is first requiring a self-evaluation of the user and is waiting until 
+the user has completed this task.</para>
+
+  <para>To see the tasks that have been assigned to you, choose the "Tasks" tab on the left and select 
+"Personal Tasks" (you may need to click refresh to update your task view).  The personal tasks table 
+should show a "Performance Evaluation" task for you.  You can complete this task by selecting it and 
+clicking the "View" button.  This will open the task form for performance evaluations.  You can fill 
+in the necessary data and then complete the form and close the window.  After completing the task, you 
+could check the "Process Overview" once more to check the progress of your process instance.  You 
+should be able to see that the process is now waiting for your HR manager and project manager to also 
+perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" to complete these 
+tasks.</para>
+
+  <para>After starting and/or completing a few process instances and human tasks, you can generate a report of 
+what happened so far.  Under "Reporting", select "Report Templates".  By default, the console has two 
+report templates, one for generating a generic overview for all processes and one for inspecting once 
+specific process definition.  If you select the latter, make sure to enter "com.sample.evaluation" as 
+the process definition id to see the activity related to the evaluation process.  Click the "Create 
+Report" button to generate a realtime report of the current status.  Notice that the initialization of 
+the reports might take a moment, especially the first time you use the application.</para>
 
   </section>
 
   <section>
     <title>Using Guvnor repository</title>
     
-    <para>We're still working on the integration with the Guvnor repository.  This will be improved in the next releases but feel free to already try it out.  Current limitations:
-      <itemizedlist>
-        <listitem>If you want to create a new BPMN2 process definition on Guvnor, you should select "Create New - New File" and specify bpmn as the extension.</listitem>
-        <listitem>The designer currently only works in Google Chrome.</listitem>
-        <listitem>
-It is currently not yet possible to use a package built on Guvnor as a jBPM5 knowledge base.</listitem>
-        <listitem>It is possible that the designer is still unable to save or load specific BPMN2 processes.  Please contact the jBPM community with details on how to reproduce the issue so we can improve it.</listitem>
-      </itemizedlist>
-    </para>
+    <para>The Guvnor repository can be used as a process repository to store business processes.  It also offers
+a web-based interface to manage your processes.  This includes a web-based editor for viewing and
+editing processes.</para>
 
     <para>Open up Drools Guvnor:</para>
     <para><ulink url="http://localhost:8080/drools-guvnor">http://localhost:8080/drools-guvnor</ulink></para>
 
     <para>Log in, using any non-empty username / password (we disabled authentication for demo purposes). 
-    The <ulink url="TODO">following screencast [TODO]</ulink> gives an overview of how to manage your repository. It shows you:
+    The <ulink url="http://people.redhat.com/kverlaen/install-guvnor-jbpm.swf">following screencast</ulink> gives an overview of how to manage your repository. It shows you:
       <itemizedlist>
-        <listitem>How to import an existing sample repository, containing the performance evaluation process as shown in the previous section</listitem>
+        <listitem>How to import an existing process (in this case the evaluation process) from eclipse into guvnor</listitem>
         <listitem>How to open up the evaluation process in the web editor</listitem>
         <listitem>How to build a package so it can be used for creating a session</listitem>
       </itemizedlist>
@@ -148,6 +177,34 @@ It is currently not yet possible to use a package built on Guvnor as a jBPM5 kno
     <para>IRC: #jbpm at irc.codehaus.org</para>
     <para><ulink url="http://community.jboss.org/en/jbpm?view=discussions">jBPM User Forum</ulink></para>
   
-   </section>
+  </section>
+   
+  <section>
+  
+    <title>Frequently asked questions</title>
+    
+    <para>Some common issues are explained below.</para>
+
+    <para>Q: What if the installer complains it cannot download component X?</para>
+    <para>A: Are you connected to the internet? Do you have a firewall turned on? Do you require a proxy?  It might be possible that one of the locations we're downloading the components from is temporarly offline.  Try downloading the components manually (possibly from alternate locations) and put them in the jbpm-installer/lib folder.</para>
+
+    <para>Q: What if the installer complains it cannot extract / unzip a certain jar/war/zip?</para>
+    <para>A: If your download failed while downloading a component, it is possible that the installer is trying to use an incomplete file.  Try deleting the component in question from the jbpm-installer/lib folder and reinstall, so it will be downloaded again.</para>
+
+    <para>Q: What if I have been changing my installation (and it no longer works) and I want to start over again with a clean installation?</para>
+    <para>A: You can use ant clean.demo to remove all the installed components, so you end up with a fresh installation again.</para>
+
+    <para>Q: I sometimes see exceptions when trying to stop or restart certain services, what should I do?</para>
+    <para>A: If you see errors during shutdown, are you sure the services were still running?  If you see exceptions during restart, are you sure the service you started earlier was successfully shutdown?  Maybe try killing the services manually if necessary.</para>
+
+    <para>Q: Something seems to be going wrong when running Eclipse but I have no idea what.  What can I do?</para>
+    <para>A: Always check the consoles for output like error messages or stack traces.  You can also check the Eclipse Error Log for exceptions.  Try adding an audit logger to your session to figure out what's happening at runtime, or try debugging your application.</para>
+
+    <para>Q: Something seems to be going wrong when running the a web-based application like the jbpm-console, Guvnor and the Designer.  What can I do?</para>
+    <para>A: You can check the server log for possible exceptions in the jbpm-installer/jboss-4.2.3.GA/server/default/log directory.</para>
+
+    <para>For all other questions, try contacting the jBPM community as described above.</para>
+  
+  </section>
 
 </chapter>

@@ -430,14 +430,14 @@
     <property name="jboss.full.path.win" location="${jboss.home}/bin/run.bat" />
     <exec executable="${jboss.full.path.win}" spawn="yes"
           os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
-      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" os="Linux,Mac OS X">
-      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
@@ -511,7 +511,8 @@
   </target>
 
   <!-- Start Demo -->
-  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
+  <target name="start.demo" depends="start.h2,s/home/kverlaen/Desktop/install-eclipse-jbpm.swf
+/home/kverlaen/Desktop/install-guvnor-jbpm.swftart.jboss,start.eclipse,start.human.task" />
   <!-- Stop Demo -->
   <target name="stop.demo" depends="stop.h2,stop.jboss" />
 
