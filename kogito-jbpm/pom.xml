@@ -102,6 +102,20 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>Public Maven Repository</id>
+      <name>Public Maven Repository</name>
+      <url>http://repo2.maven.org/maven2</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
 
   <modules>
