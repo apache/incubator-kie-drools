@@ -627,7 +627,7 @@ public class ConcurrentRightTupleIndexHashTableTest {
 
         assertNull( map.getFirst( new LeftTuple( stiltonHandle,
                                                  null,
-                                                 true ) ) );
+                                                 true ), null ) );
     }
 
 

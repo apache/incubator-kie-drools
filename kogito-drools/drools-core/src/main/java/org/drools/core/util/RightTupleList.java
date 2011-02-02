@@ -70,7 +70,7 @@ public class RightTupleList
         this.last = p.last;
     }
 
-    public RightTuple getFirst(LeftTuple leftTuple) {
+    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle) {
         return this.first;
     }
     
@@ -202,10 +202,19 @@ public class RightTupleList
     }
 
     public boolean matches(final LeftTuple tuple,
-                           final int tupleHashCode) {
+                           final int tupleHashCode,
+                           final InternalFactHandle factHandle) {
         if ( this.hashCode != tupleHashCode ) {
             return false;
-        }       
+        }
+        
+        if ( this.first.getFactHandle() == factHandle ) {
+            RightTuple rightTuple = ( RightTuple ) this.first.getNext();
+            if ( rightTuple != null ) {
+                return this.index.equal( rightTuple.getFactHandle().getObject(),
+                                         tuple );                  
+            }
+        }
         
         return this.index.equal( this.first.getFactHandle().getObject(),
                                                                    tuple );

@@ -37,6 +37,6 @@ public class RightTupleListTest {
                                                              stilton1 );                        
         
         assertNull( map.getFirst( new LeftTuple( h1, null,
-                                                 true ) ) );
+                                                 true ), null ) );
     }
 }

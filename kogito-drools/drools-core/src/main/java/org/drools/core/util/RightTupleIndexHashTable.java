@@ -100,8 +100,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         out.writeObject( index );
     }
 
-    public RightTuple getFirst(LeftTuple leftTuple) {
-        RightTupleList bucket = get( leftTuple );
+    public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle) {
+        RightTupleList bucket = get( leftTuple, factHandle );
         if ( bucket != null ) {
             return bucket.first;
         } else {
@@ -325,7 +325,9 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         return false;
     }
 
-    public RightTupleList get(final LeftTuple tuple) {
+    public RightTupleList get(final LeftTuple tuple, InternalFactHandle factHandle) {
+        //this.index.setCachedValue( tuple );
+
         final int hashCode = this.index.hashCodeOf( tuple );
 
         final int index = indexOf( hashCode,
@@ -335,7 +337,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 
         while ( entry != null ) {
             if ( entry.matches( tuple,
-                                hashCode ) ) {
+                                hashCode,
+                                factHandle ) ) {
                 return entry;
             }
             entry = (RightTupleList) entry.getNext();
