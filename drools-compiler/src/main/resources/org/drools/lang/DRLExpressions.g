@@ -85,51 +85,58 @@ dummy
 	:	expression AT
 	;
 
+// top level entry point for arbitrary expression parsing
 expression
 	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)? 
 	;
 
 conditionalExpression
-        :       conditionalOrExpression ( QUESTION expression COLON expression )?
+  : conditionalOrExpression ( QUESTION expression COLON expression )?
 	;
 conditionalOrExpression
-    :   conditionalAndExpression ( DOUBLE_PIPE conditionalAndExpression )*
+  : conditionalAndExpression ( DOUBLE_PIPE conditionalAndExpression )*
 	;
 
 conditionalAndExpression
-    :   inclusiveOrExpression ( DOUBLE_AMPER inclusiveOrExpression )*
+  : inclusiveOrExpression ( DOUBLE_AMPER inclusiveOrExpression )*
 	;
 
 inclusiveOrExpression
-    :   exclusiveOrExpression ( PIPE exclusiveOrExpression )*
+  : exclusiveOrExpression ( PIPE exclusiveOrExpression )*
 	;
 
 exclusiveOrExpression
-    :   andExpression ( XOR andExpression )*
+  : andExpression ( XOR andExpression )*
 	;
 
 andExpression
-    :   equalityExpression ( AMPER equalityExpression )*
+  : equalityExpression ( AMPER equalityExpression )*
 	;
 
 equalityExpression
-    :   instanceOfExpression ( ( EQUALS | NOT_EQUALS ) instanceOfExpression )*
+  : instanceOfExpression ( ( EQUALS | NOT_EQUALS ) instanceOfExpression )*
 	;
 
 instanceOfExpression
-    :   relationalExpression (instanceof_key type)?
+  : relationalExpression (instanceof_key type)?
 	;
 
 relationalExpression
-    :   shiftExpression ( (LESS)=> relationalOp shiftExpression )*
-    ;
+  : shiftExpression ( (relationalOp)=> relationalOp shiftExpression )*
+  ;
 	
 relationalOp
-	:	(LESS_EQUALS| GREATER_EQUALS | LESS | GREATER)
+  : ( LESS_EQUALS
+    | GREATER_EQUALS 
+    | LESS 
+    | GREATER
+    | not_key neg_operator_key
+    | operator_key
+    )
 	;
 
 shiftExpression
-    :   additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
+  : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
 	;
 
 shiftOp
@@ -137,11 +144,11 @@ shiftOp
 	;
 
 additiveExpression
-    :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
+  :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
 	;
 
 multiplicativeExpression
-    :   unaryExpression ( ( STAR | DIV | MOD ) unaryExpression )*
+  :   unaryExpression ( ( STAR | DIV | MOD ) unaryExpression )*
 	;
 	
 unaryExpression
@@ -287,22 +294,22 @@ arguments
 	;
 
 expressionList
-    :   expression (COMMA expression)*
-    ;
+  :   expression (COMMA expression)*
+  ;
 
 assignmentOperator
 	:   EQUALS_ASSIGN
-        |   PLUS_ASSIGN
-        |   MINUS_ASSIGN
-        |   MULT_ASSIGN
-        |   DIV_ASSIGN
-        |   AND_ASSIGN
-        |   OR_ASSIGN
-        |   XOR_ASSIGN
-        |   MOD_ASSIGN
-        |   LESS LESS EQUALS_ASSIGN
-        |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
-        |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
+  |   PLUS_ASSIGN
+  |   MINUS_ASSIGN
+  |   MULT_ASSIGN
+  |   DIV_ASSIGN
+  |   AND_ASSIGN
+  |   OR_ASSIGN
+  |   XOR_ASSIGN
+  |   MOD_ASSIGN
+  |   LESS LESS EQUALS_ASSIGN
+  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
+  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
 	;
 
 // --------------------------------------------------------
@@ -367,4 +374,17 @@ class_key
 new_key
 	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID
 	;
+
+not_key
+	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID
+	;
+
+operator_key
+  :      {(helper.isPluggableEvaluator(false))}?=> id=ID
+  ;
+
+neg_operator_key
+  :      {(helper.isPluggableEvaluator(true))}?=> id=ID 
+  ;
+
 

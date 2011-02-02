@@ -26,15 +26,6 @@ import org.drools.lang.descr.OrDescr;
 
 /**
  *  A descriptor builder for Conditional Elements
- *  
- *  rule.lhs()
- *    .and()
- *      .pattern("Foo").id("$foo").constraint("bar==baz").constraint("x>y").end()
- *      .not().pattern("Bar").constraint("a+b==c").end()
- *    .end()
- *  .rhs()
- *  .end()
- *     
  */
 public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     extends

@@ -37,42 +37,43 @@ public class BaseDescr
     private int               endColumn        = -1;
     private String            text             = "";
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        startCharacter  = in.readInt();
-        endCharacter  = in.readInt();
-        line        = in.readInt();
-        column      = in.readInt();
-        endLine     = in.readInt();
-        endColumn   = in.readInt();
-        text        = (String)in.readObject();
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
+        startCharacter = in.readInt();
+        endCharacter = in.readInt();
+        line = in.readInt();
+        column = in.readInt();
+        endLine = in.readInt();
+        endColumn = in.readInt();
+        text = (String) in.readObject();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt(startCharacter);
-        out.writeInt(endCharacter);
-        out.writeInt(line);
-        out.writeInt(column);
-        out.writeInt(endLine);
-        out.writeInt(endColumn);
-        out.writeObject(text);
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        out.writeInt( startCharacter );
+        out.writeInt( endCharacter );
+        out.writeInt( line );
+        out.writeInt( column );
+        out.writeInt( endLine );
+        out.writeInt( endColumn );
+        out.writeObject( text );
     }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
+    public void setText( String text ) {
         this.text = text;
     }
 
-    public void setLocation(final int line,
-                            final int column) {
+    public void setLocation( final int line,
+                             final int column ) {
         this.line = line;
         this.column = column;
     }
 
-    public void setEndLocation(final int line,
-                               final int column) {
+    public void setEndLocation( final int line,
+                                final int column ) {
         this.endLine = line;
         this.endColumn = column;
     }
@@ -103,7 +104,7 @@ public class BaseDescr
     /**
      * @param endCharacter the endCharacter to set
      */
-    public void setEndCharacter(final int endCharacter) {
+    public void setEndCharacter( final int endCharacter ) {
         this.endCharacter = endCharacter;
     }
 
@@ -117,7 +118,7 @@ public class BaseDescr
     /**
      * @param startCharacter the startCharacter to set
      */
-    public void setStartCharacter(final int startCharacter) {
+    public void setStartCharacter( final int startCharacter ) {
         this.startCharacter = startCharacter;
     }
 }

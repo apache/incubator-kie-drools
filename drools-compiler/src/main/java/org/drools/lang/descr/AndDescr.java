@@ -26,7 +26,7 @@ public class AndDescr extends BaseDescr
      * 
      */
     private static final long serialVersionUID = 510l;
-    private List              descrs           = new ArrayList();
+    private List<BaseDescr>    descrs           = new ArrayList<BaseDescr>();
 
     public AndDescr() {
     }
@@ -55,7 +55,7 @@ public class AndDescr extends BaseDescr
                          baseDescr );
     }
 
-    public void insertBeforeLast(final Class clazz,
+    public void insertBeforeLast(final Class<?> clazz,
                              final BaseDescr baseDescr) {
         if ( this.descrs.isEmpty() ) {
             addDescr( baseDescr );
@@ -73,13 +73,13 @@ public class AndDescr extends BaseDescr
         addDescr( baseDescr );
     }
 
-    public List getDescrs() {
+    public List<BaseDescr> getDescrs() {
         return this.descrs;
     }
 
     public void addOrMerge(final BaseDescr baseDescr) {
         if ( baseDescr instanceof AndDescr ) {
-            for( BaseDescr descr : (List<BaseDescr>)((AndDescr) baseDescr).getDescrs() ) {
+            for( BaseDescr descr : ((AndDescr) baseDescr).getDescrs() ) {
                 addDescr( descr );
             }
         } else {
