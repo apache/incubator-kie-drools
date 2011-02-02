@@ -15,73 +15,72 @@
  */
 package org.drools.lang.descr;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrDescr extends BaseDescr
     implements
     ConditionalElementDescr {
-    /**
-     * 
-     */
+
     private static final long serialVersionUID = 510l;
-    private List              descrs           = new ArrayList();
+    private List<BaseDescr>   descrs           = new ArrayList<BaseDescr>();
 
     public OrDescr() {
     }
-    
-    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) {
-        if(clazz.isInstance( baseDescr )) {
+
+    public void insertBeforeLast( final Class<?> clazz,
+                                  final BaseDescr baseDescr ) {
+        if ( clazz.isInstance( baseDescr ) ) {
             if ( this.descrs.isEmpty() ) {
                 addDescr( baseDescr );
                 return;
             }
-            for ( int i = this.descrs.size()-1; i >= 0; i-- ) {
-                if ( this.descrs.get( i ) instanceof FieldConstraintDescr ) {
-                    insertDescr( i-1, baseDescr );
+            for ( int i = this.descrs.size() - 1; i >= 0; i-- ) {
+                if ( clazz.isInstance( this.descrs.get( i ) ) ) {
+                    insertDescr( i - 1,
+                                 baseDescr );
                     return;
-                }                
+                }
             }
-        }    
+        }
         addDescr( baseDescr );
     }
-    
-    public void insertDescr(int index, final BaseDescr baseDescr) {
-        if( baseDescr instanceof FieldBindingDescr ) {
+
+    public void insertDescr( int index,
+                             final BaseDescr baseDescr ) {
+        if ( baseDescr instanceof FieldBindingDescr ) {
             FieldBindingDescr fbd = (FieldBindingDescr) baseDescr;
-            if( fbd.getFieldConstraint() != null ) {
-                this.descrs.add(index, fbd.getFieldConstraint() );
+            if ( fbd.getFieldConstraint() != null ) {
+                this.descrs.add( index,
+                                 fbd.getFieldConstraint() );
                 fbd.setFieldConstraint( null );
             }
         }
         this.descrs.add( index,
                          baseDescr );
-    }    
+    }
 
-    public void addDescr(final BaseDescr baseDescr) {
+    public void addDescr( final BaseDescr baseDescr ) {
         this.descrs.add( baseDescr );
-        if( baseDescr instanceof FieldBindingDescr ) {
+        if ( baseDescr instanceof FieldBindingDescr ) {
             FieldBindingDescr fbd = (FieldBindingDescr) baseDescr;
-            if( fbd.getFieldConstraint() != null ) {
+            if ( fbd.getFieldConstraint() != null ) {
                 this.descrs.add( fbd.getFieldConstraint() );
                 fbd.setFieldConstraint( null );
             }
         }
     }
 
-
-    public List getDescrs() {
+    public List<BaseDescr> getDescrs() {
         return this.descrs;
     }
 
-    public void addOrMerge(final BaseDescr baseDescr) {
-        if( baseDescr instanceof OrDescr ) {
-            this.descrs.addAll( ((OrDescr)baseDescr).getDescrs() );
+    public void addOrMerge( final BaseDescr baseDescr ) {
+        if ( baseDescr instanceof OrDescr ) {
+            this.descrs.addAll( ((OrDescr) baseDescr).getDescrs() );
         } else {
             this.descrs.add( baseDescr );
         }
     }
-    
-    
+
 }

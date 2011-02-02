@@ -1305,9 +1305,8 @@ public class DRLXParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return null;
 
-        while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
-            // TODO: implement this
-            input.consume();
+        if ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
+            constraints( pattern );
         }
 
         match( input,
@@ -1349,6 +1348,45 @@ public class DRLXParser {
         if ( state.failed ) return null;
 
         return label.getText();
+    }
+
+    /**
+     * constraints := constraint (COMMA constraint)*
+     * @param pattern
+     * @throws RecognitionException 
+     */
+    private void constraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        constraint( pattern );
+        if ( state.failed ) return;
+
+        while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+            match( input,
+                   DRLLexer.COMMA,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            constraint( pattern );
+            if ( state.failed ) return;
+        }
+    }
+
+    /**
+     * constraint := conditionalExpression
+     * @param pattern
+     * @throws RecognitionException 
+     */
+    private void constraint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        int first = input.index();
+        exprParser.conditionalAndExpression();
+        if ( state.failed ) return;
+        
+        if ( state.backtracking == 0 && input.index() > first ) {
+            // expression consumed something
+            String value = input.toString( first,
+                                           input.LT( -1 ).getTokenIndex() );
+        }
     }
 
     /**

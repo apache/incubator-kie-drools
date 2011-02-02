@@ -20,7 +20,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -432,13 +437,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2, 
                       constraint.getDescrs().size() );
         assertEquals( "type == stilton",
-                      constraint.getDescrs().get( 0 ).getText() );
+                      constraint.getDescrs().get( 0 ) );
         assertEquals( "price > 10",
-                      constraint.getDescrs().get( 1 ).getText() );
-        
-
+                      constraint.getDescrs().get( 1 ) );
     }
-
+    
     public void testDialect() throws Exception {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
