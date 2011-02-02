@@ -511,8 +511,7 @@
   </target>
 
   <!-- Start Demo -->
-  <target name="start.demo" depends="start.h2,s/home/kverlaen/Desktop/install-eclipse-jbpm.swf
-/home/kverlaen/Desktop/install-guvnor-jbpm.swftart.jboss,start.eclipse,start.human.task" />
+  <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
   <!-- Stop Demo -->
   <target name="stop.demo" depends="stop.h2,stop.jboss" />
 
