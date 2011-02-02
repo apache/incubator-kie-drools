@@ -12,7 +12,7 @@
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
   <properties>
-    <drools.version>5.2.0-M1</drools.version>
+    <drools.version>5.2.0.M1</drools.version>
     <drools.osgi.version>5.2.0</drools.osgi.version>
     <jbpm.osgi.version>5.0.0.SNAPSHOT</jbpm.osgi.version>
   </properties>
