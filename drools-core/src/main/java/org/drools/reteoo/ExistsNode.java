@@ -112,7 +112,8 @@ public class ExistsNode extends BetaNode {
             }
         }
 
-        for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+        for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( leftTuple,
+                                                                             (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                        rightTuple.getFactHandle() ) ) {
 
@@ -304,7 +305,8 @@ public class ExistsNode extends BetaNode {
             memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
-            if ( rightMemory.isIndexed() && rightMemory.getFirst( blocker ) != rightMemory.getFirst( leftTuple ) ) {
+            if ( rightMemory.isIndexed() && rightMemory.getFirst( blocker ) != rightMemory.getFirst( leftTuple,
+                                                                                                     (InternalFactHandle) context.getFactHandle() ) ) {
                 // we changed bucket, so blocker no longer blocks
                 blocker.removeBlocked( leftTuple );
                 leftTuple.setBlocker( null );
@@ -332,7 +334,8 @@ public class ExistsNode extends BetaNode {
             }
 
             // find first blocker, because it's a modify, we need to start from the beginning again        
-            RightTuple rightTuple = rightMemory.getFirst( leftTuple );
+            RightTuple rightTuple = rightMemory.getFirst( leftTuple,
+                                                          (InternalFactHandle) context.getFactHandle() );
             for ( RightTuple newBlocker = rightTuple; newBlocker != null; newBlocker = (RightTuple) newBlocker.getNext() ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
