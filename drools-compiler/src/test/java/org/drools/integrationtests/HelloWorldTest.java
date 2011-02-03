@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,10 @@ public class HelloWorldTest {
 		// load up the knowledge base
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
+                 "target/test-tmp/testHelloWorld" );
 		// go !
 		Message message = new Message();
 		message.setMessage("Hello World");
@@ -65,7 +69,10 @@ public class HelloWorldTest {
 		// load up the knowledge base
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
+                 "target/test-tmp/testHelloWorldDebug" );
 		// go !
 		Message message = new Message();
 		message.setMessage("Hello World");
