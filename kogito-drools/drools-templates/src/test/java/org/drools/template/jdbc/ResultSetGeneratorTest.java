@@ -26,15 +26,13 @@ import java.util.ArrayList;
  * @author Bill Tarr       
  */
 public class ResultSetGeneratorTest {
-  
-
 
     @Test
     public void testResultSet() throws Exception {
 
         // setup the HSQL database with our rules.
         Class.forName("org.hsqldb.jdbcDriver");
-        Connection conn = DriverManager.getConnection("jdbc:hsqldb:HAHARULES", "sa", "");
+        Connection conn = DriverManager.getConnection("jdbc:hsqldb:mem:drools-templates", "sa", "");
 
         try {
             update("CREATE TABLE cheese_rules ( id INTEGER IDENTITY, persons_age INTEGER, birth_date DATE, cheese_type VARCHAR(256), log VARCHAR(256) )", conn);
@@ -42,7 +40,7 @@ public class ResultSetGeneratorTest {
             update("INSERT INTO cheese_rules(persons_age,birth_date,cheese_type,log) VALUES(42, '1950-01-01', 'stilton', 'Old man stilton')", conn);
             update("INSERT INTO cheese_rules(persons_age,birth_date,cheese_type,log) VALUES(10, '2009-01-01', 'cheddar', 'Young man cheddar')", conn);
         } catch (SQLException e) {
-            // catch exception for table already existing
+            throw new IllegalStateException("Could not initialize in memory database", e);
         }
 
         // query the DB for the rule rows, convert them using the template.
@@ -52,13 +50,11 @@ public class ResultSetGeneratorTest {
                 " FROM cheese_rules");
 
         final ResultSetGenerator converter = new ResultSetGenerator();
-        final String drl1 = converter.compile(rs, getRulesStream());
+        final String drl = converter.compile(rs, getRulesStream());
 
-        System.out.println(drl1);
+        System.out.println(drl);
 
         sta.close();
-
-        String drl = drl1;
 
         // test that our rules can execute.
         final RuleBase rb = buildRuleBase(drl);
