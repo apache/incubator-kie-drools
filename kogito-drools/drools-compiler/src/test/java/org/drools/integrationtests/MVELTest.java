@@ -6,6 +6,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -65,9 +66,9 @@ public class MVELTest {
         workingMemory.fireAllRules();
         assertEquals( 2,
                       list.size() );
-        assertEquals( new Integer( 30 ),
+        assertEquals( BigInteger.valueOf( 30 ),
                       list.get( 0 ) );
-        assertEquals( new Integer( 22 ),
+        assertEquals( Integer.valueOf( 22 ),
                       list.get( 1 ) );
 
         assertEquals( "hello world",
