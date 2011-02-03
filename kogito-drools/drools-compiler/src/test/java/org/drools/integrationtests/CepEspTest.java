@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -1464,7 +1465,9 @@ public class CepEspTest {
         StatefulSession wm = ruleBase.newStatefulSession( conf,
                                                           null );
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
-        logger.setFileName( "audit" );
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
+        logger.setFileName( "target/test-tmp/testIdleTimeAndTimeToNextJob-audit" );
 
         try {
             List results = new ArrayList();
