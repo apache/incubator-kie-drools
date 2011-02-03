@@ -54,11 +54,13 @@ public abstract class AbstractCompositeRestriction
     public Declaration[] getRequiredDeclarations() {
         // Iterate all restrictions building up a unique list of declarations
         // No need to cache, as this should only be called once at build time
-        final Set set = new HashSet();
+        final Set<Declaration> set = new HashSet<Declaration>();
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             final Declaration[] declarations = this.restrictions[i].getRequiredDeclarations();
             for ( int j = 0, jlength = declarations.length; j < jlength; j++ ) {
-                set.add( declarations[j] );
+            	if( declarations[j].getExtractor() != null ){
+                    set.add( declarations[j] );
+            	}
             }
         }
 
