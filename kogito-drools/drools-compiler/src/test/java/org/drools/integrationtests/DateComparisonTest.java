@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -66,8 +67,10 @@ public class DateComparisonTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.setGlobal( "results",
                             results );
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
-                                                                                     "test" );
+                 "target/test-tmp/testDateComparisonThan" );
         // go !
         Cheese yesterday = new Cheese( "Yesterday" );
         yesterday.setUsedBy( yesterday() );
