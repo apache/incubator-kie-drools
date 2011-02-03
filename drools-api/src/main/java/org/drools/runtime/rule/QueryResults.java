@@ -21,7 +21,7 @@ import java.util.Iterator;
 /**
  * <p>
  * Contains the results of a query. The identifiers is a map of the declarations for the query, only patterns or fields that are bound can
- * be accessed in the QueryResultsRow. This class can be marshalled using the drools-transformer-xstream module in combination with the BatchExecutionHelper.
+ * be accessed in the QueryResultsRow. This class can be marshalled using the drools-drools-pipeline module in combination with the BatchExecutionHelper.
  * See the BatchExecutionHelper for more details.
  * </p>
  * 

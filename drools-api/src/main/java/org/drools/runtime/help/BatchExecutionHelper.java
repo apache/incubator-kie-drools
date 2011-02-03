@@ -30,7 +30,7 @@ import com.thoughtworks.xstream.XStream;
  * </p>
  * 
  * <p>
- * There is current no xsd for schema validation, however we will try to outline the basic format here and the drools-transformer-xstream module
+ * There is current no xsd for schema validation, however we will try to outline the basic format here and the drools-pipeline module
  * has an illustrative unit test in the XStreamBatchExecutionTest unit test. The root element is &lt;batch-execution&gt; and it can contain zero or more
  * commands elements.
  * </p>

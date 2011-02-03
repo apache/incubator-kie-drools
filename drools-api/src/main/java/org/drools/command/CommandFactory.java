@@ -31,7 +31,7 @@ import org.drools.runtime.rule.FactHandle;
  * 
  * <p>
  * Out of the box marshalling to XML is support for the Commands, specifically the BatchExecution command and ExecutionResults, using the Drools Pipeline. If the 
- * drools-transformer-xstream is added then the PipelineFactory can be used in conjunction with the BatchExecutionHelper to marshall to and from XML. BatchExecutionHelper
+ * drools-pipeline module is added then the PipelineFactory can be used in conjunction with the BatchExecutionHelper to marshall to and from XML. BatchExecutionHelper
  * also provides additional documentation on the supported XML format.
  * </p>
  *`
