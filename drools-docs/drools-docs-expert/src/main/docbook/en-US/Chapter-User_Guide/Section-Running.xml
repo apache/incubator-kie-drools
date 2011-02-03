@@ -1242,7 +1242,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     when services are involved.</para>
 
     <para>There is currently no XML schema to support schema validation. The
-    basic format is outlined here, and the drools-transformer-xstream module
+    basic format is outlined here, and the drools-pipeline module
     has an illustrative unit test in the
     <code>XStreamBatchExecutionTest</code> unit test. The root element is
     &lt;batch-execution&gt; and it can contain zero or more commands
