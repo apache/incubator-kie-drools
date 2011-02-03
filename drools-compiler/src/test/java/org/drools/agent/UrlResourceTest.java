@@ -69,7 +69,9 @@ public class UrlResourceTest {
     public void testWithCache() throws Exception {
         URL url = new URL("http://localhost:"+this.getPort()+"/rule1.drl");
         UrlResource ur = new UrlResource(url);
-        UrlResource.CACHE_DIR = new File(".");
+        File cacheDir = new File("target/test-tmp/cache");
+        cacheDir.mkdirs();
+        UrlResource.CACHE_DIR = cacheDir;
 
         File f1 = fileManager.newFile( "rule1.drl" );
         System.err.println("target file: " + f1.getAbsolutePath());
