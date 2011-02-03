@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * <p>A simple example of using the ResultSetGenerator.
  * The template used is "Cheese.drt" the same used by SimpleRuleTemplateExample.
  * Rather than use the spreadsheet ExampleCheese.xls, this example reads the data
- * from an HSQL database (which is created in this example.)</p>
+ * from an HSQL database (which is created in this example).</p>
  * @author Michael Neale
  * @author Bill Tarr       
  */
@@ -34,7 +34,7 @@ public class ResultSetGeneratorTest {
 
         // setup the HSQL database with our rules.
         Class.forName("org.hsqldb.jdbcDriver");
-        Connection conn = DriverManager.getConnection("jdbc:hsqldb:RULES", "sa", "");
+        Connection conn = DriverManager.getConnection("jdbc:hsqldb:HAHARULES", "sa", "");
 
         try {
             update("CREATE TABLE cheese_rules ( id INTEGER IDENTITY, persons_age INTEGER, birth_date DATE, cheese_type VARCHAR(256), log VARCHAR(256) )", conn);
