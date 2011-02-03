@@ -1586,7 +1586,9 @@ public class CepEspTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
                                                                                null );
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        logger.setFileName( "audit" );
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
+        logger.setFileName( "target/test-tmp/testCollectWithWindows-audit" );
 
         List<Number> timeResults = new ArrayList<Number>();
         List<Number> lengthResults = new ArrayList<Number>();
