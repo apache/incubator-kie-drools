@@ -34,11 +34,16 @@
   <target name="download.h2" depends="download.h2.check" if="h2.not.available">
     <echo message="Getting h2 ..." />
     <mkdir dir="${install.home}/db/driver"/>
-    <get src="${h2.download.url}" dest="${install.home}/db/driver/h2.jar" />
+    <get src="${h2.download.url}" dest="${install.home}/db/driver/h2.jar"  />
   </target>
 
   <!-- Download BIRT engine (gwt-console) -->
-  <target name="download.birt.check">
+  <target name="check.birt">
+    <condition property="birt.download">
+      <equals arg1="${jBPM.birt.download}" arg2="true" />
+    </condition>
+  </target>
+  <target name="download.birt.check" depends="check.birt" if="birt.download">
     <echo message="Checking birt reporting engine download ..." />
     <condition property="birt.not.available">
       <not>
@@ -64,7 +69,7 @@
   <target name="download.jboss" depends="download.jboss.check" if="jboss.not.available">
     <echo message="Getting JBoss AS ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-${jboss.server.version}.zip" />
+    <get src="${jboss.download.url}" dest="${install.home}/lib/jboss-${jboss.server.version}.zip"  />
   </target>
 
   <!-- Download Eclipse -->
@@ -83,6 +88,24 @@
         <os family="mac" />
       </not>
       <os family="unix" />
+      <not>
+        <or>
+          <os arch="x86_64" />
+          <os arch="amd64" />
+        </or>
+      </not>
+    </and>
+  </condition>
+  <condition property="download.type" value="linux-gtk-x86_64">
+    <and>
+      <not>
+        <os family="mac" />
+      </not>
+      <os family="unix" />
+      <or>
+        <os arch="x86_64" />
+        <os arch="amd64" />
+      </or>
     </and>
   </condition>		
   <condition property="download.extension" value="zip">
@@ -104,15 +127,15 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-helios-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/eclipse/downloads/drops/R-3.6.1-201009090800/eclipse-SDK-3.6.1-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.${download.extension}" />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/helios/R/eclipse-java-helios-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-helios-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
@@ -126,63 +149,7 @@
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
     <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.6.1/R201009132020/GEF-SDK-3.6.1.zip"
-         dest="${install.home}/lib/GEF-SDK-3.6.1.zip" />
-  </target>
-  <target name="download.eclipse.emf.check">
-    <echo message="Checking Eclipse EMF download ..." />
-    <condition property="eclipse.emf.not.available">
-      <not>
-        <available file="${install.home}/lib/emf-runtime-2.6.1.zip" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.eclipse.emf" depends="download.eclipse.emf.check" if="eclipse.emf.not.available">
-    <echo message="Getting Eclipse EMF ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/modeling/emf/emf/downloads/drops/2.6.x/R201009141218/emf-runtime-2.6.1.zip"
-         dest="${install.home}/lib/emf-runtime-2.6.1.zip" />
-  </target>
-  <target name="download.eclipse.emf.validation.check">
-    <echo message="Checking Eclipse EMF Validation download ..." />
-    <condition property="eclipse.emf.validation.not.available">
-      <not>
-        <available file="${install.home}/lib/emf-validation-runtime-1.4.0.zip" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.eclipse.emf.validation" depends="download.eclipse.emf.validation.check" if="eclipse.emf.validation.not.available">
-    <echo message="Getting Eclipse EMF Validation ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/modeling/emf/validation/downloads/drops/1.4.0/R201006151000/emf-validation-runtime-1.4.0.zip" 
-         dest="${install.home}/lib/emf-validation-runtime-1.4.0.zip" />
-  </target>
-  <target name="download.eclipse.emf.transaction.check">
-    <echo message="Checking Eclipse EMF Transaction download ..." />
-    <condition property="eclipse.emf.transaction.not.available">
-      <not>
-        <available file="${install.home}/lib/emf-transaction-runtime-1.4.0.zip" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.eclipse.emf.transaction" depends="download.eclipse.emf.transaction.check" if="eclipse.emf.transaction.not.available">
-    <echo message="Getting Eclipse EMF Transaction ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/modeling/emf/transaction/downloads/drops/1.4.0/R201006151000/emf-transaction-runtime-1.4.0.zip" 
-         dest="${install.home}/lib/emf-transaction-runtime-1.4.0.zip" />
-  </target>
-  <target name="download.eclipse.gmf.check">
-    <echo message="Checking Eclipse GMF download ..." />
-    <condition property="eclipse.gmf.not.available">
-      <not>
-        <available file="${install.home}/lib/gmf-sdk-2.3.1.zip" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.eclipse.gmf" depends="download.eclipse.gmf.check" if="eclipse.gmf.not.available">
-    <echo message="Getting Eclipse GMF ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/modeling/gmp/gmf-tooling/downloads/drops/2.3.1/R201009150806/gmf-sdk-2.3.1.zip" 
-         dest="${install.home}/lib/gmf-sdk-2.3.1.zip" />
+         dest="${install.home}/lib/GEF-SDK-3.6.1.zip"  />
   </target>
 
   <!-- Download jBPM binaries -->
@@ -197,7 +164,7 @@
   <target name="download.jBPM.bin" depends="download.jBPM.bin.check" if="jBPM.bin.not.available">
     <echo message="Getting jBPM binaries ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jBPM.url}/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip" />
+    <get src="${jBPM.url}/jbpm-${jBPM.version}-bin.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip"  />
   </target>
 
   <!-- Download Drools Guvnor -->
@@ -212,7 +179,7 @@
   <target name="download.drools.guvnor" depends="download.drools.guvnor.check" if="drools.guvnor.not.available">
     <echo message="Getting Drools Guvnor ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.url}/drools-${drools.version}-guvnor.war" dest="${install.home}/lib/drools-${drools.version}-guvnor.war" />
+    <get src="${drools.url}/drools-${drools.version}-guvnor.war" dest="${install.home}/lib/drools-${drools.version}-guvnor.war"  />
   </target>
 
   <!-- Download Designer -->
@@ -227,22 +194,8 @@
   <target name="download.designer" depends="download.designer.check" if="designer.not.available">
     <echo message="Getting Designer ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war" />
+    <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war"  />
   </target>
-  <target name="download.slf4j.check">
-    <echo message="Checking slf4j download ..." />
-    <condition property="slf4j.not.available">
-      <not>
-        <available file="${install.home}/lib/slf4j-jdk14-1.5.11.jar" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.slf4j" depends="download.slf4j.check" if="slf4j.not.available">
-    <echo message="Getting slf4j ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="${slf4j.download.url}" dest="${install.home}/lib/slf4j-jdk14-1.5.11.jar" />
-  </target>
-
 
   <!-- Download jBPM Eclipse plugins -->
   <target name="download.jBPM.eclipse.check">
@@ -256,7 +209,7 @@
   <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
     <echo message="Getting jBPM Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-4-18524/jbpm-5.0-SNAPSHOT-eclipse-all.zip" dest="${install.home}/lib/jbpm-5.0-SNAPSHOT-eclipse-all.zip" />
+    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-6-25925/jbpm-5.0.0-eclipse-all.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip"  />
   </target>
 
   <!-- Download Drools Eclipse plugins -->
@@ -271,7 +224,7 @@
   <target name="download.drools.eclipse" depends="download.drools.eclipse.check" if="drools.eclipse.not.available">
     <echo message="Getting Drools Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.url}/drools-${drools.version}-eclipse-all.zip" dest="${install.home}/lib/drools-${drools.version}-eclipse-all.zip" />
+    <get src="${drools.url}/drools-${drools.version}-eclipse-all.zip" dest="${install.home}/lib/drools-${drools.version}-eclipse-all.zip"  />
   </target>
 
   <!-- Download jBPM gwt-console -->
@@ -286,7 +239,7 @@
   <target name="download.jBPM.gwt-console" depends="download.jBPM.gwt-console.check" if="jBPM.gwt-console.not.available">
     <echo message="Getting jBPM gwt-console ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${jBPM.url}/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip" />
+    <get src="${jBPM.url}/jbpm-${jBPM.version}-gwt-console.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-gwt-console.zip"  />
   </target>
 
   <!-- ############ INSTALL ############ -->
@@ -313,11 +266,11 @@
   <target name="install.guvnor.into.jboss.5" depends="check.jboss.version" if="jboss.version.is.5">
     <mkdir dir="${install.home}/target/drools-guvnor"/>
     <unzip src="${install.home}/lib/drools-${drools.version}-guvnor.war" dest="${install.home}/target/drools-guvnor" />
-  	<delete>
+    <delete>
       <fileset dir="${install.home}/target/drools-guvnor/WEB-INF/lib" includes="xml-apis-*.jar"/>
     </delete>
-  	<zip basedir="${install.home}/target/drools-guvnor"
-  	     destfile="${install.home}/target/drools-guvnor.war"/>
+    <zip basedir="${install.home}/target/drools-guvnor"
+         destfile="${install.home}/target/drools-guvnor.war"/>
     <copy file="${install.home}/target/drools-guvnor.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
           overwrite="true" />
@@ -326,35 +279,17 @@
 
   <target name="install.guvnor.into.jboss.other" depends="check.jboss.version" unless="jboss.version.is.5">
     <copy file="${install.home}/lib/drools-${drools.version}-guvnor.war"
-         tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
-         overwrite="true" />
+          tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
+          overwrite="true" />
   </target> 
 		
   <!-- Install designer -->
-  <target name="install.designer.into.jboss" depends="download.designer,download.slf4j">
-    <antcall target="install.designer.into.jboss.5" />
-    <antcall target="install.designer.into.jboss.other" />
+  <target name="install.designer.into.jboss" depends="download.designer">
+    <copy file="${install.home}/lib/designer-${designer.version}.war"
+          tofile="${jboss.server.deploy.dir}/designer.war"
+          overwrite="true" />
   </target>
-  
-  <target name="install.designer.into.jboss.5" depends="check.jboss.version" if="jboss.version.is.5">
-    <mkdir dir="${jboss.server.deploy.dir}/designer.war"/>
-    <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${jboss.server.deploy.dir}/designer.war" />
-    <delete file="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/servlet-api-2.5.jar"/>
-    <copy file="${install.home}/lib/slf4j-jdk14-1.5.11.jar"
-          tofile="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/slf4j-jdk14-1.5.11.jar"/>
-  	<delete>
-      <fileset dir="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib" includes="xercesImpl-*.jar"/>
-    </delete>
-  </target>  	
-
-  <target name="install.designer.into.jboss.other" depends="check.jboss.version" unless="jboss.version.is.5">
-    <mkdir dir="${jboss.server.deploy.dir}/designer.war"/>
-    <unzip src="${install.home}/lib/designer-${designer.version}.war" dest="${jboss.server.deploy.dir}/designer.war" />
-    <delete file="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/servlet-api-2.5.jar"/>
-    <copy file="${install.home}/lib/slf4j-jdk14-1.5.11.jar"
-          tofile="${jboss.server.deploy.dir}/designer.war/WEB-INF/lib/slf4j-jdk14-1.5.11.jar"/>
-  </target> 
-			
+  			
   <!-- Install gwt-console -->
   <target name="install.jBPM-gwt-console.into.jboss" depends="download.h2,download.birt,download.jBPM.gwt-console">
     <!-- gwt-console -->
@@ -399,6 +334,10 @@
           tofile="${jboss.server.conf.dir}/roles.properties"
           overwrite="true" />
     <!-- reporting -->
+    <antcall target="install.reporting.into.jboss" />
+  </target>
+
+  <target name="install.reporting.into.jboss" depends="check.birt" if="birt.download" >
     <mkdir dir="${install.home}/target"/>
     <unzip src="${install.home}/lib/birt-runtime-2_3_2_2.zip"
            dest="${install.home}/target"/>
@@ -410,39 +349,31 @@
     <delete dir="${install.home}/target"/>
     <copy file="${install.home}/report/overall_activity.rptdesign"
           tofile="${jboss.server.birt.dir}/overall_activity.rptdesign"
-          overwrite="true" />
+          overwrite="true"/>
     <copy file="${install.home}/report/process_summary.rptdesign"
           tofile="${jboss.server.birt.dir}/process_summary.rptdesign"
-          overwrite="true" />
+          overwrite="true"/>
     <copy todir="${jboss.server.birt.dir}/ReportEngine/plugins/org.eclipse.birt.report.data.oda.jdbc_2.3.2.r232_v20090212/drivers" overwrite="true">
       <fileset dir="${install.home}/db/driver"/>
     </copy>
   </target>
 
   <!-- Install Eclipse -->
-  <target name="install.eclipse" depends="download.eclipse,download.eclipse.gef,download.eclipse.emf,download.eclipse.emf.validation,download.eclipse.emf.transaction,download.eclipse.gmf">   
+  <target name="install.eclipse" depends="download.eclipse,download.eclipse.gef">   
     <antcall target="unzipEclipse" />	
     <antcall target="untarEclipse" />
     <unzip dest="${install.home}" overwrite="true" 
            src="${install.home}/lib/GEF-SDK-3.6.1.zip" />				         
-    <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/emf-runtime-2.6.1.zip" />				         
-    <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/emf-validation-runtime-1.4.0.zip" />				         
-    <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/emf-transaction-runtime-1.4.0.zip" />				         
-    <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/gmf-sdk-2.3.1.zip" />				         
   </target>
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-helios-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-SDK-3.6.1-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-helios-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-helios-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -457,7 +388,7 @@
   <!-- Install Eclipse plugins -->
   <target name="install.jBPM-eclipse.into.eclipse" depends="download.jBPM.eclipse">
     <!-- install plugins -->
-    <unzip src="${install.home}/lib/jbpm-5.0-SNAPSHOT-eclipse-all.zip" dest="${eclipse.home}" />
+    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" dest="${eclipse.home}" />
   </target>
 
   <!-- Install Eclipse plugins -->
@@ -498,15 +429,15 @@
   <target name="start.jboss">
     <property name="jboss.full.path.win" location="${jboss.home}/bin/run.bat" />
     <exec executable="${jboss.full.path.win}" spawn="yes"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
-      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" os="Linux,Mac OS X">
-      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m" />
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
@@ -520,7 +451,7 @@
   <!-- Stop JBoss AS -->
   <target name="stop.jboss">
     <exec executable="${jboss.home}/bin/shutdown.bat"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
       <arg value="-s" />
       <arg value="jnp://${jboss.bind.address}:1099" />
       <arg value="-S" />
@@ -536,7 +467,7 @@
   <target name="start.eclipse">
     <exec executable="${eclipse.home}/eclipse.exe"
           spawn="yes"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000">
+          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
@@ -548,11 +479,13 @@
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
     </exec>
+  	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
+    <exec executable="./generate.mac.eclipse.preferences.sh" os="Mac OS X"/>
     <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" os="Mac OS X">
       <arg value="-data" />
-      <arg value="${eclipse.workspace.dir}" />
+      <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
-      <arg value="./eclipse.preferences.ini" />
+      <arg value="../../../../mac.eclipse.preferences.ini" />
     </exec>
   </target>
 

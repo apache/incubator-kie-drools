@@ -61,6 +61,8 @@ public class TaskHandler extends AbstractNodeHandler {
         	}
     		xmlNode = xmlNode.getNextSibling();
         }
+        handleScript(workItemNode, element, "onEntry");
+        handleScript(workItemNode, element, "onExit");
 	}
     
     protected String getTaskName(final Element element) {

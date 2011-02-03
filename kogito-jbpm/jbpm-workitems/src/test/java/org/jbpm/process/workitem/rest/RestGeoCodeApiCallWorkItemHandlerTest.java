@@ -23,8 +23,8 @@ import junit.framework.TestCase;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.DefaultWorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
-import org.drools.process.workitem.rest.RestGeoCodeApiCallWorkItemHandler;
-import org.drools.process.workitem.rest.ResultGeoCodeApi;
+import org.jbpm.process.workitem.rest.RestGeoCodeApiCallWorkItemHandler;
+import org.jbpm.process.workitem.rest.ResultGeoCodeApi;
 
 public class RestGeoCodeApiCallWorkItemHandlerTest extends TestCase {
 

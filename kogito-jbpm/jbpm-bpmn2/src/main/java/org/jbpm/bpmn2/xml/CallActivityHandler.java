@@ -68,6 +68,8 @@ public class CallActivityHandler extends AbstractNodeHandler {
         	}
     		xmlNode = xmlNode.getNextSibling();
         }
+        handleScript(subProcessNode, element, "onEntry");
+        handleScript(subProcessNode, element, "onExit");
 	}
     
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
@@ -120,6 +122,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 			xmlDump.append("tns:independent=\"false\" ");
 		}
 		xmlDump.append(">" + EOL);
+		writeScripts(subProcessNode, xmlDump);
 		writeIO(subProcessNode, xmlDump);
 		endNode("callActivity", xmlDump);
 	}

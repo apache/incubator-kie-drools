@@ -38,7 +38,7 @@ public class StateNodeHandler extends AbstractNodeHandler {
 		writeNode("intermediateCatchEvent", stateNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
         xmlDump.append("      <conditionalEventDefinition>" + EOL);
-        xmlDump.append("        <condition xs:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + XmlDumper.replaceIllegalChars(condition) + "</condition>" + EOL);
+        xmlDump.append("        <condition xsi:type=\"tFormalExpression\" language=\"" + XmlBPMNProcessDumper.RULE_LANGUAGE + "\">" + XmlDumper.replaceIllegalChars(condition) + "</condition>" + EOL);
         xmlDump.append("      </conditionalEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);
 	}

@@ -20,7 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-import org.drools.process.workitem.transform.Transformer;
+import org.jbpm.process.workitem.transform.Transformer;
 
 public class FileTransformer {
 

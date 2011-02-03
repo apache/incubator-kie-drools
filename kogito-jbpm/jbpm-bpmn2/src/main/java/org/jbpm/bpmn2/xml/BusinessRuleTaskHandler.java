@@ -42,15 +42,18 @@ public class BusinessRuleTaskHandler extends AbstractNodeHandler {
 		if (ruleFlowGroup != null) {
 			ruleSetNode.setRuleFlowGroup(ruleFlowGroup);
 		}
+        handleScript(ruleSetNode, element, "onEntry");
+        handleScript(ruleSetNode, element, "onExit");
 	}
 
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		RuleSetNode ruleSetNode = (RuleSetNode) node;
 		writeNode("businessRuleTask", ruleSetNode, xmlDump, metaDataType);
 		if (ruleSetNode.getRuleFlowGroup() != null) {
-			xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getRuleFlowGroup()) + "\" ");
+			xmlDump.append("g:ruleFlowGroup=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ruleSetNode.getRuleFlowGroup()) + "\" >" + EOL);
 		}
-		endNode(xmlDump);
+		writeScripts(ruleSetNode, xmlDump);
+		endNode("businessRuleTask", xmlDump);
 	}
 
 }

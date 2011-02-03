@@ -33,13 +33,14 @@
 
   <xi:include href="Chapter-Overview/Chapter-Overview.xml" />
   <xi:include href="Chapter-Installer/Chapter-Installer.xml" />
+  <xi:include href="Chapter-Processes/Chapter-Processes.xml" />
   <xi:include href="Chapter-BPMN2/Chapter-BPMN2.xml" />
   <xi:include href="Chapter-API/Chapter-API.xml" />
   <xi:include href="Chapter-HumanTasks/Chapter-HumanTasks.xml" />
   <xi:include href="Chapter-DomainSpecificProcesses/Chapter-DomainSpecificProcesses.xml" />
   <xi:include href="Chapter-Persistence/Chapter-Persistence.xml" />
   <xi:include href="Chapter-Console/Chapter-Console.xml" />
-  <!-- xi:include href="Chapter-BAM/Chapter-BAM.xml" /-->
+  <xi:include href="Chapter-BAM/Chapter-BAM.xml" />
 
   <index/>
 

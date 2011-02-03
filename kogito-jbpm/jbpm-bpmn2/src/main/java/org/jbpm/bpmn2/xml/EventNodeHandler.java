@@ -91,7 +91,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(">" + EOL);
                 xmlDump.append(
                     "      <timerEventDefinition>" + EOL +
-                    "        <timeCycle xs:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars((String) eventNode.getMetaData("TimeCycle")) + "</timeCycle>" + EOL +
+                    "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars((String) eventNode.getMetaData("TimeCycle")) + "</timeCycle>" + EOL +
                     "      </timerEventDefinition>" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Compensate-")) {

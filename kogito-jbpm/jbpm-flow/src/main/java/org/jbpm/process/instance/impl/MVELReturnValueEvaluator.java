@@ -114,21 +114,9 @@ public class MVELReturnValueEvaluator
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        CompiledExpression compexpr = (CompiledExpression) this.expr;
-
-        Object value;
-        if ( MVELDebugHandler.isDebugMode() ) {
-            if ( MVELDebugHandler.verbose ) {
-                System.out.println( DebugTools.decompile( compexpr ) );
-            }
-            value = MVEL.executeDebugger( compexpr,
-                                          null,
-                                          factory );
-        } else {
-            value = MVEL.executeExpression( compexpr,
-                                            null,
-                                            factory );
-        }
+        Object value = MVEL.executeExpression( this.expr,
+	                                           null,
+	                                           factory );
 
         if ( !(value instanceof Boolean) ) {
             throw new RuntimeException( "Constraints must return boolean values" );

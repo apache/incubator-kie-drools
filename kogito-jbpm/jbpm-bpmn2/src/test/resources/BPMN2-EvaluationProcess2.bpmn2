@@ -4,14 +4,14 @@
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_employeeItem" structureRef="java.lang.Object" />
+  <itemDefinition id="_employeeItem" />
 
   <process processType="Private" isExecutable="true" id="com.sample.evaluation" name="Evaluation" >
 
@@ -40,36 +40,36 @@
       <dataInputAssociation>
         <targetRef>_2_CommentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">You need to perform a self evaluation</from>
-          <to xs:type="tFormalExpression">_2_CommentInput</to>
+          <from xsi:type="tFormalExpression">You need to perform a self evaluation</from>
+          <to xsi:type="tFormalExpression">_2_CommentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_SkippableInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">false</from>
-          <to xs:type="tFormalExpression">_2_SkippableInput</to>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_2_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"></from>
-          <to xs:type="tFormalExpression">_2_ContentInput</to>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_2_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Performance Evaluation</from>
-          <to xs:type="tFormalExpression">_2_TaskNameInput</to>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_2_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_2_PriorityInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">1</from>
-          <to xs:type="tFormalExpression">_2_PriorityInput</to>
+          <from xsi:type="tFormalExpression">1</from>
+          <to xsi:type="tFormalExpression">_2_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
       <potentialOwner>
@@ -99,36 +99,36 @@
       <dataInputAssociation>
         <targetRef>_4_CommentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
-          <to xs:type="tFormalExpression">_4_CommentInput</to>
+          <from xsi:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
+          <to xsi:type="tFormalExpression">_4_CommentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_4_SkippableInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">false</from>
-          <to xs:type="tFormalExpression">_4_SkippableInput</to>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_4_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_4_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"></from>
-          <to xs:type="tFormalExpression">_4_ContentInput</to>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_4_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_4_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Performance Evaluation</from>
-          <to xs:type="tFormalExpression">_4_TaskNameInput</to>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_4_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_4_PriorityInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">1</from>
-          <to xs:type="tFormalExpression">_4_PriorityInput</to>
+          <from xsi:type="tFormalExpression">1</from>
+          <to xsi:type="tFormalExpression">_4_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
       <potentialOwner>
@@ -157,36 +157,36 @@
       <dataInputAssociation>
         <targetRef>_5_CommentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
-          <to xs:type="tFormalExpression">_5_CommentInput</to>
+          <from xsi:type="tFormalExpression">You need to perform an evaluation for employee #{employee}</from>
+          <to xsi:type="tFormalExpression">_5_CommentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_SkippableInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">false</from>
-          <to xs:type="tFormalExpression">_5_SkippableInput</to>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_5_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_ContentInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression"></from>
-          <to xs:type="tFormalExpression">_5_ContentInput</to>
+          <from xsi:type="tFormalExpression"></from>
+          <to xsi:type="tFormalExpression">_5_ContentInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_TaskNameInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">Performance Evaluation</from>
-          <to xs:type="tFormalExpression">_5_TaskNameInput</to>
+          <from xsi:type="tFormalExpression">Performance Evaluation</from>
+          <to xsi:type="tFormalExpression">_5_TaskNameInput</to>
         </assignment>
       </dataInputAssociation>
       <dataInputAssociation>
         <targetRef>_5_PriorityInput</targetRef>
         <assignment>
-          <from xs:type="tFormalExpression">1</from>
-          <to xs:type="tFormalExpression">_5_PriorityInput</to>
+          <from xsi:type="tFormalExpression">1</from>
+          <to xsi:type="tFormalExpression">_5_PriorityInput</to>
         </assignment>
       </dataInputAssociation>
       <potentialOwner>

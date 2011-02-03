@@ -280,7 +280,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.jbpm\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -321,7 +321,7 @@ public class ProcessForEachTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.drools\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.jbpm\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -369,7 +369,7 @@ public class ProcessForEachTest extends JbpmTestCase {
             "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
             "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
             "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.drools\" >\n" +
+            "         type=\"RuleFlow\" name=\"ForEach\" id=\"org.drools.ForEach\" package-name=\"org.jbpm\" >\n" +
             "  <header>\n" +
             "    <globals>\n" +
             "      <global identifier=\"myList\" type=\"java.util.List\" />\n" +
@@ -410,7 +410,7 @@ public class ProcessForEachTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.drools\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.subflow\" package-name=\"org.jbpm\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +

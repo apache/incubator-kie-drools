@@ -114,20 +114,9 @@ public class MVELAction
             factory.setNextFactory( data.getFunctionFactory() );
         }        
         
-        CompiledExpression compexpr = (CompiledExpression) this.expr;
-
-        if ( MVELDebugHandler.isDebugMode() ) {
-            if ( MVELDebugHandler.verbose ) {
-                System.out.println( DebugTools.decompile( compexpr ) );
-            }
-            MVEL.executeDebugger( compexpr,
-                                  null,
-                                  factory );
-        } else {
-            MVEL.executeExpression( compexpr,
-                                    null,
-                                    factory );
-        }
+        MVEL.executeExpression( this.expr,
+                                null,
+                                factory );
 
     }
 

@@ -66,6 +66,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setProcessInstanceId(10);
         handler.executeWorkItem(workItem, manager);
 
         Thread.sleep(500);
@@ -80,6 +81,7 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
         assertEquals("Comment", task.getDescription());
         assertEquals(Status.Reserved, task.getStatus());
         assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals(10, task.getProcessInstanceId());
 
         System.out.println("Starting task " + task.getId());
         BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();

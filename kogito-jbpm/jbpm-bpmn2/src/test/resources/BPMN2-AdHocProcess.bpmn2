@@ -4,8 +4,8 @@
              typeLanguage="http://www.java.com/javaTypes"
              expressionLanguage="http://www.mvel.org/2.0"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
              xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
@@ -41,10 +41,10 @@
 
     <!-- connections -->
     <sequenceFlow id="_7-_5" sourceRef="_7" targetRef="_5" name="default" >
-      <conditionExpression xs:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >not org.jbpm.bpmn2.Person()</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >not org.jbpm.bpmn2.Person()</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_7-_6" sourceRef="_7" targetRef="_6" name="Person" >
-      <conditionExpression xs:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.Person()</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.jboss.org/drools/rule" >org.jbpm.bpmn2.Person()</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_4-_7" sourceRef="_4" targetRef="_7" />
 
