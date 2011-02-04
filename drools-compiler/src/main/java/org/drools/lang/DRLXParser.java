@@ -16,6 +16,7 @@ import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
@@ -1080,7 +1081,7 @@ public class DRLXParser {
      * @param lhs
      * @throws RecognitionException 
      */
-    private BaseDescr lhsOr( final CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs ) throws RecognitionException {
+    private BaseDescr lhsOr( final CEDescrBuilder<?, ?> ce ) throws RecognitionException {
         BaseDescr result = null;
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
                                                                         DroolsSoftKeywords.OR ) ) {
@@ -1099,9 +1100,9 @@ public class DRLXParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, OrDescr> or = null;
+            CEDescrBuilder<CEDescrBuilder<?, ?>, OrDescr> or = null;
             if ( state.backtracking == 0 ) {
-                or = lhs.or();
+                or = ce.or();
                 result = or.getDescr();
             }
 
@@ -1120,14 +1121,14 @@ public class DRLXParser {
         } else {
             // infix OR
 
-            result = lhsAnd( lhs );
+            result = lhsAnd( ce );
             if ( state.failed ) return null;
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
                 CEDescrBuilder<CEDescrBuilder<RuleDescrBuilder, AndDescr>, OrDescr> or = null;
                 if ( state.backtracking == 0 ) {
-                    lhs.getDescr().getDescrs().remove( result );
-                    or = lhs.or();
+                    ce.getDescr().getDescrs().remove( result );
+                    or = ce.or();
                     or.getDescr().addDescr( result );
                     result = or.getDescr();
                 }
@@ -1259,7 +1260,7 @@ public class DRLXParser {
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXISTS ) ) {
             // TODO: handle this
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NOT ) ) {
-            // TODO: handle this
+            lhsNot( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
             // TODO: handle this
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
@@ -1272,6 +1273,61 @@ public class DRLXParser {
             result = lhsPattern( ce );
         }
         return result;
+    }
+
+    /**
+     * lhsNot := NOT
+     *           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
+     *           | LEFT_PAREN lhsOr RIGHT_PAREN 
+     *           | lhsPattern
+     *           )
+     *  
+     * @param ce
+     * @return
+     * @throws RecognitionException 
+     */
+    private BaseDescr lhsNot( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        CEDescrBuilder< ? , AndDescr> not = null;
+        
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.NOT,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return null;
+
+        if ( state.backtracking == 0 ) { not = ce.and(); }
+
+        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+            boolean prefixed = helper.validateLT( 2, DroolsSoftKeywords.AND ) || helper.validateLT( 2, DroolsSoftKeywords.OR );
+             
+            if( ! prefixed ) {
+                 match( input,
+                        DRLLexer.LEFT_PAREN,
+                        null,
+                        null,
+                        DroolsEditorType.SYMBOL );
+                 if ( state.failed ) return null;
+            }
+            
+            lhsOr( not );
+            if ( state.failed ) return null;
+            
+            if( ! prefixed ) {
+                match( input,
+                       DRLLexer.RIGHT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+           }
+        } else {
+            
+            lhsPattern( not );
+            if ( state.failed ) return null;
+        }
+
+        return not != null ? not.getDescr() : null;
     }
 
     /**
