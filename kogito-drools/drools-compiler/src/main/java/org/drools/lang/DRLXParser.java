@@ -27,6 +27,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.OrDescr;
@@ -1381,11 +1382,12 @@ public class DRLXParser {
         int first = input.index();
         exprParser.conditionalAndExpression();
         if ( state.failed ) return;
-        
+
         if ( state.backtracking == 0 && input.index() > first ) {
             // expression consumed something
-            String value = input.toString( first,
-                                           input.LT( -1 ).getTokenIndex() );
+            String expr = input.toString( first,
+                                          input.LT( -1 ).getTokenIndex() );
+            pattern.constraint( expr );
         }
     }
 

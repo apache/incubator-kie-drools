@@ -436,10 +436,10 @@ public class RuleParserTest extends TestCase {
         AndDescr constraint = (AndDescr) pattern.getConstraint();
         assertEquals( 2, 
                       constraint.getDescrs().size() );
-        assertEquals( "type == stilton",
-                      constraint.getDescrs().get( 0 ) );
+        assertEquals( "type == 'stilton'",
+                      constraint.getDescrs().get( 0 ).toString() );
         assertEquals( "price > 10",
-                      constraint.getDescrs().get( 1 ) );
+                      constraint.getDescrs().get( 1 ).toString() );
     }
     
     public void testDialect() throws Exception {

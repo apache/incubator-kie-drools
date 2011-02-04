@@ -35,6 +35,10 @@ options {
     public LinkedList<DroolsSentence> getEditorInterface()    { return helper.getEditorInterface(); }
     public void reportError(RecognitionException ex)          {        helper.reportError( ex ); }
     public void emitErrorMessage(String msg)                  {}
+    
+    private boolean buildConstraint;
+    public void setBuildConstraint( boolean build ) { this.buildConstraint = build; }
+    public boolean isBuildConstraint() { return this.buildConstraint; }
 
 }
 
@@ -50,12 +54,12 @@ catch (RecognitionException re) {
 //                      GENERAL RULES
 // --------------------------------------------------------
 literal
-	:	STRING                	{	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
+	:	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
 	|	DECIMAL 		{	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
 	|	HEX     		{	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
 	|	FLOAT   		{	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
-	|	BOOL                  	{	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
-	|	NULL                  	{	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+	|	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
+	|	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
 	;
 
 typeList
@@ -93,36 +97,112 @@ expression
 conditionalExpression
   : conditionalOrExpression ( QUESTION expression COLON expression )?
 	;
-conditionalOrExpression
-  : conditionalAndExpression ( DOUBLE_PIPE conditionalAndExpression )*
+	
+conditionalOrExpression returns [BaseDescr descr]
+@init { ConstraintConnectiveDescr or = null; }
+  : left=conditionalAndExpression { $descr = $left.descr; } 
+    ( DOUBLE_PIPE right=conditionalAndExpression
+        { if( state.backtracking == 0 && buildConstraint ) {
+            if( or == null ) {
+              or = ConstraintConnectiveDescr.newOr();
+              or.addOrMerge( $left.descr );
+              $descr = or;
+            }
+            or.addOrMerge( $right.descr );
+          }
+        } 
+    )*
 	;
 
-conditionalAndExpression
-  : inclusiveOrExpression ( DOUBLE_AMPER inclusiveOrExpression )*
+conditionalAndExpression returns [BaseDescr descr]
+@init { ConstraintConnectiveDescr and = null; }
+  : left=inclusiveOrExpression { $descr = $left.descr; }
+    ( DOUBLE_AMPER right=inclusiveOrExpression 
+        { if( state.backtracking == 0 && buildConstraint ) {
+            if( and == null ) {
+              and = ConstraintConnectiveDescr.newAnd();
+              and.addOrMerge( $left.descr );
+              $descr = and;
+            }
+            and.addOrMerge( $right.descr );
+          }
+        } 
+    )*
 	;
 
-inclusiveOrExpression
-  : exclusiveOrExpression ( PIPE exclusiveOrExpression )*
+inclusiveOrExpression returns [BaseDescr descr]
+@init { ConstraintConnectiveDescr or = null; }
+  : left=exclusiveOrExpression { $descr = $left.descr; }
+    ( PIPE right=exclusiveOrExpression 
+        { if( state.backtracking == 0 && buildConstraint ) {
+            if( or == null ) {
+              or = ConstraintConnectiveDescr.newIncOr();
+              or.addOrMerge( $left.descr );
+              $descr = or;
+            }
+            or.addOrMerge( $right.descr );
+          }
+        } 
+    )*
 	;
 
-exclusiveOrExpression
-  : andExpression ( XOR andExpression )*
+exclusiveOrExpression returns [BaseDescr descr]
+@init { ConstraintConnectiveDescr xor = null; }
+  : left=andExpression { $descr = $left.descr; }
+    ( XOR right=andExpression 
+        { if( state.backtracking == 0 && buildConstraint ) {
+            if( xor == null ) {
+              xor = ConstraintConnectiveDescr.newXor();
+              xor.addOrMerge( $left.descr );
+              $descr = xor;
+            }
+            xor.addOrMerge( $right.descr );
+          }
+        } 
+    )*
 	;
 
-andExpression
-  : equalityExpression ( AMPER equalityExpression )*
+andExpression returns [BaseDescr descr]
+@init { ConstraintConnectiveDescr and = null; }
+  : left=equalityExpression { $descr = $left.descr; }
+    ( AMPER right=equalityExpression 
+        { if( state.backtracking == 0 && buildConstraint ) {
+            if( and == null ) {
+              and = ConstraintConnectiveDescr.newIncAnd();
+              and.addOrMerge( $left.descr );
+              $descr = and;
+            }
+            and.addOrMerge( $right.descr );
+          }
+        } 
+    )*
 	;
 
-equalityExpression
-  : instanceOfExpression ( ( EQUALS | NOT_EQUALS ) instanceOfExpression )*
+equalityExpression returns [BaseDescr descr]
+@after { $descr = $left; }
+  : left=instanceOfExpression ( ( op=EQUALS | op=NOT_EQUALS ) right=instanceOfExpression )*
 	;
 
-instanceOfExpression
-  : relationalExpression (instanceof_key type)?
+instanceOfExpression returns [BaseDescr descr]
+@after { $descr = $left; }
+  : left=relationalExpression (op=instanceof_key righ=type)?
 	;
 
-relationalExpression
-  : shiftExpression ( (relationalOp)=> relationalOp shiftExpression )*
+relationalExpression returns [BaseDescr descr]
+@init { ExprConstraintDescr constr = null; boolean }
+  : left=shiftExpression
+    {   if( state.backtracking == 0 && buildConstraint ) {
+            constr = new ExprConstraintDescr( $left.text );
+            $descr = constr;
+        }
+    } 
+    ( (relationalOp)=> op=relationalOp right=shiftExpression 
+    {   if( state.backtracking == 0 && buildConstraint ) {
+            constr.setOperator( $op.text );
+            constr.setRightSide( $right.text );
+        }
+    } 
+    )*
   ;
 	
 relationalOp
