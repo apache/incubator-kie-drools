@@ -9,7 +9,9 @@
   </parent>
   <artifactId>drools-verifier</artifactId>
   <packaging>jar</packaging>
+
   <name>Drools :: Verifier</name>
+  <description>Drools Verifier analyses the quality of Drools rules and reports any issues.</description>
 
   <dependencies>
     <!-- Internal dependencies -->
