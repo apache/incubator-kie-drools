@@ -3,6 +3,7 @@ package org.drools.lang;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -186,6 +187,18 @@ public class DroolsParserExceptionFactory {
         } else if ( e instanceof MismatchedSetException ) {
             MismatchedSetException mse = (MismatchedSetException) e;
             String expected = expectedTokensAsString( mse.expecting );
+            message = String.format(
+                                     DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
+                                     e.line,
+                                     e.charPositionInLine,
+                                     getBetterToken( e.token ),
+                                     expected,
+                                     formatParserLocation() );
+            codeAndMessage.add( message );
+            codeAndMessage.add( "ERR 107" );
+        } else if ( e instanceof DroolsMismatchedSetException ) {
+            DroolsMismatchedSetException mse = (DroolsMismatchedSetException) e;
+            String expected = Arrays.asList( mse.getTokenText() ).toString();
             message = String.format(
                                      DroolsParserExceptionFactory.MISMATCHED_SET_MESSAGE,
                                      e.line,

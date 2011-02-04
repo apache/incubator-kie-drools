@@ -19,7 +19,7 @@ package org.drools.lang.api;
 import org.drools.lang.descr.TypeDeclarationDescr;
 
 /**
- *  A descriptor builder for Globals
+ *  A descriptor builder for declared types
  */
 public interface DeclareDescrBuilder
     extends

@@ -22,17 +22,30 @@ import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.FieldDescrBuilder;
+import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
+import org.drools.lang.descr.AttributeDescr;
 
 /**
  * This is a class to hold all the helper functions/methods used
  * by the DRL parser
  */
 public class ParserXHelper {
+    public final String[]                             statementKeywords        = new String[]{
+                                                                               DroolsSoftKeywords.PACKAGE,
+                                                                               DroolsSoftKeywords.IMPORT,
+                                                                               DroolsSoftKeywords.GLOBAL,
+                                                                               DroolsSoftKeywords.DECLARE,
+                                                                               DroolsSoftKeywords.FUNCTION,
+                                                                               DroolsSoftKeywords.RULE,
+                                                                               DroolsSoftKeywords.QUERY
+                                                                               };
+
     public List<DroolsParserException>                errors                   = new ArrayList<DroolsParserException>();
     public LinkedList<DroolsSentence>                 editorInterface          = null;
     public boolean                                    isEditorInterfaceEnabled = false;
@@ -44,7 +57,7 @@ public class ParserXHelper {
     private TokenStream                               input                    = null;
     private RecognizerSharedState                     state                    = null;
 
-    public Stack<DescrBuilder>                        builderContext           = null;
+    public Stack<DescrBuilder< ? >>                   builderContext           = null;
 
     public ParserXHelper(String[] tokenNames,
                          TokenStream input,
@@ -53,7 +66,7 @@ public class ParserXHelper {
                                                                      paraphrases );
         this.input = input;
         this.state = state;
-        this.builderContext = new Stack<DescrBuilder>();
+        this.builderContext = new Stack<DescrBuilder< ? >>();
     }
 
     public LinkedList<DroolsSentence> getEditorInterface() {
@@ -175,6 +188,17 @@ public class ParserXHelper {
                            DroolsSoftKeywords.NEW ) ||
                validateLT( index,
                            DroolsSoftKeywords.CLASS );
+    }
+    
+    public boolean validateStatement( int index ) {
+        boolean ret = false;
+        for( String st : statementKeywords ) {
+            if( validateLT( index, st ) ) {
+                ret = true;
+                break;
+            }
+        }
+        return ret || validateAttribute( index );
     }
 
     public boolean validateAttribute( int index ) {
@@ -298,10 +322,8 @@ public class ParserXHelper {
     }
 
     public void reportError( Exception e ) {
-        if ( state.errorRecovery ) {
-            return;
-        }
-        errors.add( errorMessageFactory.createDroolsException( e, input.LT( 1 ) ) );
+        errors.add( errorMessageFactory.createDroolsException( e,
+                                                               input.LT( 1 ) ) );
     }
 
     /** return the raw DroolsParserException errors */
@@ -481,12 +503,12 @@ public class ParserXHelper {
     // END COPIED FROM: http://www.antlr.org/wiki/display/ANTLR3/Custom+Syntax+Error+Recovery
     // ---------------------------------------------------------------------------------
 
-    void setStart( DescrBuilder db ) {
+    void setStart( DescrBuilder< ? > db ) {
         setStart( db,
                   input.LT( 1 ) );
     }
 
-    void setStart( DescrBuilder db,
+    void setStart( DescrBuilder< ? > db,
                    Token first ) {
         if ( db != null && first != null ) {
             db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
@@ -504,8 +526,8 @@ public class ParserXHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder> T start( Class<T> clazz,
-                                             String param ) {
+    public <T extends DescrBuilder< ? >> T start( Class<T> clazz,
+                                                  String param ) {
         if ( state.backtracking == 0 ) {
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 pushParaphrases( DroolsParaphraseTypes.PACKAGE );
@@ -515,9 +537,13 @@ public class ParserXHelper {
                 ImportDescrBuilder imp;
                 if ( validateLT( 2,
                                  DroolsSoftKeywords.FUNCTION ) ) {
-                    imp = ((PackageDescrBuilder) builderContext.peek()).newFunctionImport();
+                    imp = (builderContext.empty()) ?
+                          DescrFactory.newPackage().newFunctionImport() :
+                          ((PackageDescrBuilder) builderContext.peek()).newFunctionImport();
                 } else {
-                    imp = ((PackageDescrBuilder) builderContext.peek()).newImport();
+                    imp = (builderContext.empty()) ?
+                          DescrFactory.newPackage().newImport() :
+                          ((PackageDescrBuilder) builderContext.peek()).newImport();
                 }
                 builderContext.push( imp );
                 pushParaphrases( DroolsParaphraseTypes.IMPORT );
@@ -525,14 +551,18 @@ public class ParserXHelper {
                 setStart( imp );
                 return (T) imp;
             } else if ( GlobalDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                GlobalDescrBuilder global = ((PackageDescrBuilder) builderContext.peek()).newGlobal();
+                GlobalDescrBuilder global = (builderContext.empty()) ?
+                                            DescrFactory.newPackage().newGlobal() :
+                                            ((PackageDescrBuilder) builderContext.peek()).newGlobal();
                 builderContext.push( global );
                 pushParaphrases( DroolsParaphraseTypes.GLOBAL );
                 beginSentence( DroolsSentenceType.GLOBAL );
                 setStart( global );
                 return (T) global;
             } else if ( DeclareDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                DeclareDescrBuilder declare = ((PackageDescrBuilder) builderContext.peek()).newDeclare();
+                DeclareDescrBuilder declare = (builderContext.empty()) ?
+                                              DescrFactory.newPackage().newDeclare() :
+                                              ((PackageDescrBuilder) builderContext.peek()).newDeclare();
                 builderContext.push( declare );
                 pushParaphrases( DroolsParaphraseTypes.TYPE_DECLARE );
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
@@ -543,8 +573,27 @@ public class ParserXHelper {
                 builderContext.push( field );
                 setStart( field );
                 return (T) field;
+            } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                FunctionDescrBuilder function = null;
+                if( builderContext.empty() ) {
+                    function = DescrFactory.newPackage().newFunction();
+                } else {
+                    PackageDescrBuilder pkg = (PackageDescrBuilder) builderContext.peek();
+                    function = pkg.newFunction().namespace( pkg.getDescr().getName() );
+                    AttributeDescr attribute = pkg.getDescr().getAttribute( "dialect" );
+                    if( attribute != null ) {
+                        function.dialect( attribute.getValue() );
+                    }
+                }
+                builderContext.push( function );
+                pushParaphrases( DroolsParaphraseTypes.FUNCTION );
+                beginSentence( DroolsSentenceType.FUNCTION );
+                setStart( function );
+                return (T) function;
             } else if ( RuleDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                RuleDescrBuilder rule = ((PackageDescrBuilder) builderContext.peek()).newRule();
+                RuleDescrBuilder rule = (builderContext.empty()) ?
+                                        DescrFactory.newPackage().newRule() :
+                                        ((PackageDescrBuilder) builderContext.peek()).newRule();
                 builderContext.push( rule );
                 pushParaphrases( DroolsParaphraseTypes.RULE );
                 beginSentence( DroolsSentenceType.RULE );
@@ -561,10 +610,9 @@ public class ParserXHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder> T end( Class<T> clazz ) {
+    public <T extends DescrBuilder< ? >> T end( Class<T> clazz ) {
         if ( state.backtracking == 0 ) {
-            if ( !( FieldDescrBuilder.class.isAssignableFrom( clazz ) ||
-                    AttributeDescrBuilder.class.isAssignableFrom( clazz )) ) {
+            if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || AttributeDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
@@ -574,5 +622,9 @@ public class ParserXHelper {
             return (T) builderContext.pop();
         }
         return null;
+    }
+
+    public String[] getStatementKeywords() {
+        return statementKeywords;
     }
 }

@@ -17,6 +17,8 @@ public interface PackageDescrBuilder
 
     public DeclareDescrBuilder newDeclare();
 
+    public FunctionDescrBuilder newFunction();
+
     public RuleDescrBuilder newRule();
 
 }

@@ -17,61 +17,31 @@ package org.drools.lang.descr;
 
 /**
  * This represents a constraint in a pattern defined by an arbitrary
- * expression. The constraint can be a single expression without comparative
- * operators that returns a boolean value, for instance "isEmpty()", or it 
- * can be a complete expression including an operator, and which also returns
- * a boolean value as a result, e.g. "x > 20". Any valid java/mvel expression
- * is supported.
+ * expression. The constraint can be any valid java/mvel expression.
  */
 public class ExprConstraintDescr extends BaseDescr {
 
-    private static final long serialVersionUID = 510l;
-    private String            leftSide;
-    private String            operator;
-    private String            rightSide;
+    private static final long serialVersionUID = 520l;
 
     public ExprConstraintDescr() {
         super();
     }
     
-    public ExprConstraintDescr(final String leftSide) {
-        this.leftSide = leftSide;
-    }
-
-    public String getLeftSide() {
-        return leftSide;
-    }
-
-    public void setLeftSide( String leftSide ) {
-        this.leftSide = leftSide;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator( String operator ) {
-        this.operator = operator;
-    }
-
-    public String getRightSide() {
-        return rightSide;
-    }
-
-    public void setRightSide( String rightSide ) {
-        this.rightSide = rightSide;
+    public ExprConstraintDescr(final String expr) {
+        super();
+        setText( expr );
     }
     
-    public boolean isSingleValue() {
-        return this.operator == null;
+    public void setExpression( final String expr ) {
+        setText( expr );
     }
     
-    public boolean isCompleteExpr() {
-        return this.operator != null;
+    public String getExpression( ) {
+        return getText();
     }
 
     @Override
     public String toString() {
-        return leftSide + ((operator!=null) ? " " + operator + " " + rightSide : "");
+        return getText();
     }
 }

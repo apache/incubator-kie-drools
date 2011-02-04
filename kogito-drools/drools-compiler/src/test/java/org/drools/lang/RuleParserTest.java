@@ -20,12 +20,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -36,6 +31,8 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -384,40 +381,19 @@ public class RuleParserTest extends TestCase {
     //
     //    }
     //
-    //    public void testCompatibleRestriction() throws Exception {
-    //        String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
-    //        parse( "compilation_unit",
-    //               "compilation_unit",
-    //               source );
-    //        assertEquals( "com.sample",
-    //                      this.walker.getPackageDescr().getName() );
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertEquals( "test",
-    //                      rule.getName() );
-    //        OrDescr or = (OrDescr) ((PatternDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
-    //        assertEquals( 2,
-    //                      or.getDescrs().size() );
-    //        assertEquals( "text",
-    //                      ((FieldConstraintDescr) or.getDescrs().get( 0 )).getFieldName() );
-    //        assertEquals( "text2",
-    //                      ((FieldConstraintDescr) or.getDescrs().get( 1 )).getFieldName() );
-    //    }
-    //
-    //    public void testSimpleRestriction() throws Exception {
-    //        String source = "package com.sample  rule test  when  Test( ( text == null || matches \"\" ) )  then  end";
-    //        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
-    //                                                 source );
-    //        assertEquals( "com.sample",
-    //                          pkg.getName() );
-    //        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-    //        assertEquals( "test",
-    //                          rule.getName() );
-    //
-    //        FieldConstraintDescr fieldConstr = (FieldConstraintDescr) ((PatternDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
-    //        RestrictionConnectiveDescr restConnective = (RestrictionConnectiveDescr) fieldConstr.getRestrictions().get( 0 );
-    //        assertEquals( 2,
-    //                          restConnective.getRestrictions().size() );
-    //    }
+    public void testCompatibleRestriction() throws Exception {
+        String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        assertEquals( "com.sample",
+                          pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                          rule.getName() );
+        ExprConstraintDescr expr = (ExprConstraintDescr) ((PatternDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
+        assertEquals( "( text == null || text2 matches \"\" )",
+                          expr.getText() );
+    }
 
     public void testSimpleConstraint() throws Exception {
         String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
@@ -432,16 +408,16 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       rule.getLhs().getDescrs().size() );
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        
+
         AndDescr constraint = (AndDescr) pattern.getConstraint();
-        assertEquals( 2, 
+        assertEquals( 2,
                       constraint.getDescrs().size() );
         assertEquals( "type == 'stilton'",
                       constraint.getDescrs().get( 0 ).toString() );
         assertEquals( "price > 10",
                       constraint.getDescrs().get( 1 ).toString() );
     }
-    
+
     public void testDialect() throws Exception {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -453,58 +429,51 @@ public class RuleParserTest extends TestCase {
                       attr.getValue() );
     }
 
-    //
-    //    public void testDialect2() throws Exception {
-    //        final String source = "dialect \"mvel\"";
-    //        parse( "compilation_unit",
-    //               "compilation_unit",
-    //               source );
-    //        AttributeDescr attr = (AttributeDescr) this.walker.getPackageDescr().getAttributes().get( 0 );
-    //        assertEquals( "dialect",
-    //                      attr.getName() );
-    //        assertEquals( "mvel",
-    //                      attr.getValue() );
-    //    }
-    //
-    //    public void testEmptyRule() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "empty_rule.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "empty",
-    //                      rule.getName() );
-    //        assertNotNull( rule.getLhs() );
-    //        assertNotNull( rule.getConsequence() );
-    //    }
-    //
-    //    public void testKeywordCollisions() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "eol_funny_business.drl" );
-    //
-    //        final PackageDescr pkg = walker.getPackageDescr();
-    //
-    //        assertEquals( 1,
-    //                      pkg.getRules().size() );
-    //    }
-    //
-    //    public void testTernaryExpression() throws Exception {
-    //
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "ternary_expression.drl" );
-    //
-    //        final PackageDescr pkg = walker.getPackageDescr();
-    //        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-    //        assertEquals( 1,
-    //                      pkg.getRules().size() );
-    //
-    //        assertEqualsIgnoreWhitespace( "if (speed > speedLimit ? true : false;) pullEmOver();",
-    //                                      (String) rule.getConsequence() );
-    //    }
-    //
+    public void testDialect2() throws Exception {
+        final String source = "dialect \"mvel\"";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                     source );
+        AttributeDescr attr = pkg.getAttributes().get( 0 );
+        assertEquals( "dialect",
+                          attr.getName() );
+        assertEquals( "mvel",
+                          attr.getValue() );
+    }
+
+    public void testEmptyRule() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                              "empty_rule.drl" );
+
+        assertNotNull( rule );
+
+        assertEquals( "empty",
+                          rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertNotNull( rule.getConsequence() );
+    }
+
+    public void testKeywordCollisions() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "eol_funny_business.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+    }
+
+    public void testTernaryExpression() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "ternary_expression.drl" );
+
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        assertEqualsIgnoreWhitespace( "if (speed > speedLimit ? true : false;) pullEmOver();",
+                                          (String) rule.getConsequence() );
+    }
+
     //    public void FIXME_testLatinChars() throws Exception {
     //        final DrlParser parser = new DrlParser();
     //        final Reader drl = new InputStreamReader( this.getClass().getResourceAsStream( "latin-sample.dslr" ) );
@@ -526,32 +495,30 @@ public class RuleParserTest extends TestCase {
     //
     //    }
     //
-    //    public void testFunctionWithArrays() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "function_arrays.drl" );
-    //
-    //        final PackageDescr pkg = walker.getPackageDescr();
-    //
-    //        assertEquals( "foo",
-    //                      pkg.getName() );
-    //        assertEquals( 1,
-    //                      pkg.getRules().size() );
-    //
-    //        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-    //
-    //        assertEqualsIgnoreWhitespace( "yourFunction(new String[3] {\"a\",\"b\",\"c\"});",
-    //                                      (String) rule.getConsequence() );
-    //        final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get( 0 );
-    //
-    //        assertEquals( "String[]",
-    //                      func.getReturnType() );
-    //        assertEquals( "args[]",
-    //                      func.getParameterNames().get( 0 ) );
-    //        assertEquals( "String",
-    //                      func.getParameterTypes().get( 0 ) );
-    //    }
-    //
+    public void testFunctionWithArrays() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "function_arrays.drl" );
+
+        assertEquals( "foo",
+                          pkg.getName() );
+        assertEquals( 1,
+                          pkg.getRules().size() );
+
+        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEqualsIgnoreWhitespace( "yourFunction(new String[3] {\"a\",\"b\",\"c\"});",
+                                      (String) rule.getConsequence() );
+        
+        final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get( 0 );
+
+        assertEquals( "String[]",
+                          func.getReturnType() );
+        assertEquals( "args[]",
+                          func.getParameterNames().get( 0 ) );
+        assertEquals( "String",
+                          func.getParameterTypes().get( 0 ) );
+    }
+
     //    public void testAlmostEmptyRule() throws Exception {
     //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
     //                                                          "rule",
