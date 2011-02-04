@@ -16,6 +16,7 @@
 
 package org.drools.lang.api;
 
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 
 /**
@@ -39,18 +40,16 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
     }
 
     public PatternDescrBuilder<P> constraint( String constraint ) {
-        // TODO Auto-generated method stub
-        return null;
+        descr.addConstraint( new ExprConstraintDescr( constraint ) );
+        return this;
     }
 
     public PatternDescrBuilder<P> bind( String var,
                                         String target ) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public SourceDescrBuilder<?> from() {
-        // TODO Auto-generated method stub
         return null;
     }
 
