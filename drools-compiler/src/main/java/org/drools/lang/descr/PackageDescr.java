@@ -145,6 +145,17 @@ public class PackageDescr extends BaseDescr
     public List<AttributeDescr> getAttributes() {
         return this.attributes;
     }
+    
+    public AttributeDescr getAttribute( String name ) {
+        if( name != null ) {
+            for( AttributeDescr attr : this.attributes ) {
+                if( name.equals( attr.getName() ) ) {
+                    return attr;
+                }
+            }
+        }
+        return null;
+    }
 
     public void addFactTemplate(final FactTemplateDescr factTemplate) {
         if ( this.factTemplates == Collections.EMPTY_LIST ) {

@@ -72,4 +72,10 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
         return attribute;
     }
 
+    public FunctionDescrBuilder newFunction() {
+        FunctionDescrBuilder function = new FunctionDescrBuilderImpl();
+        descr.addFunction( function.getDescr() );
+        return function;
+    }
+
 }
