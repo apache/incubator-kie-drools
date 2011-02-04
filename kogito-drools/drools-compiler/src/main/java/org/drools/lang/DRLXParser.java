@@ -625,7 +625,7 @@ public class DRLXParser {
     }
 
     /**
-     * argument := type ID
+     * argument := type ID (LEFT_SQUARE RIGHT_SQUARE)*
      * @param function
      * @throws RecognitionException
      */
@@ -633,14 +633,32 @@ public class DRLXParser {
         String type = type();
         if ( state.failed ) return;
 
-        Token id = match( input,
-                          DRLLexer.ID,
-                          null,
-                          null,
-                          DroolsEditorType.IDENTIFIER );
+        int start = input.index();
+        match( input,
+               DRLLexer.ID,
+               null,
+               null,
+               DroolsEditorType.IDENTIFIER );
         if ( state.failed ) return;
         
-        if( state.backtracking == 0 ) function.argument( type, id.getText() );
+        while( input.LA( 1 ) == DRLLexer.LEFT_SQUARE ) {
+            match( input,
+                   DRLLexer.LEFT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL);
+            if ( state.failed ) return;
+                        
+            match( input,
+                   DRLLexer.RIGHT_SQUARE,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL);
+            if ( state.failed ) return;
+        }
+        int end = input.LT(-1).getTokenIndex();
+        
+        if( state.backtracking == 0 ) function.argument( type, input.toString( start, end ) );
     }
 
     /* ------------------------------------------------------------------------------------------------

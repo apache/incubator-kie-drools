@@ -518,7 +518,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "String",
                           func.getParameterTypes().get( 0 ) );
     }
-
+    
     //    public void testAlmostEmptyRule() throws Exception {
     //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
     //                                                          "rule",
