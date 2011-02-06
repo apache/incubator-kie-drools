@@ -508,7 +508,7 @@ public class RuleParserTest extends TestCase {
 
         assertEqualsIgnoreWhitespace( "yourFunction(new String[3] {\"a\",\"b\",\"c\"});",
                                       (String) rule.getConsequence() );
-        
+
         final FunctionDescr func = (FunctionDescr) pkg.getFunctions().get( 0 );
 
         assertEquals( "String[]",
@@ -518,115 +518,132 @@ public class RuleParserTest extends TestCase {
         assertEquals( "String",
                           func.getParameterTypes().get( 0 ) );
     }
-    
-    //    public void testAlmostEmptyRule() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "almost_empty_rule.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "almost_empty",
-    //                      rule.getName() );
-    //        assertNotNull( rule.getLhs() );
-    //        assertEquals( "",
-    //                      ((String) rule.getConsequence()).trim() );
-    //    }
-    //
-    //    public void testQuotedStringNameRule() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "quoted_string_name_rule.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "quoted string name",
-    //                      rule.getName() );
-    //        assertNotNull( rule.getLhs() );
-    //        assertEquals( "",
-    //                      ((String) rule.getConsequence()).trim() );
-    //    }
-    //
-    //    public void testNoLoop() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "no-loop.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "rule1",
-    //                      rule.getName() );
-    //        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "no-loop" );
-    //        assertEquals( "false",
-    //                      att.getValue() );
-    //        assertEquals( "no-loop",
-    //                      att.getName() );
-    //    }
-    //
-    //    public void testAutofocus() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "autofocus.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "rule1",
-    //                      rule.getName() );
-    //        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "auto-focus" );
-    //        assertEquals( "true",
-    //                      att.getValue() );
-    //        assertEquals( "auto-focus",
-    //                      att.getName() );
-    //    }
-    //
-    //    public void testRuleFlowGroup() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "ruleflowgroup.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "rule1",
-    //                      rule.getName() );
-    //        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "ruleflow-group" );
-    //        assertEquals( "a group",
-    //                      att.getValue() );
-    //        assertEquals( "ruleflow-group",
-    //                      att.getName() );
-    //    }
-    //
-    //    public void testConsequenceWithDeclaration() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "declaration-in-consequence.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "myrule",
-    //                      rule.getName() );
-    //
-    //        final String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";  ++i;" + "i++; --i; i--; i += i; i -= i; i *= i; i /= i;" + "int i = 5;" + "for(int j; j<i; ++j) {" + "System.out.println(j);}"
-    //                                + "Object o = new String(\"Hello\");" + "String s = (String) o;";
-    //
-    //        assertEqualsIgnoreWhitespace( expected,
-    //                                      (String) rule.getConsequence() );
-    //        assertTrue( ((String) rule.getConsequence()).indexOf( "++" ) > 0 );
-    //        assertTrue( ((String) rule.getConsequence()).indexOf( "--" ) > 0 );
-    //        assertTrue( ((String) rule.getConsequence()).indexOf( "+=" ) > 0 );
-    //        assertTrue( ((String) rule.getConsequence()).indexOf( "==" ) > 0 );
-    //
-    //        // System.out.println(( String ) rule.getConsequence());
-    //        // note, need to assert that "i++" is preserved as is, no extra spaces.
-    //    }
-    //
-    //    public void testRuleParseLhs() throws Exception {
-    //        final String text = "Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") \n";
-    //        PatternDescr pattern = (PatternDescr) parse( "lhs_pattern",
-    //                                                     "lhs_pattern",
-    //                                                     text );
-    //        assertNotNull( pattern );
-    //    }
-    //
+
+    public void testAlmostEmptyRule() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "almost_empty_rule.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        assertNotNull( pkg );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+
+        assertEquals( "almost_empty",
+                      rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEquals( "",
+                      ((String) rule.getConsequence()).trim() );
+    }
+
+    public void testQuotedStringNameRule() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "quoted_string_name_rule.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                         parser.hasErrors() );
+        assertNotNull( rule );
+
+        assertEquals( "quoted string name",
+                          rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEquals( "",
+                          ((String) rule.getConsequence()).trim() );
+    }
+
+    public void testNoLoop() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "no-loop.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "no-loop" );
+        assertEquals( "false",
+                      att.getValue() );
+        assertEquals( "no-loop",
+                      att.getName() );
+    }
+
+    public void testAutofocus() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "autofocus.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "auto-focus" );
+        assertEquals( "true",
+                      att.getValue() );
+        assertEquals( "auto-focus",
+                      att.getName() );
+    }
+
+    public void testRuleFlowGroup() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "ruleflowgroup.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEquals( "rule1",
+                      rule.getName() );
+        final AttributeDescr att = (AttributeDescr) rule.getAttributes().get( "ruleflow-group" );
+        assertEquals( "a group",
+                      att.getValue() );
+        assertEquals( "ruleflow-group",
+                      att.getName() );
+    }
+
+    public void testConsequenceWithDeclaration() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "declaration-in-consequence.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEquals( "myrule",
+                          rule.getName() );
+
+        final String expected = "int i = 0; i = 1; i / 1; i == 1; i(i); i = 'i'; i.i.i; i\\i; i<i; i>i; i=\"i\";  ++i;" + "i++; --i; i--; i += i; i -= i; i *= i; i /= i;" + "int i = 5;" + "for(int j; j<i; ++j) {" + "System.out.println(j);}"
+                                    + "Object o = new String(\"Hello\");" + "String s = (String) o;";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                          (String) rule.getConsequence() );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "++" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "--" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "+=" ) > 0 );
+        assertTrue( ((String) rule.getConsequence()).indexOf( "==" ) > 0 );
+
+        // System.out.println(( String ) rule.getConsequence());
+        // note, need to assert that "i++" is preserved as is, no extra spaces.
+    }
+
+    public void testRuleParseLhs() throws Exception {
+        final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                                         text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        AndDescr lhs = rule.getLhs();
+        assertEquals( 2,
+                      lhs.getDescrs().size() );
+    }
+
     //    public void testRuleParseLhsWithStringQuotes() throws Exception {
     //        final String text = "Person( location==\"atlanta\\\"\")\n";
     //        PatternDescr pattern = (PatternDescr) parse( "lhs_pattern",

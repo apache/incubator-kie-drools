@@ -992,12 +992,21 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                match( input,
-                       DRLLexer.ID,
-                       k,
-                       null,
-                       DroolsEditorType.KEYWORD );
-                if ( state.failed ) return null;
+                if( "-".equals( k ) ) {
+                    match( input,
+                           DRLLexer.MINUS,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD ); // part of the keyword
+                    if ( state.failed ) return null;
+                } else {
+                    match( input,
+                           DRLLexer.ID,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD );
+                    if ( state.failed ) return null;
+                }
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
@@ -1036,12 +1045,21 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                match( input,
-                       DRLLexer.ID,
-                       k,
-                       null,
-                       DroolsEditorType.KEYWORD );
-                if ( state.failed ) return null;
+                if( "-".equals( k ) ) {
+                    match( input,
+                           DRLLexer.MINUS,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD ); // part of the keyword
+                    if ( state.failed ) return null;
+                } else {
+                    match( input,
+                           DRLLexer.ID,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD );
+                    if ( state.failed ) return null;
+                }
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
@@ -1076,12 +1094,21 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                match( input,
-                       DRLLexer.ID,
-                       k,
-                       null,
-                       DroolsEditorType.KEYWORD );
-                if ( state.failed ) return null;
+                if( "-".equals( k ) ) {
+                    match( input,
+                           DRLLexer.MINUS,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD ); // part of the keyword
+                    if ( state.failed ) return null;
+                } else {
+                    match( input,
+                           DRLLexer.ID,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD );
+                    if ( state.failed ) return null;
+                }
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
@@ -1137,12 +1164,21 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                match( input,
-                       DRLLexer.ID,
-                       k,
-                       null,
-                       DroolsEditorType.KEYWORD );
-                if ( state.failed ) return null;
+                if( "-".equals( k ) ) {
+                    match( input,
+                           DRLLexer.MINUS,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD ); // part of the keyword
+                    if ( state.failed ) return null;
+                } else {
+                    match( input,
+                           DRLLexer.ID,
+                           k,
+                           null,
+                           DroolsEditorType.KEYWORD );
+                    if ( state.failed ) return null;
+                }
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {

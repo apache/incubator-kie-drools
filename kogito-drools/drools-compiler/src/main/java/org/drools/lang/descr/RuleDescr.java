@@ -49,6 +49,8 @@ public class RuleDescr extends AnnotatedBaseDescr
     private Resource                    resource;
 
     public RuleDescr() {
+        this( null,
+              "" );
     }
 
     public RuleDescr(final String name) {
