@@ -83,4 +83,8 @@ public class OrDescr extends BaseDescr
         }
     }
 
+    @Override
+    public String toString() {
+        return "[OR "+descrs+" ]";
+    }
 }

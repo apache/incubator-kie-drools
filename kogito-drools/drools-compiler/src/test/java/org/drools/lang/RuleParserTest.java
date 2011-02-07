@@ -32,10 +32,14 @@ import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.FieldConstraintDescr;
+import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.MVELExprDescr;
+import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -633,187 +637,159 @@ public class RuleParserTest extends TestCase {
     public void testRuleParseLhs() throws Exception {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
-                                                         text );
+                                            text );
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
         assertNotNull( rule );
 
         AndDescr lhs = rule.getLhs();
-        assertEquals( 2,
+        assertEquals( 1,
                       lhs.getDescrs().size() );
+        assertEquals( 2,
+                      ((OrDescr) lhs.getDescrs().get( 0 )).getDescrs().size() );
     }
 
-    //    public void testRuleParseLhsWithStringQuotes() throws Exception {
-    //        final String text = "Person( location==\"atlanta\\\"\")\n";
-    //        PatternDescr pattern = (PatternDescr) parse( "lhs_pattern",
-    //                                                     "lhs_pattern",
-    //                                                     text );
-    //        assertNotNull( pattern );
-    //
-    //        FieldConstraintDescr field = (FieldConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "location",
-    //                      field.getFieldName() );
-    //        // System.out.println(field.getRestriction().getRestrictions().get( 0
-    //        // ).getText());
-    //        assertEquals( "atlanta\\\"",
-    //                      field.getRestriction().getRestrictions().get( 0 ).getText() );
-    //    }
-    //
-    //    public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "literal_bool_and_negative.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "simple_rule",
-    //                      rule.getName() );
-    //        assertNotNull( rule.getLhs() );
-    //        assertEqualsIgnoreWhitespace( "cons();",
-    //                                      (String) rule.getConsequence() );
-    //
-    //        final AndDescr lhs = rule.getLhs();
-    //        assertEquals( 3,
-    //                      lhs.getDescrs().size() );
-    //
-    //        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
-    //        assertEquals( 1,
-    //                      pattern.getConstraint().getDescrs().size() );
-    //        AndDescr fieldAnd = (AndDescr) pattern.getConstraint();
-    //        FieldConstraintDescr fld = (FieldConstraintDescr) fieldAnd.getDescrs().get( 0 );
-    //        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //
-    //        assertEquals( "==",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "false",
-    //                      lit.getText() );
-    //        assertEquals( "bar",
-    //                      fld.getFieldName() );
-    //
-    //        pattern = (PatternDescr) lhs.getDescrs().get( 1 );
-    //        assertEquals( 1,
-    //                      pattern.getConstraint().getDescrs().size() );
-    //
-    //        fieldAnd = (AndDescr) pattern.getConstraint();
-    //        fld = (FieldConstraintDescr) fieldAnd.getDescrs().get( 0 );
-    //        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //
-    //        assertEquals( ">",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "-42",
-    //                      lit.getText() );
-    //        assertEquals( "boo",
-    //                      fld.getFieldName() );
-    //
-    //        pattern = (PatternDescr) lhs.getDescrs().get( 2 );
-    //        assertEquals( 1,
-    //                      pattern.getConstraint().getDescrs().size() );
-    //
-    //        // lit = (LiteralDescr) col.getDescrs().get( 0 );
-    //
-    //        fieldAnd = (AndDescr) pattern.getConstraint();
-    //        fld = (FieldConstraintDescr) fieldAnd.getDescrs().get( 0 );
-    //        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //        assertEquals( ">",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "-42.42",
-    //                      lit.getText() );
-    //        assertEquals( "boo",
-    //                      fld.getFieldName() );
-    //    }
-    //
-    //    public void testChunkWithoutParens() throws Exception {
-    //        String input = "( foo )";
-    //        ReturnValueRestrictionDescr returnData = (ReturnValueRestrictionDescr) parse( "paren_chunk",
-    //                                                                                      "fact_expression",
-    //                                                                                      input );
-    //
-    //        assertEquals( "( foo )",
-    //                      input.substring( returnData.getStartCharacter(),
-    //                                       returnData.getEndCharacter() ) );
-    //    }
-    //
-    //    public void testChunkWithParens() throws Exception {
-    //        String input = "(fnord())";
-    //        ReturnValueRestrictionDescr returnData = (ReturnValueRestrictionDescr) parse( "paren_chunk",
-    //                                                                                      "fact_expression",
-    //                                                                                      input );
-    //
-    //        assertEquals( "(fnord())",
-    //                      input.substring( returnData.getStartCharacter(),
-    //                                       returnData.getEndCharacter() ) );
-    //    }
-    //
-    //    public void testChunkWithParensAndQuotedString() throws Exception {
-    //        String input = "( fnord( \"cheese\" ) )";
-    //        ReturnValueRestrictionDescr returnData = (ReturnValueRestrictionDescr) parse( "paren_chunk",
-    //                                                                                      "fact_expression",
-    //                                                                                      input );
-    //
-    //        assertEquals( "( fnord( \"cheese\" ) )",
-    //                      input.substring( returnData.getStartCharacter(),
-    //                                       returnData.getEndCharacter() ) );
-    //    }
-    //
-    //    public void testChunkWithRandomCharac5ters() throws Exception {
-    //        String input = "( %*9dkj)";
-    //        ReturnValueRestrictionDescr returnData = (ReturnValueRestrictionDescr) parse( "paren_chunk",
-    //                                                                                      "fact_expression",
-    //                                                                                      input );
-    //
-    //        assertEquals( "( %*9dkj)",
-    //                      input.substring( returnData.getStartCharacter(),
-    //                                       returnData.getEndCharacter() ) );
-    //    }
-    //
-    //    public void testEmptyPattern() throws Exception {
-    //        parseResource( "compilation_unit",
-    //                       "compilation_unit",
-    //                       "test_EmptyPattern.drl" );
-    //
-    //        final PackageDescr packageDescr = this.walker.getPackageDescr();
-    //        assertEquals( 1,
-    //                      packageDescr.getRules().size() );
-    //        final RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
-    //        assertEquals( "simple rule",
-    //                      ruleDescr.getName() );
-    //        assertNotNull( ruleDescr.getLhs() );
-    //        assertEquals( 1,
-    //                      ruleDescr.getLhs().getDescrs().size() );
-    //        final PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get( 0 );
-    //        assertEquals( 0,
-    //                      patternDescr.getConstraint().getDescrs().size() ); // this
-    //        // may
-    //        // be
-    //        // null,
-    //        // not
-    //        // sure
-    //        // as
-    //        // the
-    //        // test
-    //        // doesn't
-    //        // get
-    //        // this
-    //        // far...
-    //        assertEquals( "Cheese",
-    //                      patternDescr.getObjectType() );
-    //
-    //    }
-    //
-    //    public void testSimpleMethodCallWithFrom() throws Exception {
-    //
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "test_SimpleMethodCallWithFrom.drl" );
-    //        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        final FromDescr from = (FromDescr) pattern.getSource();
-    //        final AccessorDescr method = (AccessorDescr) from.getDataSource();
-    //
-    //        assertEquals( "something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
-    //                      method.toString() );
-    //    }
-    //
+    public void testRuleParseLhsWithStringQuotes() throws Exception {
+        final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                                text );
+        assertFalse( parser.getErrors().toString(),
+                         parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        AndDescr lhs = rule.getLhs();
+        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 0 );
+
+        assertEquals( "location==\"atlanta\\\"\"",
+                          constr.getText() );
+    }
+
+    public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                              "literal_bool_and_negative.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                         parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEquals( "simple_rule",
+                          rule.getName() );
+        assertNotNull( rule.getLhs() );
+        assertEqualsIgnoreWhitespace( "cons();",
+                                          (String) rule.getConsequence() );
+
+        final AndDescr lhs = rule.getLhs();
+        assertEquals( 3,
+                          lhs.getDescrs().size() );
+
+        PatternDescr pattern = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( 1,
+                          pattern.getConstraint().getDescrs().size() );
+        AndDescr fieldAnd = (AndDescr) pattern.getConstraint();
+        ExprConstraintDescr fld = (ExprConstraintDescr) fieldAnd.getDescrs().get( 0 );
+        assertEquals( "bar == false",
+                          fld.getExpression() );
+
+        pattern = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( 1,
+                          pattern.getConstraint().getDescrs().size() );
+
+        fieldAnd = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) fieldAnd.getDescrs().get( 0 );
+
+        assertEquals( "boo > -42",
+                          fld.getText() );
+
+        pattern = (PatternDescr) lhs.getDescrs().get( 2 );
+        assertEquals( 1,
+                          pattern.getConstraint().getDescrs().size() );
+
+        fieldAnd = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) fieldAnd.getDescrs().get( 0 );
+
+        assertEquals( "boo > -42.42",
+                          fld.getText() );
+    }
+
+    public void testChunkWithoutParens() throws Exception {
+        String input = "( foo )";
+        createParser( new ANTLRStringStream( input ) );
+        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
+                                          DRLLexer.RIGHT_PAREN );
+
+        assertEquals( "foo",
+                          returnData );
+    }
+
+    public void testChunkWithParens() throws Exception {
+        String input = "(fnord())";
+        createParser( new ANTLRStringStream( input ) );
+        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
+                                          DRLLexer.RIGHT_PAREN );
+
+        assertEquals( "fnord()",
+                          returnData );
+    }
+
+    public void testChunkWithParensAndQuotedString() throws Exception {
+        String input = "( fnord( \"cheese\" ) )";
+        createParser( new ANTLRStringStream( input ) );
+        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
+                                          DRLLexer.RIGHT_PAREN );
+
+        assertEquals( "fnord( \"cheese\" )",
+                          returnData );
+    }
+
+    public void testChunkWithRandomCharac5ters() throws Exception {
+        String input = "( %*9dkj)";
+        createParser( new ANTLRStringStream( input ) );
+        String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
+                                          DRLLexer.RIGHT_PAREN );
+
+        assertEquals( "%*9dkj",
+                          returnData );
+    }
+
+    public void testEmptyPattern() throws Exception {
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "test_EmptyPattern.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+        final RuleDescr ruleDescr = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "simple rule",
+                      ruleDescr.getName() );
+        assertNotNull( ruleDescr.getLhs() );
+        assertEquals( 1,
+                      ruleDescr.getLhs().getDescrs().size() );
+        final PatternDescr patternDescr = (PatternDescr) ruleDescr.getLhs().getDescrs().get( 0 );
+        assertEquals( 0,
+                      patternDescr.getConstraint().getDescrs().size() ); // this
+        assertEquals( "Cheese",
+                      patternDescr.getObjectType() );
+
+    }
+
+    
+        public void testSimpleMethodCallWithFrom() throws Exception {
+    
+            final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                              "test_SimpleMethodCallWithFrom.drl" );
+            final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+            final FromDescr from = (FromDescr) pattern.getSource();
+            final MVELExprDescr method = (MVELExprDescr) from.getDataSource();
+    
+            assertEquals( "something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
+                          method.getExpression() );
+        }
+    
     //    public void testSimpleFunctionCallWithFrom() throws Exception {
     //
     //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
@@ -4363,9 +4339,7 @@ public class RuleParserTest extends TestCase {
     public Object execParser( String testRuleName,
                               CharStream charStream ) {
         try {
-            DRLLexer lexer = new DRLLexer( charStream );
-            CommonTokenStream tokens = new CommonTokenStream( lexer );
-            parser = new DRLXParser( tokens );
+            createParser( charStream );
             /** Use Reflection to get rule method from parser */
             Method ruleName = DRLXParser.class.getMethod( testRuleName );
 
@@ -4382,6 +4356,12 @@ public class RuleParserTest extends TestCase {
             fail( e.getMessage() );
         }
         return null;
+    }
+
+    private void createParser( CharStream charStream ) {
+        DRLLexer lexer = new DRLLexer( charStream );
+        CommonTokenStream tokens = new CommonTokenStream( lexer );
+        parser = new DRLXParser( tokens );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

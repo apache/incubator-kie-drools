@@ -49,8 +49,8 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
         return null;
     }
 
-    public SourceDescrBuilder<?> from() {
-        return null;
+    public SourceDescrBuilder<PatternDescrBuilder<P>> from() {
+        return new SourceDescrBuilderImpl<PatternDescrBuilder<P>>( this );
     }
 
     public P end() {
