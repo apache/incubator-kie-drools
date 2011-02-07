@@ -17,6 +17,7 @@ import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrFactory;
+import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
@@ -28,6 +29,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -543,7 +545,7 @@ public class DRLXParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            if( input.LA( 1 ) != DRLLexer.ID || input.LA( 2 ) != DRLLexer.LEFT_PAREN ) {
+            if ( input.LA( 1 ) != DRLLexer.ID || input.LA( 2 ) != DRLLexer.LEFT_PAREN ) {
                 // type
                 String type = type();
                 if ( state.failed ) return null;
@@ -602,15 +604,15 @@ public class DRLXParser {
         if ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
             argument( function );
             if ( state.failed ) return;
-            
-            while( input.LA( 1 ) == DRLLexer.COMMA ) {
+
+            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
                 match( input,
                        DRLLexer.COMMA,
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return;
-                
+
                 argument( function );
                 if ( state.failed ) return;
             }
@@ -640,25 +642,27 @@ public class DRLXParser {
                null,
                DroolsEditorType.IDENTIFIER );
         if ( state.failed ) return;
-        
-        while( input.LA( 1 ) == DRLLexer.LEFT_SQUARE ) {
+
+        while ( input.LA( 1 ) == DRLLexer.LEFT_SQUARE ) {
             match( input,
                    DRLLexer.LEFT_SQUARE,
                    null,
                    null,
-                   DroolsEditorType.SYMBOL);
+                   DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
-                        
+
             match( input,
                    DRLLexer.RIGHT_SQUARE,
                    null,
                    null,
-                   DroolsEditorType.SYMBOL);
+                   DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
         }
-        int end = input.LT(-1).getTokenIndex();
-        
-        if( state.backtracking == 0 ) function.argument( type, input.toString( start, end ) );
+        int end = input.LT( -1 ).getTokenIndex();
+
+        if ( state.backtracking == 0 ) function.argument( type,
+                                                          input.toString( start,
+                                                                          end ) );
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -992,7 +996,7 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                if( "-".equals( k ) ) {
+                if ( "-".equals( k ) ) {
                     match( input,
                            DRLLexer.MINUS,
                            k,
@@ -1045,7 +1049,7 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                if( "-".equals( k ) ) {
+                if ( "-".equals( k ) ) {
                     match( input,
                            DRLLexer.MINUS,
                            k,
@@ -1094,7 +1098,7 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                if( "-".equals( k ) ) {
+                if ( "-".equals( k ) ) {
                     match( input,
                            DRLLexer.MINUS,
                            k,
@@ -1164,7 +1168,7 @@ public class DRLXParser {
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
-                if( "-".equals( k ) ) {
+                if ( "-".equals( k ) ) {
                     match( input,
                            DRLLexer.MINUS,
                            k,
@@ -1452,17 +1456,17 @@ public class DRLXParser {
     private BaseDescr lhsUnary( final CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
         BaseDescr result = null;
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXISTS ) ) {
-            lhsExists( ce );
+            result = lhsExists( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NOT ) ) {
-            lhsNot( ce );
+            result = lhsNot( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
-            // TODO: handle this
+            result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
             // TODO: handle this
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
             // TODO: handle this
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
-            // TODO: handle this
+            result = lhsParen( ce );
         } else {
             result = lhsPattern( ce );
         }
@@ -1597,6 +1601,78 @@ public class DRLXParser {
     }
 
     /**
+     * lhsEval := EVAL LEFT_PAREN expression RIGHT_PAREN
+     *  
+     * @param ce
+     * @return
+     * @throws RecognitionException 
+     */
+    private BaseDescr lhsEval( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        EvalDescrBuilder< ? > eval = null;
+
+        try {
+            eval = helper.start( EvalDescrBuilder.class,
+                                 null );
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.EVAL,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.LEFT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            String expr = conditionalExpression();
+            if ( state.backtracking == 0 ) eval.constraint( expr );
+
+            match( input,
+                   DRLLexer.RIGHT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+        } finally {
+            helper.end( EvalDescrBuilder.class );
+        }
+
+        return eval != null ? eval.getDescr() : null;
+    }
+
+    /**
+     * lhsParen := LEFT_PAREN lhsOr RIGHT_PAREN 
+     *  
+     * @param ce
+     * @return
+     * @throws RecognitionException 
+     */
+    private BaseDescr lhsParen( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        match( input,
+               DRLLexer.LEFT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return null;
+
+        BaseDescr descr = lhsOr( ce );
+        if ( state.failed ) return null;
+
+        match( input,
+               DRLLexer.RIGHT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return null;
+
+        return descr;
+    }
+
+    /**
      * lhsPattern := label? type LEFT_PAREN constraints? RIGHT_PAREN over? source?
      *  
      * @param ce
@@ -1644,7 +1720,7 @@ public class DRLXParser {
         }
 
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.FROM ) ) {
-            // from clause
+            patternSource( pattern );
         }
 
         return pattern != null ? pattern.getDescr() : null;
@@ -1710,6 +1786,84 @@ public class DRLXParser {
             String expr = input.toString( first,
                                           input.LT( -1 ).getTokenIndex() );
             pattern.constraint( expr );
+        }
+    }
+
+    /**
+     * patternSource := FROM
+     *                ( accumulate
+     *                | collect
+     *                | entryPoint
+     *                | expression )
+     * @param pattern
+     * @throws RecognitionException 
+     */
+    private void patternSource( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.FROM,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+
+        if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
+            // accumulate
+        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.COLLECT ) ) {
+            // collect
+        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) &&
+                    helper.validateLT( 2,
+                                       "-" ) &&
+                    helper.validateLT( 3,
+                                       DroolsSoftKeywords.POINT ) ) {
+            fromEntryPoint( pattern );
+            if ( state.failed ) return;
+        } else {
+            fromExpression( pattern );
+            if ( state.failed ) return;
+        }
+    }
+
+    /**
+     * fromExpression := conditionalExpression
+     * 
+     * @param pattern
+     * @throws RecognitionException
+     */
+    private void fromExpression( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        String expr = conditionalExpression();
+        if ( state.failed ) return;
+
+        if ( state.backtracking == 0 ) {
+            pattern.from().expression( expr );
+        }
+    }
+
+    /**
+     * fromEntryPoint := STRING | ID
+     * 
+     * @param pattern
+     * @throws RecognitionException
+     */
+    private void fromEntryPoint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        String ep = "";
+        if ( input.LA( 1 ) == DRLLexer.STRING ) {
+            Token epStr = match( input,
+                                 DRLLexer.STRING,
+                                 null,
+                                 null,
+                                 DroolsEditorType.STRING_CONST );
+            ep = safeStripStringDelimiters( epStr.getText() );
+        } else {
+            Token epID = match( input,
+                                DRLLexer.ID,
+                                null,
+                                null,
+                                DroolsEditorType.IDENTIFIER );
+            ep = epID.getText();
+        }
+
+        if ( state.backtracking == 0 ) {
+            pattern.from().entryPoint( ep );
         }
     }
 
@@ -2197,8 +2351,35 @@ public class DRLXParser {
         return qi;
     }
 
-    private String chunk( final int leftDelimiter,
-                          final int rightDelimiter ) {
+    /**
+     * Matches a conditional expression
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public String conditionalExpression() throws RecognitionException {
+        int first = input.index();
+        exprParser.conditionalExpression();
+        if ( state.failed ) return null;
+
+        if ( state.backtracking == 0 && input.index() > first ) {
+            // expression consumed something
+            String expr = input.toString( first,
+                                          input.LT( -1 ).getTokenIndex() );
+            return expr;
+        }
+        return null;
+    }
+
+    /**
+     * Matches a chunk started by the leftDelimiter and ended by the rightDelimiter.
+     * 
+     * @param leftDelimiter
+     * @param rightDelimiter
+     * @return the matched chunk without the delimiters
+     */
+    public String chunk( final int leftDelimiter,
+                         final int rightDelimiter ) {
         String chunk = "";
         int first = -1, last = first;
         try {

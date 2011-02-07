@@ -20,9 +20,11 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
+import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
+import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
@@ -512,7 +514,7 @@ public class ParserXHelper {
                    Token first ) {
         if ( db != null && first != null ) {
             db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
-                                                                                           first.getCharPositionInLine() );
+                                                                                      first.getCharPositionInLine() );
         }
     }
 
@@ -604,6 +606,13 @@ public class ParserXHelper {
                 builderContext.push( attribute );
                 setStart( attribute );
                 return (T) attribute;
+            } else if ( EvalDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                EvalDescrBuilder<?> eval= ((CEDescrBuilder<?,?>) builderContext.peek()).eval();
+                builderContext.push( eval );
+                pushParaphrases( DroolsParaphraseTypes.EVAL );
+                beginSentence( DroolsSentenceType.EVAL );
+                setStart( eval );
+                return (T) eval;
             }
         }
         return null;

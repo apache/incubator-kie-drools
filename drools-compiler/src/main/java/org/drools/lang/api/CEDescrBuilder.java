@@ -18,7 +18,6 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
@@ -36,7 +35,8 @@ public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     public CEDescrBuilder<CEDescrBuilder<P, T>, NotDescr> not();
     public CEDescrBuilder<CEDescrBuilder<P, T>, ExistsDescr> exists();
     public CEDescrBuilder<CEDescrBuilder<P, T>, ForallDescr> forall();
-    public CEDescrBuilder<CEDescrBuilder<P, T>, EvalDescr> eval();
+    
+    public EvalDescrBuilder<CEDescrBuilder<P, T>> eval();
     
     public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern( String type );
     

@@ -19,7 +19,6 @@ package org.drools.lang.api;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
@@ -87,9 +86,10 @@ public class CEDescrBuilderImpl<P extends DescrBuilder<?>, T extends BaseDescr> 
     /**
      * {@inheritDoc}
      */
-    public CEDescrBuilder<CEDescrBuilder<P, T>, EvalDescr> eval() {
-        // TODO Auto-generated method stub
-        return null;
+    public EvalDescrBuilder<CEDescrBuilder<P, T>> eval() {
+        EvalDescrBuilder<CEDescrBuilder<P, T>> eval = new EvalDescrBuilderImpl<CEDescrBuilder<P,T>>();
+        ((ConditionalElementDescr) descr).addDescr( eval.getDescr() );
+        return eval;
     }
 
     /**

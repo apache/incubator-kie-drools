@@ -320,6 +320,8 @@ public class DroolsParserExceptionFactory {
                 return "rule attribute";
             case PATTERN :
                 return "pattern";
+            case EVAL :
+                return "eval";
             default :
                 return "";
         }
