@@ -31,50 +31,8 @@
         </property>
       </activation>
       <modules>
-        <module>drools-docs-planner</module>
         <module>drools-docs-integration</module>
       </modules>
     </profile>
   </profiles>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-introduction</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-expert</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-fusion</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-guvnor</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-planner</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-docs-integration</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>
