@@ -37,7 +37,7 @@ public class XPATHReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBui
         String text = descr.getText();
 
         try {
-            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text, null );
+            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text, "XPath" );
 
             constraintNode.setEvaluator( expr );
             
