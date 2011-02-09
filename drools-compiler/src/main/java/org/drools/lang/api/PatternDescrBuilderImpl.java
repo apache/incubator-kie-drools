@@ -16,6 +16,7 @@
 
 package org.drools.lang.api;
 
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 
@@ -46,7 +47,8 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
 
     public PatternDescrBuilder<P> bind( String var,
                                         String target ) {
-        return null;
+        descr.addBinding( new BindingDescr( var, target ) );
+        return this;
     }
 
     public SourceDescrBuilder<PatternDescrBuilder<P>> from() {

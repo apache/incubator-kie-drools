@@ -31,7 +31,9 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -777,269 +779,250 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    
-        public void testSimpleMethodCallWithFrom() throws Exception {
-    
-            final RuleDescr rule = (RuleDescr) parseResource( "rule",
+    public void testSimpleMethodCallWithFrom() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "test_SimpleMethodCallWithFrom.drl" );
-            final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-            final FromDescr from = (FromDescr) pattern.getSource();
-            final MVELExprDescr method = (MVELExprDescr) from.getDataSource();
-    
-            assertEquals( "something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
-                          method.getExpression() );
-        }
-    
-    //    public void testSimpleFunctionCallWithFrom() throws Exception {
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr method = (MVELExprDescr) from.getDataSource();
+
+        assertEquals( "something.doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
+                      method.getExpression() );
+    }
+
+    public void testSimpleFunctionCallWithFrom() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "test_SimpleFunctionCallWithFrom.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr func = (MVELExprDescr) from.getDataSource();
+
+        assertEquals( "doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
+                      func.getExpression() );
+    }
+
+    public void testSimpleAccessorWithFrom() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "test_SimpleAccessorWithFrom.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
+
+        assertEquals( "something.doIt",
+                      accessor.getExpression() );
+    }
+
+    public void testSimpleAccessorAndArgWithFrom() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "test_SimpleAccessorArgWithFrom.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
+
+        assertEquals( "something.doIt[\"key\"]",
+                      accessor.getExpression() );
+    }
+
+    public void testComplexChainedAcessor() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "test_ComplexChainedCallWithFrom.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        final FromDescr from = (FromDescr) pattern.getSource();
+        final MVELExprDescr accessor = (MVELExprDescr) from.getDataSource();
+
+        assertEquals( "doIt1( foo,bar,42,\"hello\",[ a : \"b\"], [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]",
+                          accessor.getExpression() );
+    }
+
+    // public void testFrom() throws Exception {
+    // final RuleDescr rule = parseResource( "from.drl" ).rule();
     //
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "test_SimpleFunctionCallWithFrom.drl" );
-    //        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        final FromDescr from = (FromDescr) pattern.getSource();
-    //        final AccessorDescr func = (AccessorDescr) from.getDataSource();
+    // if(parser.hasErrors()) {
+    // System.err.println(parser.getErrorMessages());
+    // }
+    // assertFalse(parser.hasErrors());
     //
-    //        assertEquals( "doIt( foo,bar,42,\"hello\",[ a : \"b\", \"something\" : 42, \"a\" : foo, x : [x:y]],\"end\", [a, \"b\", 42] )",
-    //                      func.toString() );
-    //    }
+    // assertNotNull( rule );
     //
-    //    public void testSimpleAccessorWithFrom() throws Exception {
+    // assertEquals( "using_from",
+    // rule.getName() );
     //
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "test_SimpleAccessorWithFrom.drl" );
-    //        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        final FromDescr from = (FromDescr) pattern.getSource();
-    //        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+    // assertEquals(9, rule.getLhs().getDescrs().size());
     //
-    //        assertEquals( "something.doIt",
-    //                      accessor.toString() );
-    //    }
+    // FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
     //
-    //    public void testSimpleAccessorAndArgWithFrom() throws Exception {
+    // assertEquals(3, from.getLine());
     //
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "test_SimpleAccessorArgWithFrom.drl" );
-    //        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        final FromDescr from = (FromDescr) pattern.getSource();
-    //        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+    // assertEquals("Foo", from.getReturnedPattern().getObjectType());
+    // assertTrue(from.getDataSource() instanceof FieldAccessDescr);
+    // assertEquals("baz", ((FieldAccessDescr)
+    // from.getDataSource()).getFieldName());
+    // assertEquals("bar", ((FieldAccessDescr)
+    // from.getDataSource()).getVariableName());
     //
-    //        assertEquals( "something.doIt[\"key\"]",
-    //                      accessor.toString() );
-    //    }
     //
-    //    public void testComplexChainedAcessor() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "test_ComplexChainedCallWithFrom.drl" );
-    //        final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        final FromDescr from = (FromDescr) pattern.getSource();
-    //        final AccessorDescr accessor = (AccessorDescr) from.getDataSource();
+    // ArgumentValueDescr arg = null;
     //
-    //        assertEquals( "doIt1( foo,bar,42,\"hello\",[ a : \"b\"], [a, \"b\", 42] ).doIt2(bar, [a, \"b\", 42]).field[\"key\"]",
-    //                      accessor.toString() );
-    //    }
+    // from = (FromDescr) rule.getLhs().getDescrs().get(1);
+    // assertEquals("Foo", from.getReturnedPattern().getObjectType());
+    // assertEquals(0, from.getReturnedPattern().getDescrs().size());
+    // FieldAccessDescr fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+    // assertEquals(ArgumentValueDescr.STRING, arg.getType() );
     //
-    //    // public void testFrom() throws Exception {
-    //    // final RuleDescr rule = parseResource( "from.drl" ).rule();
-    //    //
-    //    // if(parser.hasErrors()) {
-    //    // System.err.println(parser.getErrorMessages());
-    //    // }
-    //    // assertFalse(parser.hasErrors());
-    //    //
-    //    // assertNotNull( rule );
-    //    //
-    //    // assertEquals( "using_from",
-    //    // rule.getName() );
-    //    //
-    //    // assertEquals(9, rule.getLhs().getDescrs().size());
-    //    //
-    //    // FromDescr from = (FromDescr) rule.getLhs().getDescrs().get(0);
-    //    //
-    //    // assertEquals(3, from.getLine());
-    //    //
-    //    // assertEquals("Foo", from.getReturnedPattern().getObjectType());
-    //    // assertTrue(from.getDataSource() instanceof FieldAccessDescr);
-    //    // assertEquals("baz", ((FieldAccessDescr)
-    //    // from.getDataSource()).getFieldName());
-    //    // assertEquals("bar", ((FieldAccessDescr)
-    //    // from.getDataSource()).getVariableName());
-    //    //
-    //    //
-    //    // ArgumentValueDescr arg = null;
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(1);
-    //    // assertEquals("Foo", from.getReturnedPattern().getObjectType());
-    //    // assertEquals(0, from.getReturnedPattern().getDescrs().size());
-    //    // FieldAccessDescr fieldAccess = ( FieldAccessDescr ) from.getDataSource();
-    //    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
-    //    // assertEquals(ArgumentValueDescr.STRING, arg.getType() );
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(2);
-    //    // fieldAccess = ( FieldAccessDescr ) from.getDataSource();
-    //    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
-    //    // assertEquals(ArgumentValueDescr.VARIABLE, arg.getType() );
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(3);
-    //    // fieldAccess = ( FieldAccessDescr ) from.getDataSource();
-    //    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
-    //    // assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType() );
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(4);
-    //    // assertEquals("Whee", from.getReturnedColumn().getObjectType());
-    //    // assertEquals(1, from.getReturnedColumn().getDescrs().size());
-    //    // assertTrue(from.getDataSource() instanceof FunctionCallDescr);
-    //    // assertEquals("whee", ((FunctionCallDescr)
-    //    // from.getDataSource()).getName());
-    //    // assertEquals(1, ((FunctionCallDescr)
-    //    // from.getDataSource()).getArguments().size());
-    //    // arg = ( (ArgumentValueDescr )((FunctionCallDescr)
-    //    // from.getDataSource()).getArguments().get(0));
-    //    // assertEquals("y", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.STRING, arg.getType());
-    //    //
-    //    // assertEquals(7, from.getLine());
-    //    // assertEquals(7, from.getReturnedColumn().getLine());
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(5);
-    //    // assertEquals("Foo", from.getReturnedColumn().getObjectType());
-    //    // assertEquals(1, from.getReturnedColumn().getDescrs().size());
-    //    // assertEquals("f", from.getReturnedColumn().getIdentifier());
-    //    // assertTrue(from.getDataSource() instanceof MethodAccessDescr);
-    //    // assertEquals("bar", ((MethodAccessDescr)
-    //    // from.getDataSource()).getVariableName());
-    //    // assertEquals("la", ((MethodAccessDescr)
-    //    // from.getDataSource()).getMethodName());
-    //    // assertEquals(1, ((MethodAccessDescr)
-    //    // from.getDataSource()).getArguments().size());
-    //    // arg = (ArgumentValueDescr) ((MethodAccessDescr)
-    //    // from.getDataSource()).getArguments().get(0);
-    //    //
-    //    //
-    //    // assertEquals("x", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
-    //    //
-    //    // assertEqualsIgnoreWhitespace("whee();", ( String )
-    //    // rule.getConsequence());
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(6);
-    //    // assertEquals("wa", ((FunctionCallDescr)from.getDataSource()).getName());
-    //    //
-    //    // from = (FromDescr) rule.getLhs().getDescrs().get(7);
-    //    // MethodAccessDescr meth = (MethodAccessDescr)from.getDataSource();
-    //    // assertEquals("wa", meth.getMethodName());
-    //    // assertEquals("la", meth.getVariableName());
-    //    //
-    //    // arg = (ArgumentValueDescr) meth.getArguments().get(0);
-    //    // assertEquals("42", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType());
-    //    //
-    //    // arg = (ArgumentValueDescr) meth.getArguments().get(1);
-    //    // assertEquals("42.42", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.DECIMAL, arg.getType());
-    //    //
-    //    // arg = (ArgumentValueDescr) meth.getArguments().get(2);
-    //    // assertEquals("false", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.BOOLEAN, arg.getType());
-    //    //
-    //    // arg = (ArgumentValueDescr) meth.getArguments().get(3);
-    //    // assertEquals("null", arg.getValue());
-    //    // assertEquals(ArgumentValueDescr.NULL, arg.getType());
-    //    //
-    //    // assertEquals("Bam",
-    //    // ((PatternDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
-    //    // }
+    // from = (FromDescr) rule.getLhs().getDescrs().get(2);
+    // fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+    // assertEquals(ArgumentValueDescr.VARIABLE, arg.getType() );
     //
-    //    public void testSimpleRule() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "simple_rule.drl" );
+    // from = (FromDescr) rule.getLhs().getDescrs().get(3);
+    // fieldAccess = ( FieldAccessDescr ) from.getDataSource();
+    // arg = ( ArgumentValueDescr ) fieldAccess.getArgument();
+    // assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType() );
     //
-    //        assertNotNull( rule );
+    // from = (FromDescr) rule.getLhs().getDescrs().get(4);
+    // assertEquals("Whee", from.getReturnedColumn().getObjectType());
+    // assertEquals(1, from.getReturnedColumn().getDescrs().size());
+    // assertTrue(from.getDataSource() instanceof FunctionCallDescr);
+    // assertEquals("whee", ((FunctionCallDescr)
+    // from.getDataSource()).getName());
+    // assertEquals(1, ((FunctionCallDescr)
+    // from.getDataSource()).getArguments().size());
+    // arg = ( (ArgumentValueDescr )((FunctionCallDescr)
+    // from.getDataSource()).getArguments().get(0));
+    // assertEquals("y", arg.getValue());
+    // assertEquals(ArgumentValueDescr.STRING, arg.getType());
     //
-    //        assertEquals( "simple_rule",
-    //                      rule.getName() );
+    // assertEquals(7, from.getLine());
+    // assertEquals(7, from.getReturnedColumn().getLine());
     //
-    //        assertEquals( 7,
-    //                      rule.getConsequenceLine() );
-    //        assertEquals( 2,
-    //                      rule.getConsequencePattern() );
+    // from = (FromDescr) rule.getLhs().getDescrs().get(5);
+    // assertEquals("Foo", from.getReturnedColumn().getObjectType());
+    // assertEquals(1, from.getReturnedColumn().getDescrs().size());
+    // assertEquals("f", from.getReturnedColumn().getIdentifier());
+    // assertTrue(from.getDataSource() instanceof MethodAccessDescr);
+    // assertEquals("bar", ((MethodAccessDescr)
+    // from.getDataSource()).getVariableName());
+    // assertEquals("la", ((MethodAccessDescr)
+    // from.getDataSource()).getMethodName());
+    // assertEquals(1, ((MethodAccessDescr)
+    // from.getDataSource()).getArguments().size());
+    // arg = (ArgumentValueDescr) ((MethodAccessDescr)
+    // from.getDataSource()).getArguments().get(0);
     //
-    //        final AndDescr lhs = rule.getLhs();
     //
-    //        assertNotNull( lhs );
+    // assertEquals("x", arg.getValue());
+    // assertEquals(ArgumentValueDescr.VARIABLE, arg.getType());
     //
-    //        assertEquals( 3,
-    //                      lhs.getDescrs().size() );
+    // assertEqualsIgnoreWhitespace("whee();", ( String )
+    // rule.getConsequence());
     //
-    //        // System.err.println( lhs.getDescrs() );
+    // from = (FromDescr) rule.getLhs().getDescrs().get(6);
+    // assertEquals("wa", ((FunctionCallDescr)from.getDataSource()).getName());
     //
-    //        // Check first pattern
-    //        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
-    //        assertEquals( "foo3",
-    //                      first.getIdentifier() );
-    //        assertEquals( "Bar",
-    //                      first.getObjectType() );
+    // from = (FromDescr) rule.getLhs().getDescrs().get(7);
+    // MethodAccessDescr meth = (MethodAccessDescr)from.getDataSource();
+    // assertEquals("wa", meth.getMethodName());
+    // assertEquals("la", meth.getVariableName());
     //
-    //        assertEquals( 1,
-    //                      first.getConstraint().getDescrs().size() );
+    // arg = (ArgumentValueDescr) meth.getArguments().get(0);
+    // assertEquals("42", arg.getValue());
+    // assertEquals(ArgumentValueDescr.INTEGRAL, arg.getType());
     //
-    //        AndDescr fieldAnd = (AndDescr) first.getConstraint();
-    //        FieldConstraintDescr fld = (FieldConstraintDescr) fieldAnd.getDescrs().get( 0 );
-    //        LiteralRestrictionDescr constraint = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
+    // arg = (ArgumentValueDescr) meth.getArguments().get(1);
+    // assertEquals("42.42", arg.getValue());
+    // assertEquals(ArgumentValueDescr.DECIMAL, arg.getType());
     //
-    //        assertNotNull( constraint );
+    // arg = (ArgumentValueDescr) meth.getArguments().get(2);
+    // assertEquals("false", arg.getValue());
+    // assertEquals(ArgumentValueDescr.BOOLEAN, arg.getType());
     //
-    //        assertEquals( "a",
-    //                      fld.getFieldName() );
-    //        assertEquals( "==",
-    //                      constraint.getEvaluator() );
-    //        assertEquals( "3",
-    //                      constraint.getText() );
+    // arg = (ArgumentValueDescr) meth.getArguments().get(3);
+    // assertEquals("null", arg.getValue());
+    // assertEquals(ArgumentValueDescr.NULL, arg.getType());
     //
-    //        // Check second pattern
-    //        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
-    //        assertEquals( "foo4",
-    //                      second.getIdentifier() );
-    //        assertEquals( "Bar",
-    //                      second.getObjectType() );
-    //
-    //        // System.err.println( second.getDescrs() );
-    //
-    //        fieldAnd = (AndDescr) second.getConstraint();
-    //        assertEquals( 2,
-    //                      fieldAnd.getDescrs().size() );
-    //
-    //        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) fieldAnd.getDescrs().get( 0 );
-    //        assertEquals( "a",
-    //                      fieldBindingDescr.getFieldName() );
-    //        assertEquals( "a4",
-    //                      fieldBindingDescr.getIdentifier() );
-    //
-    //        fld = (FieldConstraintDescr) fieldAnd.getDescrs().get( 1 );
-    //        constraint = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //
-    //        assertNotNull( constraint );
-    //
-    //        assertEquals( "a",
-    //                      fld.getFieldName() );
-    //        assertEquals( "==",
-    //                      constraint.getEvaluator() );
-    //        assertEquals( "4",
-    //                      constraint.getText() );
-    //
-    //        // Check third pattern
-    //        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
-    //        assertNull( third.getIdentifier() );
-    //        assertEquals( "Baz",
-    //                      third.getObjectType() );
-    //
-    //        assertEqualsIgnoreWhitespace( "if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );",
-    //                                      (String) rule.getConsequence() );
-    //    }
-    //
+    // assertEquals("Bam",
+    // ((PatternDescr)rule.getLhs().getDescrs().get(8)).getObjectType());
+    // }
+
+    public void testSimpleRule() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "simple_rule.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEquals( "simple_rule",
+                      rule.getName() );
+
+        assertEquals( 7,
+                      rule.getConsequenceLine() );
+        assertEquals( 2,
+                      rule.getConsequencePattern() );
+
+        final AndDescr lhs = rule.getLhs();
+
+        assertNotNull( lhs );
+
+        assertEquals( 3,
+                      lhs.getDescrs().size() );
+
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "foo3",
+                      first.getIdentifier() );
+        assertEquals( "Bar",
+                      first.getObjectType() );
+
+        assertEquals( 1,
+                      first.getConstraint().getDescrs().size() );
+
+        AndDescr fieldAnd = (AndDescr) first.getConstraint();
+        ExprConstraintDescr constraint = (ExprConstraintDescr) fieldAnd.getDescrs().get( 0 );
+        assertNotNull( constraint );
+
+        assertEquals( "a==3",
+                      constraint.getExpression() );
+
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "foo4",
+                      second.getIdentifier() );
+        assertEquals( "Bar",
+                      second.getObjectType() );
+
+        // no constraints, only a binding
+        fieldAnd = (AndDescr) second.getConstraint();
+        assertEquals( 0,
+                      fieldAnd.getDescrs().size() );
+
+        final BindingDescr binding = second.getBindings().get( 0 );
+        assertEquals( "a4",
+                      binding.getVariable() );
+        assertEquals( "a==4",
+                      binding.getExpression() );
+
+        // Check third pattern
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
+        assertNull( third.getIdentifier() );
+        assertEquals( "Baz",
+                          third.getObjectType() );
+
+        assertEqualsIgnoreWhitespace( "if ( a == b ) { " + "  assert( foo3 );" + "} else {" + "  retract( foo4 );" + "}" + "  System.out.println( a4 );",
+                                          (String) rule.getConsequence() );
+    }
+
     //    public void testRestrictionsMultiple() throws Exception {
     //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
     //                                                          "rule",
