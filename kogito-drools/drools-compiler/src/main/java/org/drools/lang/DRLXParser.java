@@ -1777,6 +1777,26 @@ public class DRLXParser {
      * @throws RecognitionException 
      */
     private void constraint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        String bind = null;
+        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
+            // bind
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER_VARIABLE );
+            if ( state.failed ) return;
+
+            bind = id.getText();
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+        }
+
         int first = input.index();
         exprParser.conditionalAndExpression();
         if ( state.failed ) return;
@@ -1785,7 +1805,14 @@ public class DRLXParser {
             // expression consumed something
             String expr = input.toString( first,
                                           input.LT( -1 ).getTokenIndex() );
-            pattern.constraint( expr );
+            if ( bind == null ) {
+                // it is a constraint
+                pattern.constraint( expr );
+            } else {
+                // it is a bind
+                pattern.bind( bind,
+                              expr );
+            }
         }
     }
 
@@ -1876,13 +1903,18 @@ public class DRLXParser {
         String chunk = "";
         int first = -1, last = first;
         try {
-            match( input,
-                   DRLLexer.ID,
-                   DroolsSoftKeywords.THEN,
-                   null,
-                   DroolsEditorType.KEYWORD );
+            Token t = match( input,
+                             DRLLexer.ID,
+                             DroolsSoftKeywords.THEN,
+                             null,
+                             DroolsEditorType.KEYWORD );
             if ( state.failed ) return;
             first = input.index();
+
+            if ( state.backtracking == 0 ) {
+                rule.getDescr().setConsequenceLocation( t.getLine(),
+                                                        t.getCharPositionInLine() );
+            }
 
             while ( !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 input.consume();
