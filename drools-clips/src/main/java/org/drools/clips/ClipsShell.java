@@ -45,6 +45,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.mvel.DroolsMVELFactory;
+import org.drools.builder.ResourceType;
 import org.drools.clips.functions.AssertFunction;
 import org.drools.clips.functions.BindFunction;
 import org.drools.clips.functions.CallFunction;
@@ -69,6 +70,7 @@ import org.drools.clips.functions.SetFunction;
 import org.drools.clips.functions.SwitchFunction;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.ImportDescr;
@@ -109,7 +111,7 @@ public class ClipsShell
     //    private Map                 directImports;
     //    private Set                 dynamicImports;
 
-    private ClassTypeResolver   typeResolver;
+    //private ClassTypeResolver   typeResolver;
 
     private String              moduleName;
     private static final String MAIN = "MAIN";
@@ -118,12 +120,10 @@ public class ClipsShell
 
     public ClipsShell() {
         this( RuleBaseFactory.newRuleBase() );
+        init( this );
     }
-
-    public static void main(String[] args) throws Exception {
-
-
-        StringBuffer buf = new StringBuffer();
+    
+    public static void init(ClipsShell shell ) {
         FunctionHandlers handlers = FunctionHandlers.getInstance();
         handlers.registerFunction( new PlusFunction() );
         handlers.registerFunction( new MinusFunction() );
@@ -148,10 +148,14 @@ public class ClipsShell
         handlers.registerFunction( new GetFunction() );
         handlers.registerFunction( new CallFunction() );
         handlers.registerFunction( new AssertFunction() );
+    }
+
+    public static void main(String[] args) throws Exception {
         ClipsShell shell = new ClipsShell();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        shell.addRouter( "t", new PrintStream( out ) );
-
+        shell.addRouter( "t", new PrintStream( out ) );    
+        
+        StringBuffer buf = new StringBuffer();
         System.out.print("Drools>");
 
         StringBuffer sessionLog = new StringBuffer();
@@ -160,8 +164,6 @@ public class ClipsShell
 
 	        System.in.read(name);
 	        String cmd = (new String(name)).trim();
-
-	        //System.out.println("ECHO:" + cmd);
 
 	        if (cmd.equals("(exit)") || cmd.equals("(quit)")) {
 	        	sessionLog.append(cmd);
@@ -268,6 +270,8 @@ public class ClipsShell
         this.ruleBase = ruleBase;
 
         this.packageBuilder = new PackageBuilder( this.ruleBase );
+        String str = "global java.util.Map printrouters\n";
+        packageBuilder.addKnowledgeResource( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL, null );
 
         this.session = this.ruleBase.newStatefulSession();
         // this.functions = new HashMap();
@@ -291,9 +295,6 @@ public class ClipsShell
                                  null,
                                  this.session,
                                  this.vars );
-
-        addRouter( "t",
-                   System.out );
     }
 
     public StatefulSession getStatefulSession() {
@@ -382,6 +383,8 @@ public class ClipsShell
         }
         builder.append( "}" );
 
+        System.out.println( "mvel expr:" + builder.toString() );
+        
         functionDescr.setText( builder.toString() );
         functionDescr.setDialect( "clips" );
 
@@ -396,73 +399,68 @@ public class ClipsShell
         FunctionHandlers.dump( lispForm,
                                appendable,
                                true );
-
-        ParserContext context = new ParserContext();
         
-
-        String namespace = this.session.getAgenda().getFocusName();
-
-        Package pkg = this.ruleBase.getPackage( namespace );
-        if ( pkg == null ) {
-            this.packageBuilder.addPackage( createPackageDescr( namespace ) );
-            pkg = this.ruleBase.getPackage( namespace );
-            
-        }
-
-        if ( pkg != null ) {
-            // only time this will be null is if we have yet to do any packagedescr work
-
-            try {
-                for ( Iterator it = pkg.getImports().entrySet().iterator(); it.hasNext(); ) {
-                    Entry entry = (Entry) it.next();
-                    String importName = ((ImportDeclaration) entry.getValue()).getTarget();
-                    if ( importName.endsWith( "*" )) {
-                        context.addPackageImport( importName.substring( 0,
-                                                                        importName.length() - 2 ) );
-                    } else {
-                    	
-                        Class cls = ((InternalRuleBase)ruleBase).getRootClassLoader().loadClass( importName );
-                        context.addImport( cls.getSimpleName(),
-                                           (Class) cls );
-                    }
-                }
-
-            } catch ( Exception e ) {
-                e.printStackTrace();
-            }
-
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "clips" );
-            this.factory.setNextFactory( data.getFunctionFactory() );
-        }
-
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );
-        
-        System.out.println( "mvel expr:" + appendable.toString() );
-        
-        ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
-        Serializable executable = expr.compile( context );
+        try {
+            Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );        
 
-        MVEL.executeExpression( executable,
-                                this,
-                                this.factory );
-        Thread.currentThread().setContextClassLoader( tempClassLoader );
+            ParserContext context = new ParserContext();
+            
+    
+            String namespace = this.session.getAgenda().getFocusName();
+    
+            Package pkg = this.ruleBase.getPackage( namespace );
+            if ( pkg == null ) {
+                this.packageBuilder.addPackage( createPackageDescr( namespace ) );
+                pkg = this.ruleBase.getPackage( namespace );
+                
+            }
+    
+            if ( pkg != null ) {
+                // only time this will be null is if we have yet to do any packagedescr work
+                try {                
+    
+                    for ( Iterator it = pkg.getImports().entrySet().iterator(); it.hasNext(); ) {
+                        Entry entry = (Entry) it.next();
+                        String importName = ((ImportDeclaration) entry.getValue()).getTarget();
+                        if ( importName.endsWith( "*" )) {
+                            context.addPackageImport( importName.substring( 0,
+                                                                            importName.length() - 2 ) );
+                        } else {
+                        	
+                            Class cls = ((InternalRuleBase)ruleBase).getRootClassLoader().loadClass( importName );
+                            context.addImport( cls.getSimpleName(),
+                                               (Class) cls );
+                        }
+                    }
+    
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+    
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "clips" );
+                this.factory.setNextFactory( data.getFunctionFactory() );
+            }
+            
+            ExpressionCompiler expr = new ExpressionCompiler( appendable.toString() );
+            Serializable executable = expr.compile( context );
+    
+            MVEL.executeExpression( executable,
+                                    this,
+                                    this.factory );
+        } finally {
+            Thread.currentThread().setContextClassLoader( tempClassLoader );
+        }
     }
 
     public void templateHandler(TypeDeclarationDescr typeDescr) {
         setModuleName( typeDescr );
 
         PackageDescr pkg = createPackageDescr( typeDescr.getNamespace() );
-        //pkg.addRule( ruleDescr );
+        
         pkg.addTypeDeclaration( typeDescr );
 
         this.packageBuilder.addPackage( pkg );
-
-        //        try {
-        //            this.ruleBase.addPackage( builder.getPackage() );
-        //        } catch ( Exception e ) {
-        //            e.printStackTrace();
-        //        }
     }
 
     public void ruleHandler(RuleDescr ruleDescr) {
@@ -472,14 +470,7 @@ public class ClipsShell
 
         this.packageBuilder.addPackage( pkg );
 
-        this.session.fireAllRules();
-
-        //        try {
-        //            this.ruleBase.addPackage( builder.getPackage() );
-        //        } catch ( Exception e ) {
-        //            e.printStackTrace();
-        //        }
-    }
+        this.session.fireAllRules();    }
 
     public void setModuleName(Namespaceable namespaceable) {
         // if the namespace is not set, set it to the current focus module
@@ -502,7 +493,7 @@ public class ClipsShell
             parser = new ClipsParser( new CommonTokenStream( new ClipsLexer( new ANTLRReaderStream( reader ) ) ) );
             parser.eval( this );
         } catch ( Exception e ) {
-            e.printStackTrace();
+            throw new RuntimeException( e );
         }
     }
 
@@ -542,6 +533,10 @@ public class ClipsShell
         //        }
         return map;
     }
+    
+    public Map getVariables() {
+        return this.vars;
+    }
 
     public void addRouter(String name,
                           PrintStream out) {
@@ -562,18 +557,6 @@ public class ClipsShell
         return false; //(this.vars.remove( name ) != null);
     }
 
-    //    public Map<String, PrintStream> getRouters() {
-    //        Map<String, PrintStream> map = new HashMap<String, PrintStream>();
-    //        for ( Iterator it = this.vars.entrySet().iterator(); it.hasNext(); ) {
-    //            Entry entry = (Entry) it.next();
-    //            if ( entry.getValue() instanceof Function ) {
-    //                map.put( (String) entry.getKey(),
-    //                         (PrintStream) entry.getValue() );
-    //            }
-    //        }
-    //        return map;
-    //    }
-
     public void addVariable(String name,
                             Object value) {
         if ( name.startsWith( "?" ) ) {
@@ -581,27 +564,13 @@ public class ClipsShell
         }
         this.factory.createVariable( name,
                                      value );
-        //        this.session.setGlobal( name,
-        //                                value );
     }
 
-    //    public void removeVariable(String name) {
-    //        String temp = this.varNameMap.get( name );
-    //        if ( temp != null ) {
-    //            name = temp;
-    //        }
-    //        this.session.getGlobal( identifier ).remove( name );
-    //    }
 
     private PackageDescr createPackageDescr(String moduleName) {
         PackageDescr pkg = new PackageDescr( moduleName );
         pkg.addAttribute( new AttributeDescr( "dialect",
                                               "clips" ) );
-
-        //        for ( Iterator it = this.typeResolver.getImports().iterator(); it.hasNext(); ) {
-        //            pkg.addImport( new ImportDescr( (String) it.next() ) );
-        //        }
-
         return pkg;
     }
 

@@ -44,12 +44,11 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.builder.BuildContext;
 
 public class LhsClpParserTest {
 
     private ClipsParser parser;
-    
-    //XFunctionRegistry registry;
     
     @Before
     public void setUp() {
@@ -59,16 +58,6 @@ public class LhsClpParserTest {
     @After
     public void tearDown() throws Exception {
         //this.parser = null;
-    }
-
-    @Test
-    public void testParseFunction() throws Exception {
-//        BuildContext context = new ExecutionBuildContext( new CLPPredicate(), this.registry );
-//        FunctionCaller fc = ( FunctionCaller ) parse( "(< 1 2)" ).lisp_list( context, new LispForm2(context) );
-//        
-//        assertEquals( "<", fc.getName() );        
-//        assertEquals( new LongValueHandler( 1 ), fc.getParameters()[0] );
-//        assertEquals( new LongValueHandler( 2 ), fc.getParameters()[1] );
     }
     
     @Test

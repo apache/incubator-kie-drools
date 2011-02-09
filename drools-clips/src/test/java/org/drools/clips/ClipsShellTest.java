@@ -16,82 +16,37 @@
 
 package org.drools.clips;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.Person;
 import org.drools.WorkingMemory;
-import org.drools.clips.functions.AssertFunction;
-import org.drools.clips.functions.BindFunction;
-import org.drools.clips.functions.CallFunction;
-import org.drools.clips.functions.CreateListFunction;
-import org.drools.clips.functions.EqFunction;
-import org.drools.clips.functions.GetFunction;
-import org.drools.clips.functions.IfFunction;
-import org.drools.clips.functions.LessThanFunction;
-import org.drools.clips.functions.LessThanOrEqFunction;
-import org.drools.clips.functions.MinusFunction;
-import org.drools.clips.functions.ModifyFunction;
-import org.drools.clips.functions.MoreThanFunction;
-import org.drools.clips.functions.MoreThanOrEqFunction;
-import org.drools.clips.functions.MultiplyFunction;
-import org.drools.clips.functions.NewFunction;
-import org.drools.clips.functions.PlusFunction;
-import org.drools.clips.functions.PrintoutFunction;
-import org.drools.clips.functions.PrognFunction;
-import org.drools.clips.functions.ReturnFunction;
-import org.drools.clips.functions.RunFunction;
-import org.drools.clips.functions.SetFunction;
-import org.drools.clips.functions.SwitchFunction;
 import org.drools.common.InternalRuleBase;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ClipsShellTest {
     private ByteArrayOutputStream baos;
 
-    ClipsShell                    shell;
+    private ClipsShell                    shell;
 
     @Before
     public void setUp() {
-        FunctionHandlers handlers = FunctionHandlers.getInstance();
-        handlers.registerFunction( new PlusFunction() );
-        handlers.registerFunction( new MinusFunction() );
-        handlers.registerFunction( new MultiplyFunction() );
-        handlers.registerFunction( new ModifyFunction() );
-        handlers.registerFunction( new CreateListFunction() );
-        handlers.registerFunction( new PrintoutFunction() );
-        handlers.registerFunction( new PrognFunction() );
-        handlers.registerFunction( new IfFunction() );
-        handlers.registerFunction( new LessThanFunction() );
-        handlers.registerFunction( new LessThanOrEqFunction() );
-        handlers.registerFunction( new MoreThanFunction() );
-        handlers.registerFunction( new MoreThanOrEqFunction() );
-        handlers.registerFunction( new EqFunction() );
-        handlers.registerFunction( new SwitchFunction() );
-        //handlers.registerFunction( new DeffunctionFunction() );
-        handlers.registerFunction( new ReturnFunction() );
-        handlers.registerFunction( new RunFunction() );
-        handlers.registerFunction( new BindFunction() );
-        handlers.registerFunction( new NewFunction() );
-        handlers.registerFunction( new SetFunction() );
-        handlers.registerFunction( new GetFunction() );
-        handlers.registerFunction( new CallFunction() );
-        handlers.registerFunction( new AssertFunction() );
 
-        this.shell = new ClipsShell();
 
+        this.shell = new ClipsShell();        
         this.baos = new ByteArrayOutputStream();
+        PrintStream p = new PrintStream( baos );
         shell.addRouter( "t",
-                         new PrintStream( baos ) );
+                         p );
     }
 
     //    public void test1() {
@@ -184,18 +139,20 @@ public class ClipsShellTest {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
 
-        String expr = "(if (eq (max 3 5) 5) then (printout t hello) )";
+        String expr = "(if (eq (max 3 5) 5) then (printout t right) else (printout t wrong) )";
+
         this.shell.eval( expr );
-        assertEquals( "hello",
+        
+        assertEquals( "right",
                       new String( baos.toByteArray() ) );
 
-        expr = "(if (eq (max ?a ?b) 5) then (printout t hello) )";
+        expr = "(if (eq (max ?a ?b) 5) then (printout t right) else (printout t wrong)  )";
         this.shell.addVariable( "$a",
                                 "3" );
         this.shell.addVariable( "$b",
                                 "5" );
         this.shell.eval( expr );
-        assertEquals( "hellohello",
+        assertEquals( "rightright",
                       new String( baos.toByteArray() ) );
     }
 
@@ -247,7 +204,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testRuleCreation() {
         this.shell.eval( "(import org.drools.Person)" );
 
@@ -281,7 +238,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test 
     public void testTemplateCreation2() throws Exception {
         this.shell.eval( "(deftemplate PersonTemplate (slot name (type String) ) (slot age (type int) ) )" );
         this.shell.eval( "(defrule xxx (PersonTemplate (name ?name&bob) (age 30) ) (PersonTemplate  (name ?name) (age 35)) => (printout t xx \" \" (eq 1 1) ) )" );
@@ -291,7 +248,7 @@ public class ClipsShellTest {
         assertNotNull( personClass );
     }
 
-    @Test @Ignore
+    @Test 
     public void testTemplateCreation() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
@@ -304,7 +261,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testTemplateCreationWithJava() throws Exception {
         this.shell.eval( "(deftemplate Person (slot name (type String) ) (slot age (type int) ) )" );
 
@@ -352,7 +309,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test 
     public void testEmptyLHSRule() {
         String rule1 = "(defrule testRule => (printout t hello) (printout t goodbye))";
         this.shell.eval( rule1 );
@@ -360,7 +317,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testSimpleLHSRule() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name))" );
@@ -370,7 +327,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testRuleCallDeftemplate() {
         String function = "(deffunction max (?a ?b) (if (> ?a ?b) then (return ?a) else (return ?b) ) )";
         this.shell.eval( function );
@@ -383,7 +340,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testTwoSimpleRulesWithModify() {
         this.shell.eval( "(import org.drools.*)" );
         this.shell.eval( "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )" );
@@ -394,7 +351,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testBlockEval() {
         String text = "(import org.drools.*)";
         text += "(defrule testRule1 ?p <- (Person (name ?name&mark) ) => (printout t hello) (printout t \" \" ?name) (modify ?p (name bob) ) )";
@@ -406,7 +363,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testPredicate() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (name ?name) (age ?age&:(> ?age 30)) ) => (printout t hello) (printout t \" \" ?name) )" );
@@ -417,7 +374,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testReturnValue() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age) ) (Person (name ?name) (age =(- ?age 3)) ) => (printout t hello) (printout t \" \" ?name) )" );
@@ -428,7 +385,7 @@ public class ClipsShellTest {
                       new String( this.baos.toByteArray() ) );
     }
 
-    @Test @Ignore
+    @Test
     public void testTest() {
         this.shell.eval( "(import org.drools.Person)" );
         this.shell.eval( "(defrule testRule1 (Person (age ?age1) ) (Person (name ?name) (age ?age2) ) (test(eq ?age1 (+ ?age2 3) )) => (printout t hello) )" );
@@ -444,7 +401,7 @@ public class ClipsShellTest {
         this.shell.eval( "(run)" );
     }
 
-    @Test @Ignore
+    @Test
     public void testMixed() {
         this.shell.eval( "(import org.drools.Cheese)" );
         String str ="";
