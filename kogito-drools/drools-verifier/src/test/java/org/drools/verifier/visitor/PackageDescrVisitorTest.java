@@ -16,6 +16,7 @@
 
 package org.drools.verifier.visitor;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
@@ -33,115 +34,116 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
-import org.drools.verifier.visitor.PackageDescrVisitor;
-import org.drools.verifier.visitor.UnknownDescriptionException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class PackageDescrVisitorTest {
 
+    private VerifierData verifierData;
+    private PackageDescrVisitor packageDescrVisitor;
+
+    @Before
+    public void setUp() throws Exception {
+        verifierData = VerifierReportFactory.newVerifierData();
+        packageDescrVisitor = new PackageDescrVisitor(verifierData,
+                Collections.EMPTY_LIST);
+    }
+
+
     @Test
-    public void testVisit() throws DroolsParserException,
-                           UnknownDescriptionException {
-        VerifierData data = VerifierReportFactory.newVerifierData();
-        PackageDescrVisitor visitor = new PackageDescrVisitor( data,
-                                                               Collections.EMPTY_LIST );
+    public void testVisit() throws Exception {
 
-        assertNotNull( data );
+        PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
 
-        Reader drlReader = new InputStreamReader( Verifier.class.getResourceAsStream( "Misc3.drl" ) );
-        PackageDescr packageDescr = new DrlParser().parse( drlReader );
+        assertNotNull(packageDescr);
 
-        assertNotNull( packageDescr );
+        packageDescrVisitor.visitPackageDescr(packageDescr);
 
-        visitor.visitPackageDescr( packageDescr );
-
-        Collection<VerifierComponent> all = data.getAll();
+        Collection<VerifierComponent> all = verifierData.getAll();
 
         Set<String> names = new HashSet<String>();
-        for ( VerifierComponent verifierComponent : all ) {
+        for (VerifierComponent verifierComponent : all) {
             String path = verifierComponent.getPath();
 
             //            System.out.println( "-" + verifierComponent );
 
-            if ( names.contains( path ) ) {
-                fail( "Dublicate path " + path );
+            if (names.contains(path)) {
+                fail("Dublicate path " + path);
             } else {
-                names.add( path );
+                names.add(path);
             }
         }
 
-        assertNotNull( all );
-        assertEquals( 52,
-                      all.size() );
+        assertNotNull(all);
+        assertEquals(52,
+                all.size());
 
     }
 
     @Test
-    public void testSubPatterns() throws DroolsParserException,
-                                 UnknownDescriptionException {
-        VerifierData data = VerifierReportFactory.newVerifierData();
-        PackageDescrVisitor visitor = new PackageDescrVisitor( data,
-                                                               Collections.EMPTY_LIST );
+    public void testSubPatterns() throws Exception {
 
-        assertNotNull( data );
+        PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("SubPattern.drl"));
 
-        Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "SubPattern.drl" ) );
-        PackageDescr packageDescr = new DrlParser().parse( drlReader );
+        assertNotNull(packageDescr);
 
-        assertNotNull( packageDescr );
+        packageDescrVisitor.visitPackageDescr(packageDescr);
 
-        visitor.visitPackageDescr( packageDescr );
+        Collection<VerifierComponent> all = verifierData.getAll();
 
-        Collection<VerifierComponent> all = data.getAll();
-
-        assertNotNull( all );
+        assertNotNull(all);
 
         SubPattern test1SubPattern = null;
         SubPattern test2SubPattern = null;
         SubRule test1SubRule = null;
         SubRule test2SubRule = null;
 
-        for ( VerifierComponent verifierComponent : all ) {
+        for (VerifierComponent verifierComponent : all) {
             //            System.out.println( verifierComponent );
 
-            if ( verifierComponent.getVerifierComponentType().equals( VerifierComponentType.SUB_PATTERN ) ) {
+            if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 SubPattern subPattern = (SubPattern) verifierComponent;
-                if ( "Test 1".equals( subPattern.getRuleName() ) ) {
-                    assertNull( test1SubPattern );
+                if ("Test 1".equals(subPattern.getRuleName())) {
+                    assertNull(test1SubPattern);
                     test1SubPattern = subPattern;
-                } else if ( "Test 2".equals( subPattern.getRuleName() ) ) {
-                    assertNull( test2SubPattern );
+                } else if ("Test 2".equals(subPattern.getRuleName())) {
+                    assertNull(test2SubPattern);
                     test2SubPattern = subPattern;
                 }
             }
-            if ( verifierComponent.getVerifierComponentType().equals( VerifierComponentType.SUB_RULE ) ) {
+            if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_RULE)) {
                 SubRule subRule = (SubRule) verifierComponent;
-                if ( "Test 1".equals( subRule.getRuleName() ) ) {
-                    assertNull( test1SubRule );
+                if ("Test 1".equals(subRule.getRuleName())) {
+                    assertNull(test1SubRule);
                     test1SubRule = subRule;
-                } else if ( "Test 2".equals( subRule.getRuleName() ) ) {
-                    assertNull( test2SubRule );
+                } else if ("Test 2".equals(subRule.getRuleName())) {
+                    assertNull(test2SubRule);
                     test2SubRule = subRule;
                 }
             }
         }
 
-        assertNotNull( test1SubPattern );
-        assertEquals( 3,
-                      test1SubPattern.getItems().size() );
-        assertNotNull( test2SubPattern );
-        assertEquals( 3,
-                      test2SubPattern.getItems().size() );
-        assertNotNull( test1SubRule );
-        assertEquals( 1,
-                      test1SubRule.getItems().size() );
-        assertNotNull( test2SubRule );
-        assertEquals( 1,
-                      test2SubRule.getItems().size() );
+        assertNotNull(test1SubPattern);
+        assertEquals(3,
+                test1SubPattern.getItems().size());
+        assertNotNull(test2SubPattern);
+        assertEquals(3,
+                test2SubPattern.getItems().size());
+        assertNotNull(test1SubRule);
+        assertEquals(1,
+                test1SubRule.getItems().size());
+        assertNotNull(test2SubRule);
+        assertEquals(1,
+                test2SubRule.getItems().size());
 
     }
+
+    private PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
+        Reader drlReader = new InputStreamReader(resourceAsStream);
+        return new DrlParser().parse(drlReader);
+    }
+
 }
