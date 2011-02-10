@@ -30,6 +30,7 @@ import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 
@@ -191,11 +192,12 @@ public class ParserXHelper {
                validateLT( index,
                            DroolsSoftKeywords.CLASS );
     }
-    
+
     public boolean validateStatement( int index ) {
         boolean ret = false;
-        for( String st : statementKeywords ) {
-            if( validateLT( index, st ) ) {
+        for ( String st : statementKeywords ) {
+            if ( validateLT( index,
+                             st ) ) {
                 ret = true;
                 break;
             }
@@ -475,6 +477,10 @@ public class ParserXHelper {
         }
     }
 
+    // ---------------------------------------------------------------------------------
+    // END COPIED FROM: http://www.antlr.org/wiki/display/ANTLR3/Custom+Syntax+Error+Recovery
+    // ---------------------------------------------------------------------------------
+
     private boolean memberOfFollowSet( BitSet follow ) {
         boolean isMember = follow.member( input.LA( 1 ) );
         if ( input.LA( 1 ) == DRLParser.ID ) {
@@ -501,10 +507,6 @@ public class ParserXHelper {
         return isMember;
     }
 
-    // ---------------------------------------------------------------------------------
-    // END COPIED FROM: http://www.antlr.org/wiki/display/ANTLR3/Custom+Syntax+Error+Recovery
-    // ---------------------------------------------------------------------------------
-
     void setStart( DescrBuilder< ? > db ) {
         setStart( db,
                   input.LT( 1 ) );
@@ -527,9 +529,19 @@ public class ParserXHelper {
         }
     }
 
+    void setEnd( DescrBuilder< ? > db ) {
+        Token last = input.LT( -1 );
+        if ( last != null && !builderContext.empty() ) {
+            int endLocation = last.getText() != null ? last.getCharPositionInLine() + last.getText().length() - 1 : last.getCharPositionInLine();
+            db.endCharacter( ((CommonToken) last).getStopIndex() + 1 ).endLocation( last.getLine(),
+                                                                                    endLocation );
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends DescrBuilder< ? >> T start( Class<T> clazz,
-                                                  String param ) {
+                                                  String param,
+                                                  DescrBuilder< ? > builder ) {
         if ( state.backtracking == 0 ) {
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 pushParaphrases( DroolsParaphraseTypes.PACKAGE );
@@ -577,13 +589,13 @@ public class ParserXHelper {
                 return (T) field;
             } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 FunctionDescrBuilder function = null;
-                if( builderContext.empty() ) {
+                if ( builderContext.empty() ) {
                     function = DescrFactory.newPackage().newFunction();
                 } else {
                     PackageDescrBuilder pkg = (PackageDescrBuilder) builderContext.peek();
                     function = pkg.newFunction().namespace( pkg.getDescr().getName() );
                     AttributeDescr attribute = pkg.getDescr().getAttribute( "dialect" );
-                    if( attribute != null ) {
+                    if ( attribute != null ) {
                         function.dialect( attribute.getValue() );
                     }
                 }
@@ -607,21 +619,34 @@ public class ParserXHelper {
                 setStart( attribute );
                 return (T) attribute;
             } else if ( EvalDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                EvalDescrBuilder<?> eval= ((CEDescrBuilder<?,?>) builderContext.peek()).eval();
+                EvalDescrBuilder< ? > eval = ((CEDescrBuilder< ? , ? >) builderContext.peek()).eval();
                 builderContext.push( eval );
                 pushParaphrases( DroolsParaphraseTypes.EVAL );
                 beginSentence( DroolsSentenceType.EVAL );
                 setStart( eval );
                 return (T) eval;
+            } else if ( CEDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                builderContext.push( builder );
+                setStart( builder );
+                return (T) builder;
+            } else if ( PatternDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                PatternDescrBuilder< ? > pattern = ((CEDescrBuilder< ? , ? >) builderContext.peek()).pattern();
+                builderContext.push( pattern );
+                pushParaphrases( DroolsParaphraseTypes.PATTERN );
+                setStart( pattern );
+                return (T) pattern;
             }
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder< ? >> T end( Class<T> clazz ) {
+    public <T extends DescrBuilder< ? >> T end( Class<T> clazz,
+                                                DescrBuilder< ? > builder ) {
         if ( state.backtracking == 0 ) {
-            if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || AttributeDescrBuilder.class.isAssignableFrom( clazz )) ) {
+            if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || 
+                   AttributeDescrBuilder.class.isAssignableFrom( clazz ) || 
+                   CEDescrBuilder.class.isAssignableFrom( clazz ) ) ) {
                 popParaphrases();
             }
             setEnd();

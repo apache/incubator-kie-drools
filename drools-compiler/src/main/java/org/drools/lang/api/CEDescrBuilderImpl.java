@@ -101,6 +101,15 @@ public class CEDescrBuilderImpl<P extends DescrBuilder<?>, T extends BaseDescr> 
         return pattern;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern() {
+        PatternDescrBuilder<CEDescrBuilder<P, T>> pattern = new PatternDescrBuilderImpl<CEDescrBuilder<P, T>>( this );
+        ((ConditionalElementDescr) descr).addDescr( pattern.getDescr() );
+        return pattern;
+    }
+
     public P end() {
         return parent;
     }

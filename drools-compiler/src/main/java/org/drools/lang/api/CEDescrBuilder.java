@@ -39,6 +39,7 @@ public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     public EvalDescrBuilder<CEDescrBuilder<P, T>> eval();
     
     public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern( String type );
+    public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern();
     
     public P end();
 }

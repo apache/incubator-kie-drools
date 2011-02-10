@@ -36,12 +36,12 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?>>
     extends
     DescrBuilder<PatternDescr> {
 
-    public PatternDescrBuilder<P> label( String id );
+    public PatternDescrBuilder<P> id( String id );
+    public PatternDescrBuilder<P> type( String type );
     public PatternDescrBuilder<P> constraint( String constraint );
     public PatternDescrBuilder<P> bind( String var, String target );
     
     public SourceDescrBuilder<?> from();
     
     public P end();
-
 }
