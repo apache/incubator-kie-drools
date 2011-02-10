@@ -49,7 +49,7 @@ public class SubsumptantSubRulesTest {
                                                                              getClass() ),
                                        ResourceType.DRL );
 
-//        for ( VerifierError error : verifier.getErrors() ) {
+//        for ( VerifierError error : verifier.getMissingClasses() ) {
 //            System.out.println( error.getMessage() );
 //        }
 
@@ -88,7 +88,7 @@ public class SubsumptantSubRulesTest {
     //                                                                             getClass() ),
     //                                       ResourceType.DRL );
     //
-    //        for ( VerifierError error : verifier.getErrors() ) {
+    //        for ( VerifierError error : verifier.getMissingClasses() ) {
     //            System.out.println( error.getMessage() );
     //        }
     //
@@ -126,7 +126,7 @@ public class SubsumptantSubRulesTest {
     //                                                                             getClass() ),
     //                                       ResourceType.DRL );
     //
-    //        for ( VerifierError error : verifier.getErrors() ) {
+    //        for ( VerifierError error : verifier.getMissingClasses() ) {
     //            System.out.println( error.getMessage() );
     //        }
     //
@@ -165,7 +165,7 @@ public class SubsumptantSubRulesTest {
     //                                                                             getClass() ),
     //                                       ResourceType.DRL );
     //
-    //        for ( VerifierError error : verifier.getErrors() ) {
+    //        for ( VerifierError error : verifier.getMissingClasses() ) {
     //            System.out.println( error.getMessage() );
     //        }
     //

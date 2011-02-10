@@ -142,8 +142,6 @@ public class VerifierImpl
                                 result );
 
             ksession.fireAllRules( scopesAgendaFilter );
-            String test = "";
-            test = test;
 
         } catch ( Exception e ) {
             throw new RuntimeException( e );

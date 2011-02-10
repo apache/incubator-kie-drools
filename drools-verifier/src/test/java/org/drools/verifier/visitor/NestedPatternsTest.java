@@ -16,6 +16,7 @@
 
 package org.drools.verifier.visitor;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
@@ -40,51 +41,50 @@ import static org.junit.Assert.*;
 public class NestedPatternsTest {
 
     @Test
-    public void runVisitor() throws DroolsParserException,
-                            UnknownDescriptionException {
+    public void runVisitor() throws Exception {
         VerifierData data = VerifierReportFactory.newVerifierData();
-        PackageDescrVisitor visitor = new PackageDescrVisitor( data,
-                                                               Collections.EMPTY_LIST );
+        PackageDescrVisitor visitor = new PackageDescrVisitor(data,
+                Collections.EMPTY_LIST);
 
-        assertNotNull( data );
+        assertNotNull(data);
 
-        Reader drlReader = new InputStreamReader( getClass().getResourceAsStream( "NestedPatterns.drl" ) );
-        PackageDescr packageDescr = new DrlParser().parse( drlReader );
+        Reader drlReader = new InputStreamReader(getClass().getResourceAsStream("NestedPatterns.drl"));
+        PackageDescr packageDescr = new DrlParser().parse(drlReader);
 
-        assertNotNull( packageDescr );
+        assertNotNull(packageDescr);
 
-        visitor.visitPackageDescr( packageDescr );
+        visitor.visitPackageDescr(packageDescr);
 
         Collection<VerifierComponent> all = data.getAll();
         int patternCount = 0;
-        for ( VerifierComponent verifierComponent : all ) {
+        for (VerifierComponent verifierComponent : all) {
 
-            if ( verifierComponent.getVerifierComponentType().equals( VerifierComponentType.PATTERN ) ) {
+            if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.PATTERN)) {
                 patternCount++;
             }
         }
-        assertEquals( 4,
-                             patternCount );
+        assertEquals(4,
+                patternCount);
 
-        Collection<Pattern> patterns = data.getAll( VerifierComponentType.PATTERN );
+        Collection<Pattern> patterns = data.getAll(VerifierComponentType.PATTERN);
 
 //        for ( Pattern pattern : patterns ) {
 //            System.out.println( pattern.getPath() + " " + pattern );
 //        }
 
-        assertNotNull( patterns );
-        assertEquals( 4,
-                             patterns.size() );
+        assertNotNull(patterns);
+        assertEquals(4,
+                patterns.size());
 
-        Collection<Restriction> restrictions = data.getAll( VerifierComponentType.RESTRICTION );
+        Collection<Restriction> restrictions = data.getAll(VerifierComponentType.RESTRICTION);
 
 //        for ( Restriction restriction : restrictions ) {
 //            System.out.println( restriction.getPath() + " " + restriction );
 //        }
 
-        assertNotNull( restrictions );
-        assertEquals( 3,
-                             restrictions.size() );
+        assertNotNull(restrictions);
+        assertEquals(3,
+                restrictions.size());
 
     }
 }

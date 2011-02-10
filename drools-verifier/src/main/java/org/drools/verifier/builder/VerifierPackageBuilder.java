@@ -22,13 +22,11 @@ import java.io.StringReader;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.BusinessRuleProvider;
-import org.drools.compiler.BusinessRuleProviderFactory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageBuilderErrors;
-import org.drools.ide.common.BusinessRuleProviderDefaultImpl;
 import org.drools.io.Resource;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DefaultExpander;
@@ -74,35 +72,6 @@ class VerifierPackageBuilder {
         @Override
         public void addPackage(PackageDescr pDescr) {
             packageDescr = pDescr;
-        }
-
-        public void addPackageFromBrl(final Resource resource) throws DroolsParserException {
-
-            try {
-                BusinessRuleProvider provider = new BusinessRuleProviderDefaultImpl();
-
-                Reader knowledge = provider.getKnowledgeReader( resource );
-
-                DrlParser parser = new DrlParser();
-                DefaultExpander expander = getDslExpander();
-
-                if ( null != expander ) {
-                    knowledge = new StringReader( expander.expand( knowledge ) );
-                    if ( expander.hasErrors() ) {
-                        getErrors().addAll( expander.getErrors() );
-                    }
-                }
-
-                PackageDescr pkg = parser.parse( knowledge );
-                if ( parser.hasErrors() ) {
-                    getErrors().addAll( parser.getErrors() );
-                } else {
-                    addPackage( pkg );
-                }
-
-            } catch ( Exception e ) {
-                throw new DroolsParserException( e );
-            }
         }
     }
 }
