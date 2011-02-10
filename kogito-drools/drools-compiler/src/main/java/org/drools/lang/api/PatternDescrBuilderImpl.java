@@ -29,14 +29,23 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
     PatternDescrBuilder<P> {
 
     private P parent;
+    
+    protected PatternDescrBuilderImpl( P parent ) {
+        this( parent, null );
+    }
 
     protected PatternDescrBuilderImpl(P parent, String type) {
         super( new PatternDescr( type ) );
         this.parent = parent;
     }
 
-    public PatternDescrBuilder<P> label( String id ) {
+    public PatternDescrBuilder<P> id( String id ) {
         descr.setIdentifier( id );
+        return this;
+    }
+
+    public PatternDescrBuilder<P> type( String type ) {
+        descr.setObjectType( type );
         return this;
     }
 

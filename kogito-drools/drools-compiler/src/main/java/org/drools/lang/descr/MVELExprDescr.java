@@ -20,23 +20,20 @@ public class MVELExprDescr extends DeclarativeInvokerDescr {
 
     private static final long serialVersionUID = 510l;
 
-    private String            expression;
-
     public MVELExprDescr() {
         this( null );
     }
 
     public MVELExprDescr(final String expr) {
-        super();
-        this.expression = expr;
+        super( );
+        setText( expr );
     }
     
     public String getExpression() {
-        return expression;
+        return getText();
     }
 
     public String toString() {
-        return expression;
+        return getText();
     }
-
 }

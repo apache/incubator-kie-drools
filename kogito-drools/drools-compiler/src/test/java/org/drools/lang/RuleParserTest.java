@@ -33,14 +33,13 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldBindingDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.MVELExprDescr;
+import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -275,27 +274,38 @@ public class RuleParserTest extends TestCase {
         assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getEndCharacter() == -1 );
     }
 
-    //    public void testFromComplexAcessor() throws Exception {
-    //        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
-    //                        " when \n" +
-    //                        "     o: Order( ) \n" +
-    //                        "     not( Customer( ) from customerService.getCustomer(o.getCustomerId()) ) \n" +
-    //                        " then \n" +
-    //                        "     System.err.println(\"Invalid customer id found!\"); \n" +
-    //                        "     o.addError(\"Invalid customer id\"); \n" +
-    //                        "end \n";
-    //        parse( "compilation_unit",
-    //               "compilation_unit",
-    //               source );
-    //
-    //        assertFalse( parser.getErrorMessages().toString(), parser.hasErrors() );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertEquals( "Invalid customer id",
-    //                      rule.getName() );
-    //
-    //    }
-    //
+    public void testFromComplexAcessor() throws Exception {
+        String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
+                            " when \n" +
+                            "     o: Order( ) \n" +
+                            "     not( Customer( ) from customerService.getCustomer(o.getCustomerId()) ) \n" +
+                            " then \n" +
+                            "     System.err.println(\"Invalid customer id found!\"); \n" +
+                            "     o.addError(\"Invalid customer id\"); \n" +
+                            "end \n";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrorMessages().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "Invalid customer id",
+                      rule.getName() );
+
+        assertEquals( 2,
+                      rule.getLhs().getDescrs().size() );
+
+        NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
+        PatternDescr customer = (PatternDescr) not.getDescrs().get( 0 );
+
+        assertEquals( "Customer",
+                      customer.getObjectType() );
+        assertEquals( "customerService.getCustomer(o.getCustomerId())",
+                      ((FromDescr)customer.getSource()).getDataSource().getText() );
+
+    }
+
     //    public void testFromWithInlineList() throws Exception {
     //        String source = "rule XYZ \n" +
     //                        " when \n" +
@@ -1023,145 +1033,105 @@ public class RuleParserTest extends TestCase {
                                           (String) rule.getConsequence() );
     }
 
-    //    public void testRestrictionsMultiple() throws Exception {
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "restrictions_test.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEqualsIgnoreWhitespace( "consequence();",
-    //                                      (String) rule.getConsequence() );
-    //        assertEquals( "simple_rule",
-    //                      rule.getName() );
-    //        assertEquals( 2,
-    //                      rule.getLhs().getDescrs().size() );
-    //
-    //        // The first pattern, with 2 restrictions on a single field (plus a
-    //        // connective)
-    //        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        assertEquals( "Person",
-    //                      pattern.getObjectType() );
-    //        assertEquals( 1,
-    //                      pattern.getConstraint().getDescrs().size() );
-    //
-    //        AndDescr and = (AndDescr) pattern.getConstraint();
-    //        FieldConstraintDescr fld = (FieldConstraintDescr) and.getDescrs().get( 0 );
-    //        assertEquals( RestrictionConnectiveDescr.AND,
-    //                      ((RestrictionConnectiveDescr) fld.getRestriction()).getConnective() );
-    //        assertEquals( 2,
-    //                      fld.getRestrictions().size() );
-    //        assertEquals( "age",
-    //                      fld.getFieldName() );
-    //
-    //        LiteralRestrictionDescr lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //        assertEquals( ">",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "30",
-    //                      lit.getText() );
-    //
-    //        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 1 );
-    //        assertEquals( "<",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "40",
-    //                      lit.getText() );
-    //
-    //        // the second col, with 2 fields, the first with 2 restrictions, the
-    //        // second field with one
-    //        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
-    //        assertEquals( "Vehicle",
-    //                      pattern.getObjectType() );
-    //        assertEquals( 2,
-    //                      pattern.getConstraint().getDescrs().size() );
-    //
-    //        and = (AndDescr) pattern.getConstraint();
-    //        fld = (FieldConstraintDescr) and.getDescrs().get( 0 );
-    //        assertEquals( "type",
-    //                      fld.getFieldName() );
-    //        assertEquals( 1,
-    //                      fld.getRestrictions().size() );
-    //        RestrictionConnectiveDescr or = (RestrictionConnectiveDescr) fld.getRestrictions().get( 0 );
-    //        assertEquals( RestrictionConnectiveDescr.OR,
-    //                      or.getConnective() );
-    //        assertEquals( 2,
-    //                      or.getRestrictions().size() );
-    //        lit = (LiteralRestrictionDescr) or.getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "sedan",
-    //                      lit.getText() );
-    //
-    //        lit = (LiteralRestrictionDescr) or.getRestrictions().get( 1 );
-    //        assertEquals( "==",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "wagon",
-    //                      lit.getText() );
-    //
-    //        // now the second field
-    //        fld = (FieldConstraintDescr) and.getDescrs().get( 1 );
-    //        assertEquals( 1,
-    //                      fld.getRestrictions().size() );
-    //        lit = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-    //        assertEquals( "<",
-    //                      lit.getEvaluator() );
-    //        assertEquals( "3",
-    //                      lit.getText() );
-    //
-    //    }
-    //
-    //    public void testLineNumberInAST() throws Exception {
-    //        // also see testSimpleExpander to see how this works with an expander
-    //        // (should be the same).
-    //
-    //        final RuleDescr rule = (RuleDescr) parseResource( "rule",
-    //                                                          "rule",
-    //                                                          "simple_rule.drl" );
-    //
-    //        assertNotNull( rule );
-    //
-    //        assertEquals( "simple_rule",
-    //                      rule.getName() );
-    //
-    //        assertEquals( 7,
-    //                      rule.getConsequenceLine() );
-    //        assertEquals( 2,
-    //                      rule.getConsequencePattern() );
-    //
-    //        final AndDescr lhs = rule.getLhs();
-    //
-    //        assertNotNull( lhs );
-    //
-    //        assertEquals( 3,
-    //                      lhs.getDescrs().size() );
-    //
-    //        // Check first pattern
-    //        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
-    //        assertEquals( "foo3",
-    //                      first.getIdentifier() );
-    //        assertEquals( "Bar",
-    //                      first.getObjectType() );
-    //        assertEquals( 1,
-    //                      first.getConstraint().getDescrs().size() );
-    //
-    //        // Check second pattern
-    //        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
-    //        assertEquals( "foo4",
-    //                      second.getIdentifier() );
-    //        assertEquals( "Bar",
-    //                      second.getObjectType() );
-    //
-    //        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
-    //        assertEquals( "Baz",
-    //                      third.getObjectType() );
-    //
-    //        assertEquals( 4,
-    //                      first.getLine() );
-    //        assertEquals( 5,
-    //                      second.getLine() );
-    //        assertEquals( 6,
-    //                      third.getLine() );
-    //    }
-    //
+    public void testRestrictionsMultiple() throws Exception {
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "restrictions_test.drl" );
+        assertFalse( parser.getErrors().toString(),
+                         parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        assertEqualsIgnoreWhitespace( "consequence();",
+                                          (String) rule.getConsequence() );
+        assertEquals( "simple_rule",
+                          rule.getName() );
+        assertEquals( 2,
+                          rule.getLhs().getDescrs().size() );
+
+        // The first pattern, with 2 restrictions on a single field (plus a
+        // connective)
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Person",
+                          pattern.getObjectType() );
+        assertEquals( 1,
+                          pattern.getConstraint().getDescrs().size() );
+
+        AndDescr and = (AndDescr) pattern.getConstraint();
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        assertEquals( "age > 30 && < 40",
+                          fld.getExpression() );
+
+        // the second col, with 2 fields, the first with 2 restrictions, the
+        // second field with one
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "Vehicle",
+                          pattern.getObjectType() );
+        assertEquals( 2,
+                          pattern.getConstraint().getDescrs().size() );
+
+        and = (AndDescr) pattern.getConstraint();
+        fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        assertEquals( "type == \"sedan\" || == \"wagon\"",
+                          fld.getExpression() );
+
+        // now the second field
+        fld = (ExprConstraintDescr) and.getDescrs().get( 1 );
+        assertEquals( "age < 3",
+                          fld.getExpression() );
+    }
+
+    public void testLineNumberInAST() throws Exception {
+        // also see testSimpleExpander to see how this works with an expander
+        // (should be the same).
+
+        final RuleDescr rule = (RuleDescr) parseResource( "rule",
+                                                          "simple_rule.drl" );
+
+        assertNotNull( rule );
+
+        assertEquals( "simple_rule",
+                      rule.getName() );
+
+        assertEquals( 7,
+                      rule.getConsequenceLine() );
+        assertEquals( 2,
+                      rule.getConsequencePattern() );
+
+        final AndDescr lhs = rule.getLhs();
+
+        assertNotNull( lhs );
+
+        assertEquals( 3,
+                      lhs.getDescrs().size() );
+
+        // Check first pattern
+        final PatternDescr first = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "foo3",
+                      first.getIdentifier() );
+        assertEquals( "Bar",
+                      first.getObjectType() );
+        assertEquals( 1,
+                      first.getConstraint().getDescrs().size() );
+
+        // Check second pattern
+        final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "foo4",
+                      second.getIdentifier() );
+        assertEquals( "Bar",
+                      second.getObjectType() );
+
+        final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
+        assertEquals( "Baz",
+                      third.getObjectType() );
+
+        assertEquals( 4,
+                      first.getLine() );
+        assertEquals( 5,
+                      second.getLine() );
+        assertEquals( 6,
+                      third.getLine() );
+    }
+
     //    public void testLineNumberIncludingCommentsInRHS() throws Exception {
     //        parseResource( "compilation_unit",
     //                       "compilation_unit",

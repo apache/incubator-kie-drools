@@ -86,7 +86,7 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-	:	expression AT
+	:	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER )
 	;
 
 // top level entry point for arbitrary expression parsing
@@ -99,23 +99,33 @@ conditionalExpression
 	;
 	
 conditionalOrExpression
-  : conditionalAndExpression ( DOUBLE_PIPE conditionalAndExpression )*
+  : conditionalAndExpression ( DOUBLE_PIPE 
+     ( (operator)=> operator shiftExpression
+     | conditionalAndExpression ) )*
 	;
 
 conditionalAndExpression 
-  : inclusiveOrExpression ( DOUBLE_AMPER inclusiveOrExpression )*
+  : inclusiveOrExpression ( DOUBLE_AMPER 
+    ( (operator)=> operator shiftExpression
+    | inclusiveOrExpression ) )*
 	;
 
 inclusiveOrExpression
-  : exclusiveOrExpression ( PIPE exclusiveOrExpression )*
+  : exclusiveOrExpression ( PIPE
+    ( (operator)=> operator shiftExpression
+    | exclusiveOrExpression ) )*
 	;
 
 exclusiveOrExpression
-  : andExpression ( XOR andExpression )*
+  : andExpression ( XOR 
+    ( (operator)=> operator shiftExpression
+    | andExpression ) )*
 	;
 
 andExpression 
-  : equalityExpression ( AMPER equalityExpression )*
+  : equalityExpression ( AMPER 
+    ( (operator)=> operator shiftExpression
+    | equalityExpression ) )*
 	;
 
 equalityExpression 
@@ -130,6 +140,13 @@ relationalExpression
   : shiftExpression ( (relationalOp)=> relationalOp shiftExpression )*
   ;
 	
+operator
+  : ( EQUALS
+    | NOT_EQUALS
+    | relationalOp
+    )
+    ;
+  	
 relationalOp
   : ( LESS_EQUALS
     | GREATER_EQUALS 

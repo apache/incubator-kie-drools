@@ -1,8 +1,5 @@
 #this is for showing off all the new multi restriction stuff
 
-
-
-
 rule simple_rule 
   when
   	Person(age > 30 && < 40)
