@@ -1367,7 +1367,7 @@ public class DRLXParser {
                 if ( state.backtracking == 0 ) {
                     ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( result );
                     or = ce.or();
-                    or.getDescr().addDescr( result );
+                    or.getDescr().addOrMerge( result );
                     result = or.getDescr();
                     helper.start( CEDescrBuilder.class,
                                   null,
@@ -1468,7 +1468,7 @@ public class DRLXParser {
                 if ( state.backtracking == 0 ) {
                     ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( result );
                     and = ce.and();
-                    and.getDescr().addDescr( result );
+                    and.getDescr().addOrMerge( result );
                     result = and.getDescr();
                     helper.start( CEDescrBuilder.class,
                                   null,
@@ -1535,9 +1535,10 @@ public class DRLXParser {
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
             // TODO: handle this
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+            // the order here is very important: this if branch must come before the lhsPatternBind bellow
             result = lhsParen( ce );
         } else {
-            result = lhsPattern( ce );
+            result = lhsPatternBind( ce );
         }
         if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
             match( input,
@@ -1606,7 +1607,7 @@ public class DRLXParser {
             }
         } else {
 
-            lhsPattern( exists );
+            lhsPatternBind( exists );
             if ( state.failed ) return null;
         }
 
@@ -1672,7 +1673,7 @@ public class DRLXParser {
                 if ( state.failed ) return null;
             }
         } else {
-            lhsPattern( not );
+            lhsPatternBind( not );
             if ( state.failed ) return null;
         }
 
@@ -1759,67 +1760,164 @@ public class DRLXParser {
     }
 
     /**
-     * lhsPattern := label? type LEFT_PAREN constraints? RIGHT_PAREN over? source?
+     * lhsPatternBind := label? 
+     *                ( LEFT_PAREN lhsPattern (OR pattern)* RIGHT_PAREN
+     *                | lhsPattern )
      *  
      * @param ce
      * @return
      * @throws RecognitionException 
      */
-    private BaseDescr lhsPattern( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsPatternBind( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
         PatternDescrBuilder< ? > pattern = null;
+        CEDescrBuilder< ? , OrDescr> or = null;
+        BaseDescr result = null;
 
-        try {
-            pattern = helper.start( PatternDescrBuilder.class,
-                                    null,
-                                    null );
+        Token first = input.LT( 1 );
+        pattern = helper.start( PatternDescrBuilder.class,
+                                null,
+                                null );
+        if ( pattern != null ) {
+            result = pattern.getDescr();
+        }
 
-            String label = null;
-            if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
-                label = label();
-                if ( state.failed ) return null;
-            }
-
-            String type = type();
+        String label = null;
+        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
+            label = label();
             if ( state.failed ) return null;
+        }
 
-            if ( state.backtracking == 0 ) {
-                pattern.type( type );
-                if ( label != null ) {
-                    pattern.id( label );
+        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+            try {
+                match( input,
+                       DRLLexer.LEFT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+
+                lhsPattern( pattern,
+                            label );
+                if ( state.failed ) return null;
+
+                if ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
+                    if ( state.backtracking == 0 ) {
+                        // this is necessary because of the crappy bind with multi-pattern OR syntax 
+                        or = ce.or();
+                        result = or.getDescr();
+
+                        helper.end( PatternDescrBuilder.class,
+                                    null );
+                        helper.start( CEDescrBuilder.class,
+                                      null,
+                                      or );
+                        // adjust real or starting token:
+                        helper.setStart( or,
+                                         first );
+
+                        // remove original pattern from the parent CE child list:
+                        ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( pattern.getDescr() );
+                        // add pattern to the OR instead
+                        or.getDescr().addDescr( pattern.getDescr() );
+                    }
+
+                    while ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
+                        match( input,
+                               DRLLexer.ID,
+                               DroolsSoftKeywords.OR,
+                               null,
+                               DroolsEditorType.KEYWORD );
+                        if ( state.failed ) return null;
+
+                        pattern = helper.start( PatternDescrBuilder.class,
+                                                null,
+                                                null );
+                        // new pattern, same binding
+                        lhsPattern( pattern,
+                                    label );
+                        if ( state.failed ) return null;
+
+                        helper.end( PatternDescrBuilder.class,
+                                    null );
+                    }
+                }
+
+                match( input,
+                       DRLLexer.RIGHT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+
+            } finally {
+                if ( or != null ) {
+                    helper.end( CEDescrBuilder.class,
+                                or );
+                } else {
+                    helper.end( PatternDescrBuilder.class,
+                                null );
                 }
             }
 
-            match( input,
-                   DRLLexer.LEFT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return null;
+        } else {
+            try {
+                lhsPattern( pattern,
+                            label );
+                if ( state.failed ) return null;
 
-            if ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
-                constraints( pattern );
+            } finally {
+                helper.end( PatternDescrBuilder.class,
+                            null );
             }
-
-            match( input,
-                   DRLLexer.RIGHT_PAREN,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return null;
-
-            if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) ) {
-                // TODO: over clause
-            }
-
-            if ( helper.validateIdentifierKey( DroolsSoftKeywords.FROM ) ) {
-                patternSource( pattern );
-            }
-        } finally {
-            helper.end( PatternDescrBuilder.class,
-                        null );
         }
 
-        return pattern != null ? pattern.getDescr() : null;
+        return result;
+    }
+
+    /**
+     * lhsPattern := type LEFT_PAREN constraints? RIGHT_PAREN over? source?
+     * 
+     * @param pattern
+     * @param label
+     * @throws RecognitionException
+     */
+    private void lhsPattern( PatternDescrBuilder< ? > pattern,
+                             String label ) throws RecognitionException {
+        String type = type();
+        if ( state.failed ) return;
+
+        if ( state.backtracking == 0 ) {
+            pattern.type( type );
+            if ( label != null ) {
+                pattern.id( label );
+            }
+        }
+
+        match( input,
+               DRLLexer.LEFT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return;
+
+        if ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
+            constraints( pattern );
+        }
+
+        match( input,
+               DRLLexer.RIGHT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return;
+
+        if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) ) {
+            // TODO: over clause
+        }
+
+        if ( helper.validateIdentifierKey( DroolsSoftKeywords.FROM ) ) {
+            patternSource( pattern );
+        }
     }
 
     /**
@@ -1997,28 +2095,44 @@ public class DRLXParser {
      */
     private void rhs( RuleDescrBuilder rule ) throws RecognitionException {
         String chunk = "";
-        int first = -1, last = first;
+        int first = -1;
+        Token last = null;
         try {
+            first = input.index();
             Token t = match( input,
                              DRLLexer.ID,
                              DroolsSoftKeywords.THEN,
                              null,
                              DroolsEditorType.KEYWORD );
             if ( state.failed ) return;
-            first = input.index();
 
             if ( state.backtracking == 0 ) {
                 rule.getDescr().setConsequenceLocation( t.getLine(),
                                                         t.getCharPositionInLine() );
             }
 
-            while ( !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+            while ( input.LA( 1 ) != DRLLexer.EOF && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 input.consume();
             }
-            last = input.LT( -1 ).getTokenIndex();
-            if ( last >= first ) {
+            last = input.LT( 1 );
+            if ( last.getTokenIndex() > first ) {
                 chunk = input.toString( first,
-                                        last );
+                                        last.getTokenIndex() ); 
+                if( chunk.endsWith( DroolsSoftKeywords.END ) ) { 
+                    chunk = chunk.substring( 0, chunk.length() - DroolsSoftKeywords.END.length() );
+                }
+                // removing the "then" keyword any any subsequent space and line break
+                int index = 4;
+                while( index < chunk.length() && Character.isWhitespace( chunk.charAt( index ) ) ) {
+                    index++;
+                    if( chunk.charAt( index-1 ) == '\r' || chunk.charAt( index-1 ) == '\n') {
+                        if( index < chunk.length() && chunk.charAt( index-1 ) == '\r' && chunk.charAt( index ) == '\n') {
+                            index++;
+                        }
+                        break;
+                    }
+                }
+                chunk = chunk.substring( index );
             }
             rule.rhs( chunk );
 
