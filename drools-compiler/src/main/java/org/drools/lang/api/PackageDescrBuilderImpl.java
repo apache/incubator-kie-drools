@@ -66,6 +66,12 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
         return rule;
     }
 
+    public QueryDescrBuilder newQuery() {
+        QueryDescrBuilder query = new QueryDescrBuilderImpl();
+        descr.addRule( query.getDescr() );
+        return query;
+    }
+
     public AttributeDescrBuilder attribute( String name ) {
         AttributeDescrBuilder attribute = new AttributeDescrBuilderImpl( name );
         descr.addAttribute( attribute.getDescr() );

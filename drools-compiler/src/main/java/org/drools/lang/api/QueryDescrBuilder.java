@@ -17,22 +17,18 @@
 package org.drools.lang.api;
 
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.QueryDescr;
 
 /**
- *  A descriptor builder for rules
+ *  A descriptor builder for queries
  */
-public interface RuleDescrBuilder
+public interface QueryDescrBuilder
     extends
-    AnnotatedDescrBuilder<RuleDescr>,
-    AttributeSupportBuilder {
+    AnnotatedDescrBuilder<QueryDescr>,
+    ParameterSupportBuilder<QueryDescrBuilder> {
 
-    public RuleDescrBuilder name( String name );
-
-    public RuleDescrBuilder extendsRule( String name );
-
-    public RuleDescrBuilder rhs( String rhs );
-
-    public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs();
+    public QueryDescrBuilder name( String name );
+    
+    public CEDescrBuilder<QueryDescrBuilder, AndDescr> lhs();
 
 }

@@ -30,9 +30,10 @@ public class FunctionDescrBuilderImpl extends BaseDescrBuilderImpl<FunctionDescr
         return this;
     }
 
-    public FunctionDescrBuilder argument( String type,
-                                          String id ) {
-        descr.addParameter( type, id );
+    public FunctionDescrBuilder parameter( String type,
+                                           String variable ) {
+        descr.addParameter( type,
+                            variable );
         return this;
     }
 

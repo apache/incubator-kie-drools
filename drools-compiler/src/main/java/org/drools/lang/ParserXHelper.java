@@ -31,6 +31,7 @@ import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
+import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 
@@ -613,6 +614,15 @@ public class ParserXHelper {
                 beginSentence( DroolsSentenceType.RULE );
                 setStart( rule );
                 return (T) rule;
+            } else if ( QueryDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                QueryDescrBuilder query = (builderContext.empty()) ?
+                                        DescrFactory.newPackage().newQuery() :
+                                        ((PackageDescrBuilder) builderContext.peek()).newQuery();
+                builderContext.push( query );
+                pushParaphrases( DroolsParaphraseTypes.QUERY );
+                beginSentence( DroolsSentenceType.QUERY );
+                setStart( query );
+                return (T) query;
             } else if ( AttributeDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 AttributeDescrBuilder attribute = ((AttributeSupportBuilder) builderContext.peek()).attribute( param );
                 builderContext.push( attribute );
