@@ -46,6 +46,8 @@ public interface BetaConstraints
 
     public LinkedList getConstraints();
 
+    public BetaConstraints getOriginalConstraint();
+    
     public boolean isIndexed();
 
     public int getIndexCount();

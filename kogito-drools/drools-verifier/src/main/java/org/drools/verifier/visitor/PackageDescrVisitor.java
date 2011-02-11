@@ -16,12 +16,6 @@
 
 package org.drools.verifier.visitor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.jar.JarInputStream;
-
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -30,17 +24,23 @@ import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.data.VerifierData;
+import org.drools.verifier.jarloader.PackageHeaderLoader;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.jar.JarInputStream;
 
 /**
- * 
  * @author Toni Rikkola
  */
 public class PackageDescrVisitor {
 
-    private final VerifierData   data;
+    private final VerifierData data;
     private List<JarInputStream> jars = null;
 
-    private RulePackage          rulePackage;
+    private RulePackage rulePackage;
 
     public PackageDescrVisitor(VerifierData data,
                                List<JarInputStream> jars) {
@@ -48,83 +48,77 @@ public class PackageDescrVisitor {
         this.jars = jars;
     }
 
-    public void visitPackageDescr(PackageDescr descr) throws UnknownDescriptionException {
-        rulePackage = data.getPackageByName( descr.getName() );
+    public void visitPackageDescr(PackageDescr descr) throws UnknownDescriptionException, ClassNotFoundException, IOException {
+        rulePackage = data.getPackageByName(descr.getName());
 
-        if ( rulePackage == null ) {
+        if (rulePackage == null) {
             rulePackage = new RulePackage();
 
-            rulePackage.setName( descr.getName() );
-            data.add( rulePackage );
+            rulePackage.setName(descr.getName());
+            data.add(rulePackage);
         }
 
-        visitImports( descr.getImports() );
+        visitImports(descr.getImports());
 
-        TypeDeclarationDescrVisitor typeDeclarationDescrVisitor = new TypeDeclarationDescrVisitor( data );
-        typeDeclarationDescrVisitor.visit( descr.getTypeDeclarations() );
+        TypeDeclarationDescrVisitor typeDeclarationDescrVisitor = new TypeDeclarationDescrVisitor(data);
+        typeDeclarationDescrVisitor.visit(descr.getTypeDeclarations());
 
-        visitRules( descr.getRules() );
+        visitRules(descr.getRules());
     }
 
-    @SuppressWarnings("unchecked")
-    private void visitImports(List<ImportDescr> importDescrs) {
-        StringBuilder header = new StringBuilder();
-        for ( ImportDescr i : importDescrs ) {
-            String fullPath = i.getTarget();
-            String name = fullPath.substring( fullPath.lastIndexOf( "." ) + 1 );
+    private void visitImports(List<ImportDescr> importDescrs) throws IOException, ClassNotFoundException {
 
-            header.append( "import " );
-            header.append( fullPath );
-            header.append( "\n" );
+        HashSet<String> imports = new HashSet<String>();
+        for (ImportDescr i : importDescrs) {
+            String fullName = i.getTarget();
+            String name = fullName.substring(fullName.lastIndexOf(".") + 1);
 
-            Import objectImport = new Import( rulePackage );
-            objectImport.setName( fullPath );
-            objectImport.setShortName( name );
-            data.add( objectImport );
+            imports.add(fullName);
 
-            ObjectType objectType = this.data.getObjectTypeByFullName( fullPath );
+            Import objectImport = new Import(rulePackage);
+            objectImport.setName(fullName);
+            objectImport.setShortName(name);
+            data.add(objectImport);
 
-            if ( objectType == null ) {
+            ObjectType objectType = this.data.getObjectTypeByFullName(fullName);
+
+            if (objectType == null) {
                 objectType = new ObjectType();
             }
 
-            objectType.setName( name );
-            objectType.setFullName( fullPath );
-            data.add( objectType );
+            objectType.setName(name);
+            objectType.setFullName(fullName);
+            data.add(objectType);
         }
 
-        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        SuggestionCompletionEngine engine = loader.getSuggestionEngine( header.toString(),
-                                                                        jars,
-                                                                        Collections.EMPTY_LIST );
-        for ( String factTypeName : engine.getFactTypes() ) {
-            for ( String fieldName : engine.getFieldCompletions( factTypeName ) ) {
-                ObjectType objectType = this.data.getObjectTypeByObjectTypeNameAndPackageName( factTypeName,
-                                                                                               rulePackage.getName() );
+        PackageHeaderLoader packageHeaderLoader = new PackageHeaderLoader(imports, jars);
 
-                Field field = data.getFieldByObjectTypeAndFieldName( objectType.getFullName(),
-                                                                     fieldName );
-                if ( field == null ) {
-                    field = ObjectTypeFactory.createField( fieldName,
-                                                           objectType );
-                    field.setFieldType( engine.getFieldType( objectType.getName(),
-                                                             fieldName ) );
-                    data.add( field );
+        for (String factTypeName : packageHeaderLoader.getClassNames()) {
+            String name = factTypeName.substring(factTypeName.lastIndexOf(".") + 1);
+            Collection<String> fieldNames = packageHeaderLoader.getFieldNames(factTypeName);
+            for (String fieldName : fieldNames) {
+                ObjectType objectType = this.data.getObjectTypeByObjectTypeNameAndPackageName(name, rulePackage.getName());
+
+                Field field = data.getFieldByObjectTypeAndFieldName(objectType.getFullName(), fieldName);
+                if (field == null) {
+                    field = ObjectTypeFactory.createField(fieldName, objectType);
+                    field.setFieldType(packageHeaderLoader.getFieldType(objectType.getName(), fieldName));
+                    data.add(field);
                 }
             }
         }
     }
 
     private void visitRules(List<RuleDescr> rules) throws UnknownDescriptionException {
-        for ( RuleDescr ruleDescr : rules ) {
-            visitRuleDescr( ruleDescr );
+        for (RuleDescr ruleDescr : rules) {
+            visitRuleDescr(ruleDescr);
         }
     }
 
     private void visitRuleDescr(RuleDescr descr) throws UnknownDescriptionException {
-        RuleDescrVisitor visitor = new RuleDescrVisitor( data,
-                                                         rulePackage );
-        visitor.visitRuleDescr( descr );
+        RuleDescrVisitor visitor = new RuleDescrVisitor(data,
+                rulePackage);
+        visitor.visitRuleDescr(descr);
     }
 
 }

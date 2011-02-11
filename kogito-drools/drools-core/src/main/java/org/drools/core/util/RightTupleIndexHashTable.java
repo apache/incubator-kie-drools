@@ -151,6 +151,73 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         }
         return this.tupleValueFullIterator;
     }
+    
+	public FastIterator fastIterator() {
+		return LinkedList.fastIterator;
+	}  
+	
+	public FastIterator fullFastIterator() {
+		return new FullFastIterator( this.table );
+	}  	
+	
+	public static class FullFastIterator implements FastIterator {
+        private Entry[]           table;
+        private int               row;
+        
+        
+        
+		public FullFastIterator(Entry[] table) {
+			this.table = table;
+			this.row = 0;
+		}
+
+
+
+		public Entry next(Entry object) {
+			RightTuple rightTuple = ( RightTuple ) object;
+			RightTupleList list = null;
+			if ( rightTuple != null ) {
+			    list = rightTuple.getMemory(); // assumes you do not pass in a null RightTuple
+			}
+			
+			int length = table.length;
+			
+            while ( this.row < length ) {                
+                // check if there is a current bucket
+                while ( list == null ) {
+                    // iterate while there is no current bucket, trying each array position
+                    list = (RightTupleList) this.table[this.row];
+                    this.row++;
+                    
+                    if ( list != null ) {
+                        // we have a bucket so assign the frist LeftTuple and return
+                        rightTuple = (RightTuple) list.getFirst( (RightTuple) null );
+                        return rightTuple;
+                    } else if ( this.row >= length ) {
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;
+                    }
+                    
+                }
+
+                rightTuple = (RightTuple) rightTuple.getNext();
+                if ( rightTuple != null ) {
+                    // we have a next tuple so return
+                    return rightTuple;
+                } else {
+                    list = (RightTupleList) list.getNext();
+                    // try the next bucket if we have a shared array position
+                    if ( list != null ) {
+                        // if we have another bucket, assign the first RightTuple and return
+                        rightTuple = (RightTuple) list.getFirst( (RightTuple) null );
+                        return rightTuple;
+                    }
+                }
+            }
+            return null;
+		}
+		
+	}
 
     public static class FieldIndexHashTableFullIterator
         implements
@@ -334,6 +401,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                                    this.table.length );
         
         RightTupleList entry = (RightTupleList) this.table[index];
+        
 
         while ( entry != null ) {
             if ( entry.matches( tuple,
@@ -417,4 +485,5 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 
         return builder.toString();
     }
+
 }

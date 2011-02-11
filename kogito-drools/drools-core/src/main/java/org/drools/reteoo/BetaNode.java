@@ -23,19 +23,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.DoubleBetaConstraints;
+import org.drools.common.DoubleNonIndexSkipBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.QuadroupleBetaConstraints;
+import org.drools.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.common.SingleBetaConstraints;
+import org.drools.common.SingleNonIndexSkipBetaConstraints;
+import org.drools.common.TripleBetaConstraints;
+import org.drools.common.TripleNonIndexSkipBetaConstraints;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
+import org.drools.rule.UnificationRestriction;
+import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -81,6 +94,9 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         objectMemory               = true; // hard coded to true
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
+    
+    
+    private boolean indexedUnificationJoin;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -115,6 +131,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( this.constraints == null ) {
             throw new RuntimeException( "cannot have null constraints, must at least be an instance of EmptyBetaConstraints" );
         }
+        setUnificationJoin();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -130,11 +147,19 @@ public abstract class BetaNode extends LeftTupleSource
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
-
+        setUnificationJoin();
         super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        LinkedList list = this.constraints.getConstraints();
+        if ( !list.isEmpty() ) {
+            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject(); 
+            if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
+                this.constraints = this.constraints.getOriginalConstraint();
+            }
+        }
+        
         out.writeObject( constraints );
         out.writeObject( behavior );
         out.writeObject( leftInput );
@@ -149,6 +174,49 @@ public abstract class BetaNode extends LeftTupleSource
 
         super.writeExternal( out );
     }
+    
+    
+    public void setUnificationJoin() {
+        // If this join uses a indexed, ==, constraint on a query parameter then set indexedUnificationJoin to true
+        // This ensure we get the correct iterator
+        LinkedList list = this.constraints.getConstraints();
+        if ( !list.isEmpty() ) {
+            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject(); 
+            if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
+                if ( this.constraints instanceof SingleBetaConstraints ) {
+                    this.constraints = new SingleNonIndexSkipBetaConstraints( ( SingleBetaConstraints ) this.constraints );   
+                }else if ( this.constraints instanceof DoubleBetaConstraints ) {
+                    this.constraints = new DoubleNonIndexSkipBetaConstraints( ( DoubleBetaConstraints ) this.constraints );
+                } else if ( this.constraints instanceof TripleBetaConstraints ) {
+                    this.constraints = new TripleNonIndexSkipBetaConstraints( ( TripleBetaConstraints ) this.constraints );
+                } else if ( this.constraints instanceof QuadroupleBetaConstraints ) {
+                    this.constraints = new QuadroupleNonIndexSkipBetaConstraints( ( QuadroupleBetaConstraints ) this.constraints );
+                }
+                
+                this.indexedUnificationJoin = true;
+            }
+        }
+    }
+    
+    public FastIterator getRightIterator(RightTupleMemory memory) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory.fastIterator();
+        } else {
+            return memory.fullFastIterator();
+        }
+    }
+    
+    public RightTuple getFirstRightTuple(final LeftTuple leftTuple, 
+                                         final RightTupleMemory memory,
+                                         final PropagationContext context,
+                                         final FastIterator it) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory.getFirst( leftTuple,
+                                    (InternalFactHandle) context.getFactHandle() );
+        } else {
+            return (RightTuple) it.next( null );
+        }        
+    }     
 
     public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();

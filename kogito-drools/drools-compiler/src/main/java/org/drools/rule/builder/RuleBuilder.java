@@ -25,6 +25,8 @@ import java.util.Map.Entry;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
 import org.drools.base.SalienceInteger;
+import org.drools.compiler.DroolsError;
+import org.drools.compiler.RuleBuildError;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.DroolsSoftKeywords;
@@ -317,7 +319,9 @@ public class RuleBuilder {
                 delay = TimeUtils.parseTimeString( times[0] );                
                 period = TimeUtils.parseTimeString( times[1] );
             } else {
-                context.getErrors().add( "Incorrect number of arguments for interval timer '" + timerString + "'");
+            	DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+            			"Incorrect number of arguments for interval timer '" + timerString + "'" );
+            	context.getErrors().add( err );
                 return;
             }
             timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);

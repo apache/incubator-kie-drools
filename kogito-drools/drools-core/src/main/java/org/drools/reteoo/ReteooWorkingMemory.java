@@ -143,16 +143,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         //        super.read( context );        
     }
 
-    //    public void write(WMSerialisationOutContext context) throws IOException, ClassNotFoundException {
-    //        this.handleFactory.write( context );
-    //        
-    ////        context.writeInt( this.initialFactHandle.getId() );
-    ////        context.writeLong( this.initialFactHandle.getRecency() );        
-    //        
-    //        OutputPersister.writeFactHandles( context );
-    //        super.write( context );
-    //    }
-
     public QueryResults getQueryResults(final String query) {
         return getQueryResults( query,
                                 null );

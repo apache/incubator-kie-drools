@@ -24,10 +24,6 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ide-common</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.collections</groupId>
       <artifactId>google-collections</artifactId>
     </dependency>

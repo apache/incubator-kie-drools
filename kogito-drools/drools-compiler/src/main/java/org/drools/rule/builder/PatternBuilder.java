@@ -168,16 +168,11 @@ public class PatternBuilder
         }
 
         Pattern pattern;
-        if ( patternDescr.getIdentifier() != null && !patternDescr.getIdentifier().equals( "" ) ) {
-
-            if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                                patternDescr.getIdentifier() ) ) {
-                // This declaration already  exists, so throw an Exception
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              patternDescr,
-                                                              null,
-                                                              "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
-            }
+        
+        boolean duplicateBindings = context.getDeclarationResolver().isDuplicated( context.getRule(),
+                                                                                   patternDescr.getIdentifier() );
+                                                       
+        if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) && !duplicateBindings  ) {
 
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
@@ -188,13 +183,23 @@ public class PatternBuilder
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
                                                                                   (PatternExtractor) pattern.getDeclaration().getExtractor() );
-            }
+            }                      
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
                                    null );
         }
+        
+        if ( duplicateBindings ) {
+            // rewrite existing bindings into == constraints, so it unifies
+            FieldConstraintDescr varDescr = new FieldConstraintDescr( "this" );  
+            varDescr.addRestriction( new VariableRestrictionDescr("==",  patternDescr.getIdentifier() ) );                
+            build( context,
+                   pattern,
+                   (FieldConstraintDescr) varDescr,
+                   null );                        
+        }          
 
         if ( objectType instanceof ClassObjectType ) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
@@ -259,7 +264,8 @@ public class PatternBuilder
         if ( constraint instanceof FieldBindingDescr ) {
             build( context,
                    pattern,
-                   (FieldBindingDescr) constraint );
+                   (FieldBindingDescr) constraint,
+                   container );
         } else if ( constraint instanceof FieldConstraintDescr ) {
             build( context,
                    pattern,
@@ -568,15 +574,18 @@ public class PatternBuilder
 
     private void build(final RuleBuildContext context,
                        final Pattern pattern,
-                       final FieldBindingDescr fieldBindingDescr) {
+                       final FieldBindingDescr fieldBindingDescr,
+                       final AbstractCompositeConstraint container) {
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getIdentifier() ) ) {
-            // This declaration already  exists, so throw an Exception
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          fieldBindingDescr,
-                                                          null,
-                                                          "Duplicate declaration for variable '" + fieldBindingDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );
+            // rewrite existing bindings into == constraints, so it unifies
+            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getFieldName() );  
+            descr.addRestriction( new VariableRestrictionDescr("==", fieldBindingDescr.getIdentifier() ) );
+            build( context,
+                   pattern,
+                   (FieldConstraintDescr) descr,
+                   container );                        
             return;
         }
 
@@ -817,11 +826,10 @@ public class PatternBuilder
                                                            declaration,
                                                            evaluator );
 
-        // TODO: FIXME: Implement proper support for Unifications
-//        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) )  {
-//            // declaration is query argument, so allow for unification.
-//            restriction = new UnificationRestriction( ( VariableRestriction ) restriction );
-//        }
+        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) )  {
+            // declaration is query argument, so allow for unification.
+            restriction = new UnificationRestriction( ( VariableRestriction ) restriction );
+        }
 
         return restriction;
     }
