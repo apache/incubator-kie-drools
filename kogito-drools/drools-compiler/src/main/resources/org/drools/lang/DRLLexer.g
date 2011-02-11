@@ -12,7 +12,7 @@ options {
  
 @members {
 	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null, null);
+	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
 
 	/** The standard method called to automatically emit a token at the
 	 *  outermost lexical rule.  The token object should point into the

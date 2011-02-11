@@ -43,8 +43,10 @@ public class DroolsParserExceptionFactory {
     public final static String                        PARSER_LOCATION_MESSAGE_PART            = " in %1$s";
     public final static String                        UNEXPECTED_EXCEPTION                    = "Line %1$d:%2$d unexpected exception at input '%3$s'. Exception: %4$s. Stack trace:\n %5$s";
 
-    private String[]                                  tokenNames                              = null;
     private Stack<Map<DroolsParaphraseTypes, String>> paraphrases                             = null;
+    
+    // TODO: need to deal with this array
+    private String[]                                  tokenNames                              = null;
 
     /**
      * DroolsParserErrorMessages constructor.
@@ -54,9 +56,7 @@ public class DroolsParserExceptionFactory {
      * @param paraphrases
      *            paraphrases parser structure
      */
-    public DroolsParserExceptionFactory(String[] tokenNames,
-                                        Stack<Map<DroolsParaphraseTypes, String>> paraphrases) {
-        this.tokenNames = tokenNames;
+    public DroolsParserExceptionFactory(Stack<Map<DroolsParaphraseTypes, String>> paraphrases) {
         this.paraphrases = paraphrases;
     }
 

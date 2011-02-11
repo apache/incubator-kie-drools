@@ -53,39 +53,9 @@ public class ErrorsParserTest {
     }
 
     @Test
-    public void testPartialAST() throws Exception {
-        parseResource( "pattern_partial.drl" );
-
-        Tree object = (Tree) this.parser.compilation_unit().getTree();
-
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
-
-        assertTrue( this.parser.hasErrors() );
-
-        // FIXME check for generated Tree
-        // final PackageDescr pkg = this.parser.getPackageDescr();
-        // assertEquals( 1,
-        // pkg.getRules().size() );
-        // final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        //
-        // assertEquals( 1,
-        // rule.getLhs().getDescrs().size() );
-        // final PatternDescr pattern = (PatternDescr)
-        // rule.getLhs().getDescrs().get( 0 );
-        //
-        // assertNotNull( pattern );
-        // assertEquals( "Bar",
-        // pattern.getObjectType() );
-        // assertEquals( "foo3",
-        // pattern.getIdentifier() );
-    }
-
-    @Test
     public void testNotBindindShouldBarf() throws Exception {
         final DRLParser parser = parseResource( "not_with_binding_error.drl" );
-        parser.compilation_unit();
+        parser.compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -102,7 +72,7 @@ public class ErrorsParserTest {
 
         final DRLParser parser = parse( name,
                                         expanded );
-        parser.compilation_unit();
+        parser.compilationUnit();
         assertTrue( parser.hasErrors() );
 //        for ( String message : this.parser.getErrorMessages() ) {
 //            System.out.println( message );
@@ -117,7 +87,7 @@ public class ErrorsParserTest {
 
     @Test
     public void testInvalidSyntax_Catches() throws Exception {
-        parseResource( "invalid_syntax.drl" ).compilation_unit();
+        parseResource( "invalid_syntax.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -126,7 +96,7 @@ public class ErrorsParserTest {
 
     @Test
     public void testMultipleErrors() throws Exception {
-        parseResource( "multiple_errors.drl" ).compilation_unit();
+        parseResource( "multiple_errors.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -138,7 +108,7 @@ public class ErrorsParserTest {
     @Test
     public void testPackageGarbage() throws Exception {
 
-        parseResource( "package_garbage.drl" ).compilation_unit();
+        parseResource( "package_garbage.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -147,7 +117,7 @@ public class ErrorsParserTest {
 
     @Test
     public void testEvalWithSemicolon() throws Exception {
-        parseResource( "eval_with_semicolon.drl" ).compilation_unit();
+        parseResource( "eval_with_semicolon.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -160,7 +130,7 @@ public class ErrorsParserTest {
 
     @Test
     public void testLexicalError() throws Exception {
-        parseResource( "lex_error.drl" ).compilation_unit();
+        parseResource( "lex_error.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -169,17 +139,7 @@ public class ErrorsParserTest {
 
     @Test
     public void testTempleteError() throws Exception {
-        parseResource( "template_test_error.drl" ).compilation_unit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
-        assertTrue( parser.hasErrors() );
-    }
-
-    @Test
-    public void testRuleParseLhs2() throws Exception {
-        final String text = "Message( Message.HELLO )\n";
-        parse( text ).lhs_pattern();
+        parseResource( "template_test_error.drl" ).compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -189,7 +149,7 @@ public class ErrorsParserTest {
     @Test
     public void testErrorMessageForMisplacedParenthesis() throws Exception {
         final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
-        parser.compilation_unit();
+        parser.compilationUnit();
 
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
@@ -209,7 +169,7 @@ public class ErrorsParserTest {
     @Test
     public void testNPEOnParser() throws Exception {
         final DRLParser parser = parseResource( "npe_on_parser.drl" );
-        parser.compilation_unit();
+        parser.compilationUnit();
         for ( String message : this.parser.getErrorMessages() ) {
             System.out.println( message );
         }
@@ -226,7 +186,7 @@ public class ErrorsParserTest {
     public void testCommaMisuse() throws Exception {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
-            parser.compilation_unit();
+            parser.compilationUnit();
 //            System.out.println( this.getName() );
 //            for ( String message : this.parser.getErrorMessages() ) {
 //                System.out.println( message );
@@ -292,7 +252,6 @@ public class ErrorsParserTest {
 
     private DRLParser newParser(final TokenStream tokenStream) {
         final DRLParser p = new DRLParser( tokenStream );
-        p.setTreeAdaptor( new DroolsTreeAdaptor() );
         return p;
     }
 }

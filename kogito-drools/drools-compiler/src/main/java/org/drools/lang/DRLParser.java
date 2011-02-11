@@ -41,19 +41,18 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 
-public class DRLXParser {
+public class DRLParser {
 
     private TokenStream           input;
     private RecognizerSharedState state;
-    private ParserXHelper         helper;
+    private ParserHelper         helper;
     private DRLExpressions        exprParser;
 
-    public DRLXParser(TokenStream input) {
+    public DRLParser(TokenStream input) {
         this.input = input;
         this.state = new RecognizerSharedState();
-        this.helper = new ParserXHelper( DRLXTokens.tokenNames,
-                                         input,
-                                         state );
+        this.helper = new ParserHelper( input,
+                                        state );
         this.exprParser = new DRLExpressions( input,
                                               state,
                                               helper );
@@ -62,11 +61,7 @@ public class DRLXParser {
     /* ------------------------------------------------------------------------------------------------
      *                         GENERAL INTERFACING METHODS
      * ------------------------------------------------------------------------------------------------ */
-    public String[] getTokenNames() {
-        return DRLXTokens.tokenNames;
-    }
-
-    public ParserXHelper getHelper() {
+    public ParserHelper getHelper() {
         return helper;
     }
 

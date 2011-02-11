@@ -1,18 +1,17 @@
 package org.drools.lang;
 
-import java.util.LinkedList;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.LinkedList;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DroolsParserException;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class DRLContextTest {
 
@@ -29,7 +28,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -45,7 +44,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -61,7 +60,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -77,7 +76,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -94,7 +93,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -112,7 +111,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -128,7 +127,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -145,7 +144,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -161,7 +160,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -177,7 +176,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -194,7 +193,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -210,7 +209,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -227,7 +226,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -244,7 +243,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -261,7 +260,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -277,7 +276,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -294,7 +293,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -311,7 +310,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -333,7 +332,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -349,7 +348,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -365,7 +364,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -382,7 +381,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -398,7 +397,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -415,7 +414,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -432,7 +431,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -449,7 +448,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -466,7 +465,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -483,7 +482,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -500,7 +499,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -517,7 +516,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -534,7 +533,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -550,7 +549,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -567,7 +566,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -584,7 +583,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -601,7 +600,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -618,7 +617,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -635,7 +634,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -652,7 +651,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -669,7 +668,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -686,7 +685,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -703,7 +702,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -720,7 +719,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -737,7 +736,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -753,7 +752,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -770,7 +769,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -787,7 +786,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -804,7 +803,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -821,7 +820,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -838,7 +837,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -855,7 +854,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -875,7 +874,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -892,7 +891,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -909,7 +908,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -926,7 +925,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -943,7 +942,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -964,7 +963,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -980,7 +979,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -996,7 +995,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1012,7 +1011,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1028,7 +1027,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1044,7 +1043,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1060,7 +1059,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1077,7 +1076,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1094,7 +1093,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1110,7 +1109,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1126,7 +1125,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1142,7 +1141,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1158,7 +1157,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1174,7 +1173,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1191,7 +1190,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1208,7 +1207,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1225,7 +1224,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1241,7 +1240,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1257,7 +1256,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1274,7 +1273,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1296,7 +1295,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1312,7 +1311,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1329,7 +1328,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1346,7 +1345,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1363,7 +1362,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1380,7 +1379,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1397,7 +1396,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1414,7 +1413,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1431,7 +1430,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1448,7 +1447,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1465,7 +1464,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1482,7 +1481,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1499,7 +1498,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1516,7 +1515,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1532,7 +1531,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1548,7 +1547,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1565,7 +1564,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1582,7 +1581,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1598,7 +1597,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1615,7 +1614,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1632,7 +1631,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1649,7 +1648,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1666,7 +1665,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1683,7 +1682,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1700,7 +1699,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1717,7 +1716,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1734,7 +1733,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1751,7 +1750,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1767,7 +1766,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1783,7 +1782,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1799,7 +1798,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1816,7 +1815,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1833,7 +1832,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1850,7 +1849,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1867,7 +1866,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1883,7 +1882,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1900,7 +1899,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1917,7 +1916,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1934,7 +1933,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1951,7 +1950,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1968,7 +1967,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -1986,7 +1985,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2003,7 +2002,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2020,7 +2019,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2037,7 +2036,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2054,7 +2053,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2071,7 +2070,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2088,7 +2087,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2105,7 +2104,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2122,7 +2121,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2139,7 +2138,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2156,7 +2155,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2173,7 +2172,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2190,7 +2189,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2207,7 +2206,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2224,7 +2223,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2242,7 +2241,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2259,7 +2258,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2276,7 +2275,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2292,7 +2291,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2308,7 +2307,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2325,7 +2324,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2343,7 +2342,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2361,7 +2360,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2378,7 +2377,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2400,7 +2399,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2418,7 +2417,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2437,7 +2436,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2456,7 +2455,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2477,7 +2476,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2496,7 +2495,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2515,7 +2514,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2536,7 +2535,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2554,7 +2553,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2572,7 +2571,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2590,7 +2589,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2608,7 +2607,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2625,7 +2624,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2643,7 +2642,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2660,7 +2659,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2678,7 +2677,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2696,7 +2695,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2715,7 +2714,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2733,7 +2732,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2750,7 +2749,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2768,7 +2767,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2786,7 +2785,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2802,7 +2801,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2819,7 +2818,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2836,7 +2835,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2853,7 +2852,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2870,7 +2869,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2888,7 +2887,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2906,7 +2905,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2923,7 +2922,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2940,7 +2939,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2957,7 +2956,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2973,7 +2972,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -2989,7 +2988,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3004,7 +3003,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3019,7 +3018,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3040,7 +3039,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3055,7 +3054,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3070,7 +3069,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3085,7 +3084,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3106,7 +3105,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3129,7 +3128,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3144,7 +3143,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3159,7 +3158,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3175,7 +3174,7 @@ public class DRLContextTest {
 		DRLParser parser = getParser(input);
 		parser.enableEditorInterface();
 		try {
-			parser.compilation_unit();
+			parser.compilationUnit();
 		} catch (Exception ex) {
 		}
 
@@ -3214,7 +3213,6 @@ public class DRLContextTest {
 	private DRLParser getParser(final String text) {
 		DRLParser parser = new DRLParser(new CommonTokenStream(new DRLLexer(
 				new ANTLRStringStream(text))));
-		parser.setTreeAdaptor(new DroolsTreeAdaptor());
 		return parser;
 	}
 }

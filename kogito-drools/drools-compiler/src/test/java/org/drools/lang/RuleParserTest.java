@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+* Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 
 public class RuleParserTest extends TestCase {
 
-    private DRLXParser parser;
+    private DRLParser parser;
 
     protected void setUp() throws Exception {
         super.setUp();
@@ -4091,7 +4091,7 @@ public class RuleParserTest extends TestCase {
         try {
             createParser( charStream );
             /** Use Reflection to get rule method from parser */
-            Method ruleName = DRLXParser.class.getMethod( testRuleName );
+            Method ruleName = DRLParser.class.getMethod( testRuleName );
 
             /** Invoke grammar rule, and get the return value */
             Object ruleReturn = ruleName.invoke( parser );
@@ -4111,7 +4111,7 @@ public class RuleParserTest extends TestCase {
     private void createParser( CharStream charStream ) {
         DRLLexer lexer = new DRLLexer( charStream );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
-        parser = new DRLXParser( tokens );
+        parser = new DRLParser( tokens );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
