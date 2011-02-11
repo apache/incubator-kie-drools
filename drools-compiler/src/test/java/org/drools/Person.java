@@ -46,6 +46,16 @@ public class Person
 
     private Cheese            cheese;
 
+    private Address           address;
+    
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     private List<Address>     addresses        = new ArrayList<Address>();
 
     //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

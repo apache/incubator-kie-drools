@@ -190,25 +190,13 @@
           -->
         </configuration>
       </plugin>
-    </plugins>
-  </build>
-  <reporting>
-    <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <aggregate>false</aggregate>
-          <links>
-            <link>http://download.oracle.com/javase/1.5.0/docs/api</link>
-          </links>
-          <minmemory>128m</minmemory>
-          <maxmemory>512m</maxmemory>
-          <author>false</author>
-          <breakiterator>true</breakiterator>
           <excludePackageNames>org.drools.asm*,org.drools.objenesis.*,org.drools.commons.jci.*</excludePackageNames>
         </configuration>
       </plugin>
     </plugins>
-  </reporting>
+  </build>
 </project>

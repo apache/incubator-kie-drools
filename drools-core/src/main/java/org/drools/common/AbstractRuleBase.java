@@ -579,6 +579,7 @@ abstract public class AbstractRuleBase
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
 
+        String lastIdent = null;
         String lastType = null;
         try {
             // merge globals
@@ -588,6 +589,7 @@ abstract public class AbstractRuleBase
                 for ( final Map.Entry<String, String> entry : newPkg.getGlobals().entrySet() ) {
                     final String identifier = entry.getKey();
                     final String type = entry.getValue();
+                    lastIdent = identifier;
                     lastType = type;
                     if ( globals.containsKey( identifier ) && !globals.get( identifier ).equals( type ) ) {
                         throw new PackageIntegrationException( pkg );
@@ -601,7 +603,8 @@ abstract public class AbstractRuleBase
                 }
             }
         } catch ( ClassNotFoundException e ) {
-            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "'" );
+            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType +
+            		"' for global '" + lastIdent + "'" );
         }
 
         // merge the type declarations

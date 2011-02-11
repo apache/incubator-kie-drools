@@ -30,6 +30,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.ArrayUtils;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
@@ -158,8 +159,9 @@ public class AccumulateNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
+        FastIterator rightIt = memory.betaMemory.getRightTupleMemory().fastIterator();
         for ( RightTuple rightTuple = memory.betaMemory.getRightTupleMemory().getFirst( leftTuple,
-                                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple) ) {
             InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
@@ -255,7 +257,9 @@ public class AccumulateNode extends BetaNode {
                                                workingMemory,
                                                factHandle );
 
-        for ( LeftTuple leftTuple = memory.betaMemory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+        FastIterator it = memory.betaMemory.getLeftTupleMemory().fastIterator();
+        
+        for ( LeftTuple leftTuple = memory.betaMemory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         leftTuple ) ) {
                 final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
@@ -346,12 +350,14 @@ public class AccumulateNode extends BetaNode {
             childLeftTuple = null; // null so the next check will attempt matches for new bucket
         }
 
+    	FastIterator rightIt = rightMemory.fastIterator();
+    	
         // we can't do anything if RightTupleMemory is empty
         if ( rightTuple != null ) {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
                     if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                                handle ) ) {
@@ -369,7 +375,7 @@ public class AccumulateNode extends BetaNode {
             } else {
                 boolean isDirty = false;
                 // in the same bucket, so iterate and compare
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
 
                     if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
@@ -471,13 +477,15 @@ public class AccumulateNode extends BetaNode {
                                                 childLeftTuple );
             childLeftTuple = null; // null so the next check will attempt matches for new bucket
         }
+        
+        FastIterator leftIt = memory.betaMemory.getLeftTupleMemory().fastIterator();
 
         // if LeftTupleMemory is empty, there are no matches to modify
         if ( leftTuple != null ) {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
                         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
@@ -501,7 +509,7 @@ public class AccumulateNode extends BetaNode {
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
                         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );

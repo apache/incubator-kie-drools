@@ -1226,30 +1226,30 @@ public class MiscTest {
 
     }
 
-    public void NullFieldOnCompositeSink() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullFieldOnCompositeSink.drl" ) ) );
-        final Package pkg = builder.getPackage();
+    @Test
+    public void testNullFieldOnCompositeSink() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource(  "test_NullFieldOnCompositeSink.drl", getClass() ), ResourceType.DRL );
 
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
-        workingMemory.insert( new Attribute() );
-        workingMemory.insert( new Message() );
-        workingMemory = SerializationHelper.serializeObject( workingMemory );
-        workingMemory.fireAllRules();
+        ksession.insert( new Attribute() );
+        ksession.insert( new Message() );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
 
         assertEquals( 1,
-                      ((List) workingMemory.getGlobal( "list" )).size() );
+                      ((List) ksession.getGlobal( "list" )).size() );
         assertEquals( "X",
-                      ((List) workingMemory.getGlobal( "list" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list" )).get( 0 ) );
 
     }
 
@@ -2273,23 +2273,22 @@ public class MiscTest {
 
     @Test
     public void testBasicFrom() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_From.drl" ) ) );
-        final Package pkg = builder.getPackage();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_From.drl", getClass() ), ResourceType.DRL );
 
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase = SerializationHelper.serializeObject( kbase );
 
-        WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final List list1 = new ArrayList();
-        workingMemory.setGlobal( "list1",
+        ksession.setGlobal( "list1",
                                  list1 );
         final List list2 = new ArrayList();
-        workingMemory.setGlobal( "list2",
+        ksession.setGlobal( "list2",
                                  list2 );
         final List list3 = new ArrayList();
-        workingMemory.setGlobal( "list3",
+        ksession.setGlobal( "list3",
                                  list3 );
 
         final Cheesery cheesery = new Cheesery();
@@ -2299,40 +2298,39 @@ public class MiscTest {
                                            15 );
         cheesery.addCheese( stilton );
         cheesery.addCheese( cheddar );
-        workingMemory.setGlobal( "cheesery",
+        ksession.setGlobal( "cheesery",
                                  cheesery );
-        workingMemory.insert( cheesery );
+        ksession.insert( cheesery );
 
         Person p = new Person( "stilton" );
-        workingMemory.insert( p );
+        ksession.insert( p );
 
-        // TODO - can not serializing rule with basic from: java.io.EOFException.
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
-        workingMemory.fireAllRules();
-        //        workingMemory    = SerializationHelper.serializeObject(workingMemory);
-        workingMemory.fireAllRules();
+        ksession    = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
+        ksession    = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
+        ksession.fireAllRules();
 
         // from using a global
         assertEquals( 2,
-                      ((List) workingMemory.getGlobal( "list1" )).size() );
+                      ((List) ksession.getGlobal( "list1" )).size() );
         assertEquals( cheddar,
-                      ((List) workingMemory.getGlobal( "list1" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list1" )).get( 0 ) );
         assertEquals( stilton,
-                      ((List) workingMemory.getGlobal( "list1" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list1" )).get( 1 ) );
 
         // from using a declaration
         assertEquals( 2,
-                      ((List) workingMemory.getGlobal( "list2" )).size() );
+                      ((List) ksession.getGlobal( "list2" )).size() );
         assertEquals( cheddar,
-                      ((List) workingMemory.getGlobal( "list2" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list2" )).get( 0 ) );
         assertEquals( stilton,
-                      ((List) workingMemory.getGlobal( "list2" )).get( 1 ) );
+                      ((List) ksession.getGlobal( "list2" )).get( 1 ) );
 
         // from using a declaration
         assertEquals( 1,
-                      ((List) workingMemory.getGlobal( "list3" )).size() );
+                      ((List) ksession.getGlobal( "list3" )).size() );
         assertEquals( stilton,
-                      ((List) workingMemory.getGlobal( "list3" )).get( 0 ) );
+                      ((List) ksession.getGlobal( "list3" )).get( 0 ) );
     }
 
     @Test
@@ -3508,7 +3506,7 @@ public class MiscTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testDeclareAndFrom() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_DeclareWithFrom.drl" );
         FactType profileType = kbase.getFactType( "org.drools", "Profile" );
@@ -3611,7 +3609,7 @@ public class MiscTest {
                       result.size() );
     }
 
-    @Test
+    @Test @Ignore // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateVariableBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
@@ -3659,7 +3657,7 @@ public class MiscTest {
                       ((Integer) result.get( "test3" + brie.getType() )).intValue() );
     }
 
-    @Test
+    @Test @Ignore // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateVariableBindingError() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
@@ -7245,10 +7243,7 @@ public class MiscTest {
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
-            }
-            throw new IllegalArgumentException( "Could not parse knowledge." );
+            fail(errors.toString() );
         }
         assertFalse( kbuilder.hasErrors() );
 
@@ -7257,7 +7252,6 @@ public class MiscTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.insert( new Person( "Toni" ) );
-        // XXX: Fails here, this worked in revision 30833
         ksession.insert( new Pet( "Toni" ) );
     }
 
@@ -7374,7 +7368,7 @@ public class MiscTest {
     }
 
     // following test depends on MVEL: http://jira.codehaus.org/browse/MVEL-212
-    @Test @Ignore
+    @Test
     public void testMVELConsequenceUsingFactConstructors() throws Exception {
         String drl = "";
         drl += "package test\n";
@@ -7393,11 +7387,7 @@ public class MiscTest {
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
-            }
-        }
+
         assertTrue( kbuilder.hasErrors() );
     }
 
