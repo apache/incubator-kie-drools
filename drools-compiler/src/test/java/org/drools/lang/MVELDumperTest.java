@@ -112,7 +112,6 @@ public class MVELDumperTest {
 			DRLLexer lexer = new DRLLexer(charStream);
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			DRLParser parser = new DRLParser(tokens);
-			parser.setTreeAdaptor(new DroolsTreeAdaptor());
 			/** Use Reflection to get rule method from parser */
 			Method ruleName = Class.forName("org.drools.lang.DRLParser")
 					.getMethod(testRuleName);
@@ -120,25 +119,6 @@ public class MVELDumperTest {
 			/** Invoke grammar rule, and get the return value */
 			Object ruleReturn = ruleName.invoke(parser);
 			
-			if (!parser.hasErrors()){
-				Class _return = Class.forName("org.drools.lang.DRLParser" + "$"
-						+ testRuleName + "_return");
-				Method returnName = _return.getMethod("getTree");
-				DroolsTree tree = (DroolsTree) returnName.invoke(ruleReturn);
-
-				// Walk resulting tree; create tree nodes stream first
-				CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
-				// AST nodes have payload that point into token stream
-				nodes.setTokenStream(tokens);
-				// Create a tree walker attached to the nodes stream
-				DescrBuilderTree walker = new DescrBuilderTree(nodes);
-				/** Invoke the tree rule, and store the return value if there is */
-				Method treeRuleName = Class.forName(
-						"org.drools.lang.DescrBuilderTree").getMethod(
-						testTreeRuleName);
-				treeRuleReturn = treeRuleName.invoke(walker);				
-			}
-
 			if (treeRuleReturn != null) {
 				/** If return object is instanceof AST, get the toStringTree */
 				if (treeRuleReturn.toString().indexOf(

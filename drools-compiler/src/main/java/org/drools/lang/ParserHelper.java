@@ -1,8 +1,5 @@
 package org.drools.lang;
 
-import static org.drools.lang.DRLParser.COLON;
-import static org.drools.lang.DRLParser.ID;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -39,7 +36,7 @@ import org.drools.lang.descr.AttributeDescr;
  * This is a class to hold all the helper functions/methods used
  * by the DRL parser
  */
-public class ParserXHelper {
+public class ParserHelper {
     public final String[]                             statementKeywords        = new String[]{
                                                                                DroolsSoftKeywords.PACKAGE,
                                                                                DroolsSoftKeywords.IMPORT,
@@ -63,11 +60,9 @@ public class ParserXHelper {
 
     public Stack<DescrBuilder< ? >>                   builderContext           = null;
 
-    public ParserXHelper(String[] tokenNames,
-                         TokenStream input,
-                         RecognizerSharedState state) {
-        this.errorMessageFactory = new DroolsParserExceptionFactory( tokenNames,
-                                                                     paraphrases );
+    public ParserHelper(TokenStream input,
+                        RecognizerSharedState state) {
+        this.errorMessageFactory = new DroolsParserExceptionFactory( paraphrases );
         this.input = input;
         this.state = state;
         this.builderContext = new Stack<DescrBuilder< ? >>();
@@ -298,7 +293,7 @@ public class ParserXHelper {
     }
 
     public boolean validateNotWithBinding() {
-        if ( input.LA( 1 ) == ID && input.LA( 2 ) == ID && input.LA( 3 ) == COLON ) {
+        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.ID && input.LA( 3 ) == DRLLexer.COLON ) {
             return true;
         }
         return false;
@@ -484,7 +479,7 @@ public class ParserXHelper {
 
     private boolean memberOfFollowSet( BitSet follow ) {
         boolean isMember = follow.member( input.LA( 1 ) );
-        if ( input.LA( 1 ) == DRLParser.ID ) {
+        if ( input.LA( 1 ) == DRLLexer.ID ) {
             String token = input.LT( 1 ).getText();
             isMember = (DroolsSoftKeywords.IMPORT.equals( token ) ||
                          DroolsSoftKeywords.GLOBAL.equals( token ) ||

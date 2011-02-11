@@ -28,7 +28,7 @@ import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.lang.DRLLexer;
-import org.drools.lang.DRLXParser;
+import org.drools.lang.DRLParser;
 import org.drools.lang.DroolsSentence;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
@@ -60,14 +60,14 @@ public class DrlParser {
 
     public PackageDescr parse(final boolean isEditor,
                               final String text) throws DroolsParserException {
-        final DRLXParser parser = getParser( text );
+        final DRLParser parser = getParser( text );
         return compile( isEditor,
                         parser );
     }
 
     public PackageDescr parse(final boolean isEditor,
                               final Reader reader) throws DroolsParserException {
-        final DRLXParser parser = getParser( reader );
+        final DRLParser parser = getParser( reader );
         return compile( isEditor,
                         parser );
     }
@@ -132,7 +132,7 @@ public class DrlParser {
 
     public PackageDescr parse(final boolean isEditor,
                               final InputStream is) throws DroolsParserException {
-        final DRLXParser parser = getParser( is );
+        final DRLParser parser = getParser( is );
         return compile( isEditor,
                         parser );
     }
@@ -216,7 +216,7 @@ public class DrlParser {
     }
 
     private PackageDescr compile(boolean isEditor,
-                                  final DRLXParser parser ) throws DroolsParserException {
+                                  final DRLParser parser ) throws DroolsParserException {
         PackageDescr pkgDescr = null;
         try {
             if ( isEditor ) {
@@ -245,7 +245,7 @@ public class DrlParser {
     }
 
     /** Convert the antlr exceptions to drools parser exceptions */
-    private void makeErrorList( final DRLXParser parser ) {
+    private void makeErrorList( final DRLParser parser ) {
         for ( final DroolsParserException recogErr : lexer.getErrors() ) {
             final ParserError err = new ParserError( recogErr.getMessage(),
                                                      recogErr.getLineNumber(),
@@ -264,16 +264,16 @@ public class DrlParser {
      * @return An instance of a RuleParser should you need one (most folks will
      *         not).
      */
-    private DRLXParser getParser( final String text ) {
+    private DRLParser getParser( final String text ) {
         lexer = new DRLLexer( new ANTLRStringStream( text ) );
-        DRLXParser parser = new DRLXParser( new CommonTokenStream( lexer ) );
+        DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
         return parser;
     }
 
-    private DRLXParser getParser( final Reader reader ) {
+    private DRLParser getParser( final Reader reader ) {
         try {
             lexer = new DRLLexer( new ANTLRReaderStream( reader ) );
-            DRLXParser parser = new DRLXParser( new CommonTokenStream( lexer ) );
+            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
             return parser;
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",
@@ -281,10 +281,10 @@ public class DrlParser {
         }
     }
 
-    private DRLXParser getParser( final InputStream is ) {
+    private DRLParser getParser( final InputStream is ) {
         try {
             lexer = new DRLLexer( new ANTLRInputStream( is ) );
-            DRLXParser parser = new DRLXParser( new CommonTokenStream( lexer ) );
+            DRLParser parser = new DRLParser( new CommonTokenStream( lexer ) );
             return parser;
         } catch ( final Exception e ) {
             throw new RuntimeException( "Unable to parser Reader",

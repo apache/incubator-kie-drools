@@ -101,19 +101,17 @@ public class DRLExpressions extends Parser {
     public String getGrammarFileName() { return "/home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g"; }
 
 
-        private ParserXHelper helper /*= new ParserXHelper( tokenNames,
-                                             input,
-                                             state )*/;
+        private ParserHelper helper;
                                                         
         public DRLExpressions(TokenStream input,
                               RecognizerSharedState state,
-                              ParserXHelper helper ) {
+                              ParserHelper helper ) {
             this( input,
                   state );
             this.helper = helper;
         }
 
-        public ParserXHelper getHelper()                          { return helper; }
+        public ParserHelper getHelper()                           { return helper; }
         public boolean hasErrors()                                { return helper.hasErrors(); }
         public List<DroolsParserException> getErrors()            { return helper.getErrors(); }
         public List<String> getErrorMessages()                    { return helper.getErrorMessages(); }

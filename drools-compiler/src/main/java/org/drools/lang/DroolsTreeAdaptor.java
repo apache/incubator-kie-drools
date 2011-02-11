@@ -30,91 +30,38 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
             tree.setStartCharOffset( ((CommonToken) token).getStartIndex() );
             tree.setEndCharOffset( ((CommonToken) token).getStopIndex() );
 
-            if ( token.getType() == DRL5xLexer.VK_END
-                    || token.getType() == DRL5xLexer.VK_EVAL
-                    || token.getType() == DRL5xLexer.THEN
-                    || token.getType() == DRL5xLexer.WHEN
-                    || token.getType() == DRL5xLexer.ACCUMULATE
-                    || token.getType() == DRL5xLexer.VK_ACTION
-                    || token.getType() == DRL5xLexer.VK_ACTIVATION_GROUP
-                    || token.getType() == DRL5xLexer.VK_AGENDA_GROUP
-                    || token.getType() == DRL5xLexer.VK_AND
-                    || token.getType() == DRL5xLexer.VK_ATTRIBUTES
-                    || token.getType() == DRL5xLexer.VK_AUTO_FOCUS
-                    || token.getType() == DRL5xLexer.COLLECT
-                    || token.getType() == DRL5xLexer.VK_DATE_EFFECTIVE
-                    || token.getType() == DRL5xLexer.VK_DATE_EXPIRES
-                    || token.getType() == DRL5xLexer.VK_DECLARE
-                    || token.getType() == DRL5xLexer.VK_DIALECT
-                    || token.getType() == DRL5xLexer.VK_TIMER
-                    || token.getType() == DRL5xLexer.VK_ENABLED
-                    || token.getType() == DRL5xLexer.VK_ENTRY_POINT
-                    || token.getType() == DRL5xLexer.VK_EXISTS
-                    || token.getType() == DRL5xLexer.VK_FORALL
-                    || token.getType() == DRL5xLexer.FROM
-                    || token.getType() == DRL5xLexer.VK_FUNCTION
-                    || token.getType() == DRL5xLexer.VK_GLOBAL
-                    || token.getType() == DRL5xLexer.VK_IMPORT
-                    || token.getType() == DRL5xLexer.VK_IN
-                    || token.getType() == DRL5xLexer.VK_INIT
-                    || token.getType() == DRL5xLexer.VK_LOCK_ON_ACTIVE
-                    || token.getType() == DRL5xLexer.VK_NO_LOOP
-                    || token.getType() == DRL5xLexer.VK_NOT
-                    || token.getType() == DRL5xLexer.VK_OR
-                    || token.getType() == DRL5xLexer.VK_PACKAGE
-                    || token.getType() == DRL5xLexer.VK_QUERY
-                    || token.getType() == DRL5xLexer.VK_RESULT
-                    || token.getType() == DRL5xLexer.VK_REVERSE
-                    || token.getType() == DRL5xLexer.VK_RULE
-                    || token.getType() == DRL5xLexer.VK_RULEFLOW_GROUP
-                    || token.getType() == DRL5xLexer.VK_SALIENCE ) {
-                tree.setEditorElementType( DroolsEditorType.KEYWORD );
-            } else if ( token.getType() == DRL5xLexer.FLOAT
-                        || token.getType() == DRL5xLexer.INT ) {
+            if ( token.getType() == DRLLexer.FLOAT
+                        || token.getType() == DRLLexer.DECIMAL ) {
                 tree.setEditorElementType( DroolsEditorType.NUMERIC_CONST );
-            } else if ( token.getType() == DRL5xLexer.STRING ) {
+            } else if ( token.getType() == DRLLexer.STRING ) {
                 tree.setEditorElementType( DroolsEditorType.STRING_CONST );
-            } else if ( token.getType() == DRL5xLexer.BOOL ) {
+            } else if ( token.getType() == DRLLexer.BOOL ) {
                 tree.setEditorElementType( DroolsEditorType.BOOLEAN_CONST );
-            } else if ( token.getType() == DRL5xLexer.NULL ) {
+            } else if ( token.getType() == DRLLexer.NULL ) {
                 tree.setEditorElementType( DroolsEditorType.NULL_CONST );
-            } else if ( token.getType() == DRL5xLexer.VT_SQUARE_CHUNK
-                        || token.getType() == DRL5xLexer.VT_PAREN_CHUNK
-                        || token.getType() == DRL5xLexer.VT_CURLY_CHUNK
-                        || token.getType() == DRL5xLexer.VT_RHS_CHUNK ) {
-                tree.setEditorElementType( DroolsEditorType.CODE_CHUNK );
-            } else if ( token.getType() == DRL5xLexer.MISC
-                        || token.getType() == DRL5xLexer.DOUBLE_PIPE
-                        || token.getType() == DRL5xLexer.DOUBLE_AMPER
-                        || token.getType() == DRL5xLexer.DOT
-                        || token.getType() == DRL5xLexer.COMMA
-                        || token.getType() == DRL5xLexer.RIGHT_CURLY
-                        || token.getType() == DRL5xLexer.LEFT_CURLY
-                        || token.getType() == DRL5xLexer.RIGHT_SQUARE
-                        || token.getType() == DRL5xLexer.LEFT_SQUARE
-                        || token.getType() == DRL5xLexer.RIGHT_PAREN
-                        || token.getType() == DRL5xLexer.LEFT_PAREN
-                        || token.getType() == DRL5xLexer.ARROW
-                        || token.getType() == DRL5xLexer.LESS_EQUAL
-                        || token.getType() == DRL5xLexer.LESS
-                        || token.getType() == DRL5xLexer.GREATER_EQUAL
-                        || token.getType() == DRL5xLexer.GREATER
-                        || token.getType() == DRL5xLexer.NOT_EQUAL
-                        || token.getType() == DRL5xLexer.EQUALS
-                        || token.getType() == DRL5xLexer.COLON
-                        || token.getType() == DRL5xLexer.SEMICOLON ) {
+            } else if ( token.getType() == DRLLexer.MISC
+                        || token.getType() == DRLLexer.DOUBLE_PIPE
+                        || token.getType() == DRLLexer.DOUBLE_AMPER
+                        || token.getType() == DRLLexer.DOT
+                        || token.getType() == DRLLexer.COMMA
+                        || token.getType() == DRLLexer.RIGHT_CURLY
+                        || token.getType() == DRLLexer.LEFT_CURLY
+                        || token.getType() == DRLLexer.RIGHT_SQUARE
+                        || token.getType() == DRLLexer.LEFT_SQUARE
+                        || token.getType() == DRLLexer.RIGHT_PAREN
+                        || token.getType() == DRLLexer.LEFT_PAREN
+                        || token.getType() == DRLLexer.ARROW
+                        || token.getType() == DRLLexer.LESS_EQUALS
+                        || token.getType() == DRLLexer.LESS
+                        || token.getType() == DRLLexer.GREATER_EQUALS
+                        || token.getType() == DRLLexer.GREATER
+                        || token.getType() == DRLLexer.NOT_EQUALS
+                        || token.getType() == DRLLexer.EQUALS
+                        || token.getType() == DRLLexer.COLON
+                        || token.getType() == DRLLexer.SEMICOLON ) {
                 tree.setEditorElementType( DroolsEditorType.SYMBOL );
-            } else if ( token.getType() == DRL5xLexer.ID
-                        || token.getType() == DRL5xLexer.VT_GLOBAL_ID
-                        || token.getType() == DRL5xLexer.VT_FUNCTION_ID
-                        || token.getType() == DRL5xLexer.VT_QUERY_ID
-                        || token.getType() == DRL5xLexer.VT_RULE_ID
-                        || token.getType() == DRL5xLexer.VT_ENTRYPOINT_ID ) {
+            } else if ( token.getType() == DRLLexer.ID ) {
                 tree.setEditorElementType( DroolsEditorType.IDENTIFIER );
-            } else if ( token.getType() == DRL5xLexer.VT_DATA_TYPE ) {
-                tree.setEditorElementType( DroolsEditorType.IDENTIFIER_TYPE );
-            } else if ( token.getType() == DRL5xLexer.VT_PATTERN_TYPE ) {
-                tree.setEditorElementType( DroolsEditorType.IDENTIFIER_PATTERN );
             }
 
         }
@@ -176,7 +123,7 @@ public class DroolsTreeAdaptor extends CommonTreeAdaptor {
                     tParent.setEndCharOffset( tChild.getEndCharOffset() );
                 }
             }
-            if ( DRL5xLexer.RIGHT_PAREN != ((Tree) child).getType() ) {
+            if ( DRLLexer.RIGHT_PAREN != ((Tree) child).getType() ) {
                 ((Tree) t).addChild( (Tree) child );
             }
         }
