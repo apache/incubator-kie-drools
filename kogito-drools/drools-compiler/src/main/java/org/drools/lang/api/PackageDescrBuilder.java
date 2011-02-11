@@ -21,4 +21,6 @@ public interface PackageDescrBuilder
 
     public RuleDescrBuilder newRule();
 
+    public QueryDescrBuilder newQuery();
+
 }

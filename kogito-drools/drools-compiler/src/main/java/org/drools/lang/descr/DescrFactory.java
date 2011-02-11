@@ -335,23 +335,11 @@ public class DescrFactory {
                                                 "" );
 
         if ( null != params && params.size() > 0 ) {
-            ArrayList<String> paramList = new ArrayList<String>( params.size() );
-            ArrayList<String> dataTypeList = new ArrayList<String>( params
-                    .size() );
             for ( Map<BaseDescr, BaseDescr> map : params ) {
                 for ( Entry<BaseDescr, BaseDescr> entry : map.entrySet() ) {
-                    paramList.add( entry.getKey().getText() );
-                    if ( null == entry.getValue() ) {
-                        dataTypeList.add( "Object" );
-                    } else {
-                        dataTypeList.add( entry.getValue().getText() );
-                    }
+                    queryDescr.addParameter( null == entry.getValue() ?  "Object" : entry.getValue().getText(), entry.getKey().getText() );
                 }
             }
-            queryDescr.setParameters( paramList.toArray( new String[paramList
-                    .size()] ) );
-            queryDescr.setParameterTypes( dataTypeList
-                    .toArray( new String[dataTypeList.size()] ) );
         }
 
         queryDescr.setLhs( andDescr );

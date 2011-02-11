@@ -23,7 +23,9 @@ import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
+import org.drools.lang.api.ParameterSupportBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
+import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -240,6 +242,9 @@ public class DRLXParser {
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.RULE ) ) {
                 descr = rule();
+                if ( state.failed ) return descr;
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.QUERY ) ) {
+                descr = query();
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FUNCTION ) ) {
                 descr = function();
@@ -537,7 +542,7 @@ public class DRLXParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * function := FUNCTION type? ID parameters curly_chunk
+     * function := FUNCTION type? ID arguments curly_chunk
      * 
      * @return
      * @throws RecognitionException
@@ -574,7 +579,7 @@ public class DRLXParser {
             if ( state.backtracking == 0 ) function.name( id.getText() );
 
             // arguments
-            arguments( function );
+            parameters( function, false );
             if ( state.failed ) return null;
 
             // body
@@ -602,11 +607,12 @@ public class DRLXParser {
     }
 
     /**
-     * arguments := LEFT_PAREN ( argument ( COMMA argument )* )? RIGHT_PAREN
-     * @param function
+     * parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
+     * @param statement
+     * @param requiresType TODO
      * @throws RecognitionException 
      */
-    private void arguments( FunctionDescrBuilder function ) throws RecognitionException {
+    private void parameters( ParameterSupportBuilder< ? > statement, boolean requiresType ) throws RecognitionException {
         match( input,
                DRLLexer.LEFT_PAREN,
                null,
@@ -615,7 +621,7 @@ public class DRLXParser {
         if ( state.failed ) return;
 
         if ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
-            argument( function );
+            parameter( statement, requiresType );
             if ( state.failed ) return;
 
             while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -626,7 +632,7 @@ public class DRLXParser {
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return;
 
-                argument( function );
+                parameter( statement, requiresType );
                 if ( state.failed ) return;
             }
         }
@@ -640,13 +646,17 @@ public class DRLXParser {
     }
 
     /**
-     * argument := type ID (LEFT_SQUARE RIGHT_SQUARE)*
-     * @param function
+     * parameter := ({requiresType}?=>type)? ID (LEFT_SQUARE RIGHT_SQUARE)*
+     * @param statement
+     * @param requiresType 
      * @throws RecognitionException
      */
-    private void argument( FunctionDescrBuilder function ) throws RecognitionException {
-        String type = type();
-        if ( state.failed ) return;
+    private void parameter( ParameterSupportBuilder< ? > statement, boolean requiresType ) throws RecognitionException {
+        String type = "Object";
+        if( requiresType ) {
+            type = type();
+            if ( state.failed ) return;
+        }
 
         int start = input.index();
         match( input,
@@ -673,9 +683,97 @@ public class DRLXParser {
         }
         int end = input.LT( -1 ).getTokenIndex();
 
-        if ( state.backtracking == 0 ) function.argument( type,
-                                                          input.toString( start,
-                                                                          end ) );
+        if ( state.backtracking == 0 ) statement.parameter( type,
+                                                            input.toString( start,
+                                                                            end ) );
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     *                         QUERY STATEMENT
+     * ------------------------------------------------------------------------------------------------ */
+
+    /**
+     * query := QUERY stringId arguments? annotation* lhs END
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public RuleDescr query() throws RecognitionException {
+        QueryDescrBuilder query = null;
+        try {
+            query = helper.start( QueryDescrBuilder.class,
+                                  null,
+                                  null );
+
+            // 'query'
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.QUERY,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            String name = stringId();
+            if ( state.backtracking == 0 ) query.name( name );
+            if ( state.failed ) return null;
+
+            if ( state.backtracking == 0 ) {
+                helper.emit( Location.LOCATION_RULE_HEADER );
+            }
+
+            if( speculateParameters( true ) || speculateParameters( false ) ) {
+                // parameters
+                parameters( query, false );
+                if ( state.failed ) return null;
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( query );
+                if ( state.failed ) return null;
+            }
+
+            lhsStatement( query != null ? query.lhs() : null );
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.END,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+                match( input,
+                       DRLLexer.SEMICOLON,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( RuleDescrBuilder.class,
+                        null );
+        }
+        return (query != null) ? query.getDescr() : null;
+    }
+
+    private boolean speculateParameters( boolean requiresType ) {
+        state.backtracking++;
+        int start = input.mark();
+        try {
+            parameters( null, requiresType ); // can never throw exception
+        } catch ( RecognitionException re ) {
+            System.err.println( "impossible: " + re );
+            re.printStackTrace();
+        }
+        boolean success = !state.failed;
+        input.rewind( start );
+        state.backtracking--;
+        state.failed = false;
+        return success;
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -703,7 +801,7 @@ public class DRLXParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            String name = ruleId();
+            String name = stringId();
             if ( state.backtracking == 0 ) rule.name( name );
             if ( state.failed ) return null;
 
@@ -716,7 +814,7 @@ public class DRLXParser {
                        DroolsEditorType.KEYWORD );
                 if ( state.failed ) return null;
 
-                String parent = ruleId();
+                String parent = stringId();
                 if ( state.backtracking == 0 ) rule.extendsRule( parent );
                 if ( state.failed ) return null;
             }
@@ -772,7 +870,7 @@ public class DRLXParser {
      * @return
      * @throws RecognitionException
      */
-    private String ruleId() throws RecognitionException {
+    private String stringId() throws RecognitionException {
         if ( input.LA( 1 ) == DRLLexer.ID ) {
             Token id = match( input,
                               DRLLexer.ID,
@@ -1291,7 +1389,7 @@ public class DRLXParser {
      * @param lhs
      * @throws RecognitionException 
      */
-    private void lhsStatement( CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs ) throws RecognitionException {
+    private void lhsStatement( CEDescrBuilder< ? , AndDescr> lhs ) throws RecognitionException {
         while ( !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
                 !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
             helper.start( CEDescrBuilder.class,
@@ -2117,16 +2215,17 @@ public class DRLXParser {
             last = input.LT( 1 );
             if ( last.getTokenIndex() > first ) {
                 chunk = input.toString( first,
-                                        last.getTokenIndex() ); 
-                if( chunk.endsWith( DroolsSoftKeywords.END ) ) { 
-                    chunk = chunk.substring( 0, chunk.length() - DroolsSoftKeywords.END.length() );
+                                        last.getTokenIndex() );
+                if ( chunk.endsWith( DroolsSoftKeywords.END ) ) {
+                    chunk = chunk.substring( 0,
+                                             chunk.length() - DroolsSoftKeywords.END.length() );
                 }
                 // removing the "then" keyword any any subsequent space and line break
                 int index = 4;
-                while( index < chunk.length() && Character.isWhitespace( chunk.charAt( index ) ) ) {
+                while ( index < chunk.length() && Character.isWhitespace( chunk.charAt( index ) ) ) {
                     index++;
-                    if( chunk.charAt( index-1 ) == '\r' || chunk.charAt( index-1 ) == '\n') {
-                        if( index < chunk.length() && chunk.charAt( index-1 ) == '\r' && chunk.charAt( index ) == '\n') {
+                    if ( chunk.charAt( index - 1 ) == '\r' || chunk.charAt( index - 1 ) == '\n' ) {
+                        if ( index < chunk.length() && chunk.charAt( index - 1 ) == '\r' && chunk.charAt( index ) == '\n' ) {
                             index++;
                         }
                         break;

@@ -1250,18 +1250,11 @@ public class RuleParserTest extends TestCase {
                       first.getConstraint().getDescrs().size() );
 
         AndDescr and = (AndDescr) first.getConstraint();
-        FieldConstraintDescr fld = (FieldConstraintDescr) and.getDescrs().get( 0 );
-        LiteralRestrictionDescr constraint = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-        // LiteralDescr constraint = (LiteralDescr) first.getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) and.getDescrs().get( 0 );
+        assertNotNull( fld );
 
-        assertNotNull( constraint );
-
-        assertEquals( "a",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      constraint.getEvaluator() );
-        assertEquals( "3",
-                      constraint.getText() );
+        assertEquals( "a==3",
+                      fld.getExpression() );
 
         // Check second pattern
         final PatternDescr second = (PatternDescr) lhs.getDescrs().get( 1 );
@@ -1270,28 +1263,14 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Bar",
                       second.getObjectType() );
 
-        and = (AndDescr) second.getConstraint();
-        assertEquals( 2,
-                      and.getDescrs().size() );
+        assertEquals( 1,
+                      second.getBindings().size() );
         // check it has field bindings.
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) and.getDescrs().get( 0 );
-        assertEquals( "a",
-                      fieldBindingDescr.getFieldName() );
+        final BindingDescr bindingDescr = second.getBindings().get( 0 );
+        assertEquals( "a==4",
+                      bindingDescr.getExpression() );
         assertEquals( "a4",
-                      fieldBindingDescr.getIdentifier() );
-
-        fld = (FieldConstraintDescr) and.getDescrs().get( 1 );
-
-        constraint = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-
-        assertNotNull( constraint );
-
-        assertEquals( "a",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      constraint.getEvaluator() );
-        assertEquals( "4",
-                      constraint.getText() );
+                      bindingDescr.getVariable() );
     }
 
     public void testQueryRuleMixed() throws Exception {

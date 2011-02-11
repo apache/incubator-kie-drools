@@ -1,5 +1,7 @@
 package org.drools.compiler;
 
+import static org.junit.Assert.assertEquals;
+
 import org.drools.Cheese;
 import org.drools.DroolsTestCase;
 import org.drools.Person;
@@ -17,13 +19,8 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class QueryBuilderTest extends DroolsTestCase {
     
@@ -35,8 +32,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         final PackageDescr packageDescr = new PackageDescr( "p1" );
 
         QueryDescr queryDescr = new QueryDescr( "query1" );
-        queryDescr.setParameters( new String[]{"$name", "$age", "$likes"} );
-        queryDescr.setParameterTypes( new String[]{"String", "int", "String"} );
+        queryDescr.addParameter( "String", "$name" );
+        queryDescr.addParameter( "int", "$age" );
+        queryDescr.addParameter( "String", "$likes" );
         packageDescr.addRule( queryDescr );
         AndDescr lhs = new AndDescr();
         queryDescr.setLhs( lhs );
@@ -97,8 +95,7 @@ public class QueryBuilderTest extends DroolsTestCase {
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
         final QueryDescr queryDescr = new QueryDescr( "query1" );
-        queryDescr.setParameters( new String[]{"$type"} );
-        queryDescr.setParameterTypes( new String[]{"String"} );
+        queryDescr.addParameter( "String", "$type" );
 
         packageDescr.addRule( queryDescr );
 
@@ -116,8 +113,6 @@ public class QueryBuilderTest extends DroolsTestCase {
         
         // Another query, no parameters
         QueryDescr queryDescr2 = new QueryDescr( "query2" );
-        queryDescr2.setParameters( new String[]{} );
-        queryDescr2.setParameterTypes( new String[]{} );
         packageDescr.addRule( queryDescr2 );
         AndDescr lhs2 = new AndDescr();
         queryDescr2.setLhs( lhs2 );

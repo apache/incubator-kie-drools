@@ -16,50 +16,46 @@
 
 package org.drools.lang.descr;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class QueryDescr extends RuleDescr {
-    private String[] params;
-    private String[] types;
+    private static final long serialVersionUID = 520l;
+
+    private List<String>      parameterTypes   = Collections.emptyList();
+    private List<String>      parameterNames   = Collections.emptyList();
     
-    private static final String[] EMPTY_PARAMS = new String[0];
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 510l;
+    public QueryDescr() {
+        this( null,
+              "" );
+    }
 
     public QueryDescr(final String name) {
         this( name,
               "" );
-        this.params = EMPTY_PARAMS;        
     }      
 
     public QueryDescr(final String ruleName,
                       final String documentation) {
         super( ruleName,
                documentation );
-        this.params = EMPTY_PARAMS;         
     }
     
-    public QueryDescr(final String ruleName,
-                      final String documentation, 
-                      final String[] params) {
-        super( ruleName,
-               documentation );
-        this.params = params;         
-    }
-    
-    public void setParameters(String[] params) {
-        this.params = params;
+    public void addParameter( String type, String variable ) {
+        if( parameterTypes == Collections.EMPTY_LIST ) {
+            this.parameterTypes = new ArrayList<String>();
+            this.parameterNames = new ArrayList<String>();
+        }
+        this.parameterTypes.add( type );
+        this.parameterNames.add( variable );
     }
     
     public String[] getParameters() {
-        return this.params;
-    }
-    
-    public void setParameterTypes(String[] types) {
-        this.types = types;
+        return this.parameterNames.toArray( new String[this.parameterNames.size()] );
     }
     
     public String[] getParameterTypes() {
-        return this.types;
+        return this.parameterTypes.toArray( new String[this.parameterTypes.size()] );
     }    
 }
