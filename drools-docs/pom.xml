@@ -18,7 +18,7 @@
     <module>drools-docs-introduction</module>
     <module>drools-docs-expert</module>
     <module>drools-docs-fusion</module>
-    <module>drools-docs-guvnor</module>
+    <!--<module>drools-docs-guvnor</module>--><!-- Already split-off to separate repo -->
     <!-- Other modules are defined in the not-soa profile -->
   </modules>
 
