@@ -296,7 +296,7 @@ public class AccumulateTemplateTest {
     private TemplateRegistry getRuleTemplateRegistry() {
         TemplateRegistry ruleRegistry = new SimpleTemplateRegistry();
         CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
-                                                                      null );
+                                                                      (Map<String, Class<? extends Node>>) null );
         TemplateRuntime.execute( compiled,
                                  null,
                                  ruleRegistry );
