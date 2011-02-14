@@ -67,7 +67,7 @@ import org.drools.rule.Package;
  *  eg: dir=/your/dir
  *
  *  <code>url</code>: A space seperated URL to a binary rulebase in the BRMS.
- *  eg: url=http://server/drools-guvnor/packages/somePakage/VERSION_1
+ *  eg: url=http://server/guvnor-webapp/packages/somePakage/VERSION_1
  *  For URL you will also want a local cache directory setup:
  *  eg: localCacheDir=/some/dir/that/exists
  *  This is needed so that the runtime can startup and load packages even if the BRMS

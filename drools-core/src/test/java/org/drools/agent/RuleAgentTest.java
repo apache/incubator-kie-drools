@@ -675,7 +675,7 @@ public class RuleAgentTest {
         Properties props = ag.loadFromProperties( "/basic-authentication-sample-agent-config.properties" );
         assertEquals( "30",
                       props.getProperty( RuleAgent.POLL_INTERVAL ) );
-        assertEquals( "http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST",
+        assertEquals( "http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST",
                 props.getProperty( RuleAgent.URLS ) );
         assertEquals( "d:/drools",
                       props.getProperty( RuleAgent.LOCAL_URL_CACHE ) );
