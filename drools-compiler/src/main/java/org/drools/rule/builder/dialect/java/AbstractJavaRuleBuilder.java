@@ -17,23 +17,32 @@ import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.mvel2.templates.res.Node;
 
 public class AbstractJavaRuleBuilder {
 
-    protected static final TemplateRegistry RULE_REGISTRY = new SimpleTemplateRegistry();
+    protected static final TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
     protected static final TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
 
     static {
-        OptimizerFactory.setDefaultOptimizer("reflective");
+        OptimizerFactory.setDefaultOptimizer( "reflective" );
 
-        RULE_REGISTRY.addNamedTemplate("rules", TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream("javaRule.mvel"), null));
-        INVOKER_REGISTRY.addNamedTemplate("invokers", TemplateCompiler.compileTemplate(AbstractJavaRuleBuilder.class.getResourceAsStream("javaInvokers.mvel"), null));
+        RULE_REGISTRY.addNamedTemplate( "rules",
+                                        TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
+                                                                          (Map<String, Class<? extends Node>>)null ) );
+        INVOKER_REGISTRY.addNamedTemplate( "invokers",
+                                           TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
+                                                                             (Map<String, Class<? extends Node>>)null ) );
 
         /**
          * Process these templates
          */
-        TemplateRuntime.execute(RULE_REGISTRY.getNamedTemplate("rules"), null, RULE_REGISTRY);
-        TemplateRuntime.execute(INVOKER_REGISTRY.getNamedTemplate("invokers"), null, INVOKER_REGISTRY);
+        TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
+                                 null,
+                                 RULE_REGISTRY );
+        TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
+                                 null,
+                                 INVOKER_REGISTRY );
 
     }
 
@@ -45,101 +54,105 @@ public class AbstractJavaRuleBuilder {
         return INVOKER_REGISTRY;
     }
 
-    public Map<String,Object> createVariableContext(final String className,
-                                     final String text,
-                                     final RuleBuildContext context,
-                                     final Declaration[] declarations,
-                                     final Declaration[] localDeclarations,
-                                     final String[] globals) {
-        final Map<String,Object> map = new HashMap<String,Object>();
+    public Map<String, Object> createVariableContext( final String className,
+                                                      final String text,
+                                                      final RuleBuildContext context,
+                                                      final Declaration[] declarations,
+                                                      final Declaration[] localDeclarations,
+                                                      final String[] globals ) {
+        final Map<String, Object> map = new HashMap<String, Object>();
 
-        map.put("methodName",
-                className);
+        map.put( "methodName",
+                 className );
 
-        map.put("package",
-                context.getPkg().getName());
+        map.put( "package",
+                 context.getPkg().getName() );
 
-        map.put("ruleClassName",
-                StringUtils.ucFirst(context.getRuleDescr().getClassName()));
+        map.put( "ruleClassName",
+                 StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
 
-        map.put("invokerClassName",
-                context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker");
+        map.put( "invokerClassName",
+                 context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
 
-        if (text != null) {
-            map.put("text",
-                    text);
+        if ( text != null ) {
+            map.put( "text",
+                     text );
 
-            map.put("hashCode",
-                    new Integer(text.hashCode()));
+            map.put( "hashCode",
+                     new Integer( text.hashCode() ) );
         }
 
         final String[] declarationTypes = new String[declarations.length];
-        for (int i = 0, size = declarations.length; i < size; i++) {
-            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix(declarations[i]);
+        for ( int i = 0, size = declarations.length; i < size; i++ ) {
+            declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
         }
 
-        map.put("declarations",
-                declarations);
+        map.put( "declarations",
+                 declarations );
 
-        map.put("declarationTypes",
-                declarationTypes);
+        map.put( "declarationTypes",
+                 declarationTypes );
 
-        if (localDeclarations != null) {
+        if ( localDeclarations != null ) {
             final String[] localDeclarationTypes = new String[localDeclarations.length];
-            for (int i = 0, size = localDeclarations.length; i < size; i++) {
-                localDeclarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix(localDeclarations[i]);
+            for ( int i = 0, size = localDeclarations.length; i < size; i++ ) {
+                localDeclarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( localDeclarations[i] );
             }
 
-            map.put("localDeclarations",
-                    localDeclarations);
+            map.put( "localDeclarations",
+                     localDeclarations );
 
-            map.put("localDeclarationTypes",
-                    localDeclarationTypes);
+            map.put( "localDeclarationTypes",
+                     localDeclarationTypes );
         }
 
-        final List<String> globalTypes = new ArrayList<String>(globals.length);
-        for (int i = 0, length = globals.length; i < length; i++) {
-            globalTypes.add((context.getPkg().getGlobals().get(globals[i])).replace('$',
-                    '.'));
+        final List<String> globalTypes = new ArrayList<String>( globals.length );
+        for ( int i = 0, length = globals.length; i < length; i++ ) {
+            globalTypes.add( (context.getPkg().getGlobals().get( globals[i] )).replace( '$',
+                                                                                        '.' ) );
         }
 
-        map.put("globals",
-                globals);
+        map.put( "globals",
+                 globals );
 
-        map.put("globalTypes",
-                globalTypes);
+        map.put( "globalTypes",
+                 globalTypes );
 
         return map;
     }
 
-    public static void generatTemplates(final String ruleTemplate,
-                                 final String invokerTemplate,
-                                 final RuleBuildContext context,
-                                 final String className,
-                                 final Map vars,
-                                 final Object invokerLookup,
-                                 final BaseDescr descrLookup) {
-        synchronized ( MVELDialect.COMPILER_LOCK ) {     
+    public static void generatTemplates( final String ruleTemplate,
+                                         final String invokerTemplate,
+                                         final RuleBuildContext context,
+                                         final String className,
+                                         final Map vars,
+                                         final Object invokerLookup,
+                                         final BaseDescr descrLookup ) {
+        synchronized ( MVELDialect.COMPILER_LOCK ) {
             AbstractParser.setLanguageLevel( 5 );
             TemplateRegistry registry = getRuleTemplateRegistry();
-    
+
             context.getMethods().add(
-                 TemplateRuntime.execute(registry.getNamedTemplate(ruleTemplate), null, new MapVariableResolverFactory(vars), registry)
-            );
-    
-    
+                                      TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
+                                                               null,
+                                                               new MapVariableResolverFactory( vars ),
+                                                               registry )
+                    );
+
             registry = getInvokerTemplateRegistry();
-            final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker";
-    
-    
-            context.getInvokers().put(invokerClassName,
-                 TemplateRuntime.execute(registry.getNamedTemplate(invokerTemplate), null, new MapVariableResolverFactory(vars), registry)
-            );
-    
-            context.getInvokerLookups().put(invokerClassName,
-                    invokerLookup);
-            context.getDescrLookups().put(invokerClassName,
-                    descrLookup);
+            final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
+
+            context.getInvokers().put( invokerClassName,
+                                       TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
+                                                                null,
+                                                                new MapVariableResolverFactory( vars ),
+                                                                registry )
+                    );
+
+            context.getInvokerLookups().put( invokerClassName,
+                                             invokerLookup );
+            context.getDescrLookups().put( invokerClassName,
+                                           descrLookup );
         }
     }
 }
