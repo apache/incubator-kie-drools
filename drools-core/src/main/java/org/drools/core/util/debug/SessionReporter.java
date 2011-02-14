@@ -27,6 +27,7 @@ import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.mvel2.templates.res.Node;
 
 public class SessionReporter {
 
@@ -37,7 +38,7 @@ public class SessionReporter {
 
         REPORT_REGISTRY.addNamedTemplate( "simple",
                                           TemplateCompiler.compileTemplate( SessionReporter.class.getResourceAsStream( "reports.mvel" ),
-                                                                            null ) );
+                                                                            (Map<String, Class<? extends Node>>) null ) );
 
         /**
          * Process these templates
@@ -69,7 +70,7 @@ public class SessionReporter {
                                         InputStream template) {
         REPORT_REGISTRY.addNamedTemplate( name,
                                           TemplateCompiler.compileTemplate( template,
-                                                                            null ) );
+                                                                            (Map<String, Class<? extends Node>>) null ) );
         /*
          * Process these templates
          */
