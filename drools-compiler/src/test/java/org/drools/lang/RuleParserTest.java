@@ -2222,15 +2222,10 @@ public class RuleParserTest extends TestCase {
                       col.getObjectType() );
         assertEquals( 1,
                       col.getConstraint().getDescrs().size() );
-        final FieldConstraintDescr fld = (FieldConstraintDescr) col.getConstraint().getDescrs().get( 0 );
-        final QualifiedIdentifierRestrictionDescr lit = (QualifiedIdentifierRestrictionDescr) fld.getRestrictions().get( 0 );
+        final ExprConstraintDescr fld = (ExprConstraintDescr) col.getConstraint().getDescrs().get( 0 );
 
-        assertEquals( "bar",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      lit.getEvaluator() );
-        assertEquals( "Foo.BAR",
-                      lit.getText() );
+        assertEquals( "bar == Foo.BAR",
+                      fld.getExpression() );
     }
 
     public void testExtraLhsNewline() throws Exception {

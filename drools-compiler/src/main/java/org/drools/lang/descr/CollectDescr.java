@@ -56,13 +56,13 @@ public class CollectDescr extends PatternSourceDescr
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
     
-    public void insertBeforeLast(final Class clazz ,final BaseDescr baseDescr ) { 
+    public void insertBeforeLast(final Class<?> clazz ,final BaseDescr baseDescr ) { 
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }    
 
-    public List getDescrs() {
+    public List<BaseDescr> getDescrs() {
         // nothing to do
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public void addOrMerge(BaseDescr baseDescr) {

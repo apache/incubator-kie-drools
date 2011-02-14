@@ -233,8 +233,7 @@ public class DescrFactory {
         for ( Map<BaseDescr, BaseDescr> map : params ) {
             for ( Entry<BaseDescr, BaseDescr> entry : map.entrySet() ) {
                 functionDescr.addParameter( entry.getValue().getText(),
-                                            entry
-                                                    .getKey().getText() );
+                                            entry.getKey().getText() );
             }
         }
 

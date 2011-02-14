@@ -16,22 +16,14 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.PatternDescr;
-
+import org.drools.lang.descr.CollectDescr;
 
 /**
- *  A descriptor builder for Pattern sources
+ *  A descriptor builder for Collect
  */
-public interface SourceDescrBuilder<P extends PatternDescrBuilder<?>>
+public interface CollectDescrBuilder<P extends DescrBuilder< ? >>
     extends
-    DescrBuilder<PatternDescr> {
-    
-    P expression( String expression );
-    
-    P entryPoint( String entryPoint );
+    PatternContainerDescrBuilder<CollectDescrBuilder<P>, CollectDescr> {
 
-    CollectDescrBuilder<P> collect();
-    
-//    AccumulateDescrBuilder<P> accumulate();
-    
+    public P end();
 }
