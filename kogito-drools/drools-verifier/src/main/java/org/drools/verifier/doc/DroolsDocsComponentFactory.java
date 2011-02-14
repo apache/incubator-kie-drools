@@ -313,7 +313,7 @@ class EndPage extends PdfPageEventHelper {
                           Document document) {
 
         try {
-            Image image = Image.getInstance( DroolsDocsBuilder.class.getResource( "drools-guvnor.png" ) );
+            Image image = Image.getInstance( DroolsDocsBuilder.class.getResource( "guvnor-webapp.png" ) ); // TODO this image never existed
             image.setAlignment( Image.RIGHT );
             image.scaleAbsolute( 100,
                                  30 );
