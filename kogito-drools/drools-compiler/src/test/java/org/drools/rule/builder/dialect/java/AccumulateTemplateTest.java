@@ -24,6 +24,7 @@ import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.mvel2.templates.res.Node;
 
 public class AccumulateTemplateTest {
 
@@ -306,7 +307,7 @@ public class AccumulateTemplateTest {
     private TemplateRegistry getInvokerTemplateRegistry() {
         TemplateRegistry invokerRegistry = new SimpleTemplateRegistry();
         CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
-                                                                      null );
+                                                                      (Map<String, Class<? extends Node>>) null );
         TemplateRuntime.execute( compiled,
                                  null,
                                  invokerRegistry );
