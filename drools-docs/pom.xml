@@ -31,7 +31,7 @@
         </property>
       </activation>
       <modules>
-        <module>drools-docs-integration</module>
+        <!--<module>drools-docs-integration</module>--><!-- Already split-off to separate repo -->
       </modules>
     </profile>
   </profiles>
