@@ -28,7 +28,7 @@ import org.drools.lang.descr.OrDescr;
  */
 public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     extends
-    DescrBuilder<T> {
+    PatternContainerDescrBuilder<CEDescrBuilder<P,T>,T> {
 
     public CEDescrBuilder<CEDescrBuilder<P, T>, AndDescr> and();
     public CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or();
@@ -37,9 +37,6 @@ public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     public CEDescrBuilder<CEDescrBuilder<P, T>, ForallDescr> forall();
     
     public EvalDescrBuilder<CEDescrBuilder<P, T>> eval();
-    
-    public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern( String type );
-    public PatternDescrBuilder<CEDescrBuilder<P, T>> pattern();
     
     public P end();
 }

@@ -18,6 +18,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
@@ -27,6 +28,7 @@ import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
+import org.drools.lang.api.PatternContainerDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
@@ -635,11 +637,16 @@ public class ParserHelper {
                 setStart( builder );
                 return (T) builder;
             } else if ( PatternDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                PatternDescrBuilder< ? > pattern = ((CEDescrBuilder< ? , ? >) builderContext.peek()).pattern();
+                PatternDescrBuilder< ? > pattern = ((PatternContainerDescrBuilder< ? , ? >) builderContext.peek()).pattern();
                 builderContext.push( pattern );
                 pushParaphrases( DroolsParaphraseTypes.PATTERN );
                 setStart( pattern );
                 return (T) pattern;
+            } else if ( CollectDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                CollectDescrBuilder< ? > collect = ((PatternDescrBuilder< ? >) builderContext.peek()).from().collect();
+                builderContext.push( collect );
+                setStart( collect );
+                return (T) collect;
             }
         }
         return null;
@@ -651,7 +658,8 @@ public class ParserHelper {
         if ( state.backtracking == 0 ) {
             if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || 
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   CEDescrBuilder.class.isAssignableFrom( clazz ) ) ) {
+                   CEDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   CollectDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();

@@ -49,4 +49,10 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
         return parent;
     }
 
+    public CollectDescrBuilder<P> collect() {
+        CollectDescrBuilder<P> collect = new CollectDescrBuilderImpl<P>( parent );
+        descr.setSource( collect.getDescr() );
+        return collect;
+    }
+
 }
