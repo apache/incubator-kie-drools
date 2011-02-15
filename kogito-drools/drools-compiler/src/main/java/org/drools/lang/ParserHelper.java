@@ -15,6 +15,7 @@ import org.antlr.runtime.RecognizerSharedState;
 import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.CEDescrBuilder;
@@ -647,6 +648,11 @@ public class ParserHelper {
                 builderContext.push( collect );
                 setStart( collect );
                 return (T) collect;
+            } else if ( AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                AccumulateDescrBuilder< ? > accumulate = ((PatternDescrBuilder< ? >) builderContext.peek()).from().accumulate();
+                builderContext.push( accumulate );
+                setStart( accumulate );
+                return (T) accumulate;
             }
         }
         return null;
@@ -659,7 +665,8 @@ public class ParserHelper {
             if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || 
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) || 
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   CollectDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   AccumulateDescrBuilder.class.isAssignableFrom( clazz )) ){
                 popParaphrases();
             }
             setEnd();

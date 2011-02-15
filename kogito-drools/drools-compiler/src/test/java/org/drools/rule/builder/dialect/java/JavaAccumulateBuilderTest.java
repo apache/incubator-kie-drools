@@ -1,13 +1,9 @@
 package org.drools.rule.builder.dialect.java;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.HashMap;
 
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.Dialect;
@@ -16,7 +12,6 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.DescrFactory;
 import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -24,6 +19,8 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
+import org.junit.Before;
+import org.junit.Test;
 
 public class JavaAccumulateBuilderTest {
 
@@ -37,7 +34,7 @@ public class JavaAccumulateBuilderTest {
     @Test
     public void testBuildRuleBuildContextBaseDescr() {
         // $total : Integer() from accumulate( Cheese( $price : price ) init( int x = 0; ) action( x += $price ) result( new Integer( x ) ) ) 
-        AccumulateDescr accumDescr = new DescrFactory().createAccumulate();
+        AccumulateDescr accumDescr = new AccumulateDescr();
         
         FieldBindingDescr price = new FieldBindingDescr( "price", "$price" );
         PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );

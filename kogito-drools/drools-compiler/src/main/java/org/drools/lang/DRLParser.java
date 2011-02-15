@@ -1,5 +1,6 @@
 package org.drools.lang;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
@@ -2270,7 +2272,7 @@ public class DRLParser {
     /**
      * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA 
      *                   ( initBlock COMMA actionBlock COMMA (reverseBlock COMMA)? resultBlock
-     *                   | functionBlock )
+     *                   | accumulateFunction (COMMA accumulateFunction)* )
      *                   RIGHT_PAREN
      * 
      * @param pattern
@@ -2278,8 +2280,8 @@ public class DRLParser {
      */
     private void fromAccumulate( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         AccumulateDescrBuilder< ? > accumulate = helper.start( AccumulateDescrBuilder.class,
-                                                         null,
-                                                         null );
+                                                               null,
+                                                               null );
         try {
             match( input,
                    DRLLexer.ID,
@@ -2304,11 +2306,79 @@ public class DRLParser {
                    null,
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
-            
-            if( helper.validateIdentifierKey( DroolsSoftKeywords.INIT ) ) {
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.INIT ) ) {
                 // custom code, inline accumulate
+                
+                // initBlock
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.INIT,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return;
+
+                String init = chunk( DRLLexer.LEFT_PAREN,
+                                     DRLLexer.RIGHT_PAREN );
+                if ( state.failed ) return;
+                if ( state.backtracking == 0 ) accumulate.init( init );
+
+                // actionBlock
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.ACTION,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return;
+
+                String action = chunk( DRLLexer.LEFT_PAREN,
+                                       DRLLexer.RIGHT_PAREN );
+                if ( state.failed ) return;
+                if ( state.backtracking == 0 ) accumulate.action( action );
+
+                // reverseBlock
+                if ( helper.validateIdentifierKey( DroolsSoftKeywords.REVERSE ) ) {
+                    match( input,
+                           DRLLexer.ID,
+                           DroolsSoftKeywords.ACTION,
+                           null,
+                           DroolsEditorType.KEYWORD );
+                    if ( state.failed ) return;
+
+                    String reverse = chunk( DRLLexer.LEFT_PAREN,
+                                            DRLLexer.RIGHT_PAREN );
+                    if ( state.failed ) return;
+                    if ( state.backtracking == 0 ) accumulate.reverse( reverse );
+                }
+
+                // resultBlock
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.RESULT,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return;
+
+                String result = chunk( DRLLexer.LEFT_PAREN,
+                                       DRLLexer.RIGHT_PAREN );
+                if ( state.failed ) return;
+                if ( state.backtracking == 0 ) accumulate.result( result );
             } else {
-                // accumulate function
+                // accumulate functions
+                accumulateFunction( accumulate );
+                if ( state.failed ) return;
+                
+                while( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return;
+                    
+                    accumulateFunction( accumulate );
+                    if ( state.failed ) return;
+                }
             }
 
             match( input,
@@ -2318,9 +2388,73 @@ public class DRLParser {
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
         } finally {
-            helper.end( CollectDescrBuilder.class,
+            helper.end( AccumulateDescrBuilder.class,
                         null );
         }
+    }
+
+    /**
+     * accumulateFunction := ID parameters
+     * @param accumulate
+     * @throws RecognitionException
+     */
+    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
+        Token function = match( input,
+                                DRLLexer.ID,
+                                null,
+                                null,
+                                DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+
+        List<String> parameters = parameters();
+        if ( state.failed ) return;
+        
+        if ( state.backtracking == 0 ) { 
+            accumulate.function( function.getText(), parameters.toArray( new String[ parameters.size() ] ) );
+        }
+    }
+
+    /**
+     * parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    private List<String> parameters() throws RecognitionException {
+        match( input,
+               DRLLexer.LEFT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return null;
+
+        List<String> parameters = new ArrayList<String>();
+        if( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
+            String param = conditionalExpression();
+            if ( state.failed ) return null;
+            parameters.add( param );
+            
+            while( input.LA( 1 ) == DRLLexer.COMMA ) {
+                match( input,
+                       DRLLexer.COMMA,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+                
+                param = conditionalExpression();
+                if ( state.failed ) return null;
+                parameters.add( param );
+            }
+        }
+        
+        match( input,
+               DRLLexer.RIGHT_PAREN,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return null;
+        return parameters;
     }
 
     /**

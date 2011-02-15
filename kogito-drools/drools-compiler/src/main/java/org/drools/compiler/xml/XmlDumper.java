@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.compiler.xml.rules.RestrictionConnectiveHandler;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
@@ -147,8 +148,10 @@ public class XmlDumper extends ReflectiveVisitor
         }
         tmpstr += this.template;
 
-        if ( descr.isExternalFunction() ) tmpstr += "<external-function evaluator=\"" + descr.getFunctionIdentifier() + "\" expression=\"" + descr.getExpression() + "\"/>";
-        else tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
+        if ( descr.isExternalFunction() ) {
+            AccumulateFunctionCallDescr func = descr.getFunctions().get( 0 );
+            tmpstr += "<external-function evaluator=\"" + func.getFunction() + "\" expression=\"" + func.getParams()[0] + "\"/>";
+        } else tmpstr += "<init>" + descr.getInitCode() + "</init><action>" + descr.getActionCode() + "</action><result>" + descr.getResultCode() + "</result>";
 
         this.template = tmpstr + " </accumulate> </from> ";
     }
