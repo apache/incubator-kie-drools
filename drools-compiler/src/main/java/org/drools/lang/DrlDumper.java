@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.CollectDescr;
@@ -52,6 +53,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 
 /**
+ * TODO: replace this class by a proper DRL dumper based on templates
  * 
  * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
  *
@@ -177,7 +179,8 @@ public class DrlDumper extends ReflectiveVisitor
         tmpstr += this.template.substring( 2 );
 
         if ( descr.isExternalFunction() ) {
-            tmpstr += "," + descr.getFunctionIdentifier() + "(" + descr.getExpression() + ")";
+            AccumulateFunctionCallDescr func = descr.getFunctions().get( 0 );
+            tmpstr += "," + func.getFunction() + "(" + func.getParams()[0] + ")";
         } else {
             tmpstr += ", init(" + descr.getInitCode() + "), ";
             tmpstr += "action(" + descr.getActionCode() + "), ";

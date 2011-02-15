@@ -89,9 +89,7 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
             emptyContentCheck( localName, expression, parser );
             accumulate.setReverseCode( expression.trim() );
         } else if ( localName.equals( "external-function" ) ) {
-            accumulate.setExternalFunction( true );
-            accumulate.setFunctionIdentifier( element.getAttribute( "evaluator" ) );
-            accumulate.setExpression( element.getAttribute( "expression" ) );
+            accumulate.addFunction( element.getAttribute( "evaluator" ), new String[] { element.getAttribute( "expression" ) });
         }
 
         return null;

@@ -1275,7 +1275,7 @@ public class RuleParserTest extends TestCase {
 
     public void testQueryRuleMixed() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
-                       "query_and_rule.drl" );
+                                                               "query_and_rule.drl" );
 
         assertEquals( 4,
                       pkg.getRules().size() ); // as queries are rules
@@ -3344,9 +3344,9 @@ public class RuleParserTest extends TestCase {
         final PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         final AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertEqualsIgnoreWhitespace( "$age",
-                                      accum.getExpression() );
+                                      accum.getFunctions().get( 0 ).getParams()[0] );
         assertEqualsIgnoreWhitespace( "average",
-                                      accum.getFunctionIdentifier() );
+                                      accum.getFunctions().get( 0 ).getFunction() );
         assertTrue( accum.isExternalFunction() );
 
         final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
@@ -4119,7 +4119,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( cleanExpected,
                       cleanActual );
     }
-    
+
     private Reader getReader( final String name ) throws Exception {
         final InputStream in = getClass().getResourceAsStream( name );
         return new InputStreamReader( in );

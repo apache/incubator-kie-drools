@@ -55,4 +55,10 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
         return collect;
     }
 
+    public AccumulateDescrBuilder<P> accumulate() {
+        AccumulateDescrBuilder<P> accumulate = new AccumulateDescrBuilderImpl<P>( parent );
+        descr.setSource( accumulate.getDescr() );
+        return accumulate;
+    }
+
 }

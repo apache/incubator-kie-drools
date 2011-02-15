@@ -16,22 +16,23 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.PatternDescr;
-
+import org.drools.lang.descr.AccumulateDescr;
 
 /**
- *  A descriptor builder for Pattern sources
+ *  A descriptor builder for Accumulate
  */
-public interface SourceDescrBuilder<P extends PatternDescrBuilder<?>>
+public interface AccumulateDescrBuilder<P extends DescrBuilder< ? >>
     extends
-    DescrBuilder<PatternDescr> {
+    PatternContainerDescrBuilder<AccumulateDescrBuilder<P>, AccumulateDescr> {
     
-    P expression( String expression );
-    
-    P entryPoint( String entryPoint );
+    public CEDescrBuilder<AccumulateDescrBuilder<P>, ?> source(); 
 
-    CollectDescrBuilder<P> collect();
-
-    AccumulateDescrBuilder<P> accumulate();
+    public AccumulateDescrBuilder<P> function( String name, String[] parameters);
     
+    public AccumulateDescrBuilder<P> init( String block );
+    public AccumulateDescrBuilder<P> action( String block );
+    public AccumulateDescrBuilder<P> reverse( String block );
+    public AccumulateDescrBuilder<P> result( String expr );
+    
+    public P end();
 }

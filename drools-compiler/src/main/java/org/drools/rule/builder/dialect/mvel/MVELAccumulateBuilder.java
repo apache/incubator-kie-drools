@@ -28,6 +28,7 @@ import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
@@ -94,13 +95,14 @@ public class MVELAccumulateBuilder
             
             if ( accumDescr.isExternalFunction() ) {
                 // build an external function executor
-                AccumulateFunction function = context.getConfiguration().getAccumulateFunction( accumDescr.getFunctionIdentifier() );
+                AccumulateFunctionCallDescr func = accumDescr.getFunctions().get( 0 );
+                AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
 
                 if( function == null ) {
                     context.getErrors().add( new DescrBuildError( accumDescr,
                                                                   context.getRuleDescr(),
                                                                   null,
-                                                                  "Unknown accumulate function: '"+accumDescr.getFunctionIdentifier()+"' on rule '"+context.getRuleDescr().getName()+"'. All accumulate functions must be registered before building a resource." ) );
+                                                                  "Unknown accumulate function: '"+func.getFunction()+"' on rule '"+context.getRuleDescr().getName()+"'. All accumulate functions must be registered before building a resource." ) );
                     return null;
                 }
 
@@ -110,7 +112,7 @@ public class MVELAccumulateBuilder
                                                                            boundIds );
 
                 
-                MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) accumDescr.getExpression(),
+                MVELCompilationUnit unit = dialect.getMVELCompilationUnit( func.getParams()[0],
                                                                            analysis,
                                                                            previousDeclarations,
                                                                            sourceDeclArr,

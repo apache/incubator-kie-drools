@@ -106,7 +106,7 @@ public class XmlPackageReaderTest {
         assertTrue( accumulatedescr.isExternalFunction() );
         
         assertEquals( "max",
-                      accumulatedescr.getFunctionIdentifier() );
+                      accumulatedescr.getFunctions().get( 0 ).getFunction() );
         
         assertNull( accumulatedescr.getInitCode() );
         assertNull( accumulatedescr.getActionCode() );
