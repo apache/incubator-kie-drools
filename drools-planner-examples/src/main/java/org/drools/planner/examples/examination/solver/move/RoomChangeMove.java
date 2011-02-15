@@ -28,9 +28,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Room;
 
-/**
- * @author Geoffrey De Smet
- */
 public class RoomChangeMove implements Move, TabuPropertyEnabled {
 
     private Exam exam;

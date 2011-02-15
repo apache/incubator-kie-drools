@@ -25,9 +25,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueens extends AbstractPersistable implements Solution {
 
     private List<Queen> queenList;

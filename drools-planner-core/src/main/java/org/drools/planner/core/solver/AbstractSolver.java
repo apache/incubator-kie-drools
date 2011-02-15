@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link Solver}.
  * @see Solver
  * @see DefaultLocalSearchSolver
- * @author Geoffrey De Smet
  */
 public abstract class AbstractSolver implements Solver {
 

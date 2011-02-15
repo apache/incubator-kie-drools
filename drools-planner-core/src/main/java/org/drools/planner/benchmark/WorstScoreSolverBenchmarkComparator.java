@@ -23,9 +23,6 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark> {
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {

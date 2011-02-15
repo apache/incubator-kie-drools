@@ -30,9 +30,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Geoffrey De Smet
- */
 public class GreatDelugeAcceptorTest {
 
     @Test

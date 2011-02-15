@@ -28,9 +28,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
 
     private CloudAssignment cloudAssignment;

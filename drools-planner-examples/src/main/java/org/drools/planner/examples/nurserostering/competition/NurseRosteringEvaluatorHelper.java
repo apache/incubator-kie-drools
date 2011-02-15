@@ -29,9 +29,6 @@ import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringEvaluatorHelper extends LoggingMain {
 
     private static final boolean ALL_INPUT_FILES = true;

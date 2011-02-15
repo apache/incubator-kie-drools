@@ -24,7 +24,6 @@ import org.drools.planner.core.score.Score;
 
 /**
  * TODO this will be removed once the time gradient based {@link SimulatedAnnealingAcceptor} is always better.
- * @author Geoffrey De Smet
  */
 public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
 

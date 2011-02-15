@@ -18,9 +18,6 @@ package org.drools.planner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("FreeBefore2DaysWithAWorkDayPattern")
 public class FreeBefore2DaysWithAWorkDayPattern extends Pattern {
 

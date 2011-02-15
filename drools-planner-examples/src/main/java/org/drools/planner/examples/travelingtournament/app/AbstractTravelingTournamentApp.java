@@ -22,9 +22,6 @@ import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractTravelingTournamentApp extends CommonApp {
 
     @Override

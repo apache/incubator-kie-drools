@@ -27,9 +27,6 @@ import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSched
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.solver.move.LectureSwitchMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class LectureSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

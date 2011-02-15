@@ -27,9 +27,6 @@ import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolutionExporter;
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolutionImporter;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringCompetitionSprintApp extends LoggingMain {
 
     public static final String SOLVER_CONFIG

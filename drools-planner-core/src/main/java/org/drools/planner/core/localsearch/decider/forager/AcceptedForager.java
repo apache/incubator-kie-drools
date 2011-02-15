@@ -31,7 +31,6 @@ import org.drools.planner.core.score.Score;
  * An AcceptedForager is a Forager which forages accepted moves and ignores unaccepted moves.
  * @see Forager
  * @see Acceptor
- * @author Geoffrey De Smet
  */
 public class AcceptedForager extends AbstractForager {
 

@@ -16,9 +16,6 @@
 
 package org.drools.planner.core.solver;
 
-/**
- * @author Geoffrey De Smet
- */
 public interface AbstractSolverLifecycleListener {
 
     void solvingStarted(AbstractSolverScope abstractSolverScope);

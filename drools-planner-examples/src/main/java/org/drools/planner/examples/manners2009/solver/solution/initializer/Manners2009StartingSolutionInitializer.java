@@ -32,9 +32,6 @@ import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Manners2009StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override

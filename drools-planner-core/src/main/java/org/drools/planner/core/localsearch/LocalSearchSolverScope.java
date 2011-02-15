@@ -18,9 +18,6 @@ package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.solver.AbstractSolverScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class LocalSearchSolverScope extends AbstractSolverScope {
 
     private LocalSearchStepScope lastCompletedLocalSearchStepScope;

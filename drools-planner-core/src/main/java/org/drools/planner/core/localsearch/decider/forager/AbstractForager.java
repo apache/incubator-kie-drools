@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Forager}.
  * @see Forager
- * @author Geoffrey De Smet
  */
 public abstract class AbstractForager implements Forager {
 

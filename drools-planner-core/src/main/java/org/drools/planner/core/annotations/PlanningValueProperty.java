@@ -22,9 +22,6 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
-/**
- * @author Geoffrey De Smet
- */
 @Target({METHOD})
 @Retention(RUNTIME)
 public @interface PlanningValueProperty {

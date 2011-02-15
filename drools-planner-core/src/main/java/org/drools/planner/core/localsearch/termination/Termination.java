@@ -22,7 +22,6 @@ import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * A Termination determines when the LocalSearchSolver should stop.
- * @author Geoffrey De Smet
  */
 public interface Termination extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
 

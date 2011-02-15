@@ -42,9 +42,6 @@ import org.drools.planner.examples.examination.domain.Topic;
 import org.drools.planner.examples.examination.domain.solver.ExamBefore;
 import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override

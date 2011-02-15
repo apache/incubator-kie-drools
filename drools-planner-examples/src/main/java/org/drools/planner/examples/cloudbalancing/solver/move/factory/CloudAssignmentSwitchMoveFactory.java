@@ -27,9 +27,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudAssignmentSwitchMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudAssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

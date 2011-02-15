@@ -27,9 +27,6 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
 
     private Employee employee;

@@ -21,9 +21,6 @@ import java.io.File;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG

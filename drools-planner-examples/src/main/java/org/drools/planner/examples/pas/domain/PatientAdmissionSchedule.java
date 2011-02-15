@@ -29,9 +29,6 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("PatientAdmissionSchedule")
 public class PatientAdmissionSchedule extends AbstractPersistable implements Solution {
 

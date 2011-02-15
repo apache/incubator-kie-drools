@@ -20,9 +20,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("ContractLine")
 public abstract class ContractLine extends AbstractPersistable implements Comparable<ContractLine> {
 

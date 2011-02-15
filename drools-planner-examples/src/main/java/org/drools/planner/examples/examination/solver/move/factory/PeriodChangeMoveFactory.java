@@ -27,9 +27,6 @@ import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.solver.move.PeriodChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PeriodChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

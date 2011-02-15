@@ -29,7 +29,6 @@ import org.drools.planner.core.solver.AbstractSolverScope;
 
 /**
  * Default implementation of {@link BruteForceSolver}.
- * @author Geoffrey De Smet
  */
 public class DefaultBruteForceSolver extends AbstractSolver implements BruteForceSolver  {
 

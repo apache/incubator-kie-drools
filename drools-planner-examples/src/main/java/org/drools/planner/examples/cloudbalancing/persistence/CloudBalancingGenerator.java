@@ -27,9 +27,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudBalancingGenerator extends LoggingMain {
 
     private static class Price {

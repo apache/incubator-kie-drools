@@ -21,9 +21,6 @@ import org.drools.planner.core.localsearch.decider.deciderscorecomparator.Decide
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.ShiftingHardPenaltyDeciderScoreComparatorFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("deciderScoreComparatorFactory")
 public class DeciderScoreComparatorFactoryConfig {
 

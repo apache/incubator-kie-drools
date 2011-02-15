@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Acceptor}.
  * @see Acceptor
- * @author Geoffrey De Smet
  */
 public abstract class AbstractAcceptor implements Acceptor {
 

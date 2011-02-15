@@ -21,7 +21,6 @@ package org.drools.planner.core.score;
  * <p/>
  * This class is immutable.
  * @see HardAndSoftScore
- * @author Geoffrey De Smet
  */
 public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScore>
         implements HardAndSoftScore {

@@ -31,9 +31,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAccepto
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("acceptor")
 public class AcceptorConfig {
 

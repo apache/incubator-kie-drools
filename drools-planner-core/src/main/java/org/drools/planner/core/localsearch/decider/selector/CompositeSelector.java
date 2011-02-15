@@ -28,7 +28,6 @@ import org.drools.planner.core.move.Move;
 
 /**
  * A CompositeSelector unions multiple Selectors.
- * @author Geoffrey De Smet
  */
 public class CompositeSelector extends AbstractSelector {
 

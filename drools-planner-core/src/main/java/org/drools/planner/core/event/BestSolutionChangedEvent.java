@@ -23,7 +23,6 @@ import org.drools.planner.core.Solver;
 
 /**
  * Delivered when the best solution changes during solving.
- * @author Geoffrey De Smet
  */
 public class BestSolutionChangedEvent extends EventObject {
 

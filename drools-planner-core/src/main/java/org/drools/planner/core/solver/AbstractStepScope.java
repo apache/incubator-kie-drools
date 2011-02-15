@@ -22,9 +22,6 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractStepScope {
 
     protected int stepIndex = -1;

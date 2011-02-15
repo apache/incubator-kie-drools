@@ -21,9 +21,6 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Guest extends AbstractPersistable implements Comparable<Guest> {
 
     private String code;

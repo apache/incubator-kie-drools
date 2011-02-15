@@ -18,9 +18,6 @@ package org.drools.planner.core.bruteforce;
 
 import org.drools.planner.core.solver.AbstractSolverScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BruteForceSolverScope extends AbstractSolverScope {
 
     // ************************************************************************

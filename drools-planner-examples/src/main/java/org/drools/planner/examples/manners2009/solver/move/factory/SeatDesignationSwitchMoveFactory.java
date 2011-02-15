@@ -27,9 +27,6 @@ import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.drools.planner.examples.manners2009.solver.move.SeatDesignationSwitchMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SeatDesignationSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

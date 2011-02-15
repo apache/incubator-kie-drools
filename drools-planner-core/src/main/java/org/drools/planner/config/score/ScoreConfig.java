@@ -20,9 +20,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("score")
 public class ScoreConfig {
 

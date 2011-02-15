@@ -21,9 +21,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("PatternContractLine")
 public class PatternContractLine extends AbstractPersistable implements Comparable<PatternContractLine> {
 

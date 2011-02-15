@@ -18,9 +18,6 @@ package org.drools.planner.examples.nurserostering.domain;
 
 import java.util.Calendar;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum DayOfWeek {
     MONDAY("Monday"),
     TUESDAY("Tuesday"),

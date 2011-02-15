@@ -26,9 +26,6 @@ import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.WorkflowFrame;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class CommonApp extends LoggingMain {
 
     private WorkflowFrame workflowFrame;

@@ -19,9 +19,6 @@ package org.drools.planner.examples.cloudbalancing.persistence;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudBalancingDaoImpl extends XstreamSolutionDaoImpl {
 
     public CloudBalancingDaoImpl() {

@@ -22,7 +22,6 @@ import org.drools.planner.core.Solver;
 
 /**
  * TODO is this the correct package? Statistics can maybe be used outside the benchmarker
- * @author Geoffrey De Smet
  */
 public interface SolverStatistic {
 

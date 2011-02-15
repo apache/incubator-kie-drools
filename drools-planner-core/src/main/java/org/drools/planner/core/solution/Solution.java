@@ -29,7 +29,6 @@ import org.drools.planner.core.Solver;
  * A Solution is mutable.
  * Drools Planner will continuously modify the same solution for scalability reasons
  * and clone it to recall the best solution.
- * @author Geoffrey De Smet
  */
 public interface Solution {
 

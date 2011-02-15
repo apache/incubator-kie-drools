@@ -27,9 +27,6 @@ import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.solver.simple.move.DayChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SimpleTravelingTournamentMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

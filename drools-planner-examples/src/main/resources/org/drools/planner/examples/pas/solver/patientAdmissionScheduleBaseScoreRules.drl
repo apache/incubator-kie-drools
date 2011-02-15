@@ -41,8 +41,6 @@ import org.drools.planner.examples.pas.domain.Specialism;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
-// @author Geoffrey De Smet
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

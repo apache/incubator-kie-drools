@@ -27,9 +27,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEna
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nqueens.domain.Queen;
 
-/**
- * @author Geoffrey De Smet
- */
 public class YChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;

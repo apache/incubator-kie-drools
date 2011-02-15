@@ -21,9 +21,6 @@ import java.util.Map;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Team extends AbstractPersistable implements Comparable<Team> {
 
     private String name;

@@ -18,9 +18,6 @@ package org.drools.planner.examples.nurserostering.domain;
 
 import java.util.EnumSet;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum WeekendDefinition {
     SATURDAY_SUNDAY("SaturdaySunday",
             DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),

@@ -31,9 +31,6 @@ import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.solver.move.NurseRosteringMoveHelper;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudAssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
     private CloudAssignment leftCloudAssignment;

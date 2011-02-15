@@ -18,7 +18,6 @@ package org.drools.planner.core.score.calculator;
 
 /**
  * @TODO rename to HardAndSoftScoreCalculator if it survives the score-in-solution refactor
- * @author Geoffrey De Smet
  */
 public interface HardAndSoftConstraintScoreCalculator extends ScoreCalculator {
 

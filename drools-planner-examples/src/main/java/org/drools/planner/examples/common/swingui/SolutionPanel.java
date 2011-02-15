@@ -27,9 +27,6 @@ import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     private static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 500);

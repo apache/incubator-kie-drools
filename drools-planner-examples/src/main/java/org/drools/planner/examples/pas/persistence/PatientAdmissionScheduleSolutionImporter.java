@@ -43,10 +43,6 @@ import org.drools.planner.examples.pas.domain.RoomEquipment;
 import org.drools.planner.examples.pas.domain.RoomSpecialism;
 import org.drools.planner.examples.pas.domain.Specialism;
 
-/**
- * @author Geoffrey De Smet
- * @author Wim Vancroonenburg
- */
 public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {

@@ -32,7 +32,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 /**
  * Abstract superclass for all Tabu Acceptors.
  * @see Acceptor
- * @author Geoffrey De Smet
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 

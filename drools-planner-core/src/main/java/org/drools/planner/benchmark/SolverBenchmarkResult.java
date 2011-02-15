@@ -21,9 +21,6 @@ import java.io.File;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("solverBenchmarkResult")
 public class SolverBenchmarkResult {
 

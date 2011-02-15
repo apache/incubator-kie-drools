@@ -16,9 +16,6 @@
 
 package org.drools.planner.core.score.constraint;
 
-/**
- * @author Geoffrey De Smet
- */
 public class UnweightedConstraintOccurrence extends ConstraintOccurrence {
 
     public UnweightedConstraintOccurrence(String ruleId, Object... causes) {

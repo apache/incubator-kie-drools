@@ -37,7 +37,6 @@ import org.drools.planner.examples.examination.solver.move.factory.RoomChangeMov
 
 /**
  * A custom selector implementation for the Examination example.
- * @author Geoffrey De Smet
  */
 public class AllMovesOfOneExamSelector extends AbstractSelector {
 

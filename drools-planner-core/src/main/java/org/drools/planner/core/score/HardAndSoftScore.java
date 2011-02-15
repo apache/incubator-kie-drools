@@ -23,7 +23,6 @@ package org.drools.planner.core.score;
  * Implementations must be immutable.
  * @see Score
  * @see DefaultHardAndSoftScore
- * @author Geoffrey De Smet
  */
 public interface HardAndSoftScore extends Score<HardAndSoftScore> {
 

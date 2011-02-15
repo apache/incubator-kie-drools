@@ -21,9 +21,6 @@ import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class LoggingTest {
 
     public static final String DEFAULT_LOGGING_CONFIG = "/org/drools/planner/examples/common/app/log4j-test.xml";

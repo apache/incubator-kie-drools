@@ -30,9 +30,6 @@ import org.drools.planner.core.localsearch.termination.TimeMillisSpendTerminatio
 import org.drools.planner.core.localsearch.termination.UnimprovedStepCountTermination;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("termination")
 public class TerminationConfig {
 

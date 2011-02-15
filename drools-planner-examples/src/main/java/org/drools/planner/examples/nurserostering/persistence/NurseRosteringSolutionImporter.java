@@ -61,9 +61,6 @@ import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter {
 
     public static void main(String[] args) {

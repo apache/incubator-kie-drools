@@ -21,9 +21,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("RosterInfo")
 public class RosterInfo extends AbstractPersistable implements Comparable<RosterInfo> {
 

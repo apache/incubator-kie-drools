@@ -38,9 +38,6 @@ import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ConstraintScoreMapDialog extends JDialog {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

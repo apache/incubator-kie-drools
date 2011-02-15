@@ -25,9 +25,6 @@ import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.jdom.Element;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter {
 
     public static void main(String[] args) {

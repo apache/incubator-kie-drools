@@ -36,9 +36,6 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
 import org.drools.planner.core.solver.AbstractSolver;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractSolverConfig {
 
     protected static final long DEFAULT_RANDOM_SEED = 0L;

@@ -34,9 +34,6 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class XstreamSolutionDaoImpl implements SolutionDao {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

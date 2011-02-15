@@ -30,9 +30,6 @@ import org.drools.planner.examples.travelingtournament.domain.Team;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImporter {
 
     protected TravelingTournamentSolutionImporter(SolutionDao solutionDao) {

@@ -29,9 +29,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SeatDesignationSwitchMove implements Move, TabuPropertyEnabled {
 
     private SeatDesignation leftSeatDesignation;

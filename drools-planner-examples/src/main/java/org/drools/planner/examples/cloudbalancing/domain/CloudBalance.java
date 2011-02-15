@@ -28,9 +28,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("CloudBalance")
 public class CloudBalance extends AbstractPersistable implements Solution {
 

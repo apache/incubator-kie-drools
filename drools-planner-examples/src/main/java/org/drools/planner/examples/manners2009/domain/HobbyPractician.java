@@ -19,9 +19,6 @@ package org.drools.planner.examples.manners2009.domain;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class HobbyPractician extends AbstractPersistable implements Comparable<HobbyPractician> {
 
     private Guest guest;

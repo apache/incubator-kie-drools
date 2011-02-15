@@ -29,9 +29,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
 
-/**
- * @author Geoffrey De Smet
- */
 public class DayChangeMove implements Move, TabuPropertyEnabled {
 
     private Match match;

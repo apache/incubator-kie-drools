@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of {@link Decider}.
- * @author Geoffrey De Smet
  */
 public class DefaultDecider implements Decider {
 

@@ -28,9 +28,6 @@ import org.drools.planner.examples.examination.persistence.ExaminationSolutionEx
 import org.drools.planner.examples.examination.persistence.ExaminationSolutionImporter;
 import org.drools.planner.examples.examination.swingui.ExaminationPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

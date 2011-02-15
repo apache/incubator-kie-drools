@@ -33,7 +33,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEna
  * Warning: one of the moveList moves should not rely on the effect on of a previous moveList move
  * to create an uncorrupted undoMove. In other words, 
  * @see Move
- * @author Geoffrey De Smet
  */
 public class CompositeMove implements Move, TabuPropertyEnabled {
 

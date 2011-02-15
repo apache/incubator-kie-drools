@@ -24,9 +24,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.examination.domain.solver.ExamBefore;
 import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("Exam")
 public class Exam extends AbstractPersistable implements Comparable<Exam> {
 

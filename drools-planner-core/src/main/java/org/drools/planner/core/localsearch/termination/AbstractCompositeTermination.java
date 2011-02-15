@@ -24,7 +24,6 @@ import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
- * @author Geoffrey De Smet
  */
 public abstract class AbstractCompositeTermination extends AbstractTermination implements Termination {
 

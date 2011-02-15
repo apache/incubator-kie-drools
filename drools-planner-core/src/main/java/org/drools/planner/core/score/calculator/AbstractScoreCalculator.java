@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 /**
  * Makes it easier to implement a ScoreCalculator.
- * @author Geoffrey De Smet
  */
 public abstract class AbstractScoreCalculator implements ScoreCalculator, Serializable {
 

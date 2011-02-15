@@ -34,8 +34,6 @@ import org.drools.planner.examples.examination.domain.Student;
 import org.drools.planner.examples.examination.domain.Topic;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 
-// @author Geoffrey De Smet
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

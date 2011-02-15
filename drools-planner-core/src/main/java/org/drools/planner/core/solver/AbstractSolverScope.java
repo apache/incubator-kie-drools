@@ -36,9 +36,6 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractSolverScope {
 
     public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";

@@ -22,9 +22,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class AcceptedMoveScopeComparator implements Comparator<MoveScope> {
 
     private final Comparator<? extends Score> deciderScoreComparator;

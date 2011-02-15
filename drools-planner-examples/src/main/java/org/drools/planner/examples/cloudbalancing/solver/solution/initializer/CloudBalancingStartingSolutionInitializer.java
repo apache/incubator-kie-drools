@@ -33,9 +33,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudBalancingStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override

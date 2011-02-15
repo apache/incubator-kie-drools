@@ -27,9 +27,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class TravelingTournament extends AbstractPersistable implements Solution {
 
     private List<Day> dayList;

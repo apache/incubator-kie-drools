@@ -20,9 +20,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ScoreAttainedTermination extends AbstractTermination {
 
     private Score scoreAttained;

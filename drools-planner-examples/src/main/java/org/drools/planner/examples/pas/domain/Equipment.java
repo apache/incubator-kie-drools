@@ -22,7 +22,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 /**
  * AKA RoomProperty
- * @author Geoffrey De Smet
  */
 @XStreamAlias("Equipment")
 public class Equipment extends AbstractPersistable implements Comparable<Equipment> {

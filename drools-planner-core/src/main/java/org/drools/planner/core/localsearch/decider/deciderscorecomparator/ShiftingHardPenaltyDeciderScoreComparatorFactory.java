@@ -28,7 +28,6 @@ import org.drools.planner.core.score.comparator.NaturalScoreComparator;
  * Implementation of {@link HardAndSoftScore}.
  * Compares by
  * @see DeciderScoreComparatorFactory
- * @author Geoffrey De Smet
  */
 public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDeciderScoreComparatorFactory {
 

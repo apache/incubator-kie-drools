@@ -19,9 +19,6 @@ package org.drools.planner.benchmark.statistic;
 import org.drools.planner.core.event.BestSolutionChangedEvent;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BestScoreStatisticPoint {
 
     private long timeMillisSpend;

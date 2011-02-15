@@ -23,9 +23,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class ConstraintOccurrence implements Comparable<ConstraintOccurrence>, Serializable {
 
     protected String ruleId;

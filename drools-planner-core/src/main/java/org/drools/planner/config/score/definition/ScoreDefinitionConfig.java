@@ -24,9 +24,6 @@ import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("scoreDefinition")
 public class ScoreDefinitionConfig {
 

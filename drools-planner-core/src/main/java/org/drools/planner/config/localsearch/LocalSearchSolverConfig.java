@@ -29,9 +29,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("localSearchSolver")
 public class LocalSearchSolverConfig extends AbstractSolverConfig {
 

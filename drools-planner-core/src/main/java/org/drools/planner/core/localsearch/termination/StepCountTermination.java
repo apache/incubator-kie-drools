@@ -18,9 +18,6 @@ package org.drools.planner.core.localsearch.termination;
 
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class StepCountTermination extends AbstractTermination {
 
     private int maximumStepCount = 100;

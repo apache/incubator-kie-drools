@@ -29,9 +29,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("Examination")
 public class Examination extends AbstractPersistable implements Solution {
 

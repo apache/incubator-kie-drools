@@ -22,7 +22,6 @@ import org.drools.planner.core.score.Score;
 
 /**
  * Compares by the natural order of scores.
- * @author Geoffrey De Smet
  */
 public class NaturalScoreComparator implements Comparator<Score> {
 

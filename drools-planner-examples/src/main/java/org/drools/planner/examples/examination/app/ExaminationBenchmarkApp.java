@@ -21,9 +21,6 @@ import java.io.File;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 import org.drools.planner.examples.examination.domain.Examination;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG

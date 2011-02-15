@@ -35,9 +35,6 @@ import org.drools.planner.examples.travelingtournament.domain.TravelingTournamen
 import org.drools.planner.examples.travelingtournament.solver.smart.move.MatchSwapMove;
 import org.drools.planner.examples.travelingtournament.solver.smart.move.MultipleMatchListRotateMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
 
     private List<Move> cachedMoveList;

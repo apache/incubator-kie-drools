@@ -39,7 +39,6 @@ import static org.junit.Assert.*;
  * because some of the hudson machines are old.
  * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
  * then specify a timeout of 2 minutes.
- * @author Geoffrey De Smet
  */
 public abstract class SolverPerformanceTest extends LoggingTest {
 

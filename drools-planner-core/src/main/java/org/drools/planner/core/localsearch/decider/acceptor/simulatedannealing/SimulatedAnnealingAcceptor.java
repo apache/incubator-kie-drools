@@ -24,7 +24,6 @@ import org.drools.planner.core.score.Score;
 
 /**
  * The time gradient implementation of simulated annealing.
- * @author Geoffrey De Smet
  */
 public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 

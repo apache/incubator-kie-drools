@@ -32,8 +32,6 @@ import org.drools.planner.core.Solver;
 
 /**
  * XML based configuration that builds a {@link Solver}.
- *
- * @author Geoffrey De Smet
  */
 public class XmlSolverConfigurer {
 

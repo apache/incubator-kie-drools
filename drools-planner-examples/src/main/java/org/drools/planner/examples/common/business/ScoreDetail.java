@@ -33,7 +33,6 @@ import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 
 /**
  * TODO Replace this class with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
- * @author Geoffrey De Smet
  */
 public class ScoreDetail implements Comparable<ScoreDetail> {
 

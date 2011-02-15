@@ -20,9 +20,6 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public class LoggingMain {
 
     public static final String DEFAULT_LOGGING_CONFIG = "/org/drools/planner/examples/common/app/log4j.xml";

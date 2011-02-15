@@ -26,9 +26,6 @@ import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.MoveFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public class MoveFactorySelector extends AbstractSelector {
 
     protected MoveFactory moveFactory;

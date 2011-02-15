@@ -28,9 +28,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImporter {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";

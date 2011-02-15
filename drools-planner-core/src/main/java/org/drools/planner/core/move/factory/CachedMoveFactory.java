@@ -23,9 +23,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class CachedMoveFactory extends AbstractMoveFactory {
 
     protected List<Move> cachedMoveList;

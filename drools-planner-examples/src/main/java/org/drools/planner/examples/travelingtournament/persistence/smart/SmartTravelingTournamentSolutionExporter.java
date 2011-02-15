@@ -25,9 +25,6 @@ import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SmartTravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";

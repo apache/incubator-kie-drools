@@ -25,7 +25,6 @@ import org.drools.planner.core.localsearch.decider.forager.Forager;
 /**
  * A decider decides the next step.
  * @see DefaultDecider
- * @author Geoffrey De Smet
  */
 public interface Decider extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
 

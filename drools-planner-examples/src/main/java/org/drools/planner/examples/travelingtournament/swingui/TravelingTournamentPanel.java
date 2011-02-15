@@ -40,7 +40,6 @@ import org.drools.planner.examples.travelingtournament.solver.simple.move.DayCha
 
 /**
  * TODO this code is highly unoptimized
- * @author Geoffrey De Smet
  */
 public class TravelingTournamentPanel extends SolutionPanel {
 

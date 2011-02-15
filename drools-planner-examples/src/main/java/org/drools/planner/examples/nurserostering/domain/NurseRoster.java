@@ -35,9 +35,6 @@ import org.drools.planner.examples.nurserostering.domain.request.DayOnRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("NurseRoster")
 public class NurseRoster extends AbstractPersistable implements Solution {
 

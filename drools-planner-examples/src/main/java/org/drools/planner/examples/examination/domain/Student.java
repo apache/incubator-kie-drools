@@ -22,7 +22,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 /**
  * Not used during score calculation, so not inserted into the working memory.
- * @author Geoffrey De Smet
  */
 @XStreamAlias("Student")
 public class Student extends AbstractPersistable implements Comparable<Student> {

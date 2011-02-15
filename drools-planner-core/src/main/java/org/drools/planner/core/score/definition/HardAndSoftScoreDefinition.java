@@ -20,9 +20,6 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndSoftScore> {
 
     private double hardScoreTimeGradientWeight = 0.75;

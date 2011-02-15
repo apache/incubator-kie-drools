@@ -24,9 +24,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 

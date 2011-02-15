@@ -21,9 +21,6 @@ import java.io.InputStream;
 
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public interface SolutionDao {
 
     String getDirName();

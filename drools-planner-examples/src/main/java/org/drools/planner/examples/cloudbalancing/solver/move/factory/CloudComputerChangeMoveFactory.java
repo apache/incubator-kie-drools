@@ -27,9 +27,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudComputerChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

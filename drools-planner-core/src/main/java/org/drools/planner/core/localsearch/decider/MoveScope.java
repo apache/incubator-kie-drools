@@ -24,9 +24,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class MoveScope {
 
     private final LocalSearchStepScope localSearchStepScope;

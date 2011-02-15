@@ -23,9 +23,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequence>, Serializable {
 
     private Employee employee;

@@ -24,7 +24,6 @@ import org.drools.event.AbstractEventSupport;
 
 /**
  * Internal API.
- * @author Geoffrey De Smet
  */
 public class SolverEventSupport extends AbstractEventSupport<SolverEventListener> {
 

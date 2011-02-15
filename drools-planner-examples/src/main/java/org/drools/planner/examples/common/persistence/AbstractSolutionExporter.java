@@ -22,9 +22,6 @@ import java.util.Arrays;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.app.LoggingMain;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractSolutionExporter extends LoggingMain {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";

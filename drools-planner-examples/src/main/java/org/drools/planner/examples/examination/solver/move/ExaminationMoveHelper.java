@@ -22,9 +22,6 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationMoveHelper {
 
     public static void movePeriod(WorkingMemory workingMemory, Exam exam, Period period) {

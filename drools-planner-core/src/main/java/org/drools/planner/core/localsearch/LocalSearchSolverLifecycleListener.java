@@ -16,9 +16,6 @@
 
 package org.drools.planner.core.localsearch;
 
-/**
- * @author Geoffrey De Smet
- */
 public interface LocalSearchSolverLifecycleListener {
 
     void solvingStarted(LocalSearchSolverScope localSearchSolverScope);

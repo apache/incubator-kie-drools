@@ -44,9 +44,6 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BestScoreStatistic implements SolverStatistic {
 
     private List<String> configNameList = new ArrayList<String>();

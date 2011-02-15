@@ -42,9 +42,6 @@ import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SolutionBusiness {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

@@ -21,9 +21,6 @@ import java.util.Collection;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PropertyTabuAcceptor extends AbstractTabuAcceptor {
 
     // ************************************************************************

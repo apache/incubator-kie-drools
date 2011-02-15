@@ -34,9 +34,6 @@ import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override

@@ -16,9 +16,6 @@
 
 package org.drools.planner.core.localsearch.stepstatistic;
 
-/**
- * @author Geoffrey De Smet
- */
 public interface StepStatistic { // TODO This isn't used anywhere
 
     /**

@@ -26,7 +26,6 @@ import org.drools.planner.core.move.Move;
 /**
  * A Forager collects the accepted moves and picks the next step from those for the Decider.
  * @see AbstractForager
- * @author Geoffrey De Smet
  */
 public interface Forager extends LocalSearchSolverLifecycleListener {
 

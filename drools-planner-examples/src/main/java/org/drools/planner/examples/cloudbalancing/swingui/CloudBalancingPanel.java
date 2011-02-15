@@ -49,7 +49,6 @@ import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove
 
 /**
  * TODO this code is highly unoptimized
- * @author Geoffrey De Smet
  */
 public class CloudBalancingPanel extends SolutionPanel {
 

@@ -27,9 +27,6 @@ import org.drools.planner.core.localsearch.decider.selector.Selector;
 import org.drools.planner.core.localsearch.decider.selector.TopListSelector;
 import org.drools.planner.core.move.factory.MoveFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("selector")
 public class SelectorConfig {
 

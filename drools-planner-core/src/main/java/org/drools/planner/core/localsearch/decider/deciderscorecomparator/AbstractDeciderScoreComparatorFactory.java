@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link DeciderScoreComparatorFactory}.
  * @see DeciderScoreComparatorFactory
- * @author Geoffrey De Smet
  */
 public abstract class AbstractDeciderScoreComparatorFactory implements DeciderScoreComparatorFactory {
 

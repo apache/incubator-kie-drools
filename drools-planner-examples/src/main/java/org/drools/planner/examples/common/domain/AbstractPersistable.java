@@ -18,9 +18,6 @@ package org.drools.planner.examples.common.domain;
 
 import java.io.Serializable;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractPersistable implements Serializable {
 
     protected Long id;

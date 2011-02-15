@@ -30,7 +30,6 @@ import org.drools.planner.core.solution.Solution;
  * On that change it should also notify the {@link WorkingMemory} accordingly.
  * </p>
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
- * @author Geoffrey De Smet
  */
 public interface Move {
 

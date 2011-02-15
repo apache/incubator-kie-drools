@@ -16,9 +16,6 @@
 
 package org.drools.planner.examples.pas.domain;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum Gender {
     MALE("M"),
     FEMALE("F");

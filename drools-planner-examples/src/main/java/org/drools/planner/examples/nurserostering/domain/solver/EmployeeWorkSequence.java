@@ -24,9 +24,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, Serializable {
 
     private Employee employee;

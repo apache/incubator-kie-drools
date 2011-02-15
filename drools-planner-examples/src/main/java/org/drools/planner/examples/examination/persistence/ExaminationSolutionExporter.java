@@ -25,9 +25,6 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".sln";

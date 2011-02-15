@@ -24,7 +24,6 @@ import org.drools.planner.core.score.Score;
 
 /**
  * TODO Under construction. Feel free to create a patch to improve this acceptor!
- * @author Geoffrey De Smet
  */
 public class GreatDelugeAcceptor extends AbstractAcceptor {
 

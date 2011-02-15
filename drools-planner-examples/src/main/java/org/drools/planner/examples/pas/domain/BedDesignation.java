@@ -22,9 +22,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("BedDesignation")
 public class BedDesignation extends AbstractPersistable implements Comparable<BedDesignation> {
 

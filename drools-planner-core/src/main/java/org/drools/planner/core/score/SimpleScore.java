@@ -22,7 +22,6 @@ package org.drools.planner.core.score;
  * Implementations must be immutable.
  * @see Score
  * @see DefaultSimpleScore
- * @author Geoffrey De Smet
  */
 public interface SimpleScore extends Score<SimpleScore> {
 

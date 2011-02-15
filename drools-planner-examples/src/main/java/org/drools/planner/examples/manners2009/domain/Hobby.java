@@ -16,9 +16,6 @@
 
 package org.drools.planner.examples.manners2009.domain;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum Hobby {
     TENNIS("1"),
     GOLF("2"),

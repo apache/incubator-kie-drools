@@ -29,9 +29,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BedDesignationSwitchMove implements Move, TabuPropertyEnabled {
 
     private BedDesignation leftBedDesignation;

@@ -26,9 +26,6 @@ import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTr
 import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentSolutionExporter;
 import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentSolutionImporter;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SmartTravelingTournamentApp extends AbstractTravelingTournamentApp {
 
     public static final String SOLVER_CONFIG

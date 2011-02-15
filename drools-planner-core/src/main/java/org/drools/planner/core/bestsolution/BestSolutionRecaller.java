@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A BestSolutionRecaller remembers the best solution that a {@link Solver} encounters.
- * @author Geoffrey De Smet
  */
 public class BestSolutionRecaller implements AbstractSolverLifecycleListener {
 

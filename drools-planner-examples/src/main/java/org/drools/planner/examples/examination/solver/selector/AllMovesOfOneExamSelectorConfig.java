@@ -23,7 +23,6 @@ import org.drools.planner.core.localsearch.decider.selector.Selector;
 /**
  * A custom selector configuration for the Examination example.
  * @see AllMovesOfOneExamSelector
- * @author Geoffrey De Smet
  */
 public class AllMovesOfOneExamSelectorConfig extends SelectorConfig {
 

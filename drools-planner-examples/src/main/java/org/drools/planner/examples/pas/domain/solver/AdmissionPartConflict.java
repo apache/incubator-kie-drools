@@ -23,7 +23,6 @@ import org.drools.planner.examples.pas.domain.AdmissionPart;
 
 /**
  * Calculated during initialization, not modified during score calculation.
- * @author Geoffrey De Smet
  */
 public class AdmissionPartConflict implements Serializable {
 

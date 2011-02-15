@@ -41,7 +41,6 @@ import org.drools.planner.examples.examination.solver.move.RoomChangeMove;
 
 /**
  * TODO this code is highly unoptimized
- * @author Geoffrey De Smet
  */
 public class ExaminationPanel extends SolutionPanel {
 

@@ -24,9 +24,6 @@ import org.drools.planner.examples.common.app.CommonApp;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudBalancingApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

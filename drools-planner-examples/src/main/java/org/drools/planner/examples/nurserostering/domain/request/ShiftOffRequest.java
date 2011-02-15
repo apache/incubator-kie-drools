@@ -22,9 +22,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("ShiftOffRequest")
 public class ShiftOffRequest extends AbstractPersistable implements Comparable<ShiftOffRequest> {
 

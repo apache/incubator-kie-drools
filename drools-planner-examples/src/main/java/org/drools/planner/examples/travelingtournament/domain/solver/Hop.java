@@ -24,9 +24,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.travelingtournament.domain.Team;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Hop implements Comparable<Hop>, Serializable {
 
     private Team team;

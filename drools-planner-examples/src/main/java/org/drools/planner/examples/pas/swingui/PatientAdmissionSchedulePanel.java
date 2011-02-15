@@ -40,7 +40,6 @@ import org.drools.planner.examples.pas.solver.move.BedChangeMove;
 
 /**
  * TODO this code is highly unoptimized
- * @author Geoffrey De Smet
  */
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 

@@ -26,7 +26,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
  * which compares 2 scores to decide the next step.
  * That Score Comparator can consider shifting penalty, aging penalty, ...
  * in which case it differs from the natural ordering of scores.
- * @author Geoffrey De Smet
  */
 public interface DeciderScoreComparatorFactory extends LocalSearchSolverLifecycleListener {
 

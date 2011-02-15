@@ -20,9 +20,6 @@ import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PersistableIdComparator implements Comparator<AbstractPersistable> {
 
     public int compare(AbstractPersistable a, AbstractPersistable b) {

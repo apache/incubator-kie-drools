@@ -35,9 +35,6 @@ import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {

@@ -23,7 +23,6 @@ import org.drools.planner.examples.examination.domain.Exam;
 
 /**
  * Calculated during initialization, not used for score calculation, used for move creation.
- * @author Geoffrey De Smet
  */
 public class ExamBefore implements Serializable {
 

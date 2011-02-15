@@ -28,9 +28,6 @@ import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourse
 import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseSolutionImporter;
 import org.drools.planner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

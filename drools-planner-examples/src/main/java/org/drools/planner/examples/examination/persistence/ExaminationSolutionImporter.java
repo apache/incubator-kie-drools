@@ -44,9 +44,6 @@ import org.drools.planner.examples.examination.domain.RoomHardConstraintType;
 import org.drools.planner.examples.examination.domain.Student;
 import org.drools.planner.examples.examination.domain.Topic;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".exam";

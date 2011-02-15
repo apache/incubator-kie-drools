@@ -27,9 +27,6 @@ import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.solver.move.BedDesignationSwitchMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BedDesignationSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

@@ -29,9 +29,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
 
     private Employee fromEmployee;

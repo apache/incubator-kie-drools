@@ -26,7 +26,6 @@ import org.drools.planner.core.event.SolverEventListener;
  * A Solver solves planning problems.
  * <p/>
  * Most methods are not thread-safe and should be called from the same thread.
- * @author Geoffrey De Smet
  */
 public interface Solver {
 

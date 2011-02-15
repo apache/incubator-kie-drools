@@ -29,9 +29,6 @@ import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExamSwitchMove implements Move, TabuPropertyEnabled {
 
     private Exam leftExam;

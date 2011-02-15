@@ -32,9 +32,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseSmokeTest extends LoggingTest {
 
     public static final String SOLVER_CONFIG

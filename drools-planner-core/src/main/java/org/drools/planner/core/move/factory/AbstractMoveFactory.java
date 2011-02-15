@@ -22,9 +22,6 @@ import org.drools.planner.core.localsearch.decider.Decider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractMoveFactory implements MoveFactory {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

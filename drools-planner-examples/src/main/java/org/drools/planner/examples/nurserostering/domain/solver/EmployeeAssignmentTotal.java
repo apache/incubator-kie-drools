@@ -25,9 +25,6 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTotal>, Serializable {
 
     private Employee employee;

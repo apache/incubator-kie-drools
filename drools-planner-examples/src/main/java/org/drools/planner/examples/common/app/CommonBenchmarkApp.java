@@ -20,9 +20,6 @@ import java.io.File;
 
 import org.drools.planner.benchmark.XmlSolverBenchmarker;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class CommonBenchmarkApp extends LoggingMain {
 
     private static final String LOGGING_CONFIG = "/org/drools/planner/examples/common/app/log4j-benchmark.xml";

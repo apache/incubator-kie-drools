@@ -22,7 +22,6 @@ import org.drools.planner.core.score.Score;
  * A ScoreDefinition knows how to compare scores and what the perfect maximum/minimum Score is.
  * @see AbstractScoreDefinition
  * @see HardAndSoftScoreDefinition
- * @author Geoffrey De Smet
  */
 public interface ScoreDefinition<S extends Score> {
 

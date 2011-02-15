@@ -24,7 +24,6 @@ import org.drools.planner.examples.pas.domain.Room;
 
 /**
  * Calculated during initialization, not modified during score calculation.
- * @author Geoffrey De Smet
  */
 @Deprecated
 public class AdmissionPartSpecialismMissingInRoom implements Serializable {

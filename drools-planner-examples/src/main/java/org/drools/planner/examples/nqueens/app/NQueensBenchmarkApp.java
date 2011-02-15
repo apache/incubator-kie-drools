@@ -21,9 +21,6 @@ import java.io.File;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueensBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String SOLVER_BENCHMARK_CONFIG

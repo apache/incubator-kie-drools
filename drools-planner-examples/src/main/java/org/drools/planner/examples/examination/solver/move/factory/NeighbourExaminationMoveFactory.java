@@ -29,9 +29,6 @@ import org.drools.planner.examples.examination.domain.Room;
 import org.drools.planner.examples.examination.solver.move.PeriodChangeMove;
 import org.drools.planner.examples.examination.solver.move.RoomChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NeighbourExaminationMoveFactory extends AbstractMoveFactory {
 
     private static final int PERIOD_JUMP = 2;

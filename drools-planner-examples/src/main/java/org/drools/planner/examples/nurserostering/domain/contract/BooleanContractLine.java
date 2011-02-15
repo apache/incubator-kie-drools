@@ -18,9 +18,6 @@ package org.drools.planner.examples.nurserostering.domain.contract;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("BooleanContractLine")
 public class BooleanContractLine extends ContractLine {
 

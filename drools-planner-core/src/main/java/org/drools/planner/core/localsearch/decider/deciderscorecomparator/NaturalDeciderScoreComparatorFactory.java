@@ -25,7 +25,6 @@ import org.drools.planner.core.score.comparator.NaturalScoreComparator;
  * Implementation of {@link DeciderScoreComparatorFactory}.
  * Compares by the natural order of scores.
  * @see DeciderScoreComparatorFactory
- * @author Geoffrey De Smet
  */
 public class NaturalDeciderScoreComparatorFactory extends AbstractDeciderScoreComparatorFactory {
 

@@ -22,9 +22,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("DayOffRequest")
 public class DayOffRequest extends AbstractPersistable implements Comparable<DayOffRequest> {
 

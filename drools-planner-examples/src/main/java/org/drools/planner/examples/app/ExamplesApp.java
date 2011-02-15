@@ -39,9 +39,6 @@ import org.drools.planner.examples.examination.app.ExaminationApp;
 import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ExamplesApp extends JFrame {
 
     public static void main(String[] args) {

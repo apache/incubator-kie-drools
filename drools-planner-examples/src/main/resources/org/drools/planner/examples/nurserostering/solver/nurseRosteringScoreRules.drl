@@ -57,8 +57,6 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequ
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 
-// @author Geoffrey De Smet
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

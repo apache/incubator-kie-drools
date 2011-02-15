@@ -27,9 +27,6 @@ import org.drools.planner.examples.manners2009.persistence.Manners2009DaoImpl;
 import org.drools.planner.examples.manners2009.persistence.Manners2009SolutionImporter;
 import org.drools.planner.examples.manners2009.swingui.Manners2009Panel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Manners2009App extends CommonApp {
 
     public static final String SOLVER_CONFIG

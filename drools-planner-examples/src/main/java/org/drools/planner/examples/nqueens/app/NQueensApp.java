@@ -24,9 +24,6 @@ import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueensApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

@@ -26,7 +26,6 @@ import org.drools.planner.core.localsearch.decider.MoveScope;
  * Combines several acceptors into one.
  * Multiplies the accept chance of its acceptors.
  * For example: combine solution and property tabu to do tabu on both.
- * @author Geoffrey De Smet
  */
 public class CompositeAcceptor extends AbstractAcceptor {
 

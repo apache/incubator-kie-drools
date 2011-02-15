@@ -26,8 +26,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
-// @author Geoffrey De Smet
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

@@ -42,7 +42,6 @@ import org.drools.planner.examples.manners2009.solver.move.SeatDesignationSwitch
 
 /**
  * TODO this code is highly unoptimized
- * @author Geoffrey De Smet
  */
 public class Manners2009Panel extends SolutionPanel {
 

@@ -24,7 +24,6 @@ import org.drools.planner.core.score.Score;
  * Abstract superclass for {@link ScoreDefinition}.
  * @see ScoreDefinition
  * @see HardAndSoftScoreDefinition
- * @author Geoffrey De Smet
  */
 public abstract class AbstractScoreDefinition<S extends Score> implements ScoreDefinition<S>, Serializable {
 

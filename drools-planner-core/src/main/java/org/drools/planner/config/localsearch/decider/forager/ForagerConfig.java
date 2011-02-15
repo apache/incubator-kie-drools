@@ -21,9 +21,6 @@ import org.drools.planner.core.localsearch.decider.forager.AcceptedForager;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("forager")
 public class ForagerConfig {
 

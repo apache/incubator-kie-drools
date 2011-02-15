@@ -24,9 +24,6 @@ import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.move.Move;
 
-/**
- * @author Geoffrey De Smet
- */
 public class TopListSelector extends AbstractSelector {
 
     private int topSize;

@@ -22,7 +22,6 @@ import org.drools.planner.core.Solver;
  * A BruteForceSolver is a Solver which uses the brute force algorithm
  * @see Solver
  * @see DefaultBruteForceSolver
- * @author Geoffrey De Smet
  */
 public interface BruteForceSolver extends Solver {
 

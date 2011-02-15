@@ -35,9 +35,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
 import org.drools.runtime.rule.FactHandle;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     @Override

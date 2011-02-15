@@ -21,7 +21,6 @@ import org.drools.planner.core.score.Score;
 /**
  * Evaluates a solution based on its WorkingMemory (which is part of the rule production system).
  * @TODO score-in-solution refactor
- * @author Geoffrey De Smet
  */
 public interface ScoreCalculator extends Cloneable {
 

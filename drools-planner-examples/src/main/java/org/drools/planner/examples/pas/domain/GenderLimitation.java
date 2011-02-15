@@ -16,9 +16,6 @@
 
 package org.drools.planner.examples.pas.domain;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum GenderLimitation {
     ANY_GENDER("N"), // mixed
     MALE_ONLY("M"),

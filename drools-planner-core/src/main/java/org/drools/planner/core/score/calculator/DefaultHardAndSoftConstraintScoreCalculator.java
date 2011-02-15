@@ -19,9 +19,6 @@ package org.drools.planner.core.score.calculator;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 
-/**
- * @author Geoffrey De Smet
- */
 public class DefaultHardAndSoftConstraintScoreCalculator extends AbstractScoreCalculator
         implements HardAndSoftConstraintScoreCalculator {
 

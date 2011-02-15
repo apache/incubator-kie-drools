@@ -28,9 +28,6 @@ import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolu
 import org.drools.planner.examples.nurserostering.persistence.NurseRosteringSolutionImporter;
 import org.drools.planner.examples.nurserostering.swingui.NurseRosteringPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

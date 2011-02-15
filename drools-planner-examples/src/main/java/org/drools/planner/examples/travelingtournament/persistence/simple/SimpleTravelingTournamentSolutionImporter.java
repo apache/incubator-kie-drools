@@ -23,9 +23,6 @@ import org.drools.planner.examples.travelingtournament.domain.Match;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 import org.drools.planner.examples.travelingtournament.persistence.TravelingTournamentSolutionImporter;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SimpleTravelingTournamentSolutionImporter extends TravelingTournamentSolutionImporter {
 
     public static void main(String[] args) {

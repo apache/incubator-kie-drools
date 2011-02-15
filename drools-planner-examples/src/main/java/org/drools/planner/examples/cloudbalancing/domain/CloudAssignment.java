@@ -24,9 +24,6 @@ import org.drools.planner.core.annotations.PlanningValueProperty;
 import org.drools.planner.core.annotations.PlanningVariableClass;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @PlanningVariableClass
 @XStreamAlias("CloudAssignment")
 public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {

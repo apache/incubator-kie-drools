@@ -28,9 +28,6 @@ import org.drools.planner.core.annotations.PlanningValueProperty;
 import org.drools.planner.core.annotations.PlanningVariableClass;
 import org.drools.runtime.rule.FactHandle;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PlanningVariableHandler {
 
     private Object planningVariable;

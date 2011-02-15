@@ -23,9 +23,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("Assignment")
 public class Assignment extends AbstractPersistable implements Comparable<Assignment> {
 

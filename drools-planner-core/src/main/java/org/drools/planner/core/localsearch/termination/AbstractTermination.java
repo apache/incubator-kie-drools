@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link Termination}.
- * @author Geoffrey De Smet
  */
 public abstract class AbstractTermination implements Termination {
 

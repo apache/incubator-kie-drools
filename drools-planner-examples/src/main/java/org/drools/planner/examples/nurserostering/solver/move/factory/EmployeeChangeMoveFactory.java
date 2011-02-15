@@ -27,9 +27,6 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

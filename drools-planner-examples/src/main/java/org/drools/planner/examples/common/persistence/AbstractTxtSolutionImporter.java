@@ -24,9 +24,6 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";

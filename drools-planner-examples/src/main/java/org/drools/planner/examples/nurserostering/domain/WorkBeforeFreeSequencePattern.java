@@ -18,9 +18,6 @@ package org.drools.planner.examples.nurserostering.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("WorkBeforeFreeSequencePattern")
 public class WorkBeforeFreeSequencePattern extends Pattern {
 

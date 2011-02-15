@@ -63,9 +63,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("solverBenchmarkSuite")
 public class SolverBenchmarkSuite {
 

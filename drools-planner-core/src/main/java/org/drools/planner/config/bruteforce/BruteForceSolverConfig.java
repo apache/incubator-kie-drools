@@ -21,9 +21,6 @@ import org.drools.planner.config.AbstractSolverConfig;
 import org.drools.planner.core.bruteforce.BruteForceSolver;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolver;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("bruteForceSolver")
 public class BruteForceSolverConfig extends AbstractSolverConfig {
 

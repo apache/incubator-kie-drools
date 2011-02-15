@@ -27,9 +27,6 @@ import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.Room;
 import org.drools.planner.examples.examination.solver.move.RoomChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class RoomChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

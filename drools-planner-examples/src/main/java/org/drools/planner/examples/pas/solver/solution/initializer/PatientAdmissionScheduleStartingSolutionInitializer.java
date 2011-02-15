@@ -37,9 +37,6 @@ import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Room;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PatientAdmissionScheduleStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
     private boolean checkSameBedInSameNight = true;

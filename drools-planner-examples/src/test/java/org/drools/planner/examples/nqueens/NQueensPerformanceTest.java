@@ -24,9 +24,6 @@ import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
 import org.junit.Test;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueensPerformanceTest extends SolverPerformanceTest {
 
     @Override

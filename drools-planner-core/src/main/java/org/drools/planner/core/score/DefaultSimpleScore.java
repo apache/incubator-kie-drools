@@ -21,7 +21,6 @@ package org.drools.planner.core.score;
  * <p/>
  * This class is immutable.
  * @see SimpleScore
- * @author Geoffrey De Smet
  */
 public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
         implements SimpleScore {

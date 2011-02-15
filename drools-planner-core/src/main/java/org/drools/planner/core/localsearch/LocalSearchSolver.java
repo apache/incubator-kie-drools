@@ -23,7 +23,6 @@ import org.drools.planner.core.Solver;
  * such as tabu search, simulated annealing, ...
  * @see Solver
  * @see DefaultLocalSearchSolver
- * @author Geoffrey De Smet
  */
 public interface LocalSearchSolver extends Solver {
 

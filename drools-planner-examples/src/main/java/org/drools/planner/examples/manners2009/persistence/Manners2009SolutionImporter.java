@@ -34,9 +34,6 @@ import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.Table;
 
-/**
- * @author Geoffrey De Smet
- */
 public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {

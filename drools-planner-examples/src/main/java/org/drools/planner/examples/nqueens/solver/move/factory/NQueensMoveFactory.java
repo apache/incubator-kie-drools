@@ -26,9 +26,6 @@ import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.solver.move.YChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueensMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

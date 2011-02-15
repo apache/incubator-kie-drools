@@ -16,9 +16,6 @@
 
 package org.drools.planner.examples.nurserostering.domain.contract;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum ContractLineType {
     SINGLE_ASSIGNMENT_PER_DAY,
     TOTAL_ASSIGNMENTS,

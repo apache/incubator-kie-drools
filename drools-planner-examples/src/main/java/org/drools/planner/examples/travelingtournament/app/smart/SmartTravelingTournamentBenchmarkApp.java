@@ -21,9 +21,6 @@ import java.io.File;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 import org.drools.planner.examples.travelingtournament.domain.TravelingTournament;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SmartTravelingTournamentBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String SOLVER_BENCHMARK_CONFIG_PREFIX

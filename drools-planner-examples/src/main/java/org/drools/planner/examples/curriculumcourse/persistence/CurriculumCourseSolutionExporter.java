@@ -23,9 +23,6 @@ import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSched
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = ".sol";

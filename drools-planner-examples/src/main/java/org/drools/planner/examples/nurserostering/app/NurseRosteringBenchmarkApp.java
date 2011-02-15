@@ -21,9 +21,6 @@ import java.io.File;
 import org.drools.planner.examples.common.app.CommonBenchmarkApp;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NurseRosteringBenchmarkApp extends CommonBenchmarkApp {
 
     public static final String SPRINT_SOLVER_BENCHMARK_CONFIG

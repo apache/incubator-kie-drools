@@ -24,7 +24,6 @@ import org.drools.planner.core.solver.AbstractSolverScope;
 
 /**
  * Default implementation of {@link LocalSearchSolver}.
- * @author Geoffrey De Smet
  */
 public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSearchSolver,
         LocalSearchSolverLifecycleListener {

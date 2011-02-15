@@ -49,9 +49,6 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Geoffrey De Smet
- */
 public class WorkflowFrame extends JFrame {
     
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

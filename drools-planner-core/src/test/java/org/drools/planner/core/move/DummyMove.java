@@ -18,9 +18,6 @@ package org.drools.planner.core.move;
 
 import org.drools.WorkingMemory;
 
-/**
- * @author Geoffrey De Smet
-*/
 public class DummyMove implements Move {
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {

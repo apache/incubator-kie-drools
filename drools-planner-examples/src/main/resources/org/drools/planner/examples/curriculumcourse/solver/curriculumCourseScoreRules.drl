@@ -32,8 +32,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Teacher;
 import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
 
-// @author Geoffrey De Smet
-
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // ############################################################################

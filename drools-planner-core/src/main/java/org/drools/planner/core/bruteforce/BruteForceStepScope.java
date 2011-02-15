@@ -19,9 +19,6 @@ package org.drools.planner.core.bruteforce;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BruteForceStepScope extends AbstractStepScope {
 
     private final BruteForceSolverScope bruteForceSolverScope;

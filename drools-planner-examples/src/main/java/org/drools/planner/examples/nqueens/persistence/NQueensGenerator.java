@@ -28,9 +28,6 @@ import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 
-/**
- * @author Geoffrey De Smet
- */
 public class NQueensGenerator extends LoggingMain {
 
     private static final File outputDir = new File("data/nqueens/unsolved/");

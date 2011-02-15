@@ -23,9 +23,6 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("Contract")
 public class Contract extends AbstractPersistable implements Comparable<Contract> {
 

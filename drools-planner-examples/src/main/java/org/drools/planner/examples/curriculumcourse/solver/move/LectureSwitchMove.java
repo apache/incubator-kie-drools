@@ -29,9 +29,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 
-/**
- * @author Geoffrey De Smet
- */
 public class LectureSwitchMove implements Move, TabuPropertyEnabled {
 
     private Lecture leftLecture;

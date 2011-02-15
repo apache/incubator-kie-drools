@@ -31,9 +31,6 @@ import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
 
-/**
- * @author Geoffrey De Smet
- */
 public class XmlSolverBenchmarker {
 
     private XStream xStream;

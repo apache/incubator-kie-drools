@@ -28,9 +28,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("CurriculumCourseSchedule")
 public class CurriculumCourseSchedule extends AbstractPersistable implements Solution {
 

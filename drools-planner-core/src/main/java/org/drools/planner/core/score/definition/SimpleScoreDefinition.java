@@ -20,9 +20,6 @@ import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 
     private SimpleScore perfectMaximumScore = new DefaultSimpleScore(0);

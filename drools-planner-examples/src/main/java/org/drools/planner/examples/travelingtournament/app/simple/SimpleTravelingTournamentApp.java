@@ -23,9 +23,6 @@ import org.drools.planner.examples.travelingtournament.app.AbstractTravelingTour
 import org.drools.planner.examples.travelingtournament.persistence.simple.SimpleTravelingTournamentDaoImpl;
 import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SimpleTravelingTournamentApp extends AbstractTravelingTournamentApp {
 
     public static final String SOLVER_CONFIG

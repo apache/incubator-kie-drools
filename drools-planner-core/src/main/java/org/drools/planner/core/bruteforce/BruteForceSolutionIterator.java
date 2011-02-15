@@ -23,9 +23,6 @@ import java.util.List;
 import org.drools.planner.core.annotations.PlanningVariableClass;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class BruteForceSolutionIterator {
 
     private BruteForceSolverScope bruteForceSolverScope;

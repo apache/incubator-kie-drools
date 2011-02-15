@@ -29,9 +29,6 @@ import org.drools.planner.examples.pas.persistence.PatientAdmissionScheduleSolut
 import org.drools.planner.examples.pas.persistence.PatientAdmissionScheduleSolutionImporter;
 import org.drools.planner.examples.pas.swingui.PatientAdmissionSchedulePanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PatientAdmissionScheduleApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

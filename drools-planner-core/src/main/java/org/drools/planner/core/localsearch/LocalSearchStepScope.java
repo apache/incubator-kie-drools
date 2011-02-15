@@ -23,9 +23,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
-/**
- * @author Geoffrey De Smet
- */
 public class LocalSearchStepScope extends AbstractStepScope {
 
     private final LocalSearchSolverScope localSearchSolverScope;

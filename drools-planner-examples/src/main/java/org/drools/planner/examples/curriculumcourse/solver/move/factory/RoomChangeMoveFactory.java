@@ -27,9 +27,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class RoomChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

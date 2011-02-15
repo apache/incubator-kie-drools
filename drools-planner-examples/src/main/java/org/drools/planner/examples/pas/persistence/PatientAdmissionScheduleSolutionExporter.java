@@ -25,9 +25,6 @@ import org.drools.planner.examples.pas.domain.Patient;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutionExporter {
 
     public static void main(String[] args) {

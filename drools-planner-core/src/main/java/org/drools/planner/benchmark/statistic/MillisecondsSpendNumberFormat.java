@@ -20,9 +20,6 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-/**
- * @author Geoffrey De Smet
- */
 class MillisecondsSpendNumberFormat extends NumberFormat {
 
     private final static long DAY_MILLIS = 3600000L * 24L;

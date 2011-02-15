@@ -35,9 +35,6 @@ import org.drools.planner.examples.curriculumcourse.domain.Timeslot;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
 import org.drools.planner.core.solution.Solution;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".ctt";

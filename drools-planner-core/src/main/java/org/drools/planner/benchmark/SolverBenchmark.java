@@ -25,9 +25,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
 import org.drools.planner.core.score.Score;
 
-/**
- * @author Geoffrey De Smet
- */
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmark {
 

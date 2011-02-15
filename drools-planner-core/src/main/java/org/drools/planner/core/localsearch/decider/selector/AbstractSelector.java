@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract superclass for {@link Selector}.
  * @see Selector
- * @author Geoffrey De Smet
  */
 public abstract class AbstractSelector implements Selector {
 

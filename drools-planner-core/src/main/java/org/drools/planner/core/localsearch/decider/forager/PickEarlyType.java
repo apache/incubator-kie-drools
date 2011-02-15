@@ -16,9 +16,6 @@
 
 package org.drools.planner.core.localsearch.decider.forager;
 
-/**
- * @author Geoffrey De Smet
- */
 public enum PickEarlyType {
     NEVER,
     FIRST_BEST_SCORE_IMPROVING,

@@ -24,9 +24,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
-/**
- * @author Geoffrey De Smet
- */
 public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<EmployeeConsecutiveWeekendAssignmentStart>,
         Serializable {
 

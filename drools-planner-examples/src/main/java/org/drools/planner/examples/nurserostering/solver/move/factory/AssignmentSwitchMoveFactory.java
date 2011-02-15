@@ -27,9 +27,6 @@ import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.solver.move.AssignmentSwitchMove;
 
-/**
- * @author Geoffrey De Smet
- */
 public class AssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {

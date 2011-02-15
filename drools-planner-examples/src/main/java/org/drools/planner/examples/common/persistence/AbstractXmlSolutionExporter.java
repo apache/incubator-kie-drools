@@ -28,9 +28,6 @@ import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-/**
- * @author Geoffrey De Smet
- */
 public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";

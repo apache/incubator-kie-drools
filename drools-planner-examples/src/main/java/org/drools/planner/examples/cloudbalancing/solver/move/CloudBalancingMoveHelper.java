@@ -22,9 +22,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.runtime.rule.FactHandle;
 
-/**
- * @author Geoffrey De Smet
- */
 public class CloudBalancingMoveHelper {
 
     public static void moveCloudComputer(WorkingMemory workingMemory, CloudAssignment cloudAssignment,
