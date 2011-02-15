@@ -20,7 +20,7 @@ element. -->
 
 <!-- By default, debug attribute is "null", meaning that we not do touch -->
 <!-- internal log4j logging settings. The "null" value for the threshold -->
-<!-- attribute can be misleading. The threshold field of a repository	 -->
+<!-- attribute can be misleading. The threshold field of a repository   -->
 <!-- cannot be set to null. The "null" value for the threshold attribute -->
 <!-- simply means don't touch the threshold field, the threshold field   -->
 <!-- keeps its old value.                                                -->
@@ -45,18 +45,18 @@ element. -->
 <!-- and filters. They may also reference (or include) other appenders. -->
 <!ELEMENT appender (errorHandler?, param*, layout?, filter*, appender-ref*)>
 <!ATTLIST appender
-  name 		ID 	#REQUIRED
-  class 	CDATA	#REQUIRED
+  name     ID   #REQUIRED
+  class   CDATA  #REQUIRED
 >
 
 <!ELEMENT layout (param*)>
 <!ATTLIST layout
-  class		CDATA	#REQUIRED
+  class    CDATA  #REQUIRED
 >
 
 <!ELEMENT filter (param*)>
 <!ATTLIST filter
-  class		CDATA	#REQUIRED
+  class    CDATA  #REQUIRED
 >
 
 <!-- ErrorHandlers can be of any class. They can admit any number of -->
@@ -76,23 +76,23 @@ element. -->
 
 <!ELEMENT param EMPTY>
 <!ATTLIST param
-  name		CDATA   #REQUIRED
-  value		CDATA	#REQUIRED
+  name    CDATA   #REQUIRED
+  value    CDATA  #REQUIRED
 >
 
 
 <!-- The priority class is org.apache.log4j.Level by default -->
 <!ELEMENT priority (param*)>
 <!ATTLIST priority
-  class   CDATA	#IMPLIED
-  value	  CDATA #REQUIRED
+  class   CDATA  #IMPLIED
+  value    CDATA #REQUIRED
 >
 
 <!-- The level class is org.apache.log4j.Level by default -->
 <!ELEMENT level (param*)>
 <!ATTLIST level
-  class   CDATA	#IMPLIED
-  value	  CDATA #REQUIRED
+  class   CDATA  #IMPLIED
+  value    CDATA #REQUIRED
 >
 
 
@@ -101,16 +101,16 @@ element. -->
 <!ELEMENT category (param*,(priority|level)?,appender-ref*)>
 <!ATTLIST category
   class         CDATA   #IMPLIED
-  name		CDATA	#REQUIRED
-  additivity	(true|false) "true"
+  name    CDATA  #REQUIRED
+  additivity  (true|false) "true"
 >
 
 <!-- If no level element is specified, then the configurator MUST not -->
 <!-- touch the level of the named logger. -->
 <!ELEMENT logger (level?,appender-ref*)>
 <!ATTLIST logger
-  name		ID	#REQUIRED
-  additivity	(true|false) "true"
+  name    ID  #REQUIRED
+  additivity  (true|false) "true"
 >
 
 
@@ -159,8 +159,8 @@ element. -->
 
 <!ELEMENT log4j:locationInfo EMPTY>
 <!ATTLIST log4j:locationInfo
-  class  CDATA	#REQUIRED
-  method CDATA	#REQUIRED
-  file   CDATA	#REQUIRED
-  line   CDATA	#REQUIRED
+  class  CDATA  #REQUIRED
+  method CDATA  #REQUIRED
+  file   CDATA  #REQUIRED
+  line   CDATA  #REQUIRED
 >

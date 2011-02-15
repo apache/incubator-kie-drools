@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSpy v2009 (http://www.altova.com) by SSS (SSS) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="Solution">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="SchedulingPeriodID" type="xs:string"/>
-				<xs:element name="Competitor"/>
-				<xs:element name="SoftConstraintsPenalty" type="xs:nonNegativeInteger"/>
-				<xs:element name="Assignment" minOccurs="0" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="Date" type="xs:date"/>
-							<xs:element name="Employee" type="xs:string"/>
-							<xs:element name="ShiftType" type="xs:string"/>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+  <xs:element name="Solution">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SchedulingPeriodID" type="xs:string"/>
+        <xs:element name="Competitor"/>
+        <xs:element name="SoftConstraintsPenalty" type="xs:nonNegativeInteger"/>
+        <xs:element name="Assignment" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Date" type="xs:date"/>
+              <xs:element name="Employee" type="xs:string"/>
+              <xs:element name="ShiftType" type="xs:string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>
