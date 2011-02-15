@@ -4478,7 +4478,7 @@ public class MiscTest {
 
     }
 
-    @Test
+    @Test(timeout = 5000) // TODO remove explicit timout after the MVEL issue is fixed
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
