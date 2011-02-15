@@ -10,7 +10,7 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-docs-planner</artifactId>
+  <artifactId>drools-planner-docs</artifactId>
   <packaging>jdocbook</packaging>
 
   <name>Drools Planner documentation</name>
