@@ -13,13 +13,31 @@
   <artifactId>drools-planner</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools :: Planner parent</name>
+  <name>Drools Planner multiproject</name>
   <description>
     Drools Planner optimizes automated planning
     by combining metaheuristic search algorithms
     with rule engine powered score calculation.
-    This is the drools-planner parent pom.
+    This is the drools planner multiproject.
   </description>
+
+  <repositories>
+    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>

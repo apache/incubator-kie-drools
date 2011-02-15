@@ -12,7 +12,8 @@
 
   <artifactId>drools-docs-planner</artifactId>
   <packaging>jdocbook</packaging>
-  <name>Drools :: Documentation :: Drools :: Planner</name>
-  <description>Drools Planner Documentation</description>
+
+  <name>Drools Planner documentation</name>
+  <description>Drools Planner documentation</description>
 
 </project>
