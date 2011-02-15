@@ -6,6 +6,7 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Drools Release Notes</title>
 
+  <xi:include href="Section-What_is_new_Drools_5.2.0.M1.xml" />
   <xi:include href="Section-What_is_new_Drools_5.1.0.xml" />
   <xi:include href="Section-What_is_new_Drools_5.0.0.xml" />
   <xi:include href="Section-What_is_new_Drools_4.xml" />
