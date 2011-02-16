@@ -24,14 +24,85 @@
   <section>
     <title>Guvnor</title>
     <section>
-      <title>GWT-Ext Removed</title>
-        <para>Guvnor look &amp; feel is moving closer to the native GWT look. This is still a work in progress and expected to be finished for the M2 release.</para>
-    </section>
+      <title>Guvnor Look &amp; Feel Moving Closer To Native GWT Look</title>
+      <para>We are removing the GWT-Ext from Guvnor. This is still a work in progress and expected to be finished for the M2 release.</para>
+   </section>
     <section>
       <title>Decision Tables</title>
+      <para>The existing Guided Decision Table has been replaced to provide a foundation on which to build our future guided Decision Table toolset. The initial release largely provides an equivalent feature-set to the obsolete Guided Decision Table with a few improvements, as explained in more detail below. A change from the legacy table was essential for us to begin to realise our desire to provide the number one web-based decision table available. With this foundation we will be able to expand the capabilities of our Guided Decision Table toolset to provide a feature rich, user-friendly environment.</para>
+      <figure>
+        <title>Basic Decision Table</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+              fileref="images/Chapter-Release_Notes/dtable-basic.png"
+              format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <section>
+        <title>Cell Merging</title>
+        <para>Adjacent cells in the same column with the same value can be merged thus eliminating the need for otherwise cluttered views of multiple rows containing the same value.</para>
+        <figure>
+          <title>Merged Decision Table</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                fileref="images/Chapter-Release_Notes/dtable-merged.png"
+                format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+      <section>
+        <title>Typed-columns</title>
+        <para>The major basic data-types (numeric, date, text and Boolean) are handled as such and respond as you'd expect to sorting.</para> 
+        <figure>
+          <title>Datatype Sorting</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                fileref="images/Chapter-Release_Notes/dtable-datatype-sorting.png"
+                format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+      <section>
+        <title>Improved header</title>
+        <para>The table header section has been improved to show more verbose information to facilitate design-time understanding.
+The table has a fixed header that remains as you'd expect, at the top of the table, whilst scrolling larger decision tables.</para>
+        <figure>
+          <title>Scrolling Decision Table</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                fileref="images/Chapter-Release_Notes/dtable-scrolling.png"
+                format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+      <section>
+        <title>Tighter integration</title>
+        <para>The decision table responds better to changes made to column definitions; so changes to column Fact Type, Fact Type field, calculation type, value list etc are reflected in the table itself.</para>
+     </section>
     </section>
     <section>
       <title>Embed Guvnor Editors</title>
+      <para>Embed Guvnor Editor's in external applications. You can create or edit assets like Business Rules, Technical Rules, DSL definitions and Decision Tables in your applications using Guvnor's specific editors. You can even edit multiple assets at once.</para>
+    </section>
+    <section>
+      <title>Enhanced Package's Report</title>
+      <para>Templates Rules and Decision Tables rules are now included in the package's report.</para>
+    </section>
+    <section>
+      <title>Package's Model URL</title>
+      <para>The JAR model of the packages is now accessible through an URL, just like rules sources and binaries. This allows external applications to get not only the rules, but also the model needed to run them.</para>
+    </section>
+    <section>
+      <title>Spring Context Editor</title>
+      <para>Now it is possible to create and mange Spring Context files inside Guvnor. These Context Files are exposed through URLs so external applications can use them.</para>
     </section>
     <section>
       <title>Jackrabbit Cluster</title>
