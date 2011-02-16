@@ -18,7 +18,7 @@ package org.drools.compiler.xml.rules;
 
 import java.util.HashSet;
 
-import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -48,7 +48,7 @@ public class PredicateHandler extends BaseAbstractHandler
             this.validPeers.add( null );
             this.validPeers.add( FieldConstraintDescr.class );
             this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( FieldBindingDescr.class );
+            this.validPeers.add( BindingDescr.class );
             this.allowNesting = false;
         }
     }

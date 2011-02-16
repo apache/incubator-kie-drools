@@ -19,15 +19,14 @@ package org.drools.lang;
 import java.util.Iterator;
 
 import org.drools.base.evaluators.Operator;
-import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.StringUtils;
-import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
+import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.builder.RuleBuildContext;
@@ -41,7 +40,6 @@ public class MVELDumper extends ReflectiveVisitor {
 
     private StringBuilder        mvelDump;
     private boolean             isDateField;
-    private static final String eol = System.getProperty( "line.separator" );
     private String              template;
     private String              fieldName;
     private RuleBuildContext context;
@@ -76,7 +74,7 @@ public class MVELDumper extends ReflectiveVisitor {
         this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getIdentifier() );
     }
 
-    public void visitFieldBindingDescr(final FieldBindingDescr descr) {
+    public void visitFieldBindingDescr(final BindingDescr descr) {
         // do nothing
     }
 
@@ -124,7 +122,7 @@ public class MVELDumper extends ReflectiveVisitor {
         } else {
             connective = " && ";
         }
-        for ( final Iterator it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
+        for ( final Iterator<RestrictionDescr> it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
             final Object temp = it.next();
             visit( temp );
             descrString += this.template;

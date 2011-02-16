@@ -15,6 +15,7 @@
  */
 
 package org.drools.compiler;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -51,11 +52,11 @@ import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -113,11 +114,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
+        BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                           "price" );
         pattern.addConstraint( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
+        fieldBindingDescr = new BindingDescr( "y",
+                                              "price" );
         pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
@@ -410,11 +411,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
+        BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                           "price" );
         pattern.addConstraint( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
+        fieldBindingDescr = new BindingDescr( "y",
+                                              "price" );
         pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
@@ -482,12 +483,12 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                           "x" );
+        final BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                                 "price" );
         pattern.addConstraint( fieldBindingDescr );
 
-        final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
-                                                                            "y" );
+        final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
+                                                                  "price" );
         pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
@@ -551,11 +552,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
+        BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                           "price" );
         pattern.addConstraint( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
+        fieldBindingDescr = new BindingDescr( "y",
+                                              "price" );
         pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
@@ -932,8 +933,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PatternDescr pattern1 = new PatternDescr( Cheese.class.getName() );
         lhs.addDescr( pattern1 );
 
-        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "type",
-                                                                           "$type" );
+        final BindingDescr fieldBindingDescr = new BindingDescr( "$type",
+                                                                 "type" );
 
         final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
         literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
@@ -1097,11 +1098,11 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                     "x" );
+        BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                           "price" );
         pattern.addConstraint( fieldBindingDescr );
-        fieldBindingDescr = new FieldBindingDescr( "price",
-                                                   "y" );
+        fieldBindingDescr = new BindingDescr( "y",
+                                              "price" );
         pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
@@ -1128,12 +1129,12 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( "price",
-                                                                           "x" );
+        final BindingDescr fieldBindingDescr = new BindingDescr( "x",
+                                                                 "price" );
         pattern.addConstraint( fieldBindingDescr );
 
-        final FieldBindingDescr fieldBindingDescr2 = new FieldBindingDescr( "price",
-                                                                            "y" );
+        final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
+                                                                  "price" );
         pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",

@@ -19,8 +19,8 @@ package org.drools.compiler.xml.rules;
 import java.util.HashSet;
 
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -52,7 +52,7 @@ public class FieldConstraintHandler extends BaseAbstractHandler
             this.validPeers.add( null );
             this.validPeers.add( FieldConstraintDescr.class );
             this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( FieldBindingDescr.class );
+            this.validPeers.add( BindingDescr.class );
 
             this.validPeers.add( AndDescr.class );
             this.validPeers.add( OrDescr.class );

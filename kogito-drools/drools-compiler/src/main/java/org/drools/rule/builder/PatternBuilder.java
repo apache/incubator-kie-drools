@@ -23,10 +23,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -44,7 +42,7 @@ import org.drools.lang.MVELDumper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.BehaviorDescr;
-import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.OrDescr;
@@ -85,13 +83,13 @@ import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
+import org.drools.spi.Constraint.ConstraintType;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
-import org.drools.spi.Constraint.ConstraintType;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
 
@@ -265,10 +263,10 @@ public class PatternBuilder
                                  final Pattern pattern,
                                  final Object constraint,
                                  final AbstractCompositeConstraint container) {
-        if ( constraint instanceof FieldBindingDescr ) {
+        if ( constraint instanceof BindingDescr ) {
             build( context,
                    pattern,
-                   (FieldBindingDescr) constraint,
+                   (BindingDescr) constraint,
                    container );
         } else if ( constraint instanceof FieldConstraintDescr ) {
             build( context,
@@ -580,14 +578,14 @@ public class PatternBuilder
 
     private void build(final RuleBuildContext context,
                        final Pattern pattern,
-                       final FieldBindingDescr fieldBindingDescr,
+                       final BindingDescr fieldBindingDescr,
                        final AbstractCompositeConstraint container) {
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                            fieldBindingDescr.getIdentifier() ) ) {
+                                                            fieldBindingDescr.getVariable() ) ) {
             // rewrite existing bindings into == constraints, so it unifies
-            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getFieldName() );  
-            descr.addRestriction( new VariableRestrictionDescr("==", fieldBindingDescr.getIdentifier() ) );
+            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getExpression() );  
+            descr.addRestriction( new VariableRestrictionDescr("==", fieldBindingDescr.getVariable() ) );
             build( context,
                    pattern,
                    (FieldConstraintDescr) descr,
@@ -595,12 +593,12 @@ public class PatternBuilder
             return;
         }
 
-        Declaration declr = pattern.addDeclaration( fieldBindingDescr.getIdentifier() );
+        Declaration declr = pattern.addDeclaration( fieldBindingDescr.getVariable() );
 
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      fieldBindingDescr,
                                                                      pattern.getObjectType(),
-                                                                     fieldBindingDescr.getFieldName(),
+                                                                     fieldBindingDescr.getExpression(),
                                                                      declr,
                                                                      true );
     }
@@ -736,8 +734,8 @@ public class PatternBuilder
     private Declaration createDeclarationObject(final RuleBuildContext context,
                                                 final String identifier,
                                                 final Pattern pattern) {
-        final FieldBindingDescr implicitBinding = new FieldBindingDescr( identifier,
-                                                                         identifier );
+        final BindingDescr implicitBinding = new BindingDescr( identifier,
+                                                               identifier );
 
         final Declaration declaration = new Declaration( identifier,
                                                          pattern );
@@ -745,7 +743,7 @@ public class PatternBuilder
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      implicitBinding,
                                                                      pattern.getObjectType(),
-                                                                     implicitBinding.getFieldName(),
+                                                                     implicitBinding.getExpression(),
                                                                      declaration,
                                                                      false );
 

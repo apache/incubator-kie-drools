@@ -27,10 +27,10 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -181,9 +181,9 @@ public class XmlDumper extends ReflectiveVisitor
         }
     }
 
-    public void visitFieldBindingDescr(final FieldBindingDescr descr) {
+    public void visitFieldBindingDescr(final BindingDescr descr) {
         this.template = new String();
-        this.template = "<field-binding field-name=\"" + descr.getFieldName() + "\" identifier=\"" + descr.getIdentifier() + "\" />" + XmlDumper.eol;
+        this.template = "<field-binding field-name=\"" + descr.getExpression() + "\" identifier=\"" + descr.getVariable() + "\" />" + XmlDumper.eol;
     }
 
     public void visitFunctionDescr(final FunctionDescr functionDescr) {

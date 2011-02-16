@@ -40,7 +40,6 @@ import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -1480,15 +1479,15 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       lhs.getDescrs().size() );
         final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
-        assertEquals( 1,
-                      cheese.getConstraint().getDescrs().size() );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
+        assertEquals( 0,
+                      cheese.getConstraint().getDescrs().size() );
         assertEquals( 1,
-                      lhs.getDescrs().size() );
-        final FieldBindingDescr fieldBinding = (FieldBindingDescr) cheese.getConstraint().getDescrs().get( 0 );
+                      cheese.getBindings().size() );
+        final BindingDescr fieldBinding = (BindingDescr) cheese.getBindings().get( 0 );
         assertEquals( "type",
-                      fieldBinding.getFieldName() );
+                      fieldBinding.getExpression() );
     }
 
     public void testBoundVariables() throws Exception {
@@ -1505,45 +1504,19 @@ public class RuleParserTest extends TestCase {
                       cheese.getObjectType() );
         assertEquals( 2,
                       lhs.getDescrs().size() );
-        FieldBindingDescr fieldBinding = (FieldBindingDescr) cheese.getConstraint().getDescrs().get( 0 );
-        assertEquals( "type",
-                      fieldBinding.getFieldName() );
-
-        FieldConstraintDescr fld = (FieldConstraintDescr) cheese.getConstraint().getDescrs().get( 1 );
-        LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
-        // LiteralDescr literalDescr = (LiteralDescr) cheese.getDescrs().get( 1
-        // );
-        assertEquals( "type",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      literalDescr.getEvaluator() );
-        assertEquals( "stilton",
-                      literalDescr.getText() );
+        BindingDescr fieldBinding = (BindingDescr) cheese.getBindings().get( 0 );
+        assertEquals( "type == \"stilton\"",
+                      fieldBinding.getExpression() );
 
         final PatternDescr person = (PatternDescr) lhs.getDescrs().get( 1 );
-        fieldBinding = (FieldBindingDescr) person.getConstraint().getDescrs().get( 0 );
-        assertEquals( "name",
-                      fieldBinding.getFieldName() );
+        fieldBinding = (BindingDescr) person.getBindings().get( 0 );
+        assertEquals( "name == \"bob\"",
+                      fieldBinding.getExpression() );
 
-        fld = (FieldConstraintDescr) person.getConstraint().getDescrs().get( 1 );
-        literalDescr = (LiteralRestrictionDescr) fld.getRestrictions().get( 0 );
 
-        assertEquals( "name",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      literalDescr.getEvaluator() );
-        assertEquals( "bob",
-                      literalDescr.getText() );
-
-        fld = (FieldConstraintDescr) person.getConstraint().getDescrs().get( 2 );
-        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) fld.getRestrictions().get( 0 );
-
-        assertEquals( "likes",
-                      fld.getFieldName() );
-        assertEquals( "==",
-                      variableDescr.getEvaluator() );
-        assertEquals( "$type",
-                      variableDescr.getIdentifier() );
+        ExprConstraintDescr fld = (ExprConstraintDescr) person.getConstraint().getDescrs().get( 0 );
+        assertEquals( "likes == $type",
+                      fld.getExpression() );
     }
 
     public void testOrNesting() throws Exception {
@@ -1593,18 +1566,13 @@ public class RuleParserTest extends TestCase {
         assertEquals( "simple_rule",
                       rule.getName() );
 
-        // we will have 2 children under the main And node
+        // we will have 3 children under the main And node
         final AndDescr and = rule.getLhs();
-        assertEquals( 2,
+        assertEquals( 3,
                       and.getDescrs().size() );
 
-        // check the "&&" part
-        final AndDescr join = (AndDescr) and.getDescrs().get( 0 );
-        assertEquals( 2,
-                      join.getDescrs().size() );
-
-        PatternDescr left = (PatternDescr) join.getDescrs().get( 0 );
-        PatternDescr right = (PatternDescr) join.getDescrs().get( 1 );
+        PatternDescr left = (PatternDescr) and.getDescrs().get( 0 );
+        PatternDescr right = (PatternDescr) and.getDescrs().get( 1 );
         assertEquals( "Person",
                       left.getObjectType() );
         assertEquals( "Cheese",
@@ -1911,12 +1879,12 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       and.getDescrs().size() );
 
-        final FieldBindingDescr field = (FieldBindingDescr) and.getDescrs().get( 0 );
+        final BindingDescr field = (BindingDescr) col.getBindings().get( 0 );
         final PredicateDescr pred = (PredicateDescr) and.getDescrs().get( 1 );
         assertEquals( "age",
-                      field.getFieldName() );
+                      field.getExpression() );
         assertEquals( "$age2",
-                      field.getIdentifier() );
+                      field.getVariable() );
         assertEqualsIgnoreWhitespace( "$age2 == $age1+2",
                                       (String) pred.getContent() );
     }
@@ -1933,9 +1901,9 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final FieldBindingDescr fieldBinding = (FieldBindingDescr) pattern.getConstraint().getDescrs().get( 0 );
+        final BindingDescr fieldBinding = (BindingDescr) pattern.getBindings().get( 0 );
         assertEquals( "$likes",
-                      fieldBinding.getIdentifier() );
+                      fieldBinding.getVariable() );
 
         final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
         pattern = (PatternDescr) not.getDescrs().get( 0 );
@@ -2443,16 +2411,16 @@ public class RuleParserTest extends TestCase {
         final PatternDescr pattern = (PatternDescr) parse( "lhsPattern",
                                                            "Foo ($var : attr -> ( $var.equals(\"xyz\") ))" );
 
-        final List constraints = pattern.getConstraint().getDescrs();
-        assertEquals( 2,
+        final List<? extends BaseDescr> constraints = pattern.getConstraint().getDescrs();
+        assertEquals( 1,
                       constraints.size() );
 
-        final FieldBindingDescr field = (FieldBindingDescr) constraints.get( 0 );
+        final BindingDescr field = (BindingDescr) pattern.getBindings().get( 0 );
         final PredicateDescr predicate = (PredicateDescr) constraints.get( 1 );
         assertEquals( "$var",
-                      field.getIdentifier() );
+                      field.getVariable() );
         assertEquals( "attr",
-                      field.getFieldName() );
+                      field.getExpression() );
         assertEquals( " $var.equals(\"xyz\") ",
                       predicate.getContent() );
     }

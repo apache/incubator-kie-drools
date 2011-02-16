@@ -23,6 +23,7 @@ import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
+import org.drools.lang.api.ForallDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -1649,14 +1650,15 @@ public class DRLParser {
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
             result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
-            // TODO: handle this
+            result = lhsForall( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
             // TODO: handle this
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
             result = lhsParen( ce );
         } else {
-            result = lhsPatternBind( ce );
+            result = lhsPatternBind( ce,
+                                     true );
         }
         if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
             match( input,
@@ -1725,7 +1727,8 @@ public class DRLParser {
             }
         } else {
 
-            lhsPatternBind( exists );
+            lhsPatternBind( exists,
+                            true );
             if ( state.failed ) return null;
         }
 
@@ -1791,7 +1794,8 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
         } else {
-            lhsPatternBind( not );
+            lhsPatternBind( not,
+                            true );
             if ( state.failed ) return null;
         }
 
@@ -1801,6 +1805,62 @@ public class DRLParser {
         }
 
         return not != null ? not.getDescr() : null;
+    }
+
+    /**
+     * lhsForall := FORALL LEFT_PAREN lhsPattern+ RIGHT_PAREN 
+     *  
+     * @param ce
+     * @return
+     * @throws RecognitionException 
+     */
+    private BaseDescr lhsForall( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        ForallDescrBuilder< ? > forall = helper.start( ForallDescrBuilder.class,
+                                                       null,
+                                                       null );
+
+        try {
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.FORALL,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.LEFT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+
+            do {
+                lhsPatternBind( forall,
+                                true );
+                if ( state.failed ) return null;
+
+                if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
+            } while ( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != DRLLexer.RIGHT_PAREN );
+
+            match( input,
+                   DRLLexer.RIGHT_PAREN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+        } finally {
+            helper.end( ForallDescrBuilder.class,
+                        null );
+        }
+
+        return forall != null ? forall.getDescr() : null;
     }
 
     /**
@@ -1887,7 +1947,8 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     @SuppressWarnings("unchecked")
-    private BaseDescr lhsPatternBind( PatternContainerDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsPatternBind( PatternContainerDescrBuilder< ? , ? > ce,
+                                      final boolean allowOr ) throws RecognitionException {
         PatternDescrBuilder< ? > pattern = null;
         CEDescrBuilder< ? , OrDescr> or = null;
         BaseDescr result = null;
@@ -1919,7 +1980,7 @@ public class DRLParser {
                             label );
                 if ( state.failed ) return null;
 
-                if ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) && ce instanceof CEDescrBuilder ) {
+                if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) && ce instanceof CEDescrBuilder ) {
                     if ( state.backtracking == 0 ) {
                         // this is necessary because of the crappy bind with multi-pattern OR syntax 
                         or = ((CEDescrBuilder<DescrBuilder< ? >, OrDescr>) ce).or();
@@ -2254,7 +2315,8 @@ public class DRLParser {
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
 
-            lhsPatternBind( collect );
+            lhsPatternBind( collect,
+                            false );
             if ( state.failed ) return;
 
             match( input,
@@ -2309,7 +2371,7 @@ public class DRLParser {
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.INIT ) ) {
                 // custom code, inline accumulate
-                
+
                 // initBlock
                 match( input,
                        DRLLexer.ID,
@@ -2367,15 +2429,15 @@ public class DRLParser {
                 // accumulate functions
                 accumulateFunction( accumulate );
                 if ( state.failed ) return;
-                
-                while( input.LA( 1 ) == DRLLexer.COMMA ) {
+
+                while ( input.LA( 1 ) == DRLLexer.COMMA ) {
                     match( input,
                            DRLLexer.COMMA,
                            null,
                            null,
                            DroolsEditorType.SYMBOL );
                     if ( state.failed ) return;
-                    
+
                     accumulateFunction( accumulate );
                     if ( state.failed ) return;
                 }
@@ -2408,9 +2470,10 @@ public class DRLParser {
 
         List<String> parameters = parameters();
         if ( state.failed ) return;
-        
-        if ( state.backtracking == 0 ) { 
-            accumulate.function( function.getText(), parameters.toArray( new String[ parameters.size() ] ) );
+
+        if ( state.backtracking == 0 ) {
+            accumulate.function( function.getText(),
+                                 parameters.toArray( new String[parameters.size()] ) );
         }
     }
 
@@ -2429,25 +2492,25 @@ public class DRLParser {
         if ( state.failed ) return null;
 
         List<String> parameters = new ArrayList<String>();
-        if( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
+        if ( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
             String param = conditionalExpression();
             if ( state.failed ) return null;
             parameters.add( param );
-            
-            while( input.LA( 1 ) == DRLLexer.COMMA ) {
+
+            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
                 match( input,
                        DRLLexer.COMMA,
                        null,
                        null,
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return null;
-                
+
                 param = conditionalExpression();
                 if ( state.failed ) return null;
                 parameters.add( param );
             }
         }
-        
+
         match( input,
                DRLLexer.RIGHT_PAREN,
                null,
