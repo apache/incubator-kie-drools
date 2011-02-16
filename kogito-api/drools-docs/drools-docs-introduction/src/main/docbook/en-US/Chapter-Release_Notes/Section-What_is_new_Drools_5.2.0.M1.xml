@@ -105,10 +105,20 @@ The table has a fixed header that remains as you'd expect, at the top of the tab
       <para>Now it is possible to create and mange Spring Context files inside Guvnor. These Context Files are exposed through URLs so external applications can use them.</para>
     </section>
     <section>
-      <title>Jackrabbit Cluster</title>
+      <title>Configuring Multiple Guvnor Instances In a Jackrabbit Cluster</title>
+      <para>We added a new task in drools-ant which helps with configuring multiple Guvnor instances to be able to share their Jackrabbit content.</para>
     </section>
     <section>
-      <title>Automated repository.xml Creator</title>
+      <title>Configuring Guvnor to use an external RDBMS made easier</title>
+      <para>The default Guvnor repository configuration uses embedded Derby databases which writes the workspace and version information to the local file system. This is not always optimal for a production system where it makes sense to use an external RDBMS.</para>
+      <para>We added a new section under the "Administration" tab called "Repository Configuration" which helps generate the repository.xml configuration file for a number of databases (Microsoft SQL Server, MySQL, Oracle, PostgreSQL, Derby, H2)</para>
+    </section>
+    <section>
+      <title>Web-based BPMN2 authoring in Guvnor</title>
+      <para>We have completed big parts of the integration between Guvnor and the Oryx web-based business process editor. Our primary use cases supported by this integration are:</para> 
+      <para>- Viewing existing jBPM5 processes in Guvnor</para>
+      <para>- Prototyping new jBPM5 processes in Guvnor.</para> 
+      <para>Please note that we are still working on full round-tripping support between the web-based Oryx editor and our BPMN2 support provided through the eclipse plugin</para>
     </section>
   </section>
 </section>
