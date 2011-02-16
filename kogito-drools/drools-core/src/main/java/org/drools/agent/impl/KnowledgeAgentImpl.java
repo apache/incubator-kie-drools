@@ -839,7 +839,11 @@ public class KnowledgeAgentImpl
                 KnowledgePackageImp kpkg = createPackageFromResource( entry.getKey() );
 
                 if ( kpkg == null ) {
-                    this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey() );
+                    this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey()+". Removing any existing knowledge definition of "+entry.getKey() );
+                    for ( KnowledgeDefinition kd : entry.getValue() ) {
+                        this.listener.debug( "KnowledgeAgent: Removing: " + kd );
+                        removeKnowledgeDefinitionFromBase( kd );
+                    }
                     continue;
                 }
 
