@@ -22,9 +22,6 @@ import java.util.List;
 public class AndDescr extends BaseDescr
     implements
     ConditionalElementDescr {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     private List<BaseDescr>    descrs           = new ArrayList<BaseDescr>();
 
@@ -33,24 +30,10 @@ public class AndDescr extends BaseDescr
 
     public void addDescr(final BaseDescr baseDescr) {
         this.descrs.add( baseDescr );
-        if( baseDescr instanceof FieldBindingDescr ) {
-            FieldBindingDescr fbd = (FieldBindingDescr) baseDescr;
-            if( fbd.getFieldConstraint() != null ) {
-                this.descrs.add( fbd.getFieldConstraint() );
-                fbd.setFieldConstraint( null );
-            }
-        }
     }
 
     public void insertDescr(int index,
                             final BaseDescr baseDescr) {
-        if( baseDescr instanceof FieldBindingDescr ) {
-            FieldBindingDescr fbd = (FieldBindingDescr) baseDescr;
-            if( fbd.getFieldConstraint() != null ) {
-                this.descrs.add(index, fbd.getFieldConstraint() );
-                fbd.setFieldConstraint( null );
-            }
-        }
         this.descrs.add( index,
                          baseDescr );
     }

@@ -19,7 +19,6 @@ package org.drools.lang.api;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 
@@ -34,7 +33,8 @@ public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     public CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or();
     public CEDescrBuilder<CEDescrBuilder<P, T>, NotDescr> not();
     public CEDescrBuilder<CEDescrBuilder<P, T>, ExistsDescr> exists();
-    public CEDescrBuilder<CEDescrBuilder<P, T>, ForallDescr> forall();
+    
+    public ForallDescrBuilder<CEDescrBuilder<P, T>> forall();
     
     public EvalDescrBuilder<CEDescrBuilder<P, T>> eval();
     

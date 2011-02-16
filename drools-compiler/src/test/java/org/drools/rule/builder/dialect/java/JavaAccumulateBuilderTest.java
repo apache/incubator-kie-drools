@@ -12,7 +12,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AccumulateDescr;
-import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -36,7 +36,7 @@ public class JavaAccumulateBuilderTest {
         // $total : Integer() from accumulate( Cheese( $price : price ) init( int x = 0; ) action( x += $price ) result( new Integer( x ) ) ) 
         AccumulateDescr accumDescr = new AccumulateDescr();
         
-        FieldBindingDescr price = new FieldBindingDescr( "price", "$price" );
+        BindingDescr price = new BindingDescr( "$price", "price" );
         PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );
         cheeseDescr.addConstraint( price );
         accumDescr.setInputPattern( cheeseDescr );

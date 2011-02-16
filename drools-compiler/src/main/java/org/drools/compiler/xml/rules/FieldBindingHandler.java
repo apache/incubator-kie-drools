@@ -18,7 +18,7 @@ package org.drools.compiler.xml.rules;
 
 import java.util.HashSet;
 
-import org.drools.lang.descr.FieldBindingDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -44,45 +44,51 @@ public class FieldBindingHandler extends BaseAbstractHandler
             this.validPeers.add( null );
             this.validPeers.add( FieldConstraintDescr.class );
             this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( FieldBindingDescr.class );
+            this.validPeers.add( BindingDescr.class );
             this.allowNesting = false;
         }
     }
 
-    public Object start(final String uri,
-                        final String localName,
-                        final Attributes attrs,
-                        final ExtensibleXmlParser parser) throws SAXException {
+    public Object start( final String uri,
+                         final String localName,
+                         final Attributes attrs,
+                         final ExtensibleXmlParser parser ) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        
+
         final String identifier = attrs.getValue( "identifier" );
         final String fieldName = attrs.getValue( "field-name" );
-        
-        emptyAttributeCheck( localName, "identifier", identifier, parser );        
-        emptyAttributeCheck( localName, "fieldName", fieldName, parser );
 
-        final FieldBindingDescr fieldBindingDescr = new FieldBindingDescr( fieldName,
-                                                                           identifier );
+        emptyAttributeCheck( localName,
+                             "identifier",
+                             identifier,
+                             parser );
+        emptyAttributeCheck( localName,
+                             "fieldName",
+                             fieldName,
+                             parser );
+
+        final BindingDescr fieldBindingDescr = new BindingDescr( fieldName,
+                                                                 identifier );
 
         return fieldBindingDescr;
     }
 
-    public Object end(final String uri,
-                      final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+    public Object end( final String uri,
+                       final String localName,
+                       final ExtensibleXmlParser parser ) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final FieldBindingDescr fieldBindingDescr = (FieldBindingDescr) parser.getCurrent();
+        final BindingDescr fieldBindingDescr = (BindingDescr) parser.getCurrent();
 
-        final PatternDescr patternDescr = (PatternDescr) parser.getParent( );
+        final PatternDescr patternDescr = (PatternDescr) parser.getParent();
 
-        patternDescr.addConstraint( fieldBindingDescr );
+        patternDescr.addBinding( fieldBindingDescr );
 
         return fieldBindingDescr;
     }
 
     public Class generateNodeFor() {
-        return FieldBindingDescr.class;
+        return BindingDescr.class;
     }
 }

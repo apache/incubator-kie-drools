@@ -46,7 +46,7 @@ public class ForallDescr extends BaseDescr
         this.patterns.add( baseDescr );
     }
 
-    public void insertBeforeLast(final Class clazz,
+    public void insertBeforeLast(final Class<?> clazz,
                                  final BaseDescr baseDescr) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
@@ -54,7 +54,7 @@ public class ForallDescr extends BaseDescr
     /* (non-Javadoc)
      * @see org.drools.lang.descr.ConditionalElementDescr#getDescrs()
      */
-    public List getDescrs() {
+    public List<BaseDescr> getDescrs() {
         return this.patterns;
     }
 
@@ -83,7 +83,7 @@ public class ForallDescr extends BaseDescr
      * Returns the remaining patterns from the forall CE
      * @return
      */
-    public List getRemainingPatterns() {
+    public List<BaseDescr> getRemainingPatterns() {
         if ( this.patterns.size() > 1 ) {
             return this.patterns.subList( 1,
                                           this.patterns.size() );
@@ -101,9 +101,9 @@ public class ForallDescr extends BaseDescr
             FieldConstraintDescr constr = new FieldConstraintDescr( "this" );
             constr.addRestriction( restr );
             remaining.addConstraint( constr );
-            return Collections.singletonList( remaining );
+            return Collections.singletonList( (BaseDescr)remaining );
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     public void addOrMerge(BaseDescr baseDescr) {

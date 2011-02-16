@@ -27,10 +27,10 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -212,9 +212,9 @@ public class DrlDumper extends ReflectiveVisitor
         this.template += DrlDumper.eol;
     }
 
-    public void visitFieldBindingDescr(final FieldBindingDescr descr) {
+    public void visitFieldBindingDescr(final BindingDescr descr) {
         this.template = new String();
-        this.template = descr.getIdentifier() + " : " + descr.getFieldName();
+        this.template = descr.getVariable() + " : " + descr.getExpression();
     }
 
     public void visitFunctionDescr(final FunctionDescr functionDescr) {
@@ -377,10 +377,10 @@ public class DrlDumper extends ReflectiveVisitor
 
             if ( previous == null ) {
                 descrString += this.template;
-            } else if ( previous instanceof FieldBindingDescr && !(temp instanceof FieldBindingDescr) && !(temp instanceof PredicateDescr) ) {
+            } else if ( previous instanceof BindingDescr && !(temp instanceof BindingDescr) && !(temp instanceof PredicateDescr) ) {
                 final FieldConstraintDescr tempDescr = (FieldConstraintDescr) temp;
-                final FieldBindingDescr previousDescr = (FieldBindingDescr) previous;
-                if ( tempDescr.getFieldName().equals( previousDescr.getFieldName() ) ) {
+                final BindingDescr previousDescr = (BindingDescr) previous;
+                if ( tempDescr.getFieldName().equals( previousDescr.getExpression() ) ) {
                     // as its a binding followed by a field constraint we need to remove 
                     // the extra field name                    
                     descrString += this.template.substring( tempDescr.getFieldName().length() + 1 );

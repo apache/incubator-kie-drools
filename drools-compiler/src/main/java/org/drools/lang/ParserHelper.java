@@ -25,6 +25,7 @@ import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
+import org.drools.lang.api.ForallDescrBuilder;
 import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.api.ImportDescrBuilder;
@@ -633,6 +634,11 @@ public class ParserHelper {
                 beginSentence( DroolsSentenceType.EVAL );
                 setStart( eval );
                 return (T) eval;
+            } else if ( ForallDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                ForallDescrBuilder< ? > forall = ((CEDescrBuilder< ? , ? >) builderContext.peek()).forall();
+                builderContext.push( forall );
+                setStart( forall );
+                return (T) forall;
             } else if ( CEDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 builderContext.push( builder );
                 setStart( builder );
@@ -666,7 +672,8 @@ public class ParserHelper {
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) || 
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   AccumulateDescrBuilder.class.isAssignableFrom( clazz )) ){
+                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   ForallDescrBuilder.class.isAssignableFrom( clazz )) ){
                 popParaphrases();
             }
             setEnd();

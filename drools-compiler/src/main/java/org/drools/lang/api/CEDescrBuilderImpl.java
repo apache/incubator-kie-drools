@@ -20,7 +20,6 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 
@@ -89,8 +88,8 @@ public class CEDescrBuilderImpl<P extends DescrBuilder<?>, T extends BaseDescr> 
     /**
      * {@inheritDoc}
      */
-    public CEDescrBuilder<CEDescrBuilder<P, T>, ForallDescr> forall() {
-        CEDescrBuilder<CEDescrBuilder<P, T>, ForallDescr> forall = new CEDescrBuilderImpl<CEDescrBuilder<P, T>, ForallDescr>( this, new ForallDescr() );
+    public ForallDescrBuilder<CEDescrBuilder<P, T>> forall() {
+        ForallDescrBuilder<CEDescrBuilder<P, T>> forall = new ForallDescrBuilderImpl<CEDescrBuilder<P, T>>( this );
         ((ConditionalElementDescr) descr).addDescr( forall.getDescr() );
         return forall;
     }
