@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +32,6 @@ import org.mortbay.jetty.handler.ResourceHandler;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 
@@ -80,10 +81,17 @@ public abstract class BaseKnowledgeAgentTest {
         // Calls the Resource Scanner and sets up a listener and a latch so we can wait until it's finished processing, instead of using timers
         final CountDownLatch latch = new CountDownLatch( 1 );
         
+        final List<ResourceCompilationFailedEvent> resourceCompilationFailedEvents = new ArrayList<ResourceCompilationFailedEvent>();
+        
         KnowledgeAgentEventListener l = new KnowledgeAgentEventListener() {
             
             public void resourceCompilationFailed(ResourceCompilationFailedEvent event) {
-                throw new RuntimeException("Unable to compile Knowledge"+ event );
+                //It is not correct to throw an exception from a listener becuase
+                //it will interfere with the agent's logic.
+                //throw new RuntimeException("Unable to compile Knowledge"+ event );
+                
+                //It is better to use a list and then check if it is empty.
+                resourceCompilationFailedEvents.add(event);
             }
             
             public void knowledgeBaseUpdated(KnowledgeBaseUpdatedEvent event) {
@@ -124,6 +132,12 @@ public abstract class BaseKnowledgeAgentTest {
         }
         
         kagent.removeEventListener( l );
+        
+        if (!resourceCompilationFailedEvents.isEmpty()){
+            //A compilation error occured
+            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0) );
+        }
+        
     }
     
     void applyChangeSet(KnowledgeAgent kagent, String xml) {
