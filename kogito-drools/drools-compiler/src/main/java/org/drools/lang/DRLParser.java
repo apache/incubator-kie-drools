@@ -940,15 +940,15 @@ public class DRLParser {
             attribute();
             if ( state.failed ) return;
 
-            if ( input.LA( 1 ) == DRLLexer.COMMA ) {
-                match( input,
-                       DRLLexer.COMMA,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
-                if ( state.failed ) return;
-            }
-            while ( helper.validateAttribute( 1 ) ) {
+            while ( input.LA( 1 ) == DRLLexer.COMMA || helper.validateAttribute( 1 ) ) {
+                if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return;
+                }
                 attribute();
                 if ( state.failed ) return;
             }
@@ -1273,7 +1273,7 @@ public class DRLParser {
             if ( state.failed ) return null;
             builder.append( value.getText() );
 
-            if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
                 match( input,
                        DRLLexer.COMMA,
                        null,
@@ -2222,6 +2222,14 @@ public class DRLParser {
             fromExpression( pattern );
             if ( state.failed ) return;
         }
+        if( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+            match( input,
+                   DRLLexer.SEMICOLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+        }
     }
 
     /**
@@ -2385,6 +2393,15 @@ public class DRLParser {
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 ) accumulate.init( init );
 
+                if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return;
+                }
+
                 // actionBlock
                 match( input,
                        DRLLexer.ID,
@@ -2398,11 +2415,20 @@ public class DRLParser {
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 ) accumulate.action( action );
 
+                if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return;
+                }
+
                 // reverseBlock
                 if ( helper.validateIdentifierKey( DroolsSoftKeywords.REVERSE ) ) {
                     match( input,
                            DRLLexer.ID,
-                           DroolsSoftKeywords.ACTION,
+                           DroolsSoftKeywords.REVERSE,
                            null,
                            DroolsEditorType.KEYWORD );
                     if ( state.failed ) return;
@@ -2411,6 +2437,15 @@ public class DRLParser {
                                             DRLLexer.RIGHT_PAREN );
                     if ( state.failed ) return;
                     if ( state.backtracking == 0 ) accumulate.reverse( reverse );
+                    
+                    if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                        match( input,
+                               DRLLexer.COMMA,
+                               null,
+                               null,
+                               DroolsEditorType.SYMBOL );
+                        if ( state.failed ) return;
+                    }
                 }
 
                 // resultBlock

@@ -14,7 +14,7 @@ options {
 }
 
 @members {
-    private ParserXHelper helper;
+    private ParserHelper helper;
                                                     
     public DRLExpressions(TokenStream input,
                           RecognizerSharedState state,
@@ -84,7 +84,7 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-	:	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER )
+	:	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER | SEMICOLON )
 	;
 
 // top level entry point for arbitrary expression parsing
@@ -131,8 +131,12 @@ equalityExpression
 	;
 
 instanceOfExpression 
-  : relationalExpression (instanceof_key type)?
+  : inExpression (instanceof_key type)?
 	;
+	
+inExpression
+  : relationalExpression (not_key? in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
+  ;
 
 relationalExpression
   : shiftExpression ( (relationalOp)=> relationalOp shiftExpression )*
@@ -189,7 +193,6 @@ unaryExpressionNotPlusMinus
 castExpression
     :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN unaryExpression
     |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
-    |  LEFT_PAREN expression RIGHT_PAREN unaryExpressionNotPlusMinus
     ;
     
 primitiveType
@@ -398,6 +401,10 @@ new_key
 not_key
 	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID
 	;
+
+in_key
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID
+  ;
 
 operator_key
   :      {(helper.isPluggableEvaluator(false))}?=> id=ID

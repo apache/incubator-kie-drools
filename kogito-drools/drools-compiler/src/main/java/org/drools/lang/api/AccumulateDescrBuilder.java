@@ -17,15 +17,16 @@
 package org.drools.lang.api;
 
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AndDescr;
 
 /**
  *  A descriptor builder for Accumulate
  */
 public interface AccumulateDescrBuilder<P extends DescrBuilder< ? >>
     extends
-    PatternContainerDescrBuilder<AccumulateDescrBuilder<P>, AccumulateDescr> {
+    DescrBuilder<AccumulateDescr> {
     
-    public CEDescrBuilder<AccumulateDescrBuilder<P>, ?> source(); 
+    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source(); 
 
     public AccumulateDescrBuilder<P> function( String name, String[] parameters);
     

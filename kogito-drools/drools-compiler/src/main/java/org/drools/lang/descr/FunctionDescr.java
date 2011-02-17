@@ -38,8 +38,6 @@ public class FunctionDescr extends BaseDescr
     private List<String>      parameterTypes   = Collections.emptyList();
     private List<String>      parameterNames   = Collections.emptyList();
 
-    private Object            content;
-
     private String            className;
     
     // this seems to be used to map error line from the java generated file to the drl file
@@ -128,12 +126,12 @@ public class FunctionDescr extends BaseDescr
         this.returnType = type;
     }
 
-    public void setContent( Object content ) {
-        this.content = content;
+    public void setBody( String body ) {
+        setText( body );
     }
 
-    public Object getContent() {
-        return this.content;
+    public String getBody() {
+        return getText();
     }
 
     public int getOffset() {

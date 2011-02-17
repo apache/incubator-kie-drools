@@ -17,6 +17,7 @@
 package org.drools.lang.api;
 
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AndDescr;
 
 /**
  * An implementation for the CollectDescrBuilder
@@ -55,14 +56,16 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ? >> extends Bas
         return parent;
     }
 
-    public CEDescrBuilder<AccumulateDescrBuilder<P>, ? > source() {
-        // TODO Auto-generated method stub
-        return null;
+    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr > source() {
+        CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> and = new CEDescrBuilderImpl<AccumulateDescrBuilder<P>, AndDescr>( this, new AndDescr() );
+        descr.setInput( and.getDescr() );
+        return and;
     }
 
     public AccumulateDescrBuilder<P> function( String name,
                                                String[] parameters ) {
-        return null;
+        descr.addFunction( name, parameters );
+        return this;
     }
 
     public AccumulateDescrBuilder<P> init( String block ) {

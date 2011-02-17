@@ -26,7 +26,7 @@ public class FunctionDescrBuilderImpl extends BaseDescrBuilderImpl<FunctionDescr
     }
 
     public FunctionDescrBuilder body( String body ) {
-        descr.setContent( body );
+        descr.setBody( body );
         return this;
     }
 
