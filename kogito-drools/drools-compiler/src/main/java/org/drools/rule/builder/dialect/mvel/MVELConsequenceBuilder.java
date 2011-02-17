@@ -1,17 +1,22 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELConsequence;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
@@ -19,7 +24,7 @@ public class MVELConsequenceBuilder
     implements
     ConsequenceBuilder {
 
-    private static final Map<String, Macro> macros = new HashMap<String,Macro>( 10 );
+    public static final Map<String, Macro> macros = new HashMap<String,Macro>( 10 );
     static {
         macros.put( "insert",
                     new Macro() {
@@ -86,18 +91,38 @@ public class MVELConsequenceBuilder
             String text = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
 
             text = processMacros( text );
-
-            Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                    context.getRuleDescr(),
-                                                                    dialect.getInterceptors(),
-                                                                    text,
-                                                                    new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()},
-                                                                    null );
             
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
+            Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
+            
+            AnalysisResult analysis = dialect.analyzeBlock( context,
+                                                            context.getRuleDescr(),
+                                                            dialect.getInterceptors(),
+                                                            text,
+                                                            new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                                                 context.getPackageBuilder().getGlobals(),
+                                                                                 KnowledgeHelper.class),
+                                                            null );
+            
+            if ( analysis == null ) {
+                // something bad happened, issue already logged in errors
+                return;
+            }
+            
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+            
+            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()]; 
+            String[] declrStr = new String[declarations.length]; 
+            int j = 0;
+            for (String str : usedIdentifiers.getDeclarations().keySet() ) {
+                declrStr[j] = str;
+                declarations[j++] = decls.get( str );
+            }
+            Arrays.sort( declarations, SortDeclarations.isntance  );  
+            context.getRule().setRequiredDeclarations( declrStr );    
+            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
-                                                                       previousDeclarations,
+                                                                       declarations,
                                                                        null,
                                                                        null,
                                                                        context );
@@ -113,7 +138,7 @@ public class MVELConsequenceBuilder
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
             data.addCompileable( context.getRule(),
-                                  expr );
+                                 expr );
             
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {

@@ -351,7 +351,7 @@ public class Declaration
         return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.readAccessor.equals( other.readAccessor );
     }
 
-    protected boolean isInternalFact() {
+    public boolean isInternalFact() {
         return internalFact;
     }
 

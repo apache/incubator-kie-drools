@@ -236,7 +236,9 @@ public class Pattern
         Declaration declaration = this.declarations != null ? (Declaration) this.declarations.get( identifier ) : null;
         if ( declaration == null ) {
             declaration = new Declaration( identifier,
-                                           this );
+                                           null,
+                                           this,                                           
+                                           true );
             this.constraints.add( declaration );
             if ( this.declarations == null ) {
                 this.declarations = new HashMap( 2 ); // default to avoid immediate resize

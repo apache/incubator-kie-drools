@@ -4,8 +4,9 @@ import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELSalienceExpression;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.RuleBuildContext;
@@ -22,13 +23,16 @@ public class MVELSalienceBuilder
         try {        
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+            
+            Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
-            Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
-                                                                         context.getRuleDescr(),
-                                                                         (String) context.getRuleDescr().getSalience(),
-                                                                         new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
+            AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                 context.getRuleDescr(),
+                                                                 (String) context.getRuleDescr().getSalience(),
+                                                                 new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                                                      context.getPackageBuilder().getGlobals() ) );
 
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
+            Declaration[] previousDeclarations = (Declaration[]) decls.values().toArray( new Declaration[decls.size()] );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) context.getRuleDescr().getSalience(),
                                                                        analysis,
                                                                        previousDeclarations,
@@ -37,7 +41,7 @@ public class MVELSalienceBuilder
                                                                        context );
 
             MVELSalienceExpression expr = new MVELSalienceExpression( unit,
-                                                                          dialect.getId() );
+                                                                      dialect.getId() );
             context.getRule().setSalience( expr );
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData(dialect.getId() );

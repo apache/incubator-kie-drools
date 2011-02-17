@@ -22,12 +22,17 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
+import org.drools.common.InternalWorkingMemory;
+import org.drools.definition.rule.Rule;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.runtime.rule.Activation;
 import org.drools.WorkingMemory;
 import org.drools.spi.Salience;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELSalienceExpression
     implements
@@ -41,7 +46,6 @@ public class MVELSalienceExpression
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
 
     public MVELSalienceExpression() {
     }
@@ -65,18 +69,13 @@ public class MVELSalienceExpression
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public int getValue(final Tuple tuple,
+                        final Rule rule,
                         final WorkingMemory workingMemory) {
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-        factory.setContext( tuple,
-                            null,
-                            null,
-                            workingMemory,
-                            null );
-
+        VariableResolverFactory factory = unit.getFactory( null, rule, (LeftTuple) tuple, null, null, (InternalWorkingMemory) workingMemory );
+        
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {

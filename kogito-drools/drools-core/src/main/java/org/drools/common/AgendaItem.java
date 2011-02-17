@@ -28,6 +28,8 @@ import org.drools.FactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -57,7 +59,7 @@ public class AgendaItem
     private static final long   serialVersionUID = 510l;
 
     /** The tuple. */
-    private Tuple               tuple;
+    private LeftTuple               tuple;
 
     /** The rule. */
     private Rule                rule;
@@ -107,7 +109,7 @@ public class AgendaItem
      *            The rule.
      */
     public AgendaItem(final long activationNumber,
-                      final Tuple tuple,
+                      final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
                       final Rule rule,
@@ -126,7 +128,7 @@ public class AgendaItem
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        tuple = (Tuple) in.readObject();
+        tuple = (LeftTuple) in.readObject();
         rule = (Rule) in.readObject();
         salience = in.readInt();
         sequenence = in.readInt();
@@ -181,7 +183,7 @@ public class AgendaItem
      *
      * @return The tuple.
      */
-    public Tuple getTuple() {
+    public LeftTuple getTuple() {
         return this.tuple;
     }
 
@@ -343,8 +345,8 @@ public class AgendaItem
         return decl.getValue( null, handle.getObject() );
     }
 
-    public List<String> getDeclarationIDs() {
-        Declaration[] declArray = this.getRule().getDeclarations(); 
+    public List<String> getDeclarationIDs() {        
+        Declaration[] declArray = ((org.drools.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations(); 
         List<String> declarations = new ArrayList<String>();
         for( Declaration decl : declArray ) {
             declarations.add( decl.getIdentifier() );

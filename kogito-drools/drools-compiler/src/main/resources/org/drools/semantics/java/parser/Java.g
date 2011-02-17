@@ -679,7 +679,7 @@ statement
     | 'break' Identifier? ';'
     | 'continue' Identifier? ';'
     // adding support to drools modify block
-    | modifyStatement
+    | modifyStatement    | updateStatement    | retractStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
@@ -703,7 +703,37 @@ modifyStatement
         {
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
         }
-	;	
+	;
+
+updateStatement
+	@init {
+	    JavaUpdateBlockDescr d = null;
+	}
+	: s='update' '('  
+	expression 
+	c = ')'	
+        {
+	    d = new JavaUpdateBlockDescr( $expression.text );
+	    d.setStart( ((CommonToken)$s).getStartIndex() );
+	    this.blocks.add( d );        
+            d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+        }
+	;
+retractStatement
+	@init {
+	    JavaRetractBlockDescr d = null;
+	}
+	: s='retract' '(' 
+	expression 
+	c = ')'	
+        {	
+	    d = new JavaRetractBlockDescr( $expression.text );
+	    d.setStart( ((CommonToken)$s).getStartIndex() );
+	    this.blocks.add( d );
+	    d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+	    
+	}
+	;		
 	
 epStatement
 	@init {

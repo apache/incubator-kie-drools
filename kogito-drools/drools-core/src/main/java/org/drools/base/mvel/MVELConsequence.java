@@ -21,9 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashMap;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.Consequence;
@@ -31,6 +34,9 @@ import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.debug.DebugTools;
+import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
+import org.mvel2.integration.impl.IndexedVariableResolverFactory;
 
 public class MVELConsequence
     implements
@@ -43,7 +49,6 @@ public class MVELConsequence
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
 
     public MVELConsequence() {
     }
@@ -67,24 +72,16 @@ public class MVELConsequence
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-
-        factory.setContext( knowledgeHelper.getTuple(),
-                            knowledgeHelper,
-                            null,
-                            workingMemory,
-                            null );
-
+        VariableResolverFactory factory = unit.getFactory( knowledgeHelper, knowledgeHelper.getRule(), (LeftTuple) knowledgeHelper.getTuple(), null, knowledgeHelper, (InternalWorkingMemory) workingMemory );
+        
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg
-                    .getDialectRuntimeRegistry().getDialectData( this.id );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 

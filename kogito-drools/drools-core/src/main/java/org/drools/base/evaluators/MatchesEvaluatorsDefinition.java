@@ -46,7 +46,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long serialVersionUID = 510l;
         {
             addEvaluator( ValueType.STRING_TYPE,        MATCHES,         StringMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        MATCHES,         StringMatchesEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
         }
     };
 

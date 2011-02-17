@@ -68,17 +68,17 @@ public interface Dialect {
 
     EntryPointBuilder getEntryPointBuilder();
 
-    EngineElementBuilder getBuilder(Class<?> clazz);
+    EngineElementBuilder getBuilder(Class clazz);
 
     AnalysisResult analyzeExpression(final PackageBuildContext context,
                                      final BaseDescr descr,
                                      final Object content,
-                                     final Map<String, Class<?>>[] availableIdentifiers);
+                                     final BoundIdentifiers availableIdentifiers);
 
     AnalysisResult analyzeBlock(final PackageBuildContext context,
                                 final BaseDescr descr,
                                 final String text,
-                                final Map<String, Class<?>>[] availableIdentifiers);
+                                final BoundIdentifiers availableIdentifiers);
 
     void compileAll();
 
@@ -97,43 +97,6 @@ public interface Dialect {
     void init(RuleDescr ruleDescr);
 
     void init(ProcessDescr processDescr);
-
-    /**
-     * An interface with the results from the expression/block analysis
-     * 
-     * @author etirelli
-     */
-    public static interface AnalysisResult {
-
-        /**
-         * Returns the list<String> of all used identifiers
-         * 
-         * @return
-         */
-        public List<String> getIdentifiers();
-
-        /**
-         * Returns the array of lists<String> of bound identifiers
-         * 
-         * @return
-         */
-        public List<String>[] getBoundIdentifiers();
-
-        /**
-         * Returns the list<String> of not bounded identifiers
-         * 
-         * @return
-         */
-        public List<String> getNotBoundedIdentifiers();
-
-        /**
-         * Returns the list<String> of declared local variables
-         * 
-         * @return
-         */
-        public List<String> getLocalVariables();
-
-    }
 
     void postCompileAddFunction(FunctionDescr functionDescr,
                                 TypeResolver typeResolver);

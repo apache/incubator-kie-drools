@@ -17,6 +17,7 @@ import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
@@ -90,6 +91,7 @@ public class MVELSalienceBuilderTest {
 
         assertEquals( 25,
                       context.getRule().getSalience().getValue( tuple,
+                                                                context.getRule(),
                                                                 wm ) );
 
     }
@@ -101,6 +103,7 @@ public class MVELSalienceBuilderTest {
         final Thread[] threads = new Thread[tcount];
         for ( int i = 0; i < evals.length; i++ ) {
             evals[i] = new SalienceEvaluator( ruleBase,
+                                              context.getRule(),
                                               context.getRule().getSalience(),
                                               new Person( "bob" + i,
                                                           30 + (i * 3) ) );
@@ -134,6 +137,7 @@ public class MVELSalienceBuilderTest {
         public static final int   iterations = 1000;
 
         private Salience          salience;
+        private Rule              rule;
         private LeftTuple         tuple;
         private WorkingMemory     wm;
         private final int         result;
@@ -142,6 +146,7 @@ public class MVELSalienceBuilderTest {
         private boolean           error;
 
         public SalienceEvaluator(RuleBase ruleBase,
+                                 Rule rule,
                                  Salience salience,
                                  Person person) {
             wm = ruleBase.newStatefulSession();
@@ -161,6 +166,7 @@ public class MVELSalienceBuilderTest {
                 for ( int i = 0; i < iterations && !halt; i++ ) {
                     assertEquals( result,
                                   salience.getValue( tuple,
+                                                     rule,
                                                      wm ) );
                     Thread.currentThread().yield();
                 }

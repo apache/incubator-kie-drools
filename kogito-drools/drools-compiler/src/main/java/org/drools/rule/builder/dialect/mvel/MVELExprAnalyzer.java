@@ -23,13 +23,22 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.compiler.BoundIdentifiers;
+import org.drools.definition.rule.Rule;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.runtime.rule.RuleContext;
+import org.drools.spi.KnowledgeHelper;
+import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.util.ParseTools;
+import org.mvel2.util.PropertyTools;
 
 /**
  * Expression analyzer.
@@ -59,57 +68,99 @@ public class MVELExprAnalyzer {
      */
     public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
-                                                final Map<String, Class<?>>[] availableIdentifiers,
-                                                final Map<String, Class<?>> localTypes) {
+                                                final BoundIdentifiers availableIdentifiers,
+                                                final Map<String, Class> localTypes) {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            
+
             // creating a reusable parser configuration
             ParserConfiguration conf = new ParserConfiguration();
-            conf.addAllImports( dialect.getImports() );
-            if ( dialect.getPackgeImports() != null && !dialect.getPackgeImports().isEmpty() ) {
-                for ( String packageImport : ((Collection<String>) dialect.getPackgeImports().values()) ) {
-                    conf.addPackageImport( packageImport );
+            conf.setImports( dialect.getImports() );
+            conf.setPackageImports( (HashSet) dialect.getPackgeImports() );
+
+            conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
+
+            // first compilation is for verification only
+            // @todo proper source file name
+            final ParserContext parserContext1 = new ParserContext( conf );
+            parserContext1.setStrictTypeEnforcement( false );
+            parserContext1.setStrongTyping( false );
+            parserContext1.setInterceptors( dialect.getInterceptors() );
+            MVEL.analysisCompile( expr,
+                                  parserContext1 );
+
+            Set<String> requiredInputs = parserContext1.getInputs().keySet();            
+
+            // now, set the required input types and compile again
+            final ParserContext parserContext2 = new ParserContext( conf );
+            parserContext2.setStrictTypeEnforcement( true );
+            parserContext2.setStrongTyping( true );
+            parserContext2.setInterceptors( dialect.getInterceptors() );
+            
+            if ( localTypes != null ) {
+                for ( Entry<String, Class> entry : localTypes.entrySet() ) {
+                    parserContext2.addInput( entry.getKey(),
+                                             entry.getValue() );                    
                 }
             }
-            conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
             
-            // first compilation is for verification only
-
-            // @todo proper source file name
-            final ParserContext parserContext1 = new ParserContext( conf ); 
-            parserContext1.setStrictTypeEnforcement( false );
-            parserContext1.setInterceptors( dialect.getInterceptors() );
-            ExpressionCompiler compiler1 = new ExpressionCompiler( expr );
-            compiler1.setVerifyOnly( true );
-            compiler1.compile( parserContext1 );
-
-            Set<String> requiredInputs = compiler1.getParserContextState().getInputs().keySet();
-            
-            // now, set the required input types and compile again
-            final ParserContext parserContext2 = new ParserContext( conf ); 
-            parserContext2.setStrictTypeEnforcement( false );
-            parserContext2.setInterceptors( dialect.getInterceptors() );
-            for( Map<String,Class<?>> map : availableIdentifiers ) {
-                for( Map.Entry<String, Class<?>> entry : map.entrySet() ) {
-                    if( requiredInputs.contains( entry.getKey() ) ) {
-                        parserContext2.addInput( entry.getKey(), entry.getValue() );
+            for ( String str : requiredInputs ) {
+                if ( availableIdentifiers.getThisClass() != null ) {
+                    if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), str ) != null ) {
+                        continue;
+                    }
+                }               
+                
+                Class cls = availableIdentifiers.getDeclarations().get( str );
+                if ( cls != null ) {
+                    parserContext2.addInput( str,
+                                             cls );    
+                    continue;
+                } 
+                
+                if ( cls == null ) {
+                    cls = availableIdentifiers.getGlobals().get( str );
+                    if ( cls != null ) {
+                        parserContext2.addInput( str,
+                                                 cls );
+                        continue;
                     }
                 }
+                
+                if ( cls == null ) {
+                    if ( str.equals( "drools" ) ) {
+                        parserContext2.addInput( "drools",
+                                                 KnowledgeHelper.class );
+                    } else if ( str.equals( "kcontext" ) ) {
+                        parserContext2.addInput( "kcontext",
+                                                 RuleContext.class );
+                    }
+                    if ( str.equals( "rule" ) ) {
+                        parserContext2.addInput( "rule",
+                                                 Rule.class );
+                    }                    
+                }
             }
-            ExpressionCompiler compiler2 = new ExpressionCompiler( expr );
-            compiler2.setVerifyOnly( true );
-            compiler2.compile( parserContext2 );
             
-            result = analyze( compiler2.getParserContextState().getInputs().keySet(),
-                              availableIdentifiers );
+            if ( availableIdentifiers.getThisClass() != null ) {
+                parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
+            }            
 
-            result.setMvelVariables( compiler2.getParserContextState().getVariables() );
+            MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+            Class returnType =  MVEL.analyze( expr,
+                                              parserContext2 );            
+
+            result = analyze( parserContext2.getInputs().keySet(),
+                              availableIdentifiers );
+            
+            result.setReturnType( returnType );
+            
+            result.setMvelVariables( parserContext2.getVariables() );
         } else {
             result = analyze( (Set<String>) Collections.EMPTY_SET,
                               availableIdentifiers );
-            result.setMvelVariables( new HashMap<String,Class<?>>() );
+            result.setMvelVariables( Collections.<String, Class> emptyMap() );
 
         }
         return result;
@@ -130,28 +181,35 @@ public class MVELExprAnalyzer {
      */
     @SuppressWarnings("unchecked")
     private MVELAnalysisResult analyze(final Set<String> identifiers,
-                                       final Map<String, Class<?>>[] availableIdentifiers) {
+                                       final BoundIdentifiers availableIdentifiers) {
 
         MVELAnalysisResult result = new MVELAnalysisResult();
-        result.setIdentifiers( new ArrayList<String>( identifiers ) );
+        result.setIdentifiers( identifiers );
 
         final Set<String> notBound = new HashSet<String>( identifiers );
-        final List<String>[] used = new List[availableIdentifiers.length];
-        for ( int i = 0, length = used.length; i < length; i++ ) {
-            used[i] = new ArrayList<String>();
-        }
+        Map<String, Class> usedDecls = new HashMap<String, Class>();
+        Map<String, Class> usedGlobals = new HashMap<String, Class>();
 
-        for ( int i = 0, length = availableIdentifiers.length; i < length; i++ ) {
-            final Set<String> set = availableIdentifiers[i].keySet();
-            for ( final String decl : set ) {
-                if ( identifiers.contains( decl ) ) {
-                    used[i].add( decl );
-                    notBound.remove( decl );
-                }
+        for ( Entry<String, Class> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+            if ( identifiers.contains( entry.getKey() ) ) {
+                usedDecls.put( entry.getKey(),
+                               entry.getValue() );
+                notBound.remove( entry.getKey() );
             }
         }
-        result.setBoundIdentifiers( used );
-        result.setNotBoundedIdentifiers( new ArrayList<String>( notBound ) );
+
+        for ( Entry<String, Class> entry : availableIdentifiers.getGlobals().entrySet() ) {
+            if ( identifiers.contains( entry.getKey() ) ) {
+                usedGlobals.put( entry.getKey(),
+                               entry.getValue() );
+                notBound.remove( entry.getKey() );
+            }
+        }
+
+        result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
+                                                          usedGlobals,
+                                                          availableIdentifiers.getThisClass() ) );
+        result.setNotBoundedIdentifiers( notBound );
 
         return result;
     }

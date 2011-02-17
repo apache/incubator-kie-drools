@@ -29,10 +29,13 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -52,7 +55,6 @@ public class MVELAccumulatorFunctionExecutor
     private MVELCompilationUnit                        unit;
     private org.drools.runtime.rule.AccumulateFunction function;
 
-    private DroolsMVELFactory                          model;
     private Serializable                               expression;
 
     public MVELAccumulatorFunctionExecutor() {
@@ -79,7 +81,6 @@ public class MVELAccumulatorFunctionExecutor
 
     public void compile(ClassLoader classLoader) {
         expression = unit.getCompiledExpression( classLoader );
-        model = unit.getFactory();
     }
 
     /* (non-Javadoc)
@@ -115,12 +116,9 @@ public class MVELAccumulatorFunctionExecutor
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) workingMemoryContext;
-        factory.setContext( leftTuple,
-                            null,
-                            handle.getObject(),
-                            workingMemory,
-                            null );
+        
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) leftTuple, null, handle.getObject(), (InternalWorkingMemory) workingMemory );
+        
         final Object value = MVEL.executeExpression( this.expression,
                                                      this.dummy,
                                                      factory );
@@ -160,7 +158,7 @@ public class MVELAccumulatorFunctionExecutor
     }
 
     public Object createWorkingMemoryContext() {
-        return this.model.clone();
+        return null; //this.model.clone();
     }
 
     private static class MVELAccumulatorFunctionContext

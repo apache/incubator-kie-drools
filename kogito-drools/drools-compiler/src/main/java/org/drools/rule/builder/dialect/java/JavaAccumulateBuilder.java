@@ -18,6 +18,7 @@ package org.drools.rule.builder.dialect.java;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,8 +27,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
@@ -72,6 +74,9 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
 
         final RuleConditionElement source = builder.build( context,
                                                            accumDescr.getInput() );
+        
+        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
+        Map<String, Class> declCls = context.getDeclarationResolver().getDeclarationClasses( decls );
 
         if ( source == null ) {
             return null;
@@ -94,18 +99,11 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                         accumDescr,
                                                                                                         accumDescr.getExpression(),
-                                                                                                        new Map[]{context.getDeclarationResolver().getDeclarationClasses( context.getRule() ), context.getPackageBuilder().getGlobals()} );
+                                                                                                        new BoundIdentifiers( declCls, context.getPackageBuilder().getGlobals() ) );
 
-            final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
-            final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
-            for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-                tupleDeclarations.add( context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                        (String) usedIdentifiers[0].get( i ) ) );
-            }
-
-            final Declaration[] previousDeclarations = tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-            final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
+            final Declaration[] previousDeclarations = usedIdentifiers.getDeclarations().values().toArray(new Declaration[usedIdentifiers.getDeclarations().size()]);
             final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
             final String className = "accumulateExpression" + context.getNextId();
@@ -115,7 +113,8 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                    context,
                                                                    previousDeclarations,
                                                                    sourceDeclArr,
-                                                                   requiredGlobals );
+                                                                   usedIdentifiers.getGlobals(),
+                                                                   null );
             map.put( "readLocalsFromTuple",
                      accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
@@ -138,53 +137,55 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final String className = "Accumulate" + context.getNextId();
             accumDescr.setClassName( className );
 
-            Map<String, Class< ? >>[] available = new Map[]{context.getDeclarationResolver().getDeclarationClasses( context.getRule() ), context.getPackageBuilder().getGlobals()};
+            BoundIdentifiers available = new BoundIdentifiers( declCls, context.getPackageBuilder().getGlobals() );
+
             final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                                 accumDescr,
                                                                                                                 accumDescr.getInitCode(),
                                                                                                                 available );
-            final Dialect.AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
-                                                                                                 accumDescr,
-                                                                                                 accumDescr.getActionCode(),
-                                                                                                 available );
-            final Dialect.AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
+            final AnalysisResult actionCodeAnalysis = context.getDialect().analyzeBlock( context,
+                                                                                         accumDescr,
+                                                                                         accumDescr.getActionCode(),
+                                                                                         available );
+            
+            final AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
                                                                                                       accumDescr,
                                                                                                       accumDescr.getResultCode(),
                                                                                                       available );
 
-            final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers()[0] );
-            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers()[0] );
+            final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
 
-            final Set<String> requiredGlobals = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers()[1] );
-            requiredGlobals.addAll( actionCodeAnalysis.getBoundIdentifiers()[1] );
-            requiredGlobals.addAll( resultCodeAnalysis.getBoundIdentifiers()[1] );
+            final Map<String, Class> requiredGlobals = new HashMap<String, Class>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
+            requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
+            requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
 
             if ( accumDescr.getReverseCode() != null ) {
-                final Dialect.AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
+                final AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
                                                                                                       accumDescr,
                                                                                                       accumDescr.getActionCode(),
                                                                                                       available );
-                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers()[0] );
-                requiredGlobals.addAll( reverseCodeAnalysis.getBoundIdentifiers()[1] );
+                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+                requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
             }
 
+            
+            
             final Declaration[] declarations = new Declaration[requiredDeclarations.size()];
             int i = 0;
             for ( Iterator<String> it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
-                declarations[i] = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                   it.next() );
+                declarations[i] = decls.get( it.next() );
             }
             final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
-
-            final String[] globals = requiredGlobals.toArray( new String[requiredGlobals.size()] );
 
             final Map<String, Object> map = createVariableContext( className,
                                                                    null,
                                                                    context,
                                                                    declarations,
                                                                    null,
-                                                                   globals );
+                                                                   requiredGlobals,
+                                                                   null );
 
             map.put( "className",
                      accumDescr.getClassName() );

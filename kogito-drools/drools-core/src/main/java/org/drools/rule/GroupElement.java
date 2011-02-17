@@ -104,7 +104,7 @@ public class GroupElement extends ConditionalElement
     /**
      * @inheritDoc
      */
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration> getOuterDeclarations() {
         return this.type.getOuterDeclarations( this.children );
     }
 

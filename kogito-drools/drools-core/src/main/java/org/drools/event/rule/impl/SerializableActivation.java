@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.definition.rule.Rule;
 import org.drools.rule.Declaration;
@@ -36,6 +37,7 @@ public class SerializableActivation
     Activation,
     Externalizable {
     private Rule                              rule;
+    private Declaration[]                     declarations;
     private List< ? extends FactHandle>       factHandles;
     private PropagationContext                propgationContext;
 
@@ -47,6 +49,13 @@ public class SerializableActivation
         this.rule = activation.getRule();
         this.factHandles = activation.getFactHandles();
         this.propgationContext = activation.getPropagationContext();
+        if ( activation instanceof AgendaItem ) {
+            declarations = ((org.drools.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getDeclarations(); 
+        } else if ( activation instanceof SerializableActivation ) {
+            this.declarations = ((SerializableActivation)activation).declarations;
+        } else {
+            throw new RuntimeException("Unable to get declarations " + activation);
+        } 
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -81,12 +90,11 @@ public class SerializableActivation
         return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
     }
 
-    public List<String> getDeclarationIDs() {
-        Declaration[] declArray = ((org.drools.rule.Rule)this.rule).getDeclarations(); 
-        List<String> declarations = new ArrayList<String>();
-        for( Declaration decl : declArray ) {
-            declarations.add( decl.getIdentifier() );
+    public List<String> getDeclarationIDs() { 
+        List<String> decls = new ArrayList<String>();
+        for( Declaration decl : this.declarations ) {
+            decls.add( decl.getIdentifier() );
         }
-        return Collections.unmodifiableList( declarations );
+        return Collections.unmodifiableList( decls );
     }
 }

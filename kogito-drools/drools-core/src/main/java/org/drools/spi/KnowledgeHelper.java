@@ -58,11 +58,11 @@ public interface KnowledgeHelper
      * 
      * @param object -
      *            the object to be asserted
-     * @throws FactException -
+     * @ -
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
-    void insert(Object object) throws FactException;
+    void insert(Object object) ;
     
     /**
      * Asserts an object specifying that it implement the onPropertyChange
@@ -72,28 +72,36 @@ public interface KnowledgeHelper
      *            the object to be asserted
      * @param dynamic -
      *            specifies the object implements onPropertyChangeListener
-     * @throws FactException -
+     * @ -
      *             Exceptions can be thrown by conditions which are wrapped and
      *             returned as a FactException
      */
     void insert(Object object,
-                      boolean dynamic) throws FactException;
+                      boolean dynamic) ;
     
-    public void insertLogical(Object object) throws FactException;
+    public void insertLogical(Object object) ;
     
     public void insertLogical(Object object,
-                                    boolean dynamic) throws FactException;
+                                    boolean dynamic) ;
     
     public void cancelRemainingPreviousLogicalDependencies();
     
+    FactHandle getFactHandle(Object object);
+    
+    FactHandle getFactHandle(FactHandle handle);    
+    
     void update(FactHandle handle,
-                      Object newObject) throws FactException;
+                      Object newObject) ;
+    
+    void update( FactHandle newObject ) ;
+    
+    void update( Object newObject ) ;
+    
+    void modify( Object newObject ) ;   
 
-    void update( Object newObject ) throws FactException;
-
-    void retract(FactHandle handle) throws FactException;
-
-    void retract(Object object) throws FactException;   
+    void retract(FactHandle handle) ;
+    
+    void retract(Object handle) ;
     
     public Object get(Declaration declaration);
 

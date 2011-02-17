@@ -27,7 +27,9 @@ import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.InternalReadAccessor;
 import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.compiler.ExpressionCompiler;
 
 /**
@@ -40,7 +42,7 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 
     private static final long  serialVersionUID = 510l;
 
-    private CompiledExpression mvelExpression   = null;
+    private ExecutableStatement mvelExpression   = null;
     private Map                extractors       = null;
 
     public MVELClassFieldReader() {
@@ -50,26 +52,37 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
                                 String fieldName,
                                 CacheEntry cache) {
         super( -1, // index
-               Object.class, // fieldType
-               ValueType.determineValueType( Object.class ) ); // value type
+               null, //Object.class, // fieldType
+               null ); //ValueType.determineValueType( Object.class ) ); // value type
         this.extractors = new HashMap();
+        ParserContext context = new ParserContext();
+        context.addInput( "this", cls );
+        context.setStrongTyping( true );
+        
+//        if  ( !fieldName.startsWith( "this." ) ) {
+//            fieldName = "this." + fieldName;
+//        }
+        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+        this.mvelExpression = (ExecutableStatement)MVEL.compileExpression( fieldName, context);
+        
+        Class returnType = this.mvelExpression.getKnownEgressType();
+        setFieldType( returnType );
+        setValueType( ValueType.determineValueType( returnType ) );
+        
 
-        ExpressionCompiler compiler = new ExpressionCompiler( fieldName );
-        this.mvelExpression = compiler.compile();
-
-        Set inputs = compiler.getParserContextState().getInputs().keySet();
-        for ( Iterator it = inputs.iterator(); it.hasNext(); ) {
-            String basefield = (String) it.next();
-            if ( "this".equals( basefield ) ) {
-                continue;
-            }
-            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(),
-                                                                                basefield,
-                                                                                AccessorKey.AccessorType.FieldAccessor ),
-                                                               cls );
-            this.extractors.put( basefield,
-                                 extr );
-        }
+//        Set inputs = compiler.getParserContextState().getInputs().keySet();
+//        for ( Iterator it = inputs.iterator(); it.hasNext(); ) {
+//            String basefield = (String) it.next();
+//            if ( "this".equals( basefield ) ) {
+//                continue;
+//            }
+//            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(),
+//                                                                                basefield,
+//                                                                                AccessorKey.AccessorType.FieldAccessor ),
+//                                                               cls );
+//            this.extractors.put( basefield,
+//                                 extr );
+//        }
     }
 
     //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -89,19 +102,18 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader {
      */
     public Object getValue(InternalWorkingMemory workingMemory,
                            Object object) {
-        Map variables = new HashMap();
-        for ( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) it.next();
-            String var = (String) entry.getKey();
-            InternalReadAccessor extr = (InternalReadAccessor) entry.getValue();
-
-            variables.put( var,
-                           extr.getValue( workingMemory,
-                                          object ) );
-        }
+//        Map variables = new HashMap();
+//        for ( Iterator it = this.extractors.entrySet().iterator(); it.hasNext(); ) {
+//            Map.Entry entry = (Map.Entry) it.next();
+//            String var = (String) entry.getKey();
+//            InternalReadAccessor extr = (InternalReadAccessor) entry.getValue();
+//
+//            variables.put( var,
+//                           extr.getValue( workingMemory,
+//                                          object ) );
+//        }
         return MVEL.executeExpression( mvelExpression,
-                                       object,
-                                       variables );
+                                       object  );
     }
 
 }

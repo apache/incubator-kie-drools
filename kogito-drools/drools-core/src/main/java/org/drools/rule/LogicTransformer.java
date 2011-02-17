@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -123,7 +124,7 @@ class LogicTransformer {
      */
     private void fixClonedDeclarations(GroupElement and) {
         Stack contextStack = new Stack();
-        DeclarationScopeResolver resolver = new DeclarationScopeResolver( new Map[0],
+        DeclarationScopeResolver resolver = new DeclarationScopeResolver( Collections.<String, Class>emptyMap(),
                                                                           contextStack );
 
         contextStack.push( and );

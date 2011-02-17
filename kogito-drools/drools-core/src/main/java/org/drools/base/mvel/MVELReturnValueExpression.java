@@ -23,6 +23,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -30,6 +32,7 @@ import org.drools.spi.FieldValue;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELReturnValueExpression
     implements
@@ -42,7 +45,6 @@ public class MVELReturnValueExpression
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
 
     public MVELReturnValueExpression() {
     }
@@ -66,7 +68,6 @@ public class MVELReturnValueExpression
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public FieldValue evaluate(final Object object,
@@ -75,13 +76,8 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory,
                                final Object ctx) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) ctx;
-        factory.setContext( tuple,
-                            null,
-                            object,
-                            workingMemory,
-                            null );
-
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, object, (InternalWorkingMemory) workingMemory );
+        
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -94,9 +90,6 @@ public class MVELReturnValueExpression
                                                                                    factory ) );
     }
 
-    public Object createContext() {
-        return this.prototype.clone();
-    }
 
     public String toString() {
         return this.unit.getExpression();
@@ -134,9 +127,12 @@ public class MVELReturnValueExpression
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         this.unit.replaceDeclaration( declaration,
-                                      resolved );
-        // need to get a new prototype factory, since the declaration was updated
-        prototype = unit.getFactory();        
+                                      resolved );        
+    }
+
+    public Object createContext() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

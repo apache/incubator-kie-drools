@@ -3,6 +3,7 @@
  */
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.rule.Declaration;
@@ -13,7 +14,7 @@ public class InstrumentedDeclarationScopeResolver extends DeclarationScopeResolv
     private Map declarations;
 
     public InstrumentedDeclarationScopeResolver() {
-        super( new Map[0] );
+        super( new HashMap() );
     }
 
     public void setDeclarations(final Map map) {

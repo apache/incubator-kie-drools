@@ -64,6 +64,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
@@ -176,7 +177,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final Tuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -259,7 +260,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final Tuple tuple = new MockTuple( new HashMap() );
+        final LeftTuple tuple = new MockTuple( new HashMap() );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),
@@ -1311,12 +1312,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         private Rule               rule;
         private int                salience;
         private final GroupElement subrule;
-        private Tuple              tuple;
+        private LeftTuple          tuple;
 
         public MockActivation(final Rule rule,
                               int salience,
                               final GroupElement subrule,
-                              final Tuple tuple) {
+                              final LeftTuple tuple) {
             this.rule = rule;
             this.salience = salience;
             this.tuple = tuple;
@@ -1331,7 +1332,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return this.salience;
         }
 
-        public Tuple getTuple() {
+        public LeftTuple getTuple() {
             return this.tuple;
         }
 
@@ -1416,8 +1417,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     class MockTuple
-        implements
-        Tuple {
+        extends
+        LeftTuple {
         private Map declarations;
 
         public MockTuple(final Map declarations) {

@@ -16,12 +16,16 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.drools.compiler.Dialect;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
@@ -63,19 +67,19 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
         final String className = "eval" + context.getNextId();
 
         evalDescr.setClassMethodName( className );
+        
+        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
-        Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                   evalDescr,
                                                                                   evalDescr.getContent(),
-                                                                                  new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
-        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+                                                                                  new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses( decls ),                 
+                                                                                                        context.getPackageBuilder().getGlobals() ) );
+        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
-        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
+        final Declaration[] declarations = decls.values().toArray( new Declaration[decls.size()]);
+        Arrays.sort( declarations, SortDeclarations.isntance  );
         
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration(context.getRule(), (String) usedIdentifiers[0].get( i ) );
-        }
-
         final EvalCondition eval = new EvalCondition( declarations );
 
         final Map map = createVariableContext( className,
@@ -83,7 +87,8 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
                                                context,
                                                declarations,
                                                null,
-                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               usedIdentifiers.getGlobals(),
+                                               null );
 
         generatTemplates( "evalMethod",
                           "evalInvoker",

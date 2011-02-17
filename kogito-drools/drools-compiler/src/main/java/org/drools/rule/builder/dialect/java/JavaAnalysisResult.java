@@ -21,8 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.drools.compiler.Dialect.AnalysisResult;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 
@@ -32,28 +34,28 @@ import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
  * @author etirelli
  */
 public class JavaAnalysisResult implements AnalysisResult {
-    private static final List<String>[] EMPTY_ARRAY_OF_LISTS = new List[0];
     
-    private List<String>[] boundIdentifiers = EMPTY_ARRAY_OF_LISTS;
-    private List<String> identifiers = Collections.emptyList();
+    private BoundIdentifiers boundIdentifiers = null;
+    private Set<String> identifiers = Collections.emptySet();
     private Map<String,JavaLocalDeclarationDescr> localVariables = Collections.emptyMap();
-    private List<String> notBoundedIdentifiers = Collections.emptyList();
+    private Set<String> notBoundedIdentifiers = Collections.emptySet();
     private List<JavaBlockDescr> blocks = Collections.emptyList();
+    private boolean modifyExpr;
     
-    public List<String>[] getBoundIdentifiers() {
+    public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
     }
-    public void setBoundIdentifiers(List<String>[] boundIdentifiers) {
+    public void setBoundIdentifiers(BoundIdentifiers boundIdentifiers) {
         this.boundIdentifiers = boundIdentifiers;
     }
-    public List<String> getIdentifiers() {
+    public Set<String> getIdentifiers() {
         return identifiers;
     }
-    public void setIdentifiers(List<String> identifiers) {
+    public void setIdentifiers(Set<String> identifiers) {
         this.identifiers = identifiers;
     }
-    public List<String> getLocalVariables() {
-        return new ArrayList<String>( localVariables.keySet() );
+    public Set<String> getLocalVariables() {
+        return localVariables.keySet();
     }
     public Map<String,JavaLocalDeclarationDescr> getLocalVariablesMap() {
         return this.localVariables;
@@ -64,10 +66,10 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void addLocalVariable( String identifier, JavaLocalDeclarationDescr descr ) {
         this.localVariables.put( identifier, descr );
     }
-    public List<String> getNotBoundedIdentifiers() {
+    public Set<String> getNotBoundedIdentifiers() {
         return notBoundedIdentifiers;
     }
-    public void setNotBoundedIdentifiers(List<String> notBoundedIdentifiers) {
+    public void setNotBoundedIdentifiers(Set<String> notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
     public List<JavaBlockDescr> getBlockDescrs() {
@@ -76,4 +78,11 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void setBlockDescrs(List<JavaBlockDescr> blocks) {
         this.blocks = blocks;
     }
+    public boolean isModifyExpr() {
+        return modifyExpr;
+    }
+    public void setModifyExpr(boolean modifyExpr) {
+        this.modifyExpr = modifyExpr;
+    }
+        
 }

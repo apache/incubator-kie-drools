@@ -19,6 +19,8 @@ import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELPredicateExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
@@ -30,6 +32,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.Rule;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.spi.InternalReadAccessor;
 
@@ -77,6 +80,9 @@ public class MVELPredicateBuilderTest {
         final Declaration b = new Declaration( "b",
                                                extractor,
                                                patternB );
+        
+        context.getBuildStack().add( patternA );
+        context.getBuildStack().add( patternB );
 
         final Map map = new HashMap();
         map.put( "a",
@@ -89,24 +95,27 @@ public class MVELPredicateBuilderTest {
         final PredicateDescr predicateDescr = new PredicateDescr();
         predicateDescr.setContent( "a == b" );
 
+        
+        
         final MVELPredicateBuilder builder = new MVELPredicateBuilder();
-
-        final List[] usedIdentifiers = new ArrayList[2];
-        final List list = new ArrayList();
-        usedIdentifiers[1] = list;
-
         final Declaration[] previousDeclarations = new Declaration[]{a};
         final Declaration[] localDeclarations = new Declaration[]{b};
 
         final PredicateConstraint predicate = new PredicateConstraint( null,
                                                                        localDeclarations );
+        
+        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                          predicateDescr,
+                                                                          predicateDescr.getContent(),
+                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), Cheese.class ) );        
 
         builder.build( context,
-                       usedIdentifiers,
+                       new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap() ),
                        previousDeclarations,
                        localDeclarations,
                        predicate,
-                       predicateDescr );
+                       predicateDescr,
+                       analysis );
         
         ( (MVELPredicateExpression) predicate.getPredicateExpression()).compile( Thread.currentThread().getContextClassLoader() );
 

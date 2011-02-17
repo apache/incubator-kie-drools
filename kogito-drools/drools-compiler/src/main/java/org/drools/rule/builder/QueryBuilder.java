@@ -58,8 +58,8 @@ public class QueryBuilder implements EngineElementBuilder {
                 
                 // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
                 ArrayElementReader reader = new ArrayElementReader( arrayExtractor,
-                                        i,
-                                        context.getDialect().getTypeResolver().resolveType( types[i] ) );
+                                                                    i,
+                                                                    context.getDialect().getTypeResolver().resolveType( types[i] ) );
                 PatternBuilder.registerReadAccessor( context, argsObjectType, "elements", reader );
                 
                 declr.setReadAccessor( reader );
