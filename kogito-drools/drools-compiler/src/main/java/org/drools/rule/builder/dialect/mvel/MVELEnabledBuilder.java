@@ -25,7 +25,7 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Map<String,Class> otherVars = new HashMap<String, Class>();
+            Map<String,Class<?>> otherVars = new HashMap<String, Class<?>>();
             otherVars.put( "rule", org.drools.rule.Rule.class );
 
            Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations(context.getRule());

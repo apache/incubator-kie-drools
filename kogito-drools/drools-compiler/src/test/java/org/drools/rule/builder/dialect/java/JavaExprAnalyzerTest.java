@@ -54,7 +54,7 @@ public class JavaExprAnalyzerTest {
                            "method();\n";
         try {
             
-            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() ) );
+            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
             Set<String> vars = analysis.getLocalVariables();
             
             assertEquals( 3, vars.size() );

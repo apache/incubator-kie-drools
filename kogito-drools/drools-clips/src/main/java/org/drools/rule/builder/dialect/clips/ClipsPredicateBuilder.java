@@ -39,7 +39,7 @@ public class ClipsPredicateBuilder extends MVELPredicateBuilder
                       final Declaration[] localDeclarations,
                       final PredicateConstraint predicate,
                       final PredicateDescr predicateDescr) {        
-        super.build(context, usedIdentifiers, previousDeclarations, localDeclarations, predicate, predicateDescr);
+        super.build(context, null /*usedIdentifiers TODO: fix this*/, previousDeclarations, localDeclarations, predicate, predicateDescr, null);
     }
 
 }

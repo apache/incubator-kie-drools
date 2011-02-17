@@ -107,7 +107,6 @@ public class ClipsParser extends Parser {
     	private List errors = new ArrayList();
     	private String source = "unknown";
     	private int lineOffset = 0;
-    	private DescrFactory factory = new DescrFactory();
     	private boolean parserDebug = false;
     	private Location location = new Location( Location.LOCATION_UNKNOWN );	
     	
@@ -123,9 +122,6 @@ public class ClipsParser extends Parser {
     	public void setSource(String source) {
     		this.source = source;
     	}
-    	public DescrFactory getFactory() {
-    		return factory;
-    	}	
 
     	public String getSource() {
     		return this.source;
@@ -1430,7 +1426,7 @@ public class ClipsParser extends Parser {
 
 
              	List list = new ArrayList();
-        		FieldBindingDescr fbd = null;
+        		BindingDescr fbd = null;
         		FieldConstraintDescr fc = null;
         		RestrictionConnectiveDescr top = null;		
         		String op = "==";
@@ -1840,10 +1836,11 @@ public class ClipsParser extends Parser {
               	        if ( declarations.contains( identifier) ) {
               				rc.addRestriction( new VariableRestrictionDescr(op, identifier ) );
               		 	} else {
-              		 		FieldBindingDescr fbd = new FieldBindingDescr();
-              		 		fbd.setIdentifier( identifier );		
-              		 		fbd.setFieldName( fcBase.getFieldName() ); 		
-              		 		ceBase.addDescr( fbd );
+              		 		BindingDescr fbd = new BindingDescr();
+              		 		fbd.setVariable( identifier );		
+              		 		fbd.setExpression( fcBase.getFieldName() );
+              		 		// TODO: add it to the pattern
+              		 		///ceBase.add( fbd );
               		 		declarations.add( identifier );
               		 	}
               		

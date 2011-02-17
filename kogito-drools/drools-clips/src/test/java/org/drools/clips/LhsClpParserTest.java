@@ -16,25 +16,22 @@
 
 package org.drools.clips;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.NotDescr;
@@ -44,7 +41,9 @@ import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.builder.BuildContext;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class LhsClpParserTest {
 
@@ -99,11 +98,11 @@ public class LhsClpParserTest {
                       colList.size() );
         
         // first, we have a field binding
-        FieldBindingDescr fbd = (FieldBindingDescr) colList.get( 0 );
+        BindingDescr fbd = (BindingDescr) colList.get( 0 );
         assertEquals( "$bf",
-                      fbd.getIdentifier() );
+                      fbd.getVariable() );
         assertEquals( "name",
-                      fbd.getFieldName() );
+                      fbd.getExpression() );
         
         // then, we have a field constraint
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
@@ -161,11 +160,11 @@ public class LhsClpParserTest {
         assertEquals( 3,
                       colList.size() );
 
-        fbd = (FieldBindingDescr) colList.get( 0 );
+        fbd = (BindingDescr) colList.get( 0 );
         assertEquals( "$bf2",
-                      fbd.getIdentifier() );
+                      fbd.getVariable() );
         assertEquals( "type",
-                      fbd.getFieldName() );
+                      fbd.getExpression() );
         
         fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
         restrictionList = fieldConstraintDescr.getRestrictions();

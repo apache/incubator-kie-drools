@@ -124,7 +124,7 @@ class LogicTransformer {
      */
     private void fixClonedDeclarations(GroupElement and) {
         Stack contextStack = new Stack();
-        DeclarationScopeResolver resolver = new DeclarationScopeResolver( Collections.<String, Class>emptyMap(),
+        DeclarationScopeResolver resolver = new DeclarationScopeResolver( Collections.<String, Class<?>>emptyMap(),
                                                                           contextStack );
 
         contextStack.push( and );

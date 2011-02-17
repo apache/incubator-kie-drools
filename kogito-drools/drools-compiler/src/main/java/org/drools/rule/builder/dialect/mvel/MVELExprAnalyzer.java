@@ -69,7 +69,7 @@ public class MVELExprAnalyzer {
     public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
                                                 final BoundIdentifiers availableIdentifiers,
-                                                final Map<String, Class> localTypes) {
+                                                final Map<String, Class<?>> localTypes) {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
@@ -99,7 +99,7 @@ public class MVELExprAnalyzer {
             parserContext2.setInterceptors( dialect.getInterceptors() );
             
             if ( localTypes != null ) {
-                for ( Entry<String, Class> entry : localTypes.entrySet() ) {
+                for ( Entry<String, Class<?>> entry : localTypes.entrySet() ) {
                     parserContext2.addInput( entry.getKey(),
                                              entry.getValue() );                    
                 }
@@ -187,10 +187,10 @@ public class MVELExprAnalyzer {
         result.setIdentifiers( identifiers );
 
         final Set<String> notBound = new HashSet<String>( identifiers );
-        Map<String, Class> usedDecls = new HashMap<String, Class>();
-        Map<String, Class> usedGlobals = new HashMap<String, Class>();
+        Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
 
-        for ( Entry<String, Class> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclarations().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedDecls.put( entry.getKey(),
                                entry.getValue() );
@@ -198,7 +198,7 @@ public class MVELExprAnalyzer {
             }
         }
 
-        for ( Entry<String, Class> entry : availableIdentifiers.getGlobals().entrySet() ) {
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getGlobals().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedGlobals.put( entry.getKey(),
                                entry.getValue() );

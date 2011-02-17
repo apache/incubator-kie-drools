@@ -77,7 +77,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                            accumDescr.getInput() );
         
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
-        Map<String, Class> declCls = context.getDeclarationResolver().getDeclarationClasses( decls );
+        Map<String, Class<?>> declCls = context.getDeclarationResolver().getDeclarationClasses( decls );
 
         if ( source == null ) {
             return null;
@@ -160,7 +160,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
             requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
 
-            final Map<String, Class> requiredGlobals = new HashMap<String, Class>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
+            final Map<String, Class<?>> requiredGlobals = new HashMap<String, Class<?>>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
             requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
             requiredGlobals.putAll( resultCodeAnalysis.getBoundIdentifiers().getGlobals() );
 

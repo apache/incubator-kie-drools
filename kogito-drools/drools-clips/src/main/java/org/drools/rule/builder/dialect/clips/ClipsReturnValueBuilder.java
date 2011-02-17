@@ -31,6 +31,6 @@ public class ClipsReturnValueBuilder extends MVELReturnValueBuilder {
                       final Declaration[] localDeclarations,
                       final ReturnValueRestriction returnValueRestriction,
                       final ReturnValueRestrictionDescr returnValueRestrictionDescr) {        
-        super.build(context, usedIdentifiers, previousDeclarations, localDeclarations, returnValueRestriction, returnValueRestrictionDescr );
+        super.build(context, null /* usedIdentifiers TODO: fix this*/, previousDeclarations, localDeclarations, returnValueRestriction, returnValueRestrictionDescr, null );
     }
 }

@@ -126,10 +126,10 @@ public class JavaExprAnalyzer {
         final Set<String> identifiers = result.getIdentifiers();
         final Set<String> notBound = new HashSet<String>( identifiers );
         
-        Map<String, Class> usedDecls = new HashMap<String, Class>();
-        Map<String, Class> usedGlobals = new HashMap<String, Class>();
+        Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
+        Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
 
-        for ( Entry<String, Class> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclarations().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedDecls.put( entry.getKey(),
                                entry.getValue() );
@@ -137,7 +137,7 @@ public class JavaExprAnalyzer {
             }
         }
 
-        for ( Entry<String, Class> entry : availableIdentifiers.getGlobals().entrySet() ) {
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getGlobals().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedGlobals.put( entry.getKey(),
                                entry.getValue() );

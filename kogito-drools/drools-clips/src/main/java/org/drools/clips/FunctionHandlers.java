@@ -91,7 +91,7 @@ public class FunctionHandlers {
             descr.addParameter(  "Object",  param );
         }
         
-        descr.setContent( content );
+        descr.setBody( content.toString() );
         
         return descr;
     }
