@@ -37,18 +37,18 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class DeclarationScopeResolver {
     private static final Stack<RuleConditionElement> EMPTY_STACK = new Stack<RuleConditionElement>();
-    private Map<String, Class< ? >>[]                maps;
+    private Map<String, Class>                  map;
     private Stack<RuleConditionElement>              buildStack;
     private Package                                  pkg;
 
-    public DeclarationScopeResolver(final Map<String, Class< ? >>[] maps) {
+    public DeclarationScopeResolver(final Map<String, Class> maps) {
         this( maps,
               EMPTY_STACK );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class< ? >>[] maps,
+    public DeclarationScopeResolver(final Map<String, Class> map,
                                     final Stack<RuleConditionElement> buildStack) {
-        this.maps = maps;
+        this.map = map;
         if ( buildStack == null ) {
             this.buildStack = EMPTY_STACK;
         } else {
@@ -104,33 +104,31 @@ public class DeclarationScopeResolver {
         }
 
         // it may be a global or something
-        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            if ( this.maps[i].containsKey( (identifier) ) ) {
-                if ( pkg != null ) {
-                    Class<?> cls = (Class<?>) this.maps[i].get( identifier );
-                    ClassObjectType classObjectType = new ClassObjectType( cls );
+        if ( this.map.containsKey( (identifier) ) ) {
+            if ( pkg != null ) {
+                Class<?> cls = (Class<?>) this.map.get( identifier );
+                ClassObjectType classObjectType = new ClassObjectType( cls );
 
-                    Declaration declaration = null;
-                    final Pattern dummy = new Pattern( 0,
-                                                       classObjectType );
+                Declaration declaration = null;
+                final Pattern dummy = new Pattern( 0,
+                                                   classObjectType );
 
-                    GlobalExtractor globalExtractor = new GlobalExtractor( identifier,
-                                                                           classObjectType );
-                    declaration = new Declaration( identifier,
-                                                   globalExtractor,
-                                                   dummy );
+                GlobalExtractor globalExtractor = new GlobalExtractor( identifier,
+                                                                       classObjectType );
+                declaration = new Declaration( identifier,
+                                               globalExtractor,
+                                               dummy );
 
-                    // make sure dummy and globalExtractor are wired up to correct ClassObjectType
-                    // and set as targets for rewiring
-                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
-                                                                         dummy );
-                    pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
-                                                                         globalExtractor );
+                // make sure dummy and globalExtractor are wired up to correct ClassObjectType
+                // and set as targets for rewiring
+                pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
+                                                                     dummy );
+                pkg.getClassFieldAccessorStore().getClassObjectType( classObjectType,
+                                                                     globalExtractor );
 
-                    return declaration;
-                } else {
-                    throw new UnsupportedOperationException( "This shoudln't happen outside of PackageBuilder" );
-                }
+                return declaration;
+            } else {
+                throw new UnsupportedOperationException( "This shoudln't happen outside of PackageBuilder" );
             }
         }
         return null;
@@ -144,11 +142,10 @@ public class DeclarationScopeResolver {
                 return true;
             }
         }
-        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            if ( this.maps[i].containsKey( (name) ) ) {
-                return true;
-            }
+        if ( this.map.containsKey( (name) ) ) {
+            return true;
         }
+        
         // look at parent rules
         if ( rule != null && rule.getParent() != null ) {
             // recursive algorithm for each parent
@@ -164,11 +161,10 @@ public class DeclarationScopeResolver {
 
     public boolean isDuplicated(Rule rule,
                                 final String name) {
-        for ( int i = 0, length = this.maps.length; i < length; i++ ) {
-            if ( this.maps[i].containsKey( (name) ) ) {
-                return true;
-            }
+        if ( this.map.containsKey( (name) ) ) {
+            return true;
         }
+        
         for ( int i = this.buildStack.size() - 1; i >= 0; i-- ) {
             final RuleConditionElement rce = (RuleConditionElement) this.buildStack.get( i );
             final Declaration declaration = (Declaration) rce.getInnerDeclarations().get( name );
@@ -214,13 +210,19 @@ public class DeclarationScopeResolver {
         return declarations;
     }
     
-    public Map<String,Class<?>> getDeclarationClasses(Rule rule) {
+    public Map<String,Class> getDeclarationClasses(Rule rule) {
         final Map<String, Declaration> declarations = getDeclarations( rule );
-        final Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+        return getDeclarationClasses( declarations );
+    }
+    
+    public static Map<String,Class> getDeclarationClasses( final Map<String, Declaration> declarations) {
+        final Map<String, Class> classes = new HashMap<String, Class>();
         for ( Map.Entry<String, Declaration> decl : declarations.entrySet() ) {
             InternalReadAccessor ira = decl.getValue().getExtractor();
-            if( ira != null )
+            // FIXME when would the IRA be null?
+            if( ira != null ) {
                 classes.put( decl.getKey(), ira.getExtractToClass() );
+            }
         }
         return classes;
     }

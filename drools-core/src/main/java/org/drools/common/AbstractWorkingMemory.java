@@ -76,6 +76,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.reteoo.Rete;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
@@ -1170,7 +1171,8 @@ public abstract class AbstractWorkingMemory
      */
     public Map getActivationParameters(Activation activation) {
         Map result = new HashMap();
-        Declaration[] declarations = activation.getRule().getDeclarations();
+        Declaration[] declarations = ((RuleTerminalNode)((LeftTuple) activation.getTuple()).getLeftTupleSink()).getDeclarations();
+        
         for ( int i = 0; i < declarations.length; i++ ) {
             FactHandle handle = activation.getTuple().get( declarations[i] );
             if ( handle instanceof InternalFactHandle ) {

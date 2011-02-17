@@ -2,6 +2,10 @@ package org.drools;
 
 global java.util.List results;
 
+function Address get(Address o) {
+    return o;
+}
+
 rule "test modify with from"
 when
     $p: Person( $addrs : addresses )

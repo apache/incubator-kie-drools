@@ -16,12 +16,14 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEvalExpression;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.rule.Declaration;
@@ -66,12 +68,17 @@ public class MVELEvalBuilder
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
-            Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                      evalDescr,
-                                                                                      evalDescr.getContent(),
-                                                                                      new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
+            Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
+            
+            AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                              evalDescr,
+                                                                              evalDescr.getContent(),
+                                                                              new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
+                                                                                                   context.getPackageBuilder().getGlobals() ) );
 
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
+            Collection<Declaration> col = decls.values();
+            Declaration[] previousDeclarations = (Declaration[]) col.toArray( new Declaration[col.size()] );
+            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) evalDescr.getContent(),
                                                                        analysis,
                                                                        previousDeclarations,
@@ -82,12 +89,12 @@ public class MVELEvalBuilder
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
                                                               dialect.getId() );
-            eval.setEvalExpression( expr );            
-            
+            eval.setEvalExpression( expr );
+
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
             data.addCompileable( eval,
                                   expr );
-            
+
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
             return eval;
         } catch ( final Exception e ) {

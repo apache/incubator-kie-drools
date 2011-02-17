@@ -458,6 +458,10 @@ public class MiscTest {
         kbuilder.add( ResourceFactory.newClassPathResource( "test_MVELrewrite.drl",
                                                             getClass() ),
                       ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1869,6 +1873,10 @@ public class MiscTest {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( rule ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -5398,6 +5406,10 @@ public class MiscTest {
     public void testCrossProductRemovingIdentityEquals() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( MiscTest.class.getResourceAsStream( "test_CrossProductRemovingIdentityEquals.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
@@ -6209,6 +6221,11 @@ public class MiscTest {
     public void testModifyBlock() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ModifyBlock.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
         final RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -6306,6 +6323,11 @@ public class MiscTest {
     public void testOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrCE.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         Package pkg = builder.getPackage();
 
         pkg = SerializationHelper.serializeObject( pkg );

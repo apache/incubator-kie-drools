@@ -29,6 +29,7 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
+import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
@@ -312,22 +313,6 @@ public class PackageBuilderConfigurationTest {
             return this.rule;
         }
 
-        public AnalysisResult analyzeBlock(PackageBuildContext context,
-                                           BaseDescr descr,
-                                           String text,
-                                           Map[] availableIdentifiers) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-        public AnalysisResult analyzeExpression(PackageBuildContext context,
-                                                BaseDescr descr,
-                                                Object content,
-                                                Map[] availableIdentifiers) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
         public void compileAll() {
             this.compileAll = true;
         }
@@ -438,6 +423,22 @@ public class PackageBuilderConfigurationTest {
                                 Resource resource) {
             // TODO Auto-generated method stub
             
+        }
+
+        public AnalysisResult analyzeExpression(PackageBuildContext context,
+                                                BaseDescr descr,
+                                                Object content,
+                                                BoundIdentifiers availableIdentifiers) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public AnalysisResult analyzeBlock(PackageBuildContext context,
+                                           BaseDescr descr,
+                                           String text,
+                                           BoundIdentifiers availableIdentifiers) {
+            // TODO Auto-generated method stub
+            return null;
         }
     }
 

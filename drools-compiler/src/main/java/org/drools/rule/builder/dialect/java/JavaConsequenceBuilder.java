@@ -19,15 +19,19 @@ package org.drools.rule.builder.dialect.java;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.core.util.ClassUtils;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -35,8 +39,15 @@ import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
+import org.drools.rule.builder.dialect.java.parser.JavaRetractBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaUpdateBlockDescr;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PatternExtractor;
+import org.mvel2.Macro;
+import org.mvel2.MacroProcessor;
 import org.mvel2.compiler.ExecutableStatement;
 
 /**
@@ -61,21 +72,24 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        Map<String, Class< ? >> variables = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
-        Dialect.AnalysisResult analysis = context.getDialect().analyzeBlock( context,
-                                                                             ruleDescr,
-                                                                             (String) ruleDescr.getConsequence(),
-                                                                             new Map[]{variables, context.getPackageBuilder().getGlobals()} );
+        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
+        
+        AnalysisResult analysis = context.getDialect().analyzeBlock( context,
+                                                                     ruleDescr,
+                                                                     (String) ruleDescr.getConsequence(),
+                                                                     new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                                                          context.getPackageBuilder().getGlobals() ) );
 
         if ( analysis == null ) {
             // not possible to get the analysis results
             return;
         }
 
-        String fixedConsequence = this.fixBlockDescr( context,
+        String fixedConsequence = this.fixBlockDescr( (String) ruleDescr.getConsequence(),
+                                                      context,
                                                       (JavaAnalysisResult) analysis,
-                                                      ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName )
-                                                       );
+                                                      ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName ),
+                                                      decls );
 
         if ( fixedConsequence == null ) {
             // not possible to rewrite the modify blocks
@@ -83,33 +97,34 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
         fixedConsequence = ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( fixedConsequence );
 
-        final List<String>[] usedIdentifiers = (List<String>[]) analysis.getBoundIdentifiers();
-
-        final Declaration[] declarations = new Declaration[usedIdentifiers[0].size()];
-
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            declarations[i] = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                               (String) usedIdentifiers[0].get( i ) );
+        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+                
+        final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()]; 
+        String[] declrStr = new String[declarations.length]; 
+        int j = 0;
+        for (String str : usedIdentifiers.getDeclarations().keySet() ) {
+            declrStr[j] = str;
+            declarations[j++] = decls.get( str );
         }
-
+        Arrays.sort( declarations, SortDeclarations.isntance  );  
+        context.getRule().setRequiredDeclarations( declrStr );
+                
         final Map<String, Object> map = createVariableContext( className,
                                                                fixedConsequence,
                                                                context,
                                                                declarations,
                                                                null,
-                                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                                               usedIdentifiers.getGlobals(),
+                                                               (JavaAnalysisResult) analysis );
         
         map.put( "consequenceName", consequenceName );
-
-        // Must use the rule declarations, so we use the same order as used in the generated invoker
-        final List list = Arrays.asList( context.getRule().getDeclarations() );
 
         //final int[] indexes = new int[declarations.length];
         final Integer[] indexes = new Integer[declarations.length];
 
         final Boolean[] notPatterns = new Boolean[declarations.length];
         for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            indexes[i] = new Integer( list.indexOf( declarations[i] ) );
+            indexes[i] = i;
             notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
             if ( (indexes[i]).intValue() == -1 ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -136,9 +151,10 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         context.getBuildStack().pop();
     }
 
-    protected String fixBlockDescr(final RuleBuildContext context,
+    protected String fixBlockDescr(String expr,
+                                   final RuleBuildContext context,
                                    final JavaAnalysisResult analysis,
-                                   final String originalCode) {
+                                   final String originalCode, Map<String, Declaration> decls) {
         MVELDialect mvel = (MVELDialect) context.getDialect( "mvel" );
 
         // sorting exit points for correct order iteration
@@ -153,19 +169,51 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         StringBuilder consequence = new StringBuilder();
         int lastAdded = 0;
+        boolean modifyExpr = true;
+        
+        // We need to do this as MVEL doesn't recognise "with"
+        MacroProcessor macroProcessor = new MacroProcessor();
+        Map macros = new HashMap( MVELConsequenceBuilder.macros );
+        macros.put( "modify",
+                    new Macro() {
+                        public String doMacro() {
+                            return "with";
+                        }
+                    } );
+        macroProcessor.setMacros( macros );
+        expr = macroProcessor.parse( expr );        
+        
+        Map<String, Class> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
+        
+        MVELAnalysisResult mvelAnalysis = null;
+        try {
+            mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
+                                                                     context.getRuleDescr(),
+                                                                     mvel.getInterceptors(),
+                                                                     expr,
+                                                                     new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals(), KnowledgeHelper.class ),
+                                                                     null );
+        } catch(Exception e) {
+            // swallow this as the error will be reported else where
+        }
+        
         for ( JavaBlockDescr block : blocks ) {
             // adding chunk
             consequence.append( originalCode.substring( lastAdded,
                                                         block.getStart() - 1 ) );
-            lastAdded = block.getEnd();
+            lastAdded = block.getEnd();           
 
             switch ( block.getType() ) {
                 case MODIFY :
-                    rewriteModify( context,
-                                   originalCode,
-                                   mvel,
-                                   consequence,
-                                   (JavaModifyBlockDescr) block );
+                case UPDATE :
+                case RETRACT :
+                    modifyExpr = rewriteDescr( context,
+                                               mvelAnalysis,
+                                               originalCode,
+                                               mvel,
+                                               consequence,
+                                               (JavaBlockDescr) block,
+                                               decls );
                     break;
                 case ENTRY :
                 case EXIT :
@@ -177,6 +225,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                     break;
             }
         }
+        analysis.setModifyExpr( modifyExpr );
         consequence.append( originalCode.substring( lastAdded ) );
 
         return consequence.toString();
@@ -214,94 +263,168 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                        originalBlock.substring( 0,
                                                 end ) );
     }
+    
+    private boolean rewriteDescr(final RuleBuildContext context,
+                                 MVELAnalysisResult analysis, 
+                                 final String originalCode,
+                                 MVELDialect mvel,
+                                 StringBuilder consequence,
+                                 JavaBlockDescr d, 
+                                 Map<String, Declaration> decls) {
+           if ( d.getEnd() <= 0 ) {
+               // not correctly parse
+               context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                             context.getRuleDescr(),
+                                                             originalCode,
+                                                             "Incorrect syntax for expression: " + d.getTargetExpression() + "\n" ) );
 
-    private void rewriteModify(final RuleBuildContext context,
-                               final String originalCode,
-                               MVELDialect mvel,
-                               StringBuilder consequence,
-                               JavaModifyBlockDescr d) {
-        Map<String, Class< ? >> variables = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
-        Dialect.AnalysisResult mvelAnalysis = mvel.analyzeBlock( context,
-                                                                 context.getRuleDescr(),
-                                                                 mvel.getInterceptors(),
-                                                                 d.getModifyExpression(),
-                                                                 new Map[]{variables, context.getPackageBuilder().getGlobals()},
-                                                                 null );
+               return false;
+           }  
+           
+           Map<String, Class> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
+           
+           MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
+                                                                                       context.getRuleDescr(),
+                                                                                       mvel.getInterceptors(),
+                                                                                       d.getTargetExpression(),
+                                                                                       new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals() ),
+                                                                                       analysis != null ?  analysis.getMvelVariables() : null );
 
-        final ExecutableStatement expr = (ExecutableStatement) mvel.compile( d.getModifyExpression(),
-                                                                             mvelAnalysis,
-                                                                             mvel.getInterceptors(),
-                                                                             null,
-                                                                             null,
-                                                                             context );
+           Class ret = mvelAnalysis.getReturnType();
 
-        Class ret = expr.getKnownEgressType();
+           if ( ret == null ) {
+               // not possible to evaluate expression return value
+               context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                             context.getRuleDescr(),
+                                                             originalCode,
+                                                             "Unable to determine the resulting type of the expression: " + d.getTargetExpression() + "\n" ) );
 
-        if ( ret == null ) {
-            // not possible to evaluate expression return value
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          context.getRuleDescr(),
-                                                          originalCode,
-                                                          "Unable to determine the resulting type of the expression: " + d.getModifyExpression() + "\n" ) );
+               return false;
+           }
+                 
+           String retString = ClassUtils.canonicalName( ret );
+           // adding modify expression
+                      
+           String declrString;
+           if (d.getTargetExpression().charAt( 0 ) == '(' ) {
+               declrString = d.getTargetExpression().substring( 1,d.getTargetExpression().length() -1 ).trim();
+           } else {
+               declrString = d.getTargetExpression();
+           }        
+           String obj = declrString;
+           Declaration declr = decls.get( declrString );
+           
+           consequence.append( "{ " );
+           
+           if ( declr == null  ) {   
+               obj = "__obj__";
+               consequence.append( retString );
+               consequence.append( " " );
+               consequence.append( obj); 
+               consequence.append( " = (" );
+               consequence.append( retString );
+               consequence.append( ") " );
+               consequence.append( d.getTargetExpression() );
+               consequence.append( "; " );
+           }
+           
+           if ( declr == null || declr.isInternalFact() ) {
+               consequence.append( "org.drools.FactHandle "  );
+               consequence.append( obj  );
+               consequence.append( "__Handle2__ = drools.getFactHandle("  );
+               consequence.append( obj  );
+               consequence.append( ");"  );               
+           }
+           
+           // the following is a hack to preserve line breaks.
+           String originalBlock = originalCode.substring( d.getStart() - 1,
+                                                          d.getEnd() );
+           
+           if ( d instanceof JavaModifyBlockDescr ) {
+               rewriteModifyDescr( context, d, originalBlock, consequence, declr, obj );
+           } else if ( d instanceof JavaUpdateBlockDescr ) {
+               rewriteUpdateDescr( d, originalBlock, consequence, declr, obj );
+           } else if ( d instanceof JavaRetractBlockDescr ) {
+               rewriteRetractDescr( d, originalBlock, consequence, declr, obj );
+           } 
 
-            return;
-        }
-        
-        if ( d.getEnd() <= 0 ) {
-            // not correctly parse
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          context.getRuleDescr(),
-                                                          originalCode,
-                                                          "Incorrect syntax for expression: " + d.getModifyExpression() + "\n" ) );
-
-            return;
-        }        
-        String retString = ClassUtils.canonicalName( ret );
-
-        // adding modify expression
-        consequence.append( "{ " );
-        consequence.append( retString );
-        consequence.append( " __obj__ = (" );
-        consequence.append( retString );
-        consequence.append( ") " );
-        consequence.append( d.getModifyExpression() );
-        consequence.append( "; " );
-        
-        // the following is a hack to preserve line breaks.
-        String originalBlock = originalCode.substring( d.getStart() - 1,
-                                                       d.getEnd() );
+           return declr != null;
+       }    
+    
+    private boolean rewriteModifyDescr(final RuleBuildContext context,
+                                       JavaBlockDescr d,
+                                       String originalBlock,
+                                       StringBuilder consequence,
+                                       Declaration declr,
+                                       String obj) {
         int end = originalBlock.indexOf( "{" );
         if( end == -1 ){
             // no block
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
-                                                          "Block missing after modify" + d.getModifyExpression() + " ?\n" ) );
-            return;
+                                                          "Block missing after modify" + d.getTargetExpression() + " ?\n" ) );
+            return false;
         }        
 
         addLineBreaks( consequence,
                        originalBlock.substring( 0,
                                                 end ) );
+        
+           int start = end + 1;
+           // adding each of the expressions:
+           for ( String exprStr : ((JavaModifyBlockDescr)d).getExpressions() ) {
+               end = originalBlock.indexOf( exprStr,
+                                            start );
+               addLineBreaks( consequence,
+                              originalBlock.substring( start,
+                                                       end ) );
+               consequence.append( obj + "." );
+               consequence.append( exprStr );
+               consequence.append( "; " );
+               start = end + exprStr.length();
+           }
+           
+           // adding the modifyInsert call:
+           addLineBreaks( consequence,
+                          originalBlock.substring( end ) );
 
-        int start = end + 1;
-        // adding each of the expressions:
-        for ( String exprStr : d.getExpressions() ) {
-            end = originalBlock.indexOf( exprStr,
-                                         start );
-            addLineBreaks( consequence,
-                           originalBlock.substring( start,
-                                                    end ) );
-            consequence.append( "__obj__." );
-            consequence.append( exprStr );
-            consequence.append( "; " );
-            start = end + exprStr.length();
-        }
-        // adding the modifyInsert call:
-        addLineBreaks( consequence,
-                       originalBlock.substring( end ) );
-        consequence.append( "update( __obj__ ); }" );
-    }
+           if ( declr != null && !declr.isInternalFact() ) {
+               consequence.append( "drools.update( " + obj + "__Handle__ ); }" );
+           } else {
+               consequence.append( "drools.update( " + obj + "__Handle2__ ); }" );
+           }
+           
+           return declr != null;
+       }    
+    
+    private boolean rewriteUpdateDescr(JavaBlockDescr d,
+                                       String originalBlock,
+                                       StringBuilder consequence,
+                                       Declaration declr,
+                                       String obj) {           
+           if ( declr != null && !declr.isInternalFact() ) {
+               consequence.append( "drools.update( " + obj + "__Handle__ ); }" );
+           } else {
+               consequence.append( "drools.update( " + obj + "__Handle2__ ); }" );
+           }     
+           
+           return declr != null;
+       }   
+    
+    private boolean rewriteRetractDescr(JavaBlockDescr d,
+                                        String originalBlock,
+                                        StringBuilder consequence,
+                                        Declaration declr,
+                                        String obj) {                      
+        if ( declr != null && !declr.isInternalFact() ) {
+               consequence.append( "drools.retract( " + obj + "__Handle__ ); }" );
+           } else {
+               consequence.append( "drools.retract( " + obj + "__Handle2__ ); }" );
+           }      
+           
+           return declr != null;
+       }     
 
     /**
      * @param consequence

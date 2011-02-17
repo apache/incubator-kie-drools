@@ -154,6 +154,10 @@ public class QueryTest {
 
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
         kbase.addKnowledgePackages( kbase.getKnowledgePackages() );
+        
+        if(kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
         kbase = SerializationHelper.serializeObject( kbase );
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -737,90 +741,65 @@ public class QueryTest {
         assertTrue( names.contains( "darth" ) );
     }
     
-//    @Test
-//    public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
-////        String str = "";
-////        str += "package org.drools.test  \n";
-////        str += "import org.drools.Person \n";
-////        str += "query peeps( String $name, int $age) \n";
-////        str += "    $p : Person( $name : name, $likes : likes, $age : age, $street : address.street == \"s1\"  ) \n";
-////        str += "end\n";
-//
-//        String str = "";
-//        str += "package org.drools.test  \n";
-//        str += "import org.drools.Person \n";
-//        str += "query peeps( String $name ) \n";
-//        str += "    $p1 : Person( $address : address )\n ";
-//        str += "    $p2 : Person( this != $p1, name != $p1.address.street  ) \n";
-//        str += "end\n";        
-//        
-//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-//                          ResourceType.DRL );
-//
-//        if ( kbuilder.hasErrors() ) {
-//            fail( kbuilder.getErrors().toString() );
-//        }
-//
-//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-//
-//        kbase = SerializationHelper.serializeObject( kbase );
-//
-//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-//        Person p1 = new Person( "darth",
-//                                "stilton",
-//                                100 );
-//        p1.setAddress( new Address("s1") );
-//        
-//        Person p2 = new Person( "yoda",
-//                                "stilton",
-//                                300 );
-//        p2.setAddress( new Address("s1") );
-////        
-////        Person p3 = new Person( "luke",
-////                                "brie",
-////                                300 );
-////        p3.setAddress( new Address("s3") );  
-////        
-////        Person p4 = new Person( "bobba",
-////                                "cheddar",
-////                                300 );
-////        p4.setAddress( new Address("s4") );
-//
-//        ksession.insert( p1 );
-//        ksession.insert( p2 );
-////        ksession.insert( p3 );
-////        ksession.insert( p4 );
-//
-////        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-////                                                                                 new Object[]{new Variable(), new Variable()} );
-//////        assertEquals( 4,
-////                          results.size() );
-////        List names = new ArrayList();
-////        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-////            System.out.println( row.get( "$street" ) );
-////            //names.add( ((Person) row.get( "$street" )).getName() );
-////        }
-////        assertEquals( 4,
-////                      names.size() );
-////        assertTrue( names.contains( "luke" ) );
-////        assertTrue( names.contains( "yoda" ) );
-////        assertTrue( names.contains( "bobba" ) );
-////        assertTrue( names.contains( "darth" ) );
-////
-////        results = ksession.getQueryResults( "peeps",
-////                                            new Object[]{p1, new Variable(), new Variable(), new Variable()} );
-////        assertEquals( 1,
-////                          results.size() );
-////        names = new ArrayList();
-////        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-////            names.add( ((Person) row.get( "$p" )).getName() );
-////        }
-////        assertEquals( 1,
-////                      names.size() );
-////        assertTrue( names.contains( "darth" ) );
-//    }    
+    @Test
+    public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
+        String str = "";
+        str += "package org.drools.test  \n";
+        str += "import org.drools.Person \n";
+        str += "query peeps( String $name, String $likes, String $street) \n";
+        str += "    $p : Person( $name : name, $likes : likes, $street : address.street ) \n";
+        str += "end\n";      
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Person p1 = new Person( "darth",
+                                "stilton",
+                                100 );
+        p1.setAddress( new Address("s1") );
+        
+        Person p2 = new Person( "yoda",
+                                "stilton",
+                                300 );
+        p2.setAddress( new Address("s2") );
+
+        ksession.insert( p1 );
+        ksession.insert( p2 );
+
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
+                                                                                 new Object[]{new Variable(), new Variable(), new Variable()} );
+        assertEquals( 2,
+                          results.size() );
+        List names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertTrue( names.contains( "yoda" ) );
+        assertTrue( names.contains( "darth" ) );
+        
+        
+
+        results = ksession.getQueryResults( "peeps",
+                                            new Object[]{ new Variable(), new Variable(), "s1"} );
+        assertEquals( 1,
+                      results.size() );        
+        names = new ArrayList();
+        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
+            names.add( ((Person) row.get( "$p" )).getName() );
+        }
+        assertTrue( names.contains( "darth" ) );      
+    }    
 
     @Test
     public void testOpenQuery() throws Exception {

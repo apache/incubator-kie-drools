@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.drools.compiler.AnalysisResult;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
@@ -54,13 +56,14 @@ public class AbstractJavaRuleBuilder {
         return INVOKER_REGISTRY;
     }
 
-    public Map<String, Object> createVariableContext( final String className,
-                                                      final String text,
-                                                      final RuleBuildContext context,
-                                                      final Declaration[] declarations,
-                                                      final Declaration[] localDeclarations,
-                                                      final String[] globals ) {
-        final Map<String, Object> map = new HashMap<String, Object>();
+    public Map<String,Object> createVariableContext(final String className,
+                                     final String text,
+                                     final RuleBuildContext context,
+                                     final Declaration[] declarations,
+                                     final Declaration[] localDeclarations,
+                                     final Map<String, Class> globals, 
+                                     JavaAnalysisResult analysis) {
+        final Map<String,Object> map = new HashMap<String,Object>();
 
         map.put( "methodName",
                  className );
@@ -71,8 +74,12 @@ public class AbstractJavaRuleBuilder {
         map.put( "ruleClassName",
                  StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
 
-        map.put( "invokerClassName",
-                 context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
+        map.put("invokerClassName",
+                context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker");
+        
+        if ( analysis != null ) {
+            map.put( "methodExpr", analysis.isModifyExpr() );
+        }
 
         if ( text != null ) {
             map.put( "text",
@@ -106,14 +113,17 @@ public class AbstractJavaRuleBuilder {
                      localDeclarationTypes );
         }
 
-        final List<String> globalTypes = new ArrayList<String>( globals.length );
-        for ( int i = 0, length = globals.length; i < length; i++ ) {
-            globalTypes.add( (context.getPkg().getGlobals().get( globals[i] )).replace( '$',
-                                                                                        '.' ) );
-        }
+        String[] globalStr = new String[globals.size()];
+        String[] globalTypes = new String[globals.size()];
+        int i = 0;
+        for ( Entry<String, Class> entry : globals.entrySet() ) {
+            globalStr[i] = entry.getKey();
+            globalTypes[i] = entry.getValue().getName().replace('$','.');
+            i++;
+        }       
 
-        map.put( "globals",
-                 globals );
+        map.put("globals",
+                globalStr );
 
         map.put( "globalTypes",
                  globalTypes );
@@ -121,14 +131,14 @@ public class AbstractJavaRuleBuilder {
         return map;
     }
 
-    public static void generatTemplates( final String ruleTemplate,
-                                         final String invokerTemplate,
-                                         final RuleBuildContext context,
-                                         final String className,
-                                         final Map vars,
-                                         final Object invokerLookup,
-                                         final BaseDescr descrLookup ) {
-        synchronized ( MVELDialect.COMPILER_LOCK ) {
+    public static void generatTemplates(final String ruleTemplate,
+                                        final String invokerTemplate,
+                                        final RuleBuildContext context,
+                                        final String className,
+                                        final Map vars,
+                                        final Object invokerLookup,
+                                        final BaseDescr descrLookup) {
+        synchronized ( MVELDialect.COMPILER_LOCK ) {     
             AbstractParser.setLanguageLevel( 5 );
             TemplateRegistry registry = getRuleTemplateRegistry();
 

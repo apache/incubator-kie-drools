@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.java;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
@@ -76,19 +78,20 @@ public class JavaAccumulateBuilderTest {
         
         String code = "int x = 0;";
         String expected = "x = 0;";
-        JavaAnalysisResult analysis = analyzer.analyzeBlock( code, new Map[0]);
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() );
+        JavaAnalysisResult analysis = analyzer.analyzeBlock( code, bindings);
         String result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
         
         code = "$anExternalVar.method(); \nint aVar = 0, anotherVar=10    ;Integer bla = new Integer( 25);functionCall();\n";
         expected = "$anExternalVar.method(); \naVar = 0;anotherVar=10;bla = new Integer( 25);functionCall();\n";;
-        analysis = analyzer.analyzeBlock( code, new Map[0]);
+        analysis = analyzer.analyzeBlock( code, bindings);
         result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
         
         code = "$anExternalVar.method(); String[] aVar = new String[] { \"a\", \"b\" }, anotherVar=new String[] { someStringVar }  ;final Integer bla = new Integer( 25);functionCall();\n";
         expected = "$anExternalVar.method(); aVar = new String[] { \"a\", \"b\" };anotherVar=new String[] { someStringVar };bla = new Integer( 25);functionCall();\n";
-        analysis = analyzer.analyzeBlock( code, new Map[0]);
+        analysis = analyzer.analyzeBlock( code,bindings);
         result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );
 

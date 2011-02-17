@@ -23,23 +23,35 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
+import org.drools.WorkingMemory;
 import org.drools.base.ModifyInterceptor;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.definition.rule.Rule;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
+import org.mvel2.integration.impl.IndexedVariableResolverFactory;
 
 public class MVELCompilationUnit
     implements
@@ -69,8 +81,6 @@ public class MVELCompilationUnit
 
     private int                             languageLevel;
     private boolean                         strictMode;
-
-    private Map<String, Class>              resolvedInputs;
 
     private static Map                      interceptors  = new HashMap( 2 );
     static {
@@ -245,149 +255,215 @@ public class MVELCompilationUnit
                 resolvedImports.put( field.getName(),
                                      field );
             }
-        } catch ( ClassNotFoundException e ) {
-            e.printStackTrace();
+        } catch ( Exception e ) {
             throw new RuntimeDroolsException( "Unable to resolve import '" + lastName + "'" );
-        } catch ( SecurityException e ) {
-            e.printStackTrace();
-            throw new RuntimeDroolsException( "Unable to resolve import '" + lastName + "'" );
-        } catch ( NoSuchFieldException e ) {
-            e.printStackTrace();
-            throw new RuntimeDroolsException( "Unable to resolve import '" + lastName + "'" );
+            
         }
 
-        final ParserContext parserContext = new ParserContext( resolvedImports,
-                                                               null,
-                                                               name );
-        parserContext.getParserConfiguration().setClassLoader( classLoader );
-
-        for ( String pkgImport : this.pkgImports ) {
-            parserContext.addPackageImport( pkgImport );
+        ParserConfiguration conf = new ParserConfiguration();
+        conf.setImports( resolvedImports );
+        conf.setPackageImports( new HashSet( Arrays.asList( this.pkgImports ) ) );
+        conf.setClassLoader( classLoader );        
+        
+        final ParserContext parserContext = new ParserContext( conf );
+        if ( MVELDebugHandler.isDebugMode() ) {
+            parserContext.setDebugSymbols( true );
         }
 
-        parserContext.setInterceptors( interceptors );
+        parserContext.setStrictTypeEnforcement( strictMode );
         parserContext.setStrongTyping( strictMode );
-        //parserContext.setStrictTypeEnforcement( strictMode );
+        parserContext.setIndexAllocation( true );
 
-        resolvedInputs = new HashMap<String, Class>( inputIdentifiers.length );
-
-        parserContext.addInput( "drools",
-                                KnowledgeHelper.class );
-
-		resolvedInputs.put( "drools",
-		                    KnowledgeHelper.class );
+        if ( interceptors != null ) {
+            parserContext.setInterceptors( interceptors );
+        }
 		
-		String lastIdentifier = null;
-        String lastType = null;
+        
+        parserContext.addIndexedVariables( inputIdentifiers );
+		String identifier = null;
+        String type = null;
         try {
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
-                lastIdentifier = inputIdentifiers[i];
-                lastType = inputTypes[i];
+                identifier = inputIdentifiers[i];
+                type = inputTypes[i];
                 Class cls = loadClass( classLoader,
                                        inputTypes[i] );
-                resolvedInputs.put( inputIdentifiers[i],
-                                    cls );
                 parserContext.addInput( inputIdentifiers[i],
                                         cls );
             }
         } catch ( ClassNotFoundException e ) {
-            e.printStackTrace();
-            throw new RuntimeDroolsException( "Unable to resolve class '" + lastType + "' for identifier '" + lastIdentifier );
+            throw new RuntimeDroolsException( "Unable to resolve class '" + type + "' for identifier '" + identifier );
         }
-
-        if ( parserContext.getInputs().get( "kcontext" ) == null)  {
-
-        	parserContext.addInput( "kcontext",
-	                                RuleContext.class );
-	
-	        resolvedInputs.put( "kcontext",
-	                            RuleContext.class );
-
-        }
+        
+        parserContext.setSourceFile( name );
         
         return compile( expression,
                         classLoader,
                         parserContext,
                         languageLevel );
     }
-
-    public DroolsMVELFactory getFactory() {
-        Map<String, Class> resolvedGlobals = null;
-        if ( inputIdentifiers != null ) {
-            resolvedGlobals = new HashMap<String, Class>( inputIdentifiers.length );
-            for ( int i = 0, length = globalIdentifiers.length; i < length; i++ ) {
-                String identifier = globalIdentifiers[i];
-                resolvedGlobals.put( identifier,
-                                     resolvedInputs.get( identifier ) );
-            }
+    
+    public VariableResolverFactory getFactory(final KnowledgeHelper knowledgeHelper,
+                                              final Rule rule,
+                                              final LeftTuple tuples,
+                                              final Object[] otherVars,
+                                              final Object thisObject,
+                                              final InternalWorkingMemory workingMemory) {
+        int varLength = inputIdentifiers.length;
+        Object[] vals = new Object[inputIdentifiers.length];
+        
+        int i = 0;
+        if ( thisObject != null ) {
+            vals[i++] = thisObject;
         }
-
-        Map<String, Declaration> previousDeclarationsMap = null;
-        if ( previousDeclarations != null ) {
-            previousDeclarationsMap = new HashMap<String, Declaration>( previousDeclarations.length );
-            for ( Declaration declr : previousDeclarations ) {
-                previousDeclarationsMap.put( declr.getIdentifier(),
-                                             declr );
-            }
+        vals[i++] = knowledgeHelper;
+        vals[i++] = knowledgeHelper;
+        vals[i++] = rule;
+        
+        if ( globalIdentifiers != null ) {
+            for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {          
+              vals[i++] = workingMemory.getGlobal( this.globalIdentifiers[j] );
+            }                
         }
-
-        Map<String, Declaration> localDeclarationsMap = null;
-        if ( localDeclarations != null ) {
-            localDeclarationsMap = new HashMap<String, Declaration>( localDeclarations.length );
-            for ( Declaration declr : localDeclarations ) {
-                localDeclarationsMap.put( declr.getIdentifier(),
-                                          declr );
-            }
+             
+        InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
+        IdentityHashMap<Object, FactHandle> identityMap = null;
+        if ( knowledgeHelper != null ) {
+            identityMap = new IdentityHashMap<Object, FactHandle>();
         }
-
-        DroolsMVELFactory factory = null;
-        if ( shadowIdentifiers == null ) {
-
-            factory = new DroolsMVELFactory( previousDeclarationsMap,
-                                             localDeclarationsMap,
-                                             resolvedGlobals,
-                                             inputIdentifiers );
-        } else {
-            Set<String> set = new HashSet<String>( shadowIdentifiers.length );
-            for ( String string  : shadowIdentifiers ) {
-                set.add( string );
-            }
-            factory = new DroolsMVELShadowFactory( previousDeclarationsMap,
-                                                   localDeclarationsMap,
-                                                   resolvedGlobals,
-                                                   inputIdentifiers,
-                                                   set );
+        
+        if ( this.previousDeclarations != null ) {
+            for ( int j = 0, length = this.previousDeclarations.length; j < length; j++ ) {
+                Declaration decl = this.previousDeclarations[j];
+                InternalFactHandle handle = getFactHandle( decl, 
+                                                           handles );
+                
+                Object o = decl.getValue( (InternalWorkingMemory) workingMemory, handle.getObject() );
+                if ( knowledgeHelper != null ) {
+                    identityMap.put( decl.getIdentifier(), handle );
+                }
+                vals[i++] = o;
+            }                
         }
-
+        
+        if ( this.localDeclarations != null ) {
+            for ( int j = 0, length = this.localDeclarations.length; j < length; j++ ) {
+                Declaration decl = this.localDeclarations[j];
+                Object o = decl.getValue( (InternalWorkingMemory) workingMemory, thisObject);
+                vals[i++] = o;
+            }                
+        }               
+        
+        for ( Object o : otherVars ) {
+            vals[i++] = o;
+        }
+        
+        if ( knowledgeHelper != null ) {
+            knowledgeHelper.setIdentityMap( identityMap );
+        }
+        
+        VariableResolverFactory locals = new CachingMapVariableResolverFactory(new HashMap<String, Object>());
+        DroolsMVELResolverFactory factory =  new DroolsMVELResolverFactory(inputIdentifiers, vals, locals);
+        factory.setKnowledgeHelper( knowledgeHelper );
         return factory;
     }
+    
+    public static class DroolsMVELResolverFactory extends IndexedVariableResolverFactory {
+        
+        private KnowledgeHelper knowledgeHelper;
 
-    public Serializable compile(final String text,
-                                final ClassLoader classLoader,
-                                final ParserContext parserContext,
-                                final int languageLevel) {
+        public DroolsMVELResolverFactory(String[] varNames,
+                                         Object[] values) {
+            super( varNames,
+                   values );
+        }
+        
+        public DroolsMVELResolverFactory(String[] varNames,
+                                         Object[] values,
+                                         VariableResolverFactory factory) {
+            super( varNames,
+                   values,
+                   factory );
+        }        
+
+        public KnowledgeHelper getKnowledgeHelper() {
+            return knowledgeHelper;
+        }
+
+        public void setKnowledgeHelper(KnowledgeHelper knowledgeHelper) {
+            this.knowledgeHelper = knowledgeHelper;
+        }
+
+    }
+    
+    private static InternalFactHandle getFactHandle(Declaration declaration, InternalFactHandle[] handles) {
+        return handles[ declaration.getPattern().getOffset() ];
+    }
+    
+
+//    public DroolsMVELFactory getFactory() {
+//        Set<String> resolvedGlobals = null;
+//        if ( globalIdentifiers != null ) {
+//            resolvedGlobals = new HashSet<String>( globalIdentifiers.length );
+//            for ( int i = 0, length = globalIdentifiers.length; i < length; i++ ) {
+//                resolvedGlobals.add( globalIdentifiers[i] );
+//            }
+//        }
+//
+//        Map<String, Declaration> previousDeclarationsMap = null;
+//        if ( previousDeclarations != null ) {
+//            previousDeclarationsMap = new HashMap<String, Declaration>( previousDeclarations.length );
+//            for ( Declaration declr : previousDeclarations ) {
+//                previousDeclarationsMap.put( declr.getIdentifier(),
+//                                             declr );
+//            }
+//        }
+//
+//        Map<String, Declaration> localDeclarationsMap = null;
+//        if ( localDeclarations != null ) {
+//            localDeclarationsMap = new HashMap<String, Declaration>( localDeclarations.length );
+//            for ( Declaration declr : localDeclarations ) {
+//                localDeclarationsMap.put( declr.getIdentifier(),
+//                                          declr );
+//            }
+//        }
+//
+//        DroolsMVELFactory factory = null;
+//        if ( shadowIdentifiers == null ) {
+//
+//            factory = new DroolsMVELFactory( previousDeclarationsMap,
+//                                             localDeclarationsMap,
+//                                             resolvedGlobals,
+//                                             inputIdentifiers );
+//        } else {
+//            Set<String> set = new HashSet<String>( shadowIdentifiers.length );
+//            for ( String string  : shadowIdentifiers ) {
+//                set.add( string );
+//            }
+//            factory = new DroolsMVELShadowFactory( previousDeclarationsMap,
+//                                                   localDeclarationsMap,
+//                                                   resolvedGlobals,
+//                                                   inputIdentifiers,
+//                                                   set );
+//        }
+//
+//        return factory;
+//    }
+
+    public static Serializable compile(final String text,
+                                       final ClassLoader classLoader,
+                                       final ParserContext parserContext,
+                                       final int languageLevel) {
     	MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
     	
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
         }
 
-        synchronized ( COMPILER_LOCK ) {
-            ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
+        Serializable expr = null;
+        expr = MVEL.compileExpression( text.trim(), parserContext );
 
-            Thread.currentThread().setContextClassLoader( classLoader );
-
-            AbstractParser.setLanguageLevel( languageLevel );
-            Serializable expr = null;
-            try {
-                expr = MVEL.compileExpression( text.trim(), parserContext );
-            } finally {
-                // make sure that in case of exceptions the context classloader is properly restored
-                Thread.currentThread().setContextClassLoader( tempClassLoader );
-            }
-
-            return expr;
-        }
+        return expr;
     }
 
     private Class loadClass(ClassLoader classLoader,
@@ -435,5 +511,79 @@ public class MVELCompilationUnit
                                        languageLevel,
                                        strictMode);
     }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String[] getPkgImports() {
+        return pkgImports;
+    }
+
+    public String[] getImportClasses() {
+        return importClasses;
+    }
+
+    public String[] getImportMethods() {
+        return importMethods;
+    }
+
+    public String[] getImportFields() {
+        return importFields;
+    }
+
+    public String[] getGlobalIdentifiers() {
+        return globalIdentifiers;
+    }
+
+    public Declaration[] getPreviousDeclarations() {
+        return previousDeclarations;
+    }
+
+    public Declaration[] getLocalDeclarations() {
+        return localDeclarations;
+    }
+
+    public String[] getOtherIdentifiers() {
+        return otherIdentifiers;
+    }
+
+    public String[] getInputIdentifiers() {
+        return inputIdentifiers;
+    }
+
+    public String[] getInputTypes() {
+        return inputTypes;
+    }
+
+    public String[] getShadowIdentifiers() {
+        return shadowIdentifiers;
+    }
+
+    public int getLanguageLevel() {
+        return languageLevel;
+    }
+
+    public boolean isStrictMode() {
+        return strictMode;
+    }
+
+    public static Map getInterceptors() {
+        return interceptors;
+    }
+
+    public static Map<String, Class> getPrimitivesmap() {
+        return primitivesMap;
+    }
+
+    public static Object getCompilerLock() {
+        return COMPILER_LOCK;
+    }
+    
+    
 
 }

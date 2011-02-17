@@ -196,8 +196,10 @@ public class ReteooBuilder
             }
 
             int s1 = so1.getValue( null,
+                                   null,
                                    null );
             int s2 = so2.getValue( null,
+                                   null,
                                    null );
 
             if ( s1 > s2 ) {

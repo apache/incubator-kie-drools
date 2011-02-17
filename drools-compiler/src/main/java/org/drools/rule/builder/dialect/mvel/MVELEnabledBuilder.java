@@ -5,8 +5,9 @@ import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEnabledExpression;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.EnabledBuilder;
@@ -24,18 +25,19 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Map<String,Class<?>> otherVars = new HashMap<String, Class<?>>();
+            Map<String,Class> otherVars = new HashMap<String, Class>();
             otherVars.put( "rule", org.drools.rule.Rule.class );
 
-            Map<String, Declaration> declarations = context.getDeclarationResolver().getDeclarations(context.getRule());
-            Map<String, Class<?>>[] available = new Map[]{ context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()};
-            Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
-                                                                         context.getRuleDescr(),
-                                                                         (String) context.getRuleDescr().getEnabled(),
-                                                                         available,
-                                                                         otherVars );
+           Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations(context.getRule());
+            
+           AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                context.getRuleDescr(),
+                                                                (String) context.getRuleDescr().getEnabled(),
+                                                                new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( declrs ), 
+                                                                                      context.getPackageBuilder().getGlobals() ),
+                                                                otherVars );
 
-            Declaration[] previousDeclarations = (Declaration[]) declarations.values().toArray( new Declaration[declarations.size()] );
+            Declaration[] previousDeclarations = declrs.values().toArray( new Declaration[declrs.size()] );
             
             String exprStr = (String) context.getRuleDescr().getEnabled();
             exprStr = exprStr.substring( 1, exprStr.length()-1 )+" ";

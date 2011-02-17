@@ -102,6 +102,14 @@ abstract public class BaseClassFieldReader
         return ClassUtils.canonicalName( this.fieldType );
     }
 
+    public void setFieldType(Class< ? > fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType;
+    }
+
     public ValueType getValueType() {
         return this.valueType;
     }

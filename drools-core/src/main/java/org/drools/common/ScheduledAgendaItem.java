@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.core.util.LinkedListNode;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -50,7 +51,7 @@ public class ScheduledAgendaItem extends AgendaItem
     private JobHandle jobHandle;    
 
     public ScheduledAgendaItem(final long activationNumber,
-                               final Tuple tuple,
+                               final LeftTuple tuple,
                                final InternalAgenda agenda,
                                final PropagationContext context,
                                final Rule rule,

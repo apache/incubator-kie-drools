@@ -20,6 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
@@ -34,6 +39,7 @@ import org.drools.common.ScheduledAgendaItem;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -72,6 +78,7 @@ public class RuleTerminalNode extends BaseNode
      */
     private GroupElement      subrule;
     private LeftTupleSource   tupleSource;
+    private Declaration[]     declarations;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -105,6 +112,14 @@ public class RuleTerminalNode extends BaseNode
         this.tupleSource = source;
         this.subrule = subrule;
         this.tupleMemoryEnabled = context.isTerminalNodeMemoryEnabled();
+        
+        Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
+        this.declarations = new Declaration[ rule.getRequiredDeclarations().length ];
+        int i = 0;
+        for (String str : rule.getRequiredDeclarations() ) {
+            this.declarations[i++] = decls.get( str );            
+        }
+        Arrays.sort( this.declarations, SortDeclarations.isntance  );        
     }
 
     // ------------------------------------------------------------
@@ -119,6 +134,7 @@ public class RuleTerminalNode extends BaseNode
         tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
+        declarations = ( Declaration[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -129,6 +145,7 @@ public class RuleTerminalNode extends BaseNode
         out.writeObject( tupleSource );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
+        out.writeObject( declarations );
     }
 
     /**
@@ -204,6 +221,7 @@ public class RuleTerminalNode extends BaseNode
             // ----------------
             final AgendaItem item = agenda.createAgendaItem( tuple,
                                                              rule.getSalience().getValue( tuple,
+                                                                                          this.rule,
                                                                                           workingMemory ),
                                                              context,
                                                              this.rule,
@@ -345,6 +363,7 @@ public class RuleTerminalNode extends BaseNode
                 // ----------------
                 item = agenda.createAgendaItem( leftTuple,
                                                 rule.getSalience().getValue( leftTuple,
+                                                                             this.rule,
                                                                              workingMemory ),
                                                 context,
                                                 this.rule,
@@ -352,6 +371,7 @@ public class RuleTerminalNode extends BaseNode
                 item.setSequenence( this.sequence );
             } else {
                 item.setSalience( rule.getSalience().getValue( leftTuple,
+                                                               this.rule,
                                                                workingMemory ) ); // need to re-evaluate salience, as used fields may have changed
                 item.setPropagationContext( context ); // update the Propagation Context
             }
@@ -426,6 +446,18 @@ public class RuleTerminalNode extends BaseNode
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
+    }
+    
+    public Declaration[] getDeclarations() {
+        return this.declarations;
+    }
+    
+    public static class SortDeclarations implements Comparator<Declaration> {
+        public final static SortDeclarations isntance = new SortDeclarations();
+        public int compare(Declaration d1,
+                           Declaration d2) {
+            return ( d1.getIdentifier().compareTo( d2.getIdentifier() ) );
+        }        
     }
 
     /**

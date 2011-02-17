@@ -16,13 +16,15 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.base.dataproviders.MVELDataProvider;
 import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
@@ -60,14 +62,21 @@ public class MVELFromBuilder
         try {
             // This builder is re-usable in other dialects, so specify by name
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+            
+            Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
             String text = (String) accessor.toString();
-            Dialect.AnalysisResult analysis = dialect.analyzeExpression( context,
-                                                                         descr,
-                                                                         text,
-                                                                         new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
-
-            Declaration[] previousDeclarations = (Declaration[]) context.getDeclarationResolver().getDeclarations(context.getRule()).values().toArray( new Declaration[context.getDeclarationResolver().getDeclarations(context.getRule()).size()] );
+            AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                 descr,
+                                                                 text,
+                                                                 new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
+                                                                                      context.getPackageBuilder().getGlobals() ) );
+            if ( analysis == null ) {
+                // something bad happened
+                return null;
+            }
+            Collection<Declaration> col = decls.values();
+            Declaration[] previousDeclarations = (Declaration[]) col.toArray( new Declaration[col.size()] );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        previousDeclarations,

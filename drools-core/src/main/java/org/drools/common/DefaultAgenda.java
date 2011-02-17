@@ -174,7 +174,7 @@ public class DefaultAgenda
         }
     }
 
-    public AgendaItem createAgendaItem(final Tuple tuple,
+    public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
                                        final Rule rule,
@@ -187,7 +187,7 @@ public class DefaultAgenda
                                subrule );
     }
 
-    public ScheduledAgendaItem createScheduledAgendaItem(final Tuple tuple,
+    public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
                                                          final Rule rule,
                                                          final GroupElement subrule) {

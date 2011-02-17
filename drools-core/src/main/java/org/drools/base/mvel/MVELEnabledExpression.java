@@ -25,12 +25,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.spi.Enabled;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELEnabledExpression
     implements
@@ -44,7 +47,6 @@ public class MVELEnabledExpression
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
 
     public MVELEnabledExpression() {
     }
@@ -68,20 +70,12 @@ public class MVELEnabledExpression
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public boolean getValue(final Tuple tuple,
                             final Rule rule,
-                            final WorkingMemory workingMemory) {
-        // it must be cloned for multi-thread safety
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-        factory.setContext( tuple,
-        		            null,
-                            null,
-                            workingMemory,
-                            null );
-        factory.createVariable( "rule", rule, rule.getClass() );
+                            final WorkingMemory workingMemory) {        
+        VariableResolverFactory factory = unit.getFactory( null, rule, (LeftTuple) tuple, null, null, (InternalWorkingMemory) workingMemory );        
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

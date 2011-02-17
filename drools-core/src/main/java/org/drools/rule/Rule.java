@@ -84,7 +84,7 @@ public class Rule
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
     private Map<String, Declaration> declarations;
-    private Declaration[]            declarationArray;
+    private String[]                 requiredDeclarations;
 
     private GroupElement             lhsRoot;
 
@@ -139,11 +139,11 @@ public class Rule
         out.writeObject( salience );
         out.writeBoolean( dirty );
         out.writeObject( declarations );
-        out.writeObject( declarationArray );
         out.writeObject( lhsRoot );
         out.writeObject( dialect );
         out.writeObject( agendaGroup );
         out.writeObject( metaAttributes );
+        out.writeObject( requiredDeclarations );
 
         if ( this.consequence instanceof CompiledInvoker ) {
             out.writeObject( null );
@@ -177,11 +177,11 @@ public class Rule
 
         dirty = in.readBoolean();
         declarations = (Map<String, Declaration>) in.readObject();
-        declarationArray = (Declaration[]) in.readObject();
         lhsRoot = (GroupElement) in.readObject();
         dialect = (String) in.readObject();
         agendaGroup = (String) in.readObject();
         metaAttributes = (Map<String, Object>) in.readObject();
+        requiredDeclarations = (String[]) in.readObject();
 
         consequence = (Consequence) in.readObject();
         namedConsequence = (Map<String, Consequence>) in.readObject();
@@ -434,10 +434,17 @@ public class Rule
         if ( this.dirty || (this.declarations == null) ) {
             this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
                                                                                 null ).getOuterDeclarations();
-            this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
         return this.declarations.get( identifier );
+    }
+
+    public String[] getRequiredDeclarations() {
+        return requiredDeclarations;
+    }
+
+    public void setRequiredDeclarations(String[] requiredDeclarations) {
+        this.requiredDeclarations = requiredDeclarations;
     }
 
     /**
@@ -469,14 +476,13 @@ public class Rule
      *         <i>root fact objects</i>.
      */
     @SuppressWarnings("unchecked")
-    public Declaration[] getDeclarations() {
-        if ( this.dirty || (this.declarationArray == null) ) {
+    public Map<String, Declaration> getDeclarations() {
+        if ( this.dirty || (this.declarations == null) ) {
             this.declarations = (Map<String, Declaration>) this.getExtendedLhs( this,
                                                                                 null ).getOuterDeclarations();
-            this.declarationArray = (Declaration[]) this.declarations.values().toArray( new Declaration[this.declarations.values().size()] );
             this.dirty = false;
         }
-        return this.declarationArray;
+        return this.declarations;
     }
 
     /**
@@ -743,5 +749,30 @@ public class Rule
     public Rule getParent() {
         return parent;
     }
+    
+    public static java.util.List getMethodBytecode(Class cls, String ruleClassName, String packageName, String methodName, String resource) {
+        org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
+
+        java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );
+
+        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int byteCount;
+        try {
+            while ( (byteCount = is.read( data,
+                                 0,
+                                 1024 )) > -1 )
+            {
+                bos.write(data, 0, byteCount);
+            }
+        } catch ( java.io.IOException e ) {
+            throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '" + ruleClassName+ "' ");
+        }
+
+        org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );
+        classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
+        org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
+        return trace.getText();
+    } 
 
 }

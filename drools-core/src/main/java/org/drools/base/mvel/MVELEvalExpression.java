@@ -23,6 +23,8 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -30,6 +32,7 @@ import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELEvalExpression
     implements
@@ -43,7 +46,6 @@ public class MVELEvalExpression
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
 
     public MVELEvalExpression() {
     }
@@ -58,36 +60,26 @@ public class MVELEvalExpression
                                             ClassNotFoundException {
         id = in.readUTF();
         unit = (MVELCompilationUnit) in.readObject();
-        //        expr    = (Serializable)in.readObject();
-        //        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
-        //        out.writeObject(expr);
-        //        out.writeObject(prototype);
     }
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public Object createContext() {
-        return this.prototype.clone();
+        return null;
     }
 
     public boolean evaluate(final Tuple tuple,
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) context;
-        factory.setContext( tuple,
-                            null,
-                            null,
-                            workingMemory,
-                            null );
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, null, (InternalWorkingMemory) workingMemory );   
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -106,18 +98,10 @@ public class MVELEvalExpression
         return this.unit.getExpression();
     }
 
-    @SuppressWarnings("unchecked")
-    public Declaration[] getRequiredDeclarations() {
-        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
-        return (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
-    }
-
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         this.unit.replaceDeclaration( declaration,
                                       resolved );
-        // need to get a new prototype factory, since the declaration was updated
-        prototype = unit.getFactory();
     }
 
     public MVELEvalExpression clone() {
@@ -125,7 +109,6 @@ public class MVELEvalExpression
                                                            id );
         // expr should be stateless, so it should be fine to share the reference
         clone.expr = expr;
-        clone.prototype = clone.unit.getFactory();
         
         return clone;
     }

@@ -1,46 +1,16 @@
 @declare{"getMethodBytecode"}
     public java.util.List getMethodBytecode() {
-        org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer("@{methodName}");
-
-        java.io.InputStream is = getClass().getClassLoader().getResourceAsStream( "@{package}.@{ruleClassName}".replace( '.', '/' ) + ".class" );
-
-        java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        int byteCount;
-        try {
-            while ( (byteCount = is.read( data,
-                                 0,
-                                 1024 )) > -1 )
-            {
-                bos.write(data, 0, byteCount);
-            }
-        } catch ( java.io.IOException e ) {
-            throw new org.drools.RuntimeDroolsException("Unable getResourceAsStream for Class '@{ruleClassName}' ");
-        }
-
-        org.mvel2.asm.ClassReader classReader = new org.mvel2.asm.ClassReader( bos.toByteArray() );
-        classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
-        org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
-        return trace.getText();
+    	return org.drools.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" ); 
     }
 @end{}
 
 
 @declare{"equals"}
     public boolean equals(Object object) {
-        if (object == null ) {
-            return false;
-        } else if ( object == this ){
-            return true;
-        }
-
-        if ( ! (object instanceof org.drools.spi.CompiledInvoker) ) {
-            return false;
-        }
-
-        org.drools.spi.CompiledInvoker other = ( org.drools.spi.CompiledInvoker ) object;
-
-        return org.drools.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), other.getMethodBytecode() );
+    	if ( object == null || !(object instanceof  org.drools.spi.CompiledInvoker) ) {
+    		return false;
+    	}
+        return org.drools.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.spi.CompiledInvoker ) object).getMethodBytecode() );
     }
 @end{}
 
@@ -351,13 +321,12 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
     public void evaluate(org.drools.spi.KnowledgeHelper knowledgeHelper,
                          org.drools.WorkingMemory workingMemory) throws Exception {
         org.drools.spi.Tuple tuple = knowledgeHelper.getTuple();
-        org.drools.rule.Declaration[] declarations = knowledgeHelper.getRule().getDeclarations();
+        org.drools.rule.Declaration[] declarations = ((org.drools.reteoo.RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations(); 
 
         @foreach{type : declarationTypes, declr : declarations, index : indexes, notPattern : notPatterns}
-          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( knowledgeHelper.getDeclaration( declarations[@{index}].getIdentifier() ) );
-          @{type} @{declr.identifier} = ( @{type} )  declarations[@{index}].@{declr.nativeReadMethod.name}((org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );
+          org.drools.common.InternalFactHandle @{declr.identifier}__Handle__ = ( org.drools.common.InternalFactHandle ) tuple.get( declarations[@{index} ] );
+          @{type} @{declr.identifier} = ( @{type} )  declarations[@{index}].@{declr.nativeReadMethod.name}((org.drools.common.InternalWorkingMemory) workingMemory, @{declr.identifier}__Handle__.getObject() );        
           @if{notPattern}@{declr.identifier}__Handle__ =  (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle( @{declr.identifier} );@end{}
-          knowledgeHelper.getIdentityMap().put(@{declr.identifier}, @{declr.identifier}__Handle__ );
         @end{}        
 
         @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

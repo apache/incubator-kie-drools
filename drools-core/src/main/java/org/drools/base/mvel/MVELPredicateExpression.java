@@ -24,12 +24,15 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.drools.WorkingMemory;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELPredicateExpression implements PredicateExpression, MVELCompileable, Externalizable {
     private static final long       serialVersionUID = 510l;
@@ -38,7 +41,6 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
     private String id;
     
     private Serializable      expr;
-    private DroolsMVELFactory prototype;
 
     public MVELPredicateExpression() {
     }
@@ -61,11 +63,10 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
     
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory( );
     }      
 
     public Object createContext() {
-        return this.prototype.clone();
+        return null;
     }
 
     public boolean evaluate(final Object object,
@@ -74,12 +75,7 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context ) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) context;
-        factory.setContext( tuple,
-                                 null,
-                                 object,
-                                 workingMemory,
-                                 null );                
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, object, (InternalWorkingMemory) workingMemory );              
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

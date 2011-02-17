@@ -22,6 +22,7 @@ import org.drools.common.ActivationGroupNode;
 import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
 import org.drools.core.util.LinkedList;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 
@@ -71,7 +72,7 @@ public interface Activation
      * 
      * @return The tuple.
      */
-    Tuple getTuple();
+    LeftTuple getTuple();
 
     /**
      * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>

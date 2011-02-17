@@ -69,7 +69,7 @@ public class RuleBuildContext extends PackageBuildContext {
                             final Dialect defaultDialect) {
         this.buildStack = new Stack<RuleConditionElement>();
 
-        this.declarationResolver = new DeclarationScopeResolver( new Map[]{pkgBuilder.getGlobals()},
+        this.declarationResolver = new DeclarationScopeResolver( pkgBuilder.getGlobals(),
                                                                  this.buildStack );
         this.declarationResolver.setPackage( pkg );
         this.ruleDescr = ruleDescr;

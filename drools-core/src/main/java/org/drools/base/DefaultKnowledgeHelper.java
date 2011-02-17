@@ -75,7 +75,7 @@ public class DefaultKnowledgeHelper
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
 
-        this.identityMap = new IdentityHashMap<Object, FactHandle>();
+        this.identityMap = null;
 
     }
 
@@ -114,11 +114,11 @@ public class DefaultKnowledgeHelper
         this.subrule = null;
         this.activation = null;
         this.tuple = null;
-        this.identityMap.clear();
+        this.identityMap = null;
         this.previousJustified = null;
     }
 
-    public void insert(final Object object) throws FactException {
+    public void insert(final Object object) {
         insert( object,
                 false );
     }
@@ -130,17 +130,19 @@ public class DefaultKnowledgeHelper
                                                        false,
                                                        this.rule,
                                                        this.activation );
-        this.getIdentityMap().put( object,
-                                   handle );
+        if ( this.identityMap != null ) {
+            this.getIdentityMap().put( object,
+                                       handle );
+        }
     }
 
-    public void insertLogical(final Object object) throws FactException {
+    public void insertLogical(final Object object) {
         insertLogical( object,
                        false );
     }
 
     public void insertLogical(final Object object,
-                              final boolean dynamic) throws FactException {
+                              final boolean dynamic) {
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
@@ -163,8 +165,10 @@ public class DefaultKnowledgeHelper
                                                            this.rule,
                                                            this.activation );
 
-            this.getIdentityMap().put( object,
-                                       handle );
+            if ( this.identityMap != null ) {
+                this.getIdentityMap().put( object,
+                                           handle );
+            }
         }
     }
     
@@ -175,43 +179,67 @@ public class DefaultKnowledgeHelper
             }
         }
     }
-
+    
+    public FactHandle getFactHandle(Object object) {
+        FactHandle handle = null;
+        if ( identityMap != null ) {
+            identityMap.get( object );
+        }
+        if ( handle == null ) {
+            handle = getFactHandleFromWM( object );
+        }
+        if ( handle == null ) {
+            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+        }
+        return handle;
+    }
+    
+    public FactHandle getFactHandle(FactHandle handle) {
+        Object object = ((InternalFactHandle)handle).getObject();
+        handle = getFactHandleFromWM( object );
+        if ( handle == null ) {
+            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+        }
+        return handle;
+    }    
+    
     public void update(final FactHandle handle,
-                       final Object newObject) throws FactException {
-        // only update if this fact exists in the wm
-
+                       final Object newObject){
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
                                                                                                   newObject,
                                                                                                   this.rule,
                                                                                                   this.activation );
-        this.getIdentityMap().put( newObject,
-                                   handle );
-    }
-
-    public void update(final Object object) throws FactException {
-        FactHandle handle = getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
+        if ( getIdentityMap() != null ) {
+            this.getIdentityMap().put( newObject,
+                                       handle );
         }
-        update( handle,
-                object );
+    }    
+    
+    public void update(final FactHandle handle) {
+        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
+                                                                                                  ((InternalFactHandle)handle).getObject(),
+                                                                                                  this.rule,
+                                                                                                  this.activation );
+    }    
+
+    
+    public void update( Object object ) {
+        update( getFactHandle(object) );
+    }
+    
+    public void retract(Object object) {
+       retract( getFactHandle(object) );
     }
 
-    public void retract(final FactHandle handle) throws FactException {
+    public void retract(final FactHandle handle) {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
                                                                                                    true,
                                                                                                    true,
                                                                                                    this.rule,
                                                                                                    this.activation );
-        this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
-    }
-
-    public void retract(final Object object) throws FactException {
-        FactHandle handle = getFactHandle( object );
-        if ( handle == null ) {
-            throw new FactException( "Retract error: handle not found for object: " + object + ". Is it in the working memory?" );
+        if ( this.identityMap != null ) {
+            this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
         }
-        retract( handle );
     }
 
     public Rule getRule() {
@@ -244,9 +272,11 @@ public class DefaultKnowledgeHelper
         if ( wmTmp != null ) {
             Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                   this.tuple.get( declaration ).getObject() );
-
-            getIdentityMap().put( object,
-                                  wmTmp.getFactHandleByIdentity( object ) );
+            
+            if ( identityMap != null ) {
+                getIdentityMap().put( object,
+                                      wmTmp.getFactHandleByIdentity( object ) );
+            }
             return object;
         }
         return null;
@@ -306,11 +336,10 @@ public class DefaultKnowledgeHelper
         this.identityMap = identityMap;
     }
 
-    private FactHandle getFactHandle(final Object object) {
-        FactHandle handle = identityMap.get( object );
+    private FactHandle getFactHandleFromWM(final Object object) {
+        FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-        if ( handle == null || ((InternalFactHandle) handle).getEntryPoint() == null ) {
             for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
                 if ( handle != null ) {
@@ -319,7 +348,6 @@ public class DefaultKnowledgeHelper
                     break;
                 }
             }
-        }
         return handle;
     }
     
@@ -359,6 +387,11 @@ public class DefaultKnowledgeHelper
     		}
     	}
     	return null;
+    }
+
+    public void modify(Object newObject) {
+        // TODO Auto-generated method stub
+        
     }
 
 }

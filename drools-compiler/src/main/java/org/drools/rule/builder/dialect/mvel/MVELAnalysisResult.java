@@ -20,8 +20,10 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.drools.compiler.Dialect.AnalysisResult;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 
 /**
  * An analysis result implementation for the MVEL dialect
@@ -29,39 +31,40 @@ import org.drools.compiler.Dialect.AnalysisResult;
  * @author etirelli
  */
 public class MVELAnalysisResult implements AnalysisResult {
-    private static final List[] EMPTY_ARRAY_OF_LISTS = new List[0];
     
-    private List[] boundIdentifiers = EMPTY_ARRAY_OF_LISTS;
-    private List identifiers = Collections.EMPTY_LIST;
-    private List localVariables = Collections.EMPTY_LIST;
-    private List notBoundedIdentifiers = Collections.EMPTY_LIST;
+    private BoundIdentifiers boundIdentifiers = null;
+    private Set identifiers = Collections.EMPTY_SET;
+    private Set localVariables = Collections.EMPTY_SET;
+    private Set notBoundedIdentifiers = Collections.EMPTY_SET;
     
     private Map mvelVariables;
     private Map mvelInputs;
     
-    public List[] getBoundIdentifiers() {
+    private Class returnType;
+    
+    public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
     }
-    public void setBoundIdentifiers(List[] boundIdentifiers) {
+    public void setBoundIdentifiers(BoundIdentifiers boundIdentifiers) {
         this.boundIdentifiers = boundIdentifiers;
         
     }
-    public List getIdentifiers() {
+    public Set getIdentifiers() {
         return identifiers;
     }
-    public void setIdentifiers(List identifiers) {
+    public void setIdentifiers(Set identifiers) {
         this.identifiers = identifiers;
     }
-    public List getLocalVariables() {
+    public Set getLocalVariables() {
         return this.localVariables;
     }
-    public void setLocalVariables(List localVariables) {
+    public void setLocalVariables(Set localVariables) {
         this.localVariables = localVariables;
     }
-    public List getNotBoundedIdentifiers() {
+    public Set getNotBoundedIdentifiers() {
         return notBoundedIdentifiers;
     }
-    public void setNotBoundedIdentifiers(List notBoundedIdentifiers) {
+    public void setNotBoundedIdentifiers(Set notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
 
@@ -72,4 +75,25 @@ public class MVELAnalysisResult implements AnalysisResult {
     public void setMvelVariables(Map mvelVariables) {
         this.mvelVariables = mvelVariables;
     }
+    public Class getReturnType() {
+        return returnType;
+    }
+    public void setReturnType(Class returnType) {
+        this.returnType = returnType;
+    }
+    @Override
+    public String toString() {
+        return "MVELAnalysisResult [boundIdentifiers=" + boundIdentifiers + 
+               ",\n identifiers=" + identifiers + 
+               ",\n localVariables=" + localVariables + 
+               ",\n notBoundedIdentifiers=" + notBoundedIdentifiers + 
+               ",\n mvelVariables=" + mvelVariables+ 
+               ",\n mvelInputs=" + mvelInputs + 
+               ",\n returnType=" + returnType + "]";
+    }
+
+    
+    
+    
+    
 }

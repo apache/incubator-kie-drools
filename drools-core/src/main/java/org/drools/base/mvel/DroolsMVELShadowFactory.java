@@ -36,7 +36,7 @@ public class DroolsMVELShadowFactory extends DroolsMVELFactory {
 
     public DroolsMVELShadowFactory(final Map previousDeclarations,
                                    final Map localDeclarations,
-                                   final Map globals,
+                                   final Set<String> globals,
                                    final Set<String> shadowVariables) {
         this( previousDeclarations,
               localDeclarations,
@@ -47,7 +47,7 @@ public class DroolsMVELShadowFactory extends DroolsMVELFactory {
 
     public DroolsMVELShadowFactory(final Map previousDeclarations,
                                    final Map localDeclarations,
-                                   final Map globals,
+                                   final Set<String> globals,
                                    final String[] inputIdentifiers,
                                    final Set<String> shadowVariables) {
         super( previousDeclarations,

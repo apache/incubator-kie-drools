@@ -79,7 +79,7 @@ public class PatternDescr extends BaseDescr implements Cloneable {
     }
     
     public boolean isInternalFact() {
-        return this.getSource() != null && this.getSource() instanceof CollectDescr;
+        return this.getSource() != null && !(this.getSource() instanceof EntryPointDescr);
     }
 
     public String toString() {

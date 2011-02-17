@@ -17,6 +17,7 @@
 package org.drools.rule.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +32,8 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.field.ObjectFieldImpl;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.core.util.StringUtils;
@@ -53,6 +56,7 @@ import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.AbstractCompositeRestriction;
 import org.drools.rule.AndCompositeRestriction;
@@ -326,15 +330,15 @@ public class PatternBuilder
                        final AbstractCompositeConstraint container) {
         String fieldName = fieldConstraintDescr.getFieldName();
 
-        if ( fieldName.indexOf( '[' ) > -1 ) {
-            rewriteToEval( context,
-                           pattern,
-                           fieldConstraintDescr,
-                           container );
-
-            // after building the predicate, we are done, so return
-            return;
-        }
+//        if ( fieldName.indexOf( '[' ) > -1 ) {
+//            rewriteToEval( context,
+//                           pattern,
+//                           fieldConstraintDescr,
+//                           container );
+//
+//            // after building the predicate, we are done, so return
+//            return;
+//        }
 
         if ( fieldName.indexOf( '.' ) > -1 ) {
             // we have a composite field name
@@ -342,15 +346,16 @@ public class PatternBuilder
             if ( identifiers.length == 2 && ((pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) || ("this".equals( identifiers[0] ))) ) {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
-            } else {
-                rewriteToEval( context,
-                               pattern,
-                               fieldConstraintDescr,
-                               container );
-
-                // after building the predicate, we are done, so return
-                return;
-            }
+            } 
+//             else {
+//                rewriteToEval( context,
+//                               pattern,
+//                               fieldConstraintDescr,
+//                               container );
+//
+//                // after building the predicate, we are done, so return
+//                return;
+//            }
         }
 
         // if it is not a complex expression, just build a simple field constraint
@@ -470,13 +475,14 @@ public class PatternBuilder
                                final AbstractCompositeConstraint container) {
         // it is a complex expression, so we need to turn it into an MVEL predicate
         Dialect dialect = context.getDialect();
+        
         // switch to MVEL dialect
         MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
         boolean strictMode = mvelDialect.isStrictMode();
         mvelDialect.setStrictMode( false );
         context.setDialect( mvelDialect );
 
-        // analyze field type:
+        // analyze field type
         Class resultType = getFieldReturnType( pattern,
                                                fieldConstraintDescr );
 
@@ -605,13 +611,19 @@ public class PatternBuilder
                        final PredicateDescr predicateDescr,
                        final AbstractCompositeConstraint container) {
 
-        Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr, context );
-        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
-
-        final Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                        predicateDescr,
-                                                                                        predicateDescr.getContent(),
-                                                                                        new Map[]{declarations, globals} );
+        Map<String, Class> declarations = getDeclarationsMap( predicateDescr, context );
+        Map<String, Class> globals = context.getPackageBuilder().getGlobals();
+        Class thisClass = null;
+        if (pattern.getObjectType() instanceof ClassObjectType ) {
+            thisClass = ((ClassObjectType)pattern.getObjectType()).getClassType();
+        }
+        
+        final AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                predicateDescr,
+                                                                                predicateDescr.getContent(),
+                                                                                new BoundIdentifiers( declarations, 
+                                                                                                      globals,
+                                                                                                      thisClass ) );
 
         if ( analysis == null ) {
             // something bad happened
@@ -621,13 +633,13 @@ public class PatternBuilder
         // this will return an array with 2 lists
         // where first list is from rule local variables
         // second list is from global variables
-        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
+        for( String id : usedIdentifiers.getDeclarations().keySet() ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                      (String) usedIdentifiers[0].get( i ) );
+                                                                                      id );
             if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {
@@ -640,8 +652,11 @@ public class PatternBuilder
                                      factDeclarations );
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
-        final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
+        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );        
+        final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[ usedIdentifiers.getGlobals().size() ] );
+        
+        Arrays.sort( previousDeclarations, SortDeclarations.isntance  );
+        Arrays.sort( localDeclarations, SortDeclarations.isntance  );        
 
         final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
                                                                                  previousDeclarations,
@@ -665,12 +680,13 @@ public class PatternBuilder
                        previousDeclarations,
                        localDeclarations,
                        predicateConstraint,
-                       predicateDescr );
+                       predicateDescr,
+                       analysis );
 
     }
 
-    private Map<String, Class< ? >> getDeclarationsMap(final BaseDescr baseDescr, final RuleBuildContext context) {
-        Map<String, Class< ? >> declarations = new HashMap<String, Class< ? >>();
+    private Map<String, Class> getDeclarationsMap(final BaseDescr baseDescr, final RuleBuildContext context) {
+        Map<String, Class> declarations = new HashMap<String, Class>();
         for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
             if ( entry.getValue().getExtractor() == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -695,12 +711,9 @@ public class PatternBuilder
      */
     private void createImplicitBindings(final RuleBuildContext context,
                                         final Pattern pattern,
-                                        final List unboundIdentifiers,
+                                        final Set<String> unboundIdentifiers,
                                         final List factDeclarations) {
-        // the following will create the implicit bindings
-        for ( int i = 0, size = unboundIdentifiers.size(); i < size; i++ ) {
-            final String identifier = (String) unboundIdentifiers.get( i );
-
+        for ( String identifier : unboundIdentifiers ) {
             Declaration declaration = createDeclarationObject( context,
                                                                identifier,
                                                                pattern );
@@ -883,55 +896,103 @@ public class PatternBuilder
                                          final FieldConstraintDescr fieldConstraintDescr,
                                          final QualifiedIdentifierRestrictionDescr qiRestrictionDescr) {
         FieldValue field = null;
-        final String[] parts = qiRestrictionDescr.getText().split( "\\." );
+        String t = qiRestrictionDescr.getText();
+        final String[] parts = t.split( "\\." );
+        
 
-        // if only 2 parts, it may be a composed direct property access
-        if ( parts.length == 2 ) {
-            Declaration implicit = null;
-            if ( "this".equals( parts[0] ) ) {
-                implicit = this.createDeclarationObject( context,
-                                                         parts[1],
-                                                         (Pattern) context.getBuildStack().peek() );
-            } else {
-                final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                          parts[0] );
-                // if a declaration exists, then it may be a variable direct property access, not an enum
-                if ( decl != null ) {
-                    if ( decl.isPatternDeclaration() ) {
-                        implicit = this.createDeclarationObject( context,
-                                                                 parts[1],
-                                                                 decl.getPattern() );
+        Declaration implicit = null;                    
+        if ( "this".equals( parts[0] ) ) {
+            implicit = this.createDeclarationObject( context,
+                                                     parts[1],
+                                                     (Pattern) context.getBuildStack().peek() );            
+        } 
+        if ( implicit == null ) {
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                      parts[0] );
+            // if a declaration exists, then it may be a variable direct property access, not an enum
+            if ( decl != null ) {
+                if ( decl.isPatternDeclaration() ) {
+                    implicit = this.createDeclarationObject( context,
+                                                             t.substring( t.indexOf( '.' ) + 1 ),
+                                                             decl.getPattern() );
 
-                    } else {
-                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                      qiRestrictionDescr,
-                                                                      "",
-                                                                      "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
-                        return null;
-                    }
-                }
-            }
-
-            if ( implicit != null ) {
-                Target right = getRightTarget( extractor );
-                Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-                final Evaluator evaluator = getEvaluator( context,
-                                                          qiRestrictionDescr,
-                                                          extractor.getValueType(),
-                                                          qiRestrictionDescr.getEvaluator(),
-                                                          qiRestrictionDescr.isNegated(),
-                                                          qiRestrictionDescr.getParameterText(),
-                                                          left,
-                                                          right );
-                if ( evaluator == null ) {
+                } else {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  qiRestrictionDescr,
+                                                                  "",
+                                                                  "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                     return null;
                 }
-
-                return new VariableRestriction( extractor,
-                                                implicit,
-                                                evaluator );
-            }
+            }            
         }
+        
+        if ( implicit != null ) {
+            Target right = getRightTarget( extractor );
+            Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
+            final Evaluator evaluator = getEvaluator( context,
+                                                      qiRestrictionDescr,
+                                                      extractor.getValueType(),
+                                                      qiRestrictionDescr.getEvaluator(),
+                                                      qiRestrictionDescr.isNegated(),
+                                                      qiRestrictionDescr.getParameterText(),
+                                                      left,
+                                                      right );
+            if ( evaluator == null ) {
+                return null;
+            }
+
+            return new VariableRestriction( extractor,
+                                            implicit,
+                                            evaluator );
+        }        
+
+//        // if only 2 parts, it may be a composed direct property access
+//        if ( parts.length == 2 ) {
+//            Declaration implicit = null;
+//            if ( "this".equals( parts[0] ) ) {
+//                implicit = this.createDeclarationObject( context,
+//                                                         parts[1],
+//                                                         (Pattern) context.getBuildStack().peek() );
+//            } else {
+//                final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+//                                                                                          parts[0] );
+//                // if a declaration exists, then it may be a variable direct property access, not an enum
+//                if ( decl != null ) {
+//                    if ( decl.isPatternDeclaration() ) {
+//                        implicit = this.createDeclarationObject( context,
+//                                                                 parts[1],
+//                                                                 decl.getPattern() );
+//
+//                    } else {
+//                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+//                                                                      qiRestrictionDescr,
+//                                                                      "",
+//                                                                      "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
+//                        return null;
+//                    }
+//                }
+//            }
+//
+//            if ( implicit != null ) {
+//                Target right = getRightTarget( extractor );
+//                Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
+//                final Evaluator evaluator = getEvaluator( context,
+//                                                          qiRestrictionDescr,
+//                                                          extractor.getValueType(),
+//                                                          qiRestrictionDescr.getEvaluator(),
+//                                                          qiRestrictionDescr.isNegated(),
+//                                                          qiRestrictionDescr.getParameterText(),
+//                                                          left,
+//                                                          right );
+//                if ( evaluator == null ) {
+//                    return null;
+//                }
+//
+//                return new VariableRestriction( extractor,
+//                                                implicit,
+//                                                evaluator );
+//            }
+//        }
 
         final int lastDot = qiRestrictionDescr.getText().lastIndexOf( '.' );
         final String className = qiRestrictionDescr.getText().substring( 0,
@@ -954,10 +1015,6 @@ public class PatternBuilder
                                                           qiRestrictionDescr,
                                                           e,
                                                           "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
-        }
-
-        if ( field == null ) {
-            return null;
         }
 
         Target right = getRightTarget( extractor );
@@ -989,30 +1046,38 @@ public class PatternBuilder
                                                     final InternalReadAccessor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr, context );
-        Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
-        Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                  returnValueRestrictionDescr,
-                                                                                  returnValueRestrictionDescr.getContent(),
-                                                                                  new Map[]{declarations, globals} );
-        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+        Map<String, Class> declarations = getDeclarationsMap( returnValueRestrictionDescr, context );
+        Class thisClass = null;
+        if (pattern.getObjectType() instanceof ClassObjectType ) {
+            thisClass = ((ClassObjectType)pattern.getObjectType()).getClassType();
+        }
+        
+        Map<String, Class> globals = context.getPackageBuilder().getGlobals();
+        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                          returnValueRestrictionDescr,
+                                                                          returnValueRestrictionDescr.getContent(),
+                                                                          new BoundIdentifiers( declarations, globals, thisClass ) );
+        if ( analysis == null ) {
+            // something bad happened
+            return null;
+        }        
+        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
-        for ( int i = 0, size = usedIdentifiers[0].size(); i < size; i++ ) {
-            final Declaration declaration = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                             (String) usedIdentifiers[0].get( i ) );
-            if ( declaration.getPattern() == pattern ) {
-                factDeclarations.add( declaration );
+        for( String id : usedIdentifiers.getDeclarations().keySet() ) {
+            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                      id );
+            if ( decl.getPattern() == pattern ) {
+                factDeclarations.add( decl );
             } else {
-                tupleDeclarations.add( declaration );
+                tupleDeclarations.add( decl );
             }
         }
-
-        createImplicitBindings( context,
-                                pattern,
-                                analysis.getNotBoundedIdentifiers(),
-                                factDeclarations );
+        this.createImplicitBindings( context,
+                                     pattern,
+                                     analysis.getNotBoundedIdentifiers(),
+                                     factDeclarations );
 
         Target right = getRightTarget( extractor );
         Target left = Target.FACT;
@@ -1028,9 +1093,13 @@ public class PatternBuilder
             return null;
         }
 
-        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );                          
         final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
-        final String[] requiredGlobals = (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] );
+        
+        Arrays.sort( previousDeclarations, SortDeclarations.isntance  );
+        Arrays.sort( localDeclarations, SortDeclarations.isntance  );        
+        
+        final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[ usedIdentifiers.getGlobals().size() ] );
         final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,
                                                                                           previousDeclarations,
                                                                                           localDeclarations,
@@ -1044,7 +1113,8 @@ public class PatternBuilder
                        previousDeclarations,
                        localDeclarations,
                        returnValueRestriction,
-                       returnValueRestrictionDescr );
+                       returnValueRestrictionDescr,
+                       analysis );
 
         return returnValueRestriction;
     }

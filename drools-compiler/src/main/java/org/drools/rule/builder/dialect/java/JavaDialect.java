@@ -19,6 +19,8 @@ import org.drools.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.commons.jci.readers.ResourceReader;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.PackageBuilder;
@@ -233,7 +235,7 @@ public class JavaDialect
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
                                             final BaseDescr descr,
                                             final Object content,
-                                            final Map<String, Class< ? >>[] availableIdentifiers) {
+                                            final BoundIdentifiers availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
             result = this.analyzer.analyzeExpression( (String) content,
@@ -250,7 +252,7 @@ public class JavaDialect
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
                                        final BaseDescr descr,
                                        final String text,
-                                       final Map<String, Class< ? >>[] availableIdentifiers) {
+                                       final BoundIdentifiers availableIdentifiers) {
         JavaAnalysisResult result = null;
         try {
             result = this.analyzer.analyzeBlock( text,

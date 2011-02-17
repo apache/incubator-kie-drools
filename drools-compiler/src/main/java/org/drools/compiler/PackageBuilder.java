@@ -123,7 +123,7 @@ public class PackageBuilder {
 
     private CompositeClassLoader        rootClassLoader;
 
-    private Map<String, Class< ? >>           globals;
+    private Map<String, Class>           globals;
 
     private Resource                          resource;
 
@@ -200,7 +200,7 @@ public class PackageBuilder {
         this.pkgRegistryMap.put( pkg.getName(),
                                  pkgRegistry );
 
-        globals = new HashMap<String, Class< ? >>();
+        globals = new HashMap<String, Class>();
         
         processBuilder = createProcessBuilder();
     }
@@ -236,7 +236,7 @@ public class PackageBuilder {
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
-        globals = new HashMap<String, Class< ? >>();
+        globals = new HashMap<String, Class>();
         
         processBuilder = createProcessBuilder();
     }
@@ -1303,7 +1303,7 @@ public class PackageBuilder {
         return expander;
     }
 
-    public Map<String, Class< ? >> getGlobals() {
+    public Map<String, Class> getGlobals() {
         return this.globals;
     }
 

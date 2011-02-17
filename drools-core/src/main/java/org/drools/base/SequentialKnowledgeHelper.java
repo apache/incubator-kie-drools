@@ -70,62 +70,6 @@ public class SequentialKnowledgeHelper
     }
     
 
-    public void insert(final Object object) throws FactException {        
-    }
-    
-    public void insert(final Object object, final long duration) throws FactException {        
-    }
-
-    public void insert(final Object object,
-                       final boolean dynamic) throws FactException {
-    }
-    
-    public void insert(final Object object,
-    				   final long duration,
-    				   final boolean dynamic) throws FactException {
-    }
-
-    public void insertLogical(final Object object) throws FactException {
-    }
-    
-    public void insertLogical(final Object object, final long duration) throws FactException {
-    }
-
-    public void insertLogical(final Object object,
-                              final boolean dynamic) throws FactException {
-    }
-    
-    public void insertLogical(final Object object,
-    						  final long duration,
-            				  final boolean dynamic) throws FactException {
-    }
-
-    public void update(final FactHandle handle,
-                       final Object newObject) throws FactException {
-    }
-
-    public void update(final Object object) throws FactException {
-    }
-
-    public void retract(final FactHandle handle) throws FactException {
-    }
-
-    public void retract(final Object object) throws FactException {
-    }
-
-    public void modifyRetract(final Object object) {
-    }
-
-    public void modifyRetract(final FactHandle factHandle) {
-    }
-
-    public void modifyInsert(final Object object) {
-    }
-
-    public void modifyInsert(final FactHandle factHandle,
-                             final Object object) {      
-    }
-
     public Rule getRule() {
         return this.rule;
     }
@@ -233,13 +177,72 @@ public class SequentialKnowledgeHelper
     }
 
 	public <T> T getContext(Class<T> contextClass) {
-		// TODO
 		return null;
 	}
 
-    public void cancelRemainingPreviousLogicalDependencies() {
+    public void cancelRemainingPreviousLogicalDependencies() {       
+    }
+
+    public void insert(Object object) {
         // TODO Auto-generated method stub
         
     }
 
+    public void insert(Object object,
+                       boolean dynamic) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void insertLogical(Object object) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void insertLogical(Object object,
+                              boolean dynamic) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public FactHandle getFactHandle(Object object) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public FactHandle getFactHandle(FactHandle handle) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void update(FactHandle handle,
+                       Object newObject) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void update(FactHandle newObject) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void retract(FactHandle handle) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void update(Object newObject) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void retract(Object handle) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modify(Object newObject) {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -42,7 +42,7 @@ public class Cheesery
     private int               totalAmount;
     private Maturity          maturity;
 
-    public List getCheeses() {
+    public List<Object> getCheeses() {
         return this.cheeses;
     }
     public void setCheeses(List l) {

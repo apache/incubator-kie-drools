@@ -49,7 +49,6 @@ public class MVELDataProvider
     private String                  id;
 
     private Serializable            expr;
-    private DroolsMVELFactory       prototype;
 
     private transient Declaration[] requiredDeclarations;
 
@@ -60,7 +59,6 @@ public class MVELDataProvider
     public MVELDataProvider(final MVELCompilationUnit unit,
                             final String id) {
         this.unit = unit;
-        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -81,9 +79,10 @@ public class MVELDataProvider
     @SuppressWarnings("unchecked")
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
-        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
-        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
+        
+//        @TODO URGENT DO NOT FORGET!!!!
+//        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();        
+//        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -100,11 +99,10 @@ public class MVELDataProvider
         }
         this.unit.replaceDeclaration( declaration,
                                       resolved );
-        prototype = unit.getFactory();
     }
 
     public Object createContext() {
-        return this.prototype.clone();
+        return null;
     }
 
     public Iterator getResults(final Tuple tuple,

@@ -17,6 +17,7 @@
  */
 package org.drools.rule.builder.dialect.java;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,6 +28,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.compiler.BoundIdentifiers;
 
 /**
  * @author etirelli
@@ -51,8 +53,9 @@ public class JavaExprAnalyzerTest {
                            "double thisIsAGoodVar = 0;\n" +
                            "method();\n";
         try {
-            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new Map[0] );
-            List vars = analysis.getLocalVariables();
+            
+            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() ) );
+            Set<String> vars = analysis.getLocalVariables();
             
             assertEquals( 3, vars.size() );
             assertTrue( vars.contains( "x" ));

@@ -23,9 +23,11 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.WorkingMemory;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.runtime.KnowledgeRuntime;
@@ -65,7 +67,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     // get retracted during the execution of an MVEL consequence
     private Map<String, Object> previousDeclarationsObjectCache; 
  
-    private Map globals;
+    private Set<String> globals;
  
     private WorkingMemory workingMemory;
     private KnowledgeRuntime kruntime;
@@ -80,7 +82,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
  
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
-                             final Map globals) {
+                             final Set<String> globals) {
         this(previousDeclarations,
                 localDeclarations,
                 globals,
@@ -89,7 +91,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
  
     public DroolsMVELFactory(final Map previousDeclarations,
                              final Map localDeclarations,
-                             final Map globals,
+                             final Set<String> globals,
                              final String[] inputIdentifiers) {
         this.previousDeclarations = (Map<String, Declaration>) previousDeclarations;
         this.localDeclarations = localDeclarations;
@@ -111,7 +113,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         object = in.readObject();
         localDeclarations = (Map) in.readObject();
         previousDeclarations = (Map<String, Declaration>) in.readObject();
-        globals = (Map) in.readObject();
+        globals = (Set) in.readObject();
         workingMemory = (WorkingMemory) in.readObject();
         kruntime = (KnowledgeRuntime) in.readObject();
         localVariables = (Map) in.readObject();
@@ -328,8 +330,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
             addResolver(DroolsMVELKnowledgeHelper.DROOLS,
                     new DroolsMVELKnowledgeHelper(this));
             return true;
-        }
-        else if (this.variableResolvers != null && this.variableResolvers.containsKey(name)) {
+        } else if (DroolsMVELKnowledgeHelper.CONTEXT.equals(name)) {
+            addResolver(DroolsMVELKnowledgeHelper.CONTEXT,
+                        new DroolsMVELKnowledgeHelper(this));
+                return true;
+        }  else if (this.variableResolvers != null && this.variableResolvers.containsKey(name)) {
             return true;
         }
         else if (DroolsMVELKnowledgeHelper.CONTEXT.equals(name)) {
@@ -349,11 +354,11 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                             this));
             return true;
         }
-        else if (this.globals.containsKey(name)) {
+        else if (this.globals.contains( name)) {
             addResolver(name,
                     new DroolsMVELGlobalVariable(name,
-                            (Class) this.globals.get(name),
-                            this));
+                                                 (Class) ((InternalRuleBase)this.workingMemory.getRuleBase()).getGlobals().get( name ),
+                                                 this));
             return true;
         }
         else if (nextFactory != null) {
@@ -416,7 +421,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     /**
      * @return the globals
      */
-    protected Map getGlobals() {
+    protected Set<String> getGlobals() {
         return globals;
     }
  

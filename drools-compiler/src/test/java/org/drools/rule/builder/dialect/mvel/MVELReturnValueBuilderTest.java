@@ -21,6 +21,8 @@ import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -33,6 +35,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.Rule;
 import org.drools.spi.InternalReadAccessor;
 
 public class MVELReturnValueBuilderTest {
@@ -93,10 +96,6 @@ public class MVELReturnValueBuilderTest {
 
         final MVELReturnValueBuilder builder = new MVELReturnValueBuilder();
 
-        final List[] usedIdentifiers = new ArrayList[2];
-        final List list = new ArrayList();
-        usedIdentifiers[1] = list;
-
         final Declaration[] previousDeclarations = new Declaration[]{a, b};
         final Declaration[] localDeclarations = new Declaration[]{};
         final String[] requiredGlobals = new String[]{};
@@ -107,12 +106,18 @@ public class MVELReturnValueBuilderTest {
                                                                                requiredGlobals,
                                                                                context.getConfiguration().getEvaluatorRegistry().getEvaluator( ValueType.PINTEGER_TYPE,
                                                                                                                                                Operator.EQUAL ) );
+        AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                          returnValueDescr,
+                                                                          returnValueDescr.getContent(),
+                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), Cheese.class ) );        
+        context.getBuildStack().push( patternB );
         builder.build( context,
-                       usedIdentifiers,
+                       analysis.getBoundIdentifiers(),
                        previousDeclarations,
                        localDeclarations,
                        returnValue,
-                       returnValueDescr );
+                       returnValueDescr,
+                       analysis );
         
         ((MVELReturnValueExpression)returnValue.getExpression()).compile( Thread.currentThread().getContextClassLoader() );
 

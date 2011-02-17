@@ -17,6 +17,7 @@
 package org.drools.common;
 
 import org.drools.Agenda;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -42,13 +43,13 @@ public interface InternalAgenda
 
     public void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
-    public AgendaItem createAgendaItem(final Tuple tuple,
+    public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
                                        final Rule rule,
                                        final GroupElement subrule);
 
-    public ScheduledAgendaItem createScheduledAgendaItem(final Tuple tuple,
+    public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
                                                          final Rule rule,
                                                          final GroupElement subrule);   

@@ -115,7 +115,7 @@ public class RuleBuilderTest {
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
-                      rule.getDeclarations().length );
+                      rule.getDeclarations().size() );
 
         // second GE should be a not
         final GroupElement not = (GroupElement) rule.getLhs().getChildren().get( 1 );

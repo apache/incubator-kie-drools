@@ -144,6 +144,8 @@ public class Order implements Serializable {
 
     public static class OrderStatus {
         private boolean active;
+        
+        private int val;
 
         public boolean isActive() {
             return active;
@@ -152,6 +154,16 @@ public class Order implements Serializable {
         public void setActive(boolean active) {
             this.active = active;
         }
+
+        public int getVal() {
+            return val;
+        }
+
+        public void setVal(int val) {
+            this.val = val;
+        }
+        
+        
     }
 
     /**

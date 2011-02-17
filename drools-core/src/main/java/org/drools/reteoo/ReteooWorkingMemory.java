@@ -179,7 +179,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             Declaration[] declarations = new Declaration[0];
             if ( queryObject.getQuery() != null ) {
                 // this is null when there are no query results, thus the query object is never set
-                declarations = queryObject.getQuery().getDeclarations();
+                declarations = queryObject.getQuery().getDeclarations().values().toArray(new Declaration[0]);
             }
 
             return new QueryResults( (List<FactHandle[]>) queryObject.getQueryResultCollector().getResults(),

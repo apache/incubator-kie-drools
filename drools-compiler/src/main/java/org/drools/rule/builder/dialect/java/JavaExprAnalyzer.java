@@ -23,12 +23,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaParser;
@@ -67,7 +69,7 @@ public class JavaExprAnalyzer {
      *             If an error occurs in the parser.
      */
     public JavaAnalysisResult analyzeExpression(final String expr,
-                                                final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
+                                                final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( expr );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -76,13 +78,13 @@ public class JavaExprAnalyzer {
         parser.conditionalOrExpression();
         
         JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setIdentifiers( parser.getIdentifiers() );
+        result.setIdentifiers(new HashSet( parser.getIdentifiers() ) );
         return analyze( result,
                         availableIdentifiers );
     }
 
     public JavaAnalysisResult analyzeBlock(final String expr,
-                                       final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
+                                       final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
         final JavaLexer lexer = new JavaLexer( charStream );
         final TokenStream tokenStream = new CommonTokenStream( lexer );
@@ -91,7 +93,7 @@ public class JavaExprAnalyzer {
         parser.block();
 
         JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setIdentifiers( parser.getIdentifiers() );
+        result.setIdentifiers( new HashSet( parser.getIdentifiers() ) );
         result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
         for( Iterator it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
             JavaLocalDeclarationDescr descr = (JavaLocalDeclarationDescr) it.next();
@@ -120,24 +122,32 @@ public class JavaExprAnalyzer {
      *             If an error occurs in the parser.
      */
     private JavaAnalysisResult analyze(final JavaAnalysisResult result,
-                                   final Map<String,Class<?>>[] availableIdentifiers) throws RecognitionException {
-        final List<String> identifiers = result.getIdentifiers();
+                                   final BoundIdentifiers availableIdentifiers) throws RecognitionException {
+        final Set<String> identifiers = result.getIdentifiers();
         final Set<String> notBound = new HashSet<String>( identifiers );
-        final List<String>[] used = new List[availableIdentifiers.length];
-        for ( int i = 0, length = used.length; i < length; i++ ) {
-            used[i] = new ArrayList<String>();
-        }
+        
+        Map<String, Class> usedDecls = new HashMap<String, Class>();
+        Map<String, Class> usedGlobals = new HashMap<String, Class>();
 
-        for ( int i = 0, length = availableIdentifiers.length; i < length; i++ ) {
-            for ( final String eachDecl : availableIdentifiers[i].keySet() ) {
-                if ( identifiers.contains( eachDecl ) ) {
-                    used[i].add( eachDecl );
-                    notBound.remove( eachDecl );
-                }
+        for ( Entry<String, Class> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+            if ( identifiers.contains( entry.getKey() ) ) {
+                usedDecls.put( entry.getKey(),
+                               entry.getValue() );
+                notBound.remove( entry.getKey() );
             }
         }
-        result.setBoundIdentifiers( used );
-        result.setNotBoundedIdentifiers( new ArrayList<String>( notBound ) );
+
+        for ( Entry<String, Class> entry : availableIdentifiers.getGlobals().entrySet() ) {
+            if ( identifiers.contains( entry.getKey() ) ) {
+                usedGlobals.put( entry.getKey(),
+                               entry.getValue() );
+                notBound.remove( entry.getKey() );
+            }
+        }
+
+        result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
+                                                          usedGlobals ) );
+        result.setNotBoundedIdentifiers( notBound );
 
         return result;
     }

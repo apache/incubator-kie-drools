@@ -258,7 +258,7 @@ public abstract class BaseMannersTest {
                     //                    drools.update( tuple.get( contextDeclaration ),
                     //                            context );
 
-                    drools.update( context );
+                    drools.update( tuple.get( contextDeclaration ) );
 
                     //                    System.err.println( "assign first seat :  " + seating + " : " + path );
 
@@ -814,7 +814,7 @@ public abstract class BaseMannersTest {
                     //                    if ( seating.getId() == 6 ) {
                     //                        System.err.println( "pause" );
                     //                    }
-                    drools.update( seating );
+                    drools.update( tuple.get( seatingDeclaration ) );
 
                     context.setState( Context.CHECK_DONE );
                     drools.update( tuple.get( contextDeclaration ),

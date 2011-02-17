@@ -86,7 +86,7 @@ public class  SingleThreadedObjectStore implements Externalizable, ObjectStore {
      * @see org.drools.common.ObjectStore#isEmpty()
      */
     public boolean isEmpty() {
-        return this.assertMap != null;
+        return this.assertMap.size() == 0;
     }
     
     public void clear() {

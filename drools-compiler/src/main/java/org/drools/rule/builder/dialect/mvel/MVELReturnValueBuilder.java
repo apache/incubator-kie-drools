@@ -16,16 +16,21 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELReturnValueExpression;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
@@ -39,22 +44,26 @@ public class MVELReturnValueBuilder
     ReturnValueBuilder {
 
     public void build(final RuleBuildContext context,
-                      final List[] usedIdentifiers,
+                      final BoundIdentifiers usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
                       final ReturnValueRestriction returnValueRestriction,
-                      final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
+                      final ReturnValueRestrictionDescr returnValueRestrictionDescr,
+                      final AnalysisResult analysis) {
 
         try {  
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
-    
-            Dialect.AnalysisResult analysis = context.getDialect().analyzeExpression( context,
-                                                                                      returnValueRestrictionDescr,
-                                                                                      returnValueRestrictionDescr.getContent(),
-                                                                                      new Map[]{context.getDeclarationResolver().getDeclarationClasses(context.getRule()), context.getPackageBuilder().getGlobals()} );
-
-    
-            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
+            
+            Map< String , Class > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
+            
+            Pattern p = ( Pattern ) context.getBuildStack().peek();   
+            
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), 
+                                                                      analysis,  
+                                                                      previousDeclarations, 
+                                                                      localDeclarations, 
+                                                                      null, 
+                                                                      context);
     
             MVELReturnValueExpression expr = new MVELReturnValueExpression( unit,
                                                                             context.getDialect().getId() );

@@ -3,6 +3,8 @@ package org.drools.rule.builder.dialect.java;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.ReturnValueRestriction;
@@ -13,20 +15,22 @@ public class JavaReturnValueBuilder extends AbstractJavaRuleBuilder
     implements
     ReturnValueBuilder {
     public void build(final RuleBuildContext context,
-                      final List[] usedIdentifiers,
+                      final BoundIdentifiers usedIdentifiers,
                       final Declaration[] previousDeclarations,
                       final Declaration[] localDeclarations,
                       final ReturnValueRestriction returnValueRestriction,
-                      final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
+                      final ReturnValueRestrictionDescr returnValueRestrictionDescr,
+                      final AnalysisResult analysis) {
         final String className = "returnValue" + context.getNextId();
         returnValueRestrictionDescr.setClassMethodName( className );
 
         final Map map = createVariableContext( className,
-                                         (String) returnValueRestrictionDescr.getContent(),
-                                         context,
-                                         previousDeclarations,
-                                         localDeclarations,
-                                         (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ) );
+                                               (String) returnValueRestrictionDescr.getContent(),
+                                               context,
+                                               previousDeclarations,
+                                               localDeclarations,
+                                               usedIdentifiers.getGlobals(),
+                                               null );
 
         map.put( "readLocalsFromTuple", Boolean.FALSE );
 
