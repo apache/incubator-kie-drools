@@ -183,7 +183,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         macroProcessor.setMacros( macros );
         expr = macroProcessor.parse( expr );        
         
-        Map<String, Class> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
+        Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
         
         MVELAnalysisResult mvelAnalysis = null;
         try {
@@ -281,7 +281,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                return false;
            }  
            
-           Map<String, Class> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
+           Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
            
            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                                        context.getRuleDescr(),

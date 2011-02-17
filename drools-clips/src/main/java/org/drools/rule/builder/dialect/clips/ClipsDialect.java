@@ -23,7 +23,7 @@ import org.drools.clips.Appendable;
 import org.drools.clips.FunctionHandlers;
 import org.drools.clips.LispForm;
 import org.drools.clips.StringBuilderAppendable;
-import org.drools.compiler.Dialect;
+import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AccumulateDescr;
@@ -153,7 +153,7 @@ public class ClipsDialect extends MVELDialect {
         return this.PREDICATE_BUILDER;
     }
 
-    public Dialect.AnalysisResult analyzeExpression(PackageBuildContext context,
+    public AnalysisResult analyzeExpression(PackageBuildContext context,
                                                     BaseDescr descr,
                                                     Object content,
                                                     final Map<String,Class<?>>[] availableIdentifiers,
@@ -183,7 +183,7 @@ public class ClipsDialect extends MVELDialect {
         return super.analyzeExpression( context,
                                         descr,
                                         content,
-                                        availableIdentifiers,
+                                        null, // TODO: fix this: availableIdentifiers,
                                         localTypes );
     }
 

@@ -75,7 +75,7 @@ public class JavaAccumulateBuilderTest {
         
         String code = "int x = 0;";
         String expected = "x = 0;";
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() );
         JavaAnalysisResult analysis = analyzer.analyzeBlock( code, bindings);
         String result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );

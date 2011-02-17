@@ -90,7 +90,7 @@ public class MVELAccumulateBuilder
             Accumulator accumulator = null;
             Declaration[] declarations = null;
 
-            Map<String, Class> declarationsMap = context.getDeclarationResolver().getDeclarationClasses( decls );
+            Map<String, Class<?>> declarationsMap = context.getDeclarationResolver().getDeclarationClasses( decls );
             BoundIdentifiers boundIds = new BoundIdentifiers( declarationsMap, context.getPackageBuilder().getGlobals() ) ;
             
             if ( accumDescr.isExternalFunction() ) {
@@ -108,7 +108,7 @@ public class MVELAccumulateBuilder
 
                 final AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                            accumDescr,
-                                                                           accumDescr.getExpression(),
+                                                                           func.getParams()[0],
                                                                            boundIds );
 
                 

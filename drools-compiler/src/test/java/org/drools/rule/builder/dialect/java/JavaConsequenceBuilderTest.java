@@ -84,7 +84,7 @@ public class JavaConsequenceBuilderTest {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
             String fixed = builder.fixBlockDescr( consequence,
                                                   context,
@@ -118,7 +118,7 @@ public class JavaConsequenceBuilderTest {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class>(), new HashMap<String, Class>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
             String fixed = builder.fixBlockDescr( consequence,
                                                   context,
@@ -151,11 +151,11 @@ public class JavaConsequenceBuilderTest {
         setupTest( consequence, new HashMap<String, Object>() );
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
-            Map<String, Class> declrCls = new HashMap<String, Class>();
+            Map<String, Class<?>> declrCls = new HashMap<String, Class<?>>();
             declrCls.put( "$cheese", Cheese.class );
             
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers(declrCls, new HashMap<String, Class>() ) );
+                                                                                      new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
 
             Map<String, Declaration> declr = new HashMap<String, Declaration>();
             Declaration d = new Declaration();

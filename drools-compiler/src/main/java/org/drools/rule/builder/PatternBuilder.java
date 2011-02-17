@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -609,8 +611,8 @@ public class PatternBuilder
                        final PredicateDescr predicateDescr,
                        final AbstractCompositeConstraint container) {
 
-        Map<String, Class> declarations = getDeclarationsMap( predicateDescr, context );
-        Map<String, Class> globals = context.getPackageBuilder().getGlobals();
+        Map<String, Class<?>> declarations = getDeclarationsMap( predicateDescr, context );
+        Map<String, Class<?>> globals = context.getPackageBuilder().getGlobals();
         Class thisClass = null;
         if (pattern.getObjectType() instanceof ClassObjectType ) {
             thisClass = ((ClassObjectType)pattern.getObjectType()).getClassType();
@@ -683,8 +685,8 @@ public class PatternBuilder
 
     }
 
-    private Map<String, Class> getDeclarationsMap(final BaseDescr baseDescr, final RuleBuildContext context) {
-        Map<String, Class> declarations = new HashMap<String, Class>();
+    private Map<String, Class<?>> getDeclarationsMap(final BaseDescr baseDescr, final RuleBuildContext context) {
+        Map<String, Class<?>> declarations = new HashMap<String, Class<?>>();
         for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
             if ( entry.getValue().getExtractor() == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -1044,13 +1046,13 @@ public class PatternBuilder
                                                     final InternalReadAccessor extractor,
                                                     final FieldConstraintDescr fieldConstraintDescr,
                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr) {
-        Map<String, Class> declarations = getDeclarationsMap( returnValueRestrictionDescr, context );
-        Class thisClass = null;
+        Map<String, Class<?>> declarations = getDeclarationsMap( returnValueRestrictionDescr, context );
+        Class<?> thisClass = null;
         if (pattern.getObjectType() instanceof ClassObjectType ) {
             thisClass = ((ClassObjectType)pattern.getObjectType()).getClassType();
         }
         
-        Map<String, Class> globals = context.getPackageBuilder().getGlobals();
+        Map<String, Class<?>> globals = context.getPackageBuilder().getGlobals();
         AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                           returnValueRestrictionDescr,
                                                                           returnValueRestrictionDescr.getContent(),

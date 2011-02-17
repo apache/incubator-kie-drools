@@ -458,7 +458,7 @@ public class MVELDialect
                                                     final BaseDescr descr,
                                                     final Object content,
                                                     final BoundIdentifiers availableIdentifiers,
-                                                    final Map<String, Class> localTypes) {
+                                                    final Map<String, Class<?>> localTypes) {
 
         AnalysisResult result = null;
         try {
@@ -492,7 +492,7 @@ public class MVELDialect
                                                final Map interceptors,
                                                final String text,
                                                final BoundIdentifiers availableIdentifiers,
-                                               final Map<String, Class> localTypes) {
+                                               final Map<String, Class<?>> localTypes) {
 
         AnalysisResult result = null;
         result = analyzer.analyzeExpression( context,
@@ -506,7 +506,7 @@ public class MVELDialect
                                                       final AnalysisResult analysis,
                                                       Declaration[] previousDeclarations,
                                                       Declaration[] localDeclarations,
-                                                      final Map<String, Class> otherInputVariables,
+                                                      final Map<String, Class<?>> otherInputVariables,
                                                       final PackageBuildContext context) {        
         String[] pkgImports  = this.packageImports.toArray( new String[this.packageImports.size()] );
 
@@ -547,7 +547,7 @@ public class MVELDialect
         
         List<String> strList = new ArrayList();
         int i = 0;
-        for( Entry<String, Class> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
+        for( Entry<String, Class<?>> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
             strList.add(  e.getKey() );
             resolvedInputs.put( e.getKey(), e.getValue() );
         }                

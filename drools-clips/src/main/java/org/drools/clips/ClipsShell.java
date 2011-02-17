@@ -283,7 +283,7 @@ public class ClipsShell
 
         this.factory = (DroolsMVELFactory) new DroolsMVELFactory( null,
                                                                   null,
-                                                                  ((InternalRuleBase) this.ruleBase).getGlobals() );
+                                                                  ((InternalRuleBase) this.ruleBase).getGlobals().keySet() );
 
         this.vars = new HashMap<String, Object>();
         GlobalResolver2 globalResolver = new GlobalResolver2( this.vars,
@@ -375,12 +375,13 @@ public class ClipsShell
         }
 
         builder.append( ") {\n" );
-        List list = (List) functionDescr.getContent();
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            FunctionHandlers.dump( (LispForm) it.next(),
-                                   builder, 
-                                   true );
-        }
+        // TODO: fix this
+//        List list = (List) functionDescr.getBody();
+//        for ( Iterator it = list.iterator(); it.hasNext(); ) {
+//            FunctionHandlers.dump( (LispForm) it.next(),
+//                                   builder, 
+//                                   true );
+//        }
         builder.append( "}" );
 
         System.out.println( "mvel expr:" + builder.toString() );

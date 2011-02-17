@@ -37,16 +37,16 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class DeclarationScopeResolver {
     private static final Stack<RuleConditionElement> EMPTY_STACK = new Stack<RuleConditionElement>();
-    private Map<String, Class>                  map;
+    private Map<String, Class<?>>                  map;
     private Stack<RuleConditionElement>              buildStack;
     private Package                                  pkg;
 
-    public DeclarationScopeResolver(final Map<String, Class> maps) {
+    public DeclarationScopeResolver(final Map<String, Class<?>> maps) {
         this( maps,
               EMPTY_STACK );
     }
 
-    public DeclarationScopeResolver(final Map<String, Class> map,
+    public DeclarationScopeResolver(final Map<String, Class<?>> map,
                                     final Stack<RuleConditionElement> buildStack) {
         this.map = map;
         if ( buildStack == null ) {
@@ -210,13 +210,13 @@ public class DeclarationScopeResolver {
         return declarations;
     }
     
-    public Map<String,Class> getDeclarationClasses(Rule rule) {
+    public Map<String,Class<?>> getDeclarationClasses(Rule rule) {
         final Map<String, Declaration> declarations = getDeclarations( rule );
         return getDeclarationClasses( declarations );
     }
     
-    public static Map<String,Class> getDeclarationClasses( final Map<String, Declaration> declarations) {
-        final Map<String, Class> classes = new HashMap<String, Class>();
+    public static Map<String,Class<?>> getDeclarationClasses( final Map<String, Declaration> declarations) {
+        final Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
         for ( Map.Entry<String, Declaration> decl : declarations.entrySet() ) {
             InternalReadAccessor ira = decl.getValue().getExtractor();
             // FIXME when would the IRA be null?

@@ -52,7 +52,7 @@ public class MVELPredicateBuilder
         MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
         try {            
-            Map< String , Class > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
+            Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
             
             Pattern p = ( Pattern ) context.getBuildStack().peek();            
             if (p.getObjectType() instanceof ClassObjectType ) {

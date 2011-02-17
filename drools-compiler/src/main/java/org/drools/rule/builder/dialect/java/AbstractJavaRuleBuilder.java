@@ -61,7 +61,7 @@ public class AbstractJavaRuleBuilder {
                                      final RuleBuildContext context,
                                      final Declaration[] declarations,
                                      final Declaration[] localDeclarations,
-                                     final Map<String, Class> globals, 
+                                     final Map<String, Class<?>> globals, 
                                      JavaAnalysisResult analysis) {
         final Map<String,Object> map = new HashMap<String,Object>();
 
@@ -116,7 +116,7 @@ public class AbstractJavaRuleBuilder {
         String[] globalStr = new String[globals.size()];
         String[] globalTypes = new String[globals.size()];
         int i = 0;
-        for ( Entry<String, Class> entry : globals.entrySet() ) {
+        for ( Entry<String, Class<?>> entry : globals.entrySet() ) {
             globalStr[i] = entry.getKey();
             globalTypes[i] = entry.getValue().getName().replace('$','.');
             i++;

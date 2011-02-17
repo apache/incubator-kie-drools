@@ -54,7 +54,7 @@ public class MVELReturnValueBuilder
         try {  
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
             
-            Map< String , Class > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
+            Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
             
             Pattern p = ( Pattern ) context.getBuildStack().peek();   
             
