@@ -21,7 +21,6 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
@@ -30,14 +29,13 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.RuleOperatorDescr;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
@@ -73,7 +71,8 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
         Consequence consequence = visitConsequence( rule,
                                                     descr.getConsequence() );
 
-        rule.getMetadata().putAll( descr.getMetaAttributes() );
+        // TODO: NEEDS TO BE FIXED
+        //rule.getMetadata().putAll( descr.get );
         rule.setConsequencePath( consequence.getPath() );
         rule.setConsequenceType( consequence.getConsequenceType() );
         rule.setLineNumber( descr.getLine() );

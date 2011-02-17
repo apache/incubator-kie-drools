@@ -19,27 +19,27 @@ package org.drools.verifier.visitor;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.DeclarativeInvokerDescr;
 import org.drools.lang.descr.EntryPointDescr;
-import org.drools.lang.descr.FieldBindingDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
+import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
+import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.PatternOperatorDescr;
 import org.drools.verifier.components.Variable;
 import org.drools.verifier.components.VerifierAccumulateDescr;
 import org.drools.verifier.components.VerifierCollectDescr;
 import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.VerifierFromDescr;
-import org.drools.verifier.components.PatternEval;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.WorkingMemory;
 import org.drools.verifier.data.VerifierComponent;
@@ -162,8 +162,8 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             visitOrDescr( (OrDescr) descr );
         } else if ( descr instanceof FieldConstraintDescr ) {
             visitFieldConstraintDescr( (FieldConstraintDescr) descr );
-        } else if ( descr instanceof FieldBindingDescr ) {
-            visitFieldBindingDescr( (FieldBindingDescr) descr );
+        } else if ( descr instanceof BindingDescr ) {
+            visitBindingDescr( (BindingDescr) descr );
         } else if ( descr instanceof PredicateDescr ) {
             visitPredicateDescr( (PredicateDescr) descr );
         } else {
@@ -198,10 +198,10 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
      * 
      * @param descr
      */
-    private void visitFieldBindingDescr(FieldBindingDescr descr) {
+    private void visitBindingDescr(BindingDescr descr) {
 
         Variable variable = new Variable( rule );
-        variable.setName( descr.getIdentifier() );
+        variable.setName( descr.getVariable() );
         variable.setOrderNumber( orderNumber.next() );
         variable.setParentPath( rule.getPath() );
         variable.setParentType( rule.getVerifierComponentType() );
@@ -296,8 +296,8 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
 
         accumulate.setClassName( descr.getClassName() );
         accumulate.setExternalFunction( descr.isExternalFunction() );
-        accumulate.setFunctionIdentifier( descr.getFunctionIdentifier() );
-        accumulate.setExpression( descr.getExpression() );
+        accumulate.setFunctionIdentifier( descr.getFunctions().get( 0 ).getFunction() );
+        accumulate.setExpression( descr.getFunctions().get(0).getParams()[0] );
         accumulate.setParentPath( parentPattern.getPath() );
         accumulate.setParentType( parentPattern.getVerifierComponentType() );
 
