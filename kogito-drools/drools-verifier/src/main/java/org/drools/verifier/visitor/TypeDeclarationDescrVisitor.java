@@ -62,10 +62,11 @@ public class TypeDeclarationDescrVisitor {
                     data.add( field );
                 }
             }
-            for ( String metadata : typeDeclaration.getMetaAttributes().keySet() ) {
-                objectType.getMetadata().put( metadata,
-                                              typeDeclaration.getMetaAttribute( metadata ) );
-            }
+            // TODO: bellow needs to be fixed
+//            for ( String metadata : typeDeclaration.getMetaAttributes().keySet() ) {
+//                objectType.getMetadata().put( metadata,
+//                                              typeDeclaration.getMetaAttribute( metadata ) );
+//            }
         }
     }
 

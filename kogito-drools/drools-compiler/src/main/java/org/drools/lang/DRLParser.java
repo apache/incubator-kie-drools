@@ -1413,13 +1413,17 @@ public class DRLParser {
     private void lhsStatement( CEDescrBuilder< ? , AndDescr> lhs ) throws RecognitionException {
         while ( !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
                 !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
-            helper.start( CEDescrBuilder.class,
-                          null,
-                          lhs );
-            lhsOr( lhs );
-            if ( state.failed ) return;
-            helper.end( CEDescrBuilder.class,
-                        lhs );
+            try {
+                helper.start( CEDescrBuilder.class,
+                              null,
+                              lhs );
+                lhsOr( lhs,
+                       true );
+                if ( state.failed ) return;
+            } finally {
+                helper.end( CEDescrBuilder.class,
+                            lhs );
+            }
         }
     }
 
@@ -1430,10 +1434,11 @@ public class DRLParser {
      * @param lhs
      * @throws RecognitionException 
      */
-    private BaseDescr lhsOr( final CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsOr( final CEDescrBuilder< ? , ? > ce,
+                             boolean allowOr ) throws RecognitionException {
         BaseDescr result = null;
-        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
-                                                                        DroolsSoftKeywords.OR ) ) {
+        if ( allowOr && input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
+                                                                                   DroolsSoftKeywords.OR ) ) {
             CEDescrBuilder< ? , OrDescr> or = null;
             if ( state.backtracking == 0 ) {
                 or = ce.or();
@@ -1459,7 +1464,8 @@ public class DRLParser {
             if ( state.failed ) return null;
 
             while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
-                lhsAnd( or );
+                lhsAnd( or,
+                        allowOr );
                 if ( state.failed ) return null;
             }
 
@@ -1478,10 +1484,11 @@ public class DRLParser {
             // infix OR
             Token first = input.LT( 1 );
 
-            result = lhsAnd( ce );
+            result = lhsAnd( ce,
+                             allowOr );
             if ( state.failed ) return null;
 
-            if ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
+            if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
                 CEDescrBuilder< ? , OrDescr> or = null;
                 if ( state.backtracking == 0 ) {
                     ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( result );
@@ -1512,7 +1519,7 @@ public class DRLParser {
                     }
                     if ( state.failed ) return null;
 
-                    lhsAnd( or );
+                    lhsAnd( or, allowOr );
                     if ( state.failed ) return null;
                     if ( state.backtracking == 0 ) {
                         helper.end( CEDescrBuilder.class,
@@ -1531,7 +1538,8 @@ public class DRLParser {
      * @param ce
      * @throws RecognitionException 
      */
-    private BaseDescr lhsAnd( final CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsAnd( final CEDescrBuilder< ? , ? > ce,
+                              boolean allowOr ) throws RecognitionException {
         BaseDescr result = null;
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
                                                                         DroolsSoftKeywords.AND ) ) {
@@ -1560,7 +1568,8 @@ public class DRLParser {
             if ( state.failed ) return null;
 
             while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
-                lhsUnary( and );
+                lhsUnary( and,
+                          allowOr );
                 if ( state.failed ) return null;
             }
 
@@ -1579,7 +1588,8 @@ public class DRLParser {
             // infix AND
             Token first = input.LT( 1 );
 
-            result = lhsUnary( ce );
+            result = lhsUnary( ce,
+                               allowOr );
             if ( state.failed ) return null;
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.AND ) ) {
@@ -1613,7 +1623,8 @@ public class DRLParser {
                     }
                     if ( state.failed ) return null;
 
-                    lhsUnary( and );
+                    lhsUnary( and,
+                              allowOr );
                     if ( state.failed ) return null;
 
                     if ( state.backtracking == 0 ) {
@@ -1641,12 +1652,15 @@ public class DRLParser {
      * @param ce
      * @return
      */
-    private BaseDescr lhsUnary( final CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsUnary( final CEDescrBuilder< ? , ? > ce,
+                                boolean allowOr ) throws RecognitionException {
         BaseDescr result = null;
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXISTS ) ) {
-            result = lhsExists( ce );
+            result = lhsExists( ce,
+                                allowOr );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NOT ) ) {
-            result = lhsNot( ce );
+            result = lhsNot( ce,
+                             allowOr );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
             result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
@@ -1655,10 +1669,11 @@ public class DRLParser {
             // TODO: handle this
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
-            result = lhsParen( ce );
+            result = lhsParen( ce,
+                               allowOr );
         } else {
             result = lhsPatternBind( ce,
-                                     true );
+                                     allowOr );
         }
         if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
             match( input,
@@ -1683,7 +1698,8 @@ public class DRLParser {
      * @return
      * @throws RecognitionException 
      */
-    private BaseDescr lhsExists( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsExists( CEDescrBuilder< ? , ? > ce,
+                                 boolean allowOr ) throws RecognitionException {
         CEDescrBuilder< ? , ExistsDescr> exists = null;
 
         if ( state.backtracking == 0 ) {
@@ -1714,7 +1730,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            lhsOr( exists );
+            lhsOr( exists, allowOr );
             if ( state.failed ) return null;
 
             if ( !prefixed ) {
@@ -1751,7 +1767,8 @@ public class DRLParser {
      * @return
      * @throws RecognitionException 
      */
-    private BaseDescr lhsNot( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsNot( CEDescrBuilder< ? , ? > ce,
+                              boolean allowOr ) throws RecognitionException {
         CEDescrBuilder< ? , NotDescr> not = null;
 
         if ( state.backtracking == 0 ) {
@@ -1782,7 +1799,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            lhsOr( not );
+            lhsOr( not, allowOr );
             if ( state.failed ) return null;
 
             if ( !prefixed ) {
@@ -1836,7 +1853,7 @@ public class DRLParser {
 
             do {
                 lhsPatternBind( forall,
-                                true );
+                                false );
                 if ( state.failed ) return null;
 
                 if ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -1916,7 +1933,8 @@ public class DRLParser {
      * @return
      * @throws RecognitionException 
      */
-    private BaseDescr lhsParen( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
+    private BaseDescr lhsParen( CEDescrBuilder< ? , ? > ce,
+                                boolean allowOr ) throws RecognitionException {
         match( input,
                DRLLexer.LEFT_PAREN,
                null,
@@ -1924,7 +1942,7 @@ public class DRLParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return null;
 
-        BaseDescr descr = lhsOr( ce );
+        BaseDescr descr = lhsOr( ce, allowOr );
         if ( state.failed ) return null;
 
         match( input,
@@ -2222,7 +2240,7 @@ public class DRLParser {
             fromExpression( pattern );
             if ( state.failed ) return;
         }
-        if( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+        if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
             match( input,
                    DRLLexer.SEMICOLON,
                    null,
@@ -2367,8 +2385,18 @@ public class DRLParser {
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
 
-            lhsAnd( accumulate.source() );
-            if ( state.failed ) return;
+            CEDescrBuilder< ? , AndDescr> source = accumulate.source();
+            try {
+                helper.start( CEDescrBuilder.class,
+                              null,
+                              source );
+                lhsAnd( source,
+                        false );
+                if ( state.failed ) return;
+            } finally {
+                helper.end( CEDescrBuilder.class,
+                            source );
+            }
 
             match( input,
                    DRLLexer.COMMA,
@@ -2393,7 +2421,7 @@ public class DRLParser {
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 ) accumulate.init( init );
 
-                if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                if ( input.LA( 1 ) == DRLLexer.COMMA ) {
                     match( input,
                            DRLLexer.COMMA,
                            null,
@@ -2415,7 +2443,7 @@ public class DRLParser {
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 ) accumulate.action( action );
 
-                if( input.LA( 1 ) == DRLLexer.COMMA ) {
+                if ( input.LA( 1 ) == DRLLexer.COMMA ) {
                     match( input,
                            DRLLexer.COMMA,
                            null,
@@ -2437,8 +2465,8 @@ public class DRLParser {
                                             DRLLexer.RIGHT_PAREN );
                     if ( state.failed ) return;
                     if ( state.backtracking == 0 ) accumulate.reverse( reverse );
-                    
-                    if( input.LA( 1 ) == DRLLexer.COMMA ) {
+
+                    if ( input.LA( 1 ) == DRLLexer.COMMA ) {
                         match( input,
                                DRLLexer.COMMA,
                                null,
