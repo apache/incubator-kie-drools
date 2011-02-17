@@ -7,7 +7,7 @@
 
   <info>
     <title>jBPM User Guide</title>
-    <releaseinfo>5.0-SNAPSHOT</releaseinfo>
+    <releaseinfo>5.1-SNAPSHOT</releaseinfo>
     <authorgroup>
       <author>
         <orgname><link xlink:href="http://www.jboss.org/jbpm">The jBPM team</link></orgname>
@@ -41,6 +41,9 @@
   <xi:include href="Chapter-Persistence/Chapter-Persistence.xml" />
   <xi:include href="Chapter-Console/Chapter-Console.xml" />
   <xi:include href="Chapter-BAM/Chapter-BAM.xml" />
+  <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
+  <xi:include href="Chapter-Designer/Chapter-Designer.xml" />
+  <xi:include href="Chapter-FlexibleProcesses/Chapter-FlexibleProcesses.xml" />
 
   <index/>
 
