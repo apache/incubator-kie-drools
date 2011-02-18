@@ -604,7 +604,7 @@ abstract public class AbstractRuleBase
             }
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Unable to resolve class '" + lastType +
-                	"' for global '" + lastIdent + "'" );
+                    "' for global '" + lastIdent + "'" );
         }
 
         // merge the type declarations

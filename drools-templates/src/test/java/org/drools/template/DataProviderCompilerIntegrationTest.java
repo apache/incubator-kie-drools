@@ -138,10 +138,10 @@ public class DataProviderCompilerIntegrationTest {
         for( String[] row: rows ){
             Map<String,Object> map = new HashMap<String,Object>();
             for( int icol = 0; icol < columns.length; icol++ ){
-            	Object value = row[icol];
-            	if( value != null ){
-            		map.put( columns[icol].getName(), value );
-            	}
+                Object value = row[icol];
+                if( value != null ){
+                    map.put( columns[icol].getName(), value );
+                }
             }
             maps.add( map );
         }
@@ -165,35 +165,35 @@ public class DataProviderCompilerIntegrationTest {
         public final String LC_AMOUNT;
         public final String AMOUNT;
         OBJ( String[] vals ){
-        	FEE_SCHEDULE_ID   = vals[0];
-        	FEE_SCHEDULE_TYPE = vals[1];
-        	FEE_MODE_TYPE     = vals[2];
-        	ENTITY_BRANCH     = vals[3];
-        	PRODUCT_TYPE      = vals[4];
-        	ACTIVITY_TYPE     = vals[5];
-        	FEE_TYPE          = vals[6];
-        	OWNING_PARTY      = vals[7];
-        	CCY               = vals[8];
-        	LC_AMOUNT         = vals[9];
-        	AMOUNT            = vals[10];
+            FEE_SCHEDULE_ID   = vals[0];
+            FEE_SCHEDULE_TYPE = vals[1];
+            FEE_MODE_TYPE     = vals[2];
+            ENTITY_BRANCH     = vals[3];
+            PRODUCT_TYPE      = vals[4];
+            ACTIVITY_TYPE     = vals[5];
+            FEE_TYPE          = vals[6];
+            OWNING_PARTY      = vals[7];
+            CCY               = vals[8];
+            LC_AMOUNT         = vals[9];
+            AMOUNT            = vals[10];
         }
         public String getFEE_SCHEDULE_ID() {
-        	return FEE_SCHEDULE_ID;
+            return FEE_SCHEDULE_ID;
         }
         public String getFEE_SCHEDULE_TYPE() {
-        	return FEE_SCHEDULE_TYPE;
+            return FEE_SCHEDULE_TYPE;
         }
         public String getFEE_MODE_TYPE() {
-        	return FEE_MODE_TYPE;
+            return FEE_MODE_TYPE;
         }
         public String ENTITY_BRANCH() {
-        	return ENTITY_BRANCH;
+            return ENTITY_BRANCH;
         }
         public String PRODUCT_TYPE() {
-        	return PRODUCT_TYPE;
+            return PRODUCT_TYPE;
         }
         public String ACTIVITY_TYPE() {
-        	return ACTIVITY_TYPE;
+            return ACTIVITY_TYPE;
         }
     }
 

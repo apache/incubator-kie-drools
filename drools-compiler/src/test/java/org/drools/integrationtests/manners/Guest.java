@@ -49,6 +49,6 @@ public class Guest implements Serializable {
 
     public String toString() {
         return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies="
-        		+ this.hobby + "]";
+                + this.hobby + "]";
     }
 }

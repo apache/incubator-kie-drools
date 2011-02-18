@@ -60,7 +60,7 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
 
     public String toString() {
         return "session.getWorkItemManager().registerWorkItemHandler("
-        	+ workItemName + ", " + handler +  ");";
+            + workItemName + ", " + handler +  ");";
     }
 
 }

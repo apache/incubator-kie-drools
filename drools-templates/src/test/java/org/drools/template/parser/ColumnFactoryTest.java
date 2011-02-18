@@ -54,9 +54,9 @@ public class ColumnFactoryTest {
     @Test
     public void testInvalidGetColumn() {
         try {
-        	ColumnFactory f = new ColumnFactory();
-        	f.getColumn("column$");
-        	fail("IllegalArgumentException expected");
+            ColumnFactory f = new ColumnFactory();
+            f.getColumn("column$");
+            fail("IllegalArgumentException expected");
         } catch (IllegalArgumentException expected) {
 
         }

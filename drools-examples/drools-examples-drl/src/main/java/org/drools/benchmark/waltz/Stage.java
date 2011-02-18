@@ -72,28 +72,28 @@ public class Stage implements Serializable {
 
     public static int resolveStageValue(String str) {
         if (str.equals("start")) {
-        	return 0;
+            return 0;
 
         } else if (str.equals("duplicate")) {
-        	return 1;
+            return 1;
 
         } else if (str.equals("detect_junctions")) {
-        	return 2;
+            return 2;
 
         } else if (str.equals("find_initial_boundary")) {
-        	return 3;
+            return 3;
 
         } else if (str.equals("find_second_boundary")) {
-        	return 4;
+            return 4;
 
         } else if (str.equals("labeling")) {
-        	return 5;
+            return 5;
 
         } else if (str.equals("plot_remaining_edges")) {
-        	return 9;
+            return 9;
 
         } else if (str.equals("done")) {
-        	return 10;
+            return 10;
         }
         else return -9999999;
     }

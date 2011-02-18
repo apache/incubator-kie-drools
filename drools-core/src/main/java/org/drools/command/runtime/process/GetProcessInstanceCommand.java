@@ -43,7 +43,7 @@ public class GetProcessInstanceCommand implements GenericCommand<ProcessInstance
     public ProcessInstance execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if (processInstanceId == null) {
-        	return null;
+            return null;
         }
         return ksession.getProcessInstance(processInstanceId);
     }

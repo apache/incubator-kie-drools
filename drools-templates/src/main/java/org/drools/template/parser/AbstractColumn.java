@@ -38,10 +38,10 @@ public abstract class AbstractColumn implements Column {
         StringBuffer conditionString = new StringBuffer(getCellType());
         conditionString.append("(row == r, column == $param");
         if (index != -1) {
-        	conditionString.append(", index == ").append(index);
+            conditionString.append(", index == ").append(index);
         }
         if (!StringUtils.isEmpty(condition)) {
-        	conditionString.append(", value ").append(condition);
+            conditionString.append(", value ").append(condition);
         }
         conditionString.append(")");
         return conditionString.toString();

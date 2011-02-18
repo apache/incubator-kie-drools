@@ -59,23 +59,23 @@ public class DynamicFact implements Map<String, Object> {
 
         List<FactField> list = this.typeDef.getFields();
         for (FactField factField : list) {
-        	final FactField ff = factField;
-        	Map.Entry<String, Object> ent = new Map.Entry<String, Object>() {
+            final FactField ff = factField;
+            Map.Entry<String, Object> ent = new Map.Entry<String, Object>() {
 
-        		public String getKey() {
-        			return ff.getName();
-        		}
+                public String getKey() {
+                    return ff.getName();
+                }
 
-        		public Object getValue() {
-        			return typeDef.get(bean, ff.getName());
-        		}
+                public Object getValue() {
+                    return typeDef.get(bean, ff.getName());
+                }
 
-        		public Object setValue(Object o) {
-        			typeDef.set(bean, ff.getName(), o);
-        			return o;
-        		}
+                public Object setValue(Object o) {
+                    typeDef.set(bean, ff.getName(), o);
+                    return o;
+                }
 
-        	};
+            };
         }
 
         return set;

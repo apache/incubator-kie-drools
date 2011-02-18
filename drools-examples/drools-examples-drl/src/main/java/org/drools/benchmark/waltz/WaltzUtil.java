@@ -54,19 +54,19 @@ public class WaltzUtil {
         delta_y = get_y(p2) - get_y(p1);
 
         if (delta_x == 0) {
-        	if (delta_y > 0) {
-        		ret = PI / 2;
-        	} else if (delta_y < 0) {
-        		ret = -PI / 2;
-        	}
+            if (delta_y > 0) {
+                ret = PI / 2;
+            } else if (delta_y < 0) {
+                ret = -PI / 2;
+            }
         } else if (delta_y == 0) {
-        	if (delta_x > 0) {
-        		ret = 0.0;
-        	} else if (delta_x < 0) {
-        		ret = PI;
-        	}
+            if (delta_x > 0) {
+                ret = 0.0;
+            } else if (delta_x < 0) {
+                ret = PI;
+            }
         } else {
-        	ret = Math.atan2(delta_y, delta_x);
+            ret = Math.atan2(delta_y, delta_x);
         }
         return ret;
     }
@@ -87,7 +87,7 @@ public class WaltzUtil {
         angle2 = get_angle(basepoint, p2);
         temp = angle1 - angle2;
         if (temp < 0.0)
-        	temp = -temp;
+            temp = -temp;
 
         /*
          * We always want the smaller of the two angles inscribed, so if the
@@ -95,9 +95,9 @@ public class WaltzUtil {
          * return it.
          */
         if (temp > PI)
-        	temp = 2 * PI - temp;
+            temp = 2 * PI - temp;
         if (temp < 0.0)
-        	return (-temp);
+            return (-temp);
         return (temp);
     }
 
@@ -117,41 +117,41 @@ public class WaltzUtil {
         sum1323 = angle13 + angle23;
 
         if (sum1213 < sum1223) {
-        	if (sum1213 < sum1323) {
-        		sum = sum1213;
-        		shaft = p1;
-        		barb1 = p2;
-        		barb2 = p3;
-        	} else {
-        		sum = sum1323;
-        		shaft = p3;
-        		barb1 = p1;
-        		barb2 = p2;
-        	}
+            if (sum1213 < sum1323) {
+                sum = sum1213;
+                shaft = p1;
+                barb1 = p2;
+                barb2 = p3;
+            } else {
+                sum = sum1323;
+                shaft = p3;
+                barb1 = p1;
+                barb2 = p2;
+            }
         } else {
-        	if (sum1223 < sum1323) {
-        		sum = sum1223;
-        		shaft = p2;
-        		barb1 = p1;
-        		barb2 = p3;
-        	} else {
-        		sum = sum1323;
-        		shaft = p3;
-        		barb1 = p1;
-        		barb2 = p2;
-        	}
+            if (sum1223 < sum1323) {
+                sum = sum1223;
+                shaft = p2;
+                barb1 = p1;
+                barb2 = p3;
+            } else {
+                sum = sum1323;
+                shaft = p3;
+                barb1 = p1;
+                barb2 = p2;
+            }
         }
 
         delta = sum - PI;
         if (delta < 0.0)
-        	delta = -delta;
+            delta = -delta;
 
         if (delta < 0.001) {
-        	j_type = Junction.TEE;
+            j_type = Junction.TEE;
         } else if (sum > PI) {
-        	j_type = Junction.FORK;
+            j_type = Junction.FORK;
         } else {
-        	j_type = Junction.ARROW;
+            j_type = Junction.ARROW;
         }
 
         return new Junction(barb1, shaft, barb2, basepoint, j_type);

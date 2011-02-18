@@ -37,8 +37,8 @@ public class SimpleEventGeneratorTest {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-        	System.out.println( parser.getErrors() );
-        	fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            System.out.println( parser.getErrors() );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();

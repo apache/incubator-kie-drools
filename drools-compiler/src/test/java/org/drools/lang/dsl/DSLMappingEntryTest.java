@@ -111,7 +111,7 @@ public class DSLMappingEntryTest {
         DefaultExpander expander = new DefaultExpander();
         DefaultDSLMapping mapping = new DefaultDSLMapping();
         for( DSLMappingEntry entry: entries ){
-        	mapping.addEntry( entry );
+            mapping.addEntry( entry );
         }
         List<String> options = new ArrayList<String>();
         options.add("result");
@@ -128,7 +128,7 @@ public class DSLMappingEntryTest {
         DSLMappingEntry entry = this.setupEntry();
         DefaultExpander ex = makeExpander( entry );
         String[] strs = new String[]{ "0_sp", " 1_sp", "   3_sp", "0_sp_1 ", 
-            	                      "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
+                                      "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
         StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
         for( String str: strs ){
             sb.append( "String is \"" + str + "\"\n" );
@@ -200,7 +200,7 @@ public class DSLMappingEntryTest {
                        entry7.getValuePattern());
   
         DefaultExpander ex = makeExpander( entry1, entry2, entry3, entry4,
-            	                           entry5, entry6, entry7 );
+                                           entry5, entry6, entry7 );
         StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
         
         sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
@@ -215,8 +215,8 @@ public class DSLMappingEntryTest {
         String drl = ex.expand( dslr );
 
         for( String exp: new String[]{
-            	"name in ( 'Edson', 'Bob' )",
-            	"Person( attribute == \"handsome\" )",
+                "name in ( 'Edson', 'Bob' )",
+                "Person( attribute == \"handsome\" )",
                 "Sentence( mykey == myvalue )",
 //                "applicant:Applicant(credit==AA)",
                 "applicant:Applicant(credit==555)",

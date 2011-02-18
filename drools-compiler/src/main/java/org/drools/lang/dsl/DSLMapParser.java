@@ -80,11 +80,11 @@ public class DSLMapParser extends Parser {
         private List<ParserError> errors = new ArrayList<ParserError>();
 
         public void reportError(RecognitionException ex) {
-        	errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
+            errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
         }
 
         public List<ParserError> getErrors() {
-        	return errors;
+            return errors;
         }
 
         /** Override this method to not output mesages */
@@ -102,20 +102,20 @@ public class DSLMapParser extends Parser {
         }
 
         private boolean validateLT(int LTNumber, String text){
-        	if (null == input) return false;
-        	if (null == input.LT(LTNumber)) return false;
-        	if (null == input.LT(LTNumber).getText()) return false;
+            if (null == input) return false;
+            if (null == input.LT(LTNumber)) return false;
+            if (null == input.LT(LTNumber).getText()) return false;
 
-        	String text2Validate = input.LT(LTNumber).getText();
-        	if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
-        		text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
-        	}
+            String text2Validate = input.LT(LTNumber).getText();
+            if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
+                text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
+            }
 
-        	return text2Validate.equalsIgnoreCase(text);
+            return text2Validate.equalsIgnoreCase(text);
         }
 
         private boolean validateIdentifierKey(String text){
-        	return validateLT(1, text);
+            return validateLT(1, text);
         }
 
 
@@ -523,7 +523,7 @@ public class DSLMapParser extends Parser {
         }
         catch ( RecognitionException e ) {
 
-                	reportError( e );
+                    reportError( e );
 
         }
         catch ( RewriteEmptyStreamException e ) {
@@ -1640,8 +1640,8 @@ public class DSLMapParser extends Parser {
 
             if ( state.backtracking==0 ) {
                
-                  	CommonToken back2 =  (CommonToken)input.LT(-2);
-                  	if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+                      CommonToken back2 =  (CommonToken)input.LT(-2);
+                      if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
 
             }
             name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition693); if (state.failed) return retval;
@@ -2225,8 +2225,8 @@ public class DSLMapParser extends Parser {
 
             if ( state.backtracking==0 ) {
 
-                  	CommonToken back2 =  (CommonToken)input.LT(-2);
-                  	if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+                      CommonToken back2 =  (CommonToken)input.LT(-2);
+                      if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
 
             }
             name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1205); if (state.failed) return retval;

@@ -73,13 +73,13 @@ public class CompleteWorkItemCommand implements GenericCommand<Object> {
     public String toString() {
         String result = "session.getWorkItemManager().completeWorkItem(" + workItemId + ", [";
         if (results != null) {
-        	int i = 0;
-        	for (Map.Entry<String, Object> entry: results.entrySet()) {
-        		if (i++ > 0) {
-        			result += ", ";
-        		}
-        		result += entry.getKey() + "=" + entry.getValue();
-        	}
+            int i = 0;
+            for (Map.Entry<String, Object> entry: results.entrySet()) {
+                if (i++ > 0) {
+                    result += ", ";
+                }
+                result += entry.getKey() + "=" + entry.getValue();
+            }
         }
         result += "]);";
         return result;

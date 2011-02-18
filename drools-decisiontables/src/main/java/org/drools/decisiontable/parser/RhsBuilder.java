@@ -61,9 +61,9 @@ public class RhsBuilder implements SourceBuilder {
         hasValues = true;
         String template = (String) this.templates.get( new Integer( column ) );
         if( template == null ){
-        	throw new DecisionTableParseException( "No code snippet for " +
-        			this.actionTypeCode + ", above cell " +
-        			RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+            throw new DecisionTableParseException( "No code snippet for " +
+                    this.actionTypeCode + ", above cell " +
+                    RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
         }
         SnippetBuilder snip = new SnippetBuilder(template);
         this.values.add(snip.build( value ));

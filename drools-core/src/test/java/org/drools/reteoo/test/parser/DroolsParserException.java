@@ -74,7 +74,7 @@ public class DroolsParserException extends CheckedDroolsException {
      *            exception cause
      */
     public DroolsParserException(String errorCode, String message, int lineNumber,
-        	int column, int offset, Throwable cause) {
+            int column, int offset, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
         this.lineNumber = lineNumber;
@@ -84,7 +84,7 @@ public class DroolsParserException extends CheckedDroolsException {
 
     public String getMessage() {
         if (null == errorCode) {
-        	return super.getMessage();
+            return super.getMessage();
         }
         return "[" + errorCode + "] " + super.getMessage();
     }

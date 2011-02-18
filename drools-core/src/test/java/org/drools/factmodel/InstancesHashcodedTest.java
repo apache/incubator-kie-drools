@@ -40,12 +40,12 @@ public class InstancesHashcodedTest {
 
 /*
         <dimension name="bck_cycle_dm"  item-expression="cycleDimension"
-        	       mode="ignore" cache="10" export-to="cycle_id">
-        	<id    name="objid"            type="long"             generator-sql="select bck_dimensions_uid.nextval from dual"/>
-        	<field name="cut_date"         type="java.util.Date"   value="cutDate"     key="true"/>
-        	<field name="due_date"         type="java.util.Date"   value="dueDate"     key="true"/>
-        	<field name="cycle_code"       type="java.lang.String" value="cycleCode"/>
-        	<field name="issue_date"       type="java.util.Date"   value="issueDate"/>
+                   mode="ignore" cache="10" export-to="cycle_id">
+            <id    name="objid"            type="long"             generator-sql="select bck_dimensions_uid.nextval from dual"/>
+            <field name="cut_date"         type="java.util.Date"   value="cutDate"     key="true"/>
+            <field name="due_date"         type="java.util.Date"   value="dueDate"     key="true"/>
+            <field name="cycle_code"       type="java.lang.String" value="cycleCode"/>
+            <field name="issue_date"       type="java.util.Date"   value="issueDate"/>
         </dimension>
  */	
 
@@ -92,14 +92,14 @@ public class InstancesHashcodedTest {
         Date d2 = cal.getTime();
 
         try {
-        	Class klass = build(cb, cd);
-        	Object o1 = klass.newInstance();
-        	cd.getField("cutDate").getFieldAccessor().setValue(o1, cut);
-        	cd.getField("dueDate").getFieldAccessor().setValue(o1, d1);
+            Class klass = build(cb, cd);
+            Object o1 = klass.newInstance();
+            cd.getField("cutDate").getFieldAccessor().setValue(o1, cut);
+            cd.getField("dueDate").getFieldAccessor().setValue(o1, d1);
 
-        	Object o2 = klass.newInstance();
-        	cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
-        	cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
+            Object o2 = klass.newInstance();
+            cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
+            cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
 
 //			System.out.println(o1);
 //			System.out.println(o1.hashCode());

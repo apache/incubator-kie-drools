@@ -36,7 +36,7 @@ class PackageChangeInfo {
     void addPackage(Package p) {
 
         if (changedPackages == null) {
-        	changedPackages = new ArrayList<Package>();
+            changedPackages = new ArrayList<Package>();
         }
 
         changedPackages.add(p);
@@ -45,31 +45,31 @@ class PackageChangeInfo {
     void addRemovedPackages(Collection<String> removedPackages) {
 
         for (String name : removedPackages) {
-        	addRemovedPackage(name);
+            addRemovedPackage(name);
         }
 
     }
 
     Collection<Package> getChangedPackages() {
         if (changedPackages != null) {
-        	return changedPackages;
+            return changedPackages;
         } else {
-        	return Collections.emptyList();
+            return Collections.emptyList();
         }
     }
 
     Collection<String> getRemovedPackages() {
         if (removedPackages != null) {
-        	return removedPackages;
+            return removedPackages;
         } else {
-        	return Collections.emptyList();
+            return Collections.emptyList();
         }
     }
 
     void addRemovedPackage(String name) {
 
         if (removedPackages == null) {
-        	removedPackages = new ArrayList<String>();
+            removedPackages = new ArrayList<String>();
         }
 
         removedPackages.add(name);

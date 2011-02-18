@@ -38,7 +38,7 @@ public class MockPersistentSet extends AbstractSet implements Set
     public boolean addAll(Collection c)
     {
         if (exception)
-        	throw new MockPersistentSetException("error message like PersistentSet");
+            throw new MockPersistentSetException("error message like PersistentSet");
         return set.addAll(c);
     }
 

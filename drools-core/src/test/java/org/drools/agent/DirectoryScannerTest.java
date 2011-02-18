@@ -51,7 +51,7 @@ public class DirectoryScannerTest {
 
         RuleBase rb = RuleBaseFactory.newRuleBase();
         PackageProvider.applyChanges(rb, true, scan.loadPackageChanges().getChangedPackages(),
-        		new MockListener());
+                new MockListener());
 
         assertEquals(2, rb.getPackages().length);
 
@@ -61,7 +61,7 @@ public class DirectoryScannerTest {
         RuleBaseAssemblerTest.writePackage(p3, p3f);
 
         PackageProvider.applyChanges(rb, true, scan.loadPackageChanges().getChangedPackages(),
-        		new MockListener());
+                new MockListener());
 
         assertEquals(3, rb.getPackages().length);
     }

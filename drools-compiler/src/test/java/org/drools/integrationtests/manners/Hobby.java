@@ -28,7 +28,7 @@ public class Hobby {
     public static final String stringH5 = "h5";
 
     public static final String[] hobbyStrings = new String[] { stringH1,
-        	stringH2, stringH3, stringH4, stringH5 };
+            stringH2, stringH3, stringH4, stringH5 };
 
     public static final Hobby H1 = new Hobby(1);
 
@@ -59,18 +59,18 @@ public class Hobby {
 
     public static Hobby resolve(String hobby) {
         if (stringH1.equals(hobby)) {
-        	return Hobby.H1;
+            return Hobby.H1;
         } else if (stringH2.equals(hobby)) {
-        	return Hobby.H2;
+            return Hobby.H2;
         } else if (stringH3.equals(hobby)) {
-        	return Hobby.H3;
+            return Hobby.H3;
         } else if (stringH4.equals(hobby)) {
-        	return Hobby.H4;
+            return Hobby.H4;
         } else if (stringH5.equals(hobby)) {
-        	return Hobby.H5;
+            return Hobby.H5;
         } else {
-        	throw new RuntimeException("Hobby '" + hobby
-        			+ "' does not exist for Hobby Enum");
+            throw new RuntimeException("Hobby '" + hobby
+                    + "' does not exist for Hobby Enum");
         }
     }
 

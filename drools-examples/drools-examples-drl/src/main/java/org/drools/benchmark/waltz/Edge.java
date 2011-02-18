@@ -74,8 +74,8 @@ public class Edge {
 
     public String toString() {
         return "( Edge p1=" + this.p1 + ", p2=" + this.p2 + ", joined="
-        		+ this.joined + ", label=" + this.label + ", plotted="
-        		+ this.plotted +" )";
+                + this.joined + ", label=" + this.label + ", plotted="
+                + this.plotted +" )";
     }
 
     public boolean isJoined() {

@@ -50,10 +50,10 @@ public class JpaJDKTimerService extends JDKTimerService {
     }
 
     protected Callable<Void> createCallableJob(Job job,
-        							           JobContext ctx,
-        							           Trigger trigger,
-        							           JDKJobHandle handle,
-        							           ScheduledThreadPoolExecutor scheduler) {
+                                               JobContext ctx,
+                                               Trigger trigger,
+                                               JDKJobHandle handle,
+                                               ScheduledThreadPoolExecutor scheduler) {
         return new JpaJDKCallableJob( job,
                 ctx,
                 trigger,
@@ -64,11 +64,11 @@ public class JpaJDKTimerService extends JDKTimerService {
     public class JpaJDKCallableJob extends JDKCallableJob {
 
         public JpaJDKCallableJob(Job job,
-        			             JobContext ctx,
-        			             Trigger trigger,
-        			             JDKJobHandle handle,
-        			             ScheduledThreadPoolExecutor scheduler) {
-        	super(job, ctx, trigger, handle, scheduler);
+                                 JobContext ctx,
+                                 Trigger trigger,
+                                 JDKJobHandle handle,
+                                 ScheduledThreadPoolExecutor scheduler) {
+            super(job, ctx, trigger, handle, scheduler);
         }
 
         public Void call() throws Exception {
@@ -89,16 +89,16 @@ public class JpaJDKTimerService extends JDKTimerService {
         private JpaJDKCallableJob job;
 
         public JDKCallableJobCommand(JpaJDKCallableJob job) {
-        	this.job = job;
+            this.job = job;
         }
 
         public Void execute(Context context) {
-        	try {
-        		return job.internalCall();
-        	} catch (Exception e) {
-        		e.printStackTrace();
-        	}
-        	return null;
+            try {
+                return job.internalCall();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
     }

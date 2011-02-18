@@ -79,7 +79,7 @@ public class SerializablePropagationContext
     @Override
     public String toString() {
         return "==>[SerializablePropagationContext: getFactHandle()=" + getFactHandle() + ", getPropagationNumber()="
-        		+ getPropagationNumber() + ", getRule()=" + getRule() + ", getType()=" + getType() + "]";
+                + getPropagationNumber() + ", getRule()=" + getRule() + ", getType()=" + getType() + "]";
     }
     
 }

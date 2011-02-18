@@ -83,53 +83,53 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     private Rule               firstRule;
 
     public void newCell(final int row,
-        	final int column,
-        	final String value,
-        	final int mergedColStart) {
+            final int column,
+            final String value,
+            final int mergedColStart) {
         // if we aren't in the rule table just use the default handling
         // (add a property)
         if ( ! isInRuleTable ) {
-        	super.newCell( row, column, value, mergedColStart );
-        	return;
+            super.newCell( row, column, value, mergedColStart );
+            return;
         }
         // ignore empty cells
         if ( StringUtils.isEmpty( value ) ) {
-        	return;
+            return;
         }
 
         //Horizontal header column
         //Create a new condition using HorizontalCondition as the template
         //and save it for later use
         if ( row == (ruleTableRow) && column > ruleTableColumn ) {
-        	_horizontalConditions.add( createCondition( value, _horizontalCondition ) );
+            _horizontalConditions.add( createCondition( value, _horizontalCondition ) );
         }
         //Vertical header column
         //Create a new condition using VerticalCondition as the template
         //and set it as the current condition
         else if ( row > (ruleTableRow) && column == ruleTableColumn ) {
-        	_currentVerticalCondition = createCondition( value, _verticalCondition );
+            _currentVerticalCondition = createCondition( value, _verticalCondition );
         }
         //Intersection column
         //Create a new Consequence
         else if ( row > (ruleTableRow) && column > ruleTableColumn ) {
-        	createRule( row, column, value );
+            createRule( row, column, value );
         }
     }
 
     private void createRule(final int row,
-        	final int column,
-        	final String value) {
+            final int column,
+            final String value) {
         final Consequence consequence = createConsequence( value );
 
         Rule rule = firstRule;
         if ( rule == null ) {
-        	rule = new Rule( "rule_" + row + "_" + column,
-        			null,
-        			row );
-        	addRule( rule );
+            rule = new Rule( "rule_" + row + "_" + column,
+                    null,
+                    row );
+            addRule( rule );
         } else {
-        	firstRule = null;
-        	rule.setName( "rule_" + row + "_" + column );
+            firstRule = null;
+            rule.setName( "rule_" + row + "_" + column );
         }
         rule.setAgendaGroup( this._currentAgendaGroup );
         rule.addCondition( this._currentPrecondition );
@@ -147,7 +147,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     }
 
     private Condition createCondition(final String value,
-        	final String conditionTemplate) {
+            final String conditionTemplate) {
         SnippetBuilder snip = new SnippetBuilder( conditionTemplate );
         String result = snip.build( value );
         Condition condition = new Condition();
@@ -156,7 +156,7 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     }
 
     public void newRow(int rowNumber,
-        	int columns) {
+            int columns) {
         // nothing to do here
     }
 
@@ -165,8 +165,8 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
     }
 
     protected void postInitRuleTable(int row,
-        	int column,
-        	String value) {
+            int column,
+            String value) {
         this.firstRule = getCurrentRule();
     }
 
@@ -174,8 +174,8 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
      * This gets called each time a "new" rule table is found.
      */
     protected void preInitRuleTable(final int row,
-        	final int column,
-        	final String value) {
+            final int column,
+            final String value) {
         this.ruleTableColumn = column;
         this.ruleTableRow = row;
         this.isInRuleTable = true;
@@ -185,8 +185,8 @@ public class RuleMatrixSheetListener extends DefaultRuleSheetListener {
         this._verticalCondition   = getProperties().getSingleProperty( VERTICALCONDITION_TAG );
         String precondition       = getProperties().getSingleProperty( PRECONDITION_TAG );
         if ( precondition != null ) {
-        	this._currentPrecondition = new Condition();
-        	this._currentPrecondition.setSnippet( precondition );
+            this._currentPrecondition = new Condition();
+            this._currentPrecondition.setSnippet( precondition );
         }
     }
 

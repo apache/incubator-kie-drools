@@ -35,7 +35,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
     @Override
     public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
         if (value == null || value.isEmpty()) {
-        	return new JaxbStringObjectPair[0];
+            return new JaxbStringObjectPair[0];
         }
 
         List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(value.size());
@@ -50,7 +50,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
             } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
                 obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
             }
-        	ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
+            ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
         }
 
         return ret.toArray(new JaxbStringObjectPair[value.size()]);

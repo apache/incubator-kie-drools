@@ -41,7 +41,7 @@ public class RowAdapter implements Row {
 
     public Object get(String identifier) {
         if ( factHandles == null ) {
-        	this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.leftTuple.toFactHandles();
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
@@ -53,7 +53,7 @@ public class RowAdapter implements Row {
 
     public FactHandle getFactHandle(String identifier) {
         if ( factHandles == null ) {
-        	this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.leftTuple.toFactHandles();
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
@@ -65,14 +65,14 @@ public class RowAdapter implements Row {
 
     public FactHandle getFactHandle(int i) {
         if ( factHandles == null ) {
-        	this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.leftTuple.toFactHandles();
         }
         return null;
     }
 
     public int size() {
         if ( factHandles == null ) {
-        	this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.leftTuple.toFactHandles();
         }
         return 0;
     }
@@ -82,24 +82,24 @@ public class RowAdapter implements Row {
         final int prime = 31;
         int result = 1;
         result = prime * result
-        		+ ((this.leftTuple == null) ? 0 : this.leftTuple.hashCode());
+                + ((this.leftTuple == null) ? 0 : this.leftTuple.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         RowAdapter other = (RowAdapter) obj;
         if (this.leftTuple == null) {
-        	if (other.leftTuple != null)
-        		return false;
+            if (other.leftTuple != null)
+                return false;
         } else if (!this.leftTuple.equals(other.leftTuple))
-        	return false;
+            return false;
         return true;
     }
     

@@ -40,26 +40,26 @@ public class PseudoSessionClock
 
          // using an arbitrary starting point as reference
          public static long calcFuturePointInTime (long currentTime, long timeToAdd){
-         	return currentTime+timeToAdd;
-     	}
+             return currentTime+timeToAdd;
+         }
 
          // convert seconds to milliseconds
-     	public static long timeInSeconds (long timeInSecs){
-     		return timeInSecs*1000;
-     	}
+         public static long timeInSeconds (long timeInSecs){
+             return timeInSecs*1000;
+         }
 
-     	// convert seconds to milliseconds
-     	public static long timeInMinutes (long timeInMins){
-     		return timeInSeconds(timeInMins)*60;
-     	}
+         // convert seconds to milliseconds
+         public static long timeInMinutes (long timeInMins){
+             return timeInSeconds(timeInMins)*60;
+         }
 
-     	// convert seconds to milliseconds
-     	public static long timeInHours (long timeInHrs){
-     		return timeInMinutes(timeInHrs)*60;
-     	}
+         // convert seconds to milliseconds
+         public static long timeInHours (long timeInHrs){
+             return timeInMinutes(timeInHrs)*60;
+         }
 
-     	// convert time given as hours, minutes, seconds, milliseconds to milliseconds
-     	public static long timeinHMSM (long hours, long mins, long secs, long msecs){
-     		return timeInHours(hours) + timeInMinutes(mins) + timeInSeconds(secs) + msecs;
-     	}
+         // convert time given as hours, minutes, seconds, milliseconds to milliseconds
+         public static long timeinHMSM (long hours, long mins, long secs, long msecs){
+             return timeInHours(hours) + timeInMinutes(mins) + timeInSeconds(secs) + msecs;
+         }
      }

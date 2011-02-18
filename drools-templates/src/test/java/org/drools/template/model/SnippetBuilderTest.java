@@ -133,8 +133,8 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
         assertEquals(
-        		"something == x || something == x && something == y || something == y",
-        		result);
+                "something == x || something == x && something == y || something == y",
+                result);
     }
 
     @Test
@@ -151,8 +151,8 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
         assertEquals(
-        		"something == x || something == y && something < x || something < y",
-        		result);
+                "something == x || something == y && something < x || something < y",
+                result);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class SnippetBuilderTest {
         final SnippetBuilder snip = new SnippetBuilder(snippet);
         final String result = snip.build("x, y");
         assertEquals(
-        		"something == this && something == x || something == y && something < x && something < y",
-        		result);
+                "something == this && something == x || something == y && something < x && something < y",
+                result);
     }
 }

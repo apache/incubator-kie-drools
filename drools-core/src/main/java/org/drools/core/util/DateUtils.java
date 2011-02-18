@@ -35,26 +35,26 @@ public class DateUtils {
     private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String DATE_FORMAT_MASK = getDateFormatMask();
     private static final String DEFAULT_COUNTRY = Locale.getDefault()
-        	.getCountry();
+            .getCountry();
     private static final String DEFINE_COUNTRY = getDefaultContry();
     private static final String DEFAULT_LANGUAGE = Locale.getDefault()
-        	.getLanguage();
+            .getLanguage();
     private static final String DEFINE_LANGUAGE = getDefaultLanguage();
 
     private static ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>() {
         protected SimpleDateFormat initialValue() {
-        	DateFormatSymbols dateSymbol = new DateFormatSymbols(new Locale(
-        			DEFINE_LANGUAGE, DEFINE_COUNTRY));
-        	SimpleDateFormat dateFormat = new SimpleDateFormat(
-        			DATE_FORMAT_MASK, dateSymbol);
-        	return dateFormat;
+            DateFormatSymbols dateSymbol = new DateFormatSymbols(new Locale(
+                    DEFINE_LANGUAGE, DEFINE_COUNTRY));
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    DATE_FORMAT_MASK, dateSymbol);
+            return dateFormat;
         };
     };
 
     private static String getDefaultLanguage() {
         String fmt = System.getProperty("drools.defaultlanguage");
         if (fmt == null) {
-        	fmt = DEFAULT_LANGUAGE;
+            fmt = DEFAULT_LANGUAGE;
         }
         return fmt;
     }
@@ -62,7 +62,7 @@ public class DateUtils {
     private static String getDefaultContry() {
         String fmt = System.getProperty("drools.defaultcountry");
         if (fmt == null) {
-        	fmt = DEFAULT_COUNTRY;
+            fmt = DEFAULT_COUNTRY;
         }
         return fmt;
     }
@@ -77,23 +77,23 @@ public class DateUtils {
 //		    }
             return df.get().parse(input);
         } catch (final ParseException e) {
-        	throw new IllegalArgumentException("Invalid date input format: ["
-        			+ input + "] it should follow: [" + DATE_FORMAT_MASK + "]");
+            throw new IllegalArgumentException("Invalid date input format: ["
+                    + input + "] it should follow: [" + DATE_FORMAT_MASK + "]");
         }
     }
 
     /** Converts the right hand side date as appropriate */
     public static Date getRightDate(final Object object2, DateFormats dateFormats) {
         if (object2 == null) {
-        	return null;
+            return null;
         }
         if (object2 instanceof String) {
-        	return parseDate((String) object2, dateFormats);
+            return parseDate((String) object2, dateFormats);
         } else if (object2 instanceof Date) {
-        	return (Date) object2;
+            return (Date) object2;
         } else {
-        	throw new IllegalArgumentException("Unable to convert "
-        			+ object2.getClass() + " to a Date.");
+            throw new IllegalArgumentException("Unable to convert "
+                    + object2.getClass() + " to a Date.");
         }
     }
 
@@ -101,7 +101,7 @@ public class DateUtils {
     public static String getDateFormatMask() {
         String fmt = System.getProperty("drools.dateformat");
         if (fmt == null) {
-        	fmt = DEFAULT_FORMAT_MASK;
+            fmt = DEFAULT_FORMAT_MASK;
         }
         return fmt;
     }

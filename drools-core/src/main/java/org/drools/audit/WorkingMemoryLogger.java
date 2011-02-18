@@ -130,31 +130,31 @@ public abstract class WorkingMemoryLogger
     
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
-        	WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
-        	eventManager.addEventListener( (WorkingMemoryEventListener) this );
-        	eventManager.addEventListener( (RuleBaseEventListener) this );
-        	eventManager.addEventListener( (RuleBaseEventListener) this );
-        	InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
-        	if (processRuntime != null) {
-        		processRuntime.addEventListener( (ProcessEventListener) this );
-        	}
+            WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
+            eventManager.addEventListener( (WorkingMemoryEventListener) this );
+            eventManager.addEventListener( (RuleBaseEventListener) this );
+            eventManager.addEventListener( (RuleBaseEventListener) this );
+            InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
+            if (processRuntime != null) {
+                processRuntime.addEventListener( (ProcessEventListener) this );
+            }
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
-        	((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
-        	((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
-        	((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
-        	((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
+            ((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
+            ((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
+            ((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
+            ((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
-        	ReteooWorkingMemory eventManager =
-        		((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
-        	eventManager.addEventListener( (WorkingMemoryEventListener) this );
-        	eventManager.addEventListener( (AgendaEventListener) this );
-        	InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
-        	eventManager.addEventListener( (RuleBaseEventListener) this );
-        	if (processRuntime != null) {
-        		processRuntime.addEventListener( (ProcessEventListener) this );
-        	}
+            ReteooWorkingMemory eventManager =
+                ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
+            eventManager.addEventListener( (WorkingMemoryEventListener) this );
+            eventManager.addEventListener( (AgendaEventListener) this );
+            InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
+            eventManager.addEventListener( (RuleBaseEventListener) this );
+            if (processRuntime != null) {
+                processRuntime.addEventListener( (ProcessEventListener) this );
+            }
         } else {
-        	throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
+            throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
         }
     }
 
@@ -262,7 +262,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-        										event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -274,7 +274,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-        										event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-        										event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -298,7 +298,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-        										event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -417,7 +417,7 @@ public abstract class WorkingMemoryLogger
     
     public void beforeProcessStarted(ProcessStartedEvent event) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
-            	event.getProcessInstance().getProcessId(),
+                event.getProcessInstance().getProcessId(),
                 event.getProcessInstance().getProcessName(),
                 event.getProcessInstance().getId()) );
     }
@@ -431,7 +431,7 @@ public abstract class WorkingMemoryLogger
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED,
-            	event.getProcessInstance().getProcessId(),
+                event.getProcessInstance().getProcessId(),
                 event.getProcessInstance().getProcessName(),
                 event.getProcessInstance().getId()) );
     }
@@ -466,21 +466,21 @@ public abstract class WorkingMemoryLogger
     private String createNodeId(NodeInstance nodeInstance) {
         Node node = nodeInstance.getNode();
         if (node == null) {
-        	return "";
+            return "";
         }
         String nodeId = "" + node.getId();
         NodeContainer nodeContainer = node.getNodeContainer();
         while (nodeContainer != null) {
-        	if (nodeContainer instanceof Node) {
-        		node = (Node) nodeContainer;
-        		nodeContainer = node.getNodeContainer();
-        		// TODO fix this filter out hidden compositeNode inside ForEach node
-        		if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
-            		nodeId = node.getId() + ":" + nodeId;
-        		}
-        	} else {
-        		break;
-        	}
+            if (nodeContainer instanceof Node) {
+                node = (Node) nodeContainer;
+                nodeContainer = node.getNodeContainer();
+                // TODO fix this filter out hidden compositeNode inside ForEach node
+                if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
+                    nodeId = node.getId() + ":" + nodeId;
+                }
+            } else {
+                break;
+            }
         }
         return nodeId;
     }
@@ -489,13 +489,13 @@ public abstract class WorkingMemoryLogger
         String nodeInstanceId = "" + nodeInstance.getId();
         NodeInstanceContainer nodeContainer = nodeInstance.getNodeInstanceContainer();
         while (nodeContainer != null) {
-        	if (nodeContainer instanceof NodeInstance) {
-        		nodeInstance = (NodeInstance) nodeContainer;
-        		nodeInstanceId = nodeInstance.getId() + ":" + nodeInstanceId;
-        		nodeContainer = nodeInstance.getNodeInstanceContainer();
-        	} else {
-        		break;
-        	}
+            if (nodeContainer instanceof NodeInstance) {
+                nodeInstance = (NodeInstance) nodeContainer;
+                nodeInstanceId = nodeInstance.getId() + ":" + nodeInstanceId;
+                nodeContainer = nodeInstance.getNodeInstanceContainer();
+            } else {
+                break;
+            }
         }
         return nodeInstanceId;
     }

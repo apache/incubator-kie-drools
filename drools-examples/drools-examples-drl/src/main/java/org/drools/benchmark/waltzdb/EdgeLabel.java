@@ -44,26 +44,26 @@ public class EdgeLabel {
 
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         final EdgeLabel other = (EdgeLabel) obj;
         if (labelId == null) {
-        	if (other.labelId != null)
-        		return false;
+            if (other.labelId != null)
+                return false;
         } else if (!labelId.equals(other.labelId))
-        	return false;
+            return false;
         if (labelName == null) {
-        	if (other.labelName != null)
-        		return false;
+            if (other.labelName != null)
+                return false;
         } else if (!labelName.equals(other.labelName))
-        	return false;
+            return false;
         if (p1 != other.p1)
-        	return false;
+            return false;
         if (p2 != other.p2)
-        	return false;
+            return false;
         return true;
     }
     public String getLabelId() {

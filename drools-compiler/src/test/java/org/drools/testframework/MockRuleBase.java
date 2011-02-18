@@ -60,7 +60,7 @@ public class MockRuleBase implements RuleBase {
     }
 
     public StatefulSession readStatefulSession(InputStream stream,
-        	boolean keepReference) throws IOException, ClassNotFoundException {
+            boolean keepReference) throws IOException, ClassNotFoundException {
         // TODO Auto-generated method stub
         return null;
     }

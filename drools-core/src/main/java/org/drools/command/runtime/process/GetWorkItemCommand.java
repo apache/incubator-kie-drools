@@ -50,7 +50,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
 
     public String toString() {
         return "((org.drools.process.instance.WorkItemManager) session.getWorkItemManager()).getWorkItem("
-        	+ workItemId +  ");";
+            + workItemId +  ");";
     }
 
 }

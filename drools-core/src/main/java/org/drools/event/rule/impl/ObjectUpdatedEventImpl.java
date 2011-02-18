@@ -66,7 +66,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
     @Override
     public String toString() {
         return "==>[ObjectUpdatedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
-        		+ ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime()
-        		+ ", getPropagationContext()=" + getPropagationContext() + "]";
+                + ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime()
+                + ", getPropagationContext()=" + getPropagationContext() + "]";
     }
 }

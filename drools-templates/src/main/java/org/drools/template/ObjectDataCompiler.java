@@ -38,10 +38,10 @@ public class ObjectDataCompiler extends DataProviderCompiler {
      * @return the expanded rules as a string
      */
     public String compile(final Collection<?> objs,
-        	final InputStream templateStream) {
+            final InputStream templateStream) {
         TemplateContainer tc = new DefaultTemplateContainer( templateStream );
         closeStream( templateStream );
         return compile( new ObjectDataProvider( tc, objs ),
-        		        new TemplateDataListener( tc ) );
+                        new TemplateDataListener( tc ) );
     }
 }

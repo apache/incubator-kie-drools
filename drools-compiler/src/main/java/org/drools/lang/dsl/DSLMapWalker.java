@@ -120,7 +120,7 @@ public class DSLMapWalker extends TreeParser {
                 match(input, Token.UP, null);
             }
 
-                	mapping = ((mapping_file_scope)mapping_file_stack.peek()).retval;
+                    mapping = ((mapping_file_scope)mapping_file_stack.peek()).retval;
 
 
             }
@@ -263,10 +263,10 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-                	((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).sentenceValueBuffer.toString());
-                	((entry_scope)entry_stack.peek()).retval.setValuePattern(((entry_scope)entry_stack.peek()).valuebuffer.toString());
-                	mappingEntry = ((entry_scope)entry_stack.peek()).retval;
-                	((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(mappingEntry);
+                    ((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).sentenceValueBuffer.toString());
+                    ((entry_scope)entry_stack.peek()).retval.setValuePattern(((entry_scope)entry_stack.peek()).valuebuffer.toString());
+                    mappingEntry = ((entry_scope)entry_stack.peek()).retval;
+                    ((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(mappingEntry);
 
 
             }
@@ -438,10 +438,10 @@ public class DSLMapWalker extends TreeParser {
                 match(input, Token.UP, null);
             }
 
-                	if ( metalit == null || (metalit!=null?metalit.getText():null) == null || (metalit!=null?metalit.getText():null).length() == 0 ) {
-                		((entry_scope)entry_stack.peek()).retval.setMetaData(DSLMappingEntry.EMPTY_METADATA);
-                	} else {
-                        	((entry_scope)entry_stack.peek()).retval.setMetaData(new DSLMappingEntry.DefaultDSLEntryMetaData( (metalit!=null?metalit.getText():null) ));
+                    if ( metalit == null || (metalit!=null?metalit.getText():null) == null || (metalit!=null?metalit.getText():null).length() == 0 ) {
+                        ((entry_scope)entry_stack.peek()).retval.setMetaData(DSLMappingEntry.EMPTY_METADATA);
+                    } else {
+                            ((entry_scope)entry_stack.peek()).retval.setMetaData(new DSLMappingEntry.DefaultDSLEntryMetaData( (metalit!=null?metalit.getText():null) ));
                         }
 
 
@@ -568,8 +568,8 @@ public class DSLMapWalker extends TreeParser {
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_key_sentence223);
 
-                        	((entry_scope)entry_stack.peek()).keybuffer.append((vtl!=null?vtl.getText():null));
-                        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append((vtl!=null?vtl.getText():null));
+                            ((entry_scope)entry_stack.peek()).keybuffer.append((vtl!=null?vtl.getText():null));
+                            ((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append((vtl!=null?vtl.getText():null));
 
 
                     }
@@ -579,8 +579,8 @@ public class DSLMapWalker extends TreeParser {
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_key_sentence232);
 
-                        	((entry_scope)entry_stack.peek()).keybuffer.append("\\s+");
-                        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append(" ");
+                            ((entry_scope)entry_stack.peek()).keybuffer.append("\\s+");
+                            ((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append(" ");
 
 
                     }
@@ -711,8 +711,8 @@ public class DSLMapWalker extends TreeParser {
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence279);
 
-                        	((entry_scope)entry_stack.peek()).valuebuffer.append((vtl!=null?vtl.getText():null));
-                        	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append((vtl!=null?vtl.getText():null));
+                            ((entry_scope)entry_stack.peek()).valuebuffer.append((vtl!=null?vtl.getText():null));
+                            ((entry_scope)entry_stack.peek()).sentenceValueBuffer.append((vtl!=null?vtl.getText():null));
 
 
                     }
@@ -722,8 +722,8 @@ public class DSLMapWalker extends TreeParser {
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_value_sentence287);
 
-                        	((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
-                        	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append(" ");
+                            ((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
+                            ((entry_scope)entry_stack.peek()).sentenceValueBuffer.append(" ");
 
 
                     }
@@ -828,21 +828,21 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-                	((entry_scope)entry_stack.peek()).variables.put((varname!=null?varname.getText():null), Integer.valueOf(0));
+                    ((entry_scope)entry_stack.peek()).variables.put((varname!=null?varname.getText():null), Integer.valueOf(0));
 
-                	if(q!=null && pattern!=null){
-                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(q!=null?q.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
-                	}else if(q==null && pattern!=null){
-                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
-                	}else{
-                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+"}");
-                	}
+                    if(q!=null && pattern!=null){
+                        ((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(q!=null?q.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
+                    }else if(q==null && pattern!=null){
+                        ((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
+                    }else{
+                        ((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+"}");
+                    }
 
-                	if(q == null || (!q.getText().equals("ENUM") && !q.getText().equals("DATE") && !q.getText().equals("BOOLEAN"))){
-                		((entry_scope)entry_stack.peek()).keybuffer.append(pattern != null? "(" + (pattern!=null?pattern.getText():null) + ")" : "(.*?)");
-                	}else{
-                		((entry_scope)entry_stack.peek()).keybuffer.append("(.*?)");
-                	}
+                    if(q == null || (!q.getText().equals("ENUM") && !q.getText().equals("DATE") && !q.getText().equals("BOOLEAN"))){
+                        ((entry_scope)entry_stack.peek()).keybuffer.append(pattern != null? "(" + (pattern!=null?pattern.getText():null) + ")" : "(.*?)");
+                    }else{
+                        ((entry_scope)entry_stack.peek()).keybuffer.append("(.*?)");
+                    }
 
 
             }
@@ -876,8 +876,8 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-                	((entry_scope)entry_stack.peek()).valuebuffer.append("{" + (lit!=null?lit.getText():null) + "}" );
-                 	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append("{"+(lit!=null?lit.getText():null)+"}");
+                    ((entry_scope)entry_stack.peek()).valuebuffer.append("{" + (lit!=null?lit.getText():null) + "}" );
+                     ((entry_scope)entry_stack.peek()).sentenceValueBuffer.append("{"+(lit!=null?lit.getText():null)+"}");
 
 
             }

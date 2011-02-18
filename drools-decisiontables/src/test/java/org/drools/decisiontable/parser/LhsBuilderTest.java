@@ -98,7 +98,7 @@ public class LhsBuilderTest {
         builder.addTemplate(10, 1, "forall(&&){age < $}");
         builder.addCellValue(11, 1, "42, 43, 44");
         assertEquals("Person(age < 42 && age < 43 && age < 44)", builder
-        		.getResult());
+                .getResult());
     }
 
     @Test
@@ -107,8 +107,8 @@ public class LhsBuilderTest {
         builder.addTemplate(10, 1, "forall(&&){age < $ || age == $}");
         builder.addCellValue(11, 1, "42, 43, 44");
         assertEquals(
-        		"Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
-        		builder.getResult());
+                "Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
+                builder.getResult());
     }
 
     @Test
@@ -117,8 +117,8 @@ public class LhsBuilderTest {
         builder.addTemplate(10, 1, "forall(&&){age < $ || age == $} && forall(&&){age < $ || age == $}");
         builder.addCellValue(11, 1, "42, 43, 44");
         assertEquals(
-        		"Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44 && age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
-        		builder.getResult());
+                "Person(age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44 && age < 42 || age == 42 && age < 43 || age == 43 && age < 44 || age == 44)",
+                builder.getResult());
     }
 
     @Test

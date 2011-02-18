@@ -56,22 +56,22 @@ public class DebugAgendaEventListener
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	                                WorkingMemory workingMemory) {
+                                            WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-        	                                  WorkingMemory workingMemory) {
+                                              WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         System.err.println( event );
     }
 
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-        	                                   WorkingMemory workingMemory) {
+                                               WorkingMemory workingMemory) {
         System.err.println( event );
     }
 

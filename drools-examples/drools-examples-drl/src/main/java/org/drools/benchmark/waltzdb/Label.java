@@ -86,42 +86,42 @@ public class Label {
 
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         final Label other = (Label) obj;
         if (id == null) {
-        	if (other.id != null)
-        		return false;
+            if (other.id != null)
+                return false;
         } else if (!id.equals(other.id))
-        	return false;
+            return false;
         if (n1 == null) {
-        	if (other.n1 != null)
-        		return false;
+            if (other.n1 != null)
+                return false;
         } else if (!n1.equals(other.n1))
-        	return false;
+            return false;
         if (n2 == null) {
-        	if (other.n2 != null)
-        		return false;
+            if (other.n2 != null)
+                return false;
         } else if (!n2.equals(other.n2))
-        	return false;
+            return false;
         if (n3 == null) {
-        	if (other.n3 != null)
-        		return false;
+            if (other.n3 != null)
+                return false;
         } else if (!n3.equals(other.n3))
-        	return false;
+            return false;
         if (name == null) {
-        	if (other.name != null)
-        		return false;
+            if (other.name != null)
+                return false;
         } else if (!name.equals(other.name))
-        	return false;
+            return false;
         if (type == null) {
-        	if (other.type != null)
-        		return false;
+            if (other.type != null)
+                return false;
         } else if (!type.equals(other.type))
-        	return false;
+            return false;
         return true;
     }
 }

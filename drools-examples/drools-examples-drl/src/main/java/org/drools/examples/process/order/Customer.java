@@ -60,7 +60,7 @@ public class Customer {
 
     public int getAge() {
         if (birthday == null) {
-        	return -1;
+            return -1;
         }
         Calendar today = Calendar.getInstance();
         Calendar dateOfBirth = Calendar.getInstance();

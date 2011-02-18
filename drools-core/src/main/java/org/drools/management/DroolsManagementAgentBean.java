@@ -40,14 +40,14 @@ public class DroolsManagementAgentBean {
     public void start() {
         instance = DroolsManagementAgent.getInstance();
         if (knowledgeBases!= null) {
-        	for (KnowledgeBase kbase : knowledgeBases) {
-        		instance.registerKnowledgeBase((ReteooRuleBase) ((KnowledgeBaseImpl)kbase).getRuleBase());
-        	}
+            for (KnowledgeBase kbase : knowledgeBases) {
+                instance.registerKnowledgeBase((ReteooRuleBase) ((KnowledgeBaseImpl)kbase).getRuleBase());
+            }
         }
         if (statefulKnowledgeSessions!=null) {
-        	for (StatefulKnowledgeSession ksession : statefulKnowledgeSessions) {
-        		instance.registerKnowledgeSession(((StatefulKnowledgeSessionImpl)ksession).getInternalWorkingMemory());
-        	}
+            for (StatefulKnowledgeSession ksession : statefulKnowledgeSessions) {
+                instance.registerKnowledgeSession(((StatefulKnowledgeSessionImpl)ksession).getInternalWorkingMemory());
+            }
         }
     }
 

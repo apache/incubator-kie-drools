@@ -111,79 +111,79 @@ public class ClipsParser extends Parser {
         private Location location = new Location( Location.LOCATION_UNKNOWN );
 
         public void setParserDebug(boolean parserDebug) {
-        	this.parserDebug = parserDebug;
+            this.parserDebug = parserDebug;
         }
 
         public void debug(String message) {
-        	if ( parserDebug )
-        		System.err.println( "drl parser: " + message );
+            if ( parserDebug )
+                System.err.println( "drl parser: " + message );
         }
 
         public void setSource(String source) {
-        	this.source = source;
+            this.source = source;
         }
 
         public String getSource() {
-        	return this.source;
+            return this.source;
         }
 
         public PackageDescr getPackageDescr() {
-        	return packageDescr;
+            return packageDescr;
         }
 
         private int offset(int line) {
-        	return line + lineOffset;
+            return line + lineOffset;
         }
 
         /**
          * This will set the offset to record when reparsing. Normally is zero of course
          */
         public void setLineOffset(int i) {
-         	this.lineOffset = i;
+             this.lineOffset = i;
         }
 
         private String getString(Token token) {
-        	String orig = token.getText();
-        	return orig.substring( 1, orig.length() -1 );
+            String orig = token.getText();
+            return orig.substring( 1, orig.length() -1 );
         }
 
         public void reportError(RecognitionException ex) {
-        	// if we've already reported an error and have not matched a token
-        	// yet successfully, don't report any errors.
-        	if ( state.errorRecovery ) {
-        		//System.err.print("[SPURIOUS] ");
-        		return;
-        	}
-        	state.syntaxErrors++; // don't count spurious
-        	state.errorRecovery = true;
+            // if we've already reported an error and have not matched a token
+            // yet successfully, don't report any errors.
+            if ( state.errorRecovery ) {
+                //System.err.print("[SPURIOUS] ");
+                return;
+            }
+            state.syntaxErrors++; // don't count spurious
+            state.errorRecovery = true;
 
-        	ex.line = offset(ex.line); //add the offset if there is one
-        	errors.add( ex );
+            ex.line = offset(ex.line); //add the offset if there is one
+            errors.add( ex );
         }
 
              /** return the raw RecognitionException errors */
              public List getErrors() {
-             	return errors;
+                 return errors;
              }
 
              /** Return a list of pretty strings summarising the errors */
              public List getErrorMessages() {
-             	List messages = new ArrayList();
-         	for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
-                  		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
-                  	}
-                  	return messages;
+                 List messages = new ArrayList();
+             for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+                          messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+                      }
+                      return messages;
              }
 
              /** return true if any parser errors were accumulated */
              public boolean hasErrors() {
-          	return ! errors.isEmpty();
+              return ! errors.isEmpty();
              }
 
              /** This will take a RecognitionException, and create a sensible error message out of it */
              public String createErrorMessage(RecognitionException e)
             {
-        	StringBuffer message = new StringBuffer();
+            StringBuffer message = new StringBuffer();
                     message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                     if ( e instanceof MismatchedTokenException ) {
                             MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -201,7 +201,7 @@ public class ClipsParser extends Parser {
                     }
                     else if ( e instanceof NoViableAltException ) {
                             NoViableAltException nvae = (NoViableAltException)e;
-        		message.append( "Unexpected token '" + e.token.getText() + "'" );
+                message.append( "Unexpected token '" + e.token.getText() + "'" );
                             /*
                             message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
                                                                " state "+nvae.stateNumber+
@@ -234,18 +234,18 @@ public class ClipsParser extends Parser {
                             message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                                fpe.predicateText+"}?");
                     } else if (e instanceof GeneralParseException) {
-        		message.append(" " + e.getMessage());
-        	}
+                message.append(" " + e.getMessage());
+            }
                        return message.toString();
             }
             
             void checkTrailingSemicolon(String text, int line) {
                 if (text.trim().endsWith( ";" ) ) {
-                	this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
+                    this.errors.add( new GeneralParseException( "Trailing semi-colon not allowed", offset(line) ) );
                 }
             }
             
-            	void addTypeFieldDescr(LispForm lispForm, TypeDeclarationDescr typeDescr) {
+                void addTypeFieldDescr(LispForm lispForm, TypeDeclarationDescr typeDescr) {
                     if ( !(lispForm.getSExpressions()[0] instanceof SymbolLispAtom) ) {
                         throw new RuntimeException("should specify a slot");
                     }
@@ -282,9 +282,9 @@ public class ClipsParser extends Parser {
                     typeDescr.addField( fieldDescr );
                 }
 
-            	String removeQuotes(String string) {
-            	    return string.substring( 1, string.length() -1 );
-            	}
+                String removeQuotes(String string) {
+                    return string.substring( 1, string.length() -1 );
+                }
           
 
 
@@ -588,43 +588,43 @@ public class ClipsParser extends Parser {
             ruleName=(Token)match(input,NAME,FOLLOW_NAME_in_defrule295); if (state.failed) return rule;
             if ( state.backtracking==0 ) {
 
-                    		debug( "start rule: " + ruleName.getText() );
-                    		String ruleStr = ruleName.getText();
-                    		AttributeDescr module = null;
+                            debug( "start rule: " + ruleName.getText() );
+                            String ruleStr = ruleName.getText();
+                            AttributeDescr module = null;
 
                           if ( ruleStr.indexOf("::") >= 0 ) {
                               String mod = ruleStr.substring(0, ruleStr.indexOf("::"));
                               ruleStr = ruleStr.substring(ruleStr.indexOf("::")+2);
-                  			module = new AttributeDescr( "agenda-group", mod );
-                  			module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
-                  			module.setStartCharacter( ((CommonToken)ruleName).getStartIndex() );
-                  			module.setEndCharacter( ((CommonToken)ruleName).getStopIndex() );
-                  		}
+                                      module = new AttributeDescr( "agenda-group", mod );
+                                      module.setLocation( offset(ruleName.getLine()), ruleName.getCharPositionInLine() );
+                                      module.setStartCharacter( ((CommonToken)ruleName).getStartIndex() );
+                                      module.setEndCharacter( ((CommonToken)ruleName).getStopIndex() );
+                          }
 
-                  	    rule = new RuleDescr( ruleStr, null );
-                  	    if( module != null ) {
-                  	        rule.setNamespace( module.getValue() );
-                  	    	rule.addAttribute( module );
-                  	    }
+                          rule = new RuleDescr( ruleStr, null );
+                          if( module != null ) {
+                              rule.setNamespace( module.getValue() );
+                              rule.addAttribute( module );
+                          }
 
-                  		rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-                  		rule.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+                          rule.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+                          rule.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 
-                  		// not sure how you define where a LHS starts in clips, so just putting it here for now
+                          // not sure how you define where a LHS starts in clips, so just putting it here for now
                           lhs = new AndDescr();
                             rule.setLhs( lhs );
                           lhs.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-                  		lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+                          lhs.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 
-                  		rule.addAttribute( new AttributeDescr( "dialect", "clips") );
+                          rule.addAttribute( new AttributeDescr( "dialect", "clips") );
 
-                  		declarations = new HashSet();
+                          declarations = new HashSet();
 
             }
             documentation=(Token)match(input,STRING,FOLLOW_STRING_in_defrule307); if (state.failed) return rule;
             if ( state.backtracking==0 ) {
 
-                      	// do nothing here for now
+                          // do nothing here for now
 
             }
             pushFollow(FOLLOW_ruleAttribute_in_defrule313);
@@ -833,7 +833,7 @@ public class ClipsParser extends Parser {
         Token i=null;
 
 
-            	d = null;
+                d = null;
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:429:2: (loc= SALIENCE i= INT )
@@ -843,10 +843,10 @@ public class ClipsParser extends Parser {
             i=(Token)match(input,INT,FOLLOW_INT_in_salience470); if (state.failed) return d;
             if ( state.backtracking==0 ) {
 
-                  		d = new AttributeDescr( "salience", i.getText() );
-                  		d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-                  		d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
-                  		d.setEndCharacter( ((CommonToken)i).getStopIndex() );
+                          d = new AttributeDescr( "salience", i.getText() );
+                          d.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+                          d.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+                          d.setEndCharacter( ((CommonToken)i).getStopIndex() );
 
             }
 
@@ -1036,8 +1036,8 @@ public class ClipsParser extends Parser {
             match(input,AND,FOLLOW_AND_in_and_ce593); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                      	andDescr = new AndDescr();
-                  		in_ce.addDescr( andDescr );
+                          andDescr = new AndDescr();
+                          in_ce.addDescr( andDescr );
 
             }
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:460:3: ( ce[andDescr, declarations] )+
@@ -1105,8 +1105,8 @@ public class ClipsParser extends Parser {
             match(input,OR,FOLLOW_OR_in_or_ce641); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                      	orDescr = new OrDescr();
-                  		in_ce.addDescr( orDescr );
+                          orDescr = new OrDescr();
+                          in_ce.addDescr( orDescr );
 
             }
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:473:3: ( ce[orDescr, declarations] )+
@@ -1174,8 +1174,8 @@ public class ClipsParser extends Parser {
             match(input,NOT,FOLLOW_NOT_in_not_ce689); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  		notDescr = new NotDescr();
-                  	    in_ce.addDescr( notDescr );
+                          notDescr = new NotDescr();
+                          in_ce.addDescr( notDescr );
 
             }
             pushFollow(FOLLOW_ce_in_not_ce695);
@@ -1213,8 +1213,8 @@ public class ClipsParser extends Parser {
             match(input,EXISTS,FOLLOW_EXISTS_in_exists_ce737); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  	    existsDescr = new ExistsDescr();
-                  	    in_ce.addDescr( existsDescr );
+                          existsDescr = new ExistsDescr();
+                          in_ce.addDescr( existsDescr );
 
             }
             pushFollow(FOLLOW_ce_in_exists_ce743);
@@ -1291,9 +1291,9 @@ public class ClipsParser extends Parser {
             name=(Token)match(input,NAME,FOLLOW_NAME_in_normal_pattern827); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  		pattern = new PatternDescr(name.getText());
-                  		in_ce.addDescr( pattern );
-                  		top = pattern.getConstraint();
+                          pattern = new PatternDescr(name.getText());
+                          in_ce.addDescr( pattern );
+                          top = pattern.getConstraint();
 
 
             }
@@ -1360,7 +1360,7 @@ public class ClipsParser extends Parser {
             var=(Token)match(input,VAR,FOLLOW_VAR_in_bound_pattern871); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  		identifier = var.getText();
+                          identifier = var.getText();
 
             }
             match(input,ASSIGN_OP,FOLLOW_ASSIGN_OP_in_bound_pattern877); if (state.failed) return ;
@@ -1368,10 +1368,10 @@ public class ClipsParser extends Parser {
             name=(Token)match(input,NAME,FOLLOW_NAME_in_bound_pattern883); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  		pattern = new PatternDescr(name.getText());
-                  		pattern.setIdentifier( identifier.replace( '?', '$') );
-                  		in_ce.addDescr( pattern );
-                  		top = pattern.getConstraint();
+                          pattern = new PatternDescr(name.getText());
+                          pattern.setIdentifier( identifier.replace( '?', '$') );
+                          in_ce.addDescr( pattern );
+                          top = pattern.getConstraint();
 
             }
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:544:3: ( field_constriant[top, declarations] )*
@@ -1426,10 +1426,10 @@ public class ClipsParser extends Parser {
 
 
                  List list = new ArrayList();
-            	BindingDescr fbd = null;
-            	FieldConstraintDescr fc = null;
-            	RestrictionConnectiveDescr top = null;
-            	String op = "==";
+                BindingDescr fbd = null;
+                FieldConstraintDescr fc = null;
+                RestrictionConnectiveDescr top = null;
+                String op = "==";
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:556:2: ( LEFT_PAREN f= NAME or_restr_connective[top, base, fc, declarations] RIGHT_PAREN )
@@ -1439,11 +1439,11 @@ public class ClipsParser extends Parser {
             f=(Token)match(input,NAME,FOLLOW_NAME_in_field_constriant934); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                  		fc = new FieldConstraintDescr(f.getText());
-                  		fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
-                  		fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
-                  		//base.addDescr( fc );
-                  		top = fc.getRestriction();
+                          fc = new FieldConstraintDescr(f.getText());
+                          fc.setLocation( offset(f.getLine()), f.getCharPositionInLine() );
+                          fc.setStartCharacter( ((CommonToken)f).getStartIndex() );
+                          //base.addDescr( fc );
+                          top = fc.getRestriction();
 
             }
             pushFollow(FOLLOW_or_restr_connective_in_field_constriant949);
@@ -1453,8 +1453,8 @@ public class ClipsParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
                if ( top.getRestrictions().size() != 0 ) {
-                  	    base.insertBeforeLast( PredicateDescr.class, fc );
-                  	  }
+                          base.insertBeforeLast( PredicateDescr.class, fc );
+                        }
 
             }
             match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_field_constriant959); if (state.failed) return ;
@@ -1477,7 +1477,7 @@ public class ClipsParser extends Parser {
     // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:588:1: or_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ] options {backtrack=true; } : and_restr_connective[or, ceBase, fcBase, declarations] ( options {backtrack=true; } : PIPE and_restr_connective[or, ceBase, fcBase, declarations] )* ;
     public final void or_restr_connective(RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations) throws RecognitionException {
 
-            	RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
+                RestrictionConnectiveDescr or = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.OR);
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:595:2: ( and_restr_connective[or, ceBase, fcBase, declarations] ( options {backtrack=true; } : PIPE and_restr_connective[or, ceBase, fcBase, declarations] )* )
@@ -1506,7 +1506,7 @@ public class ClipsParser extends Parser {
                     match(input,PIPE,FOLLOW_PIPE_in_or_restr_connective1022); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                      				location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
+                                          location.setType(Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR);
 
                     }
                     pushFollow(FOLLOW_and_restr_connective_in_or_restr_connective1032);
@@ -1536,7 +1536,7 @@ public class ClipsParser extends Parser {
                         if( or.getRestrictions().size() == 1 ) {
                                 rcBase.addOrMerge( (RestrictionDescr) or.getRestrictions().get( 0 ) );
                         } else if ( or.getRestrictions().size() > 1 ) {
-                        	rcBase.addRestriction( or );
+                            rcBase.addRestriction( or );
                         }
 
         }
@@ -1549,7 +1549,7 @@ public class ClipsParser extends Parser {
     // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:614:1: and_restr_connective[ RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations ] : restriction[and, ceBase, fcBase, declarations] ( AMPERSAND restriction[and, ceBase, fcBase, declarations] )* ;
     public final void and_restr_connective(RestrictionConnectiveDescr rcBase, ConditionalElementDescr ceBase, FieldConstraintDescr fcBase, Set declarations) throws RecognitionException {
 
-            	RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
+                RestrictionConnectiveDescr and = new RestrictionConnectiveDescr(RestrictionConnectiveDescr.AND);
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:618:2: ( restriction[and, ceBase, fcBase, declarations] ( AMPERSAND restriction[and, ceBase, fcBase, declarations] )* )
@@ -1603,7 +1603,7 @@ public class ClipsParser extends Parser {
                         if( and.getRestrictions().size() == 1) {
                                 rcBase.addOrMerge( (RestrictionDescr) and.getRestrictions().get( 0 ) );
                         } else if ( and.getRestrictions().size() > 1 ) {
-                        	rcBase.addRestriction( and );
+                            rcBase.addRestriction( and );
                         }
 
         }
@@ -1619,7 +1619,7 @@ public class ClipsParser extends Parser {
 
 
 
-            		String op = "==";
+                    String op = "==";
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:643:2: ( ( TILDE )? ( predicate_constraint[rc, op, base] | return_value_restriction[op, rc] | variable_restriction[op, rc, base, fcBase, declarations] | lc= literal_restriction ) )
@@ -1726,8 +1726,8 @@ public class ClipsParser extends Parser {
                     if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                                   			rc.addRestriction( new LiteralRestrictionDescr(op, lc) );
-                          	      		op = "==";
+                                               rc.addRestriction( new LiteralRestrictionDescr(op, lc) );
+                                            op = "==";
 
                     }
 
@@ -1834,15 +1834,15 @@ public class ClipsParser extends Parser {
 
                           identifier =  (VAR1!=null?VAR1.getText():null).replace( '?', '$');
                           if ( declarations.contains( identifier) ) {
-                  			rc.addRestriction( new VariableRestrictionDescr(op, identifier ) );
-                  	 	} else {
-                  	 		BindingDescr fbd = new BindingDescr();
-                  	 		fbd.setVariable( identifier );
-                  	 		fbd.setExpression( fcBase.getFieldName() );
-                  	 		// TODO: add it to the pattern
-                  	 		///ceBase.add( fbd );
-                  	 		declarations.add( identifier );
-                  	 	}
+                              rc.addRestriction( new VariableRestrictionDescr(op, identifier ) );
+                           } else {
+                               BindingDescr fbd = new BindingDescr();
+                               fbd.setVariable( identifier );
+                               fbd.setExpression( fcBase.getFieldName() );
+                               // TODO: add it to the pattern
+                               ///ceBase.add( fbd );
+                               declarations.add( identifier );
+                           }
 
             }
 
@@ -1869,7 +1869,7 @@ public class ClipsParser extends Parser {
 
 
 
-            	text = null;
+                text = null;
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:688:2: (t= literal )
@@ -1882,7 +1882,7 @@ public class ClipsParser extends Parser {
             if (state.failed) return text;
             if ( state.backtracking==0 ) {
 
-                      	text = t;
+                          text = t;
 
             }
 
@@ -2037,7 +2037,7 @@ public class ClipsParser extends Parser {
         Token t=null;
 
 
-            	sExpression  =  null;
+                sExpression  =  null;
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:729:2: ( (t= VAR | t= STRING | t= FLOAT | t= INT | t= BOOL | t= NULL | t= NAME ) )
@@ -2198,22 +2198,22 @@ public class ClipsParser extends Parser {
             deftemplateName=(Token)match(input,NAME,FOLLOW_NAME_in_deftemplate1609); if (state.failed) return typeDescr;
             if ( state.backtracking==0 ) {
 
-                    		debug( "start rule: " + deftemplateName.getText() );
-                    		String templateStr = deftemplateName.getText();
+                            debug( "start rule: " + deftemplateName.getText() );
+                            String templateStr = deftemplateName.getText();
 
                           String mod = null;
                           if ( templateStr.indexOf("::") >= 0 ) {
                               mod = templateStr.substring(0, templateStr.indexOf("::"));
                               templateStr = templateStr.substring(templateStr.indexOf("::")+2);
-                  		}
+                          }
 
-                  	    typeDescr = new TypeDeclarationDescr( templateStr );
-                  	    if( mod != null ) {
-                  	        typeDescr.setNamespace( mod );
-                  	    }
+                          typeDescr = new TypeDeclarationDescr( templateStr );
+                          if( mod != null ) {
+                              typeDescr.setNamespace( mod );
+                          }
 
-                  		typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
-                  		typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() );
+                          typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
+                          typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() );
 
 
 
@@ -2221,7 +2221,7 @@ public class ClipsParser extends Parser {
             documentation=(Token)match(input,STRING,FOLLOW_STRING_in_deftemplate1623); if (state.failed) return typeDescr;
             if ( state.backtracking==0 ) {
 
-                  	// do nothing here for now
+                      // do nothing here for now
 
             }
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:783:2: (list= lisp_form )*
@@ -2280,7 +2280,7 @@ public class ClipsParser extends Parser {
         Token t=null;
 
 
-            	text = null;
+                text = null;
 
         try {
             // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:793:2: ( (t= STRING | t= NAME | t= INT | t= FLOAT | t= BOOL | t= NULL ) )

@@ -43,12 +43,12 @@ public class Sex {
 
     public  static Sex resolve(String sex) {
         if (stringM.equals(sex)) {
-        	return Sex.M;
+            return Sex.M;
         } else if (stringF.equals(sex)) {
-        	return Sex.F;
+            return Sex.F;
         } else {
-        	throw new RuntimeException("Sex '" + sex
-        			+ "' does not exist for Sex Enum");
+            throw new RuntimeException("Sex '" + sex
+                    + "' does not exist for Sex Enum");
         }
     }
 

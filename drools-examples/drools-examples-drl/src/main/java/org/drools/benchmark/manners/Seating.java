@@ -36,8 +36,8 @@ public class Seating implements Serializable {
     }
 
     public Seating( int id,  int pid,  boolean pathDone,
-        	 int leftSeat,  String leftGuestName,
-        	 int rightSeat,  String rightGuestName) {
+             int leftSeat,  String leftGuestName,
+             int rightSeat,  String rightGuestName) {
         super();
         this.id = id;
         this.pid = pid;
@@ -82,9 +82,9 @@ public class Seating implements Serializable {
 
     public  String toString() {
         return "[Seating id=" + this.id + " , pid=" + this.pid + " , pathDone="
-        		+ this.pathDone + " , leftSeat=" + this.leftSeat
-        		+ ", leftGuestName=" + this.leftGuestName + ", rightSeat="
-        		+ this.rightSeat + ", rightGuestName=" + this.rightGuestName
-        		+ "]";
+                + this.pathDone + " , leftSeat=" + this.leftSeat
+                + ", leftGuestName=" + this.leftGuestName + ", rightSeat="
+                + this.rightSeat + ", rightGuestName=" + this.rightGuestName
+                + "]";
     }
 }

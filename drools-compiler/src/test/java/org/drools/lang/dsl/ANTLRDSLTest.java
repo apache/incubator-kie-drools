@@ -20,7 +20,7 @@ public class ANTLRDSLTest {
         tokenizedFile.parseAndLoad( reader );
         reader.close();
         for (Iterator it = tokenizedFile.getMapping().getEntries().iterator(); it.hasNext();) {
-        	DSLMappingEntry entry = (DSLMappingEntry) it.next();
+            DSLMappingEntry entry = (DSLMappingEntry) it.next();
 //			System.out.println("ENTRY: " + entry.getKeyPattern() + "   :::::   " + entry.getValuePattern());
         }
         

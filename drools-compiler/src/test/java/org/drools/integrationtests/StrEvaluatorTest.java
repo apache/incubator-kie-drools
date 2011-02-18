@@ -131,10 +131,10 @@ public class StrEvaluatorTest {
                 ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
-        	for (KnowledgeBuilderError error: errors) {
-        		System.err.println(error);
-        	}
-        	throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

@@ -21,21 +21,21 @@ public class RuleTemplateTest {
     private TemplateContainer getTemplateContainer() {
         return new TemplateContainer() {
 
-        	public Column getColumn(String name) {
-        		return null;
-        	}
+            public Column getColumn(String name) {
+                return null;
+            }
 
-        	public Column[] getColumns() {
-        		return null;
-        	}
+            public Column[] getColumns() {
+                return null;
+            }
 
-        	public String getHeader() {
-        		return null;
-        	}
+            public String getHeader() {
+                return null;
+            }
 
-        	public Map<String, RuleTemplate> getTemplates() {
-        		return null;
-        	}
+            public Map<String, RuleTemplate> getTemplates() {
+                return null;
+            }
 
         };
     }

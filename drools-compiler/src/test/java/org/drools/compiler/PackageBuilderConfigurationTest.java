@@ -402,8 +402,8 @@ public class PackageBuilderConfigurationTest {
         }
 
         public void postCompileAddFunction(FunctionDescr functionDescr,
-        		TypeResolver typeResolver) {
-        	// TODO Auto-generated method stub
+                TypeResolver typeResolver) {
+            // TODO Auto-generated method stub
 
         }
 

@@ -33,28 +33,28 @@ public class RuleCoverageListener implements AgendaEventListener {
     }
 
     public void activationCancelled(ActivationCancelledEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
     }
 
     public void activationCreated(ActivationCreatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
     }
 
     public void afterActivationFired(AfterActivationFiredEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         rules.remove(event.getActivation().getRule().getName());
     }
 
     public void agendaGroupPopped(AgendaGroupPoppedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
     }
 
     public void agendaGroupPushed(AgendaGroupPushedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
     }
 
     public void beforeActivationFired(BeforeActivationFiredEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
     }
 
     /**
@@ -71,25 +71,25 @@ public class RuleCoverageListener implements AgendaEventListener {
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void afterRuleFlowGroupDeactivated(
-        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void beforeRuleFlowGroupDeactivated(
-        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }

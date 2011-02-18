@@ -31,7 +31,7 @@ public class Context implements Serializable {
     public static final int PRINT_RESULTS = 4;
 
     public static final String[] stateStrings = { "START_UP", "ASSIGN_SEATS",
-        	"MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS" };
+            "MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS" };
 
     private int state;
 
@@ -41,10 +41,10 @@ public class Context implements Serializable {
 
     public Context(String state) {
         if ("start".equals(state)) {
-        	this.state = Context.START_UP;
+            this.state = Context.START_UP;
         } else {
-        	throw new RuntimeException("Context '" + state
-        			+ "' does not exist for Context Enum");
+            throw new RuntimeException("Context '" + state
+                    + "' does not exist for Context Enum");
         }
     }
 

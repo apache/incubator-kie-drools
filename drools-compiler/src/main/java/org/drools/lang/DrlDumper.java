@@ -319,9 +319,9 @@ public class DrlDumper extends ReflectiveVisitor
         for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
             ruleobj = iterator.next();
             if ( ruleobj instanceof QueryDescr ) {
-            	visitQueryDescr((QueryDescr) ruleobj);
-            	ruleList += this.template;
-            	break;
+                visitQueryDescr((QueryDescr) ruleobj);
+                ruleList += this.template;
+                break;
             }
 
             final RuleDescr ruleDescr = (RuleDescr) ruleobj;

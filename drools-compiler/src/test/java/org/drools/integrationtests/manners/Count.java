@@ -42,11 +42,11 @@ public class Count {
 
     public boolean equals(Object object) {
         if (object == this) {
-        	return true;
+            return true;
         }
 
         if ((object == null) || !(object instanceof Count)) {
-        	return false;
+            return false;
         }
 
         return this.value == ((Count) object).value;

@@ -267,7 +267,7 @@ public class OverlappedByEvaluatorDefinition
                 return false;
             }
             long rightStartTS = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp();
-        	long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
+            long leftEndTS = ((EventFactHandle) left ).getEndTimestamp();
             long dist = leftEndTS - rightStartTS;
             return this.getOperator().isNegated() ^ ( 
                     ((EventFactHandle) left ).getStartTimestamp() < rightStartTS &&
@@ -283,7 +283,7 @@ public class OverlappedByEvaluatorDefinition
                 return false;
             }
             long leftEndTS = ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
-        	long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
+            long rightStartTS = ((EventFactHandle) right ).getStartTimestamp();
             long dist = leftEndTS - rightStartTS;
             return this.getOperator().isNegated() ^ ( 
                     ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp() < rightStartTS &&

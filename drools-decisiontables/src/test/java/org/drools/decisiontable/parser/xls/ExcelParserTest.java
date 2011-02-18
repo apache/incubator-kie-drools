@@ -104,27 +104,27 @@ public class ExcelParserTest {
 
 
         public CellFormat getCellFormat() {
-        	return null;
+            return null;
         }
 
         public int getColumn() {
-        	return column;
+            return column;
         }
 
         public String getContents() {
-        	return contents;
+            return contents;
         }
 
         public int getRow() {
-        	return row;
+            return row;
         }
 
         public CellType getType() {
-        	return null;
+            return null;
         }
 
         public boolean isHidden() {
-        	return false;
+            return false;
         }
 
         public jxl.CellFeatures getCellFeatures() {
@@ -140,19 +140,19 @@ public class ExcelParserTest {
         MockCell topLeft;
 
         public Cell getBottomRight() {
-        	return bottomRight;
+            return bottomRight;
         }
 
         public int getFirstSheetIndex() {
-        	return 0;
+            return 0;
         }
 
         public int getLastSheetIndex() {
-        	return 0;
+            return 0;
         }
 
         public Cell getTopLeft() {
-        	return topLeft;
+            return topLeft;
         }
 
     }

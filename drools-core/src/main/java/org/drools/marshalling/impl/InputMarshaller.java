@@ -87,9 +87,9 @@ public class InputMarshaller {
 
     private static ProcessMarshaller createProcessMarshaller() {
         try {
-        	return ProcessMarshallerFactory.newProcessMarshaller();
+            return ProcessMarshallerFactory.newProcessMarshaller();
         } catch (IllegalArgumentException e) {
-        	return null;
+            return null;
         }
     }
 

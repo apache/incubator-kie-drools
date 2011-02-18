@@ -47,9 +47,9 @@ public class Activator
         this.dtableTracker.open();
 
         this.bpmn2Tracker = new ServiceTracker( bc,
-        						                BPMN2ProcessProvider.class.getName(),
-        						                new DroolsServiceTracker( bc,
-        						                                          this ) );
+                                                BPMN2ProcessProvider.class.getName(),
+                                                new DroolsServiceTracker( bc,
+                                                                          this ) );
         this.bpmn2Tracker.open();
         
         this.processRuntimeTracker = new ServiceTracker( bc,

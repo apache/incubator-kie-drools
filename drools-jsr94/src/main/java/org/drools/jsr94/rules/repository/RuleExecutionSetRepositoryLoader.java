@@ -57,7 +57,7 @@ public abstract class RuleExecutionSetRepositoryLoader
      * @return
      */
     public static RuleExecutionSetRepository loadRuleExecutionSetRepository(
-        	String defaultFactoryName) {
+            String defaultFactoryName) {
 
         Object factory = null;
         String factoryName = null;
@@ -69,43 +69,43 @@ public abstract class RuleExecutionSetRepositoryLoader
         InputStream in = cL.getResourceAsStream(fileName);
 
         if (in != null) {
-        	BufferedReader reader = null;
+            BufferedReader reader = null;
 
-        	try {
-        		reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        		factoryName = reader.readLine();
+            try {
+                reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                factoryName = reader.readLine();
 
-        		if (factoryName != null) {
-        			factory = createFactory(cL, factoryName);
-        		}
+                if (factoryName != null) {
+                    factory = createFactory(cL, factoryName);
+                }
 
-        	} catch (UnsupportedEncodingException e) {
-        		throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
-        	} catch (IOException e) {
-        		throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
-        	} finally {
-        		close(reader);
-        	}
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
+            } finally {
+                close(reader);
+            }
         }
 
         // Use the properties file "drools.properties"
         if (factory == null) {
-        	// TODO
+            // TODO
         }
 
         // Use system property
         if (factory == null) {
-        	PrivilegedAction action = new PropertyAccessAction(propertyName);
-        	factoryName = (String)AccessController.doPrivileged(action);
+            PrivilegedAction action = new PropertyAccessAction(propertyName);
+            factoryName = (String)AccessController.doPrivileged(action);
 
-        	if (factoryName != null) {
-        		factory = createFactory(cL, factoryName);
-        	}
+            if (factoryName != null) {
+                factory = createFactory(cL, factoryName);
+            }
         }
 
         // Use the default factory implementation class.
         if (factory == null && defaultFactoryName != null) {
-        	factory = createFactory(cL, defaultFactoryName);
+            factory = createFactory(cL, defaultFactoryName);
         }
 
         return (RuleExecutionSetRepository)factory;
@@ -118,11 +118,11 @@ public abstract class RuleExecutionSetRepositoryLoader
      */
     private static void close(Closeable closeable) {
         if (closeable != null) {
-        	try {
-        		closeable.close();
-        	} catch (IOException e) {
-        		// ignored
-        	}
+            try {
+                closeable.close();
+            } catch (IOException e) {
+                // ignored
+            }
         }
     }
 
@@ -135,10 +135,10 @@ public abstract class RuleExecutionSetRepositoryLoader
      */
     private static Object createFactory(ClassLoader cL, String factoryName) {
         try {
-        	Class factoryClass = cL.loadClass(factoryName);
-        	return factoryClass.newInstance();
+            Class factoryClass = cL.loadClass(factoryName);
+            return factoryClass.newInstance();
         } catch (Throwable t) {
-        	throw new IllegalStateException("Failed to load: " + factoryName, t);
+            throw new IllegalStateException("Failed to load: " + factoryName, t);
         }
     }
 
@@ -147,11 +147,11 @@ public abstract class RuleExecutionSetRepositoryLoader
         private String name;
 
         PropertyAccessAction(String name) {
-        	this.name = name;
+            this.name = name;
         }
 
         public Object run() {
-        	return System.getProperty(name);
+            return System.getProperty(name);
         }
     }
 
@@ -160,22 +160,22 @@ public abstract class RuleExecutionSetRepositoryLoader
         private String fileName;
 
         PropertyFileAccessAction(String fileName) {
-        	this.fileName = fileName;
+            this.fileName = fileName;
         }
 
         public Object run() {
-        	InputStream in = null;
+            InputStream in = null;
 
-        	try {
-        		in = new FileInputStream(fileName);
-        		Properties props = new Properties();
-        		props.load(in);
-        		return props;
-        	} catch (IOException e) {
-        		throw new SecurityException("Cannot load properties: " + fileName, e);
-        	} finally {
-        		close(in);
-        	}
+            try {
+                in = new FileInputStream(fileName);
+                Properties props = new Properties();
+                props.load(in);
+                return props;
+            } catch (IOException e) {
+                throw new SecurityException("Cannot load properties: " + fileName, e);
+            } finally {
+                close(in);
+            }
         }
     }
 }

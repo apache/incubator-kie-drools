@@ -49,12 +49,12 @@ public class Jenerator {
         String packagePath = packageName.replace('.', '/');
 
         for (int i = 0; i < facts.length; i++) {
-        	ClassBuilder cb = new ClassBuilder();
+            ClassBuilder cb = new ClassBuilder();
             ClassDefinition classDef = new ClassDefinition( packageName, null, new String[]{"java.io.Serializable"} );
             for (int j = 0; j < facts[i].fields.size(); j++) {
-        		Field fd = (Field) facts[i].fields.get(j);
-        		classDef.addField(new FieldDefinition(fd.name, fd.type));
-        	}
+                Field fd = (Field) facts[i].fields.get(j);
+                classDef.addField(new FieldDefinition(fd.name, fd.type));
+            }
             JarEntry je = new JarEntry(packagePath + "/" + facts[i].name + ".class");
             jout.putNextEntry(je);
             jout.write(cb.buildClass(classDef));
@@ -76,7 +76,7 @@ public class Jenerator {
         JarEntry entry = null;
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if (entry.getName().equals("factmodel.xml")) {
-            	return fromXML(jis);
+                return fromXML(jis);
             }
         }
 

@@ -58,7 +58,7 @@ public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements
     @Override
     public String toString() {
         return "==>[ObjectRetractedEventImpl: getFactHandle()=" + getFactHandle() + ", getOldObject()="
-        		+ getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + ", getPropagationContext()="
-        		+ getPropagationContext() + "]";
+                + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + ", getPropagationContext()="
+                + getPropagationContext() + "]";
     }
 }

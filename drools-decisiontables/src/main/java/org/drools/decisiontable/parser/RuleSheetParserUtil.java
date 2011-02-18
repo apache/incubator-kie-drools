@@ -55,12 +55,12 @@ public class RuleSheetParserUtil {
         if ( importCells == null ) return importList;
 
         for( String importCell: importCells ){
-        	final StringTokenizer tokens = new StringTokenizer( importCell, "," );
-        	while ( tokens.hasMoreTokens() ) {
-        		final Import imp = new Import();
-        		imp.setClassName( tokens.nextToken().trim() );
-        		importList.add( imp );
-        	}
+            final StringTokenizer tokens = new StringTokenizer( importCell, "," );
+            while ( tokens.hasMoreTokens() ) {
+                final Import imp = new Import();
+                imp.setClassName( tokens.nextToken().trim() );
+                importList.add( imp );
+            }
         }
         return importList;
     }
@@ -75,18 +75,18 @@ public class RuleSheetParserUtil {
         if ( variableCells == null ) return variableList;
 
         for( String variableCell: variableCells ){
-        	final StringTokenizer tokens = new StringTokenizer( variableCell, "," );
-        	while ( tokens.hasMoreTokens() ) {
-        		final String token = tokens.nextToken();
-        		final Global vars = new Global();
-        		final StringTokenizer paramTokens = new StringTokenizer( token, " " );
-        		vars.setClassName( paramTokens.nextToken() );
-        		if ( !paramTokens.hasMoreTokens() ) {
-        			throw new DecisionTableParseException( "The format for global variables is incorrect. " + "It should be: [Class name, Class otherName]. But it was: [" + variableCell + "]" );
-        		}
-        		vars.setIdentifier( paramTokens.nextToken() );
-        		variableList.add( vars );
-        	}
+            final StringTokenizer tokens = new StringTokenizer( variableCell, "," );
+            while ( tokens.hasMoreTokens() ) {
+                final String token = tokens.nextToken();
+                final Global vars = new Global();
+                final StringTokenizer paramTokens = new StringTokenizer( token, " " );
+                vars.setClassName( paramTokens.nextToken() );
+                if ( !paramTokens.hasMoreTokens() ) {
+                    throw new DecisionTableParseException( "The format for global variables is incorrect. " + "It should be: [Class name, Class otherName]. But it was: [" + variableCell + "]" );
+                }
+                vars.setIdentifier( paramTokens.nextToken() );
+                variableList.add( vars );
+            }
         }
         return variableList;
     }
@@ -96,20 +96,20 @@ public class RuleSheetParserUtil {
      */
     public static boolean isStringMeaningTrue(String property) {
         if ( property == null ) {
-        	return false;
+            return false;
         } else {
-        	property = property.trim();
-        	if ( property.equalsIgnoreCase( "true" ) ) {
-        		return true;
-        	} else if ( property.startsWith( "Y" ) ) {
-        		return true;
-        	} else if ( property.startsWith( "y" ) ) {
-        		return true;
-        	} else if ( property.equalsIgnoreCase( "on" ) ) {
-        		return true;
-        	} else {
-        		return false;
-        	}
+            property = property.trim();
+            if ( property.equalsIgnoreCase( "true" ) ) {
+                return true;
+            } else if ( property.startsWith( "Y" ) ) {
+                return true;
+            } else if ( property.startsWith( "y" ) ) {
+                return true;
+            } else if ( property.equalsIgnoreCase( "on" ) ) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
@@ -124,17 +124,17 @@ public class RuleSheetParserUtil {
         int b = 26;
         int p = 1;
         if( col >= b  ){
-        	col -= b;
-        	p *= b;
+            col -= b;
+            p *= b;
         }
         if( col >= b*b ){
-        	col -= b*b;
-        	p *= b;
+            col -= b*b;
+            p *= b;
         }
         while( p > 0 ){
-        	sb.append( (char)(col/p + (int)'A') );
-        	col %= p;
-        	p /= b;
+            sb.append( (char)(col/p + (int)'A') );
+            col %= p;
+            p /= b;
         }
         sb.append( row + 1 );
         return sb.toString();

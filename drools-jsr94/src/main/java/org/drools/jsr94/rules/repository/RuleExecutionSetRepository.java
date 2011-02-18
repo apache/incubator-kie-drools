@@ -56,8 +56,8 @@ public interface RuleExecutionSetRepository extends Serializable
      * @throws RuleExecutionSetRepositoryException
      */
     RuleExecutionSet getRuleExecutionSet(
-        	String bindUri,
-        	Map properties)
+            String bindUri,
+            Map properties)
     throws RuleExecutionSetRepositoryException;
 
     /**
@@ -72,9 +72,9 @@ public interface RuleExecutionSetRepository extends Serializable
      *             bindUri or ruleSet are <code>null</code>)
      */
     void registerRuleExecutionSet(
-        	String bindUri,
-        	RuleExecutionSet ruleSet,
-        	Map properties)
+            String bindUri,
+            RuleExecutionSet ruleSet,
+            Map properties)
     throws RuleExecutionSetRegisterException;
 
     /**
@@ -86,7 +86,7 @@ public interface RuleExecutionSetRepository extends Serializable
      *             if an error occurred that prevented deregistration
      */
     void unregisterRuleExecutionSet(
-        	String bindUri,
-        	Map properties)
+            String bindUri,
+            Map properties)
     throws RuleExecutionSetDeregistrationException;
 }

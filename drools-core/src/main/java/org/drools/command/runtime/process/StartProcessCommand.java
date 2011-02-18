@@ -112,9 +112,9 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
         if (data != null) {
-        	for (Object o: data) {
-        		ksession.insert(o);
-        	}
+            for (Object o: data) {
+                ksession.insert(o);
+            }
         }
         ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
         if ( this.outIdentifier != null ) {
@@ -127,13 +127,13 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
     public String toString() {
         String result = "session.startProcess(" + processId + ", [";
         if (parameters != null) {
-        	int i = 0;
-        	for (Map.Entry<String, Object> entry: parameters.entrySet()) {
-        		if (i++ > 0) {
-        			result += ", ";
-        		}
-        		result += entry.getKey() + "=" + entry.getValue();
-        	}
+            int i = 0;
+            for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+                if (i++ > 0) {
+                    result += ", ";
+                }
+                result += entry.getKey() + "=" + entry.getValue();
+            }
         }
         result += "]);";
         return result;

@@ -354,37 +354,37 @@ public class DefaultKnowledgeHelper
     @SuppressWarnings("unchecked")
     public <T> T getContext(Class<T> contextClass) {
         if (ProcessContext.class.equals(contextClass)) {
-        	String ruleflowGroupName = getActivation().getRule().getRuleFlowGroup();
-        	if (ruleflowGroupName != null) {
-        		Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
-        		if (!nodeInstances.isEmpty()) {
-        			if (nodeInstances.size() > 1) {
-        				// TODO
-        				throw new UnsupportedOperationException(
-        					"Not supporting multiple node instances for the same ruleflow group");
-        			}
-        			Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
-        			ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
-        			org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
-        			context.setProcessInstance(processInstance);
-        			String nodeInstance = entry.getValue();
-        			String[] nodeInstanceIds = nodeInstance.split(":");
-        			NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
-        			for (int i = 0; i < nodeInstanceIds.length; i++) {
-        				for (NodeInstance subNodeInstance: container.getNodeInstances()) {
-        					if (subNodeInstance.getId() == new Long(nodeInstanceIds[i])) {
-        						if (i == nodeInstanceIds.length - 1) {
-        							context.setNodeInstance(subNodeInstance);
-        							break;
-        						} else {
-        							container = (NodeInstanceContainer) subNodeInstance;
-        						}
-        					}
-        				}
-        			}
-        			return (T) context;
-        		}
-        	}
+            String ruleflowGroupName = getActivation().getRule().getRuleFlowGroup();
+            if (ruleflowGroupName != null) {
+                Map<Long, String> nodeInstances = ((InternalRuleFlowGroup) workingMemory.getAgenda().getRuleFlowGroup(ruleflowGroupName)).getNodeInstances();
+                if (!nodeInstances.isEmpty()) {
+                    if (nodeInstances.size() > 1) {
+                        // TODO
+                        throw new UnsupportedOperationException(
+                            "Not supporting multiple node instances for the same ruleflow group");
+                    }
+                    Map.Entry<Long, String> entry = nodeInstances.entrySet().iterator().next();
+                    ProcessInstance processInstance = workingMemory.getProcessInstance(entry.getKey());
+                    org.drools.spi.ProcessContext context = new org.drools.spi.ProcessContext(workingMemory.getKnowledgeRuntime());
+                    context.setProcessInstance(processInstance);
+                    String nodeInstance = entry.getValue();
+                    String[] nodeInstanceIds = nodeInstance.split(":");
+                    NodeInstanceContainer container = (WorkflowProcessInstance) processInstance;
+                    for (int i = 0; i < nodeInstanceIds.length; i++) {
+                        for (NodeInstance subNodeInstance: container.getNodeInstances()) {
+                            if (subNodeInstance.getId() == new Long(nodeInstanceIds[i])) {
+                                if (i == nodeInstanceIds.length - 1) {
+                                    context.setNodeInstance(subNodeInstance);
+                                    break;
+                                } else {
+                                    container = (NodeInstanceContainer) subNodeInstance;
+                                }
+                            }
+                        }
+                    }
+                    return (T) context;
+                }
+            }
         }
         return null;
     }

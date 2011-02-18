@@ -48,7 +48,7 @@ public class CsvParser implements DecisionTableParser {
     private CsvLineParser _lineParser;
 
     public CsvParser(final DataListener listener,
-        	final CsvLineParser lineParser) {
+            final CsvLineParser lineParser) {
         _listeners = new ArrayList<DataListener>();
         _listeners.add(listener);
         this._lineParser = lineParser;
@@ -61,39 +61,39 @@ public class CsvParser implements DecisionTableParser {
 
     public void parseFile(final InputStream inStream) {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(
-        		inStream));
+                inStream));
         try {
-        	startSheet();
-        	processRows(reader);
-        	finishSheet();
+            startSheet();
+            processRows(reader);
+            finishSheet();
         } catch (final IOException e) {
-        	throw new DecisionTableParseException(
-        			"An error occurred reading the CSV data.", e);
+            throw new DecisionTableParseException(
+                    "An error occurred reading the CSV data.", e);
         }
     }
 
     private void startSheet() {
         for ( DataListener listener : _listeners ) {
-        	listener.startSheet("csv");
+            listener.startSheet("csv");
         }
     }
 
     private void finishSheet() {
         for ( DataListener listener : _listeners ) {
-        	listener.finishSheet();
+            listener.finishSheet();
         }
     }
 
     private void newRow(final int row, final int numCells) {
         for ( DataListener listener : _listeners ) {
-        	listener.newRow(row, numCells);
+            listener.newRow(row, numCells);
         }
     }
 
     private void newCell(final int row, final int column, final String value,
-        	final int mergedColStart) {
+            final int mergedColStart) {
         for ( DataListener listener : _listeners ) {
-        	listener.newCell(row, column, value, mergedColStart);
+            listener.newCell(row, column, value, mergedColStart);
         }
     }
 
@@ -103,39 +103,39 @@ public class CsvParser implements DecisionTableParser {
         int row = 0;
         while (line != null) {
 
-        	final List<String> cells = this._lineParser.parse(line);
-        	// remove the trailing empty "cells" which some tools smatter around
-        	// trimCells(cells);
-        	newRow(row, cells.size());
+            final List<String> cells = this._lineParser.parse(line);
+            // remove the trailing empty "cells" which some tools smatter around
+            // trimCells(cells);
+            newRow(row, cells.size());
 
-        	int startMergeCol = DataListener.NON_MERGED;
-        	for (int col = 0; col < cells.size(); col++) {
-        		String cell = (String) cells.get(col);
+            int startMergeCol = DataListener.NON_MERGED;
+            for (int col = 0; col < cells.size(); col++) {
+                String cell = (String) cells.get(col);
 
-        		startMergeCol = calcStartMerge(startMergeCol, col, cell);
+                startMergeCol = calcStartMerge(startMergeCol, col, cell);
 
-        		cell = calcCellText(startMergeCol, cell);
+                cell = calcCellText(startMergeCol, cell);
 
-        		newCell(row, col, cell, startMergeCol);
-        	}
-        	row++;
-        	line = reader.readLine();
+                newCell(row, col, cell, startMergeCol);
+            }
+            row++;
+            line = reader.readLine();
         }
         finishSheet();
     }
 
     String calcCellText(int startMergeCol, String cell) {
         if (startMergeCol != DataListener.NON_MERGED) {
-        	cell = cell.substring(0, cell.length() - 3);
+            cell = cell.substring(0, cell.length() - 3);
         }
         return cell;
     }
 
     int calcStartMerge(int startMergeCol, int col, String cell) {
         if (cell.endsWith("...") && startMergeCol == DataListener.NON_MERGED) {
-        	startMergeCol = col;
+            startMergeCol = col;
         } else if (!cell.endsWith("...")) {
-        	startMergeCol = DataListener.NON_MERGED;
+            startMergeCol = DataListener.NON_MERGED;
         }
         return startMergeCol;
     }

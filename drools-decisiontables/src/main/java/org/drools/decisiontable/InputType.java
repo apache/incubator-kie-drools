@@ -67,7 +67,7 @@ class CsvInput extends InputType {
 
     public DecisionTableParser createParser(final List<DataListener> listeners) {
         return new CsvParser( listeners,
-        		new CsvLineParser() );
+                new CsvLineParser() );
     }
     
 }

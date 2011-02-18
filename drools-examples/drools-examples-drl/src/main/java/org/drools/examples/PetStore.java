@@ -286,9 +286,9 @@ public class PetStore {
          */
         private class NameRenderer extends DefaultTableCellRenderer {
 
-        	private static final long serialVersionUID = 510l;
+            private static final long serialVersionUID = 510l;
 
-        	public NameRenderer() {
+            public NameRenderer() {
                 super();
             }
 
@@ -303,9 +303,9 @@ public class PetStore {
          */
         private class PriceRenderer extends DefaultTableCellRenderer {
 
-        	private static final long serialVersionUID = 510l;
+            private static final long serialVersionUID = 510l;
 
-        	public PriceRenderer() {
+            public PriceRenderer() {
                 super();
             }
 

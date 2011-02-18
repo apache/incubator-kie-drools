@@ -50,6 +50,6 @@ public class Chosen implements Serializable {
 
     public String toString() {
         return "{Chosen id=" + this.id + ", name=" + this.guestName
-        		+ ", hobbies=" + this.hobby + "}";
+                + ", hobbies=" + this.hobby + "}";
     }
 }

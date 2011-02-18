@@ -24,7 +24,7 @@ import java.util.Collection;
 public class Severity implements Comparable<Severity> {
     public static final Severity NOTE = new Severity(0, "Note", "Notes");
     public static final Severity WARNING = new Severity(1, "Warning",
-        	"Warnings");
+            "Warnings");
     public static final Severity ERROR = new Severity(2, "Error", "Errors");
 
     private final int index;
@@ -67,7 +67,7 @@ public class Severity implements Comparable<Severity> {
     public int compareTo(Severity s) {
 
         if (s.getIndex() == this.index) {
-        	return 0;
+            return 0;
         }
 
         return (s.getIndex() < this.index ? -1 : 1);

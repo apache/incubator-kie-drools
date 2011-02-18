@@ -47,8 +47,8 @@ public class RuleExecutionSetRepositoryException extends RuleExecutionException
      * @param exception
      */
     public RuleExecutionSetRepositoryException(
-        	String message,
-        	Exception exception) {
+            String message,
+            Exception exception) {
         super(message, exception);
     }
 }

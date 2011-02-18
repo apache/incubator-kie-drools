@@ -71,9 +71,9 @@ public class OutputMarshaller {
 
     private static ProcessMarshaller createProcessMarshaller() {
         try {
-        	return ProcessMarshallerFactory.newProcessMarshaller();
+            return ProcessMarshallerFactory.newProcessMarshaller();
         } catch (IllegalArgumentException e) {
-        	return null;
+            return null;
         }
     }
 
@@ -615,12 +615,12 @@ public class OutputMarshaller {
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 if (entry.getKey().getObject() != null) {
-        			LeftTuple leftTuple = entry.getKey();
-        			stream.writeShort(PersisterEnums.ACTIVATION);
-        			writeActivation(context, leftTuple, (AgendaItem) leftTuple
-        					.getObject(), (RuleTerminalNode) leftTuple
-        					.getLeftTupleSink());
-        		}
+                    LeftTuple leftTuple = entry.getKey();
+                    stream.writeShort(PersisterEnums.ACTIVATION);
+                    writeActivation(context, leftTuple, (AgendaItem) leftTuple
+                            .getObject(), (RuleTerminalNode) leftTuple
+                            .getLeftTupleSink());
+                }
             }
         }
         stream.writeShort( PersisterEnums.END );
@@ -695,14 +695,14 @@ public class OutputMarshaller {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
                 if (leftTuple.getObject() != null) {
-        			PropagationContext pc = ((Activation)leftTuple.getObject())
-        					.getPropagationContext();
-        			if (!pcMap.containsKey(pc.getPropagationNumber())) {
-        				stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
-        				writePropagationContext(context, pc);
-        				pcMap.put(pc.getPropagationNumber(), pc);
-        			}
-        		}
+                    PropagationContext pc = ((Activation)leftTuple.getObject())
+                            .getPropagationContext();
+                    if (!pcMap.containsKey(pc.getPropagationNumber())) {
+                        stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
+                        writePropagationContext(context, pc);
+                        pcMap.put(pc.getPropagationNumber(), pc);
+                    }
+                }
             }
         }
 
@@ -748,7 +748,7 @@ public class OutputMarshaller {
 
     
     public static void writeWorkItem(MarshallerWriteContext context,
-        	WorkItem workItem) throws IOException {
+            WorkItem workItem) throws IOException {
         ObjectOutputStream stream = context.stream;
         stream.writeLong(workItem.getId());
         stream.writeLong(workItem.getProcessInstanceId());

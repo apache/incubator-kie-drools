@@ -43,7 +43,7 @@ public class OverlappingRestrictionsTest extends TestBase {
         Verifier verifier = vBuilder.newVerifier();
 
         verifier.addResourcesToVerify(ResourceFactory.newClassPathResource(
-        		"RestrictionsTest.drl", getClass()), ResourceType.DRL);
+                "RestrictionsTest.drl", getClass()), ResourceType.DRL);
 
         assertFalse(verifier.hasErrors());
 
@@ -51,11 +51,11 @@ public class OverlappingRestrictionsTest extends TestBase {
         assertTrue(noProblems);
 
         Collection<Object> overlaps = ((VerifierImpl) verifier)
-        		.getKnowledgeSession().getObjects(
-        				new ClassObjectFilter(Overlap.class));
+                .getKnowledgeSession().getObjects(
+                        new ClassObjectFilter(Overlap.class));
 
         for (Object object : overlaps) {
-        	System.out.println(object);
+            System.out.println(object);
         }
 
         assertEquals(3, overlaps.size());

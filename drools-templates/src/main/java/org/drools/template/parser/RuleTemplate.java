@@ -73,7 +73,7 @@ public class RuleTemplate {
      */
     public String toString() {
         return "RuleTemplate[name," + this.name + "contents," + this.columns
-        		+ "columns";
+                + "columns";
     }
 
     /*
@@ -82,40 +82,40 @@ public class RuleTemplate {
      */
     private String replaceOptionals(String contents) {
         try {
-        	final Pattern pattern = Pattern.compile("@\\{(.[^}]*)\\}");
-        	final Collection<String> columns = getColumnNames();
-        	columns.add("row.rowNumber");
-        	final BufferedReader reader = new BufferedReader(new StringReader(
-        			contents));
-        	String line = null;
-        	final StringBuffer newLine = new StringBuffer();
-        	while ((line = reader.readLine()) != null) {
-        		final Matcher matcher = pattern.matcher(line);
-        		int optCols = 0;
-        		while (matcher.find()) {
-        			final String c = matcher.group(1);
-        			if (!columns.contains(c)) {
-        				newLine.append("@if{").append(matcher.group(1)).append(
-        						" != null}");
-        				optCols++;
-        			}
-        		}
-        		newLine.append(line);
-        		newLine.append(StringUtils.repeat("@end{}", optCols));
-        		newLine.append("\n");
-        	}
+            final Pattern pattern = Pattern.compile("@\\{(.[^}]*)\\}");
+            final Collection<String> columns = getColumnNames();
+            columns.add("row.rowNumber");
+            final BufferedReader reader = new BufferedReader(new StringReader(
+                    contents));
+            String line = null;
+            final StringBuffer newLine = new StringBuffer();
+            while ((line = reader.readLine()) != null) {
+                final Matcher matcher = pattern.matcher(line);
+                int optCols = 0;
+                while (matcher.find()) {
+                    final String c = matcher.group(1);
+                    if (!columns.contains(c)) {
+                        newLine.append("@if{").append(matcher.group(1)).append(
+                                " != null}");
+                        optCols++;
+                    }
+                }
+                newLine.append(line);
+                newLine.append(StringUtils.repeat("@end{}", optCols));
+                newLine.append("\n");
+            }
 //			System.out.println("newLine: " + newLine);
-        	return newLine.toString();
+            return newLine.toString();
 
         } catch (IOException e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
     private Collection<String> getColumnNames() {
         Collection<String> columnNames = new ArrayList<String>();
         for ( TemplateColumn column : getColumns() ) {
-        	columnNames.add(column.getName());
+            columnNames.add(column.getName());
         }
         return columnNames;
     }

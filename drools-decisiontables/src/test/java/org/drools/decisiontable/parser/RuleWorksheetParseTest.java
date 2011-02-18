@@ -104,7 +104,7 @@ public class RuleWorksheetParseTest {
         Rule rule = (Rule) ruleset.getRules().get( 0 );
         Condition cond = (Condition) rule.getConditions().get( 0 );
         assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")",
-        		cond.getSnippet() );
+                cond.getSnippet() );
 
         Consequence cons = (Consequence) rule.getConsequences().get( 0 );
         assertNotNull( cons );
@@ -145,9 +145,9 @@ public class RuleWorksheetParseTest {
     private void makeRow( int row, String... values ) throws DecisionTableParseException {
         listener.newRow( row, values.length );
         for( int i = 0; i < values.length; i++ ){
-        	if( values[i] != null ){
-        		listener.newCell( row, i+1, values[i],  DataListener.NON_MERGED );
-        	}
+            if( values[i] != null ){
+                listener.newCell( row, i+1, values[i],  DataListener.NON_MERGED );
+            }
         }
     }
 
@@ -157,15 +157,15 @@ public class RuleWorksheetParseTest {
     @Test
     public void testTooManyColumnsNoLoop() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C", "C", "A", "U", "U" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C", "C", "A", "U", "U" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -175,15 +175,15 @@ public class RuleWorksheetParseTest {
     @Test
     public void testTooManyColumnsPriority() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C", "C", "A", "PRIORITY", "P" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C", "C", "A", "PRIORITY", "P" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 11, 5 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -193,15 +193,15 @@ public class RuleWorksheetParseTest {
     @Test
     public void testBadColumnHeader() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "Condition", "CONDITION", "A", "BLURB", "P" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "Condition", "CONDITION", "A", "BLURB", "P" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 11, 4 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 11, 4 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -211,16 +211,16 @@ public class RuleWorksheetParseTest {
     @Test
     public void testMissingCondition() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",   "C", "C",   "A", "A" );
-        	makeRow( 12, "attr == $param", "attr == $param", "attr == $param", "action();", "action();" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",   "C", "C",   "A", "A" );
+            makeRow( 12, "attr == $param", "attr == $param", "attr == $param", "action();", "action();" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 12, 1 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 12, 1 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -230,18 +230,18 @@ public class RuleWorksheetParseTest {
     @Test
     public void testMissingCodeSnippetCondition() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",              "C",              "C",   "A",         "A" );
-        	makeRow( 12, "Foo",            "Foo",            "Foo" );
-        	makeRow( 13, "attr == $param", "attr == $param", "",    "action();", "action();" );
-        	makeRow( 15, "1",              "2",              "3",   "",          "" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",              "C",              "C",   "A",         "A" );
+            makeRow( 12, "Foo",            "Foo",            "Foo" );
+            makeRow( 13, "attr == $param", "attr == $param", "",    "action();", "action();" );
+            makeRow( 15, "1",              "2",              "3",   "",          "" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -251,18 +251,18 @@ public class RuleWorksheetParseTest {
     @Test
     public void testSpuriousCodeSnippet() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",              "C",              "A" );
-        	makeRow( 12, "Foo",            "Foo" );
-        	makeRow( 13, "attr == $param", "attr == $param", "action();", "attr > $param" );
-        	makeRow( 15, "1",              "2",              "" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",              "C",              "A" );
+            makeRow( 12, "Foo",            "Foo" );
+            makeRow( 13, "attr == $param", "attr == $param", "action();", "attr > $param" );
+            makeRow( 15, "1",              "2",              "" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 13, 4 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 13, 4 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -272,18 +272,18 @@ public class RuleWorksheetParseTest {
     @Test
     public void testIncorrectPriority() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",              "A",         "P" );
-        	makeRow( 12, "Foo",            "Foo"            );
-        	makeRow( 13, "attr == $param", "x"              );
-        	makeRow( 15, "1",              "show()",   "12E" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",              "A",         "P" );
+            makeRow( 12, "Foo",            "Foo"            );
+            makeRow( 13, "attr == $param", "x"              );
+            makeRow( 15, "1",              "show()",   "12E" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 15, 3 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 15, 3 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -293,18 +293,18 @@ public class RuleWorksheetParseTest {
     @Test
     public void testSnippetForAttribute() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",              "A",         "G" );
-        	makeRow( 12, "Foo",            "Foo"            );
-        	makeRow( 13, "attr == $param", "x",       "XXX" );
-        	makeRow( 15, "1",              "show()",   "10" );
-        	listener.finishSheet();
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",              "A",         "G" );
+            makeRow( 12, "Foo",            "Foo"            );
+            makeRow( 13, "attr == $param", "x",       "XXX" );
+            makeRow( 15, "1",              "show()",   "10" );
+            listener.finishSheet();
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 13, 3 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 
@@ -336,24 +336,24 @@ public class RuleWorksheetParseTest {
     @Test
     public void testDuplicatePackageAttribute() {
         try {
-        	makeRuleSet();
-        	makeAttribute( "agenda-group", "agroup" );  // B3, C3
-        	makeAttribute( "agenda-group", "bgroup" );  // B3. B4
-        	makeRuleTable();
-        	makeRow( 11, "C",              "A",         "P" );
-        	makeRow( 12, "Foo",            "Foo"            );
-        	makeRow( 13, "attr == $param", "x"              );
-        	makeRow( 15, "1",              "show()",   "10" );
-        	listener.finishSheet();
-        	Package p = listener.getRuleSet();
-        	DRLOutput dout = new DRLOutput();
-        	p.renderDRL(dout);
-        	String drl = dout.getDRL();
-        	//			System.out.println( drl );
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeAttribute( "agenda-group", "agroup" );  // B3, C3
+            makeAttribute( "agenda-group", "bgroup" );  // B3. B4
+            makeRuleTable();
+            makeRow( 11, "C",              "A",         "P" );
+            makeRow( 12, "Foo",            "Foo"            );
+            makeRow( 13, "attr == $param", "x"              );
+            makeRow( 15, "1",              "show()",   "10" );
+            listener.finishSheet();
+            Package p = listener.getRuleSet();
+            DRLOutput dout = new DRLOutput();
+            p.renderDRL(dout);
+            String drl = dout.getDRL();
+            //			System.out.println( drl );
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( "C3, C4" ) );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( "C3, C4" ) );
         }
     }
 
@@ -386,24 +386,24 @@ public class RuleWorksheetParseTest {
     @Test
     public void testMissingCodeSnippetAction() {
         try {
-        	makeRuleSet();
-        	makeRuleTable();
-        	makeRow( 11, "C",              "A"          );
-        	makeRow( 12, "foo: Foo",       "Bar()"          );
-        	makeRow( 13, "attr == $param"  );
-        	makeRow( 15, "1",              "1"          );
-        	makeRow( 16, "2",              "2"          );
-        	listener.finishSheet();
-        	Package p = listener.getRuleSet();
-        	DRLOutput dout = new DRLOutput();
-        	p.renderDRL(dout);
-        	String drl = dout.getDRL();
-        	System.out.println( drl );
-        	fail( "should have failed" );
+            makeRuleSet();
+            makeRuleTable();
+            makeRow( 11, "C",              "A"          );
+            makeRow( 12, "foo: Foo",       "Bar()"          );
+            makeRow( 13, "attr == $param"  );
+            makeRow( 15, "1",              "1"          );
+            makeRow( 16, "2",              "2"          );
+            listener.finishSheet();
+            Package p = listener.getRuleSet();
+            DRLOutput dout = new DRLOutput();
+            p.renderDRL(dout);
+            String drl = dout.getDRL();
+            System.out.println( drl );
+            fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
-        	String badCell = RuleSheetParserUtil.rc2name( 13, 2 );
-        	System.err.println( e.getMessage() );
-        	assertTrue( e.getMessage().contains( badCell ) );
+            String badCell = RuleSheetParserUtil.rc2name( 13, 2 );
+            System.err.println( e.getMessage() );
+            assertTrue( e.getMessage().contains( badCell ) );
         }
     }
 

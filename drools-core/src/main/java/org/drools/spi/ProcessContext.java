@@ -33,10 +33,10 @@ public class ProcessContext implements org.drools.runtime.process.ProcessContext
 
     public ProcessInstance getProcessInstance() {
         if (processInstance != null) {
-        	return processInstance;
+            return processInstance;
         }
         if (nodeInstance != null) {
-        	return (ProcessInstance) nodeInstance.getProcessInstance();
+            return (ProcessInstance) nodeInstance.getProcessInstance();
         }
         return null;
     }
@@ -57,15 +57,15 @@ public class ProcessContext implements org.drools.runtime.process.ProcessContext
         if (nodeInstance != null) {
             return nodeInstance.getVariable(variableName);
         } else {
-        	return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
+            return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
         }
     }
     
     public void setVariable(String variableName, Object value) {
         if (nodeInstance != null) {
-        	nodeInstance.setVariable(variableName, value);
+            nodeInstance.setVariable(variableName, value);
         } else {
-        	((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
+            ((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
         }
     }
 

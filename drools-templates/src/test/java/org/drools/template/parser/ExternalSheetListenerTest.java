@@ -44,7 +44,7 @@ public class ExternalSheetListenerTest {
     @Before
     public void setUp() throws Exception {
         esl = new TemplateDataListener(2, 2, new TestTemplateContainer(),
-        		new TestTemplateRuleBase(), new TestGenerator());
+                new TestTemplateRuleBase(), new TestGenerator());
 
     }
 
@@ -71,15 +71,15 @@ public class ExternalSheetListenerTest {
         esl.finishSheet();
         assertEquals(2, assertedRows.size());
         for ( Map.Entry<Row, List<StringCell>> entry : assertedRows.entrySet() ) {
-        	Row row = entry.getKey();
-        	List<StringCell> cells = entry.getValue();
-        	// first column is not part of the decision table
-        	int i = 1;
-        	for ( StringCell cell : cells ) {
-        		assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
-        		assertEquals("Pattern " + i, cell.getColumn().getName());
-        		i++;
-        	}
+            Row row = entry.getKey();
+            List<StringCell> cells = entry.getValue();
+            // first column is not part of the decision table
+            int i = 1;
+            for ( StringCell cell : cells ) {
+                assertEquals("row" + row.getRowNumber() + "col" + i, cell.getValue());
+                assertEquals("Pattern " + i, cell.getColumn().getName());
+                i++;
+            }
         }
     }
 
@@ -113,132 +113,132 @@ public class ExternalSheetListenerTest {
     private class TestTemplateRuleBase implements TemplateRuleBase {
 
         public StatefulSession newStatefulSession() {
-        	return new StatefulSession() {
+            return new StatefulSession() {
                 private static final long serialVersionUID = 510l;
 
                 public void addEventListener(WorkingMemoryEventListener arg0) {
 
-        		}
+                }
 
-        		public void addEventListener(AgendaEventListener arg0) {
+                public void addEventListener(AgendaEventListener arg0) {
 
-        		}
+                }
 
-        		public FactHandle insert(Object fact)
-        				throws FactException {
-        			if (fact instanceof Row) {
-        				assertedRows.put((Row) fact, currentRow);
-        				currentRow = new ArrayList<StringCell>();
-        			} else if (fact instanceof StringCell) {
-        				currentRow.add((StringCell) fact);
-        			}
-        			return null;
-        		}
+                public FactHandle insert(Object fact)
+                        throws FactException {
+                    if (fact instanceof Row) {
+                        assertedRows.put((Row) fact, currentRow);
+                        currentRow = new ArrayList<StringCell>();
+                    } else if (fact instanceof StringCell) {
+                        currentRow.add((StringCell) fact);
+                    }
+                    return null;
+                }
 
-        		public FactHandle insert(Object arg0, boolean arg1)
-        				throws FactException {
-        			return null;
-        		}
+                public FactHandle insert(Object arg0, boolean arg1)
+                        throws FactException {
+                    return null;
+                }
 
-        		public void clearAgenda() {
+                public void clearAgenda() {
 
-        		}
+                }
 
-        		public void clearAgendaGroup(String arg0) {
+                public void clearAgendaGroup(String arg0) {
 
-        		}
+                }
 
-        		public void dispose() {
+                public void dispose() {
 
-        		}
+                }
 
-        		public int fireAllRules() throws FactException {
-        			return 0;
-        		}
+                public int fireAllRules() throws FactException {
+                    return 0;
+                }
 
-        		public int fireAllRules(AgendaFilter arg0)
-        				throws FactException {
-        			return 0;
-        		}
+                public int fireAllRules(AgendaFilter arg0)
+                        throws FactException {
+                    return 0;
+                }
 
-        		public Agenda getAgenda() {
-        			return null;
-        		}
+                public Agenda getAgenda() {
+                    return null;
+                }
 
-        		@SuppressWarnings("unchecked")
+                @SuppressWarnings("unchecked")
                 public List getAgendaEventListeners() {
-        			return null;
-        		}
+                    return null;
+                }
 
-        		public FactHandle getFactHandle(Object arg0) {
-        			return null;
-        		}
+                public FactHandle getFactHandle(Object arg0) {
+                    return null;
+                }
 
-        		public AgendaGroup getFocus() {
-        			return null;
-        		}
+                public AgendaGroup getFocus() {
+                    return null;
+                }
 
-        		public Object getGlobal(String arg0) {
-        			return null;
-        		}
+                public Object getGlobal(String arg0) {
+                    return null;
+                }
 
-        		public Object getObject(FactHandle arg0) {
-        			return null;
-        		}
+                public Object getObject(FactHandle arg0) {
+                    return null;
+                }
 
-        		public QueryResults getQueryResults(String arg0) {
-        			return null;
-        		}
+                public QueryResults getQueryResults(String arg0) {
+                    return null;
+                }
 
-        		public RuleBase getRuleBase() {
-        			return null;
-        		}
+                public RuleBase getRuleBase() {
+                    return null;
+                }
 
-        		@SuppressWarnings("unchecked")
+                @SuppressWarnings("unchecked")
                 public List getWorkingMemoryEventListeners() {
-        			return null;
-        		}
+                    return null;
+                }
 
-        		public void update(org.drools.runtime.rule.FactHandle arg0, Object arg1)
-        				throws FactException {
+                public void update(org.drools.runtime.rule.FactHandle arg0, Object arg1)
+                        throws FactException {
 
-        		}
+                }
 
-        		public void removeEventListener(WorkingMemoryEventListener arg0) {
+                public void removeEventListener(WorkingMemoryEventListener arg0) {
 
-        		}
+                }
 
-        		public void removeEventListener(AgendaEventListener arg0) {
+                public void removeEventListener(AgendaEventListener arg0) {
 
-        		}
+                }
 
-        		public void retract(org.drools.runtime.rule.FactHandle arg0) throws FactException {
+                public void retract(org.drools.runtime.rule.FactHandle arg0) throws FactException {
 
-        		}
+                }
 
-        		public void setAsyncExceptionHandler(AsyncExceptionHandler arg0) {
+                public void setAsyncExceptionHandler(AsyncExceptionHandler arg0) {
 
-        		}
+                }
 
-        		public void setFocus(String arg0) {
+                public void setFocus(String arg0) {
 
-        		}
+                }
 
-        		public void setFocus(AgendaGroup arg0) {
+                public void setFocus(AgendaGroup arg0) {
 
-        		}
+                }
 
-        		public void setGlobal(String arg0, Object arg1) {
+                public void setGlobal(String arg0, Object arg1) {
 
-        		}
+                }
 
-        		public void setGlobalResolver(GlobalResolver globalResolver) {
+                public void setGlobalResolver(GlobalResolver globalResolver) {
 
-        		}
+                }
 
-        		public ProcessInstance startProcess(String processId) {
-        			return null;
-        		}
+                public ProcessInstance startProcess(String processId) {
+                    return null;
+                }
 
                 @SuppressWarnings("unchecked")
                 public Iterator iterateFactHandles() {
@@ -403,15 +403,15 @@ public class ExternalSheetListenerTest {
                     return null;
                 }
 
-        		public void fireUntilHalt() {
-        			// TODO Auto-generated method stub
+                public void fireUntilHalt() {
+                    // TODO Auto-generated method stub
 
-        		}
+                }
 
-        		public void fireUntilHalt(AgendaFilter agendaFilter) {
-        			// TODO Auto-generated method stub
+                public void fireUntilHalt(AgendaFilter agendaFilter) {
+                    // TODO Auto-generated method stub
 
-        		}
+                }
 
                 public Object getObject(org.drools.runtime.rule.FactHandle handle) {
                     // TODO Auto-generated method stub
@@ -453,7 +453,7 @@ public class ExternalSheetListenerTest {
                     return 0;
                 }
 
-        	};
+            };
         }
     }
 
@@ -463,7 +463,7 @@ public class ExternalSheetListenerTest {
         }
 
         public String getDrl() {
-        	return "Test Generated DRL";
+            return "Test Generated DRL";
         }
 
     }
@@ -477,16 +477,16 @@ public class ExternalSheetListenerTest {
         }
 
         public Column[] getColumns() {
-        	return new Column[] { new StringColumn("Pattern 1"),
-        			new StringColumn("Pattern 2"), new StringColumn("Pattern 3") };
+            return new Column[] { new StringColumn("Pattern 1"),
+                    new StringColumn("Pattern 2"), new StringColumn("Pattern 3") };
         }
 
         public String getHeader() {
-        	return "Test Template Header";
+            return "Test Template Header";
         }
 
         public Map<String, RuleTemplate> getTemplates() {
-        	return null;
+            return null;
         }
 
         public void setHeader(String head) {
@@ -497,7 +497,7 @@ public class ExternalSheetListenerTest {
         }
 
         public Column getColumn(String name) {
-        	return null;
+            return null;
         }
     }
 

@@ -33,7 +33,7 @@ public class Row {
     Row(int r, Column[] columns) {
         rowNum = r;
         for (int i = 0; i < columns.length; i++) {
-        	cells.add(columns[i].createCell(this));
+            cells.add(columns[i].createCell(this));
         }
     }
     
@@ -48,10 +48,10 @@ public class Row {
     
     boolean isEmpty() {
         for ( Cell cell : cells ) {
-        	if (!cell.isEmpty())
-        	{
-        		return false;
-        	}
+            if (!cell.isEmpty())
+            {
+                return false;
+            }
         }
         return true;
     }

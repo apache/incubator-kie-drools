@@ -38,19 +38,19 @@ public class Illegal {
 
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         final Illegal other = (Illegal) obj;
         if (basePoint != other.basePoint)
-        	return false;
+            return false;
         if (labelId == null) {
-        	if (other.labelId != null)
-        		return false;
+            if (other.labelId != null)
+                return false;
         } else if (!labelId.equals(other.labelId))
-        	return false;
+            return false;
         return true;
     }
     public int getBasePoint() {

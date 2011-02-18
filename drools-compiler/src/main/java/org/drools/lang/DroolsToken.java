@@ -42,7 +42,7 @@ public class DroolsToken extends CommonToken {
     }
 
     public DroolsToken(CharStream input, int type, int channel, int start,
-        	int stop) {
+            int stop) {
         super(input, type, channel, start, stop);
     }
 
@@ -58,10 +58,10 @@ public class DroolsToken extends CommonToken {
     public DroolsToken(Token oldToken) {
         super(oldToken);
         if (null != oldToken
-        		&& (oldToken.getClass().equals(CommonToken.class) || oldToken
-        				.getClass().equals(DroolsToken.class))) {
-        	start = ((CommonToken) oldToken).getStartIndex();
-        	stop = ((CommonToken) oldToken).getStopIndex();
+                && (oldToken.getClass().equals(CommonToken.class) || oldToken
+                        .getClass().equals(DroolsToken.class))) {
+            start = ((CommonToken) oldToken).getStartIndex();
+            stop = ((CommonToken) oldToken).getStopIndex();
         }
     }
 
