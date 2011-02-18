@@ -41,28 +41,28 @@ public class NativeQueryResults
     private org.drools.QueryResults results;
     
     public NativeQueryResults() {
-	}
+    }
 
     public NativeQueryResults(org.drools.QueryResults results) {
         this.results = results;
     }
 
-	public org.drools.QueryResults getResults() {
-		return results;
-	}
+    public org.drools.QueryResults getResults() {
+        return results;
+    }
 
-	public String[] getIdentifiers() {
-	    List<String> actualIds = new ArrayList();
-	    for ( Declaration declr : results.getDeclarations().values() ) {
-	           ObjectType objectType = declr.getPattern().getObjectType();
-	            if ( objectType instanceof ClassObjectType ) {
-	                if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
-	                    continue;
-	                }
-	            }
-	            actualIds.add( declr.getIdentifier() );
-	    }
-	    return actualIds.toArray( new String[actualIds.size() ] );
+    public String[] getIdentifiers() {
+        List<String> actualIds = new ArrayList();
+        for ( Declaration declr : results.getDeclarations().values() ) {
+               ObjectType objectType = declr.getPattern().getObjectType();
+                if ( objectType instanceof ClassObjectType ) {
+                    if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
+                        continue;
+                    }
+                }
+                actualIds.add( declr.getIdentifier() );
+        }
+        return actualIds.toArray( new String[actualIds.size() ] );
     }
     
     

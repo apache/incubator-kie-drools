@@ -23,22 +23,22 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 
 public class ProcessContext implements org.drools.runtime.process.ProcessContext {
     
-	private KnowledgeRuntime kruntime;
-	private ProcessInstance processInstance;
+    private KnowledgeRuntime kruntime;
+    private ProcessInstance processInstance;
     private NodeInstance nodeInstance;
     
     public ProcessContext(KnowledgeRuntime kruntime) {
-    	this.kruntime = kruntime;
+        this.kruntime = kruntime;
     }
 
     public ProcessInstance getProcessInstance() {
-    	if (processInstance != null) {
-    		return processInstance;
-    	}
-    	if (nodeInstance != null) {
-    		return (ProcessInstance) nodeInstance.getProcessInstance();
-    	}
-    	return null;
+        if (processInstance != null) {
+        	return processInstance;
+        }
+        if (nodeInstance != null) {
+        	return (ProcessInstance) nodeInstance.getProcessInstance();
+        }
+        return null;
     }
 
     public void setProcessInstance(ProcessInstance processInstance) {
@@ -54,23 +54,23 @@ public class ProcessContext implements org.drools.runtime.process.ProcessContext
     }
     
     public Object getVariable(String variableName) {
-    	if (nodeInstance != null) {
-	    	return nodeInstance.getVariable(variableName);
-    	} else {
-    		return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
-    	}
+        if (nodeInstance != null) {
+            return nodeInstance.getVariable(variableName);
+        } else {
+        	return ((WorkflowProcessInstance) getProcessInstance()).getVariable(variableName);
+        }
     }
     
     public void setVariable(String variableName, Object value) {
-    	if (nodeInstance != null) {
-    		nodeInstance.setVariable(variableName, value);
-    	} else {
-    		((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
-    	}
+        if (nodeInstance != null) {
+        	nodeInstance.setVariable(variableName, value);
+        } else {
+        	((WorkflowProcessInstance) getProcessInstance()).setVariable(variableName, value);
+        }
     }
 
-	public KnowledgeRuntime getKnowledgeRuntime() {
-		return kruntime;
-	}
+    public KnowledgeRuntime getKnowledgeRuntime() {
+        return kruntime;
+    }
     
 }

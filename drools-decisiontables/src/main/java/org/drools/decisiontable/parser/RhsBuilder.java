@@ -16,9 +16,9 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class RhsBuilder implements SourceBuilder {
 
-	private int headerRow;
-	private int headerCol;
-	private ActionType.Code actionTypeCode;
+    private int headerRow;
+    private int headerCol;
+    private ActionType.Code actionTypeCode;
     private Map<Integer, String> templates;
     private String variable;
     private List<String> values;
@@ -30,18 +30,18 @@ public class RhsBuilder implements SourceBuilder {
      * Leaving it blank will make it work in "classic" mode.
      */
     public RhsBuilder( ActionType.Code code, int row, int column, String boundVariable ) {
-    	this.actionTypeCode = code;
-    	this.headerRow = row;
-    	this.headerCol = column;
+        this.actionTypeCode = code;
+        this.headerRow = row;
+        this.headerCol = column;
         this.variable = boundVariable == null ? "" : boundVariable.trim();
         this.templates = new HashMap<Integer, String>();
         this.values = new ArrayList<String>();
     }
 
     
-	public ActionType.Code getActionTypeCode(){
-		return this.actionTypeCode;
-	}
+    public ActionType.Code getActionTypeCode(){
+        return this.actionTypeCode;
+    }
 
     
     public void addTemplate(int row, int column, String content) {
@@ -58,25 +58,25 @@ public class RhsBuilder implements SourceBuilder {
     }
 
     public void addCellValue(int row, int column, String value) {
-    	hasValues = true;
-    	String template = (String) this.templates.get( new Integer( column ) );
-    	if( template == null ){
-    		throw new DecisionTableParseException( "No code snippet for " + 
-    				this.actionTypeCode + ", above cell " +
-    				RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
-    	}
-    	SnippetBuilder snip = new SnippetBuilder(template);
-    	this.values.add(snip.build( value ));
+        hasValues = true;
+        String template = (String) this.templates.get( new Integer( column ) );
+        if( template == null ){
+        	throw new DecisionTableParseException( "No code snippet for " +
+        			this.actionTypeCode + ", above cell " +
+        			RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+        }
+        SnippetBuilder snip = new SnippetBuilder(template);
+        this.values.add(snip.build( value ));
     }
 
     public void clearValues() {
-    	this.hasValues = false;
-    	this.values.clear();
+        this.hasValues = false;
+        this.values.clear();
     }
 
     public String getResult() {
-    	StringBuffer buf = new StringBuffer();
-    	for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
+        StringBuffer buf = new StringBuffer();
+        for ( Iterator<String> iter = this.values.iterator(); iter.hasNext(); ) {
             buf.append( iter.next() );
             if (iter.hasNext()) {
                 buf.append( '\n' );

@@ -38,87 +38,87 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class HelloWorldExample {
 
-	public static final void main(final String[] args) throws Exception {
-		final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-				.newKnowledgeBuilder();
+    public static final void main(final String[] args) throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+        		.newKnowledgeBuilder();
 
-		// this will parse and compile in one step
-		kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
-				HelloWorldExample.class), ResourceType.DRL);
+        // this will parse and compile in one step
+        kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
+        		HelloWorldExample.class), ResourceType.DRL);
 
-		// Check the builder for errors
-		if (kbuilder.hasErrors()) {
-			System.out.println(kbuilder.getErrors().toString());
-			throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
-		}
+        // Check the builder for errors
+        if (kbuilder.hasErrors()) {
+        	System.out.println(kbuilder.getErrors().toString());
+        	throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
+        }
 
-		// get the compiled packages (which are serializable)
-		final Collection<KnowledgePackage> pkgs = kbuilder
-				.getKnowledgePackages();
+        // get the compiled packages (which are serializable)
+        final Collection<KnowledgePackage> pkgs = kbuilder
+        		.getKnowledgePackages();
 
-		// add the packages to a knowledgebase (deploy the knowledge packages).
-		final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(pkgs);
+        // add the packages to a knowledgebase (deploy the knowledge packages).
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(pkgs);
 
-		final StatefulKnowledgeSession ksession = kbase
-				.newStatefulKnowledgeSession();
-		ksession.setGlobal("list", new ArrayList<Object>());
+        final StatefulKnowledgeSession ksession = kbase
+        		.newStatefulKnowledgeSession();
+        ksession.setGlobal("list", new ArrayList<Object>());
 
-		ksession.addEventListener(new DebugAgendaEventListener());
-		ksession.addEventListener(new DebugWorkingMemoryEventListener());
+        ksession.addEventListener(new DebugAgendaEventListener());
+        ksession.addEventListener(new DebugWorkingMemoryEventListener());
 
-		// setup the audit logging
-		KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
-				.newFileLogger(ksession, "log/helloworld");
+        // setup the audit logging
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
+        		.newFileLogger(ksession, "log/helloworld");
 
-		final Message message = new Message();
-		message.setMessage("Hello World");
-		message.setStatus(Message.HELLO);
-		ksession.insert(message);
+        final Message message = new Message();
+        message.setMessage("Hello World");
+        message.setStatus(Message.HELLO);
+        ksession.insert(message);
 
-		ksession.fireAllRules();
+        ksession.fireAllRules();
 
-		logger.close();
+        logger.close();
 
-		ksession.dispose();
-	}
+        ksession.dispose();
+    }
 
-	public static class Message {
-		public static final int HELLO = 0;
-		public static final int GOODBYE = 1;
+    public static class Message {
+        public static final int HELLO = 0;
+        public static final int GOODBYE = 1;
 
-		private String message;
+        private String message;
 
-		private int status;
+        private int status;
 
-		public Message() {
+        public Message() {
 
-		}
+        }
 
-		public String getMessage() {
-			return this.message;
-		}
+        public String getMessage() {
+        	return this.message;
+        }
 
-		public void setMessage(final String message) {
-			this.message = message;
-		}
+        public void setMessage(final String message) {
+        	this.message = message;
+        }
 
-		public int getStatus() {
-			return this.status;
-		}
+        public int getStatus() {
+        	return this.status;
+        }
 
-		public void setStatus(final int status) {
-			this.status = status;
-		}
+        public void setStatus(final int status) {
+        	this.status = status;
+        }
 
-		public static Message doSomething(Message message) {
-			return message;
-		}
+        public static Message doSomething(Message message) {
+        	return message;
+        }
 
-		public boolean isSomething(String msg, List<Object> list) {
-			list.add(this);
-			return this.message.equals(msg);
-		}
-	}
+        public boolean isSomething(String msg, List<Object> list) {
+        	list.add(this);
+        	return this.message.equals(msg);
+        }
+    }
 
 }

@@ -53,7 +53,7 @@ class XlsInput extends InputType {
         return new ExcelParser( listener );
     }
     public DecisionTableParser createParser(final List<DataListener> listeners) {
-    	return new ExcelParser( listeners );
+        return new ExcelParser( listeners );
     }
 
 }
@@ -66,8 +66,8 @@ class CsvInput extends InputType {
     }
 
     public DecisionTableParser createParser(final List<DataListener> listeners) {
-    	return new CsvParser( listeners,
-    			new CsvLineParser() );
+        return new CsvParser( listeners,
+        		new CsvLineParser() );
     }
     
 }

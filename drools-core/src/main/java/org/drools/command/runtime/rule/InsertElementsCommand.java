@@ -45,11 +45,11 @@ public class InsertElementsCommand
     implements
     GenericCommand<Collection<FactHandle>> {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	@XmlJavaTypeAdapter(JaxbCollectionAdapter.class)
-	@XmlElement(name="list")
-	public Collection<Object> objects;
+    @XmlJavaTypeAdapter(JaxbCollectionAdapter.class)
+    @XmlElement(name="list")
+    public Collection<Object> objects;
 
     @XmlAttribute
     private String  outIdentifier;
@@ -69,11 +69,11 @@ public class InsertElementsCommand
     }
 
     public InsertElementsCommand(String outIdentifier) {
-		this();
-		this.outIdentifier = outIdentifier;
-	}
+        this();
+        this.outIdentifier = outIdentifier;
+    }
 
-	public Collection<Object> getObjects() {
+    public Collection<Object> getObjects() {
         return this.objects;
     }
 

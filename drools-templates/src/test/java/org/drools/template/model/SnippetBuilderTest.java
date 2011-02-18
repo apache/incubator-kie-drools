@@ -105,63 +105,63 @@ public class SnippetBuilderTest {
     
     @Test
     public void testForAllAnd() {
-		final String snippet = "forall(&&){something == $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x");
-		assertEquals("something == x", result);
-	}
+        final String snippet = "forall(&&){something == $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x");
+        assertEquals("something == x", result);
+    }
 
     @Test
     public void testForAllAndCSV() {
-		final String snippet = "forall(&&){something == $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x, y");
-		assertEquals("something == x && something == y", result);
-	}
+        final String snippet = "forall(&&){something == $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals("something == x && something == y", result);
+    }
 
     @Test
     public void testForAllAndNone() {
-		final String snippet = "forall(&&){something == $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("");
-		assertEquals("forall(&&){something == $}", result);
-	}
+        final String snippet = "forall(&&){something == $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("");
+        assertEquals("forall(&&){something == $}", result);
+    }
 
     @Test
     public void testForAllAndCSVMultiple() {
-		final String snippet = "forall(&&){something == $ || something == $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x, y");
-		assertEquals(
-				"something == x || something == x && something == y || something == y",
-				result);
-	}
+        final String snippet = "forall(&&){something == $ || something == $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals(
+        		"something == x || something == x && something == y || something == y",
+        		result);
+    }
 
     @Test
     public void testForAllOr() {
-		final String snippet = "forall(||){something == $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x");
-		assertEquals("something == x", result);
-	}
+        final String snippet = "forall(||){something == $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x");
+        assertEquals("something == x", result);
+    }
 
     @Test
     public void testForAllOrMultiple() {
-		final String snippet = "forall(||){something == $} && forall(||){something < $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x, y");
-		assertEquals(
-				"something == x || something == y && something < x || something < y",
-				result);
-	}
-	
+        final String snippet = "forall(||){something == $} && forall(||){something < $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals(
+        		"something == x || something == y && something < x || something < y",
+        		result);
+    }
+
     @Test
     public void testForAllOrAndMultipleWithPrefix() {
-		final String snippet = "something == this && forall(||){something == $} && forall(&&){something < $}";
-		final SnippetBuilder snip = new SnippetBuilder(snippet);
-		final String result = snip.build("x, y");
-		assertEquals(
-				"something == this && something == x || something == y && something < x && something < y",
-				result);
-	}
+        final String snippet = "something == this && forall(||){something == $} && forall(&&){something < $}";
+        final SnippetBuilder snip = new SnippetBuilder(snippet);
+        final String result = snip.build("x, y");
+        assertEquals(
+        		"something == this && something == x || something == y && something < x && something < y",
+        		result);
+    }
 }

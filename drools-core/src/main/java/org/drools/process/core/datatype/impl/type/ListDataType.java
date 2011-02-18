@@ -37,7 +37,7 @@ public class ListDataType extends ObjectDataType implements TypeObject {
     private DataType dataType;
     
     public ListDataType() {
-    	setClassName("java.util.List");
+        setClassName("java.util.List");
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -49,7 +49,7 @@ public class ListDataType extends ObjectDataType implements TypeObject {
     }
     
     public ListDataType(DataType dataType) {
-    	setType(dataType);
+        setType(dataType);
     }
 
     public void setType(final DataType dataType) {

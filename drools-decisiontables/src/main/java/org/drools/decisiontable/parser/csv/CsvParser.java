@@ -43,101 +43,101 @@ import org.drools.template.parser.DecisionTableParseException;
  */
 public class CsvParser implements DecisionTableParser {
 
-	private List<DataListener> _listeners;
+    private List<DataListener> _listeners;
 
-	private CsvLineParser _lineParser;
+    private CsvLineParser _lineParser;
 
-	public CsvParser(final DataListener listener,
-			final CsvLineParser lineParser) {
-		_listeners = new ArrayList<DataListener>();
-		_listeners.add(listener);
-		this._lineParser = lineParser;
-	}
+    public CsvParser(final DataListener listener,
+        	final CsvLineParser lineParser) {
+        _listeners = new ArrayList<DataListener>();
+        _listeners.add(listener);
+        this._lineParser = lineParser;
+    }
 
-	public CsvParser(final List<DataListener> listeners, final CsvLineParser lineParser) {
-		this._listeners = listeners;
-		this._lineParser = lineParser;
-	}
+    public CsvParser(final List<DataListener> listeners, final CsvLineParser lineParser) {
+        this._listeners = listeners;
+        this._lineParser = lineParser;
+    }
 
-	public void parseFile(final InputStream inStream) {
-		final BufferedReader reader = new BufferedReader(new InputStreamReader(
-				inStream));
-		try {
-			startSheet();
-			processRows(reader);
-			finishSheet();
-		} catch (final IOException e) {
-			throw new DecisionTableParseException(
-					"An error occurred reading the CSV data.", e);
-		}
-	}
+    public void parseFile(final InputStream inStream) {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(
+        		inStream));
+        try {
+        	startSheet();
+        	processRows(reader);
+        	finishSheet();
+        } catch (final IOException e) {
+        	throw new DecisionTableParseException(
+        			"An error occurred reading the CSV data.", e);
+        }
+    }
 
-	private void startSheet() {
-	    for ( DataListener listener : _listeners ) {
-			listener.startSheet("csv");
-		}
-	}
-
-	private void finishSheet() {
+    private void startSheet() {
         for ( DataListener listener : _listeners ) {
-			listener.finishSheet();
-		}
-	}
+        	listener.startSheet("csv");
+        }
+    }
 
-	private void newRow(final int row, final int numCells) {
+    private void finishSheet() {
         for ( DataListener listener : _listeners ) {
-			listener.newRow(row, numCells);
-		}
-	}
+        	listener.finishSheet();
+        }
+    }
 
-	private void newCell(final int row, final int column, final String value,
-			final int mergedColStart) {
+    private void newRow(final int row, final int numCells) {
         for ( DataListener listener : _listeners ) {
-			listener.newCell(row, column, value, mergedColStart);
-		}
-	}
+        	listener.newRow(row, numCells);
+        }
+    }
 
-	private void processRows(final BufferedReader reader) throws IOException {
-		String line = reader.readLine();
+    private void newCell(final int row, final int column, final String value,
+        	final int mergedColStart) {
+        for ( DataListener listener : _listeners ) {
+        	listener.newCell(row, column, value, mergedColStart);
+        }
+    }
 
-		int row = 0;
-		while (line != null) {
+    private void processRows(final BufferedReader reader) throws IOException {
+        String line = reader.readLine();
 
-			final List<String> cells = this._lineParser.parse(line);
-			// remove the trailing empty "cells" which some tools smatter around
-			// trimCells(cells);
-			newRow(row, cells.size());
+        int row = 0;
+        while (line != null) {
 
-			int startMergeCol = DataListener.NON_MERGED;
-			for (int col = 0; col < cells.size(); col++) {
-				String cell = (String) cells.get(col);
+        	final List<String> cells = this._lineParser.parse(line);
+        	// remove the trailing empty "cells" which some tools smatter around
+        	// trimCells(cells);
+        	newRow(row, cells.size());
 
-				startMergeCol = calcStartMerge(startMergeCol, col, cell);
+        	int startMergeCol = DataListener.NON_MERGED;
+        	for (int col = 0; col < cells.size(); col++) {
+        		String cell = (String) cells.get(col);
 
-				cell = calcCellText(startMergeCol, cell);
+        		startMergeCol = calcStartMerge(startMergeCol, col, cell);
 
-				newCell(row, col, cell, startMergeCol);
-			}
-			row++;
-			line = reader.readLine();
-		}
-		finishSheet();
-	}
+        		cell = calcCellText(startMergeCol, cell);
 
-	String calcCellText(int startMergeCol, String cell) {
-		if (startMergeCol != DataListener.NON_MERGED) {
-			cell = cell.substring(0, cell.length() - 3);
-		}
-		return cell;
-	}
+        		newCell(row, col, cell, startMergeCol);
+        	}
+        	row++;
+        	line = reader.readLine();
+        }
+        finishSheet();
+    }
 
-	int calcStartMerge(int startMergeCol, int col, String cell) {
-		if (cell.endsWith("...") && startMergeCol == DataListener.NON_MERGED) {
-			startMergeCol = col;
-		} else if (!cell.endsWith("...")) {
-			startMergeCol = DataListener.NON_MERGED;
-		}
-		return startMergeCol;
-	}
+    String calcCellText(int startMergeCol, String cell) {
+        if (startMergeCol != DataListener.NON_MERGED) {
+        	cell = cell.substring(0, cell.length() - 3);
+        }
+        return cell;
+    }
+
+    int calcStartMerge(int startMergeCol, int col, String cell) {
+        if (cell.endsWith("...") && startMergeCol == DataListener.NON_MERGED) {
+        	startMergeCol = col;
+        } else if (!cell.endsWith("...")) {
+        	startMergeCol = DataListener.NON_MERGED;
+        }
+        return startMergeCol;
+    }
 
 }

@@ -127,7 +127,7 @@ public class ReteooStatelessSession
         }
     }
     
-	public void addEventListener(final WorkingMemoryEventListener listener) {
+    public void addEventListener(final WorkingMemoryEventListener listener) {
         this.workingMemoryEventSupport.addEventListener( listener );
     }
 

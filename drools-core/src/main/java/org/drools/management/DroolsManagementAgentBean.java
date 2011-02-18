@@ -30,33 +30,33 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class DroolsManagementAgentBean {
 
-	private DroolsManagementAgent instance;
-	private List<KnowledgeBase> knowledgeBases;
-	private List<StatefulKnowledgeSession> statefulKnowledgeSessions;
+    private DroolsManagementAgent instance;
+    private List<KnowledgeBase> knowledgeBases;
+    private List<StatefulKnowledgeSession> statefulKnowledgeSessions;
 
-	public DroolsManagementAgentBean() {
-	}
+    public DroolsManagementAgentBean() {
+    }
 
-	public void start() {
-		instance = DroolsManagementAgent.getInstance();
-		if (knowledgeBases!= null) {
-			for (KnowledgeBase kbase : knowledgeBases) {
-				instance.registerKnowledgeBase((ReteooRuleBase) ((KnowledgeBaseImpl)kbase).getRuleBase());
-			}
-		}
-		if (statefulKnowledgeSessions!=null) {
-			for (StatefulKnowledgeSession ksession : statefulKnowledgeSessions) {
-				instance.registerKnowledgeSession(((StatefulKnowledgeSessionImpl)ksession).getInternalWorkingMemory());
-			}
-		}
-	}
+    public void start() {
+        instance = DroolsManagementAgent.getInstance();
+        if (knowledgeBases!= null) {
+        	for (KnowledgeBase kbase : knowledgeBases) {
+        		instance.registerKnowledgeBase((ReteooRuleBase) ((KnowledgeBaseImpl)kbase).getRuleBase());
+        	}
+        }
+        if (statefulKnowledgeSessions!=null) {
+        	for (StatefulKnowledgeSession ksession : statefulKnowledgeSessions) {
+        		instance.registerKnowledgeSession(((StatefulKnowledgeSessionImpl)ksession).getInternalWorkingMemory());
+        	}
+        }
+    }
 
-	public void setKnowledgeBases(List<KnowledgeBase> knowledgeBases) {
-		this.knowledgeBases = knowledgeBases;
-	}
+    public void setKnowledgeBases(List<KnowledgeBase> knowledgeBases) {
+        this.knowledgeBases = knowledgeBases;
+    }
 
-	public void setStatefulKnowledgeSessions(List<StatefulKnowledgeSession> statefulKnowledgeSessions) {
-		this.statefulKnowledgeSessions = statefulKnowledgeSessions;
-	}
+    public void setStatefulKnowledgeSessions(List<StatefulKnowledgeSession> statefulKnowledgeSessions) {
+        this.statefulKnowledgeSessions = statefulKnowledgeSessions;
+    }
 
 }

@@ -165,12 +165,12 @@ public class RightTupleList
     }
 
     public FastIterator fastIterator() {
-    	return LinkedList.fastIterator; // contains no state, so ok to be static   
+        return LinkedList.fastIterator; // contains no state, so ok to be static
     }
     
-	public FastIterator fullFastIterator() {
-    	return LinkedList.fastIterator; // contains no state, so ok to be static
-	}
+    public FastIterator fullFastIterator() {
+        return LinkedList.fastIterator; // contains no state, so ok to be static
+    }
     
     public Iterator iterator() {
         if ( this.iterator == null ) {

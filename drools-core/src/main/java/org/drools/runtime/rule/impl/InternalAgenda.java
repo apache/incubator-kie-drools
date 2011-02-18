@@ -3,8 +3,8 @@ package org.drools.runtime.rule.impl;
 import org.drools.runtime.rule.Agenda;
 
 public interface InternalAgenda extends Agenda {
-	
-	public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
+
+    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 
     /**
      * Activates the <code>RuleFlowGroup</code> with the given name.

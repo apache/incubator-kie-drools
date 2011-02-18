@@ -47,19 +47,19 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     }
     
     public Set<ParameterDefinition> getParameters() {
-    	return new HashSet<ParameterDefinition>(parameters.values());
+        return new HashSet<ParameterDefinition>(parameters.values());
     }
     
     public void setParameters(Set<ParameterDefinition> parameters) {
         this.parameters.clear();
         Iterator<ParameterDefinition> iterator = parameters.iterator();
         while (iterator.hasNext()) {
-        	addParameter(iterator.next());
+            addParameter(iterator.next());
         }
     }
     
     public void addParameter(ParameterDefinition parameter) {
-    	parameters.put(parameter.getName(), parameter);
+        parameters.put(parameter.getName(), parameter);
     }
     
     public void removeParameter(String name) {
@@ -75,14 +75,14 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     }
     
     public Set<ParameterDefinition> getResults() {
-    	return new HashSet<ParameterDefinition>(results.values());
+        return new HashSet<ParameterDefinition>(results.values());
     }
     
     public void setResults(Set<ParameterDefinition> results) {
-    	this.results.clear();
+        this.results.clear();
         Iterator<ParameterDefinition> it = results.iterator();
         while (it.hasNext()) {
-        	addResult(it.next());
+            addResult(it.next());
         }
     }
     

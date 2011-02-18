@@ -277,13 +277,13 @@ public class LinkedList
     }
     
     public FastIterator fastIterator() {
-    	return fastIterator;
+        return fastIterator;
     }
     
     public static class LinkedListFastIterator implements FastIterator {
-		public Entry next(Entry object) {
-			return object.getNext();
-		}
+        public Entry next(Entry object) {
+        	return object.getNext();
+        }
     }
 
     public java.util.Iterator javaUtilIterator() {

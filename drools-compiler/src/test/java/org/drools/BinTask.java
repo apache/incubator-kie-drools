@@ -1,14 +1,14 @@
 package org.drools;
 
 public class BinTask {
-	private Bin bin;
+    private Bin bin;
 
-	public Bin getBin() {
-		return bin;
-	}
+    public Bin getBin() {
+        return bin;
+    }
 
-	public void setBin(Bin bin) {
-		this.bin = bin;
-	}
-	
+    public void setBin(Bin bin) {
+        this.bin = bin;
+    }
+
 }

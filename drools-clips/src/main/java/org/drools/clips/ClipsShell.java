@@ -162,50 +162,50 @@ public class ClipsShell
         while(true) {
             byte name[] = new byte[256];
 
-	        System.in.read(name);
-	        String cmd = (new String(name)).trim();
+            System.in.read(name);
+            String cmd = (new String(name)).trim();
 
-	        if (cmd.equals("(exit)") || cmd.equals("(quit)")) {
-	        	sessionLog.append(cmd);
-	        	break;
-	        }
-	        buf.append(cmd);
+            if (cmd.equals("(exit)") || cmd.equals("(quit)")) {
+                sessionLog.append(cmd);
+                break;
+            }
+            buf.append(cmd);
 
-	        if (isBalancedBrackets(buf)) {
-	        	String exp = buf.toString();
-	        	if (exp.startsWith("(save ")) {
-	        		String file = getFileName(exp);
-	        		System.out.println("Saving transcript to [" + file + "]");
-	        		writeFile(file, sessionLog);
-	        		sessionLog = new StringBuffer();
-	        		System.out.print("Drools>");
-	        	} else {
-	        		sessionLog.append(cmd + "\n");
+            if (isBalancedBrackets(buf)) {
+                String exp = buf.toString();
+                if (exp.startsWith("(save ")) {
+                	String file = getFileName(exp);
+                	System.out.println("Saving transcript to [" + file + "]");
+                	writeFile(file, sessionLog);
+                	sessionLog = new StringBuffer();
+                	System.out.print("Drools>");
+                } else {
+                	sessionLog.append(cmd + "\n");
 
-	        		if (exp.startsWith("(load ")) {
-	        			String file = getFileName(exp);
-	        			System.out.println("Loading transcript from [" + file + "]");
-	        			exp = loadFile(file);
-	        		}
+                	if (exp.startsWith("(load ")) {
+                		String file = getFileName(exp);
+                		System.out.println("Loading transcript from [" + file + "]");
+                		exp = loadFile(file);
+                	}
 
-		        	shell.eval(exp);
-		        	String output = new String(out.toByteArray());
-		        	if (output != null && output.trim().length() > 0) {
-		        		System.out.println(output);
-		        	}
-		        	out.reset();
-		        	System.out.print("Drools>");
-		        	buf = new StringBuffer();
-	        	}
-	        }
+                	shell.eval(exp);
+                	String output = new String(out.toByteArray());
+                	if (output != null && output.trim().length() > 0) {
+                		System.out.println(output);
+                	}
+                	out.reset();
+                	System.out.print("Drools>");
+                	buf = new StringBuffer();
+                }
+            }
         }
 
         System.out.println("Goodbye, and good luck !");
 
     }
 
-	private static String loadFile(String fileName) throws IOException {
-		File f = new File(fileName);
+    private static String loadFile(String fileName) throws IOException {
+        File f = new File(fileName);
         InputStream is = new FileInputStream(f);
 
         long length = f.length();
@@ -223,49 +223,49 @@ public class ClipsShell
         }
 
         is.close();
-		return new String(bytes);
-	}
+        return new String(bytes);
+    }
 
-	private static String getFileName(String exp) {
-		char qt = '\'';
-		if (exp.contains("\"")) {
-			qt = '"';
-		}
-		String file = exp.substring(exp.indexOf(qt) + 1, exp.lastIndexOf(qt));
-		return file;
-	}
+    private static String getFileName(String exp) {
+        char qt = '\'';
+        if (exp.contains("\"")) {
+        	qt = '"';
+        }
+        String file = exp.substring(exp.indexOf(qt) + 1, exp.lastIndexOf(qt));
+        return file;
+    }
 
     private static void writeFile(String file, StringBuffer sessionLog) {
-    	FileOutputStream fout;
-		try {
-			File f = new File(file);
-			if (!f.exists()) {
-				f.createNewFile();
-			}
-			fout = new FileOutputStream(f);
-			fout.write(sessionLog.toString().getBytes());
-			fout.flush();
-			fout.close();
-		} catch (FileNotFoundException e) {
-			System.err.println("File " + file + " does not exist.");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        FileOutputStream fout;
+        try {
+        	File f = new File(file);
+        	if (!f.exists()) {
+        		f.createNewFile();
+        	}
+        	fout = new FileOutputStream(f);
+        	fout.write(sessionLog.toString().getBytes());
+        	fout.flush();
+        	fout.close();
+        } catch (FileNotFoundException e) {
+        	System.err.println("File " + file + " does not exist.");
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
 
 
-	}
+    }
 
-	private static boolean isBalancedBrackets(StringBuffer buf) {
-		char[] cs = buf.toString().toCharArray();
-		int stack = 0;
-		for (int i = 0; i < cs.length; i++) {
-			if (cs[i] == '(') stack++;
-			if (cs[i] == ')') stack--;
-		}
-		return stack == 0;
-	}
+    private static boolean isBalancedBrackets(StringBuffer buf) {
+        char[] cs = buf.toString().toCharArray();
+        int stack = 0;
+        for (int i = 0; i < cs.length; i++) {
+        	if (cs[i] == '(') stack++;
+        	if (cs[i] == ')') stack--;
+        }
+        return stack == 0;
+    }
 
-	public ClipsShell(RuleBase ruleBase) {
+    public ClipsShell(RuleBase ruleBase) {
         this.moduleName = MAIN;
         this.ruleBase = ruleBase;
 
@@ -428,7 +428,7 @@ public class ClipsShell
                             context.addPackageImport( importName.substring( 0,
                                                                             importName.length() - 2 ) );
                         } else {
-                        	
+
                             Class cls = ((InternalRuleBase)ruleBase).getRootClassLoader().loadClass( importName );
                             context.addImport( cls.getSimpleName(),
                                                (Class) cls );

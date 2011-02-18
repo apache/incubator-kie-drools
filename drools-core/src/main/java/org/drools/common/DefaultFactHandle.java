@@ -186,7 +186,7 @@ public class DefaultFactHandle
 
     @XmlAttribute(name="external-form")
     public String getExternalForm() {
-    	return toExternalForm();
+        return toExternalForm();
     }
     
     /**

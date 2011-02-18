@@ -50,7 +50,7 @@ public class CDSSExample {
             RecommendationService recommendationService = new RecommendationService();
             ksession.setGlobal( "recommendationService",
                                      recommendationService );
-    		
+
             // create patient
             Patient patient = new Patient();
             patient.setName( "John Doe" );
@@ -106,7 +106,7 @@ public class CDSSExample {
                              ResourceType.DRF );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/ClinicalPathwayX.drl", CDSSExample.class ),
-        		ResourceType.DRL );
+            	ResourceType.DRL );
 
         kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/cdss/TreatmentX.rf", CDSSExample.class ),
                              ResourceType.DRF );

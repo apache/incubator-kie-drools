@@ -28,8 +28,8 @@ import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 
 public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
 
-	public void build(final RuleBuildContext context, String consequenceName) {
-		// TODO does not support named consequences
+    public void build(final RuleBuildContext context, String consequenceName) {
+        // TODO does not support named consequences
         Appendable builder = new StringBuilderAppendable();
         
         List list = (List) context.getRuleDescr().getConsequence();

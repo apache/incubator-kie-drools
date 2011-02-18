@@ -30,6 +30,6 @@ import java.io.IOException;
  */
 public interface FileLoader {
 
-	public org.drools.rule.Package loadPackage(File drl) throws FileNotFoundException, IOException;
+    public org.drools.rule.Package loadPackage(File drl) throws FileNotFoundException, IOException;
 
 }

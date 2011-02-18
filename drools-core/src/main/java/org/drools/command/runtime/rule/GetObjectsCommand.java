@@ -40,16 +40,16 @@ public class GetObjectsCommand
     GenericCommand<Collection> {
 
     public String getOutIdentifier() {
-		return outIdentifier;
-	}
+        return outIdentifier;
+    }
 
-	public void setOutIdentifier(String outIdentifier) {
-		this.outIdentifier = outIdentifier;
-	}
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
+    }
 
-	private ObjectFilter filter = null;
+    private ObjectFilter filter = null;
     
-	@XmlAttribute(name="out-identifier")
+    @XmlAttribute(name="out-identifier")
     private String outIdentifier;
 
     public GetObjectsCommand() {

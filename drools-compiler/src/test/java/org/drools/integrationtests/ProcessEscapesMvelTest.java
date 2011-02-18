@@ -23,81 +23,81 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class ProcessEscapesMvelTest {
-	
+
     @Test
     public void testProcessStringEscapesOptionOn() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		
-		List list = new ArrayList();
-		ksession.setGlobal( "list", list );
-		
-		BinTask bt = new BinTask();
-		Bin b = new Bin();
-		b.setName("aa123bb");
-		bt.setBin(b);
-		
-		ksession.insert(b);
-		ksession.insert(bt);
-		ksession.fireAllRules();
-		
-		assertEquals(1, list.size());
-		
-	}
-	
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        BinTask bt = new BinTask();
+        Bin b = new Bin();
+        b.setName("aa123bb");
+        bt.setBin(b);
+
+        ksession.insert(b);
+        ksession.insert(bt);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+
+    }
+
     @Test
     public void testProcessStringEscapesOptionOff() throws Exception {
-		KnowledgeBase kbase = readKnowledgeBaseWithEscapesOff();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-		
-		List list = new ArrayList();
-		ksession.setGlobal( "list", list );
-		
-		BinTask bt = new BinTask();
-		Bin b = new Bin();
-		b.setName("aa123bb");
-		bt.setBin(b);
-		
-		ksession.insert(bt);
-		ksession.insert(b);
-		ksession.fireAllRules();
-		
-		assertEquals(1, list.size());
-	}
-	
-	private KnowledgeBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "processescapes.drl" ) ),
+        KnowledgeBase kbase = readKnowledgeBaseWithEscapesOff();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        BinTask bt = new BinTask();
+        Bin b = new Bin();
+        b.setName("aa123bb");
+        bt.setBin(b);
+
+        ksession.insert(bt);
+        ksession.insert(b);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+    }
+
+    private KnowledgeBase readKnowledgeBase() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "processescapes.drl" ) ),
                 ResourceType.DRL );
-		KnowledgeBuilderErrors errors = kbuilder.getErrors();
-		if (errors.size() > 0) {
-			for (KnowledgeBuilderError error: errors) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		return kbase;
-	}
-	
-	private KnowledgeBase readKnowledgeBaseWithEscapesOff() throws Exception {
-		KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-		kbconf.setProperty("drools.parser.processStringEscapes", "false");
-		
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbconf);
-		//kbuilder.add(ResourceFactory.newClassPathResource("processescapes.drl"), ResourceType.DRL);
-		kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "processescapesoff.drl" ) ),
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+        	for (KnowledgeBuilderError error: errors) {
+        		System.err.println(error);
+        	}
+        	throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
+
+    private KnowledgeBase readKnowledgeBaseWithEscapesOff() throws Exception {
+        KnowledgeBuilderConfiguration kbconf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbconf.setProperty("drools.parser.processStringEscapes", "false");
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbconf);
+        //kbuilder.add(ResourceFactory.newClassPathResource("processescapes.drl"), ResourceType.DRL);
+        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "processescapesoff.drl" ) ),
                 ResourceType.DRL );
-		KnowledgeBuilderErrors errors = kbuilder.getErrors();
-		if (errors.size() > 0) {
-			for (KnowledgeBuilderError error: errors) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		return kbase;
-	}
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+        	for (KnowledgeBuilderError error: errors) {
+        		System.err.println(error);
+        	}
+        	throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
 }

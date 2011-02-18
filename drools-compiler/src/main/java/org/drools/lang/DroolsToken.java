@@ -28,61 +28,61 @@ import org.antlr.runtime.Token;
  */
 public class DroolsToken extends CommonToken {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	/**
-	 * editor type
-	 * 
-	 * @see DroolsEditorType
-	 */
-	private DroolsEditorType editorType = DroolsEditorType.IDENTIFIER;
+    /**
+     * editor type
+     *
+     * @see DroolsEditorType
+     */
+    private DroolsEditorType editorType = DroolsEditorType.IDENTIFIER;
 
-	public DroolsToken(int type) {
-		super(type);
-	}
+    public DroolsToken(int type) {
+        super(type);
+    }
 
-	public DroolsToken(CharStream input, int type, int channel, int start,
-			int stop) {
-		super(input, type, channel, start, stop);
-	}
+    public DroolsToken(CharStream input, int type, int channel, int start,
+        	int stop) {
+        super(input, type, channel, start, stop);
+    }
 
-	public DroolsToken(int type, String text) {
-		super(type, text);
-	}
+    public DroolsToken(int type, String text) {
+        super(type, text);
+    }
 
-	/**
-	 * Constructor that preserves the char offset
-	 * 
-	 * @param oldToken
-	 */
-	public DroolsToken(Token oldToken) {
-		super(oldToken);
-		if (null != oldToken
-				&& (oldToken.getClass().equals(CommonToken.class) || oldToken
-						.getClass().equals(DroolsToken.class))) {
-			start = ((CommonToken) oldToken).getStartIndex();
-			stop = ((CommonToken) oldToken).getStopIndex();
-		}
-	}
+    /**
+     * Constructor that preserves the char offset
+     *
+     * @param oldToken
+     */
+    public DroolsToken(Token oldToken) {
+        super(oldToken);
+        if (null != oldToken
+        		&& (oldToken.getClass().equals(CommonToken.class) || oldToken
+        				.getClass().equals(DroolsToken.class))) {
+        	start = ((CommonToken) oldToken).getStartIndex();
+        	stop = ((CommonToken) oldToken).getStopIndex();
+        }
+    }
 
-	/**
-	 * getter of editor type
-	 * 
-	 * @return editor type
-	 * @see DroolsEditorType
-	 */
-	public DroolsEditorType getEditorType() {
-		return editorType;
-	}
+    /**
+     * getter of editor type
+     *
+     * @return editor type
+     * @see DroolsEditorType
+     */
+    public DroolsEditorType getEditorType() {
+        return editorType;
+    }
 
-	/**
-	 * setter of editor type
-	 * 
-	 * @param editorElementType
-	 *            editor type
-	 * @see DroolsEditorType
-	 */
-	public void setEditorType(DroolsEditorType editorType) {
-		this.editorType = editorType;
-	}
+    /**
+     * setter of editor type
+     *
+     * @param editorElementType
+     *            editor type
+     * @see DroolsEditorType
+     */
+    public void setEditorType(DroolsEditorType editorType) {
+        this.editorType = editorType;
+    }
 }

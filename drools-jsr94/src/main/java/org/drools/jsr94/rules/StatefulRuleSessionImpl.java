@@ -90,19 +90,19 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
                             final Map properties,
                             final RuleExecutionSetRepository repository)
     throws RuleExecutionSetNotFoundException, RuleSessionCreateException {
-    	
+
         super( repository );
         setProperties( properties );
 
         RuleExecutionSetImpl ruleSet = null;
         
-		try {
-			ruleSet = (RuleExecutionSetImpl)
-			repository.getRuleExecutionSet(bindUri, properties);
-		} catch (RuleExecutionSetRepositoryException e) {
-			String s = "Error while retrieving rule execution set bound to: " + bindUri;
-			throw new RuleSessionCreateException(s, e);
-		}
+        try {
+        	ruleSet = (RuleExecutionSetImpl)
+        	repository.getRuleExecutionSet(bindUri, properties);
+        } catch (RuleExecutionSetRepositoryException e) {
+        	String s = "Error while retrieving rule execution set bound to: " + bindUri;
+        	throw new RuleSessionCreateException(s, e);
+        }
 
         if ( ruleSet == null ) {
             throw new RuleExecutionSetNotFoundException( "no execution set bound to: " + bindUri );

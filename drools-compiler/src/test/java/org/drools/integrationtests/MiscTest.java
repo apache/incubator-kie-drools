@@ -3867,33 +3867,33 @@ public class MiscTest {
                 agendaList.add( event );
             }
 
-			public void afterRuleFlowGroupActivated(
-					RuleFlowGroupActivatedEvent event,
-					WorkingMemory workingMemory) {
-				// TODO Auto-generated method stub
-				
-			}
+        	public void afterRuleFlowGroupActivated(
+        			RuleFlowGroupActivatedEvent event,
+        			WorkingMemory workingMemory) {
+        		// TODO Auto-generated method stub
 
-			public void afterRuleFlowGroupDeactivated(
-					RuleFlowGroupDeactivatedEvent event,
-					WorkingMemory workingMemory) {
-				// TODO Auto-generated method stub
-				
-			}
+        	}
 
-			public void beforeRuleFlowGroupActivated(
-					RuleFlowGroupActivatedEvent event,
-					WorkingMemory workingMemory) {
-				// TODO Auto-generated method stub
-				
-			}
+        	public void afterRuleFlowGroupDeactivated(
+        			RuleFlowGroupDeactivatedEvent event,
+        			WorkingMemory workingMemory) {
+        		// TODO Auto-generated method stub
 
-			public void beforeRuleFlowGroupDeactivated(
-					RuleFlowGroupDeactivatedEvent event,
-					WorkingMemory workingMemory) {
-				// TODO Auto-generated method stub
-				
-			}
+        	}
+
+        	public void beforeRuleFlowGroupActivated(
+        			RuleFlowGroupActivatedEvent event,
+        			WorkingMemory workingMemory) {
+        		// TODO Auto-generated method stub
+
+        	}
+
+        	public void beforeRuleFlowGroupDeactivated(
+        			RuleFlowGroupDeactivatedEvent event,
+        			WorkingMemory workingMemory) {
+        		// TODO Auto-generated method stub
+
+        	}
 
         };
 

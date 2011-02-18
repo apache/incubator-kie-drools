@@ -40,85 +40,85 @@ public class MissingEqualityTest extends TestBase {
 
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("MissingEquality.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("MissingEquality.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Missing restriction in LiteralRestrictions"));
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        		"Missing restriction in LiteralRestrictions"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingEqualityTest.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingEqualityTest.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		session.executeWithResults(testData);
+        session.executeWithResults(testData);
 
-		Iterator<VerifierMessageBase> iter = result.getBySeverity(
-				Severity.WARNING).iterator();
+        Iterator<VerifierMessageBase> iter = result.getBySeverity(
+        		Severity.WARNING).iterator();
 
-		Collection<String> ruleNames = new ArrayList<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof VerifierMessage) {
-				Cause cause = ((VerifierMessage) o).getFaulty();
-				String name = ((LiteralRestriction) cause).getRuleName();
+        Collection<String> ruleNames = new ArrayList<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof VerifierMessage) {
+        		Cause cause = ((VerifierMessage) o).getFaulty();
+        		String name = ((LiteralRestriction) cause).getRuleName();
 
-				ruleNames.add(name);
-			}
-		}
+        		ruleNames.add(name);
+        	}
+        }
 
-		assertTrue(ruleNames.remove("Missing equality 1"));
-		assertTrue(ruleNames.remove("Missing equality 2"));
+        assertTrue(ruleNames.remove("Missing equality 1"));
+        assertTrue(ruleNames.remove("Missing equality 2"));
 
-		if (!ruleNames.isEmpty()) {
-			for (String string : ruleNames) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!ruleNames.isEmpty()) {
+        	for (String string : ruleNames) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 
     @Test
     public void testMissingEqualityInVariableRestrictions() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("MissingEquality.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("MissingEquality.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Missing restriction in VariableRestrictions"));
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        		"Missing restriction in VariableRestrictions"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingEqualityTest.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingEqualityTest.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		session.executeWithResults(testData);
+        session.executeWithResults(testData);
 
-		Iterator<VerifierMessageBase> iter = result.getBySeverity(
-				Severity.WARNING).iterator();
+        Iterator<VerifierMessageBase> iter = result.getBySeverity(
+        		Severity.WARNING).iterator();
 
-		Collection<String> ruleNames = new ArrayList<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof VerifierMessage) {
-				Cause cause = ((VerifierMessage) o).getFaulty();
-				String name = ((VariableRestriction) cause).getRuleName();
+        Collection<String> ruleNames = new ArrayList<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof VerifierMessage) {
+        		Cause cause = ((VerifierMessage) o).getFaulty();
+        		String name = ((VariableRestriction) cause).getRuleName();
 
-				ruleNames.add(name);
-			}
-		}
+        		ruleNames.add(name);
+        	}
+        }
 
-		assertTrue(ruleNames.remove("Missing equality 3"));
-		assertTrue(ruleNames.remove("Missing equality 4"));
-		assertTrue(ruleNames.remove("Missing equality 5"));
-		assertTrue(ruleNames.remove("Missing equality 6"));
+        assertTrue(ruleNames.remove("Missing equality 3"));
+        assertTrue(ruleNames.remove("Missing equality 4"));
+        assertTrue(ruleNames.remove("Missing equality 5"));
+        assertTrue(ruleNames.remove("Missing equality 6"));
 
-		if (!ruleNames.isEmpty()) {
-			for (String string : ruleNames) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!ruleNames.isEmpty()) {
+        	for (String string : ruleNames) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 }

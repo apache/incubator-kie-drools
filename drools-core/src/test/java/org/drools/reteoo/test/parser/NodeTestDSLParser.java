@@ -16,11 +16,11 @@
 
 // $ANTLR 3.1.1 src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g 2010-01-26 19:56:36
 
-	package org.drools.reteoo.test.parser;
-	
-	import java.util.Map;
-	import java.util.HashMap;
-	import java.util.Stack;
+    package org.drools.reteoo.test.parser;
+
+    import java.util.Map;
+    import java.util.HashMap;
+    import java.util.Stack;
 
 
 import org.antlr.runtime.*;
@@ -97,75 +97,75 @@ public class NodeTestDSLParser extends Parser {
     public String getGrammarFileName() { return "src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g"; }
 
 
-    	private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
-    	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-    	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
+        private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
+        private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+        private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
             
 
-    	private boolean validateIdentifierKey(String text) {
-    		return validateLT(1, text);
-    	}
-    	
-    	private boolean validateLT(int LTNumber, String text) {
-    		String text2Validate = retrieveLT( LTNumber );
-    		return text2Validate != null && text2Validate.equalsIgnoreCase(text);
-    	}
-    	
-    	private String retrieveLT(int LTNumber) {
-          		if (null == input)
-    			return null;
-    		if (null == input.LT(LTNumber))
-    			return null;
-    		if (null == input.LT(LTNumber).getText())
-    			return null;
-    	
-    		return input.LT(LTNumber).getText();
-    	}
-    	
-    	public void reportError(RecognitionException ex) {
-    		// if we've already reported an error and have not matched a token
-    		// yet successfully, don't report any errors.
-    		if (state.errorRecovery) {
-    			return;
-    		}
-    		state.errorRecovery = true;
-    	
-    		errors.add(errorMessageFactory.createDroolsException(ex));
-    	}
-    	
-    	// return the raw RecognitionException errors 
-    	public List<DroolsParserException> getErrors() {
-    		return errors;
-    	}
-    	
-    	// Return a list of pretty strings summarising the errors 
-    	public List<String> getErrorMessages() {
-    		List<String> messages = new ArrayList<String>(errors.size());
-    	
-    		for (DroolsParserException activeException : errors) {
-    			messages.add(activeException.getMessage());
-    		}
-    	
-    		return messages;
-    	}
-    	
-    	// return true if any parser errors were accumulated 
-    	public boolean hasErrors() {
-    		return !errors.isEmpty();
-    	}
-    	
-    	// Method that adds a paraphrase type into paraphrases stack.
-    	private void pushParaphrases(DroolsParaphraseTypes type) {
-    		Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
-    		activeMap.put(type, "");
-    		paraphrases.push(activeMap);
-    	}
+        private boolean validateIdentifierKey(String text) {
+        	return validateLT(1, text);
+        }
 
-    	// Method that sets paraphrase value for a type into paraphrases stack.
-    	private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
-    		paraphrases.peek().put(type, value);
-    	}
-    	
+        private boolean validateLT(int LTNumber, String text) {
+        	String text2Validate = retrieveLT( LTNumber );
+        	return text2Validate != null && text2Validate.equalsIgnoreCase(text);
+        }
+
+        private String retrieveLT(int LTNumber) {
+              	if (null == input)
+        		return null;
+        	if (null == input.LT(LTNumber))
+        		return null;
+        	if (null == input.LT(LTNumber).getText())
+        		return null;
+
+        	return input.LT(LTNumber).getText();
+        }
+
+        public void reportError(RecognitionException ex) {
+        	// if we've already reported an error and have not matched a token
+        	// yet successfully, don't report any errors.
+        	if (state.errorRecovery) {
+        		return;
+        	}
+        	state.errorRecovery = true;
+
+        	errors.add(errorMessageFactory.createDroolsException(ex));
+        }
+
+        // return the raw RecognitionException errors
+        public List<DroolsParserException> getErrors() {
+        	return errors;
+        }
+
+        // Return a list of pretty strings summarising the errors
+        public List<String> getErrorMessages() {
+        	List<String> messages = new ArrayList<String>(errors.size());
+
+        	for (DroolsParserException activeException : errors) {
+        		messages.add(activeException.getMessage());
+        	}
+
+        	return messages;
+        }
+
+        // return true if any parser errors were accumulated
+        public boolean hasErrors() {
+        	return !errors.isEmpty();
+        }
+
+        // Method that adds a paraphrase type into paraphrases stack.
+        private void pushParaphrases(DroolsParaphraseTypes type) {
+        	Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
+        	activeMap.put(type, "");
+        	paraphrases.push(activeMap);
+        }
+
+        // Method that sets paraphrase value for a type into paraphrases stack.
+        private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
+        	paraphrases.peek().put(type, value);
+        }
+
 
 
 
@@ -217,21 +217,21 @@ public class NodeTestDSLParser extends Parser {
                 int alt1=2;
                 alt1 = dfa1.predict(input);
                 switch (alt1) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:112:3: import_statement
-            	    {
-            	    pushFollow(FOLLOW_import_statement_in_compilation_unit111);
-            	    import_statement2=import_statement();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:112:3: import_statement
+                    {
+                    pushFollow(FOLLOW_import_statement_in_compilation_unit111);
+                    import_statement2=import_statement();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    stream_import_statement.add(import_statement2.getTree());
+                    stream_import_statement.add(import_statement2.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop1;
+                default :
+                    break loop1;
                 }
             } while (true);
 
@@ -301,21 +301,21 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt4) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:115:3: test
-            	    {
-            	    pushFollow(FOLLOW_test_in_compilation_unit126);
-            	    test5=test();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:115:3: test
+                    {
+                    pushFollow(FOLLOW_test_in_compilation_unit126);
+                    test5=test();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    stream_test.add(test5.getTree());
+                    stream_test.add(test5.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop4;
+                default :
+                    break loop4;
                 }
             } while (true);
 
@@ -383,8 +383,8 @@ public class NodeTestDSLParser extends Parser {
         }
         catch ( RecognitionException e) {
 
-            		reportError( e );
-            	
+                	reportError( e );
+
         }
         finally {
         }
@@ -439,7 +439,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -500,7 +500,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -558,21 +558,21 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt5) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:132:15: step
-            	    {
-            	    pushFollow(FOLLOW_step_in_setup212);
-            	    step12=step();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:132:15: step
+                    {
+                    pushFollow(FOLLOW_step_in_setup212);
+                    step12=step();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_0, step12.getTree());
+                    adaptor.addChild(root_0, step12.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop5;
+                default :
+                    break loop5;
                 }
             } while (true);
 
@@ -588,7 +588,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -646,21 +646,21 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt6) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:136:18: step
-            	    {
-            	    pushFollow(FOLLOW_step_in_teardown228);
-            	    step14=step();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:136:18: step
+                    {
+                    pushFollow(FOLLOW_step_in_teardown228);
+                    step14=step();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_0, step14.getTree());
+                    adaptor.addChild(root_0, step14.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop6;
+                default :
+                    break loop6;
                 }
             } while (true);
 
@@ -676,7 +676,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -740,21 +740,21 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt7) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:140:26: step
-            	    {
-            	    pushFollow(FOLLOW_step_in_test249);
-            	    step16=step();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:140:26: step
+                    {
+                    pushFollow(FOLLOW_step_in_test249);
+                    step16=step();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_0, step16.getTree());
+                    adaptor.addChild(root_0, step16.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop7;
+                default :
+                    break loop7;
                 }
             } while (true);
 
@@ -770,7 +770,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -820,22 +820,22 @@ public class NodeTestDSLParser extends Parser {
                 int alt8=2;
                 alt8 = dfa8.predict(input);
                 switch (alt8) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:144:17: params SEMI_COLON
-            	    {
-            	    pushFollow(FOLLOW_params_in_step271);
-            	    params19=params();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:144:17: params SEMI_COLON
+                    {
+                    pushFollow(FOLLOW_params_in_step271);
+                    params19=params();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_0, params19.getTree());
-            	    SEMI_COLON20=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_step273);
+                    adaptor.addChild(root_0, params19.getTree());
+                    SEMI_COLON20=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_step273);
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt8 >= 1 ) break loop8;
+                default :
+                    if ( cnt8 >= 1 ) break loop8;
                         EarlyExitException eee =
                             new EarlyExitException(8, input);
                         throw eee;
@@ -855,7 +855,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -908,24 +908,24 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt9) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:148:17: COMMA param_chunk
-            	    {
-            	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_params293);
-            	    stream_COMMA.add(COMMA22);
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:148:17: COMMA param_chunk
+                    {
+                    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_params293);
+                    stream_COMMA.add(COMMA22);
 
-            	    pushFollow(FOLLOW_param_chunk_in_params295);
-            	    param_chunk23=param_chunk();
+                    pushFollow(FOLLOW_param_chunk_in_params295);
+                    param_chunk23=param_chunk();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    stream_param_chunk.add(param_chunk23.getTree());
+                    stream_param_chunk.add(param_chunk23.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop9;
+                default :
+                    break loop9;
                 }
             } while (true);
 
@@ -974,7 +974,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1040,7 +1040,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1085,21 +1085,21 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt10) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:158:4: param
-            	    {
-            	    pushFollow(FOLLOW_param_in_param_sequence343);
-            	    param24=param();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:158:4: param
+                    {
+                    pushFollow(FOLLOW_param_in_param_sequence343);
+                    param24=param();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_0, param24.getTree());
+                    adaptor.addChild(root_0, param24.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt10 >= 1 ) break loop10;
+                default :
+                    if ( cnt10 >= 1 ) break loop10;
                         EarlyExitException eee =
                             new EarlyExitException(10, input);
                         throw eee;
@@ -1119,7 +1119,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1332,7 +1332,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1398,7 +1398,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1477,7 +1477,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1543,7 +1543,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1601,23 +1601,23 @@ public class NodeTestDSLParser extends Parser {
 
 
                 switch (alt13) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:189:8: DOT ID
-            	    {
-            	    DOT38=(Token)match(input,DOT,FOLLOW_DOT_in_qualified_id_matcher491);
-            	    DOT38_tree = (Object)adaptor.create(DOT38);
-            	    adaptor.addChild(root_0, DOT38_tree);
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:189:8: DOT ID
+                    {
+                    DOT38=(Token)match(input,DOT,FOLLOW_DOT_in_qualified_id_matcher491);
+                    DOT38_tree = (Object)adaptor.create(DOT38);
+                    adaptor.addChild(root_0, DOT38_tree);
 
-            	    ID39=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher493);
-            	    ID39_tree = (Object)adaptor.create(ID39);
-            	    adaptor.addChild(root_0, ID39_tree);
+                    ID39=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher493);
+                    ID39_tree = (Object)adaptor.create(ID39);
+                    adaptor.addChild(root_0, ID39_tree);
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop13;
+                default :
+                    break loop13;
                 }
             } while (true);
 
@@ -1633,7 +1633,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1683,7 +1683,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1762,7 +1762,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1812,7 +1812,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1891,7 +1891,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1958,7 +1958,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2025,7 +2025,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2092,7 +2092,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2159,7 +2159,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2226,7 +2226,7 @@ public class NodeTestDSLParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2299,7 +2299,7 @@ public class NodeTestDSLParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA1_0 = input.LA(1);
@@ -2424,7 +2424,7 @@ public class NodeTestDSLParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA8_12 = input.LA(1);

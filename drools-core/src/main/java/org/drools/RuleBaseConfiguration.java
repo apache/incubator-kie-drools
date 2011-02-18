@@ -730,7 +730,7 @@ public class RuleBaseConfiguration
                                                                                   RuleBaseConfiguration.class ) );
         try {
             this.workDefinitions.addAll(
-        		(List<Map<String, Object>>) MVEL.eval( content, new HashMap() ) );
+            	(List<Map<String, Object>>) MVEL.eval( content, new HashMap() ) );
         } catch ( Throwable t ) {
             System.err.println( "Error occured while loading work definitions " + location );
             System.err.println( "Continuing without reading these work definitions" );

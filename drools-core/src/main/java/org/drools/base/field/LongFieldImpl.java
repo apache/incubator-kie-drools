@@ -134,12 +134,12 @@ public class LongFieldImpl
         return false;
     }
 
-	public BigDecimal getBigDecimalValue() {
-		return new BigDecimal(this.value);
-	}
+    public BigDecimal getBigDecimalValue() {
+        return new BigDecimal(this.value);
+    }
 
-	public BigInteger getBigIntegerValue() {
-		return BigInteger.valueOf(this.value);
-	}
+    public BigInteger getBigIntegerValue() {
+        return BigInteger.valueOf(this.value);
+    }
 
 }

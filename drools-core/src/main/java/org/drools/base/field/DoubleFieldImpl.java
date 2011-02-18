@@ -133,12 +133,12 @@ public class DoubleFieldImpl
         return false;
     }
 
-	public BigDecimal getBigDecimalValue() {
-		return new BigDecimal(this.value);
-	}
+    public BigDecimal getBigDecimalValue() {
+        return new BigDecimal(this.value);
+    }
 
-	public BigInteger getBigIntegerValue() {
-		return new BigDecimal(this.value).toBigInteger();
-	}
+    public BigInteger getBigIntegerValue() {
+        return new BigDecimal(this.value).toBigInteger();
+    }
 
 }

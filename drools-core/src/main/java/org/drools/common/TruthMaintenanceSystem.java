@@ -285,7 +285,7 @@ public class TruthMaintenanceSystem {
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 

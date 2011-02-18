@@ -17,51 +17,51 @@
 package org.drools.integrationtests.manners;
 
 public class Sex {
-	public static final Sex M = new Sex(0);
+    public static final Sex M = new Sex(0);
 
-	public static final Sex F = new Sex(1);
+    public static final Sex F = new Sex(1);
 
-	public static final String stringM = "m";
+    public static final String stringM = "m";
 
-	public static final String stringF = "f";
+    public static final String stringF = "f";
 
-	public static final String[] sexList = new String[] { stringM, stringF };
+    public static final String[] sexList = new String[] { stringM, stringF };
 
-	private int sex;
+    private int sex;
 
-	public Sex() {
-		
-	}
-	
-	private Sex(int sex) {
-		this.sex = sex;
-	}
+    public Sex() {
 
-	public  String getSex() {
-		return sexList[this.sex];
-	}
+    }
 
-	public  static Sex resolve(String sex) {
-		if (stringM.equals(sex)) {
-			return Sex.M;
-		} else if (stringF.equals(sex)) {
-			return Sex.F;
-		} else {
-			throw new RuntimeException("Sex '" + sex
-					+ "' does not exist for Sex Enum");
-		}
-	}
+    private Sex(int sex) {
+        this.sex = sex;
+    }
 
-	public  String toString() {
-		return getSex();
-	}
+    public  String getSex() {
+        return sexList[this.sex];
+    }
 
-	public  boolean equals(Object object) {
-		return this == object;
-	}
+    public  static Sex resolve(String sex) {
+        if (stringM.equals(sex)) {
+        	return Sex.M;
+        } else if (stringF.equals(sex)) {
+        	return Sex.F;
+        } else {
+        	throw new RuntimeException("Sex '" + sex
+        			+ "' does not exist for Sex Enum");
+        }
+    }
 
-	public  int hashCode() {
-		return this.sex;
-	}
+    public  String toString() {
+        return getSex();
+    }
+
+    public  boolean equals(Object object) {
+        return this == object;
+    }
+
+    public  int hashCode() {
+        return this.sex;
+    }
 
 }

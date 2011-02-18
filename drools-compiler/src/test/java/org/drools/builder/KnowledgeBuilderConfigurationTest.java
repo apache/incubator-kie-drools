@@ -311,15 +311,15 @@ public class KnowledgeBuilderConfigurationTest {
         public boolean supportsReverse() {
             return false;
         }
-		public void readExternal(ObjectInput in) throws IOException,
-				ClassNotFoundException {
-			// TODO Auto-generated method stub
-			
-		}
-		public void writeExternal(ObjectOutput out) throws IOException {
-			// TODO Auto-generated method stub
-			
-		}
+        public void readExternal(ObjectInput in) throws IOException,
+        		ClassNotFoundException {
+        	// TODO Auto-generated method stub
+
+        }
+        public void writeExternal(ObjectOutput out) throws IOException {
+        	// TODO Auto-generated method stub
+
+        }
     }
 
 }

@@ -37,7 +37,7 @@ public class DefaultSemanticModule implements SemanticModule {
     public void addHandler(String name, Handler handler) {
         this.handlers.put( name, handler );
         if (handler != null && handler.generateNodeFor() != null) {
-        	this.handlersByClass.put( handler.generateNodeFor(), handler );
+            this.handlersByClass.put( handler.generateNodeFor(), handler );
         }
     }
 
@@ -47,9 +47,9 @@ public class DefaultSemanticModule implements SemanticModule {
     
     public Handler getHandlerByClass(Class<?> clazz) {
         while (clazz != null) {
-        	Handler handler = this.handlersByClass.get( clazz );
+            Handler handler = this.handlersByClass.get( clazz );
             if (handler != null) {
-            	return handler;
+                return handler;
             }
             clazz = clazz.getSuperclass();
         }

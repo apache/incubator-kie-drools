@@ -66,15 +66,15 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 
 public class OutputMarshaller {
-	
-	private static ProcessMarshaller processMarshaller = createProcessMarshaller();
-	
+
+    private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+
     private static ProcessMarshaller createProcessMarshaller() {
-		try {
-			return ProcessMarshallerFactory.newProcessMarshaller();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+        try {
+        	return ProcessMarshallerFactory.newProcessMarshaller();
+        } catch (IllegalArgumentException e) {
+        	return null;
+        }
     }
 
     public static void writeSession(MarshallerWriteContext context) throws IOException {
@@ -114,11 +114,11 @@ public class OutputMarshaller {
         }
 
         if ( context.marshalWorkItems  && processMarshaller != null ) {
-        	processMarshaller.writeWorkItems( context );
+            processMarshaller.writeWorkItems( context );
         }
 
         if ( processMarshaller != null ) {
-        	processMarshaller.writeProcessTimers( context );
+            processMarshaller.writeProcessTimers( context );
         }
         
         if( multithread ) {
@@ -164,8 +164,8 @@ public class OutputMarshaller {
             Map<Long, String> nodeInstances = group.getNodeInstances();
             context.writeInt( nodeInstances.size() );
             for (Map.Entry<Long, String> entry: nodeInstances.entrySet()) {
-            	context.writeLong( entry.getKey() );
-            	context.writeUTF( entry.getValue() );
+                context.writeLong( entry.getKey() );
+                context.writeUTF( entry.getValue() );
             }
         }
         context.writeShort( PersisterEnums.END );
@@ -615,12 +615,12 @@ public class OutputMarshaller {
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 if (entry.getKey().getObject() != null) {
-					LeftTuple leftTuple = entry.getKey();
-					stream.writeShort(PersisterEnums.ACTIVATION);
-					writeActivation(context, leftTuple, (AgendaItem) leftTuple
-							.getObject(), (RuleTerminalNode) leftTuple
-							.getLeftTupleSink());
-				}
+        			LeftTuple leftTuple = entry.getKey();
+        			stream.writeShort(PersisterEnums.ACTIVATION);
+        			writeActivation(context, leftTuple, (AgendaItem) leftTuple
+        					.getObject(), (RuleTerminalNode) leftTuple
+        					.getLeftTupleSink());
+        		}
             }
         }
         stream.writeShort( PersisterEnums.END );
@@ -695,14 +695,14 @@ public class OutputMarshaller {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
                 if (leftTuple.getObject() != null) {
-					PropagationContext pc = ((Activation)leftTuple.getObject())
-							.getPropagationContext();
-					if (!pcMap.containsKey(pc.getPropagationNumber())) {
-						stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
-						writePropagationContext(context, pc);
-						pcMap.put(pc.getPropagationNumber(), pc);
-					}
-				}
+        			PropagationContext pc = ((Activation)leftTuple.getObject())
+        					.getPropagationContext();
+        			if (!pcMap.containsKey(pc.getPropagationNumber())) {
+        				stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
+        				writePropagationContext(context, pc);
+        				pcMap.put(pc.getPropagationNumber(), pc);
+        			}
+        		}
             }
         }
 
@@ -747,15 +747,15 @@ public class OutputMarshaller {
     }
 
     
-	public static void writeWorkItem(MarshallerWriteContext context,
-			WorkItem workItem) throws IOException {
-		ObjectOutputStream stream = context.stream;
-		stream.writeLong(workItem.getId());
-		stream.writeLong(workItem.getProcessInstanceId());
-		stream.writeUTF(workItem.getName());
-		stream.writeInt(workItem.getState());
+    public static void writeWorkItem(MarshallerWriteContext context,
+        	WorkItem workItem) throws IOException {
+        ObjectOutputStream stream = context.stream;
+        stream.writeLong(workItem.getId());
+        stream.writeLong(workItem.getProcessInstanceId());
+        stream.writeUTF(workItem.getName());
+        stream.writeInt(workItem.getState());
 
-		//Work Item Parameters
+        //Work Item Parameters
                 Map<String, Object> parameters = workItem.getParameters();
                  Collection<Object> notNullValues = new ArrayList<Object>();
                 for(Object value: parameters.values()){
@@ -779,6 +779,6 @@ public class OutputMarshaller {
 
                 }
              
-	}
+    }
 
 }

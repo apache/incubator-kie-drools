@@ -157,14 +157,14 @@ public class ConcurrentRightTupleList
         throw new UnsupportedOperationException();
     }
     
-	public FastIterator fastIterator() {
-		return LinkedList.fastIterator;
-	}
-	
-	public FastIterator fullFastIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public FastIterator fastIterator() {
+        return LinkedList.fastIterator;
+    }
+
+    public FastIterator fullFastIterator() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public boolean matches(final Object object,
                            final int objectHashCode) {

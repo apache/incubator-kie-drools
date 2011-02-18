@@ -63,10 +63,10 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
         return this.oldObject;
     }
 
-	@Override
-	public String toString() {
-		return "==>[ObjectUpdatedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
-				+ ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime()
-				+ ", getPropagationContext()=" + getPropagationContext() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[ObjectUpdatedEventImpl: getFactHandle()=" + getFactHandle() + ", getObject()=" + getObject()
+        		+ ", getOldObject()=" + getOldObject() + ", getKnowledgeRuntime()=" + getKnowledgeRuntime()
+        		+ ", getPropagationContext()=" + getPropagationContext() + "]";
+    }
 }

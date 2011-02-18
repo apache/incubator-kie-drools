@@ -36,11 +36,11 @@ import org.drools.examples.conway.CellState;
  */
 public class CellGridCanvas extends Canvas {
     
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
     private static final Color BACKGROUND_COLOR = Color.gray;
     private static final Color GRID_COLOR       = CellGridCanvas.BACKGROUND_COLOR.brighter();
-	
-	private Image              offScreenImage;
+
+    private Image              offScreenImage;
     private Image              backgroundImage;
     private final int          cellSize;
     private final CellGrid     cellGrid;

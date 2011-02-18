@@ -108,9 +108,9 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         return this.tupleValueFullIterator;
     }
     
-	public FastIterator fastIterator() {
-		return LinkedList.fastIterator;
-	}
+    public FastIterator fastIterator() {
+        return LinkedList.fastIterator;
+    }
 
     public LeftTuple getFirst(final RightTuple rightTuple) {
         LeftTupleList bucket = get( rightTuple );

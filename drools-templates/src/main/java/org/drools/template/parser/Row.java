@@ -27,14 +27,14 @@ public class Row {
     List<Cell> cells = new ArrayList<Cell>();
 
     public Row() {
-    	
+
     }
     
     Row(int r, Column[] columns) {
         rowNum = r;
         for (int i = 0; i < columns.length; i++) {
-			cells.add(columns[i].createCell(this));
-		}
+        	cells.add(columns[i].createCell(this));
+        }
     }
     
     public int getRowNumber() {
@@ -43,21 +43,21 @@ public class Row {
 
     Cell getCell(int columnIndex)
     {
-    	return cells.get(columnIndex);
+        return cells.get(columnIndex);
     }
     
     boolean isEmpty() {
         for ( Cell cell : cells ) {
-			if (!cell.isEmpty())
-			{
-				return false;
-			}
-		}
-    	return true;
+        	if (!cell.isEmpty())
+        	{
+        		return false;
+        	}
+        }
+        return true;
     }
     
     public List<Cell> getCells() {
-    	return cells;
+        return cells;
     }
 
     public String toString() {

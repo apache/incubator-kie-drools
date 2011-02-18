@@ -167,8 +167,8 @@ public class NotNode extends BetaNode {
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         
-    	FastIterator it = memory.getRightTupleMemory().fastIterator();
-    	
+        FastIterator it = memory.getRightTupleMemory().fastIterator();
+
         // assign now, so we can remove from memory before doing any possible propagations
         final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
@@ -382,8 +382,8 @@ public class NotNode extends BetaNode {
         if ( firstBlocked != null ) {
             // now process existing blocks, we only process existing and not new from above loop
 
-        	FastIterator it = memory.getRightTupleMemory().fastIterator();
-        	
+            FastIterator it = memory.getRightTupleMemory().fastIterator();
+
             final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
 
             // iterate all the existing previous blocked LeftTuples

@@ -30,10 +30,10 @@ public class BeforeFunctionRemovedEventImpl extends KnowledgeBaseEventImpl imple
         return this.function;
     }
 
-	@Override
-	public String toString() {
-		return "==>[BeforeFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
-				+ getKnowledgeBase() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[BeforeFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
+        		+ getKnowledgeBase() + "]";
+    }
 
 }

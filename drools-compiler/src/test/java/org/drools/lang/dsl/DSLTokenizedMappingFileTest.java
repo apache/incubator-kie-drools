@@ -11,11 +11,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DSLTokenizedMappingFileTest {
-	
-	// Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
-	// JDK works correctly with "(?<=^|\\W)"
-	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
-	
+
+    // Due to a bug in JDK 5, a workaround for zero-widht lookbehind has to be used.
+    // JDK works correctly with "(?<=^|\\W)"
+    private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 

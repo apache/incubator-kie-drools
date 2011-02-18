@@ -38,16 +38,16 @@ import java.util.regex.Pattern;
  */
 public class SnippetBuilder {
 
-	public enum SnippetType {
-		SINGLE, PARAM, INDEXED, FORALL
-	};
+    public enum SnippetType {
+        SINGLE, PARAM, INDEXED, FORALL
+    };
 
-	public static final String PARAM_PREFIX = "$";
-	public static final String PARAM_SUFFIX = "param";
-	public static final String PARAM_STRING = PARAM_PREFIX + PARAM_SUFFIX;
-	public static final String PARAM_FORALL_STRING = "forall";
-	public static final Pattern PARAM_FORALL_PATTERN = Pattern
-			.compile(PARAM_FORALL_STRING + "\\(([^{}]*)\\)\\{([^{}]+)\\}");
+    public static final String PARAM_PREFIX = "$";
+    public static final String PARAM_SUFFIX = "param";
+    public static final String PARAM_STRING = PARAM_PREFIX + PARAM_SUFFIX;
+    public static final String PARAM_FORALL_STRING = "forall";
+    public static final Pattern PARAM_FORALL_PATTERN = Pattern
+        	.compile(PARAM_FORALL_STRING + "\\(([^{}]*)\\)\\{([^{}]+)\\}");
 
     private final String        _template;
     
@@ -69,16 +69,16 @@ public class SnippetBuilder {
         this.delimiter = Pattern.compile( "(.*?[^\\\\])(,|\\z)" );
     }
 
-	public static SnippetType getType(String template) {
-		Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(template);
-		if (forallMatcher.find())
-			return SnippetType.FORALL;
-		else if (template.indexOf(PARAM_PREFIX + "1") != -1)
-			return SnippetType.INDEXED;
-		else if (template.indexOf(PARAM_STRING) != -1)
-			return SnippetType.PARAM;
-		return SnippetType.SINGLE;
-	}
+    public static SnippetType getType(String template) {
+        Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(template);
+        if (forallMatcher.find())
+        	return SnippetType.FORALL;
+        else if (template.indexOf(PARAM_PREFIX + "1") != -1)
+        	return SnippetType.INDEXED;
+        else if (template.indexOf(PARAM_STRING) != -1)
+        	return SnippetType.PARAM;
+        return SnippetType.SINGLE;
+    }
     
     /**
      * @param cellValue
@@ -86,38 +86,38 @@ public class SnippetBuilder {
      *            place holder exists, will just return the snippet.
      * @return The final snippet.
      */
-	public String build(final String cellValue) {
-		switch (type) {
-		case FORALL:
-			return buildForAll(cellValue);
-		case INDEXED:
-			return buildMulti(cellValue);
-		default:
-			return buildSingle(cellValue);
-		}
-	}
+    public String build(final String cellValue) {
+        switch (type) {
+        case FORALL:
+        	return buildForAll(cellValue);
+        case INDEXED:
+        	return buildMulti(cellValue);
+        default:
+        	return buildSingle(cellValue);
+        }
+    }
 
-	private String buildForAll(final String cellValue) {
-		final String[] cellVals = split(cellValue);
-		Map<String, String> replacements = new HashMap<String, String>();
-		Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(_template);
-		while (forallMatcher.find()) {
-			replacements.put(forallMatcher.group(), "");
-			for (int paramNumber = 0; paramNumber < cellVals.length; paramNumber++) {
-				replacements.put(forallMatcher.group(), replacements
-						.get(forallMatcher.group())
-						+ (paramNumber == 0 ? "" : " " + forallMatcher.group(1)
-								+ " ")
-						+ replace(forallMatcher.group(2), PARAM_PREFIX,
-								cellVals[paramNumber].trim(), 256));
-			}
-		}
-		String result = _template;
-		for (String key : replacements.keySet())
-			result = replace(result, key, replacements.get(key), 256);
-		return result.equals("") ? _template : result;
-	}
-	
+    private String buildForAll(final String cellValue) {
+        final String[] cellVals = split(cellValue);
+        Map<String, String> replacements = new HashMap<String, String>();
+        Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(_template);
+        while (forallMatcher.find()) {
+        	replacements.put(forallMatcher.group(), "");
+        	for (int paramNumber = 0; paramNumber < cellVals.length; paramNumber++) {
+        		replacements.put(forallMatcher.group(), replacements
+        				.get(forallMatcher.group())
+        				+ (paramNumber == 0 ? "" : " " + forallMatcher.group(1)
+        						+ " ")
+        				+ replace(forallMatcher.group(2), PARAM_PREFIX,
+        						cellVals[paramNumber].trim(), 256));
+        	}
+        }
+        String result = _template;
+        for (String key : replacements.keySet())
+        	result = replace(result, key, replacements.get(key), 256);
+        return result.equals("") ? _template : result;
+    }
+
     private String buildMulti(final String cellValue) {
         final String[] cellVals = split( cellValue );
         String result = this._template;
@@ -150,7 +150,7 @@ public class SnippetBuilder {
     private String buildSingle(final String cellValue) {
 
         return replace( this._template,
-        				PARAM_STRING,
+            			PARAM_STRING,
                         cellValue,
                         256 );
 

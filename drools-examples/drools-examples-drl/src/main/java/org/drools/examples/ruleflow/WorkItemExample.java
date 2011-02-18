@@ -36,14 +36,14 @@ public class WorkItemExample {
 
             // logging all work items to System.out
             WorkItemHandler handler = new WorkItemHandler() {
-				public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-					System.out.println("Executing work item " + workItem);
-			        manager.completeWorkItem(workItem.getId(), null);
-				}
-            	
-				public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-					// Do nothing
-				}
+        		public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        			System.out.println("Executing work item " + workItem);
+        	        manager.completeWorkItem(workItem.getId(), null);
+        		}
+
+        		public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        			// Do nothing
+        		}
             };
             ksession.getWorkItemManager().registerWorkItemHandler( "Email", handler );
             ksession.getWorkItemManager().registerWorkItemHandler( "Log", handler );

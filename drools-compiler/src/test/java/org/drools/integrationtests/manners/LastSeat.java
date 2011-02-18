@@ -19,21 +19,21 @@ package org.drools.integrationtests.manners;
 import java.io.Serializable;
 
 public class LastSeat implements Serializable {
-	private int seat;
-	
-	public LastSeat() {
-		
-	}
+    private int seat;
 
-	public LastSeat(int seat) {
-		this.seat = seat;
-	}
+    public LastSeat() {
 
-	public int getSeat() {
-		return this.seat;
-	}
+    }
 
-	public String toString() {
-		return "[LastSeat seat=" + this.seat + "]";
-	}
+    public LastSeat(int seat) {
+        this.seat = seat;
+    }
+
+    public int getSeat() {
+        return this.seat;
+    }
+
+    public String toString() {
+        return "[LastSeat seat=" + this.seat + "]";
+    }
 }

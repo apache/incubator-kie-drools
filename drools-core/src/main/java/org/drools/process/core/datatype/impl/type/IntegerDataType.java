@@ -49,17 +49,17 @@ public class IntegerDataType
         }
     }
 
-	public Object readValue(String value) {
-		return new Integer(value);
-	}
+    public Object readValue(String value) {
+        return new Integer(value);
+    }
 
-	public String writeValue(Object value) {
-		Integer i = (Integer) value;
-		return i == null ? "" : i.toString();
-	}
+    public String writeValue(Object value) {
+        Integer i = (Integer) value;
+        return i == null ? "" : i.toString();
+    }
 
-	public String getStringType() {
-		return "Integer";
-	}
+    public String getStringType() {
+        return "Integer";
+    }
 
 }

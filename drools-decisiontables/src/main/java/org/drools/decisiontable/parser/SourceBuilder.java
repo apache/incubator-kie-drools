@@ -5,7 +5,7 @@ package org.drools.decisiontable.parser;
  * @author Michael Neale
  */
 public interface SourceBuilder {
-	ActionType.Code getActionTypeCode();
+    ActionType.Code getActionTypeCode();
     String getResult();
     void addTemplate(int row, int col, String content);
     void addCellValue(int row, int col, String value);

@@ -23,20 +23,20 @@ package org.drools.template.parser;
  */
 public class LongColumn extends AbstractColumn {
 
-	public LongColumn(String n) {
-		super(n);
-	}
+    public LongColumn(String n) {
+        super(n);
+    }
 //
 //	public void addValue(Map vars, Object value) {
 //		vars.put(getName(), value);
 //	}
 
-	public Cell createCell(Row row) {
-		return new LongCell(row, this);
-	}
+    public Cell createCell(Row row) {
+        return new LongCell(row, this);
+    }
 
-	public String getCellType() {
-		return "LongCell";
-	}
+    public String getCellType() {
+        return "LongCell";
+    }
 
 }

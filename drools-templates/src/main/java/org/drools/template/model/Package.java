@@ -87,10 +87,10 @@ public class Package extends AttributedDRLElement
     }
 
     public void renderDRL(final DRLOutput out) {
-    	if (_name != null) {
-	        out.writeLine( "package " + this._name.replace( ' ',
-	                                                   '_' ) + ";" );
-    	}
+        if (_name != null) {
+            out.writeLine( "package " + this._name.replace( ' ',
+                                                       '_' ) + ";" );
+        }
         out.writeLine( "#generated from Decision Table" );
         renderDRL( this._imports,
                    out );

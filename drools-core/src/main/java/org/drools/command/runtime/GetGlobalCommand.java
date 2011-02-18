@@ -32,15 +32,15 @@ public class GetGlobalCommand
     implements
     GenericCommand<Object> {
 
-	private static final long serialVersionUID = 510l;
-	
-	@XmlAttribute (required=true)
-	private String identifier;
-	@XmlAttribute(name="out-identifier")
+    private static final long serialVersionUID = 510l;
+
+    @XmlAttribute (required=true)
+    private String identifier;
+    @XmlAttribute(name="out-identifier")
     private String outIdentifier;
     
     public GetGlobalCommand() {
-	}
+    }
 
     public GetGlobalCommand(String identifier) {
         this.identifier = identifier;

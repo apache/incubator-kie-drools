@@ -354,7 +354,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
         
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 
@@ -416,7 +416,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
         
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 

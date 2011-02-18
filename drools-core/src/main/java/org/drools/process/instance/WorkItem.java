@@ -23,17 +23,17 @@ import java.util.Map;
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface WorkItem extends org.drools.runtime.process.WorkItem {
-	
-	void setName(String name);
-	
-	void setParameter(String name, Object value);
-	
-	void setParameters(Map<String, Object> parameters);
-	
-	void setResults(Map<String, Object> results);
-	
-	void setState(int state);
-	
-	void setProcessInstanceId(long processInstanceId);
-	
+
+    void setName(String name);
+
+    void setParameter(String name, Object value);
+
+    void setParameters(Map<String, Object> parameters);
+
+    void setResults(Map<String, Object> results);
+
+    void setState(int state);
+
+    void setProcessInstanceId(long processInstanceId);
+
 }

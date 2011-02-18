@@ -56,9 +56,9 @@ public class ActivationEventImpl implements ActivationEvent, Externalizable {
         this.kruntime = null; // we null this as it isn't serializable;
     }
 
-	@Override
-	public String toString() {
-		return "==>[ActivationEventImpl: getActivation()=" + getActivation() + ", getKnowledgeRuntime()="
-				+ getKnowledgeRuntime() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[ActivationEventImpl: getActivation()=" + getActivation() + ", getKnowledgeRuntime()="
+        		+ getKnowledgeRuntime() + "]";
+    }
 }

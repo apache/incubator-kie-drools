@@ -32,7 +32,7 @@ public class AbortWorkItemCommand
     implements
     GenericCommand<Object> {
 
-	@XmlAttribute(name="id", required=true)
+    @XmlAttribute(name="id", required=true)
     private long workItemId;
     
     public AbortWorkItemCommand() {

@@ -160,7 +160,7 @@ public class KnowledgeStoreServiceImpl
         if ( timerServiceClass != null ) {
             this.timerServiceClass = timerServiceClass;
             configProps.put( "drools.timerService",
-            		         timerServiceClass.getName() );
+                	         timerServiceClass.getName() );
         }
     }
 

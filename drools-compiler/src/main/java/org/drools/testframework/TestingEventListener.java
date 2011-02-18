@@ -38,40 +38,40 @@ public class TestingEventListener implements AgendaEventListener {
 
     final Map<String, Integer>	firingCounts = new HashMap<String, Integer>(100);
 
-	long totalFires;
+    long totalFires;
 
 
     public TestingEventListener() {
     }
 
     public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
-    	return new AgendaFilter() {
-			public boolean accept(Activation activation) {
-				if (ruleNames.size() ==0) return true;
-				String ruleName = activation.getRule().getName();
-				
-				http://www.wtf.com
-					
-				//jdelong: please don't want to see records of cancelled activations 
-					
-				if (inclusive) {
-					if (ruleNames.contains(ruleName)) {
-						return true;
-					} else {
-						//record(activation.getRule(), firingCounts);
-						return false;
-					}
-					
-				} else {
-					if (!ruleNames.contains(ruleName)) {
-						return true;
-					} else {
-						//record(activation.getRule(), firingCounts);
-						return false;
-					}
-				}
-			}
-    	};
+        return new AgendaFilter() {
+        	public boolean accept(Activation activation) {
+        		if (ruleNames.size() ==0) return true;
+        		String ruleName = activation.getRule().getName();
+
+        		http://www.wtf.com
+
+        		//jdelong: please don't want to see records of cancelled activations
+
+        		if (inclusive) {
+        			if (ruleNames.contains(ruleName)) {
+        				return true;
+        			} else {
+        				//record(activation.getRule(), firingCounts);
+        				return false;
+        			}
+
+        		} else {
+        			if (!ruleNames.contains(ruleName)) {
+        				return true;
+        			} else {
+        				//record(activation.getRule(), firingCounts);
+        				return false;
+        			}
+        		}
+        	}
+        };
     }
 
 
@@ -125,14 +125,14 @@ public class TestingEventListener implements AgendaEventListener {
 
     public void afterActivationFired(AfterActivationFiredEvent event,
             WorkingMemory workingMemory) {
-    	recordFiring(event.getActivation().getRule());
+        recordFiring(event.getActivation().getRule());
     }
 
-	private void recordFiring(Rule rule) {
-		record(rule, this.firingCounts);
-	}
+    private void recordFiring(Rule rule) {
+        record(rule, this.firingCounts);
+    }
 
-	public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event,
             WorkingMemory workingMemory) {
     }
 
@@ -140,67 +140,67 @@ public class TestingEventListener implements AgendaEventListener {
             WorkingMemory workingMemory) {
     }
 
-	public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
-	}
+    public void beforeActivationFired(BeforeActivationFiredEvent event, WorkingMemory workingMemory) {
+    }
 
-	private void record(Rule rule, Map<String, Integer> counts) {
-		this.totalFires++;
-		String name = rule.getName();
-		if (!counts.containsKey(name)) {
-			counts.put(name, 1);
-		} else {
-			counts.put(name, counts.get(name) + 1);
-		}
-	}
+    private void record(Rule rule, Map<String, Integer> counts) {
+        this.totalFires++;
+        String name = rule.getName();
+        if (!counts.containsKey(name)) {
+        	counts.put(name, 1);
+        } else {
+        	counts.put(name, counts.get(name) + 1);
+        }
+    }
 
 
 
-	/**
-	 * @return A map of the number of times a given rule "fired".
-	 * (of course in reality the side effect of its firing may have been nilled out).
-	 */
-	public Map<String, Integer> getFiringCounts() {
-		return this.firingCounts;
-	}
+    /**
+     * @return A map of the number of times a given rule "fired".
+     * (of course in reality the side effect of its firing may have been nilled out).
+     */
+    public Map<String, Integer> getFiringCounts() {
+        return this.firingCounts;
+    }
 
-	/**
-	 * Return a list of the rules fired, for display purposes.
-	 */
-	public String[] getRulesFiredSummary() {
-		String[] r = new String[firingCounts.size()];
-		int i = 0;
-		for (Iterator iterator = firingCounts.entrySet().iterator(); iterator.hasNext();) {
-			Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
-			r[i] = e.getKey() + " [" + e.getValue() + "]";
-			i++;
-		}
+    /**
+     * Return a list of the rules fired, for display purposes.
+     */
+    public String[] getRulesFiredSummary() {
+        String[] r = new String[firingCounts.size()];
+        int i = 0;
+        for (Iterator iterator = firingCounts.entrySet().iterator(); iterator.hasNext();) {
+        	Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
+        	r[i] = e.getKey() + " [" + e.getValue() + "]";
+        	i++;
+        }
 
-		return r;
-	}
+        return r;
+    }
 
-	public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-			WorkingMemory workingMemory) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+        	WorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
 
-	public void afterRuleFlowGroupDeactivated(
-			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-			WorkingMemory workingMemory) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void afterRuleFlowGroupDeactivated(
+        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
 
-	public void beforeRuleFlowGroupDeactivated(
-			RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+        	WorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void beforeRuleFlowGroupDeactivated(
+        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        // TODO Auto-generated method stub
+
+    }
 
 
 
@@ -208,8 +208,8 @@ public class TestingEventListener implements AgendaEventListener {
 
 class NilConsequence implements Consequence {
 
-	public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
-	}
+    public void evaluate(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) throws Exception {
+    }
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
     }

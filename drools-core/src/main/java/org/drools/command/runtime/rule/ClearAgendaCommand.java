@@ -29,11 +29,11 @@ public class ClearAgendaCommand implements GenericCommand<Object> {
     public Void execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         ksession.getAgenda().clear();
-		return null;
-	}
+        return null;
+    }
 
-	public String toString() {
-		return "session.getAgenda().clear();";
-	}
-	
+    public String toString() {
+        return "session.getAgenda().clear();";
+    }
+
 }

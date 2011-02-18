@@ -12,9 +12,9 @@ import static org.junit.Assert.*;
 
 public class DSLMappingEntryTest {
 
-	// Due to a bug in JDK 5, a workaround for zero-width lookbehind has to be used.
-	// JDK works correctly with "(?<=^|\\W)"
-	private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
+    // Due to a bug in JDK 5, a workaround for zero-width lookbehind has to be used.
+    // JDK works correctly with "(?<=^|\\W)"
+    private static final String lookbehind = "(?:(?<=^)|(?<=\\W))";
 
     private DSLMappingEntry createEntry(final String inputKey,
                                         final String inputValue) throws IOException {
@@ -108,18 +108,18 @@ public class DSLMappingEntryTest {
     }
         
     private DefaultExpander makeExpander( DSLMappingEntry... entries ){
-    	DefaultExpander expander = new DefaultExpander();
-    	DefaultDSLMapping mapping = new DefaultDSLMapping();
-    	for( DSLMappingEntry entry: entries ){
-    		mapping.addEntry( entry );
-    	}
-    	List<String> options = new ArrayList<String>();
-    	options.add("result");
-    	options.add("when");
-    	options.add("steps");
-    	mapping.setOptions(options);
-    	expander.addDSLMapping(mapping);
-    	return expander;
+        DefaultExpander expander = new DefaultExpander();
+        DefaultDSLMapping mapping = new DefaultDSLMapping();
+        for( DSLMappingEntry entry: entries ){
+        	mapping.addEntry( entry );
+        }
+        List<String> options = new ArrayList<String>();
+        options.add("result");
+        options.add("when");
+        options.add("steps");
+        mapping.setOptions(options);
+        expander.addDSLMapping(mapping);
+        return expander;
     }
     
 
@@ -128,17 +128,17 @@ public class DSLMappingEntryTest {
         DSLMappingEntry entry = this.setupEntry();
         DefaultExpander ex = makeExpander( entry );
         String[] strs = new String[]{ "0_sp", " 1_sp", "   3_sp", "0_sp_1 ", 
-        		                      "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
+            	                      "0_sp_3   ", "0_sp 1_sp 2_sp", "   3_sp   3_sp 1_sp 1_sp_2  " };
         StringBuilder sb = new StringBuilder( "rule x\n" + "when\n" );
         for( String str: strs ){
-        	sb.append( "String is \"" + str + "\"\n" );
+            sb.append( "String is \"" + str + "\"\n" );
         }
         sb.append( "then\n" + "end\n" );
         String dslr = sb.toString();
         String drl = ex.expand( dslr );
         
         for( String str: strs ){
-        	assertTrue( drl.contains( '"' + str + '"' ) );
+            assertTrue( drl.contains( '"' + str + '"' ) );
         }
     }
 
@@ -200,7 +200,7 @@ public class DSLMappingEntryTest {
                        entry7.getValuePattern());
   
         DefaultExpander ex = makeExpander( entry1, entry2, entry3, entry4,
-        		                           entry5, entry6, entry7 );
+            	                           entry5, entry6, entry7 );
         StringBuilder sb = new StringBuilder( "rule x\n" ).append( "when\n" );
         
         sb.append( "attr name is in [ 'Edson', 'Bob' ]" ).append( "\n" );
@@ -215,8 +215,8 @@ public class DSLMappingEntryTest {
         String drl = ex.expand( dslr );
 
         for( String exp: new String[]{
-        		"name in ( 'Edson', 'Bob' )",
-        		"Person( attribute == \"handsome\" )",
+            	"name in ( 'Edson', 'Bob' )",
+            	"Person( attribute == \"handsome\" )",
                 "Sentence( mykey == myvalue )",
 //                "applicant:Applicant(credit==AA)",
                 "applicant:Applicant(credit==555)",

@@ -49,11 +49,11 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     }
     
     public WorkingMemoryInMemoryLogger(final KnowledgeRuntimeEventManager session) {
-    	super( session );
+        super( session );
     }
 
     @SuppressWarnings("unchecked")
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         events  = (List<LogEvent>) in.readObject();
     }
@@ -68,10 +68,10 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
         StringWriter writer = new StringWriter();
         try {
             final ObjectOutputStream out = xstream.createObjectOutputStream(writer);
-        	out.writeObject( this.events );
+            out.writeObject( this.events );
             out.close();
         } catch (Throwable t) {
-        	throw new RuntimeException("Unable to create event output: " + t.getMessage());
+            throw new RuntimeException("Unable to create event output: " + t.getMessage());
         }
         return writer.toString();
     }
@@ -91,7 +91,7 @@ public class WorkingMemoryInMemoryLogger extends WorkingMemoryLogger {
     }
     
     public List<LogEvent> getLogEvents() {
-    	return this.events;
+        return this.events;
     }
 
 }

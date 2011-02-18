@@ -23,10 +23,10 @@ import org.drools.spi.RuleFlowGroup;
 
 public interface InternalRuleFlowGroup extends RuleFlowGroup {
 
-	void setWorkingMemory(InternalWorkingMemory workingMemory);
-	
-	InternalWorkingMemory getWorkingMemory();
-	
+    void setWorkingMemory(InternalWorkingMemory workingMemory);
+
+    InternalWorkingMemory getWorkingMemory();
+
     void addActivation(Activation activation);
 
     void removeActivation(final Activation activation);

@@ -172,9 +172,9 @@ public class DrlDumper extends ReflectiveVisitor
         String tmpstr = new String();
         tmpstr += " accumulate (";
         if ( descr.isSinglePattern() ) {
-        	visitPatternDescr( descr.getInputPattern() );
+            visitPatternDescr( descr.getInputPattern() );
         } else {
-        	visit(descr.getInput());
+            visit(descr.getInput());
         }
         tmpstr += this.template.substring( 2 );
 
@@ -317,14 +317,14 @@ public class DrlDumper extends ReflectiveVisitor
         String ruleList = "";
         Object ruleobj;
         for ( final Iterator iterator = rules.iterator(); iterator.hasNext(); ) {
-        	ruleobj = iterator.next();
-        	if ( ruleobj instanceof QueryDescr ) {
-        		visitQueryDescr((QueryDescr) ruleobj);
-        		ruleList += this.template;
-        		break;
-        	}
+            ruleobj = iterator.next();
+            if ( ruleobj instanceof QueryDescr ) {
+            	visitQueryDescr((QueryDescr) ruleobj);
+            	ruleList += this.template;
+            	break;
+            }
 
-        	final RuleDescr ruleDescr = (RuleDescr) ruleobj;
+            final RuleDescr ruleDescr = (RuleDescr) ruleobj;
             String rule = "rule \"" + ruleDescr.getName() + "\" " + DrlDumper.eol;
             final String attribute = processAttribute( ruleDescr.getAttributes().values() );
             String lhs = "";

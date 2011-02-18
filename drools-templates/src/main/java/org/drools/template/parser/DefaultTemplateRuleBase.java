@@ -58,97 +58,97 @@ import org.drools.template.model.Rule;
  * 
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
-	private RuleBase ruleBase;
+    private RuleBase ruleBase;
 
-	public DefaultTemplateRuleBase(final TemplateContainer tc) {
-		ruleBase = readRule(getDTRules(tc.getTemplates()));
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.drools.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
-	 */
-	public StatefulSession newStatefulSession() {
-		return ruleBase.newStatefulSession();
-	}
-	/**
-	 * 
-	 * @param templates
-	 * @return
-	 */
-	private String getDTRules(Map<String, RuleTemplate> templates) {
-		org.drools.template.model.Package p = new org.drools.template.model.Package(
-				DefaultTemplateRuleBase.class.getPackage().getName());
-		addImports(p);
-		addGlobals(p);
-		int i = 1;
-		for ( RuleTemplate template : templates.values() ) {
-			createTemplateRule(p, i++, template);
-		}
-		DRLOutput out = new DRLOutput();
-		p.renderDRL(out);
-		return out.getDRL();
+    public DefaultTemplateRuleBase(final TemplateContainer tc) {
+        ruleBase = readRule(getDTRules(tc.getTemplates()));
+    }
 
-	}
+    /* (non-Javadoc)
+     * @see org.drools.decisiontable.parser.TemplateRuleBase#newWorkingMemory()
+     */
+    public StatefulSession newStatefulSession() {
+        return ruleBase.newStatefulSession();
+    }
+    /**
+     *
+     * @param templates
+     * @return
+     */
+    private String getDTRules(Map<String, RuleTemplate> templates) {
+        org.drools.template.model.Package p = new org.drools.template.model.Package(
+        		DefaultTemplateRuleBase.class.getPackage().getName());
+        addImports(p);
+        addGlobals(p);
+        int i = 1;
+        for ( RuleTemplate template : templates.values() ) {
+        	createTemplateRule(p, i++, template);
+        }
+        DRLOutput out = new DRLOutput();
+        p.renderDRL(out);
+        return out.getDRL();
 
-	private void createTemplateRule(org.drools.template.model.Package p, int index, RuleTemplate template) {
-		Rule rule = new Rule(template.getName(), null, index);
-		Condition condition = new Condition();
-		condition.setSnippet("r : Row()");
-		rule.addCondition(condition);
-		createColumnConditions(template, rule);
-		rule.addConsequence(createConsequence(template));
-		p.addRule(rule);
-	}
+    }
 
-	private void createColumnConditions(RuleTemplate template, Rule rule) {
-		for ( TemplateColumn column : template.getColumns() ) {
-			column.addCondition(rule);
-		}
-	}
+    private void createTemplateRule(org.drools.template.model.Package p, int index, RuleTemplate template) {
+        Rule rule = new Rule(template.getName(), null, index);
+        Condition condition = new Condition();
+        condition.setSnippet("r : Row()");
+        rule.addCondition(condition);
+        createColumnConditions(template, rule);
+        rule.addConsequence(createConsequence(template));
+        p.addRule(rule);
+    }
+
+    private void createColumnConditions(RuleTemplate template, Rule rule) {
+        for ( TemplateColumn column : template.getColumns() ) {
+        	column.addCondition(rule);
+        }
+    }
 
 
-	private void addGlobals(org.drools.template.model.Package p) {
-		Global global = new Global();
-		global.setClassName(DefaultGenerator.class.getName());
-		global.setIdentifier("generator");
-		p.addVariable(global);
-	}
+    private void addGlobals(org.drools.template.model.Package p) {
+        Global global = new Global();
+        global.setClassName(DefaultGenerator.class.getName());
+        global.setIdentifier("generator");
+        p.addVariable(global);
+    }
 
-	private void addImports(org.drools.template.model.Package p) {
-		Import drlImport1 = new Import();
-		drlImport1.setClassName(Map.class.getName());
-		Import drlImport2 = new Import();
-		drlImport2.setClassName(HashMap.class.getName());
-		p.addImport(drlImport1);
-		p.addImport(drlImport2);
-	}
+    private void addImports(org.drools.template.model.Package p) {
+        Import drlImport1 = new Import();
+        drlImport1.setClassName(Map.class.getName());
+        Import drlImport2 = new Import();
+        drlImport2.setClassName(HashMap.class.getName());
+        p.addImport(drlImport1);
+        p.addImport(drlImport2);
+    }
 
-	private Consequence createConsequence(RuleTemplate template) {
-		StringBuffer action = new StringBuffer();
-		action.append("generator.generate( \"");
-		action.append(template.getName()).append("\", r);");
-		final Consequence consequence = new Consequence();
-		consequence.setSnippet(action.toString());
-		return consequence;
-	}
+    private Consequence createConsequence(RuleTemplate template) {
+        StringBuffer action = new StringBuffer();
+        action.append("generator.generate( \"");
+        action.append(template.getName()).append("\", r);");
+        final Consequence consequence = new Consequence();
+        consequence.setSnippet(action.toString());
+        return consequence;
+    }
 
-	private RuleBase readRule(String drl) {
-		try {
+    private RuleBase readRule(String drl) {
+        try {
 //			System.out.println(drl);
-			// read in the source
-			Reader source = new StringReader(drl);
-			PackageBuilder builder = new PackageBuilder();
-			builder.addPackageFromDrl(source);
-			Package pkg = builder.getPackage();
+        	// read in the source
+        	Reader source = new StringReader(drl);
+        	PackageBuilder builder = new PackageBuilder();
+        	builder.addPackageFromDrl(source);
+        	Package pkg = builder.getPackage();
 
-			// add the package to a rulebase (deploy the rule package).
-			RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-			ruleBase.addPackage(pkg);
-			return ruleBase;
+        	// add the package to a rulebase (deploy the rule package).
+        	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        	ruleBase.addPackage(pkg);
+        	return ruleBase;
 
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+        } catch (Exception e) {
+        	throw new RuntimeException(e);
+        }
+    }
 
 }

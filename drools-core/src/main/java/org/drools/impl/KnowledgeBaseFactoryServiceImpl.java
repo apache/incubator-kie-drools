@@ -63,7 +63,7 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
                                                                    ( RuleBaseConfiguration ) conf ) );
     }
 
-	public Environment newEnvironment() {
-		return EnvironmentFactory.newEnvironment();//new EnvironmentImpl(); //
-	}
+    public Environment newEnvironment() {
+        return EnvironmentFactory.newEnvironment();//new EnvironmentImpl(); //
+    }
 }

@@ -138,13 +138,13 @@ public class BooleanFieldImpl
         return false;
     }
 
-	public BigDecimal getBigDecimalValue() {
-		throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type boolean" );
-	}
+    public BigDecimal getBigDecimalValue() {
+        throw new RuntimeDroolsException( "Conversion to BigDecimal not supported for type boolean" );
+    }
 
-	public BigInteger getBigIntegerValue() {
-		throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type boolean" );
-	}
+    public BigInteger getBigIntegerValue() {
+        throw new RuntimeDroolsException( "Conversion to BigInteger not supported for type boolean" );
+    }
 
 
 }

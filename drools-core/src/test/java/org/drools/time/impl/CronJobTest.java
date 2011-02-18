@@ -36,8 +36,8 @@ import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 public class CronJobTest {
     @Test
     public void testCronTriggerJob() throws Exception {
-    	SessionConfiguration config = new SessionConfiguration();
-    	config.setClockType(ClockType.PSEUDO_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setClockType(ClockType.PSEUDO_CLOCK);
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( config );
         
         DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );

@@ -34,72 +34,72 @@ import org.drools.template.model.SnippetBuilder;
  * can be any valid rule condition.
  */
 class DefaultTemplateColumn implements TemplateColumn {
-	private static final Pattern COLUMN_PATTERN = Pattern
-			.compile("^(!?)([a-zA-Z0-9_]*)(\\[([0-9]+)\\])?\\s*(.*)");
+    private static final Pattern COLUMN_PATTERN = Pattern
+        	.compile("^(!?)([a-zA-Z0-9_]*)(\\[([0-9]+)\\])?\\s*(.*)");
 
-	private boolean notCondition;
+    private boolean notCondition;
 
-	private String columnName;
+    private String columnName;
 
-	private String condition;
+    private String condition;
 
-	private TemplateContainer templateContainer;
+    private TemplateContainer templateContainer;
 
-	private int index = -1;
+    private int index = -1;
 
-	DefaultTemplateColumn(TemplateContainer tc, String columnString) {
-		templateContainer = tc;
-		Matcher matcher = COLUMN_PATTERN.matcher(columnString);
-		if (!matcher.matches())
-			throw new IllegalArgumentException("column " + columnString
-					+ " is not valid");
-		notCondition = !StringUtils.isEmpty(matcher.group(1));
-		columnName = matcher.group(2);
-		String indexString = matcher.group(4);
-		condition = matcher.group(5);
-		if (!StringUtils.isEmpty(indexString)) {
-			index = Integer.parseInt(indexString);
-		}
-	}
+    DefaultTemplateColumn(TemplateContainer tc, String columnString) {
+        templateContainer = tc;
+        Matcher matcher = COLUMN_PATTERN.matcher(columnString);
+        if (!matcher.matches())
+        	throw new IllegalArgumentException("column " + columnString
+        			+ " is not valid");
+        notCondition = !StringUtils.isEmpty(matcher.group(1));
+        columnName = matcher.group(2);
+        String indexString = matcher.group(4);
+        condition = matcher.group(5);
+        if (!StringUtils.isEmpty(indexString)) {
+        	index = Integer.parseInt(indexString);
+        }
+    }
 
-	private void createCellCondition(final Rule rule) {
-		StringBuffer conditionString = new StringBuffer();
-		Column column = templateContainer.getColumn(columnName);
-		column.getCondition(condition, index);
-		
-		if (notCondition) {
-			conditionString.append("not ");
-		}
-		conditionString.append("exists ");
-		conditionString.append(column.getCondition(condition, index));
-		SnippetBuilder snip = new SnippetBuilder(conditionString.toString());
-		Condition condition = new Condition();
-		condition.setSnippet(snip.build(columnName));
-		rule.addCondition(condition);
-	}
+    private void createCellCondition(final Rule rule) {
+        StringBuffer conditionString = new StringBuffer();
+        Column column = templateContainer.getColumn(columnName);
+        column.getCondition(condition, index);
 
-	private void createColumnCondition(final Rule rule, final String value) {
-		SnippetBuilder colSnip = new SnippetBuilder(
-				"$param : Column(name == \"$param\")");
-		Condition colCondition = new Condition();
-		colCondition.setSnippet(colSnip.build(value));
-		rule.addCondition(colCondition);
-	}
+        if (notCondition) {
+        	conditionString.append("not ");
+        }
+        conditionString.append("exists ");
+        conditionString.append(column.getCondition(condition, index));
+        SnippetBuilder snip = new SnippetBuilder(conditionString.toString());
+        Condition condition = new Condition();
+        condition.setSnippet(snip.build(columnName));
+        rule.addCondition(condition);
+    }
 
-	public void addCondition(Rule rule) {
-		createColumnCondition(rule, columnName);
-		createCellCondition(rule);
-	}
+    private void createColumnCondition(final Rule rule, final String value) {
+        SnippetBuilder colSnip = new SnippetBuilder(
+        		"$param : Column(name == \"$param\")");
+        Condition colCondition = new Condition();
+        colCondition.setSnippet(colSnip.build(value));
+        rule.addCondition(colCondition);
+    }
 
-	public String getName() {
-		return columnName;
-	}
+    public void addCondition(Rule rule) {
+        createColumnCondition(rule, columnName);
+        createCellCondition(rule);
+    }
 
-	public boolean isNotCondition() {
-		return notCondition;
-	}
+    public String getName() {
+        return columnName;
+    }
 
-	public String getCondition() {
-		return condition;
-	}
+    public boolean isNotCondition() {
+        return notCondition;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
 }

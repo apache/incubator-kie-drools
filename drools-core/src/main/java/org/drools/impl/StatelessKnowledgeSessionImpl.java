@@ -134,7 +134,7 @@ public class StatelessKnowledgeSessionImpl
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             InternalProcessRuntime processRuntime = wm.getProcessRuntime();
             if (processRuntime != null) {
-            	processRuntime.setProcessEventSupport( this.processEventSupport );
+                processRuntime.setProcessEventSupport( this.processEventSupport );
             }
 
             final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
@@ -210,17 +210,17 @@ public class StatelessKnowledgeSessionImpl
         return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
     }
 
-	public void addEventListener(ProcessEventListener listener) {
-		this.processEventSupport.addEventListener(listener);
-	}
+    public void addEventListener(ProcessEventListener listener) {
+        this.processEventSupport.addEventListener(listener);
+    }
 
-	public Collection<ProcessEventListener> getProcessEventListeners() {
-		return this.processEventSupport.getEventListeners();
-	}
+    public Collection<ProcessEventListener> getProcessEventListeners() {
+        return this.processEventSupport.getEventListeners();
+    }
 
-	public void removeEventListener(ProcessEventListener listener) {
-		this.processEventSupport.removeEventListener(listener);
-	}
+    public void removeEventListener(ProcessEventListener listener) {
+        this.processEventSupport.removeEventListener(listener);
+    }
 
     public void setGlobal(String identifier,
                           Object value) {
@@ -289,7 +289,7 @@ public class StatelessKnowledgeSessionImpl
     }
     
     public Environment getEnvironment() {
-    	return environment;
+        return environment;
     }
 
 }

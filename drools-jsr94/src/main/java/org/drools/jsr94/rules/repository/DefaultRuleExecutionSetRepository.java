@@ -61,8 +61,8 @@ public class DefaultRuleExecutionSetRepository
      * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
      */
     public RuleExecutionSet getRuleExecutionSet(
-    		String bindUri,
-    		Map properties)
+        	String bindUri,
+        	Map properties)
     throws RuleExecutionSetRepositoryException {
         return (RuleExecutionSet)map.get(bindUri);
     }
@@ -70,12 +70,12 @@ public class DefaultRuleExecutionSetRepository
     /* (non-Javadoc)
      * @see org.drools.jsr94.rules.admin.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
      */
-	public void registerRuleExecutionSet(
-    		String bindUri,
+    public void registerRuleExecutionSet(
+        	String bindUri,
             RuleExecutionSet ruleSet,
             Map properties)
     throws RuleExecutionSetRegisterException {
-    	
+
         if (bindUri == null) {
             throw new RuleExecutionSetRegisterException("bindUri cannot be null");
         }
@@ -90,11 +90,11 @@ public class DefaultRuleExecutionSetRepository
     /* (non-Javadoc)
      * @see org.drools.jsr94.rules.admin.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
      */
-	public void unregisterRuleExecutionSet(
-    		String bindUri,
-    		Map properties)
+    public void unregisterRuleExecutionSet(
+        	String bindUri,
+        	Map properties)
     throws RuleExecutionSetDeregistrationException {
-    	
+
         if (bindUri == null) {
             throw new RuleExecutionSetDeregistrationException("bindUri cannot be null");
         }

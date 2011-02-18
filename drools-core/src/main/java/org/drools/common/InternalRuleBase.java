@@ -117,15 +117,15 @@ public interface InternalRuleBase
      * @return
      */
     public boolean isEvent( Class<?> clazz );
-	
-	public int getNodeCount();
 
-	/**
-	 * Returns the type declaration associated to the given class
-	 * 
-	 * @param clazz
-	 * @return
-	 */
+    public int getNodeCount();
+
+    /**
+     * Returns the type declaration associated to the given class
+     *
+     * @param clazz
+     * @return
+     */
     public TypeDeclaration getTypeDeclaration(Class<?> clazz);
 
     /**

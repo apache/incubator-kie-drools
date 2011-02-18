@@ -32,12 +32,12 @@ import org.drools.template.parser.TemplateDataListener;
  */
 public class DataProviderCompiler {
 
-	/**
-	 * Generates DRL from a data provider for the spreadsheet data and templates.
-	 * @param dataProvider the data provider for the spreadsheet data
-	 * @param template the string containing the template resource name
-	 * @return the generated DRL text as a String
-	 */
+    /**
+     * Generates DRL from a data provider for the spreadsheet data and templates.
+     * @param dataProvider the data provider for the spreadsheet data
+     * @param template the string containing the template resource name
+     * @return the generated DRL text as a String
+     */
     public String compile(final DataProvider dataProvider,
                           final String template) {
         final InputStream templateStream = this.getClass().getResourceAsStream( template );
@@ -46,7 +46,7 @@ public class DataProviderCompiler {
     }
 
     /**
-	 * Generates DRL from a data provider for the spreadsheet data and templates.
+     * Generates DRL from a data provider for the spreadsheet data and templates.
      * @param dataProvider the data provider for the spreadsheet data
      * @param templateStream the InputStream for reading the templates
      * @return the generated DRL text as a String

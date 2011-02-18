@@ -233,13 +233,13 @@ public class ObjectFieldImpl
         return this.isString;
     }
 
-	public BigDecimal getBigDecimalValue() {
-	    return MathUtils.getBigDecimal( this.value );
-	}
+    public BigDecimal getBigDecimalValue() {
+        return MathUtils.getBigDecimal( this.value );
+    }
 
-	public BigInteger getBigIntegerValue() {
+    public BigInteger getBigIntegerValue() {
         return MathUtils.getBigInteger( this.value );
-	}
+    }
 
     public boolean isEnum() {
         return isEnum;

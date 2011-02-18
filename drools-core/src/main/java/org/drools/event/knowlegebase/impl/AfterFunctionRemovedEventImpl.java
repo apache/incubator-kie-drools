@@ -31,10 +31,10 @@ public class AfterFunctionRemovedEventImpl extends KnowledgeBaseEventImpl implem
         return this.function;
     }
 
-	@Override
-	public String toString() {
-		return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
-				+ getKnowledgeBase() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[AfterFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
+        		+ getKnowledgeBase() + "]";
+    }
     
 }

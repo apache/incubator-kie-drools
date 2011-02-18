@@ -67,11 +67,11 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     }
     
     public EclipseJavaCompilerSettings( final JavaCompilerSettings pSettings ) {
-    	super(pSettings);
-    	
-    	if (pSettings instanceof EclipseJavaCompilerSettings) {
-    		defaultEclipseSettings.putAll(((EclipseJavaCompilerSettings)pSettings).toNativeSettings());
-    	}
+        super(pSettings);
+
+        if (pSettings instanceof EclipseJavaCompilerSettings) {
+        	defaultEclipseSettings.putAll(((EclipseJavaCompilerSettings)pSettings).toNativeSettings());
+        }
     }
     
     public EclipseJavaCompilerSettings( final Map pMap ) {
@@ -79,24 +79,24 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     }
 
     private static Map nativeVersions = new HashMap() {
-		private static final long serialVersionUID = 510l;
-	{
-    	put("1.1", CompilerOptions_VERSION_1_1);
-    	put("1.2", CompilerOptions_VERSION_1_2);
-    	put("1.3", CompilerOptions_VERSION_1_3);
-    	put("1.4", CompilerOptions_VERSION_1_4);
-    	put("1.5", CompilerOptions_VERSION_1_5);
-    	put("1.6", CompilerOptions_VERSION_1_6);
+        private static final long serialVersionUID = 510l;
+    {
+        put("1.1", CompilerOptions_VERSION_1_1);
+        put("1.2", CompilerOptions_VERSION_1_2);
+        put("1.3", CompilerOptions_VERSION_1_3);
+        put("1.4", CompilerOptions_VERSION_1_4);
+        put("1.5", CompilerOptions_VERSION_1_5);
+        put("1.6", CompilerOptions_VERSION_1_6);
     }};
     
     private String toNativeVersion( final String pVersion ) {
-    	final String nativeVersion = (String) nativeVersions.get(pVersion);
-    	
-    	if (nativeVersion == null) {
-    		throw new RuntimeException("unknown version " + pVersion);
-    	}
-    	
-    	return nativeVersion;
+        final String nativeVersion = (String) nativeVersions.get(pVersion);
+
+        if (nativeVersion == null) {
+        	throw new RuntimeException("unknown version " + pVersion);
+        }
+
+        return nativeVersion;
     }
     
     Map toNativeSettings() {

@@ -38,69 +38,69 @@ import org.drools.xml.jaxb.util.JaxbMapAdapter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class StartProcessCommand implements GenericCommand<ProcessInstance> {
 
-	@XmlAttribute(required = true)
-	private String processId;
-	
-	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
-	@XmlElement(name="parameter")
-	private Map<String, Object> parameters = new HashMap<String, Object>();
-	
-	@XmlElementWrapper(name="data")
-	private List<Object> data = null;
-	@XmlAttribute(name="out-identifier")
+    @XmlAttribute(required = true)
+    private String processId;
+
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement(name="parameter")
+    private Map<String, Object> parameters = new HashMap<String, Object>();
+
+    @XmlElementWrapper(name="data")
+    private List<Object> data = null;
+    @XmlAttribute(name="out-identifier")
     private String outIdentifier;
 
-	public StartProcessCommand() {
-	}
+    public StartProcessCommand() {
+    }
 
-	public StartProcessCommand(String processId) {
-		this.processId = processId;
-	}
+    public StartProcessCommand(String processId) {
+        this.processId = processId;
+    }
 
-	public StartProcessCommand(String processId, String outIdentifier) {
-	    this(processId);
+    public StartProcessCommand(String processId, String outIdentifier) {
+        this(processId);
         this.outIdentifier = outIdentifier;
     }
 
-	public StartProcessCommand(String processId, Map<String, Object> parameters) {
-		this(processId);
-		this.parameters = parameters;
-	}
+    public StartProcessCommand(String processId, Map<String, Object> parameters) {
+        this(processId);
+        this.parameters = parameters;
+    }
 
-	public StartProcessCommand(String processId, Map<String, Object> parameters, String outIdentifier) {
+    public StartProcessCommand(String processId, Map<String, Object> parameters, String outIdentifier) {
         this(processId, outIdentifier);
         this.parameters = parameters;
     }
 
-	public String getProcessId() {
-		return processId;
-	}
+    public String getProcessId() {
+        return processId;
+    }
 
-	public void setProcessId(String processId) {
-		this.processId = processId;
-	}
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
 
-	public Map<String, Object> getParameters() {
-		return parameters;
-	}
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
 
-	public void setParameters(Map<String, Object> parameters) {
-		this.parameters = parameters;
-	}
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 
-	public void putParameter(String key, Object value) {
-		getParameters().put(key, value);
-	}
-	
-	public List<Object> getData() {
-		return data;
-	}
+    public void putParameter(String key, Object value) {
+        getParameters().put(key, value);
+    }
 
-	public void setData(List<Object> data) {
-		this.data = data;
-	}
+    public List<Object> getData() {
+        return data;
+    }
 
-	public void setOutIdentifier(String outIdentifier) {
+    public void setData(List<Object> data) {
+        this.data = data;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
         this.outIdentifier = outIdentifier;
     }
 
@@ -109,33 +109,33 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance> {
     }
 
     public ProcessInstance execute(Context context) {
-		StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
-		if (data != null) {
-			for (Object o: data) {
-				ksession.insert(o);
-			}
-		}
-		ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
-		if ( this.outIdentifier != null ) {
-		    ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
-		                                                                                                       processInstance.getId());
-		}
-		return processInstance;
-	}
+        if (data != null) {
+        	for (Object o: data) {
+        		ksession.insert(o);
+        	}
+        }
+        ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
+        if ( this.outIdentifier != null ) {
+            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
+                                                                                                               processInstance.getId());
+        }
+        return processInstance;
+    }
 
-	public String toString() {
-		String result = "session.startProcess(" + processId + ", [";
-		if (parameters != null) {
-			int i = 0;
-			for (Map.Entry<String, Object> entry: parameters.entrySet()) {
-				if (i++ > 0) {
-					result += ", ";
-				}
-				result += entry.getKey() + "=" + entry.getValue();
-			}
-		}
-		result += "]);";
-		return result;
-	}
+    public String toString() {
+        String result = "session.startProcess(" + processId + ", [";
+        if (parameters != null) {
+        	int i = 0;
+        	for (Map.Entry<String, Object> entry: parameters.entrySet()) {
+        		if (i++ > 0) {
+        			result += ", ";
+        		}
+        		result += entry.getKey() + "=" + entry.getValue();
+        	}
+        }
+        result += "]);";
+        return result;
+    }
 }

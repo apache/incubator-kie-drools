@@ -40,7 +40,7 @@ public class WorkingMemoryConsoleLogger extends WorkingMemoryLogger {
     }
     
     public WorkingMemoryConsoleLogger(KnowledgeRuntimeEventManager session) {
-    	super(session);
+        super(session);
     }
 
     public void logEventCreated(LogEvent logEvent) {

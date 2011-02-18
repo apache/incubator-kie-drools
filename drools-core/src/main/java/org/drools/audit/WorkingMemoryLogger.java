@@ -123,43 +123,43 @@ public abstract class WorkingMemoryLogger
         workingMemory.addEventListener( (AgendaEventListener) this );
         InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
         if (processRuntime != null) {
-        	processRuntime.addEventListener( (ProcessEventListener) this );
+            processRuntime.addEventListener( (ProcessEventListener) this );
         }
         workingMemory.addEventListener( (RuleBaseEventListener) this );
     }
     
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
-    	if (session instanceof StatefulKnowledgeSessionImpl) {
-    		WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
-    		eventManager.addEventListener( (WorkingMemoryEventListener) this );
-    		eventManager.addEventListener( (RuleBaseEventListener) this );
-    		eventManager.addEventListener( (RuleBaseEventListener) this );
-    		InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
-    		if (processRuntime != null) {
-    			processRuntime.addEventListener( (ProcessEventListener) this );
-    		}
-    	} else if (session instanceof StatelessKnowledgeSessionImpl) {
-    		((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
-    		((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
-    		((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
-    		((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
-    	} else if (session instanceof CommandBasedStatefulKnowledgeSession) {
-    		ReteooWorkingMemory eventManager = 
-    			((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
-    		eventManager.addEventListener( (WorkingMemoryEventListener) this );
-    		eventManager.addEventListener( (AgendaEventListener) this );
-    		InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
-    		eventManager.addEventListener( (RuleBaseEventListener) this );
-    		if (processRuntime != null) {
-    			processRuntime.addEventListener( (ProcessEventListener) this );
-    		}
-    	} else {
-    		throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
-    	}
+        if (session instanceof StatefulKnowledgeSessionImpl) {
+        	WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
+        	eventManager.addEventListener( (WorkingMemoryEventListener) this );
+        	eventManager.addEventListener( (RuleBaseEventListener) this );
+        	eventManager.addEventListener( (RuleBaseEventListener) this );
+        	InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
+        	if (processRuntime != null) {
+        		processRuntime.addEventListener( (ProcessEventListener) this );
+        	}
+        } else if (session instanceof StatelessKnowledgeSessionImpl) {
+        	((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
+        	((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
+        	((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
+        	((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
+        } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
+        	ReteooWorkingMemory eventManager =
+        		((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getStatefulKnowledgesession()).session;
+        	eventManager.addEventListener( (WorkingMemoryEventListener) this );
+        	eventManager.addEventListener( (AgendaEventListener) this );
+        	InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
+        	eventManager.addEventListener( (RuleBaseEventListener) this );
+        	if (processRuntime != null) {
+        		processRuntime.addEventListener( (ProcessEventListener) this );
+        	}
+        } else {
+        	throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
+        }
     }
 
     @SuppressWarnings("unchecked")
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         filters = (List<ILogEventFilter>) in.readObject();
     }
 
@@ -262,8 +262,8 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-    											event.getActivation().getRule().getRuleFlowGroup() ) );
-	}
+        										event.getActivation().getRule().getRuleFlowGroup() ) );
+    }
 
     /**
      * @see org.drools.event.AgendaEventListener
@@ -274,7 +274,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-    											event.getActivation().getRule().getRuleFlowGroup() ) );
+        										event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -286,7 +286,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-    											event.getActivation().getRule().getRuleFlowGroup() ) );
+        										event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -298,7 +298,7 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-    											event.getActivation().getRule().getRuleFlowGroup() ) );
+        										event.getActivation().getRule().getRuleFlowGroup() ) );
     }
 
     /**
@@ -417,7 +417,7 @@ public abstract class WorkingMemoryLogger
     
     public void beforeProcessStarted(ProcessStartedEvent event) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_CREATED,
-        		event.getProcessInstance().getProcessId(),
+            	event.getProcessInstance().getProcessId(),
                 event.getProcessInstance().getProcessName(),
                 event.getProcessInstance().getId()) );
     }
@@ -431,7 +431,7 @@ public abstract class WorkingMemoryLogger
 
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
         filterLogEvent( new RuleFlowLogEvent( LogEvent.BEFORE_RULEFLOW_COMPLETED,
-        		event.getProcessInstance().getProcessId(),
+            	event.getProcessInstance().getProcessId(),
                 event.getProcessInstance().getProcessName(),
                 event.getProcessInstance().getId()) );
     }
@@ -464,40 +464,40 @@ public abstract class WorkingMemoryLogger
     }
     
     private String createNodeId(NodeInstance nodeInstance) {
-    	Node node = nodeInstance.getNode();
-    	if (node == null) {
-    		return "";
-    	}
-    	String nodeId = "" + node.getId();
-    	NodeContainer nodeContainer = node.getNodeContainer();
-    	while (nodeContainer != null) {
-    		if (nodeContainer instanceof Node) {
-    			node = (Node) nodeContainer;
-    			nodeContainer = node.getNodeContainer();
-    			// TODO fix this filter out hidden compositeNode inside ForEach node
-    			if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
-        			nodeId = node.getId() + ":" + nodeId;
-    			}
-    		} else {
-    			break;
-    		}
-    	}
-    	return nodeId;
+        Node node = nodeInstance.getNode();
+        if (node == null) {
+        	return "";
+        }
+        String nodeId = "" + node.getId();
+        NodeContainer nodeContainer = node.getNodeContainer();
+        while (nodeContainer != null) {
+        	if (nodeContainer instanceof Node) {
+        		node = (Node) nodeContainer;
+        		nodeContainer = node.getNodeContainer();
+        		// TODO fix this filter out hidden compositeNode inside ForEach node
+        		if (!(nodeContainer.getClass().getName().endsWith("ForEachNode"))) {
+            		nodeId = node.getId() + ":" + nodeId;
+        		}
+        	} else {
+        		break;
+        	}
+        }
+        return nodeId;
     }
 
     private String createNodeInstanceId(NodeInstance nodeInstance) {
-    	String nodeInstanceId = "" + nodeInstance.getId();
-    	NodeInstanceContainer nodeContainer = nodeInstance.getNodeInstanceContainer();
-    	while (nodeContainer != null) {
-    		if (nodeContainer instanceof NodeInstance) {
-    			nodeInstance = (NodeInstance) nodeContainer;
-    			nodeInstanceId = nodeInstance.getId() + ":" + nodeInstanceId;
-    			nodeContainer = nodeInstance.getNodeInstanceContainer();
-    		} else {
-    			break;
-    		}
-    	}
-    	return nodeInstanceId;
+        String nodeInstanceId = "" + nodeInstance.getId();
+        NodeInstanceContainer nodeContainer = nodeInstance.getNodeInstanceContainer();
+        while (nodeContainer != null) {
+        	if (nodeContainer instanceof NodeInstance) {
+        		nodeInstance = (NodeInstance) nodeContainer;
+        		nodeInstanceId = nodeInstance.getId() + ":" + nodeInstanceId;
+        		nodeContainer = nodeInstance.getNodeInstanceContainer();
+        	} else {
+        		break;
+        	}
+        }
+        return nodeInstanceId;
     }
 
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
@@ -521,26 +521,26 @@ public abstract class WorkingMemoryLogger
     }
 
     public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-    	filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
+        filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.BEFORE_VARIABLE_INSTANCE_CHANGED,
             event.getVariableId(),
             event.getVariableInstanceId(),
             event.getProcessInstance().getProcessId(), 
             event.getProcessInstance().getProcessName(),
             event.getProcessInstance().getId(),
             event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
-	}
-	
-    public void afterVariableChanged(ProcessVariableChangedEvent event) {
-    	filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
-            event.getVariableId(),
-            event.getVariableInstanceId(),
-            event.getProcessInstance().getProcessId(), 
-            event.getProcessInstance().getProcessName(),
-            event.getProcessInstance().getId(),
-            event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
-	}
+    }
 
-	public void afterPackageAdded(AfterPackageAddedEvent event) {
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        filterLogEvent(new RuleFlowVariableLogEvent(LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED,
+            event.getVariableId(),
+            event.getVariableInstanceId(),
+            event.getProcessInstance().getProcessId(), 
+            event.getProcessInstance().getProcessName(),
+            event.getProcessInstance().getId(),
+            event.getNewValue() == null ? "null" : event.getNewValue().toString()) );
+    }
+
+    public void afterPackageAdded(AfterPackageAddedEvent event) {
         filterLogEvent( new RuleBaseLogEvent( LogEvent.AFTER_PACKAGE_ADDED,
                                               event.getPackage().getName(),
                                               null ) );

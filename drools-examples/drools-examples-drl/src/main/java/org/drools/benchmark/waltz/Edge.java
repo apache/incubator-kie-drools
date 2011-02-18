@@ -26,79 +26,79 @@ package org.drools.benchmark.waltz;
  * 
  */
 public class Edge {
-	private int p1;
+    private int p1;
 
-	private int p2;
+    private int p2;
 
-	private boolean joined;
+    private boolean joined;
 
-	private String label;
+    private String label;
 
-	private boolean plotted;
-	
-	final public static String NIL = "empty";
-	
-	final public static String B = "B";
-	
-	final public static String PLUS = "+";
-	
-	final public static String MINUS = "-";
-	
-	public Edge() {
-		
-	}
-	
-	public Edge(int p1, int p2, boolean joined, String label, boolean plotted) {
-		this.p1 = p1;
-		this.p2 = p2;
-		this.joined = joined;
-		this.label = label;
-		this.plotted = plotted;
-	}
+    private boolean plotted;
 
-	public int getP1() {
-		return this.p1;
-	}
+    final public static String NIL = "empty";
 
-	public void setP1(int p1) {
-		this.p1 = p1;
-	}
+    final public static String B = "B";
 
-	public int getP2() {
-		return this.p2;
-	}
+    final public static String PLUS = "+";
 
-	public void setP2(int p2) {
-		this.p2 = p2;
-	}
+    final public static String MINUS = "-";
 
-	public String toString() {
-		return "( Edge p1=" + this.p1 + ", p2=" + this.p2 + ", joined="
-				+ this.joined + ", label=" + this.label + ", plotted="
-				+ this.plotted +" )";
-	}
+    public Edge() {
 
-	public boolean isJoined() {
-		return this.joined;
-	}
+    }
 
-	public void setJoined(boolean joined) {
-		this.joined = joined;
-	}
+    public Edge(int p1, int p2, boolean joined, String label, boolean plotted) {
+        this.p1 = p1;
+        this.p2 = p2;
+        this.joined = joined;
+        this.label = label;
+        this.plotted = plotted;
+    }
 
-	public String getLabel() {
-		return this.label;
-	}
+    public int getP1() {
+        return this.p1;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setP1(int p1) {
+        this.p1 = p1;
+    }
 
-	public boolean getPlotted() {
-		return this.plotted;
-	}
+    public int getP2() {
+        return this.p2;
+    }
 
-	public void setPlotted(boolean plotted) {
-		this.plotted = plotted;
-	}
+    public void setP2(int p2) {
+        this.p2 = p2;
+    }
+
+    public String toString() {
+        return "( Edge p1=" + this.p1 + ", p2=" + this.p2 + ", joined="
+        		+ this.joined + ", label=" + this.label + ", plotted="
+        		+ this.plotted +" )";
+    }
+
+    public boolean isJoined() {
+        return this.joined;
+    }
+
+    public void setJoined(boolean joined) {
+        this.joined = joined;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public boolean getPlotted() {
+        return this.plotted;
+    }
+
+    public void setPlotted(boolean plotted) {
+        this.plotted = plotted;
+    }
 }

@@ -33,35 +33,35 @@ public class RetractCommand
 implements
 GenericCommand<Object> {
 
-	private FactHandle handle;
+    private FactHandle handle;
 
-	public RetractCommand() {
-	}
+    public RetractCommand() {
+    }
 
-	public RetractCommand(FactHandle handle) {
-		this.handle = handle;
-	}
+    public RetractCommand(FactHandle handle) {
+        this.handle = handle;
+    }
 
-	public Object execute(Context context) {
-		StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-		ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() ).retract( handle );
-		return null;
-	}
+    public Object execute(Context context) {
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        ksession.getWorkingMemoryEntryPoint( ((InternalFactHandle)handle).getEntryPoint().getEntryPointId() ).retract( handle );
+        return null;
+    }
 
-	public FactHandle getFactHandle() {
-		return this.handle;
-	}
+    public FactHandle getFactHandle() {
+        return this.handle;
+    }
 
-	@XmlAttribute(name="fact-handle", required=true)
-	public void setFactHandleFromString(String factHandleId) {
-		handle = new DefaultFactHandle(factHandleId);
-	}
-	
+    @XmlAttribute(name="fact-handle", required=true)
+    public void setFactHandleFromString(String factHandleId) {
+        handle = new DefaultFactHandle(factHandleId);
+    }
+
     public String getFactHandleFromString() {
-    	return handle.toExternalForm();
-	}
+        return handle.toExternalForm();
+    }
 
-	public String toString() {
-		return "session.retract( " + handle + " );";
-	}
+    public String toString() {
+        return "session.retract( " + handle + " );";
+    }
 }

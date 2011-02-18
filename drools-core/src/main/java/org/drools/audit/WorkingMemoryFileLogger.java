@@ -67,11 +67,11 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     }
 
     public WorkingMemoryFileLogger(final KnowledgeRuntimeEventManager session) {
-    	super( session );
+        super( session );
     }
 
     @SuppressWarnings("unchecked")
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         events  = (List<LogEvent>)in.readObject();
         fileName    = (String) in.readObject();
@@ -120,7 +120,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             final XStream xstream = new XStream();
             List<LogEvent> eventsToWrite = null;
             synchronized (this.events) {
-            	eventsToWrite = new ArrayList<LogEvent>(this.events);
+                eventsToWrite = new ArrayList<LogEvent>(this.events);
                 clear();
             }
             for (LogEvent event : eventsToWrite) {
@@ -158,7 +158,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      */
     private void clear() {
         synchronized (this.events) {
-        	this.events.clear();
+            this.events.clear();
         }
     }
 
@@ -178,10 +178,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
      */
     public void logEventCreated(final LogEvent logEvent) {
         synchronized (this.events) {
-        	this.events.add( logEvent );
-	        if ( this.events.size() > this.maxEventsInMemory ) {
-	            writeToDisk();
-	        }
+            this.events.add( logEvent );
+            if ( this.events.size() > this.maxEventsInMemory ) {
+                writeToDisk();
+            }
         }
     }
     

@@ -76,10 +76,10 @@ public class SerializablePropagationContext
         return this.type;
     }
 
-	@Override
-	public String toString() {
-		return "==>[SerializablePropagationContext: getFactHandle()=" + getFactHandle() + ", getPropagationNumber()="
-				+ getPropagationNumber() + ", getRule()=" + getRule() + ", getType()=" + getType() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[SerializablePropagationContext: getFactHandle()=" + getFactHandle() + ", getPropagationNumber()="
+        		+ getPropagationNumber() + ", getRule()=" + getRule() + ", getType()=" + getType() + "]";
+    }
     
 }

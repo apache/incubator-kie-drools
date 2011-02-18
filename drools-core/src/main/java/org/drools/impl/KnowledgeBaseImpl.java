@@ -110,7 +110,7 @@ public class KnowledgeBaseImpl
     }
     
     public RuleBase getRuleBase() {
-    	return ruleBase;
+        return ruleBase;
     }
 
     public void addEventListener(KnowledgeBaseEventListener listener) {
@@ -153,7 +153,7 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession() {
-    	return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
+        return newStatefulKnowledgeSession(null, EnvironmentFactory.newEnvironment() );
     }
     
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeSessionConfiguration conf, Environment environment) {
@@ -166,22 +166,22 @@ public class KnowledgeBaseImpl
             environment = EnvironmentFactory.newEnvironment();
         }
         
-		ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
-		return new StatefulKnowledgeSessionImpl( session, this );
+        ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
+        return new StatefulKnowledgeSessionImpl( session, this );
     }
     
     public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions()
     {
-    	Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
-    	StatefulSession[] sss = this.ruleBase.getStatefulSessions();
-    	if (sss != null) {
-    		for (StatefulSession ss : sss) {
-    			if (ss instanceof ReteooStatefulSession) {
-	    			c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
-    			}
-    		}
-    	}
-    	return c;
+        Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
+        StatefulSession[] sss = this.ruleBase.getStatefulSessions();
+        if (sss != null) {
+        	for (StatefulSession ss : sss) {
+        		if (ss instanceof ReteooStatefulSession) {
+            		c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+        		}
+        	}
+        }
+        return c;
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
@@ -237,7 +237,7 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<Process> getProcesses() {
-    	return Arrays.asList(((InternalRuleBase) this.ruleBase).getProcesses());
+        return Arrays.asList(((InternalRuleBase) this.ruleBase).getProcesses());
     }
 
     public Rule getRule(String packageName,

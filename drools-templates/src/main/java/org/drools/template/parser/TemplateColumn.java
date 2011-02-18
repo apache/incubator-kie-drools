@@ -23,11 +23,11 @@ import org.drools.template.model.Rule;
  * A column condition for a rule template to be generated.
  */
 interface TemplateColumn {
-	void addCondition(final Rule rule);
+    void addCondition(final Rule rule);
 
-	String getName();
+    String getName();
 
-	boolean isNotCondition();
+    boolean isNotCondition();
 
-	String getCondition();
+    String getCondition();
 }

@@ -306,7 +306,7 @@ public class RuleFlowGroupImpl
             }
         }
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
 

@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class Fact {
 
-	public String name;
-	public List fields = new ArrayList();
+    public String name;
+    public List fields = new ArrayList();
 
 }

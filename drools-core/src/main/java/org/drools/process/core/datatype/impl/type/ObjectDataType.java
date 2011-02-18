@@ -39,7 +39,7 @@ public class ObjectDataType implements DataType {
     }
 
     public ObjectDataType(String className) {
-    	setClassName(className);
+        setClassName(className);
     }
 
     public String getClassName() {
@@ -51,16 +51,16 @@ public class ObjectDataType implements DataType {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    	className = (String) in.readObject();
+        className = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-    	out.writeObject(className);
+        out.writeObject(className);
     }
 
     public boolean verifyDataType(final Object value) {
-    	if (value == null) {
-        	return true;
+        if (value == null) {
+            return true;
         }
         try {
             Class<?> clazz = Class.forName(className);
@@ -74,17 +74,17 @@ public class ObjectDataType implements DataType {
         return false;
     }
 
-	public Object readValue(String value) {
-		XStream xstream = new XStream();
-		return xstream.fromXML(value);
-	}
+    public Object readValue(String value) {
+        XStream xstream = new XStream();
+        return xstream.fromXML(value);
+    }
 
-	public String writeValue(Object value) {
-		XStream xstream = new XStream();
-		return xstream.toXML(value);
-	}
+    public String writeValue(Object value) {
+        XStream xstream = new XStream();
+        return xstream.toXML(value);
+    }
 
-	public String getStringType() {
-		return className == null ? "java.lang.Object" : className;
-	}
+    public String getStringType() {
+        return className == null ? "java.lang.Object" : className;
+    }
 }

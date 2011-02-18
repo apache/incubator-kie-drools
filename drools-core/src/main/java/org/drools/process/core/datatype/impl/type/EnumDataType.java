@@ -40,7 +40,7 @@ public class EnumDataType implements DataType {
     }
 
     public EnumDataType(String className) {
-    	setClassName(className);
+        setClassName(className);
     }
 
     public String getClassName() {
@@ -52,70 +52,70 @@ public class EnumDataType implements DataType {
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    	className = (String) in.readObject();
+        className = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-    	out.writeObject(className);
+        out.writeObject(className);
     }
 
     public boolean verifyDataType(final Object value) {
-    	if (value == null) {
-        	return true;
+        if (value == null) {
+            return true;
         }
-    	return getValueMap().containsValue(value);
+        return getValueMap().containsValue(value);
     }
     
-	public Object readValue(String value) {
-		return getValueMap().get(value);
-	}
+    public Object readValue(String value) {
+        return getValueMap().get(value);
+    }
 
-	public String writeValue(Object value) {
-		return value == null ? "" : value.toString();
-	}
+    public String writeValue(Object value) {
+        return value == null ? "" : value.toString();
+    }
 
-	public String getStringType() {
-		return className == null ? "java.lang.Object" : className;
-	}
-	
-	public Object[] getValues() {
-		return getValueMap().values().toArray();
-	}
-	
-	public String[] getValueNames() {
-		return getValueMap().keySet().toArray(new String[0]);
-	}
-	
-	public Map<String, Object> getValueMap() {
-		if (this.valueMap == null) {
-			try {
-				this.valueMap = new HashMap<String, Object>();
-				if (className == null) {
-					return null;
-				}
-				Class<?> clazz = Class.forName(className);
-		        if (!clazz.isEnum()) {
-		        	return null;
-		        }
-		        Object[] values = (Object[]) clazz.getMethod("values", null).invoke(clazz, null);
-		        for (Object value: values) {
-		        	this.valueMap.put(value.toString(), value);
-		        }
-			} catch (ClassNotFoundException e) {
-	            throw new IllegalArgumentException(
-	                "Could not find data type " + className);
-			} catch (IllegalAccessException e) {
-	            throw new IllegalArgumentException(
-	                "IllegalAccessException " + e);
-			} catch (InvocationTargetException e) {
-	            throw new IllegalArgumentException(
-	                "InvocationTargetException " + e);
-			} catch (NoSuchMethodException e) {
-	            throw new IllegalArgumentException(
-	                "NoSuchMethodException " + e);
-			}
-			
-		}
-		return this.valueMap;
-	}
+    public String getStringType() {
+        return className == null ? "java.lang.Object" : className;
+    }
+
+    public Object[] getValues() {
+        return getValueMap().values().toArray();
+    }
+
+    public String[] getValueNames() {
+        return getValueMap().keySet().toArray(new String[0]);
+    }
+
+    public Map<String, Object> getValueMap() {
+        if (this.valueMap == null) {
+        	try {
+        		this.valueMap = new HashMap<String, Object>();
+        		if (className == null) {
+        			return null;
+        		}
+        		Class<?> clazz = Class.forName(className);
+                if (!clazz.isEnum()) {
+                	return null;
+                }
+                Object[] values = (Object[]) clazz.getMethod("values", null).invoke(clazz, null);
+                for (Object value: values) {
+                	this.valueMap.put(value.toString(), value);
+                }
+        	} catch (ClassNotFoundException e) {
+                throw new IllegalArgumentException(
+                    "Could not find data type " + className);
+        	} catch (IllegalAccessException e) {
+                throw new IllegalArgumentException(
+                    "IllegalAccessException " + e);
+        	} catch (InvocationTargetException e) {
+                throw new IllegalArgumentException(
+                    "InvocationTargetException " + e);
+        	} catch (NoSuchMethodException e) {
+                throw new IllegalArgumentException(
+                    "NoSuchMethodException " + e);
+        	}
+
+        }
+        return this.valueMap;
+    }
 }

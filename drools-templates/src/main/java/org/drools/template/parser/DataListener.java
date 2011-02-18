@@ -22,7 +22,7 @@ package org.drools.template.parser;
  * Callback interface for scanning an spreadsheet.
  */
 public interface DataListener {
-	
+
     public static final int NON_MERGED = -1;
 
     /**

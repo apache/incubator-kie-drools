@@ -19,7 +19,7 @@ package org.drools.process.instance;
 import org.drools.common.InternalKnowledgeRuntime;
 
 public interface WorkItemManagerFactory {
-	
-	WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime);
+
+    WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime);
 
 }

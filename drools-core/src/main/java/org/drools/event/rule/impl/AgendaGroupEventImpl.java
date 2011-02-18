@@ -53,9 +53,9 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
         this.kruntime = null; // we null this as it isn't serializable;
     }
 
-	@Override
-	public String toString() {
-		return "==>[AgendaGroupEventImpl: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
-				+ getKnowledgeRuntime() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[AgendaGroupEventImpl: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
+        		+ getKnowledgeRuntime() + "]";
+    }
 }

@@ -40,7 +40,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 public class MannersBenchmark {
-	
+
     /** Number of guests at the dinner (default: 16). */
     private static int numGuests  = 16;
 

@@ -333,7 +333,7 @@ public class SlidingTimeWindow
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
         
         public void write(MarshallerWriteContext context) throws IOException {

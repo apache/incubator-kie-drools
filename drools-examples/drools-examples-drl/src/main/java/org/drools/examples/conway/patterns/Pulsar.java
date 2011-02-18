@@ -27,8 +27,8 @@ public class Pulsar
     implements
     ConwayPattern {
 
-	private static final long serialVersionUID = 510l;
-	
+    private static final long serialVersionUID = 510l;
+
     private final boolean[][] grid = {{false, true, false}, {true, true, true}, {true, false, true}, {true, true, true}, {false, true, false}};
 
     /**

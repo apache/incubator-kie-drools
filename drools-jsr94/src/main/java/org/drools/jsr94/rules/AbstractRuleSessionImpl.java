@@ -126,25 +126,25 @@ abstract class AbstractRuleSessionImpl
         String theBindUri = null;
         List registrations = null;
         
-		try {
-			registrations = this.repository.getRegistrations();
-		} catch (RuleExecutionSetRepositoryException e) {
-			String s = "Error while retrieving rule execution set registrations";
-			throw new RuntimeException(s, e);
-		}
+        try {
+        	registrations = this.repository.getRegistrations();
+        } catch (RuleExecutionSetRepositoryException e) {
+        	String s = "Error while retrieving rule execution set registrations";
+        	throw new RuntimeException(s, e);
+        }
         
         for ( final Iterator i = registrations.iterator(); i.hasNext(); ) {
             final String aBindUri = (String) i.next();
             // FIXME: provide the correct properties
             RuleExecutionSet aRuleSet = null;
             
-			try {
-				aRuleSet = this.repository.getRuleExecutionSet( aBindUri, null );
-			} catch (RuleExecutionSetRepositoryException e) {
-				String s = "Error while retrieving rule execution set bound to: " + aBindUri;
-				throw new RuntimeException(s, e);
-			}
-			
+        	try {
+        		aRuleSet = this.repository.getRuleExecutionSet( aBindUri, null );
+        	} catch (RuleExecutionSetRepositoryException e) {
+        		String s = "Error while retrieving rule execution set bound to: " + aBindUri;
+        		throw new RuntimeException(s, e);
+        	}
+
             if ( aRuleSet == this.ruleExecutionSet ) {
                 theBindUri = aBindUri;
                 break;

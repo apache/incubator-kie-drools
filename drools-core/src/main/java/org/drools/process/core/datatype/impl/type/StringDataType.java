@@ -47,15 +47,15 @@ public class StringDataType implements DataType {
         }
     }
 
-	public Object readValue(String value) {
-		return value;
-	}
+    public Object readValue(String value) {
+        return value;
+    }
 
-	public String writeValue(Object value) {
-		return (String) value;
-	}
-	
-	public String getStringType() {
-		return "String";
-	}
+    public String writeValue(Object value) {
+        return (String) value;
+    }
+
+    public String getStringType() {
+        return "String";
+    }
 }

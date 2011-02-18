@@ -563,12 +563,12 @@ public class JavaDialect
                                      final String text,
                                      final MemoryResourceReader src,
                                      final ErrorHandler handler) {
-    	
+
         final String fileName = className.replace( '.',
                                                    '/' ) + ".java";
 
         if (src != null) {
-        	src.add( fileName,
+            src.add( fileName,
                      text.getBytes() );
         } else {
             this.src.add( fileName,

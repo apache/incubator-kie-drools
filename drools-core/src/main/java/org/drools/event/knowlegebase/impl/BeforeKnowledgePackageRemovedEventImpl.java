@@ -33,10 +33,10 @@ public class BeforeKnowledgePackageRemovedEventImpl extends KnowledgeBaseEventIm
         return this.knowledgePackage;
     }
 
-	@Override
-	public String toString() {
-		return "==>[BeforeKnowledgePackageRemovedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
-				+ ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[BeforeKnowledgePackageRemovedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
+        		+ ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
+    }
 
 }

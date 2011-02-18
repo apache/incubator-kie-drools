@@ -6,8 +6,8 @@ import org.drools.process.instance.WorkItemManagerFactory;
 
 public class JPAWorkItemManagerFactory implements WorkItemManagerFactory {
 
-	public WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
-		return new JPAWorkItemManager(kruntime);
-	}
+    public WorkItemManager createWorkItemManager(InternalKnowledgeRuntime kruntime) {
+        return new JPAWorkItemManager(kruntime);
+    }
 
 }

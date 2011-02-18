@@ -27,8 +27,8 @@ import java.util.ArrayList;
 public class Transaction extends Security {
 
     private static final long serialVersionUID = 510l;
-	
-	protected String    accountId     = null;
+
+    protected String    accountId     = null;
     protected double    buyPrice;
     protected String    purchaseDate  = null;
     protected double    shares;

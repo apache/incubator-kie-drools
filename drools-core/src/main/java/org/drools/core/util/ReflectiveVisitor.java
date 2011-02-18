@@ -59,11 +59,11 @@ public abstract class ReflectiveVisitor
     }
 
     private Method getMethod(final Class<?> clazz) {
-    	if (methodCacheContains(clazz)) {
-    		return getMethodFromCache(clazz);
-    	}
-    	
-    	Class<?> newClazz = clazz;
+        if (methodCacheContains(clazz)) {
+        	return getMethodFromCache(clazz);
+        }
+
+        Class<?> newClazz = clazz;
         Method method = null;
         
         // Try the superclasses
@@ -71,10 +71,10 @@ public abstract class ReflectiveVisitor
             String methodName = newClazz.getName();
             methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
             try {
-            	method = getClass().getMethod(methodName, 
-            			new Class[] { newClazz });
+                method = getClass().getMethod(methodName,
+                		new Class[] { newClazz });
             } catch (final NoSuchMethodException e) {
-            	newClazz = newClazz.getSuperclass();
+                newClazz = newClazz.getSuperclass();
             }
         }
 
@@ -85,10 +85,10 @@ public abstract class ReflectiveVisitor
                 String methodName = interfaces[i].getName();
                 methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
                 try {
-                	method = getClass().getMethod(methodName,
-                			new Class[] { interfaces[i] });
+                    method = getClass().getMethod(methodName,
+                    		new Class[] { interfaces[i] });
                 } catch (final NoSuchMethodException e) {
-                	// swallow
+                    // swallow
                 }
             }
         }
@@ -112,14 +112,14 @@ public abstract class ReflectiveVisitor
     }
     
     private void addMethodToCache(Class<?> clazz, Method m) {
-    	methodCache.put(clazz, m);
+        methodCache.put(clazz, m);
     }
     
     private Method getMethodFromCache(Class<?> clazz) {
-    	return methodCache.get(clazz);
+        return methodCache.get(clazz);
     }
     
     private boolean methodCacheContains(Class<?> clazz) {
-    	return methodCache.containsKey(clazz);
+        return methodCache.containsKey(clazz);
     }
 }

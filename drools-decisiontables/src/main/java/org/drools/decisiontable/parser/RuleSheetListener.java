@@ -29,14 +29,14 @@ import org.drools.template.parser.DataListener;
  */
 public interface RuleSheetListener extends DataListener {
 
-	/**
-	 * Return the rule sheet properties
-	 */
-	public abstract CaseInsensitiveMap getProperties();
+    /**
+     * Return the rule sheet properties
+     */
+    public abstract CaseInsensitiveMap getProperties();
 
-	/**
-	 * Build the final ruleset as parsed.
-	 */
-	public abstract Package getRuleSet();
+    /**
+     * Build the final ruleset as parsed.
+     */
+    public abstract Package getRuleSet();
 
 }

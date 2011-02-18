@@ -7,6 +7,6 @@ import org.drools.io.Resource;
 
 public interface BusinessRuleProvider {
 
-	public Reader getKnowledgeReader(Resource ruleResource) throws IOException;
+    public Reader getKnowledgeReader(Resource ruleResource) throws IOException;
 
 }

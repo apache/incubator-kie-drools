@@ -24,35 +24,35 @@ package org.drools.verifier.report.components;
  */
 public class PartialRedundancy {
 
-	private final Cause left;
-	private final Cause right;
-	private final Redundancy redundancy;
+    private final Cause left;
+    private final Cause right;
+    private final Redundancy redundancy;
 
-	/**
-	 * 
-	 * @param left
-	 *            Left side parent.
-	 * @param right
-	 *            Right side parent.
-	 * @param redundancy
-	 *            Connection between left and right.
-	 */
-	public PartialRedundancy(Cause left, Cause right, Redundancy redundancy) {
-		this.left = left;
-		this.right = right;
-		this.redundancy = redundancy;
-	}
+    /**
+     *
+     * @param left
+     *            Left side parent.
+     * @param right
+     *            Right side parent.
+     * @param redundancy
+     *            Connection between left and right.
+     */
+    public PartialRedundancy(Cause left, Cause right, Redundancy redundancy) {
+        this.left = left;
+        this.right = right;
+        this.redundancy = redundancy;
+    }
 
-	public Cause getLeft() {
-		return left;
-	}
+    public Cause getLeft() {
+        return left;
+    }
 
-	public Redundancy getRedundancy() {
-		return redundancy;
-	}
+    public Redundancy getRedundancy() {
+        return redundancy;
+    }
 
-	public Cause getRight() {
-		return right;
-	}
+    public Cause getRight() {
+        return right;
+    }
 
 }

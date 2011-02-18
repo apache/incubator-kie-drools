@@ -1,7 +1,7 @@
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2011-01-18 19:45:20
 
-	package org.drools.rule.builder.dialect.java.parser;
-	import java.util.Iterator;
+    package org.drools.rule.builder.dialect.java.parser;
+    import java.util.Iterator;
 
 
 import org.antlr.runtime.*;
@@ -225,28 +225,28 @@ public class JavaParser extends Parser {
     public String getGrammarFileName() { return "src/main/resources/org/drools/semantics/java/parser/Java.g"; }
 
 
-    	private List identifiers = new ArrayList();
-    	public List getIdentifiers() { return identifiers; }
-    	private List localDeclarations = new ArrayList();
-    	public List getLocalDeclarations() { return localDeclarations; }
-    	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
-    	private List errors = new ArrayList();
-    	private int localVariableLevel = 0;
-    	private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
-    	public List<JavaBlockDescr> getBlockDescr() { return blocks; }
-    	
-    	private String source = "unknown";
-    	
-    	public void setSource(String source) {
-    		this.source = source;
-    	}
-    	
-    	public String getSource() {
-    		return this.source;
-    	}
-    		
-    	public void reportError(RecognitionException ex) {
-    	        // if we've already reported an error and have not matched a token
+        private List identifiers = new ArrayList();
+        public List getIdentifiers() { return identifiers; }
+        private List localDeclarations = new ArrayList();
+        public List getLocalDeclarations() { return localDeclarations; }
+        public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+        private List errors = new ArrayList();
+        private int localVariableLevel = 0;
+        private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
+        public List<JavaBlockDescr> getBlockDescr() { return blocks; }
+
+        private String source = "unknown";
+
+        public void setSource(String source) {
+        	this.source = source;
+        }
+
+        public String getSource() {
+        	return this.source;
+        }
+
+        public void reportError(RecognitionException ex) {
+                // if we've already reported an error and have not matched a token
                     // yet successfully, don't report any errors.
                     if ( state.errorRecovery ) {
                             //System.err.print("[SPURIOUS] ");
@@ -254,32 +254,32 @@ public class JavaParser extends Parser {
                     }
                     state.errorRecovery = true;
 
-    		errors.add( ex );
-    	}
-         	
-         	/** return the raw RecognitionException errors */
-         	public List getErrors() {
-         		return errors;
-         	}
-         	
-         	/** Return a list of pretty strings summarising the errors */
-         	public List getErrorMessages() {
-         		List messages = new ArrayList();
-     		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
-         	     		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
-         	     	}
-         	     	return messages;
-         	}
-         	
-         	/** return true if any parser errors were accumulated */
-         	public boolean hasErrors() {
-      		return ! errors.isEmpty();
-         	}
-         	
-         	/** This will take a RecognitionException, and create a sensible error message out of it */
-         	public String createErrorMessage(RecognitionException e)
+        	errors.add( ex );
+        }
+
+             /** return the raw RecognitionException errors */
+             public List getErrors() {
+             	return errors;
+             }
+
+             /** Return a list of pretty strings summarising the errors */
+             public List getErrorMessages() {
+             	List messages = new ArrayList();
+         	for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+                  		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+                  	}
+                  	return messages;
+             }
+
+             /** return true if any parser errors were accumulated */
+             public boolean hasErrors() {
+          	return ! errors.isEmpty();
+             }
+
+             /** This will take a RecognitionException, and create a sensible error message out of it */
+             public String createErrorMessage(RecognitionException e)
             {
-    		StringBuilder message = new StringBuilder();
+        	StringBuilder message = new StringBuilder();
                     message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                     if ( e instanceof MismatchedTokenException ) {
                             MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -297,7 +297,7 @@ public class JavaParser extends Parser {
                     }
                     else if ( e instanceof NoViableAltException ) {
                             NoViableAltException nvae = (NoViableAltException)e;
-    			message.append( "Unexpected token '" + e.token.getText() + "'" );
+        		message.append( "Unexpected token '" + e.token.getText() + "'" );
                             /*
                             message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
                                                                " state "+nvae.stateNumber+
@@ -329,8 +329,8 @@ public class JavaParser extends Parser {
                             FailedPredicateException fpe = (FailedPredicateException)e;
                             message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                                fpe.predicateText+"}?");
-    		}
-                   	return message.toString();
+        	}
+                       return message.toString();
             }
 
 
@@ -386,20 +386,20 @@ public class JavaParser extends Parser {
                 int alt3=2;
                 alt3 = dfa3.predict(input);
                 switch (alt3) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: importDeclaration
-            	    {
-            	    pushFollow(FOLLOW_importDeclaration_in_compilationUnit86);
-            	    importDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: importDeclaration
+                    {
+                    pushFollow(FOLLOW_importDeclaration_in_compilationUnit86);
+                    importDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop3;
+                default :
+                    break loop3;
                 }
             } while (true);
 
@@ -409,20 +409,20 @@ public class JavaParser extends Parser {
                 int alt4=2;
                 alt4 = dfa4.predict(input);
                 switch (alt4) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: typeDeclaration
-            	    {
-            	    pushFollow(FOLLOW_typeDeclaration_in_compilationUnit97);
-            	    typeDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: typeDeclaration
+                    {
+                    pushFollow(FOLLOW_typeDeclaration_in_compilationUnit97);
+                    typeDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop4;
+                default :
+                    break loop4;
                 }
             } while (true);
 
@@ -521,17 +521,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt6) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:218:35: '.' Identifier
-            	    {
-            	    match(input,28,FOLLOW_28_in_importDeclaration133); if (state.failed) return ;
-            	    match(input,Identifier,FOLLOW_Identifier_in_importDeclaration135); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:218:35: '.' Identifier
+                    {
+                    match(input,28,FOLLOW_28_in_importDeclaration133); if (state.failed) return ;
+                    match(input,Identifier,FOLLOW_Identifier_in_importDeclaration135); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop6;
+                default :
+                    break loop6;
                 }
             } while (true);
 
@@ -629,20 +629,20 @@ public class JavaParser extends Parser {
                 int alt9=2;
                 alt9 = dfa9.predict(input);
                 switch (alt9) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
-            	    {
-            	    pushFollow(FOLLOW_modifier_in_classOrInterfaceDeclaration180);
-            	    modifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
+                    {
+                    pushFollow(FOLLOW_modifier_in_classOrInterfaceDeclaration180);
+                    modifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop9;
+                default :
+                    break loop9;
                 }
             } while (true);
 
@@ -893,21 +893,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt15) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:243:23: ',' typeParameter
-            	    {
-            	    match(input,34,FOLLOW_34_in_typeParameters287); if (state.failed) return ;
-            	    pushFollow(FOLLOW_typeParameter_in_typeParameters289);
-            	    typeParameter();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:243:23: ',' typeParameter
+                    {
+                    match(input,34,FOLLOW_34_in_typeParameters287); if (state.failed) return ;
+                    pushFollow(FOLLOW_typeParameter_in_typeParameters289);
+                    typeParameter();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop15;
+                default :
+                    break loop15;
                 }
             } while (true);
 
@@ -1003,21 +1003,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt17) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:251:10: '&' type
-            	    {
-            	    match(input,36,FOLLOW_36_in_bound327); if (state.failed) return ;
-            	    pushFollow(FOLLOW_type_in_bound329);
-            	    type();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:251:10: '&' type
+                    {
+                    match(input,36,FOLLOW_36_in_bound327); if (state.failed) return ;
+                    pushFollow(FOLLOW_type_in_bound329);
+                    type();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop17;
+                default :
+                    break loop17;
                 }
             } while (true);
 
@@ -1213,21 +1213,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt22) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:263:18: ',' enumConstant
-            	    {
-            	    match(input,34,FOLLOW_34_in_enumConstants390); if (state.failed) return ;
-            	    pushFollow(FOLLOW_enumConstant_in_enumConstants392);
-            	    enumConstant();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:263:18: ',' enumConstant
+                    {
+                    match(input,34,FOLLOW_34_in_enumConstants390); if (state.failed) return ;
+                    pushFollow(FOLLOW_enumConstant_in_enumConstants392);
+                    enumConstant();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop22;
+                default :
+                    break loop22;
                 }
             } while (true);
 
@@ -1355,20 +1355,20 @@ public class JavaParser extends Parser {
                 int alt26=2;
                 alt26 = dfa26.predict(input);
                 switch (alt26) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:271:9: classBodyDeclaration
-            	    {
-            	    pushFollow(FOLLOW_classBodyDeclaration_in_enumBodyDeclarations434);
-            	    classBodyDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:271:9: classBodyDeclaration
+                    {
+                    pushFollow(FOLLOW_classBodyDeclaration_in_enumBodyDeclarations434);
+                    classBodyDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop26;
+                default :
+                    break loop26;
                 }
             } while (true);
 
@@ -1552,21 +1552,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt30) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:284:10: ',' type
-            	    {
-            	    match(input,34,FOLLOW_34_in_typeList495); if (state.failed) return ;
-            	    pushFollow(FOLLOW_type_in_typeList497);
-            	    type();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:284:10: ',' type
+                    {
+                    match(input,34,FOLLOW_34_in_typeList495); if (state.failed) return ;
+                    pushFollow(FOLLOW_type_in_typeList497);
+                    type();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop30;
+                default :
+                    break loop30;
                 }
             } while (true);
 
@@ -1602,20 +1602,20 @@ public class JavaParser extends Parser {
                 int alt31=2;
                 alt31 = dfa31.predict(input);
                 switch (alt31) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: classBodyDeclaration
-            	    {
-            	    pushFollow(FOLLOW_classBodyDeclaration_in_classBody513);
-            	    classBodyDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: classBodyDeclaration
+                    {
+                    pushFollow(FOLLOW_classBodyDeclaration_in_classBody513);
+                    classBodyDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop31;
+                default :
+                    break loop31;
                 }
             } while (true);
 
@@ -1652,20 +1652,20 @@ public class JavaParser extends Parser {
                 int alt32=2;
                 alt32 = dfa32.predict(input);
                 switch (alt32) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: interfaceBodyDeclaration
-            	    {
-            	    pushFollow(FOLLOW_interfaceBodyDeclaration_in_interfaceBody530);
-            	    interfaceBodyDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: interfaceBodyDeclaration
+                    {
+                    pushFollow(FOLLOW_interfaceBodyDeclaration_in_interfaceBody530);
+                    interfaceBodyDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop32;
+                default :
+                    break loop32;
                 }
             } while (true);
 
@@ -1741,20 +1741,20 @@ public class JavaParser extends Parser {
                         int alt34=2;
                         alt34 = dfa34.predict(input);
                         switch (alt34) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
-                    	    {
-                    	    pushFollow(FOLLOW_modifier_in_classBodyDeclaration557);
-                    	    modifier();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
+                            {
+                            pushFollow(FOLLOW_modifier_in_classBodyDeclaration557);
+                            modifier();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop34;
+                        default :
+                            break loop34;
                         }
                     } while (true);
 
@@ -2128,20 +2128,20 @@ public class JavaParser extends Parser {
                         int alt39=2;
                         alt39 = dfa39.predict(input);
                         switch (alt39) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
-                    	    {
-                    	    pushFollow(FOLLOW_modifier_in_interfaceBodyDeclaration694);
-                    	    modifier();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: modifier
+                            {
+                            pushFollow(FOLLOW_modifier_in_interfaceBodyDeclaration694);
+                            modifier();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop39;
+                        default :
+                            break loop39;
                         }
                     } while (true);
 
@@ -2424,17 +2424,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt43) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:351:22: '[' ']'
-            	    {
-            	    match(input,41,FOLLOW_41_in_methodDeclaratorRest806); if (state.failed) return ;
-            	    match(input,42,FOLLOW_42_in_methodDeclaratorRest808); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:351:22: '[' ']'
+                    {
+                    match(input,41,FOLLOW_41_in_methodDeclaratorRest806); if (state.failed) return ;
+                    match(input,42,FOLLOW_42_in_methodDeclaratorRest808); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop43;
+                default :
+                    break loop43;
                 }
             } while (true);
 
@@ -2634,17 +2634,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt48) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:366:22: '[' ']'
-            	    {
-            	    match(input,41,FOLLOW_41_in_interfaceMethodDeclaratorRest935); if (state.failed) return ;
-            	    match(input,42,FOLLOW_42_in_interfaceMethodDeclaratorRest937); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:366:22: '[' ']'
+                    {
+                    match(input,41,FOLLOW_41_in_interfaceMethodDeclaratorRest935); if (state.failed) return ;
+                    match(input,42,FOLLOW_42_in_interfaceMethodDeclaratorRest937); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop48;
+                default :
+                    break loop48;
                 }
             } while (true);
 
@@ -2932,21 +2932,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt53) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:387:24: ',' variableDeclarator
-            	    {
-            	    match(input,34,FOLLOW_34_in_variableDeclarators1050); if (state.failed) return ;
-            	    pushFollow(FOLLOW_variableDeclarator_in_variableDeclarators1052);
-            	    variableDeclarator();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:387:24: ',' variableDeclarator
+                    {
+                    match(input,34,FOLLOW_34_in_variableDeclarators1050); if (state.failed) return ;
+                    pushFollow(FOLLOW_variableDeclarator_in_variableDeclarators1052);
+                    variableDeclarator();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop53;
+                default :
+                    break loop53;
                 }
             } while (true);
 
@@ -2981,10 +2981,10 @@ public class JavaParser extends Parser {
 
 
 
-        		if( this.localVariableLevel == 1 ) { // we only want top level local vars
-        			((variableDeclarator_scope)variableDeclarator_stack.peek()).ident = new JavaLocalDeclarationDescr.IdentifierDescr();
-        		}
-        	
+            	if( this.localVariableLevel == 1 ) { // we only want top level local vars
+            		((variableDeclarator_scope)variableDeclarator_stack.peek()).ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+            	}
+
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 39) ) { return ; }
             // src/main/resources/org/drools/semantics/java/parser/Java.g:404:2: (id= Identifier rest= variableDeclaratorRest )
@@ -2998,24 +2998,24 @@ public class JavaParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
                
-              			if( this.localVariableLevel == 1 ) { // we only want top level local vars
-              				((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setIdentifier( (id!=null?id.getText():null) );
-              				((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setStart( ((CommonToken)id).getStartIndex() - 1 );
-              				if( (rest!=null?((Token)rest.stop):null) != null ) {
-                 					((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setEnd( ((CommonToken)(rest!=null?((Token)rest.stop):null)).getStopIndex() );
-              				}
-              			}
-              		
+                  		if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                  			((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setIdentifier( (id!=null?id.getText():null) );
+                  			((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setStart( ((CommonToken)id).getStartIndex() - 1 );
+                  			if( (rest!=null?((Token)rest.stop):null) != null ) {
+                     				((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setEnd( ((CommonToken)(rest!=null?((Token)rest.stop):null)).getStopIndex() );
+                  			}
+                  		}
+
             }
 
             }
 
             if ( state.backtracking==0 ) {
 
-              	        if( this.localVariableLevel == 1 ) { // we only want top level local vars
-              	        	((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addIdentifier( ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident );
-              	        }
-              	
+                          if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                          	((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addIdentifier( ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident );
+                          }
+
             }
         }
         catch (RecognitionException re) {
@@ -3086,18 +3086,18 @@ public class JavaParser extends Parser {
 
 
                         switch (alt54) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:417:5: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_variableDeclaratorRest1106); if (state.failed) return retval;
-                    	    match(input,42,FOLLOW_42_in_variableDeclaratorRest1108); if (state.failed) return retval;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:417:5: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_variableDeclaratorRest1106); if (state.failed) return retval;
+                            match(input,42,FOLLOW_42_in_variableDeclaratorRest1108); if (state.failed) return retval;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt54 >= 1 ) break loop54;
-                    	    if (state.backtracking>0) {state.failed=true; return retval;}
+                        default :
+                            if ( cnt54 >= 1 ) break loop54;
+                            if (state.backtracking>0) {state.failed=true; return retval;}
                                 EarlyExitException eee =
                                     new EarlyExitException(54, input);
                                 throw eee;
@@ -3191,21 +3191,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt57) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:423:33: ',' constantDeclarator
-            	    {
-            	    match(input,34,FOLLOW_34_in_constantDeclaratorsRest1147); if (state.failed) return ;
-            	    pushFollow(FOLLOW_constantDeclarator_in_constantDeclaratorsRest1149);
-            	    constantDeclarator();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:423:33: ',' constantDeclarator
+                    {
+                    match(input,34,FOLLOW_34_in_constantDeclaratorsRest1147); if (state.failed) return ;
+                    pushFollow(FOLLOW_constantDeclarator_in_constantDeclaratorsRest1149);
+                    constantDeclarator();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop57;
+                default :
+                    break loop57;
                 }
             } while (true);
 
@@ -3246,17 +3246,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt58) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:427:5: '[' ']'
-            	    {
-            	    match(input,41,FOLLOW_41_in_constantDeclaratorRest1166); if (state.failed) return ;
-            	    match(input,42,FOLLOW_42_in_constantDeclaratorRest1168); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:427:5: '[' ']'
+                    {
+                    match(input,41,FOLLOW_41_in_constantDeclaratorRest1166); if (state.failed) return ;
+                    match(input,42,FOLLOW_42_in_constantDeclaratorRest1168); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop58;
+                default :
+                    break loop58;
                 }
             } while (true);
 
@@ -3304,17 +3304,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt59) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:431:16: '[' ']'
-            	    {
-            	    match(input,41,FOLLOW_41_in_variableDeclaratorId1189); if (state.failed) return ;
-            	    match(input,42,FOLLOW_42_in_variableDeclaratorId1191); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:431:16: '[' ']'
+                    {
+                    match(input,41,FOLLOW_41_in_variableDeclaratorId1189); if (state.failed) return ;
+                    match(input,42,FOLLOW_42_in_variableDeclaratorId1191); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop59;
+                default :
+                    break loop59;
                 }
             } while (true);
 
@@ -3409,21 +3409,21 @@ public class JavaParser extends Parser {
                         int alt61=2;
                         alt61 = dfa61.predict(input);
                         switch (alt61) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:440:30: ',' variableInitializer
-                    	    {
-                    	    match(input,34,FOLLOW_34_in_arrayInitializer1232); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_variableInitializer_in_arrayInitializer1234);
-                    	    variableInitializer();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:440:30: ',' variableInitializer
+                            {
+                            match(input,34,FOLLOW_34_in_arrayInitializer1232); if (state.failed) return ;
+                            pushFollow(FOLLOW_variableInitializer_in_arrayInitializer1234);
+                            variableInitializer();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop61;
+                        default :
+                            break loop61;
                         }
                     } while (true);
 
@@ -3615,17 +3615,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt65) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:459:16: '.' Identifier
-            	    {
-            	    match(input,28,FOLLOW_28_in_packageOrTypeName1389); if (state.failed) return ;
-            	    match(input,Identifier,FOLLOW_Identifier_in_packageOrTypeName1391); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:459:16: '.' Identifier
+                    {
+                    match(input,28,FOLLOW_28_in_packageOrTypeName1389); if (state.failed) return ;
+                    match(input,Identifier,FOLLOW_Identifier_in_packageOrTypeName1391); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop65;
+                default :
+                    break loop65;
                 }
             } while (true);
 
@@ -3797,35 +3797,35 @@ public class JavaParser extends Parser {
                         int alt69=2;
                         alt69 = dfa69.predict(input);
                         switch (alt69) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:472:33: '.' Identifier ( typeArguments )?
-                    	    {
-                    	    match(input,28,FOLLOW_28_in_type1458); if (state.failed) return retval;
-                    	    match(input,Identifier,FOLLOW_Identifier_in_type1460); if (state.failed) return retval;
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:472:48: ( typeArguments )?
-                    	    int alt68=2;
-                    	    alt68 = dfa68.predict(input);
-                    	    switch (alt68) {
-                    	        case 1 :
-                    	            // src/main/resources/org/drools/semantics/java/parser/Java.g:472:49: typeArguments
-                    	            {
-                    	            pushFollow(FOLLOW_typeArguments_in_type1463);
-                    	            typeArguments();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:472:33: '.' Identifier ( typeArguments )?
+                            {
+                            match(input,28,FOLLOW_28_in_type1458); if (state.failed) return retval;
+                            match(input,Identifier,FOLLOW_Identifier_in_type1460); if (state.failed) return retval;
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:472:48: ( typeArguments )?
+                            int alt68=2;
+                            alt68 = dfa68.predict(input);
+                            switch (alt68) {
+                                case 1 :
+                                    // src/main/resources/org/drools/semantics/java/parser/Java.g:472:49: typeArguments
+                                    {
+                                    pushFollow(FOLLOW_typeArguments_in_type1463);
+                                    typeArguments();
 
-                    	            state._fsp--;
-                    	            if (state.failed) return retval;
+                                    state._fsp--;
+                                    if (state.failed) return retval;
 
-                    	            }
-                    	            break;
+                                    }
+                                    break;
 
-                    	    }
+                            }
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop69;
+                        default :
+                            break loop69;
                         }
                     } while (true);
 
@@ -3835,17 +3835,17 @@ public class JavaParser extends Parser {
                         int alt70=2;
                         alt70 = dfa70.predict(input);
                         switch (alt70) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:472:69: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_type1471); if (state.failed) return retval;
-                    	    match(input,42,FOLLOW_42_in_type1473); if (state.failed) return retval;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:472:69: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_type1471); if (state.failed) return retval;
+                            match(input,42,FOLLOW_42_in_type1473); if (state.failed) return retval;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop70;
+                        default :
+                            break loop70;
                         }
                     } while (true);
 
@@ -3866,17 +3866,17 @@ public class JavaParser extends Parser {
                         int alt71=2;
                         alt71 = dfa71.predict(input);
                         switch (alt71) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:473:19: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_type1483); if (state.failed) return retval;
-                    	    match(input,42,FOLLOW_42_in_type1485); if (state.failed) return retval;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:473:19: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_type1483); if (state.failed) return retval;
+                            match(input,42,FOLLOW_42_in_type1485); if (state.failed) return retval;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop71;
+                        default :
+                            break loop71;
                         }
                     } while (true);
 
@@ -4025,21 +4025,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt74) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:493:22: ',' typeArgument
-            	    {
-            	    match(input,34,FOLLOW_34_in_typeArguments1599); if (state.failed) return ;
-            	    pushFollow(FOLLOW_typeArgument_in_typeArguments1601);
-            	    typeArgument();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:493:22: ',' typeArgument
+                    {
+                    match(input,34,FOLLOW_34_in_typeArguments1599); if (state.failed) return ;
+                    pushFollow(FOLLOW_typeArgument_in_typeArguments1601);
+                    typeArgument();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop74;
+                default :
+                    break loop74;
                 }
             } while (true);
 
@@ -4175,21 +4175,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt77) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:502:19: ',' qualifiedName
-            	    {
-            	    match(input,34,FOLLOW_34_in_qualifiedNameList1650); if (state.failed) return ;
-            	    pushFollow(FOLLOW_qualifiedName_in_qualifiedNameList1652);
-            	    qualifiedName();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:502:19: ',' qualifiedName
+                    {
+                    match(input,34,FOLLOW_34_in_qualifiedNameList1650); if (state.failed) return ;
+                    pushFollow(FOLLOW_qualifiedName_in_qualifiedNameList1652);
+                    qualifiedName();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop77;
+                default :
+                    break loop77;
                 }
             } while (true);
 
@@ -4279,20 +4279,20 @@ public class JavaParser extends Parser {
 
 
                 switch (alt79) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
-            	    {
-            	    pushFollow(FOLLOW_variableModifier_in_formalParameterDecls1683);
-            	    variableModifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
+                    {
+                    pushFollow(FOLLOW_variableModifier_in_formalParameterDecls1683);
+                    variableModifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop79;
+                default :
+                    break loop79;
                 }
             } while (true);
 
@@ -4476,17 +4476,17 @@ public class JavaParser extends Parser {
 
 
                 switch (alt83) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:523:16: '.' Identifier
-            	    {
-            	    match(input,28,FOLLOW_28_in_qualifiedName1743); if (state.failed) return ;
-            	    match(input,Identifier,FOLLOW_Identifier_in_qualifiedName1745); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:523:16: '.' Identifier
+                    {
+                    match(input,28,FOLLOW_28_in_qualifiedName1743); if (state.failed) return ;
+                    match(input,Identifier,FOLLOW_Identifier_in_qualifiedName1745); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop83;
+                default :
+                    break loop83;
                 }
             } while (true);
 
@@ -4708,21 +4708,21 @@ public class JavaParser extends Parser {
                 int alt85=2;
                 alt85 = dfa85.predict(input);
                 switch (alt85) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: annotation
-            	    {
-            	    pushFollow(FOLLOW_annotation_in_annotations1893);
-            	    annotation();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: annotation
+                    {
+                    pushFollow(FOLLOW_annotation_in_annotations1893);
+                    annotation();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt85 >= 1 ) break loop85;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt85 >= 1 ) break loop85;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(85, input);
                         throw eee;
@@ -4826,17 +4826,17 @@ public class JavaParser extends Parser {
                 int alt88=2;
                 alt88 = dfa88.predict(input);
                 switch (alt88) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:557:16: '.' Identifier
-            	    {
-            	    match(input,28,FOLLOW_28_in_annotationName1932); if (state.failed) return ;
-            	    match(input,Identifier,FOLLOW_Identifier_in_annotationName1934); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:557:16: '.' Identifier
+                    {
+                    match(input,28,FOLLOW_28_in_annotationName1932); if (state.failed) return ;
+                    match(input,Identifier,FOLLOW_Identifier_in_annotationName1934); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop88;
+                default :
+                    break loop88;
                 }
             } while (true);
 
@@ -4882,21 +4882,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt89) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:561:22: ',' elementValuePair
-            	    {
-            	    match(input,34,FOLLOW_34_in_elementValuePairs1951); if (state.failed) return ;
-            	    pushFollow(FOLLOW_elementValuePair_in_elementValuePairs1953);
-            	    elementValuePair();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:561:22: ',' elementValuePair
+                    {
+                    match(input,34,FOLLOW_34_in_elementValuePairs1951); if (state.failed) return ;
+                    pushFollow(FOLLOW_elementValuePair_in_elementValuePairs1953);
+                    elementValuePair();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop89;
+                default :
+                    break loop89;
                 }
             } while (true);
 
@@ -5053,21 +5053,21 @@ public class JavaParser extends Parser {
 
 
                         switch (alt92) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:575:23: ',' elementValue
-                    	    {
-                    	    match(input,34,FOLLOW_34_in_elementValueArrayInitializer2018); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_elementValue_in_elementValueArrayInitializer2020);
-                    	    elementValue();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:575:23: ',' elementValue
+                            {
+                            match(input,34,FOLLOW_34_in_elementValueArrayInitializer2018); if (state.failed) return ;
+                            pushFollow(FOLLOW_elementValue_in_elementValueArrayInitializer2020);
+                            elementValue();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop92;
+                        default :
+                            break loop92;
                         }
                     } while (true);
 
@@ -5198,20 +5198,20 @@ public class JavaParser extends Parser {
                 int alt95=2;
                 alt95 = dfa95.predict(input);
                 switch (alt95) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:587:40: annotationTypeElementDeclaration
-            	    {
-            	    pushFollow(FOLLOW_annotationTypeElementDeclaration_in_annotationTypeElementDeclarations2081);
-            	    annotationTypeElementDeclaration();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:587:40: annotationTypeElementDeclaration
+                    {
+                    pushFollow(FOLLOW_annotationTypeElementDeclaration_in_annotationTypeElementDeclarations2081);
+                    annotationTypeElementDeclaration();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop95;
+                default :
+                    break loop95;
                 }
             } while (true);
 
@@ -5246,20 +5246,20 @@ public class JavaParser extends Parser {
                 int alt96=2;
                 alt96 = dfa96.predict(input);
                 switch (alt96) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:591:5: modifier
-            	    {
-            	    pushFollow(FOLLOW_modifier_in_annotationTypeElementDeclaration2096);
-            	    modifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:591:5: modifier
+                    {
+                    pushFollow(FOLLOW_modifier_in_annotationTypeElementDeclaration2096);
+                    modifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop96;
+                default :
+                    break loop96;
                 }
             } while (true);
 
@@ -5628,20 +5628,20 @@ public class JavaParser extends Parser {
                 int alt104=2;
                 alt104 = dfa104.predict(input);
                 switch (alt104) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: blockStatement
-            	    {
-            	    pushFollow(FOLLOW_blockStatement_in_block2271);
-            	    blockStatement();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: blockStatement
+                    {
+                    pushFollow(FOLLOW_blockStatement_in_block2271);
+                    blockStatement();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop104;
+                default :
+                    break loop104;
                 }
             } while (true);
 
@@ -5760,26 +5760,26 @@ public class JavaParser extends Parser {
 
 
                 switch (alt106) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:648:4: variableModifier
-            	    {
-            	    pushFollow(FOLLOW_variableModifier_in_localVariableDeclaration2348);
-            	    variableModifier1=variableModifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:648:4: variableModifier
+                    {
+                    pushFollow(FOLLOW_variableModifier_in_localVariableDeclaration2348);
+                    variableModifier1=variableModifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
-            	    if ( state.backtracking==0 ) {
-            	       
-            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 );
-            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) );
-            	      	    
-            	    }
+                    state._fsp--;
+                    if (state.failed) return ;
+                    if ( state.backtracking==0 ) {
 
-            	    }
-            	    break;
+                      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 );
+                      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) );
 
-            	default :
-            	    break loop106;
+                    }
+
+                    }
+                    break;
+
+                default :
+                    break loop106;
                 }
             } while (true);
 
@@ -5790,10 +5790,10 @@ public class JavaParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
                
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(type2!=null?((Token)type2.start):null)).getStartIndex() - 1 );
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setType( (type2!=null?input.toString(type2.start,type2.stop):null) );
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setEnd( ((CommonToken)(type2!=null?((Token)type2.stop):null)).getStopIndex() );
-              	    
+                          ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(type2!=null?((Token)type2.start):null)).getStartIndex() - 1 );
+                          ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setType( (type2!=null?input.toString(type2.start,type2.stop):null) );
+                          ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setEnd( ((CommonToken)(type2!=null?((Token)type2.stop):null)).getStopIndex() );
+
             }
             pushFollow(FOLLOW_variableDeclarators_in_localVariableDeclaration2376);
             variableDeclarators();
@@ -6274,8 +6274,8 @@ public class JavaParser extends Parser {
 
 
 
-        	    JavaModifyBlockDescr d = null;
-        	
+                JavaModifyBlockDescr d = null;
+
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 84) ) { return ; }
             // src/main/resources/org/drools/semantics/java/parser/Java.g:692:2: (s= 'modify' parExpression '{' (e= expression ( ',' e= expression )* )? c= '}' )
@@ -6289,11 +6289,11 @@ public class JavaParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-              	    d = new JavaModifyBlockDescr( (parExpression3!=null?input.toString(parExpression3.start,parExpression3.stop):null) );
-              	    d.setStart( ((CommonToken)s).getStartIndex() );
-              	    this.blocks.add( d );
-              	    
-              	
+                      d = new JavaModifyBlockDescr( (parExpression3!=null?input.toString(parExpression3.start,parExpression3.stop):null) );
+                      d.setStart( ((CommonToken)s).getStartIndex() );
+                      this.blocks.add( d );
+
+
             }
             match(input,37,FOLLOW_37_in_modifyStatement2684); if (state.failed) return ;
             // src/main/resources/org/drools/semantics/java/parser/Java.g:699:6: (e= expression ( ',' e= expression )* )?
@@ -6323,24 +6323,24 @@ public class JavaParser extends Parser {
 
 
                         switch (alt114) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:700:10: ',' e= expression
-                    	    {
-                    	    match(input,34,FOLLOW_34_in_modifyStatement2705); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_expression_in_modifyStatement2709);
-                    	    e=expression();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:700:10: ',' e= expression
+                            {
+                            match(input,34,FOLLOW_34_in_modifyStatement2705); if (state.failed) return ;
+                            pushFollow(FOLLOW_expression_in_modifyStatement2709);
+                            e=expression();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
-                    	    if ( state.backtracking==0 ) {
-                    	       d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) );
-                    	    }
+                            state._fsp--;
+                            if (state.failed) return ;
+                            if ( state.backtracking==0 ) {
+                               d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) );
+                            }
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop114;
+                        default :
+                            break loop114;
                         }
                     } while (true);
 
@@ -6381,8 +6381,8 @@ public class JavaParser extends Parser {
         Token c=null;
 
 
-        	    JavaInterfacePointsDescr d = null;
-        	
+                JavaInterfacePointsDescr d = null;
+
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 85) ) { return ; }
             // src/main/resources/org/drools/semantics/java/parser/Java.g:712:9: ( (s= 'exitPoints' '[' id= StringLiteral c= ']' | s= 'entryPoints' '[' id= StringLiteral c= ']' | s= 'channels' '[' id= StringLiteral c= ']' ) )
@@ -6424,11 +6424,11 @@ public class JavaParser extends Parser {
                     c=(Token)match(input,42,FOLLOW_42_in_epStatement2788); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                          	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                      		    d.setType( JavaBlockDescr.BlockType.EXIT );
-                      	    	d.setStart( ((CommonToken)s).getStartIndex() );
+                                  d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
+                          	    d.setType( JavaBlockDescr.BlockType.EXIT );
+                              	d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                      	    	this.blocks.add( d );
+                              	this.blocks.add( d );
                               
                     }
 
@@ -6443,11 +6443,11 @@ public class JavaParser extends Parser {
                     c=(Token)match(input,42,FOLLOW_42_in_epStatement2824); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                      		    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                      		    d.setType( JavaBlockDescr.BlockType.ENTRY );
-                      		    d.setStart( ((CommonToken)s).getStartIndex() );
+                          	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
+                          	    d.setType( JavaBlockDescr.BlockType.ENTRY );
+                          	    d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                      		    this.blocks.add( d );
+                          	    this.blocks.add( d );
                               
                     }
 
@@ -6462,11 +6462,11 @@ public class JavaParser extends Parser {
                     c=(Token)match(input,42,FOLLOW_42_in_epStatement2860); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                      		    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                      		    d.setType( JavaBlockDescr.BlockType.CHANNEL );
-                      		    d.setStart( ((CommonToken)s).getStartIndex() );
+                          	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
+                          	    d.setType( JavaBlockDescr.BlockType.CHANNEL );
+                          	    d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                      		    this.blocks.add( d );
+                          	    this.blocks.add( d );
                               
                     }
 
@@ -6511,20 +6511,20 @@ public class JavaParser extends Parser {
                 int alt117=2;
                 alt117 = dfa117.predict(input);
                 switch (alt117) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:741:17: catchClause
-            	    {
-            	    pushFollow(FOLLOW_catchClause_in_catches2905);
-            	    catchClause();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:741:17: catchClause
+                    {
+                    pushFollow(FOLLOW_catchClause_in_catches2905);
+                    catchClause();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop117;
+                default :
+                    break loop117;
                 }
             } while (true);
 
@@ -6603,20 +6603,20 @@ public class JavaParser extends Parser {
 
 
                 switch (alt118) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
-            	    {
-            	    pushFollow(FOLLOW_variableModifier_in_formalParameter2938);
-            	    variableModifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
+                    {
+                    pushFollow(FOLLOW_variableModifier_in_formalParameter2938);
+                    variableModifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop118;
+                default :
+                    break loop118;
                 }
             } while (true);
 
@@ -6667,20 +6667,20 @@ public class JavaParser extends Parser {
 
 
                 switch (alt119) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:753:5: switchBlockStatementGroup
-            	    {
-            	    pushFollow(FOLLOW_switchBlockStatementGroup_in_switchBlockStatementGroups2957);
-            	    switchBlockStatementGroup();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:753:5: switchBlockStatementGroup
+                    {
+                    pushFollow(FOLLOW_switchBlockStatementGroup_in_switchBlockStatementGroups2957);
+                    switchBlockStatementGroup();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop119;
+                default :
+                    break loop119;
                 }
             } while (true);
 
@@ -6720,20 +6720,20 @@ public class JavaParser extends Parser {
                 int alt120=2;
                 alt120 = dfa120.predict(input);
                 switch (alt120) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: blockStatement
-            	    {
-            	    pushFollow(FOLLOW_blockStatement_in_switchBlockStatementGroup2973);
-            	    blockStatement();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: blockStatement
+                    {
+                    pushFollow(FOLLOW_blockStatement_in_switchBlockStatementGroup2973);
+                    blockStatement();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop120;
+                default :
+                    break loop120;
                 }
             } while (true);
 
@@ -6833,21 +6833,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt122) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:767:5: ',' statementExpression
-            	    {
-            	    match(input,34,FOLLOW_34_in_moreStatementExpressions3023); if (state.failed) return ;
-            	    pushFollow(FOLLOW_statementExpression_in_moreStatementExpressions3025);
-            	    statementExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:767:5: ',' statementExpression
+                    {
+                    match(input,34,FOLLOW_34_in_moreStatementExpressions3023); if (state.failed) return ;
+                    pushFollow(FOLLOW_statementExpression_in_moreStatementExpressions3025);
+                    statementExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop122;
+                default :
+                    break loop122;
                 }
             } while (true);
 
@@ -6993,20 +6993,20 @@ public class JavaParser extends Parser {
 
 
                         switch (alt127) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
-                    	    {
-                    	    pushFollow(FOLLOW_variableModifier_in_forInit3099);
-                    	    variableModifier();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
+                            {
+                            pushFollow(FOLLOW_variableModifier_in_forInit3099);
+                            variableModifier();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop127;
+                        default :
+                            break loop127;
                         }
                     } while (true);
 
@@ -7075,20 +7075,20 @@ public class JavaParser extends Parser {
 
 
                 switch (alt129) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
-            	    {
-            	    pushFollow(FOLLOW_variableModifier_in_forVarControl3121);
-            	    variableModifier();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
+                    {
+                    pushFollow(FOLLOW_variableModifier_in_forVarControl3121);
+                    variableModifier();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop129;
+                default :
+                    break loop129;
                 }
             } while (true);
 
@@ -7214,21 +7214,21 @@ public class JavaParser extends Parser {
 
 
                 switch (alt130) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:802:21: ',' expression
-            	    {
-            	    match(input,34,FOLLOW_34_in_expressionList3178); if (state.failed) return ;
-            	    pushFollow(FOLLOW_expression_in_expressionList3180);
-            	    expression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:802:21: ',' expression
+                    {
+                    match(input,34,FOLLOW_34_in_expressionList3178); if (state.failed) return ;
+                    pushFollow(FOLLOW_expression_in_expressionList3180);
+                    expression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop130;
+                default :
+                    break loop130;
                 }
             } while (true);
 
@@ -7558,21 +7558,21 @@ public class JavaParser extends Parser {
                 int alt134=2;
                 alt134 = dfa134.predict(input);
                 switch (alt134) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:837:36: '||' conditionalAndExpression
-            	    {
-            	    match(input,101,FOLLOW_101_in_conditionalOrExpression3412); if (state.failed) return ;
-            	    pushFollow(FOLLOW_conditionalAndExpression_in_conditionalOrExpression3414);
-            	    conditionalAndExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:837:36: '||' conditionalAndExpression
+                    {
+                    match(input,101,FOLLOW_101_in_conditionalOrExpression3412); if (state.failed) return ;
+                    pushFollow(FOLLOW_conditionalAndExpression_in_conditionalOrExpression3414);
+                    conditionalAndExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop134;
+                default :
+                    break loop134;
                 }
             } while (true);
 
@@ -7612,21 +7612,21 @@ public class JavaParser extends Parser {
                 int alt135=2;
                 alt135 = dfa135.predict(input);
                 switch (alt135) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:841:33: '&&' inclusiveOrExpression
-            	    {
-            	    match(input,102,FOLLOW_102_in_conditionalAndExpression3437); if (state.failed) return ;
-            	    pushFollow(FOLLOW_inclusiveOrExpression_in_conditionalAndExpression3439);
-            	    inclusiveOrExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:841:33: '&&' inclusiveOrExpression
+                    {
+                    match(input,102,FOLLOW_102_in_conditionalAndExpression3437); if (state.failed) return ;
+                    pushFollow(FOLLOW_inclusiveOrExpression_in_conditionalAndExpression3439);
+                    inclusiveOrExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop135;
+                default :
+                    break loop135;
                 }
             } while (true);
 
@@ -7666,21 +7666,21 @@ public class JavaParser extends Parser {
                 int alt136=2;
                 alt136 = dfa136.predict(input);
                 switch (alt136) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:845:33: '|' exclusiveOrExpression
-            	    {
-            	    match(input,103,FOLLOW_103_in_inclusiveOrExpression3462); if (state.failed) return ;
-            	    pushFollow(FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression3464);
-            	    exclusiveOrExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:845:33: '|' exclusiveOrExpression
+                    {
+                    match(input,103,FOLLOW_103_in_inclusiveOrExpression3462); if (state.failed) return ;
+                    pushFollow(FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression3464);
+                    exclusiveOrExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop136;
+                default :
+                    break loop136;
                 }
             } while (true);
 
@@ -7720,21 +7720,21 @@ public class JavaParser extends Parser {
                 int alt137=2;
                 alt137 = dfa137.predict(input);
                 switch (alt137) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:849:25: '^' andExpression
-            	    {
-            	    match(input,104,FOLLOW_104_in_exclusiveOrExpression3487); if (state.failed) return ;
-            	    pushFollow(FOLLOW_andExpression_in_exclusiveOrExpression3489);
-            	    andExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:849:25: '^' andExpression
+                    {
+                    match(input,104,FOLLOW_104_in_exclusiveOrExpression3487); if (state.failed) return ;
+                    pushFollow(FOLLOW_andExpression_in_exclusiveOrExpression3489);
+                    andExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop137;
+                default :
+                    break loop137;
                 }
             } while (true);
 
@@ -7774,21 +7774,21 @@ public class JavaParser extends Parser {
                 int alt138=2;
                 alt138 = dfa138.predict(input);
                 switch (alt138) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:853:30: '&' equalityExpression
-            	    {
-            	    match(input,36,FOLLOW_36_in_andExpression3512); if (state.failed) return ;
-            	    pushFollow(FOLLOW_equalityExpression_in_andExpression3514);
-            	    equalityExpression();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:853:30: '&' equalityExpression
+                    {
+                    match(input,36,FOLLOW_36_in_andExpression3512); if (state.failed) return ;
+                    pushFollow(FOLLOW_equalityExpression_in_andExpression3514);
+                    equalityExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop138;
+                default :
+                    break loop138;
                 }
             } while (true);
 
@@ -7828,30 +7828,30 @@ public class JavaParser extends Parser {
                 int alt139=2;
                 alt139 = dfa139.predict(input);
                 switch (alt139) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:857:32: ( '==' | '!=' ) instanceOfExpression
-            	    {
-            	    if ( (input.LA(1)>=105 && input.LA(1)<=106) ) {
-            	        input.consume();
-            	        state.errorRecovery=false;state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        throw mse;
-            	    }
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:857:32: ( '==' | '!=' ) instanceOfExpression
+                    {
+                    if ( (input.LA(1)>=105 && input.LA(1)<=106) ) {
+                        input.consume();
+                        state.errorRecovery=false;state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        throw mse;
+                    }
 
-            	    pushFollow(FOLLOW_instanceOfExpression_in_equalityExpression3545);
-            	    instanceOfExpression();
+                    pushFollow(FOLLOW_instanceOfExpression_in_equalityExpression3545);
+                    instanceOfExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop139;
+                default :
+                    break loop139;
                 }
             } while (true);
 
@@ -7940,25 +7940,25 @@ public class JavaParser extends Parser {
                 int alt141=2;
                 alt141 = dfa141.predict(input);
                 switch (alt141) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:865:27: relationalOp shiftExpression
-            	    {
-            	    pushFollow(FOLLOW_relationalOp_in_relationalExpression3591);
-            	    relationalOp();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:865:27: relationalOp shiftExpression
+                    {
+                    pushFollow(FOLLOW_relationalOp_in_relationalExpression3591);
+                    relationalOp();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
-            	    pushFollow(FOLLOW_shiftExpression_in_relationalExpression3593);
-            	    shiftExpression();
+                    state._fsp--;
+                    if (state.failed) return ;
+                    pushFollow(FOLLOW_shiftExpression_in_relationalExpression3593);
+                    shiftExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop141;
+                default :
+                    break loop141;
                 }
             } while (true);
 
@@ -8060,25 +8060,25 @@ public class JavaParser extends Parser {
                 int alt143=2;
                 alt143 = dfa143.predict(input);
                 switch (alt143) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:873:30: shiftOp additiveExpression
-            	    {
-            	    pushFollow(FOLLOW_shiftOp_in_shiftExpression3646);
-            	    shiftOp();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:873:30: shiftOp additiveExpression
+                    {
+                    pushFollow(FOLLOW_shiftOp_in_shiftExpression3646);
+                    shiftOp();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
-            	    pushFollow(FOLLOW_additiveExpression_in_shiftExpression3648);
-            	    additiveExpression();
+                    state._fsp--;
+                    if (state.failed) return ;
+                    pushFollow(FOLLOW_additiveExpression_in_shiftExpression3648);
+                    additiveExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop143;
+                default :
+                    break loop143;
                 }
             } while (true);
 
@@ -8214,30 +8214,30 @@ public class JavaParser extends Parser {
                 int alt145=2;
                 alt145 = dfa145.predict(input);
                 switch (alt145) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:883:36: ( '+' | '-' ) multiplicativeExpression
-            	    {
-            	    if ( (input.LA(1)>=108 && input.LA(1)<=109) ) {
-            	        input.consume();
-            	        state.errorRecovery=false;state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        throw mse;
-            	    }
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:883:36: ( '+' | '-' ) multiplicativeExpression
+                    {
+                    if ( (input.LA(1)>=108 && input.LA(1)<=109) ) {
+                        input.consume();
+                        state.errorRecovery=false;state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        throw mse;
+                    }
 
-            	    pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression3718);
-            	    multiplicativeExpression();
+                    pushFollow(FOLLOW_multiplicativeExpression_in_additiveExpression3718);
+                    multiplicativeExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop145;
+                default :
+                    break loop145;
                 }
             } while (true);
 
@@ -8277,30 +8277,30 @@ public class JavaParser extends Parser {
                 int alt146=2;
                 alt146 = dfa146.predict(input);
                 switch (alt146) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:887:27: ( '*' | '/' | '%' ) unaryExpression
-            	    {
-            	    if ( input.LA(1)==29||(input.LA(1)>=110 && input.LA(1)<=111) ) {
-            	        input.consume();
-            	        state.errorRecovery=false;state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        throw mse;
-            	    }
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:887:27: ( '*' | '/' | '%' ) unaryExpression
+                    {
+                    if ( input.LA(1)==29||(input.LA(1)>=110 && input.LA(1)<=111) ) {
+                        input.consume();
+                        state.errorRecovery=false;state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        throw mse;
+                    }
 
-            	    pushFollow(FOLLOW_unaryExpression_in_multiplicativeExpression3755);
-            	    unaryExpression();
+                    pushFollow(FOLLOW_unaryExpression_in_multiplicativeExpression3755);
+                    unaryExpression();
 
-            	    state._fsp--;
-            	    if (state.failed) return ;
+                    state._fsp--;
+                    if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop146;
+                default :
+                    break loop146;
                 }
             } while (true);
 
@@ -8463,20 +8463,20 @@ public class JavaParser extends Parser {
                         int alt148=2;
                         alt148 = dfa148.predict(input);
                         switch (alt148) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: selector
-                    	    {
-                    	    pushFollow(FOLLOW_selector_in_unaryExpressionNotPlusMinus3875);
-                    	    selector();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: selector
+                            {
+                            pushFollow(FOLLOW_selector_in_unaryExpressionNotPlusMinus3875);
+                            selector();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop148;
+                        default :
+                            break loop148;
                         }
                     } while (true);
 
@@ -8694,17 +8694,17 @@ public class JavaParser extends Parser {
                         int alt154=2;
                         alt154 = dfa154.predict(input);
                         switch (alt154) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:914:17: '.' Identifier
-                    	    {
-                    	    match(input,28,FOLLOW_28_in_primary3986); if (state.failed) return ;
-                    	    match(input,Identifier,FOLLOW_Identifier_in_primary3988); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:914:17: '.' Identifier
+                            {
+                            match(input,28,FOLLOW_28_in_primary3986); if (state.failed) return ;
+                            match(input,Identifier,FOLLOW_Identifier_in_primary3988); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop154;
+                        default :
+                            break loop154;
                         }
                     } while (true);
 
@@ -8755,17 +8755,17 @@ public class JavaParser extends Parser {
                         int alt156=2;
                         alt156 = dfa156.predict(input);
                         switch (alt156) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:916:22: '.' Identifier
-                    	    {
-                    	    match(input,28,FOLLOW_28_in_primary4020); if (state.failed) return ;
-                    	    match(input,Identifier,FOLLOW_Identifier_in_primary4022); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:916:22: '.' Identifier
+                            {
+                            match(input,28,FOLLOW_28_in_primary4020); if (state.failed) return ;
+                            match(input,Identifier,FOLLOW_Identifier_in_primary4022); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop156;
+                        default :
+                            break loop156;
                         }
                     } while (true);
 
@@ -8826,17 +8826,17 @@ public class JavaParser extends Parser {
                         int alt158=2;
                         alt158 = dfa158.predict(input);
                         switch (alt158) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:919:127: '.' Identifier
-                    	    {
-                    	    match(input,28,FOLLOW_28_in_primary4068); if (state.failed) return ;
-                    	    match(input,Identifier,FOLLOW_Identifier_in_primary4070); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:919:127: '.' Identifier
+                            {
+                            match(input,28,FOLLOW_28_in_primary4068); if (state.failed) return ;
+                            match(input,Identifier,FOLLOW_Identifier_in_primary4070); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop158;
+                        default :
+                            break loop158;
                         }
                     } while (true);
 
@@ -8881,17 +8881,17 @@ public class JavaParser extends Parser {
 
 
                         switch (alt160) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:920:24: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_primary4090); if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_primary4092); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:920:24: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_primary4090); if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_primary4092); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop160;
+                        default :
+                            break loop160;
                         }
                     } while (true);
 
@@ -8950,18 +8950,18 @@ public class JavaParser extends Parser {
 
 
                         switch (alt162) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:925:5: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_identifierSuffix4124); if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_identifierSuffix4126); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:925:5: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_identifierSuffix4124); if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_identifierSuffix4126); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt162 >= 1 ) break loop162;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt162 >= 1 ) break loop162;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(162, input);
                                 throw eee;
@@ -8984,23 +8984,23 @@ public class JavaParser extends Parser {
                         int alt163=2;
                         alt163 = dfa163.predict(input);
                         switch (alt163) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:926:5: '[' expression ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_identifierSuffix4138); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_expression_in_identifierSuffix4140);
-                    	    expression();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:926:5: '[' expression ']'
+                            {
+                            match(input,41,FOLLOW_41_in_identifierSuffix4138); if (state.failed) return ;
+                            pushFollow(FOLLOW_expression_in_identifierSuffix4140);
+                            expression();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_identifierSuffix4142); if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_identifierSuffix4142); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt163 >= 1 ) break loop163;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt163 >= 1 ) break loop163;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(163, input);
                                 throw eee;
@@ -9270,39 +9270,39 @@ public class JavaParser extends Parser {
 
 
                         switch (alt170) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:942:10: '.' Identifier ( typeArguments )?
-                    	    {
-                    	    match(input,28,FOLLOW_28_in_createdName4280); if (state.failed) return ;
-                    	    match(input,Identifier,FOLLOW_Identifier_in_createdName4282); if (state.failed) return ;
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:942:25: ( typeArguments )?
-                    	    int alt169=2;
-                    	    int LA169_0 = input.LA(1);
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:942:10: '.' Identifier ( typeArguments )?
+                            {
+                            match(input,28,FOLLOW_28_in_createdName4280); if (state.failed) return ;
+                            match(input,Identifier,FOLLOW_Identifier_in_createdName4282); if (state.failed) return ;
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:942:25: ( typeArguments )?
+                            int alt169=2;
+                            int LA169_0 = input.LA(1);
 
-                    	    if ( (LA169_0==33) ) {
-                    	        alt169=1;
-                    	    }
-                    	    switch (alt169) {
-                    	        case 1 :
-                    	            // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: typeArguments
-                    	            {
-                    	            pushFollow(FOLLOW_typeArguments_in_createdName4284);
-                    	            typeArguments();
+                            if ( (LA169_0==33) ) {
+                                alt169=1;
+                            }
+                            switch (alt169) {
+                                case 1 :
+                                    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: typeArguments
+                                    {
+                                    pushFollow(FOLLOW_typeArguments_in_createdName4284);
+                                    typeArguments();
 
-                    	            state._fsp--;
-                    	            if (state.failed) return ;
+                                    state._fsp--;
+                                    if (state.failed) return ;
 
-                    	            }
-                    	            break;
+                                    }
+                                    break;
 
-                    	    }
+                            }
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop170;
+                        default :
+                            break loop170;
                         }
                     } while (true);
 
@@ -9396,17 +9396,17 @@ public class JavaParser extends Parser {
 
 
                         switch (alt172) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:952:18: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_arrayCreatorRest4337); if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_arrayCreatorRest4339); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:952:18: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_arrayCreatorRest4337); if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_arrayCreatorRest4339); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop172;
+                        default :
+                            break loop172;
                         }
                     } while (true);
 
@@ -9433,22 +9433,22 @@ public class JavaParser extends Parser {
                         int alt173=2;
                         alt173 = dfa173.predict(input);
                         switch (alt173) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:953:29: '[' expression ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_arrayCreatorRest4362); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_expression_in_arrayCreatorRest4364);
-                    	    expression();
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:953:29: '[' expression ']'
+                            {
+                            match(input,41,FOLLOW_41_in_arrayCreatorRest4362); if (state.failed) return ;
+                            pushFollow(FOLLOW_expression_in_arrayCreatorRest4364);
+                            expression();
 
-                    	    state._fsp--;
-                    	    if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_arrayCreatorRest4366); if (state.failed) return ;
+                            state._fsp--;
+                            if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_arrayCreatorRest4366); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop173;
+                        default :
+                            break loop173;
                         }
                     } while (true);
 
@@ -9458,17 +9458,17 @@ public class JavaParser extends Parser {
                         int alt174=2;
                         alt174 = dfa174.predict(input);
                         switch (alt174) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:953:51: '[' ']'
-                    	    {
-                    	    match(input,41,FOLLOW_41_in_arrayCreatorRest4371); if (state.failed) return ;
-                    	    match(input,42,FOLLOW_42_in_arrayCreatorRest4373); if (state.failed) return ;
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:953:51: '[' ']'
+                            {
+                            match(input,41,FOLLOW_41_in_arrayCreatorRest4371); if (state.failed) return ;
+                            match(input,42,FOLLOW_42_in_arrayCreatorRest4373); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop174;
+                        default :
+                            break loop174;
                         }
                     } while (true);
 
@@ -10273,20 +10273,20 @@ public class JavaParser extends Parser {
 
 
             switch (alt209) {
-        	case 1 :
-        	    // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
-        	    {
-        	    pushFollow(FOLLOW_variableModifier_in_synpred186_Java3099);
-        	    variableModifier();
+            case 1 :
+                // src/main/resources/org/drools/semantics/java/parser/Java.g:0:0: variableModifier
+                {
+                pushFollow(FOLLOW_variableModifier_in_synpred186_Java3099);
+                variableModifier();
 
-        	    state._fsp--;
-        	    if (state.failed) return ;
+                state._fsp--;
+                if (state.failed) return ;
 
-        	    }
-        	    break;
+                }
+                break;
 
-        	default :
-        	    break loop209;
+            default :
+                break loop209;
             }
         } while (true);
 
@@ -11185,7 +11185,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA1_21 = input.LA(1);
@@ -11995,7 +11995,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA36_9 = input.LA(1);
@@ -13014,7 +13014,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA85_22 = input.LA(1);
@@ -13788,7 +13788,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA101_7 = input.LA(1);
@@ -14391,7 +14391,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA105_55 = input.LA(1);
@@ -15072,7 +15072,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA121_23 = input.LA(1);
@@ -15305,7 +15305,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA126_63 = input.LA(1);
@@ -15996,7 +15996,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA128_26 = input.LA(1);
@@ -16346,7 +16346,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA131_1 = input.LA(1);
@@ -16587,7 +16587,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA132_12 = input.LA(1);
@@ -17322,7 +17322,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA141_27 = input.LA(1);
@@ -17581,7 +17581,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA143_28 = input.LA(1);
@@ -17948,7 +17948,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA150_20 = input.LA(1);
@@ -18540,7 +18540,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA152_2 = input.LA(1);
@@ -18669,7 +18669,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA151_1 = input.LA(1);
@@ -18867,7 +18867,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA154_37 = input.LA(1);
@@ -19012,7 +19012,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA155_34 = input.LA(1);
@@ -19502,7 +19502,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA156_37 = input.LA(1);
@@ -19647,7 +19647,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA157_34 = input.LA(1);
@@ -20137,7 +20137,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA158_37 = input.LA(1);
@@ -20282,7 +20282,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA159_34 = input.LA(1);
@@ -20876,7 +20876,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA163_32 = input.LA(1);
@@ -21417,7 +21417,7 @@ public class JavaParser extends Parser {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA173_33 = input.LA(1);

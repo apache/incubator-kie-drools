@@ -41,6 +41,6 @@ public interface LeftTupleMemory {
 
     public Entry[] toArray();
 
-	public FastIterator fastIterator();
+    public FastIterator fastIterator();
 
 }

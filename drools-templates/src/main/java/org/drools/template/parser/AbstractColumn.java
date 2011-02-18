@@ -24,28 +24,28 @@ import org.drools.core.util.StringUtils;
  * Base column of in a decision table
  */
 public abstract class AbstractColumn implements Column {
-	private String name;
+    private String name;
 
-	public AbstractColumn(String n) {
-		this.name = n;
-	}
+    public AbstractColumn(String n) {
+        this.name = n;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getCondition(String condition, int index) {
-		StringBuffer conditionString = new StringBuffer(getCellType());
-		conditionString.append("(row == r, column == $param");
-		if (index != -1) {
-			conditionString.append(", index == ").append(index);
-		}
-		if (!StringUtils.isEmpty(condition)) {
-			conditionString.append(", value ").append(condition);
-		}
-		conditionString.append(")");
-		return conditionString.toString();
-	}
-	
-	
+    public String getCondition(String condition, int index) {
+        StringBuffer conditionString = new StringBuffer(getCellType());
+        conditionString.append("(row == r, column == $param");
+        if (index != -1) {
+        	conditionString.append(", index == ").append(index);
+        }
+        if (!StringUtils.isEmpty(condition)) {
+        	conditionString.append(", value ").append(condition);
+        }
+        conditionString.append(")");
+        return conditionString.toString();
+    }
+
+
 }

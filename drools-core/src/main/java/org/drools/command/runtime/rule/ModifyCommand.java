@@ -89,13 +89,13 @@ public class ModifyCommand
     }
     
     @XmlAttribute(name="fact-handle", required=true)
-	public void setFactHandleFromString(String factHandleId) {
-		handle = new DefaultFactHandle(factHandleId);
-	}
+    public void setFactHandleFromString(String factHandleId) {
+        handle = new DefaultFactHandle(factHandleId);
+    }
     
     public String getFactHandleFromString() {
-    	return handle.toExternalForm();
-	}
+        return handle.toExternalForm();
+    }
 
     public List<Setter> getSetters() {
         if ( this.setters == null ) {
@@ -105,7 +105,7 @@ public class ModifyCommand
     }
     
     public void setSetters(List<Setter> setters) {
-    	this.setters = setters;
+        this.setters = setters;
     }
 
     private String getMvelExpr() {
@@ -134,13 +134,13 @@ public class ModifyCommand
     public static class SetterImpl
         implements
         Setter {
-    	@XmlAttribute
+        @XmlAttribute
         private String accessor;
-    	@XmlAttribute
+        @XmlAttribute
         private String value;
-    	
-    	public SetterImpl() {
-		}
+
+        public SetterImpl() {
+        }
 
         public SetterImpl(String accessor,
                           String value) {

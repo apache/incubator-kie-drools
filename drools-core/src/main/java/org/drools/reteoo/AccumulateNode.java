@@ -350,8 +350,8 @@ public class AccumulateNode extends BetaNode {
             childLeftTuple = null; // null so the next check will attempt matches for new bucket
         }
 
-    	FastIterator rightIt = rightMemory.fastIterator();
-    	
+        FastIterator rightIt = rightMemory.fastIterator();
+
         // we can't do anything if RightTupleMemory is empty
         if ( rightTuple != null ) {
             if ( childLeftTuple == null ) {

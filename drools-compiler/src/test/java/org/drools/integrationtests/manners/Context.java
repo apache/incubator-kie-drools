@@ -20,55 +20,55 @@ import java.io.Serializable;
 
 public class Context implements Serializable {
 
-	public static final int START_UP = 0;
+    public static final int START_UP = 0;
 
-	public static final int ASSIGN_SEATS = 1;
+    public static final int ASSIGN_SEATS = 1;
 
-	public static final int MAKE_PATH = 2;
+    public static final int MAKE_PATH = 2;
 
-	public static final int CHECK_DONE = 3;
+    public static final int CHECK_DONE = 3;
 
-	public static final int PRINT_RESULTS = 4;
+    public static final int PRINT_RESULTS = 4;
 
-	public static final String[] stateStrings = { "START_UP", "ASSIGN_SEATS",
-			"MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS" };
+    public static final String[] stateStrings = { "START_UP", "ASSIGN_SEATS",
+        	"MAKE_PATH", "CHECK_DONE", "PRINT_RESULTS" };
 
-	private int state;
-	
-	public Context() {
-		
-	}
+    private int state;
 
-	public Context(String state) {
-		if ("start".equals(state)) {
-			this.state = Context.START_UP;
-		} else {
-			throw new RuntimeException("Context '" + state
-					+ "' does not exist for Context Enum");
-		}
-	}
+    public Context() {
 
-	public Context(int state) {
-		this.state = state;
-	}
+    }
 
-	public void setState(int state) {
-		this.state = state;
-	}
+    public Context(String state) {
+        if ("start".equals(state)) {
+        	this.state = Context.START_UP;
+        } else {
+        	throw new RuntimeException("Context '" + state
+        			+ "' does not exist for Context Enum");
+        }
+    }
 
-	public boolean isState(int state) {
-		return this.state == state;
-	}
+    public Context(int state) {
+        this.state = state;
+    }
 
-	public int getState() {
-		return this.state;
-	}
+    public void setState(int state) {
+        this.state = state;
+    }
 
-	public String getStringValue() {
-		return stateStrings[this.state];
-	}
+    public boolean isState(int state) {
+        return this.state == state;
+    }
 
-	public String toString() {
-		return "[Context state=" + getStringValue() + "]";
-	}
+    public int getState() {
+        return this.state;
+    }
+
+    public String getStringValue() {
+        return stateStrings[this.state];
+    }
+
+    public String toString() {
+        return "[Context state=" + getStringValue() + "]";
+    }
 }

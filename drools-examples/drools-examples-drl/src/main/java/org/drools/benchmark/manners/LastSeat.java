@@ -20,24 +20,24 @@ package org.drools.benchmark.manners;
 import java.io.Serializable;
 
 public class LastSeat implements Serializable {
-	
-	private static final long serialVersionUID = 510l;
-	
-	private int seat;
-	
-	public LastSeat() {
-		
-	}
 
-	public LastSeat(int seat) {
-		this.seat = seat;
-	}
+    private static final long serialVersionUID = 510l;
 
-	public int getSeat() {
-		return this.seat;
-	}
+    private int seat;
 
-	public String toString() {
-		return "[LastSeat seat=" + this.seat + "]";
-	}
+    public LastSeat() {
+
+    }
+
+    public LastSeat(int seat) {
+        this.seat = seat;
+    }
+
+    public int getSeat() {
+        return this.seat;
+    }
+
+    public String toString() {
+        return "[LastSeat seat=" + this.seat + "]";
+    }
 }

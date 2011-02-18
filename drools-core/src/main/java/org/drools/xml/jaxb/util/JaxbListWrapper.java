@@ -41,12 +41,12 @@ public class JaxbListWrapper  {
         this.elements = elements;
     }
     
-	@XmlElement(name="element")
-	public Object[] getElements() {
-		return elements;
-	}
-	
-	public void setElements(Object[] elements) {
-	    this.elements = elements;
-	}
+    @XmlElement(name="element")
+    public Object[] getElements() {
+        return elements;
+    }
+
+    public void setElements(Object[] elements) {
+        this.elements = elements;
+    }
 }

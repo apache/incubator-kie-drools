@@ -77,29 +77,29 @@ import com.sun.tools.xjc.model.Model;
 public class DroolsJaxbHelperProviderImpl
     implements
     DroolsJaxbHelperProvider {
-	
-	public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
-													   SetGlobalCommand.class.getName(),
-													   GetGlobalCommand.class.getName(),
-													   FireAllRulesCommand.class.getName(),
-													   InsertElementsCommand.class.getName(),
-														InsertObjectCommand.class.getName(),
-														ModifyCommand.class.getName(),
-														SetterImpl.class.getName(),
-														QueryCommand.class.getName(),
-														RetractCommand.class.getName(),
-														AbortWorkItemCommand.class.getName(),
-														SignalEventCommand.class.getName(),
-														StartProcessCommand.class.getName(),
-														BatchExecutionCommandImpl.class.getName(),
-														ExecutionResultImpl.class.getName() ,
-														DefaultFactHandle.class.getName(),
-														JaxbListWrapper.class.getName(),
-														FlatQueryResults.class.getName(),
-														CompleteWorkItemCommand.class.getName(),
-														GetObjectsCommand.class.getName()
-														};
-	
+
+    public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),
+        											   SetGlobalCommand.class.getName(),
+        											   GetGlobalCommand.class.getName(),
+        											   FireAllRulesCommand.class.getName(),
+        											   InsertElementsCommand.class.getName(),
+        												InsertObjectCommand.class.getName(),
+        												ModifyCommand.class.getName(),
+        												SetterImpl.class.getName(),
+        												QueryCommand.class.getName(),
+        												RetractCommand.class.getName(),
+        												AbortWorkItemCommand.class.getName(),
+        												SignalEventCommand.class.getName(),
+        												StartProcessCommand.class.getName(),
+        												BatchExecutionCommandImpl.class.getName(),
+        												ExecutionResultImpl.class.getName() ,
+        												DefaultFactHandle.class.getName(),
+        												JaxbListWrapper.class.getName(),
+        												FlatQueryResults.class.getName(),
+        												CompleteWorkItemCommand.class.getName(),
+        												GetObjectsCommand.class.getName()
+        												};
+
     public static String[] addXsdModel(Resource resource,
                                 PackageBuilder pkgBuilder,
                                 Options xjcOpts,
@@ -165,7 +165,7 @@ public class DroolsJaxbHelperProviderImpl
 
         return classNames.toArray( new String[classNames.size()] );
     }
-	
+
     public String[] addXsdModel(Resource resource,
                                 KnowledgeBuilder kbuilder,
                                 Options xjcOpts,
@@ -184,24 +184,24 @@ public class DroolsJaxbHelperProviderImpl
     public JAXBContext newJAXBContext(String[] classNames,
                                       Map<String, ? > properties,
                                       KnowledgeBase kbase) throws JAXBException {
-		ClassLoader classLoader = ((InternalRuleBase) ((KnowledgeBaseImpl) kbase)
-				.getRuleBase()).getRootClassLoader();
-		int i = 0;
-		try {
-			Class<?>[] classes = new Class[classNames.length
-					+ JAXB_ANNOTATED_CMD.length];
-			
-			for (i = 0; i < classNames.length; i++) {
-				classes[i] = classLoader.loadClass(classNames[i]);
-			}
-			int j = 0;
-			for (i = classNames.length; i < classes.length; i++, j++) {
-				classes[i] = classLoader.loadClass(JAXB_ANNOTATED_CMD[j]);
-			}
-			return JAXBContext.newInstance(classes, properties);
-		} catch (ClassNotFoundException e) {
-			throw new JAXBException("Unable to resolve class '" + classNames[i] + "'", e);
-		}
+        ClassLoader classLoader = ((InternalRuleBase) ((KnowledgeBaseImpl) kbase)
+        		.getRuleBase()).getRootClassLoader();
+        int i = 0;
+        try {
+        	Class<?>[] classes = new Class[classNames.length
+        			+ JAXB_ANNOTATED_CMD.length];
+
+        	for (i = 0; i < classNames.length; i++) {
+        		classes[i] = classLoader.loadClass(classNames[i]);
+        	}
+        	int j = 0;
+        	for (i = classNames.length; i < classes.length; i++, j++) {
+        		classes[i] = classLoader.loadClass(JAXB_ANNOTATED_CMD[j]);
+        	}
+        	return JAXBContext.newInstance(classes, properties);
+        } catch (ClassNotFoundException e) {
+        	throw new JAXBException("Unable to resolve class '" + classNames[i] + "'", e);
+        }
     }
 
     private static String convertToResource(String string) {

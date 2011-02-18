@@ -195,9 +195,9 @@ public class StartedByEvaluatorDefinition
      * Implements the 'startedby' evaluator itself
      */
     public static class StartedByEvaluator extends BaseEvaluator {
-		private static final long serialVersionUID = 510l;
+        private static final long serialVersionUID = 510l;
 
-		private long                  startDev;
+        private long                  startDev;
         private String            paramText;
 
         public StartedByEvaluator() {
@@ -254,39 +254,39 @@ public class StartedByEvaluatorDefinition
                 final VariableContextEntry context,
                 final Object left) {
 
-        	if ( context.rightNull ) {
-        		return false;
-				}
-			long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left ).getStartTimestamp());
-			long distEnd = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - ((EventFactHandle) left ).getEndTimestamp();
-			return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
-		}
+            if ( context.rightNull ) {
+            	return false;
+        		}
+        	long distStart = Math.abs(((EventFactHandle)((ObjectVariableContextEntry) context).right).getStartTimestamp() - ((EventFactHandle) left ).getStartTimestamp());
+        	long distEnd = ((EventFactHandle)((ObjectVariableContextEntry) context).right).getEndTimestamp() - ((EventFactHandle) left ).getEndTimestamp();
+        	return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
+        }
 
-		public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-			               final VariableContextEntry context,
-			               final Object right) {
-			if ( context.extractor.isNullValue( workingMemory,
-			                     right ) ) {
-			return false;
-			}
-			long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp());
-			long distEnd = ((EventFactHandle) right ).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+        	               final VariableContextEntry context,
+        	               final Object right) {
+        	if ( context.extractor.isNullValue( workingMemory,
+        	                     right ) ) {
+        	return false;
+        	}
+        	long distStart = Math.abs(((EventFactHandle) right ).getStartTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getStartTimestamp());
+        	long distEnd = ((EventFactHandle) right ).getEndTimestamp() - ((EventFactHandle) ((ObjectVariableContextEntry) context).left).getEndTimestamp();
             return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
-		}
+        }
 
-		public boolean evaluate(InternalWorkingMemory workingMemory,
-			     final InternalReadAccessor extractor1,
-			     final Object object1,
-			     final InternalReadAccessor extractor2,
-			     final Object object2) {
-			if ( extractor1.isNullValue( workingMemory,
-			              object1 ) ) {
-			return false;
-			}
-			long distStart = Math.abs(((EventFactHandle) object1 ).getStartTimestamp() - ((EventFactHandle) object2 ).getStartTimestamp());
-			long distEnd = ((EventFactHandle) object1 ).getEndTimestamp() - ((EventFactHandle) object2 ).getEndTimestamp();
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+        	     final InternalReadAccessor extractor1,
+        	     final Object object1,
+        	     final InternalReadAccessor extractor2,
+        	     final Object object2) {
+        	if ( extractor1.isNullValue( workingMemory,
+        	              object1 ) ) {
+        	return false;
+        	}
+        	long distStart = Math.abs(((EventFactHandle) object1 ).getStartTimestamp() - ((EventFactHandle) object2 ).getStartTimestamp());
+        	long distEnd = ((EventFactHandle) object1 ).getEndTimestamp() - ((EventFactHandle) object2 ).getEndTimestamp();
             return this.getOperator().isNegated() ^ ( distStart <= this.startDev && distEnd > 0 );
-		}
+        }
 
         public String toString() {
             return "startedby[" + ((paramText != null) ? paramText : "") + "]";
