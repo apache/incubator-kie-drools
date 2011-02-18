@@ -57,7 +57,7 @@ public class DayChangeMove implements Move, TabuPropertyEnabled {
         return Collections.singletonList(match);
     }
 
-    public boolean equals(Object o) {        
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         } else if (o instanceof DayChangeMove) {
