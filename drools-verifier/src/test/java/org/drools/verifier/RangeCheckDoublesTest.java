@@ -34,11 +34,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author Toni Rikkola
- * 
- */
 public class RangeCheckDoublesTest extends TestBase {
 
     @Test

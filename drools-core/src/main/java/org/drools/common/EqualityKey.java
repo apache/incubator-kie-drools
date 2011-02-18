@@ -29,7 +29,6 @@ import java.util.List;
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
 public class EqualityKey

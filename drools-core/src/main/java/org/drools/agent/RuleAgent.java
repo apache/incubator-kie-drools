@@ -81,7 +81,6 @@ import org.drools.rule.Package;
  *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
  *  The default event listener logs to the System.err output stream.
  *
- * @author Michael Neale
  */
 public class RuleAgent {
 

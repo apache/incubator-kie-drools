@@ -44,7 +44,6 @@ import java.util.Properties;
  * 4. Finally, a default implementation class name, if provided, is used.
  * 
  * @version $Revision$ $Date$
- * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
 public abstract class RuleExecutionSetRepositoryLoader
 {

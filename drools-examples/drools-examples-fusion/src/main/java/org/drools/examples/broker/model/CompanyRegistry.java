@@ -24,7 +24,6 @@ import java.util.Map;
 /**
  * A helper class to load and return the list of companies
  * 
- * @author etirelli
  *
  */
 public class CompanyRegistry {

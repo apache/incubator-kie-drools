@@ -26,9 +26,7 @@ import org.drools.spi.ConflictResolver;
  * @see #getInstance
  * @see System#identityHashCode(Object)
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
+ *
  * @version $Id: RandomConflictResolver.java,v 1.1 2004/06/25 01:55:16 mproctor
  *          Exp $
  */
@@ -37,9 +35,6 @@ public class RandomConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                   serialVersionUID = 510l;
     /** Singleton instance. */
     private static final RandomConflictResolver INSTANCE         = new RandomConflictResolver();

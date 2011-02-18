@@ -18,10 +18,6 @@ package org.drools.process.instance;
 
 import java.util.Set;
 
-/**
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public interface WorkItemManager extends org.drools.runtime.process.WorkItemManager {
 
     void internalExecuteWorkItem(WorkItem workItem);

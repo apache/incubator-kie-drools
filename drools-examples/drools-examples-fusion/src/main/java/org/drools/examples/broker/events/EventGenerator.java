@@ -28,7 +28,6 @@ import org.drools.examples.broker.model.StockTick;
 /**
  * A class to generate stock tick events
  * 
- * @author etirelli
  *
  */
 public class EventGenerator {

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  * Tests how the rule parse tree renders itself to a rule XML fragment.
  */

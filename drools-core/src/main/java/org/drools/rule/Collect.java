@@ -32,10 +32,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 
-/**
- * @author etirelli
- *
- */
 public class Collect extends ConditionalElement
     implements
     PatternSource {

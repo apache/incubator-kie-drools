@@ -21,10 +21,6 @@ import java.util.Set;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/**
- * @author mproctor
- * 
- */
 public abstract class BaseAbstractHandler {
     protected Set<Class<?>>     validPeers;
     protected Set<Class<?>>     validParents;

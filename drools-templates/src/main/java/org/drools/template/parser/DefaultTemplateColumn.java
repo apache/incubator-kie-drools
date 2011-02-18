@@ -25,8 +25,7 @@ import org.drools.template.model.SnippetBuilder;
 
 /**
  * 
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * The default column condition for a rule template to be generated. If the
  * conditon starts with "!" then the template will only be generated if the
  * column condition does not exist. If there is no condition string then the

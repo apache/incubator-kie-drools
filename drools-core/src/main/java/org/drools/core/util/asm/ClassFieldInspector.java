@@ -44,7 +44,6 @@ import org.mvel2.asm.Type;
  * This may be enhanced in the future to allow annotations or perhaps external meta data
  * configure the order of the indexes, as this may provide fine tuning options in special cases.
  * 
- * @author Michael Neale
  */
 public class ClassFieldInspector {
 
@@ -300,7 +299,6 @@ public class ClassFieldInspector {
 
     /**
      * Using the ASM classfield extractor to pluck it out in the order they appear in the class file.
-     * @author Michael Neale
      */
     static class ClassFieldVisitor
         implements

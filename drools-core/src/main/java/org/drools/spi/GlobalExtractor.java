@@ -33,7 +33,6 @@ import org.drools.core.util.MathUtils;
 /**
  * This is a global variable extractor used to get a global variable value
  *
- * @author etirelli
  */
 public class GlobalExtractor
     implements

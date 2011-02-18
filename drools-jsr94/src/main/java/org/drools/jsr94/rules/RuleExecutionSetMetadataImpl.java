@@ -28,9 +28,6 @@ import javax.rules.RuleExecutionSetMetadata;
 public class RuleExecutionSetMetadataImpl
     implements
     RuleExecutionSetMetadata {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /** The URI for this <code>RuleExecutionSet</code>. */

@@ -16,10 +16,6 @@
 
 package org.drools.integrationtests.waltz;
 
-/**
- * @author Alexander Bagerman
- * 
- */
 
 public class Line {
     private int p1;

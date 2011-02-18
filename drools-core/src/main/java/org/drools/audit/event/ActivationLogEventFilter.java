@@ -22,7 +22,6 @@ package org.drools.audit.event;
  * four types of assertion events by setting the allow boolean
  * for that type to false.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class ActivationLogEventFilter
     implements

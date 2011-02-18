@@ -25,7 +25,6 @@ import org.drools.base.ValueType;
 /**
  * Java class semantics <code>ObjectType</code>.
  *
- * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
  *
  * @version $Id: MockObjectType.java,v 1.1 2005/07/26 01:06:34 mproctor Exp $
  */
@@ -36,9 +35,6 @@ public class MockObjectType
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     /** Java object class. */
     private boolean           matches;

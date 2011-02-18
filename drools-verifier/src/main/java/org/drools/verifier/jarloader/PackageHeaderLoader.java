@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.jar.JarInputStream;
 
-/**
- * @author Toni Rikkola trikkola@redhat.com (C) 2011 Red Hat Inc
- */
 public class PackageHeaderLoader {
 
     private final static Collection<String> IGNORED_FIELDS = getIgnoredFields();

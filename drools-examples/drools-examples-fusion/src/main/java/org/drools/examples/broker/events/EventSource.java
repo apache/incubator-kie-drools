@@ -19,7 +19,6 @@ package org.drools.examples.broker.events;
 /**
  * An interface for Event Sources
  * 
- * @author etirelli
  *
  */
 public interface EventSource {

@@ -39,9 +39,6 @@ public class PatternExtractor
     AcceptsClassObjectType,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
 

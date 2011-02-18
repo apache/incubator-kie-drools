@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * A helper class that handles a DSL Mapping file
- * @author etirelli
  */
 public abstract class DSLMappingFile {
 

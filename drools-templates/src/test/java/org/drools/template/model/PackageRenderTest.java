@@ -20,8 +20,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
+ *
  * Test rendering and running a whole sample ruleset, from the model classes
  * down.
  */

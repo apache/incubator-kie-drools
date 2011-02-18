@@ -13,7 +13,6 @@ import java.util.Collection;
 /**
  * todo: document
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";

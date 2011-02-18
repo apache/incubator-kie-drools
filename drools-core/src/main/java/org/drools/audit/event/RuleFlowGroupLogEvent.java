@@ -25,7 +25,6 @@ import java.io.ObjectOutput;
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the ruleflow group name and its size.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class RuleFlowGroupLogEvent extends LogEvent {
 

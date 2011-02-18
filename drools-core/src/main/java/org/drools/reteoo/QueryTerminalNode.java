@@ -37,7 +37,6 @@ import org.drools.spi.PropagationContext;
  *
  * @see org.drools.rule.Rule
  *
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public final class QueryTerminalNode extends BaseNode
     implements
@@ -47,9 +46,6 @@ public final class QueryTerminalNode extends BaseNode
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public static final short type             = 8;

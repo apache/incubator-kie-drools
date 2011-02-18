@@ -28,9 +28,6 @@ import org.drools.rule.Namespaceable;
 public class PackageDescr extends BaseDescr
     implements
     Namespaceable {
-    /**
-     *
-     */
     private static final long          serialVersionUID = 510l;
     private String                     namespace;
     private String                     documentation;

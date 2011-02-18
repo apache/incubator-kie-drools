@@ -21,18 +21,9 @@ package org.drools.benchmark.waltz;
 
 
 
-/**
- * @author Alexander Bagerman
- * 
- */
 
 import java.io.Serializable;
 
-/**
- * 
- * @author Alexander Bagerman
- *
- */
 public class Stage implements Serializable {
     private static final long serialVersionUID = 510l;
 

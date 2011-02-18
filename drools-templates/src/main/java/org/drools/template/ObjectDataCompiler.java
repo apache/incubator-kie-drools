@@ -13,7 +13,6 @@ import org.drools.template.objects.ObjectDataProvider;
  * This class provides additional methods for invoking the template
  * compiler, taking the actual parameters from maps or objects.
  * 
- * @author Wolfgang Laun
  *
  */
 public class ObjectDataCompiler extends DataProviderCompiler {

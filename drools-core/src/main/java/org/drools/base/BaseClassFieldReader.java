@@ -27,7 +27,6 @@ import org.drools.core.util.asm.ClassFieldInspector;
 
 /**
  * This is the supertype for the ASM generated classes for accessing a field.
- * @author Alexander Bagerman
  */
 abstract public class BaseClassFieldReader
     implements

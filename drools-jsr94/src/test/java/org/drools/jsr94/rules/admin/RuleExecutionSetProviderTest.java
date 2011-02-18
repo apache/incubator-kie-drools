@@ -38,8 +38,6 @@ import static org.junit.Assert.*;
 /**
  * Test the RuleExecutionSetProvider implementation.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     private RuleAdministrator        ruleAdministrator;

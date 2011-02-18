@@ -26,7 +26,6 @@ import java.io.ObjectOutput;
  * It contains the fact id and a String represention of the object
  * at the time the event was logged.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class ObjectLogEvent extends LogEvent {
 

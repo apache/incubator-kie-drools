@@ -17,9 +17,6 @@
 package org.drools.lang.descr;
 
 public class AttributeDescr extends BaseDescr {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     private String            name;
     private String            value;

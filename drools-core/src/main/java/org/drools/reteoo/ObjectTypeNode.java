@@ -63,8 +63,6 @@ import org.drools.time.impl.PointInTimeTrigger;
  * Filters <code>Objects</code> coming from the <code>Rete</code> using a
  * <code>ObjectType</code> semantic module.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  * @see ObjectType
  * @see Rete
  */
@@ -78,9 +76,6 @@ public class ObjectTypeNode extends ObjectSource
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long   serialVersionUID = 510l;
 
     /**

@@ -39,7 +39,6 @@ import org.drools.spi.PropagationContext;
  * all the handles which are equal. Secondly It maintains another map tracking
  * the  justificiations for logically asserted facts.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  */
 public class TruthMaintenanceSystem {

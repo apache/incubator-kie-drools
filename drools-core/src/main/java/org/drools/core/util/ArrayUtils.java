@@ -46,16 +46,6 @@ import java.lang.reflect.Array;
  * array input. However, an Object array that contains a <code>null</code>
  * element may throw an exception. Each method documents its behaviour.</p>
  *
- * @author Stephen Colebourne
- * @author Moritz Petersen
- * @author <a href="mailto:fredrik@westermarck.com">Fredrik Westermarck</a>
- * @author Nikolay Metchev
- * @author Matthew Hawthorne
- * @author Tim O'Brien
- * @author Pete Gieser
- * @author Gary Gregory
- * @author <a href="mailto:equinus100@hotmail.com">Ashwin S</a>
- * @author Maarten Coene
  * @since 2.0
  * @version $Id$
  */

@@ -46,9 +46,6 @@ import com.jgoodies.forms.layout.FormLayout;
 import foxtrot.Job;
 import foxtrot.Worker;
 
-/**
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
- */
 public class ConwayGUI extends JPanel {
 
     private static final long serialVersionUID = 510l;

@@ -47,7 +47,6 @@ import org.drools.spi.Accumulator;
 /**
  * A builder for the java dialect accumulate version
  * 
- * @author etirelli
  */
 public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
     implements

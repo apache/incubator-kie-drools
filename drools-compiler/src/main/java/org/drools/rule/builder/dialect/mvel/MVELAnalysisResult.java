@@ -28,7 +28,6 @@ import org.drools.compiler.BoundIdentifiers;
 /**
  * An analysis result implementation for the MVEL dialect
  * 
- * @author etirelli
  */
 public class MVELAnalysisResult implements AnalysisResult {
     

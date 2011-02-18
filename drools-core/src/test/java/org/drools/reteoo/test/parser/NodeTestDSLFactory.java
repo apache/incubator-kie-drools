@@ -26,7 +26,6 @@ import org.drools.reteoo.test.dsl.NodeTestCase;
 /**
  * A factory used by the DSL parser
  * 
- * @author etirelli
  */
 public class NodeTestDSLFactory {
     

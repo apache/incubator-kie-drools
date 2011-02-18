@@ -19,7 +19,6 @@ package org.drools.examples.broker.model;
 /**
  * Possible actions on a portfolio
  * 
- * @author etirelli
  */
 public enum Action {
     

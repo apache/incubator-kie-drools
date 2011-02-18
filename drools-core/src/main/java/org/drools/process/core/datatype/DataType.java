@@ -21,7 +21,6 @@ import java.io.Externalizable;
 /**
  * Abstract representation of a datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface DataType extends Externalizable {
 

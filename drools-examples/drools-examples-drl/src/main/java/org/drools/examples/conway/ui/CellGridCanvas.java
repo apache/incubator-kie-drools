@@ -31,9 +31,6 @@ import org.drools.examples.conway.Cell;
 import org.drools.examples.conway.CellGrid;
 import org.drools.examples.conway.CellState;
 
-/**
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
- */
 public class CellGridCanvas extends Canvas {
     
     private static final long serialVersionUID = 510l;

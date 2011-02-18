@@ -27,17 +27,12 @@ import org.drools.spi.ConflictResolver;
  * @see #getInstance
  * @see org.drools.spi.Tuple#getMostRecentFactTimeStamp
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class RecencyConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------
     // Class members
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                    serialVersionUID = 510l;
     /** Singleton instance. */
     private static final RecencyConflictResolver INSTANCE         = new RecencyConflictResolver();

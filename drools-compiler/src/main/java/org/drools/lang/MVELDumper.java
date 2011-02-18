@@ -31,11 +31,6 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.rule.builder.RuleBuildContext;
 
-/**
- * 
- * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
- *
- */
 public class MVELDumper extends ReflectiveVisitor {
 
     private StringBuilder        mvelDump;

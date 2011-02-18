@@ -37,9 +37,6 @@ import org.drools.spi.PropagationContext;
  * subnetwork's tuple into a fact in order right join it with the tuple being propagated in
  * the main network.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
- * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
  *
  */
 public class RightInputAdapterNode extends ObjectSource

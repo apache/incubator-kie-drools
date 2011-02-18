@@ -21,10 +21,6 @@ import org.drools.definition.KnowledgeDefinition;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.agent.impl.ResourceDiffResult;
 
-/**
- *
- * @author esteban
- */
 public interface ResourceDiffProducer {
     ResourceDiffResult diff(Set<KnowledgeDefinition> originalDefinitions, KnowledgePackageImp newPkg, KnowledgePackageImp currentPkg );
 }

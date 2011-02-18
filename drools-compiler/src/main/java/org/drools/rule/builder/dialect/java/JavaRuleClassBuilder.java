@@ -23,10 +23,6 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 
-/**
- * @author etirelli
- *
- */
 public class JavaRuleClassBuilder
     implements
     RuleClassBuilder {

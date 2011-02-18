@@ -88,8 +88,6 @@ import static org.junit.Assert.*;
 /**
  * Test the RuleRuntime implementation.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 public class RuleRuntimeTest extends RuleEngineTestBase {
     private LocalRuleExecutionSetProvider ruleSetProvider;

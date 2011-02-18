@@ -23,8 +23,7 @@ import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams</a>
- * 
+ *
  * SheetListener used for creating rules
  */
 public interface RuleSheetListener extends DataListener {

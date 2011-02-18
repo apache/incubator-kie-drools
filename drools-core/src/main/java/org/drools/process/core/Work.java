@@ -19,10 +19,6 @@ package org.drools.process.core;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public interface Work {
 
     void setName(String name);

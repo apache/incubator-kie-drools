@@ -27,7 +27,6 @@ import org.drools.template.model.Rule;
 import org.drools.template.model.SnippetBuilder;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com"> Steven Williams </a><a
  *         href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * 
  * Define a ruleset spreadsheet which contains a matrix style decision tables.

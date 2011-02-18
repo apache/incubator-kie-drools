@@ -19,10 +19,6 @@ package org.drools.verifier.components;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.report.components.Cause;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public abstract class Restriction extends PatternComponent
     implements
     Cause {

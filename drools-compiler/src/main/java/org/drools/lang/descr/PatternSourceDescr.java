@@ -20,7 +20,6 @@ package org.drools.lang.descr;
 /**
  * A common base class for all descriptor classes that represent a pattern sources
  *  
- * @author etirelli
  */
 public class PatternSourceDescr extends BaseDescr {
 

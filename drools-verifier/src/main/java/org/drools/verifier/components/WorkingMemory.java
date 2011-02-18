@@ -16,10 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class WorkingMemory extends VerifierComponentSource {
 
     @Override

@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
  * Test case to ensure that the ReteooRuleBase is thread safe. Specifically to test for
  * deadlocks when modifying the rulebase while creating new sessions.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
 

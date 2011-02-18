@@ -24,9 +24,6 @@ import java.io.ObjectOutput;
 public class CheeseEqual
     implements
     Externalizable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     protected String          type;
     protected int             price;

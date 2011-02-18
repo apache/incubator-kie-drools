@@ -18,9 +18,6 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.ImportDescr;
 
-/**
- *
- */
 public interface ImportDescrBuilder
     extends
     DescrBuilder<ImportDescr> {

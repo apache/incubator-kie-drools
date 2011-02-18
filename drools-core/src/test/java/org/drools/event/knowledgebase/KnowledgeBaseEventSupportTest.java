@@ -50,10 +50,6 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.KnowledgeHelper;
 
-/**
- * @author etirelli
- *
- */
 public class KnowledgeBaseEventSupportTest {
 
     private KnowledgeBase        kbase;

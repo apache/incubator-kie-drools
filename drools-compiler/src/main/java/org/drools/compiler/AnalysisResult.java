@@ -5,7 +5,6 @@ import java.util.Set;
 /**
  * An interface with the results from the expression/block analysis
  * 
- * @author etirelli
  */
 public interface AnalysisResult {
 

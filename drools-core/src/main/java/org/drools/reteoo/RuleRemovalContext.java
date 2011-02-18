@@ -28,7 +28,6 @@ import org.drools.definition.rule.Rule;
  * This context class is used during rule removal to ensure
  * network consistency.
  *
- * @author etirelli
  *
  */
 public class RuleRemovalContext

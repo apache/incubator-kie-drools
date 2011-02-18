@@ -20,7 +20,6 @@ package org.drools.examples.conway;
  * <code>CellState</code> enumerates all of the valid states that a Cell may
  * be in.
  * 
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see Cell
  * @see CellGridImpl
  */

@@ -43,10 +43,6 @@ import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.time.TemporalDependencyMatrix;
 
-/**
- * @author etirelli
- *
- */
 public class ReteooRuleBuilder {
 
     private BuildUtils utils;

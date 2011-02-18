@@ -27,7 +27,6 @@ import java.util.Properties;
  * This will scan a directory for files to watch for a change. It will update
  * the list of files only if they number of files in a directory changes.
  * 
- * @author Michael Neale
  */
 public class DirectoryScanner extends PackageProvider {
 

@@ -3,7 +3,6 @@ package org.drools.compiler;
 
 /**
  * This is used for reporting errors with loading a ruleflow.
- * @author Michael Neale
  *
  */
 public class ProcessLoadError extends DroolsError {

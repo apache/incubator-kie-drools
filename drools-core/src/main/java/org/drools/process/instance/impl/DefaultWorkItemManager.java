@@ -33,10 +33,6 @@ import org.drools.process.instance.WorkItemManager;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItemHandler;
 
-/**
- *
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 510l;

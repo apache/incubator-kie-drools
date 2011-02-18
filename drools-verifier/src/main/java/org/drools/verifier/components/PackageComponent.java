@@ -18,10 +18,6 @@ package org.drools.verifier.components;
 
 import org.drools.verifier.data.VerifierComponent;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public abstract class PackageComponent extends VerifierComponent {
 
     private String packageName;

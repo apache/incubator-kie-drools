@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools;
 
 import java.io.Serializable;

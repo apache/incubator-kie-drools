@@ -46,9 +46,6 @@ public class DefaultBetaConstraints
     implements
     BetaConstraints {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     private LinkedList  constraints;

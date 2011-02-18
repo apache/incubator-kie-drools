@@ -24,10 +24,6 @@ import java.util.logging.Logger;
 import org.drools.command.Context;
 import org.drools.command.ContextManager;
 
-/**
- *
- * @author salaboy
- */
 public class ContextImplWithEviction extends ContextImpl{
 
     private  Logger log = Logger.getLogger( ContextImplWithEviction.class.getName() );

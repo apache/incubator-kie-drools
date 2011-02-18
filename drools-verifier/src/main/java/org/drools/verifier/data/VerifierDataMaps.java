@@ -39,10 +39,6 @@ import org.drools.verifier.components.VerifierRule;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class VerifierDataMaps
     implements
     VerifierData {

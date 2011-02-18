@@ -24,7 +24,6 @@ import java.io.Serializable;
  * @see org.drools.rule.Rule#setDuration
  * @see org.drools.rule.Rule#getDuration
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public interface Duration
     extends

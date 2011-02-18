@@ -39,7 +39,6 @@ import org.drools.rule.builder.RuleBuildContext;
 /**
  * A builder for "from" conditional element
  * 
- * @author etirelli
  */
 public class MVELFromBuilder
     implements

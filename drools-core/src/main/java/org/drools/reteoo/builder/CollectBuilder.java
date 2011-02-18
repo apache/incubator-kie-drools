@@ -36,10 +36,6 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
-/**
- * @author etirelli
- *
- */
 public class CollectBuilder
     implements
     ReteooComponentBuilder {

@@ -22,9 +22,6 @@ import org.drools.spi.Activation;
 public class ActivationCancelledEvent extends ActivationEvent {
     private ActivationCancelledCause cause;
     
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     public ActivationCancelledEvent(final Activation activation, ActivationCancelledCause cause) {

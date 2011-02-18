@@ -16,10 +16,6 @@
  */
 package org.drools.time;
 
-/**
- *
- * @author salaboy
- */
 public interface SchedulerService {
 
     /**

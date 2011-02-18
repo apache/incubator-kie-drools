@@ -19,9 +19,6 @@ package org.drools.reteoo.test.parser;
 import org.drools.CheckedDroolsException;
 
 public class DroolsParserException extends CheckedDroolsException {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     private String errorCode = null;

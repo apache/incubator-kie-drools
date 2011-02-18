@@ -16,10 +16,6 @@
 
 package org.drools.integrationtests.waltz;
 
-/**
- * @author Alexander Bagerman
- * 
- */
 public class Edge {
     private int                p1;
 

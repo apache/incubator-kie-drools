@@ -21,10 +21,6 @@ package org.drools.benchmark.waltz;
 
 
 
-/**
- * @author Alexander Bagerman
- * 
- */
 public class Edge {
     private int p1;
 

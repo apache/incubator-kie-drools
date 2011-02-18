@@ -50,7 +50,6 @@ package org.drools.util.codec;
  * forseen that [codec] would be made to depend on [lang].
  *
  * @see <a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">Standard charsets</a>
- * @author Apache Software Foundation
  * @since 1.4
  * @version $Id: CharEncoding.java 797857 2009-07-25 23:43:33Z ggregory $
  */

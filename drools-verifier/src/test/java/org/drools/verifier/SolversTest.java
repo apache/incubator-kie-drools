@@ -36,11 +36,6 @@ import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.solver.Solvers;
 
-/**
- * 
- * @author Toni Rikkola
- * 
- */
 public class SolversTest {
 
     /**

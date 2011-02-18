@@ -36,9 +36,6 @@ public class EvalCondition extends ConditionalElement
     implements
     Externalizable,
     Wireable {
-    /**
-     *
-     */
     private static final long          serialVersionUID   = 510l;
 
     private EvalExpression             expression;

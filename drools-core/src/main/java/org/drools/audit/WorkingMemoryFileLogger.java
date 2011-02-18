@@ -44,7 +44,6 @@ import com.thoughtworks.xstream.XStream;
  *  - automatically write updates to file at certain time intervals
  *  - ...
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 

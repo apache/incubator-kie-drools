@@ -52,7 +52,6 @@ import org.drools.time.impl.Timer;
  *
  * @see org.drools.rule.Rule
  *
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public class RuleTerminalNode extends BaseNode
     implements
@@ -65,9 +64,6 @@ public class RuleTerminalNode extends BaseNode
 
     private int               sequence         = -1;  // -1 means not set
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */

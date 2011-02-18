@@ -22,7 +22,6 @@ import org.drools.compiler.DroolsError;
  * MappingError
  * A class to represent errors found in a DSL mapping 
  *
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * Created: 11/04/2006
  */

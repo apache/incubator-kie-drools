@@ -28,7 +28,6 @@ import org.drools.verifier.data.VerifierComponent;
  * 
  * Equivalence happens when the LHS of the rules are redundant, but the LHS is different.
  * 
- * @author Toni Rikkola
  */
 public class Equivalence
     implements

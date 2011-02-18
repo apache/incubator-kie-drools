@@ -41,7 +41,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * 
  * @see StatelessRuleSession
  * 
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
     implements

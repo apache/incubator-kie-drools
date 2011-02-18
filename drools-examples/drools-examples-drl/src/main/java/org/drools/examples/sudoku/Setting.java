@@ -18,7 +18,6 @@ package org.drools.examples.sudoku;
 /**
  * Represents a temporary fact used for assigning a value to a cell.
  *
- * @author Wolfgang Laun
  */
 public class Setting {
     

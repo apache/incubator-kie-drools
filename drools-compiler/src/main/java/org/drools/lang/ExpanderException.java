@@ -20,9 +20,6 @@ import org.drools.compiler.DroolsError;
 
 public class ExpanderException extends DroolsError {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     private String            message;

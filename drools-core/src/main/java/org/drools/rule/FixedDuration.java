@@ -25,8 +25,7 @@ import org.drools.spi.Tuple;
  * @see Rule#setDuration
  * @see Rule#getDuration
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * 
+ *
  * @version $Id: FixedDuration.java,v 1.2 2005/08/14 22:34:41 mproctor Exp $
  */
 public class FixedDuration
@@ -36,9 +35,6 @@ public class FixedDuration
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     /** Duration, in seconds. */
     private long              duration;

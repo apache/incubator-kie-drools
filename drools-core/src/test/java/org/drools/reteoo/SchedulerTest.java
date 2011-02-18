@@ -44,9 +44,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author mproctor
- */
 
 public class SchedulerTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
@@ -74,9 +71,6 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -140,9 +134,6 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -225,9 +216,6 @@ public class SchedulerTest extends DroolsTestCase {
 
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,

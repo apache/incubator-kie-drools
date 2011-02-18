@@ -25,10 +25,6 @@ import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELPredicateBuilder;
 
-/**
- * @author etirelli
- *
- */
 public class ClipsPredicateBuilder extends MVELPredicateBuilder
     implements
     PredicateBuilder {

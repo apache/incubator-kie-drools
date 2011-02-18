@@ -28,7 +28,6 @@ import org.drools.spi.PropagationContext;
 /**
  * todo: document
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 class AssertHandler extends AbstractCompilerHandler {
     private static final String LOCAL_FACT_VAR_NAME = "fact";

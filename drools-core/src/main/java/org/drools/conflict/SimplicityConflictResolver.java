@@ -26,9 +26,7 @@ import org.drools.spi.ConflictResolver;
  * @see #getInstance
  * @see org.drools.rule.Rule#getConditionSize
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
+ *
  * @version $Id: SimplicityConflictResolver.java,v 1.9 2004/11/13 01:43:07 simon
  *          Exp $
  */
@@ -37,9 +35,6 @@ public class SimplicityConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                       serialVersionUID = 510l;
     /** Singleton instance. */
     private static final SimplicityConflictResolver INSTANCE         = new SimplicityConflictResolver();

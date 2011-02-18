@@ -30,11 +30,6 @@ import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.data.VerifierComponent;
 
-/**
- * 
- * @author Toni Rikkola
- * 
- */
 public class PatternSolverTest {
 
     /**

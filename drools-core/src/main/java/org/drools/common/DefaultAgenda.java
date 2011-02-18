@@ -66,8 +66,6 @@ import org.drools.spi.Tuple;
  * Non-invalidated actions are left on the agenda, and are executed in turn.
  * </p>
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class DefaultAgenda
     implements
@@ -77,9 +75,6 @@ public class DefaultAgenda
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                                   serialVersionUID = 510l;
 
     /** Working memory of this Agenda. */

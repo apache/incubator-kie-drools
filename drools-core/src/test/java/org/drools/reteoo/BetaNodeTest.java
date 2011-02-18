@@ -26,10 +26,6 @@ import org.drools.common.EmptyBetaConstraints;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 
-/**
- * @author etirelli
- *
- */
 public class BetaNodeTest {
 
     /**

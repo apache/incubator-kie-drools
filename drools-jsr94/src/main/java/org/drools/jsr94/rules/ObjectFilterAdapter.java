@@ -20,7 +20,6 @@ import javax.rules.ObjectFilter;
 
 /**
  * Adaptor class, that makes JSR94 ObjectFilters work from a delegating Drools ObjectFilter
- * @author mproctor
  *
  */
 public class ObjectFilterAdapter implements org.drools.runtime.ObjectFilter {

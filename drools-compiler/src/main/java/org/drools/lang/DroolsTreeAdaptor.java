@@ -10,7 +10,6 @@ import org.antlr.runtime.tree.Tree;
  * 
  * DRLParser must use this tree adaptor.
  * 
- * @author porcelli
  */
 public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 

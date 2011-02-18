@@ -28,7 +28,6 @@ import org.drools.core.util.ClassUtils;
  * 
  * TODO use META-INF discovery mechanism
  * 
- * @author tcurdt
  */
 public final class JavaCompilerFactory {
 

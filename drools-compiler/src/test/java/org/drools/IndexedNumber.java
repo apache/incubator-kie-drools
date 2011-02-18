@@ -22,7 +22,6 @@ import java.io.Serializable;
  * IndexedNumber
  *
  * Created: 22/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
  *
  * @version $Id$
  */

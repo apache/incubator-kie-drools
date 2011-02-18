@@ -42,7 +42,6 @@ import org.drools.spi.InternalReadAccessor;
  * This class defines all the comparable built in
  * evaluators like >, >=, etc.
  *
- * @author etirelli
  */
 public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 
@@ -201,9 +200,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
      *  *********************************************************
      */
     public static class BigDecimalLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessEvaluator();
 
@@ -257,9 +253,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigDecimalLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalLessOrEqualEvaluator();
 
@@ -313,9 +306,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigDecimalGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalGreaterEvaluator();
 
@@ -369,9 +359,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigDecimalGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigDecimalGreaterOrEqualEvaluator();
 
@@ -425,9 +412,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessEvaluator();
 
@@ -481,9 +465,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerLessOrEqualEvaluator();
 
@@ -538,9 +519,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerGreaterEvaluator();
 
@@ -594,9 +572,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new BigIntegerGreaterOrEqualEvaluator();
 
@@ -650,9 +625,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessEvaluator();
 
@@ -702,9 +674,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteLessOrEqualEvaluator();
 
@@ -754,9 +723,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteGreaterEvaluator();
 
@@ -806,9 +772,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new ByteGreaterOrEqualEvaluator();
 
@@ -858,9 +821,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessEvaluator();
 
@@ -910,9 +870,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterLessOrEqualEvaluator();
 
@@ -962,9 +919,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterGreaterEvaluator();
 
@@ -1014,9 +968,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new CharacterGreaterOrEqualEvaluator();
 
@@ -1066,9 +1017,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessEvaluator();
 
@@ -1127,9 +1075,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateLessOrEqualEvaluator();
 
@@ -1188,9 +1133,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateGreaterEvaluator();
 
@@ -1249,9 +1191,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DateGreaterOrEqualEvaluator();
 
@@ -1310,9 +1249,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessEvaluator();
 
@@ -1366,9 +1302,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleLessOrEqualEvaluator();
 
@@ -1422,9 +1355,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleGreaterEvaluator();
 
@@ -1478,9 +1408,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new DoubleGreaterOrEqualEvaluator();
 
@@ -1534,9 +1461,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FloatLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessEvaluator();
 
@@ -1590,9 +1514,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FloatLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatLessOrEqualEvaluator();
 
@@ -1646,9 +1567,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FloatGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatGreaterEvaluator();
 
@@ -1702,9 +1620,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FloatGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new FloatGreaterOrEqualEvaluator();
 
@@ -1758,9 +1673,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class IntegerLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessEvaluator();
 
@@ -1810,9 +1722,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerLessOrEqualEvaluator();
 
@@ -1862,9 +1771,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     static public class IntegerGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerGreaterEvaluator();
 
@@ -1914,9 +1820,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new IntegerGreaterOrEqualEvaluator();
 
@@ -1966,9 +1869,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessEvaluator();
 
@@ -2018,9 +1918,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongLessOrEqualEvaluator();
 
@@ -2070,9 +1967,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongGreaterEvaluator();
 
@@ -2122,9 +2016,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private final static Evaluator INSTANCE         = new LongGreaterOrEqualEvaluator();
 
@@ -2229,9 +2120,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ObjectLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
         private static final ObjectComparator comparator = new ObjectComparator();
@@ -2286,9 +2174,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ObjectGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
         private static final ObjectComparator comparator = new ObjectComparator();
@@ -2343,9 +2228,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ObjectGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
         private static final ObjectComparator comparator = new ObjectComparator();
@@ -2400,9 +2282,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortLessEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessEvaluator();
 
@@ -2452,9 +2331,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortLessOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortLessOrEqualEvaluator();
 
@@ -2504,9 +2380,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortGreaterEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterEvaluator();
 
@@ -2556,9 +2429,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortGreaterOrEqualEvaluator();
 

@@ -68,9 +68,6 @@ public class CrossProductTest {
 
         rule.setConsequence( new Consequence() {
 
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,

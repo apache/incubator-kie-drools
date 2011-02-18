@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.time;
 
 import java.util.regex.Matcher;
@@ -28,7 +25,6 @@ import org.drools.RuntimeDroolsException;
  * A helper class with utility methods for
  * time related operations.
  * 
- * @author etirelli
  */
 public class TimeUtils {
 

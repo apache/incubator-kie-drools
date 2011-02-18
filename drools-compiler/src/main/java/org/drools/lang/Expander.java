@@ -39,7 +39,6 @@ import org.drools.lang.dsl.DSLMapping;
  * drools-java semantic module, not in the parser itself. Expanders should 
  * be reusable across semantic languages. 
  * 
- * @author Michael Neale
  *
  */
 public interface Expander {

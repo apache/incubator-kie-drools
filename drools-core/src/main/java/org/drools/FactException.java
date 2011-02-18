@@ -21,9 +21,6 @@ package org.drools;
  * 
  */
 public class FactException extends RuntimeDroolsException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

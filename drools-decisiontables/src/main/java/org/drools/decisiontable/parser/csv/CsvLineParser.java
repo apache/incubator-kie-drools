@@ -21,7 +21,6 @@ import java.util.List;
 
 /**
  * 
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a> Break up
  *         a CSV line, with all the normal CSV features.
  */
 public class CsvLineParser {
@@ -59,9 +58,6 @@ public class CsvLineParser {
      * "You may use this code for any purpose, as long as you leave the
      * copyright notice and book citation attached." I have done so.
      * 
-     * @author Brian W. Kernighan and Rob Pike (C++ original)
-     * @author Ian F. Darwin (translation into Java and removal of I/O)
-     * @author Ben Ballard (rewrote advQuoted to handle '""' and for
      *         readability)
      */
     static class CsvParserImpl

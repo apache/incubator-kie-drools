@@ -1,15 +1,8 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
 import org.drools.integrationtests.eventgenerator.Event;
 
 
-/**
- * @author Matthias Groch
- *
- */
 public class HeartbeatEvent extends Event {
 
     /**

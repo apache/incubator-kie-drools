@@ -31,8 +31,7 @@ import jxl.format.CellFormat;
 import org.drools.template.parser.DataListener;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
+ *
  * Some unit tests for the corners of ExcelParser that are not explicitly
  * covered by integration tests.
  */

@@ -27,7 +27,6 @@ import org.drools.spi.InternalReadAccessor;
  * <pre>$m : Message( routingValue str[length] 17 )</pre>
  * 
  *
- * @author tsurdilo
  */
 public class StrEvaluatorDefinition implements EvaluatorDefinition {
     public static final Operator STR_COMPARE = Operator.addOperatorToRegistry(

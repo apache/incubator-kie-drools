@@ -47,8 +47,6 @@ import org.drools.spi.RuleComponent;
  * @see Eval
  * @see LeftTuple
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class EvalConditionNode extends LeftTupleSource
     implements
@@ -58,9 +56,6 @@ public class EvalConditionNode extends LeftTupleSource
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-    *
-    */
     private static final long serialVersionUID = 510l;
 
     /** The semantic <code>Test</code>. */

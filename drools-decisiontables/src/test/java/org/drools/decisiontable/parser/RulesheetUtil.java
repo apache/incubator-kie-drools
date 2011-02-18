@@ -26,10 +26,6 @@ import java.util.Map;
 import org.drools.decisiontable.parser.xls.ExcelParser;
 import org.drools.template.parser.DataListener;
 
-/**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
- */
 public class RulesheetUtil {
 
     /**

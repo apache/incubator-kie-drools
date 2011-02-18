@@ -22,7 +22,6 @@ import org.drools.time.TimeUtils;
 /**
  * A parameters parser that uses JodaTime for time units parsing.
  *  
- * @author etirelli
  */
 public class TimeIntervalParser
     implements

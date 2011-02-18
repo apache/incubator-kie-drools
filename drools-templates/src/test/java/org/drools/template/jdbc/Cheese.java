@@ -1,8 +1,5 @@
 package org.drools.template.jdbc;
 
-/**
- * @author Michael Neale
- */
 public class Cheese {
     private String type;
     private int    price;

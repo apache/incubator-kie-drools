@@ -23,8 +23,7 @@ import org.antlr.runtime.Token;
 /**
  * An extension of the CommonToken class that keeps the char offset information
  * 
- * @author porcelli
- * 
+ *
  */
 public class DroolsToken extends CommonToken {
 

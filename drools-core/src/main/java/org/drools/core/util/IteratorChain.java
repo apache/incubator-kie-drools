@@ -45,8 +45,6 @@ import java.util.List;
  * @since Commons Collections 2.1
  * @version $Revision: 1.1 $ $Date: 2005/07/26 01:06:32 $
  * 
- * @author Morgan Delagrange
- * @author Stephen Colebourne
  */
 public class IteratorChain
     implements

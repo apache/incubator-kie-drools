@@ -28,7 +28,6 @@ import org.drools.time.Trigger;
  * An event feeder reads an event data file and publishes
  * the read events to the consumer
  * 
- * @author etirelli
  */
 public class EventFeeder {
 

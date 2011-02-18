@@ -31,9 +31,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author fmeyer
- */
 
 public class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
     implements

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.integrationtests;
 
 import java.util.Arrays;

@@ -20,10 +20,6 @@ import java.util.Set;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class ResourceDiffResult {
     private final KnowledgePackage pkg;
 

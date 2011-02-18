@@ -25,8 +25,7 @@ import org.drools.rule.Package;
 /**
  * Contains the changes to packages.
  * 
- * @author Toni Rikkola
- * 
+ *
  */
 class PackageChangeInfo {
 

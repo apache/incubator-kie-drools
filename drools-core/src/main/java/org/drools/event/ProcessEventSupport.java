@@ -28,10 +28,6 @@ import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
- */
 public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListener> {
 
     public void fireBeforeProcessStarted(final ProcessInstance instance, KnowledgeRuntime kruntime) {

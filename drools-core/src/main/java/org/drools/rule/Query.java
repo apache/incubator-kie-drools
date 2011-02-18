@@ -31,9 +31,6 @@ import org.drools.spi.Salience;
 
 public class Query extends Rule {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public Query() {

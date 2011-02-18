@@ -13,7 +13,6 @@ import org.drools.rule.Package;
  * For additional control, refer to the DrlParser and PackageBuilder classes.
  * You can have much more detailed control with the lower level classes.
  * 
- * @author Michael Neale
  */
 public class RuleBaseLoader {
 

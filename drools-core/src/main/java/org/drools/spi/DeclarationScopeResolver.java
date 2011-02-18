@@ -33,7 +33,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * A class capable of resolving a declaration in the current build context
  * 
- * @author etirelli
  */
 public class DeclarationScopeResolver {
     private static final Stack<RuleConditionElement> EMPTY_STACK = new Stack<RuleConditionElement>();

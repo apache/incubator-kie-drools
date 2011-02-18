@@ -42,8 +42,7 @@ import org.drools.facttemplates.FactTemplate;
  * 
  * @see Rule
  * 
- * @author <a href="mail:bob@werken.com">bob mcwhirter </a>
- * 
+ *
  * @version $Id: Package.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
 public class Package
@@ -53,9 +52,6 @@ public class Package
     // Constants`
     // ------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long              serialVersionUID = 510l;
 
     // ------------------------------------------------------------

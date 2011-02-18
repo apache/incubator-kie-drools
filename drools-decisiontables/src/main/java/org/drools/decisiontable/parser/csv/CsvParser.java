@@ -39,7 +39,6 @@ import org.drools.template.parser.DecisionTableParseException;
  * 
  * 
  * 
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  */
 public class CsvParser implements DecisionTableParser {
 

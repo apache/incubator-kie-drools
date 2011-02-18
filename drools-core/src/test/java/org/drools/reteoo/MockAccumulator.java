@@ -33,7 +33,6 @@ import org.drools.spi.Tuple;
 /**
  * A Mock accumulate object.
  *
- * @author etirelli
  *
  */
 public class MockAccumulator

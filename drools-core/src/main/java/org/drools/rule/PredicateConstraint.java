@@ -40,7 +40,6 @@ import org.drools.spi.Wireable;
  * inside inside a field constraint (and as so, must implement the
  * Restriction interface).
  *
- * @author etirelli
  */
 public class PredicateConstraint extends MutableTypeConstraint
     implements
@@ -48,9 +47,6 @@ public class PredicateConstraint extends MutableTypeConstraint
     Wireable,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long          serialVersionUID   = 510l;
 
     private PredicateExpression        expression;

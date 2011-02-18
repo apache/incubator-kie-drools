@@ -25,9 +25,6 @@ public class Cheese
 
     public static final String STILTON = "stilton";
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private String            type;
     private int               price;

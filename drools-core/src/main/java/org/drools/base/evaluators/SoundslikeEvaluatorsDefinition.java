@@ -33,7 +33,6 @@ import org.mvel2.util.Soundex;
 /**
  * This class defines the soundslike evaluator
  *
- * @author etirelli
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 

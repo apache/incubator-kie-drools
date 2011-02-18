@@ -30,9 +30,6 @@ public class FactTemplateObjectType
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     /** FieldTemplate. */

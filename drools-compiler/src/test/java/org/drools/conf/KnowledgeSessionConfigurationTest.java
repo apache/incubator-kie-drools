@@ -25,10 +25,6 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.conf.ClockTypeOption;
 
-/**
- * @author etirelli
- *
- */
 public class KnowledgeSessionConfigurationTest {
 
     private KnowledgeSessionConfiguration config;

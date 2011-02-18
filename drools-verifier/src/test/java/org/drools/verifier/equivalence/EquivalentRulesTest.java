@@ -38,11 +38,6 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.Subsumption;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 public class EquivalentRulesTest {
 
     @Test

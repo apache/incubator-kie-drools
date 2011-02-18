@@ -1,15 +1,8 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/**
- * @author Matthias Groch
- *
- */
 public class Tools {
 
     // Utitlity functions for console output

@@ -21,9 +21,6 @@ import org.drools.WorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class ObjectUpdatedEvent extends WorkingMemoryEvent {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     private final FactHandle  handle;

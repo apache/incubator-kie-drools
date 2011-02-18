@@ -21,7 +21,6 @@ import org.drools.rule.RuleConditionElement;
 /**
  * An interface for Reteoo Component builders
  * 
- * @author etirelli
  */
 public interface ReteooComponentBuilder {
 

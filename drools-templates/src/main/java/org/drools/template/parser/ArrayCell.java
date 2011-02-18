@@ -15,8 +15,7 @@
  */
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Cell containing an array of values
  */
 package org.drools.template.parser;

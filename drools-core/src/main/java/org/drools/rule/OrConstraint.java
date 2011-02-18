@@ -30,7 +30,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * 
  * Person( hair == 'blue' || eyes == 'blue' )
  * 
- * @author etirelli
  *
  */
 public class OrConstraint extends AbstractCompositeConstraint {

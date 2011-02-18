@@ -65,9 +65,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author mproctor
- */
 public class AgendaTest extends DroolsTestCase {
     private InternalRuleBase ruleBase;
     private BuildContext     buildContext;
@@ -114,9 +111,6 @@ public class AgendaTest extends DroolsTestCase {
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule1.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -141,9 +135,6 @@ public class AgendaTest extends DroolsTestCase {
         // Add consequence. Notice here the context here for the add to ageyunda
         // is itself
         rule2.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -223,9 +214,6 @@ public class AgendaTest extends DroolsTestCase {
         final Map results = new HashMap();
         // add consequence
         rule.setConsequence( new org.drools.spi.Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(final KnowledgeHelper knowledgeHelper,
@@ -578,9 +566,6 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -732,9 +717,6 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -944,9 +926,6 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -1738,9 +1717,6 @@ public class AgendaTest extends DroolsTestCase {
 
         // create the consequence
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,

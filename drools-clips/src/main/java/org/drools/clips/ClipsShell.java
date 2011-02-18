@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package org.drools.clips;
 
 import java.io.ByteArrayOutputStream;
@@ -91,7 +88,6 @@ import org.mvel2.compiler.ExpressionCompiler;
 /**
  * An interactive Clips session shell.
  * You can launch this as a Main class, no parameters are required.
- * @author Michael Neale
  *
  */
 public class ClipsShell

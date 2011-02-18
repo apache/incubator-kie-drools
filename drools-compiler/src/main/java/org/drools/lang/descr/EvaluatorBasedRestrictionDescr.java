@@ -21,7 +21,6 @@ package org.drools.lang.descr;
  * This is a super class for all restrictions that are based on
  * evaluators.
  * 
- * @author etirelli
  */
 public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
 

@@ -17,8 +17,7 @@
 package org.drools.template.parser;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A column of type String in a decision table
  */
 public class StringColumn extends AbstractColumn {

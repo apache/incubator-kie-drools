@@ -19,7 +19,6 @@ package org.drools.examples.broker.model;
 /**
  * A POJO for a company
  * 
- * @author etirelli
  */
 public class Company {
 

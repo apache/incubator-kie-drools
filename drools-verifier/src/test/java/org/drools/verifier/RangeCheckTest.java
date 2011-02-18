@@ -28,11 +28,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class RangeCheckTest {
 
     @Test

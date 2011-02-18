@@ -21,10 +21,6 @@ package org.drools.benchmark.waltz;
 
 
 
-/**
- * @author Alexander Bagerman
- * 
- */
 
 public class Junction {
     public static String TEE = "tee";

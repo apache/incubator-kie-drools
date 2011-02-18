@@ -22,11 +22,6 @@ import java.util.Collection;
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.AgendaFilter;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class ScopesAgendaFilter
     implements
     AgendaFilter {

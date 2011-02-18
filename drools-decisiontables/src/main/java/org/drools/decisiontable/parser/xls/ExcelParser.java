@@ -34,7 +34,6 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  * Parse an excel spreadsheet, pusing cell info into the SheetListener interface.
  */
 public class ExcelParser

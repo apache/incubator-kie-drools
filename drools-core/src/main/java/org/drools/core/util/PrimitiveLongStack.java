@@ -24,9 +24,6 @@ import java.io.ObjectOutput;
 public class PrimitiveLongStack
     implements
     Externalizable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private int         tableSize;
     private int               currentPageId;
@@ -95,9 +92,6 @@ public class PrimitiveLongStack
     public static final class Page
         implements
         Externalizable {
-        /**
-         *
-         */
         private static final long serialVersionUID = 510l;
         private int         pageId;
         private Page              nextSibling;

@@ -41,8 +41,6 @@ import org.drools.spi.Tuple;
 /**
  * Item entry in the <code>Agenda</code>.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class AgendaItem
     implements
@@ -53,9 +51,6 @@ public class AgendaItem
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long   serialVersionUID = 510l;
 
     /** The tuple. */

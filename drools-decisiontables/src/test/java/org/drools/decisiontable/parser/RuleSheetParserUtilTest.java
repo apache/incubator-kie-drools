@@ -28,8 +28,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
+ *
  * Nuff said...
  */
 public class RuleSheetParserUtilTest {

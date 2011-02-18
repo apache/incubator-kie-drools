@@ -25,9 +25,6 @@ public class Context
     implements
     Externalizable {
 
-    /**
-     *
-     */
     private static final long    serialVersionUID = 510l;
     public static final int      START_UP         = 0;
     public static final int      ASSIGN_SEATS     = 1;

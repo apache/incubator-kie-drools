@@ -25,7 +25,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * Representation of a boolean datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public final class BooleanDataType
     implements

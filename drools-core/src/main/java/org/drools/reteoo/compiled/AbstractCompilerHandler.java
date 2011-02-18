@@ -26,7 +26,6 @@ import org.drools.rule.ContextEntry;
  * generating a compiled network. It provides methods to return the variable type and names used for storing
  * refernces to different {@link org.drools.common.NetworkNode}s and variable names for {@link ClassFieldReader}s.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     protected static final String NEWLINE = "\n";

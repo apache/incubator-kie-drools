@@ -24,8 +24,7 @@ import org.drools.spi.ConflictResolver;
  * A conflict resolver that compares the total recency of a tuple when 
  * determining firing order.
  * 
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
- * 
+ *
  * @version $Id$
  */
 public class TotalRecencyConflictResolver extends AbstractConflictResolver {
@@ -33,9 +32,6 @@ public class TotalRecencyConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                         serialVersionUID = 510l;
     /** Singleton instance. */
     private static final TotalRecencyConflictResolver INSTANCE         = new TotalRecencyConflictResolver();

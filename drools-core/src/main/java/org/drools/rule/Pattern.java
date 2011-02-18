@@ -41,9 +41,6 @@ public class Pattern
     RuleConditionElement,
     AcceptsClassObjectType,
     Externalizable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private ObjectType        objectType;
     private List              constraints      = Collections.EMPTY_LIST;

@@ -17,8 +17,7 @@
 package org.drools.template.parser;
 
 /**
- * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a>
- * 
+ *
  * Callback interface for scanning an spreadsheet.
  */
 public interface DataListener {

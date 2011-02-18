@@ -41,10 +41,6 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.rule.impl.FlatQueryResults;
 
-/**
- *
- * @author salaboy
- */
 public class DroolsJaxbContextHelper {
 
     public static final String[] JAXB_ANNOTATED_CMD = {BatchExecutionCommandImpl.class.getName(),

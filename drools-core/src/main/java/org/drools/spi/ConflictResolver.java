@@ -32,9 +32,7 @@ import java.util.Comparator;
  * @see Tuple
  * @see org.drools.rule.Rule
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
+ *
  * @version $Id: ConflictResolver.java,v 1.1 2005/07/26 01:06:32 mproctor Exp $
  */
 public interface ConflictResolver

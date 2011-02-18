@@ -26,7 +26,6 @@ import org.drools.definition.type.FactField;
 /**
  * Declares a field to be dynamically generated.
  *
- * @author etirelli
  */
 public class FieldDefinition
     implements

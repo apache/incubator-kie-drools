@@ -23,9 +23,6 @@ import org.drools.spi.PropagationContext;
 
 public class MockTupleSource extends LeftTupleSource {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     private int               attached;

@@ -20,7 +20,6 @@ package org.drools.common;
 /**
  * An interface for node memories implementation
  *
- * @author etirelli
  */
 public interface NodeMemories {
 

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.common;
 
 import java.beans.PropertyChangeEvent;

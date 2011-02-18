@@ -36,7 +36,6 @@ import java.io.ObjectOutput;
  * bound in the activation.  If necessary, this event could be extended
  * to contain a map of declarations too.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public class ActivationLogEvent extends LogEvent {
 

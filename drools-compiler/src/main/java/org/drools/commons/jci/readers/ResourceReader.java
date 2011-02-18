@@ -20,7 +20,6 @@ package org.drools.commons.jci.readers;
 /**
  * A ResourceReader provide acces to resource like e.g. source code
  * 
- * @author tcurdt
  */
 public interface ResourceReader {
 

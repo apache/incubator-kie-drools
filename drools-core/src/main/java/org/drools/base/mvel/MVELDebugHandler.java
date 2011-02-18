@@ -26,7 +26,6 @@ import org.mvel2.debug.Frame;
  * Takes care of registering breakpoints and calling required methods
  * to trigger eclipse debugger to keep breakpoints in sync etc.
  *
- * @author Ahti Kitsik
  *
  */
 public final class MVELDebugHandler {

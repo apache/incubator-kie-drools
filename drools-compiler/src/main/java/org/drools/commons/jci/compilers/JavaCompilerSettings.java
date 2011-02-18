@@ -26,7 +26,6 @@ package org.drools.commons.jci.compilers;
  * the native compiler configurations to the compilers.
  * Writing of a custom factory is suggested. 
  * 
- * @author tcurdt
  */
 public class JavaCompilerSettings {
 

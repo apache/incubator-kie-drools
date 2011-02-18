@@ -32,7 +32,6 @@ import org.drools.spi.Evaluator;
 /**
  * A registry class for all available evaluators
  *
- * @author etirelli
  */
 public class EvaluatorRegistry
     implements

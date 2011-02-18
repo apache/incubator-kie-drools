@@ -30,7 +30,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * InstanceEqualsConstraint
  *
  * Created: 21/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  *
  * @version $Id$
  */

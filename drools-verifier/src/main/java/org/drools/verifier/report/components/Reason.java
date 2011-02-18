@@ -22,7 +22,6 @@ import java.util.Collection;
  * 
  * Reason why something is wrong.
  * 
- * @author trikkola
  *
  */
 public interface Reason {

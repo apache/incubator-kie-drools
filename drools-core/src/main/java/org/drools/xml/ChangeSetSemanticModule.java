@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.xml;
 
 import org.drools.xml.changeset.AddHandler;

@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  * Some basic unit tests for converter utility.
  * Note that some of this may still use the drools 2.x syntax, as it is not compiled,

@@ -27,7 +27,6 @@ import org.mvel2.util.ParseTools;
 /**
  * An ANTLR-driven implementation for the DSL Mapping Entry interface
  * 
- * @author mattgeis
  */
 public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
 

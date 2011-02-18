@@ -36,7 +36,6 @@ import org.drools.spi.AlphaNodeFieldConstraint;
  * Events are fired when each of these network features are encountered, and again when the end of them is encountered.
  * OTN parsing is unidirectional; previously parsed data cannot be re-read without starting the parsing operation again.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public class ObjectTypeNodeParser {
 

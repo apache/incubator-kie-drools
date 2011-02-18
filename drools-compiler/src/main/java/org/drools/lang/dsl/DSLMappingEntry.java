@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 /**
  * A single entry in a DSL mapping file
  * 
- * @author etirelli
  */
 public interface DSLMappingEntry {
 
@@ -134,7 +133,6 @@ public interface DSLMappingEntry {
      * associated with this entry. It is obviously
      * implementation dependent.
      * 
-     * @author etirelli
      *
      */
     public static interface MetaData

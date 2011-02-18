@@ -23,7 +23,6 @@ import org.drools.base.evaluators.TimeIntervalParser;
 /**
  * A descriptor for sliding windows
  * 
- * @author etirelli
  */
 public class SlidingWindowDescr extends BehaviorDescr {
     private static final TimeIntervalParser parser = new TimeIntervalParser();

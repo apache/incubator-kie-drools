@@ -25,15 +25,11 @@ import org.drools.definition.process.Process;
  * @see RuleBase#addProcess
  * @see RuleBase#addPackage
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
- * 
+ *
  * @version $Id: RuleIntegrationException.java,v 1.6 2004/09/17 00:14:06
  *          mproctor Exp $
  */
 public class ProcessIntegrationException extends IntegrationException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     /** The rule. */
     private final    Process    process;

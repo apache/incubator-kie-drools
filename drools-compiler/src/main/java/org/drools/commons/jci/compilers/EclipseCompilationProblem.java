@@ -23,7 +23,6 @@ import org.eclipse.jdt.core.compiler.IProblem;
 /**
  * Wrapping an Eclipse compiler problem
  * 
- * @author tcurdt
  */
 public final class EclipseCompilationProblem implements CompilationProblem {
 

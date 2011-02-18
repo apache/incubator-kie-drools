@@ -9,9 +9,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 
-/**
- * @author Toni Rikkola trikkola@redhat.com (C) 2011 Red Hat Inc
- */
 public class VerifierMapBackedClassLoader extends MapBackedClassLoader {
     public VerifierMapBackedClassLoader(Collection<JarInputStream> jarInputStreams) throws IOException {
         super(createClassLoader(null));

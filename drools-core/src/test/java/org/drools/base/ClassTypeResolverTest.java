@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package org.drools.base;
 
 import java.util.HashSet;
@@ -30,10 +27,6 @@ import org.drools.Cheese;
 import org.drools.FirstClass;
 import org.drools.SecondClass;
 
-/**
- * @author fburlet
- *
- */
 public class ClassTypeResolverTest {
 
     @Test

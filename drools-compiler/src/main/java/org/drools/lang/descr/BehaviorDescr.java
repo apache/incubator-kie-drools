@@ -22,7 +22,6 @@ package org.drools.lang.descr;
  * A super class for all Behavior Descriptors like
  * time window, event window, distinct, etc
  *  
- * @author etirelli
  *
  */
 public class BehaviorDescr extends BaseDescr {

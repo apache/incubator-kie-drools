@@ -18,10 +18,6 @@ package org.drools.verifier.report.html;
 
 import org.drools.verifier.components.VerifierRule;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class UrlFactory {
 
     public static final String THIS_FOLDER                 = ".";

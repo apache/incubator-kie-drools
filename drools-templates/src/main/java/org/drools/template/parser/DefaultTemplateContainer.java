@@ -26,8 +26,7 @@ import java.util.Map;
 
 /**
  * 
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Container for a set of templates (residing in one file). This class will
  * parse the template file.
  * 

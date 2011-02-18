@@ -35,9 +35,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
- */
 public class WorkingMemoryEventSupportTest {
 
     @Test

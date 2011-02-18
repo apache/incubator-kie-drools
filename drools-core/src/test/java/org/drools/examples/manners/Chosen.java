@@ -25,9 +25,6 @@ public class Chosen
     implements
     Externalizable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     private int               id;

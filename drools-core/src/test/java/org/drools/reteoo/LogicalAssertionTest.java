@@ -89,9 +89,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -214,9 +211,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -321,9 +315,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -486,9 +477,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -591,9 +579,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -713,9 +698,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -869,9 +851,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
@@ -987,9 +966,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Agenda agenda = workingMemory.getAgenda();
 
         final Consequence consequence = new Consequence() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public void evaluate(KnowledgeHelper knowledgeHelper,

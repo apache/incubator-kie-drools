@@ -30,7 +30,6 @@ import java.util.List;
  * A: x > 10
  * B: x == 100
  * 
- * @author Toni Rikkola
  */
 public class Incompatibility
     implements

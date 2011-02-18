@@ -16,10 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public abstract class RuleComponent extends PackageComponent
     implements
     ChildComponent {

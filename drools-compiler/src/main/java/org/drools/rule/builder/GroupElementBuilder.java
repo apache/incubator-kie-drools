@@ -30,10 +30,6 @@ import org.drools.rule.GroupElementFactory;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 
-/**
- * @author etirelli
- *
- */
 public class GroupElementBuilder
     implements
     RuleConditionBuilder {

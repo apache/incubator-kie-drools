@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * Native Eclipse compiler settings
  * 
- * @author tcurdt
  */
 public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
     

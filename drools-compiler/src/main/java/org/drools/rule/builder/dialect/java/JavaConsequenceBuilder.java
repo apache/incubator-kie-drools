@@ -50,10 +50,6 @@ import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 import org.mvel2.compiler.ExecutableStatement;
 
-/**
- * @author etirelli
- *
- */
 public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
     implements
     ConsequenceBuilder {

@@ -21,7 +21,6 @@ import java.util.EventListener;
  * Defines the callbacks that can be implemented to listen to events from a SudokuGridModel.
  * 
  * @see SudokuGridModel
- * @author <a href="pbennett@redhat.com">Pete Bennett</a>
  * @version $Revision: 1.1 $
  */
 public interface SudokuGridListener

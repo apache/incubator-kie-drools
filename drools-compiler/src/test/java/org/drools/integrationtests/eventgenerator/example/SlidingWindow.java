@@ -1,12 +1,5 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
-/**
- * @author Matthias Groch
- *
- */
 public class SlidingWindow {
 
     // Sliding window states names

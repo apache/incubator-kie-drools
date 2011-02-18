@@ -17,8 +17,7 @@
 package org.drools.template.model;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * Classes that implement this interface should generate DRL fragments according
  * to the drools java semantic module.
  * 

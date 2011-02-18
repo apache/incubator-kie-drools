@@ -46,7 +46,6 @@ import org.drools.verifier.visitor.PackageDescrVisitor;
  * This is the main user class for verifier. This will use rules to validate
  * rules, caching the "knowledge base" of verifier rules.
  * 
- * @author Toni Rikkola
  */
 public class VerifierImpl
     implements

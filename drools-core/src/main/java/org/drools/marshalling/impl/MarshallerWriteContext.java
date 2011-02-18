@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.marshalling.impl;
 
 import java.io.IOException;

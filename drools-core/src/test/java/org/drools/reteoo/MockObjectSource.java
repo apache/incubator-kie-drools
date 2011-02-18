@@ -29,9 +29,6 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
 
 public class MockObjectSource extends ObjectSource {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     private int               attached;

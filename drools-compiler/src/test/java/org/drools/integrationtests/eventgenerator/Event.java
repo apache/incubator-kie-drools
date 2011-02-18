@@ -1,15 +1,8 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Matthias Groch
- *
- */
 public class Event implements Cloneable{
 
     public enum EventType {CUSTOM, PRODUCTION, STATUSCHANGED, HEARTBEAT, FAILURE};

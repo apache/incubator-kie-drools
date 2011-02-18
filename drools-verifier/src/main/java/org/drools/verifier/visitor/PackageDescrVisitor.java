@@ -32,9 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-/**
- * @author Toni Rikkola
- */
 public class PackageDescrVisitor {
 
     private final VerifierData data;

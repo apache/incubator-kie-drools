@@ -25,7 +25,6 @@ import org.drools.compiler.DroolsParserException;
  * Helper class that generates DroolsParserException with user friendly error
  * messages.
  * 
- * @author porcelli
  * @see DroolsParserException
  */
 public class DroolsParserExceptionFactory {

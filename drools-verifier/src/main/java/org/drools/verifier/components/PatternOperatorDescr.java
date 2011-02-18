@@ -18,10 +18,6 @@ package org.drools.verifier.components;
 
 import java.io.Serializable;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class PatternOperatorDescr extends PatternComponent
     implements
     Serializable {

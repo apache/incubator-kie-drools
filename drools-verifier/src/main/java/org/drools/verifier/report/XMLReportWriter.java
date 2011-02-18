@@ -27,11 +27,6 @@ import org.drools.verifier.report.components.VerifierMessage;
 
 import com.thoughtworks.xstream.XStream;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class XMLReportWriter
     implements
     VerifierReportWriter {

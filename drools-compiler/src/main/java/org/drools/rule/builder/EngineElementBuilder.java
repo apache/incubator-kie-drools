@@ -19,7 +19,6 @@ package org.drools.rule.builder;
 /**
  * A markup interface for builders
  * 
- * @author etirelli
  */
 public interface EngineElementBuilder {
 

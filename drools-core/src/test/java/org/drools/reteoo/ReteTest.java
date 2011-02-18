@@ -45,10 +45,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author mproctor
- *
- */
 public class ReteTest extends DroolsTestCase {
     private ReteooRuleBase ruleBase;
     private BuildContext   buildContext;

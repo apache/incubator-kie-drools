@@ -17,8 +17,7 @@
 package org.drools.template.model;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * The LayerSupertype for this model/parse tree.
  */
 public abstract class DRLElement {

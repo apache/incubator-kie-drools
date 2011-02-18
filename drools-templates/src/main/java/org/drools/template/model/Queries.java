@@ -20,7 +20,6 @@ package org.drools.template.model;
  * Wrapper for queries. Queries must be written in the appropriate style, no
  * formatting is contributed here.
  * 
- * @author salaboy
  */
 public class Queries
     implements

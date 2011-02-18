@@ -24,7 +24,6 @@ import org.drools.template.model.DRLOutput;
 /**
  * SheetListener for creating rules from a template
  * 
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
  */
 public class TemplateDataListener
     implements

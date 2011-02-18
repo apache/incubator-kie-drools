@@ -17,7 +17,6 @@ import org.drools.template.parser.TemplateContainer;
  * column names are used as keys or Bean-stype accessors to obtain the
  * actual parameters for the substitution.
  * 
- * @author Wolfgang Laun
  */
 public class ObjectDataProvider implements DataProvider {
 

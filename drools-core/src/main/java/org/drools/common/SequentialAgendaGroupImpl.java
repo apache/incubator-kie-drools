@@ -35,8 +35,6 @@ import org.drools.spi.ConflictResolver;
  * @see PriorityQueue
  * @see ActivationQueue
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public class SequentialAgendaGroupImpl

@@ -41,7 +41,6 @@ import org.drools.examples.sudoku.swing.SudokuGridView;
  * This Class hooks together the GUI and the model and allows you to 
  * load different grids.
  * 
- * @author <a href="pbennett@redhat.com">Pete Bennett</a>
  * @version $Revision: 1.1 $
  */
 public class Main

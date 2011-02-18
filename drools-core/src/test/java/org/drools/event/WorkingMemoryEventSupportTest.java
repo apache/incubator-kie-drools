@@ -31,9 +31,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 
-/**
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
- */
 public class WorkingMemoryEventSupportTest {
     @Test
     public void testIsSerializable() {

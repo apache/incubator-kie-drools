@@ -36,7 +36,6 @@ import org.drools.rule.RuleConditionElement;
 /**
  * The Reteoo component builder for forall CE
  * 
- * @author etirelli
  */
 public class ForallBuilder
     implements

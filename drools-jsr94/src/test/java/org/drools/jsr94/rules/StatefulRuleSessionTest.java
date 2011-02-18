@@ -74,9 +74,6 @@ import static org.junit.Assert.*;
 /**
  * Test the <code>StatefulRuleSession</code> implementation.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
- * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  * @see javax.rules.StatefulRuleSession
  */
 public class StatefulRuleSessionTest extends RuleEngineTestBase {

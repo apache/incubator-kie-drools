@@ -33,9 +33,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-/**
- * @author Michael Neale
- */
 public class BigDecimalEqualityTest {
 
     @Test

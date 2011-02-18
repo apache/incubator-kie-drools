@@ -36,7 +36,6 @@ import org.drools.spi.ObjectType;
  * The type declaration class stores all type's metadata
  * declared in source files.
  *  
- * @author etirelli
  */
 public class TypeDeclaration
     implements

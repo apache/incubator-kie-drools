@@ -17,9 +17,6 @@
 package org.drools.lang.descr;
 
 public class PredicateDescr extends RestrictionDescr {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     private Object            content;
 

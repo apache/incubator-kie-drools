@@ -28,7 +28,6 @@ import org.drools.spi.Constraint;
 /**
  * A base class for constraints
  *
- * @author etirelli
  */
 public abstract class MutableTypeConstraint
     implements

@@ -99,7 +99,6 @@ import org.drools.spi.Tuple;
  * method and store this information, like for example log to file
  * or database.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public abstract class WorkingMemoryLogger
     implements

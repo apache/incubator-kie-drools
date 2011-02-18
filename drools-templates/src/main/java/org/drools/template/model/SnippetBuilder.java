@@ -24,8 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * This utility class exists to convert rule script snippets to actual code. The
  * snippets contain place holders for values to be substituted into. See the
  * test case for how it really works !

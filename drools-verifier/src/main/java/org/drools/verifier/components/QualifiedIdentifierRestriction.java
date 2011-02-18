@@ -16,10 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class QualifiedIdentifierRestriction extends Restriction {
 
     private String variableName;

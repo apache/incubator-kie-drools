@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.rule.builder.dialect.mvel;
 
 import org.drools.compiler.Dialect;

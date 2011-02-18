@@ -31,11 +31,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author mproctor
- * @author fmeyer
- * 
- */
 public class LiteralRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {

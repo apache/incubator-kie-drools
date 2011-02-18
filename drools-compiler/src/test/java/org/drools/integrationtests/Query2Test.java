@@ -16,10 +16,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Damon
- * 
- */
 public class Query2Test {
 
     private KnowledgeBase knowledgeBase;

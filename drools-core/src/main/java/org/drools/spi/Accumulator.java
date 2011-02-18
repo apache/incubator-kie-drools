@@ -26,7 +26,6 @@ import org.drools.WorkingMemory;
  * Accumulator
  *
  * Created: 04/06/2006
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a> 
  *
  * @version $Id$
  */

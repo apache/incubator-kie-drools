@@ -6,7 +6,6 @@ import java.util.LinkedList;
 /**
  * Class that represents a DroolsLanguage sentence. To be used by IDE.
  * 
- * @author porcelli
  */
 @SuppressWarnings("unchecked")
 public class DroolsSentence {

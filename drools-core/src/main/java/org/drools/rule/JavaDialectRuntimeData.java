@@ -56,9 +56,6 @@ public class JavaDialectRuntimeData
     DialectRuntimeData,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long                    serialVersionUID = 510l;
 
     private static final ProtectionDomain        PROTECTION_DOMAIN;

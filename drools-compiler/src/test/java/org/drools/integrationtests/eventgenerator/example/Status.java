@@ -1,16 +1,9 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-/**
- * @author Matthias Groch
- *
- */
 public class Status {
 
     // Status names

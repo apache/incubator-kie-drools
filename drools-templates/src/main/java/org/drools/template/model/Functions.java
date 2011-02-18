@@ -20,7 +20,6 @@ package org.drools.template.model;
  * Wrapper for functions. Functions must be written in the appropriate style, no 
  * formatting is contributed here.
  * 
- * @author Michael Neale
  */
 public class Functions
     implements

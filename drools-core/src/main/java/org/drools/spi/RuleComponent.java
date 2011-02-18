@@ -20,7 +20,6 @@ package org.drools.spi;
 /**
  * Semantic component marker.
  *
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  *
  * @version $Id$
  */

@@ -16,10 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierCollectDescr extends PatternComponentSource {
 
     private String classMethodName;

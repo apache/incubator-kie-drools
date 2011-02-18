@@ -27,9 +27,6 @@ import org.drools.core.util.AbstractHashTable.ObjectComparator;
 public class IdentityAssertMapComparator
     implements
     ObjectComparator {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public IdentityAssertMapComparator() {

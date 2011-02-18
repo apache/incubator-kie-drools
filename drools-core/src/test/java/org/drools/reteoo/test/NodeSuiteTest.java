@@ -29,7 +29,6 @@ import org.junit.runner.RunWith;
 /**
  * A test case suite to manage and run all node test cases
  * 
- * @author etirelli
  */
 @RunWith(JUnitNodeTestRunner.class)
 public class NodeSuiteTest

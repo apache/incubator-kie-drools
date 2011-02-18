@@ -18,8 +18,7 @@ package org.drools.template.parser;
 
 import org.drools.core.util.StringUtils;
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A column in a decision table that represents an array (comma-delimited)
  * of values.
  */

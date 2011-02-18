@@ -34,7 +34,6 @@ import org.drools.reteoo.ReteooRuleBase;
  * agent is to serve as a singleton for knowledge base and session
  * monitoring mbeans registration and management.
  *  
- * @author etirelli
  *
  */
 public class DroolsManagementAgent

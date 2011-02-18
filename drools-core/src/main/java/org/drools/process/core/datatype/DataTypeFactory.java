@@ -22,7 +22,6 @@ import java.io.Serializable;
 /**
  * A factory for creating a datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public interface DataTypeFactory extends Serializable {
 

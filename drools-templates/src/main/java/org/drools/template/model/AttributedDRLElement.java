@@ -24,7 +24,6 @@ import java.util.regex.Matcher;
  * Intermediary class, extending DRLElement with the capability of
  * storing attributes, as required for rules and the package itself.
  * 
- * @author Wolfgang Laun
  */
 public abstract class AttributedDRLElement extends DRLElement {
 

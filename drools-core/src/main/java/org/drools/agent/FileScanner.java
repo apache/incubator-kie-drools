@@ -32,8 +32,7 @@ import org.drools.rule.Package;
 /**
  * This will monitor a file to a binary package.
  * 
- * @author Michael Neale
- * 
+ *
  */
 public class FileScanner extends PackageProvider {
 

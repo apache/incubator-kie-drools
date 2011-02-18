@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.lang.api;
 
 import org.drools.lang.descr.FunctionImportDescr;

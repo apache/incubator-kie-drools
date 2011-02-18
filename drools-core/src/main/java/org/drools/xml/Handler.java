@@ -21,10 +21,6 @@ import java.util.Set;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author mproctor
- * 
- */
 public interface Handler {
 
     Object start(String uri,

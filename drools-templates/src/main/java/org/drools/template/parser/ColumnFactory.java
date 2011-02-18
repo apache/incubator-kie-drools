@@ -22,8 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Factory to produce a column of the correct type based on its declaration.
  * [] indicates a column that represents an array (comma-delimited) of values.
  */

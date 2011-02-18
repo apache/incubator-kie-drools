@@ -54,7 +54,6 @@ import org.mvel2.PropertyAccessException;
 /**
  * A helper class to process mock related commands in the DSL
  * 
- * @author etirelli
  */
 public class MockitoHelper {
 

@@ -38,8 +38,6 @@ import org.drools.spi.PropagationContext;
  *
  *  @see AlphaNodeFieldConstraint
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public class AlphaNode extends ObjectSource
@@ -47,9 +45,6 @@ public class AlphaNode extends ObjectSource
     ObjectSinkNode,
     NodeMemory {
 
-    /**
-     *
-     */
     private static final long        serialVersionUID = 510l;
 
     /** The <code>FieldConstraint</code> */
@@ -270,7 +265,6 @@ public class AlphaNode extends ObjectSource
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
-     * @author mproctor
      *
      */
     private static class ObjectSinkUpdateAdapter

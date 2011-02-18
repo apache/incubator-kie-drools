@@ -58,10 +58,6 @@ import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
 
-/**
- * @author etirelli
- *
- */
 public class RuleBuilderTest {
 
     /**

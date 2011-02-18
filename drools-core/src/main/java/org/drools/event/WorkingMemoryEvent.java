@@ -22,9 +22,6 @@ import org.drools.WorkingMemory;
 import org.drools.spi.PropagationContext;
 
 public class WorkingMemoryEvent extends EventObject {
-    /**
-     * 
-     */
     private static final long        serialVersionUID = 510l;
     private final PropagationContext propagationContext;
 

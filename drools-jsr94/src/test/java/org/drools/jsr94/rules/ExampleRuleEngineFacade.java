@@ -75,7 +75,6 @@ import javax.rules.admin.RuleExecutionSet;
  * <code>RuleExecutionSet</code> and associated <code>RuntimeSession</code>
  * objects from a given <code>InputStream</code>.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
  */
 public class ExampleRuleEngineFacade {
     public static final String            RULE_SERVICE_PROVIDER = "http://drools.org/";

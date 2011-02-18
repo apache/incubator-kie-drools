@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.rule.builder.dialect.java.parser;
 
 
@@ -8,7 +5,6 @@ package org.drools.rule.builder.dialect.java.parser;
  * A helper class used during java code parsing to identify
  * and handle exitPoints calls
  * 
- * @author etirelli
  */
 public class JavaExitPointsDescr {
     private int start;

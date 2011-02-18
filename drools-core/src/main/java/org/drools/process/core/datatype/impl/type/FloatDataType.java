@@ -25,7 +25,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * Representation of a float datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public final class FloatDataType
     implements

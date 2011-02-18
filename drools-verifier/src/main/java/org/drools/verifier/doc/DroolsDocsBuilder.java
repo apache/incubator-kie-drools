@@ -31,11 +31,6 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfWriter;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 public class DroolsDocsBuilder {
 
     protected final String currentDate = getFormatter().format( new Date() );

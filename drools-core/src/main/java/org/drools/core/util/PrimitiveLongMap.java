@@ -24,23 +24,13 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 
-/**
- *
- * @author Mark Proctor
- */
 public class PrimitiveLongMap
     implements
     Externalizable {
-    /**
-     *
-     */
     private static final long   serialVersionUID = 510l;
 
     private final static Object NULL             = new Serializable() {
 
-                                                     /**
-                                                      *
-                                                      */
                                                      private static final long serialVersionUID = 510l;
                                                  };
 
@@ -352,9 +342,6 @@ public class PrimitiveLongMap
     public static class Page
         implements
         Externalizable {
-        /**
-         *
-         */
         private static final long serialVersionUID = 510l;
         private int         pageSize;
         private int         pageId;

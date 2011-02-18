@@ -64,8 +64,6 @@ import org.drools.spi.PropagationContext;
 /**
  * Implementation of <code>RuleBase</code>.
  *
- * @author <a href="mailto:bob@werken.com">bob mcwhirter</a>
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
  *
  * @version $Id: RuleBaseImpl.java,v 1.5 2005/08/14 22:44:12 mproctor Exp $
  */

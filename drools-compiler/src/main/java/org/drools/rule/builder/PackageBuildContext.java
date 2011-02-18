@@ -33,7 +33,6 @@ import org.drools.rule.Package;
 /**
  * A context for the current build
  * 
- * @author etirelli
  */
 public class PackageBuildContext {
 
