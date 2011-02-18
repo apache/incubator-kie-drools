@@ -33,9 +33,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.compiler.PackageBuilder;
 
-/**
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
- */
 public class RulebasePartitioningTest {
 
     protected RuleBase getRuleBase() throws Exception {

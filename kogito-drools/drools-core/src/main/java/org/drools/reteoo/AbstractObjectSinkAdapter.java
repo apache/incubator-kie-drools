@@ -25,8 +25,6 @@ import org.drools.common.RuleBasePartitionId;
 
 /**
  * An abstract super class for ObjectSinks
- *
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public abstract class AbstractObjectSinkAdapter implements ObjectSinkPropagator, Externalizable {
     protected RuleBasePartitionId partitionId;

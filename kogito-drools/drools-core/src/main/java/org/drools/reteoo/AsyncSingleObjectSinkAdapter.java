@@ -25,8 +25,6 @@ import org.drools.spi.PropagationContext;
  * This is an asynchronous implementation of the SingleObjectSinkAdapter
  * that is used to propagate facts between different partitions in the
  * rulebase
- *
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class AsyncSingleObjectSinkAdapter extends SingleObjectSinkAdapter {
 

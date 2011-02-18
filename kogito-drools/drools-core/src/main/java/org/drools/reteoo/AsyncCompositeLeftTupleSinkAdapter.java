@@ -21,9 +21,6 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.PartitionTaskManager.Action;
 import org.drools.spi.PropagationContext;
 
-/**
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
- */
 public class AsyncCompositeLeftTupleSinkAdapter extends CompositeLeftTupleSinkAdapter {
 
     public AsyncCompositeLeftTupleSinkAdapter() {
