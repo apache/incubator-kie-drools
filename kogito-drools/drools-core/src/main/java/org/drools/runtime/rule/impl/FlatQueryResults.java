@@ -48,7 +48,7 @@ public class FlatQueryResults
     private Map<String, Integer> identifiers;
     
     @XmlElement(name="results")
-    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)	
+    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
     private ArrayList<ArrayList<Object>>           results;
     
     

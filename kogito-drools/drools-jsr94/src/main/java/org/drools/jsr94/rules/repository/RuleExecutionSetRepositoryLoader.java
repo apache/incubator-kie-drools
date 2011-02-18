@@ -53,7 +53,7 @@ public abstract class RuleExecutionSetRepositoryLoader
      * algorithm described above.
      *
      * @param defaultFactoryName the className of the default
-     * 	<code>RuleExecutionSetRepository</code> implementation
+     *  <code>RuleExecutionSetRepository</code> implementation
      * @return
      */
     public static RuleExecutionSetRepository loadRuleExecutionSetRepository(

@@ -98,9 +98,9 @@ public class ReteooMannersTest extends BaseMannersTest {
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
         //        
         //        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-        //        		public void run() {
-        //        			viewer.showGUI();
-        //        		}
+        //                public void run() {
+        //                    viewer.showGUI();
+        //                }
         //        });
         //        
         //        Thread.sleep( 10000 );

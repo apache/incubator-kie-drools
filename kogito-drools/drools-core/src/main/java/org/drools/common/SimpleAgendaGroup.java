@@ -241,8 +241,7 @@ public class SimpleAgendaGroup
 
     public Activation[] getActivations() {
         return null;
-        //		return (Activation[]) this.queue.toArray(new AgendaItem[this.queue
-        //				.size()]);
+        // return (Activation[]) this.queue.toArray(new AgendaItem[this.queue.size()]);
     }
 
     public Activation[] getQueue() {

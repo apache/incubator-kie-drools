@@ -218,7 +218,7 @@ public class QueryElementNode extends LeftTupleSource
                                final LeftTuple tuple,
                 final PropagationContext context,
                 final InternalWorkingMemory workingMemory) {
-            //TODO        	
+            //TODO
         }
 
         public List< ? extends Object> getResults() {

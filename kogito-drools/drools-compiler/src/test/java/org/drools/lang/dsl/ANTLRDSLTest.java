@@ -21,7 +21,7 @@ public class ANTLRDSLTest {
         reader.close();
         for (Iterator it = tokenizedFile.getMapping().getEntries().iterator(); it.hasNext();) {
             DSLMappingEntry entry = (DSLMappingEntry) it.next();
-//			System.out.println("ENTRY: " + entry.getKeyPattern() + "   :::::   " + entry.getValuePattern());
+//            System.out.println("ENTRY: " + entry.getKeyPattern() + "   :::::   " + entry.getValuePattern());
         }
         
         DefaultExpander ex = new DefaultExpander();

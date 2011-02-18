@@ -63,7 +63,7 @@ public abstract class PackageProvider {
         }
     }
 
-    static void removePackages(	Collection<String> removedPackages,
+    static void removePackages( Collection<String> removedPackages,
                                 RuleBase rb,
                                 AgentEventListener listener ) {
 

@@ -46,9 +46,9 @@ public class SolversTest {
     /**
      * <pre>
      * when 
-     * 		Foo( r &amp;&amp; r2 )
-     * 		and
-     * 		not Foo( r3 &amp;&amp; r4 )
+     *     Foo( r &amp;&amp; r2 )
+     *     and
+     *     not Foo( r3 &amp;&amp; r4 )
      * </pre>
      * 
      * result:<br>
@@ -131,7 +131,7 @@ public class SolversTest {
     /**
      * <pre>
      * when 
-     * 		Foo( descr &amp;&amp; descr2 )
+     *     Foo( descr &amp;&amp; descr2 )
      * </pre>
      * 
      * result:<br>

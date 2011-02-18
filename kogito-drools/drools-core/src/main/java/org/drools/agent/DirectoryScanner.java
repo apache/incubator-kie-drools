@@ -75,7 +75,7 @@ public class DirectoryScanner extends PackageProvider {
                 listener.info("File changes detected in the directory "
                         + dir.getPath());
 
-//				scanner = new FileScanner();
+//                scanner = new FileScanner();
                 scanner.setFiles( files );
             }
 

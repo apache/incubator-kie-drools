@@ -68,9 +68,9 @@ public class DefaultGeneratorTest {
         Row r = new Row(1, columns);
         r.getCell(0).setValue("value1");
         r.getCell(1).setValue("value2");
-//		Row r = new Row(1);
-//		r.addCell(new StringCell(r, new StringColumn("col1"), "value1"));
-//		r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
+//        Row r = new Row(1);
+//        r.addCell(new StringCell(r, new StringColumn("col1"), "value1"));
+//        r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
         g.generate("rt3", r);
         String drl = g.getDrl();
         assertEquals("1 value1 value2\n\n", drl);

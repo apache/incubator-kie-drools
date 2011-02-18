@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * This is used to connect restrictions together for a single field
  * eg:
- * 	age < 40 & > 30 
+ * age < 40 & > 30
  *
  */
 public class RestrictionConnectiveDescr extends RestrictionDescr {

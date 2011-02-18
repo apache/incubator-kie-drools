@@ -917,7 +917,7 @@ public class TemporalEvaluatorFactoryTest {
         for ( int i = 0; i < data.length; i++ ) {
             final Object[] row = data[i];
             boolean isNegated = ((String) row[1]).startsWith( "not " );
-            //			System.out.println((String) row[1]);
+            // System.out.println((String) row[1]);
             String evaluatorStr = isNegated ? ((String) row[1]).substring( 4 ) : (String) row[1];
             boolean isConstrained = evaluatorStr.endsWith( "]" );
             String parameters = null;
@@ -932,7 +932,7 @@ public class TemporalEvaluatorFactoryTest {
                                                               evaluatorStr,
                                                               isNegated,
                                                               parameters );
-            //			System.out.println(evaluator);
+            // System.out.println(evaluator);
 
             checkEvaluatorMethodWith2Extractors( valueType,
                                                  extractor,

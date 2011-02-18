@@ -109,7 +109,7 @@ public class SlidingWindow {
         this.numberEvents = numberEvents;
     }
 
-/*	*//**
+/*    *//**
      * @return the eventsInWindow
      *//*
     public int getNumberEventsInWindow() {

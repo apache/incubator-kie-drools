@@ -41,7 +41,7 @@ public class ExternalSpreadsheetCompilerUnitTest {
                                               2 );
         assertNotNull( drl );
 
-        //		System.out.println(drl);
+        // System.out.println(drl);
 
         assertTrue( drl.indexOf( "rule \"How cool is Shaun 12\"" ) > 0 );
         assertTrue( drl.indexOf( "rule \"How cool is Kumar 11\"" ) > 0 );
@@ -57,7 +57,7 @@ public class ExternalSpreadsheetCompilerUnitTest {
                                               "/templates/test_template1.drl",
                                               11,
                                               2 );
-        //		System.out.println(drl);
+        // System.out.println(drl);
         assertNotNull( drl );
     }
 

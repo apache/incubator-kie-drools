@@ -134,7 +134,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 
     private RuleBase readRule(String drl) {
         try {
-//			System.out.println(drl);
+//            System.out.println(drl);
             // read in the source
             Reader source = new StringReader(drl);
             PackageBuilder builder = new PackageBuilder();

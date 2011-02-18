@@ -947,9 +947,9 @@ public class DRLContextTest {
         }
 
         LinkedList list = parser.getEditorInterface().get(0).getContent();
-//		for (Object o: list) {
-//			System.out.println(o);
-//		}
+//        for (Object o: list) {
+//            System.out.println(o);
+//        }
         assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_START,
                 getLastIntegerValue(parser.getEditorInterface().get(0)
                         .getContent()));
