@@ -51,7 +51,7 @@ public class ChainedProperties
         this( confFileName,
               classLoader,
               true );
-    }    
+    }
     
     public ChainedProperties(String confFileName,
                              ClassLoader classLoader,
@@ -82,7 +82,7 @@ public class ChainedProperties
 //            if ( classLoader == null ) {
 //                classLoader = cls.getClassLoader();
 //            }
-//        }        
+//        }
 
         // check META-INF directories for all known ClassLoaders
         ClassLoader confClassLoader = classLoader;

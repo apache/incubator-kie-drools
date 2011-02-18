@@ -16,6 +16,6 @@
 
 package org.drools.time;
 
-public interface Calendar {    
+public interface Calendar {
     boolean isTimeIncluded(long timestamp);
 }

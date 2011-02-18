@@ -30,12 +30,12 @@ public class ClassLoaderUtil {
         if ( systemClassLoader != null ) {
             // system classloader
             cl.addClassLoader( systemClassLoader );
-        }        
+        }
         
         if ( currentClassLoader != null ) {
             // the current classloader, typically from a drools-core or drools-compiler class
             cl.addClassLoader( currentClassLoader );
-        }        
+        }
         
 
         if ( contextClassLoader != null ) {

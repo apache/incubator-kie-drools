@@ -76,7 +76,7 @@ public class ServiceRegistryImpl
         this.registry.remove( cls.getName() );
     }
     
-    synchronized void registerInstance(Service service, Map map) {  
+    synchronized void registerInstance(Service service, Map map) {
         //this.context.getProperties().put( "org.dr, value )
         System.out.println( "regInstance : " + map );
         String[] values = ( String[] ) map.get( "objectClass" );
@@ -113,17 +113,17 @@ public class ServiceRegistryImpl
         this.registry.remove( name );
         this.registry.put( name,
                            this.defaultServices.get( name ) );
-    }    
+    }
     
 //    ConfigurationAdmin confAdmin;
 //    synchronized void setConfigurationAdmin(ConfigurationAdmin confAdmin) {
 //        this.confAdmin = confAdmin;
 //        System.out.println( "ConfAdmin : " + this.confAdmin );
-//    }   
+//    }
 //    
 //    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
 //        this.confAdmin = null;
-//    }    
+//    }
     
 //    private ComponentContext context;
 //    void activate(ComponentContext context) {
@@ -161,7 +161,7 @@ public class ServiceRegistryImpl
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate service for Class '" + (cls != null ? cls.getName() : null) + "'",
                                                     e );
-            }            
+            }
         }
     }
 
@@ -211,7 +211,7 @@ public class ServiceRegistryImpl
                 throw new IllegalArgumentException( "Unable to instantiate '" + name + "'",
                                                     e2 );
             }
-        }        
+        }
     }
 
     static class ReturnInstance<V>

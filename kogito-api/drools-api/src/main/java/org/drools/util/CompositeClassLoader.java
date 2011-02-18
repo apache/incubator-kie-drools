@@ -112,7 +112,7 @@ public class CompositeClassLoader extends ClassLoader {
        }
        
        return cls;
-   }    
+   }
     
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
@@ -215,7 +215,7 @@ public class CompositeClassLoader extends ClassLoader {
                     }
                     if ( cls != null ) {
                         break;
-                    }                    
+                    }
                 }
             }
 
@@ -224,7 +224,7 @@ public class CompositeClassLoader extends ClassLoader {
         
         public void reset() {
             // nothing to do
-        }        
+        }
     }
 
     private static class CachingLoader
@@ -269,7 +269,7 @@ public class CompositeClassLoader extends ClassLoader {
                     }
                     if ( cls != null ) {
                         break;
-                    }                    
+                    }
                 }
             }
             if ( cls != null ) {
@@ -282,7 +282,7 @@ public class CompositeClassLoader extends ClassLoader {
             }
 
             return cls;
-        }        
+        }
         
         public void reset() {
             this.classLoaderResultMap.clear();
