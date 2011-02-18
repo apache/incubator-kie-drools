@@ -1,46 +1,46 @@
 lexer grammar DRLLexer;
               
 options { 
-	language = Java;
+    language = Java;
 }
   
 @header {
-	package org.drools.lang;
+    package org.drools.lang;
 
-	import org.drools.compiler.DroolsParserException;
+    import org.drools.compiler.DroolsParserException;
 }
  
 @members {
-	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
+    private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+    private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
 
-	/** The standard method called to automatically emit a token at the
-	 *  outermost lexical rule.  The token object should point into the
-	 *  char buffer start..stop.  If there is a text override in 'text',
-	 *  use that to set the token's text.  Override this method to emit
-	 *  custom Token objects.
-	 */
-	public Token emit() {
-		Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
-		t.setLine(state.tokenStartLine);
-		t.setText(state.text);
-		t.setCharPositionInLine(state.tokenStartCharPositionInLine);
-		emit(t);
-		return t;
-	}
+    /** The standard method called to automatically emit a token at the
+     *  outermost lexical rule.  The token object should point into the
+     *  char buffer start..stop.  If there is a text override in 'text',
+     *  use that to set the token's text.  Override this method to emit
+     *  custom Token objects.
+     */
+    public Token emit() {
+        Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
+        t.setLine(state.tokenStartLine);
+        t.setText(state.text);
+        t.setCharPositionInLine(state.tokenStartCharPositionInLine);
+        emit(t);
+        return t;
+    }
 
-	public void reportError(RecognitionException ex) {
-		errors.add(errorMessageFactory.createDroolsException(ex));
-	}
+    public void reportError(RecognitionException ex) {
+        errors.add(errorMessageFactory.createDroolsException(ex));
+    }
 
-	/** return the raw DroolsParserException errors */
-	public List<DroolsParserException> getErrors() {
-		return errors;
-	}
+    /** return the raw DroolsParserException errors */
+    public List<DroolsParserException> getErrors() {
+        return errors;
+    }
 
-	/** Overrided this method to not output mesages */
-	public void emitErrorMessage(String msg) {
-	}
+    /** Overrided this method to not output mesages */
+    public void emitErrorMessage(String msg) {
+    }
 }
 
 WS      :       (	' '
@@ -53,7 +53,7 @@ WS      :       (	' '
 
 fragment
 EOL 	:	     
-   		(       ( '\r\n' )=> '\r\n'  // Evil DOS
+           (       ( '\r\n' )=> '\r\n'  // Evil DOS
                 |       '\r'    // Macintosh
                 |       '\n'    // Unix (the right way)
                 )
@@ -64,7 +64,7 @@ FLOAT
     |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
     |   ('0'..'9')+ Exponent FloatTypeSuffix?
     |   ('0'..'9')+ FloatTypeSuffix
-	;
+    ;
 
 fragment
 Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
@@ -86,12 +86,12 @@ STRING
 
 
 TimePeriod
-	: (('0'..'9')+ 'd') (('0'..'9')+ 'h')?(('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
-	| (('0'..'9')+ 'h') (('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
-	| (('0'..'9')+ 'm') (('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
-	| (('0'..'9')+ 's') (('0'..'9')+ 'ms'?)?
-	| (('0'..'9')+ 'ms'?)
-	;
+    : (('0'..'9')+ 'd') (('0'..'9')+ 'h')?(('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+    | (('0'..'9')+ 'h') (('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+    | (('0'..'9')+ 'm') (('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
+    | (('0'..'9')+ 's') (('0'..'9')+ 'ms'?)?
+    | (('0'..'9')+ 'ms'?)
+    ;
 
 
 
@@ -122,91 +122,91 @@ UnicodeEscape
     ;
     
 BOOL	:	('true'|'false')
-	;
+    ;
 
 NULL	:	'null'
-	;
+    ;
 
 AT	:	'@'
-	;
+    ;
 
 PLUS_ASSIGN
-	:	'+='
-	;
+    :	'+='
+    ;
 
 MINUS_ASSIGN
-	:	'-='
-	;
+    :	'-='
+    ;
 
 MULT_ASSIGN
-	:	'*='
-	;
+    :	'*='
+    ;
 
 DIV_ASSIGN
-	:	'/='
-	;
+    :	'/='
+    ;
 
 AND_ASSIGN
-	:	'&='
-	;
+    :	'&='
+    ;
 
 OR_ASSIGN
-	:	'|='
-	;
+    :	'|='
+    ;
 
 XOR_ASSIGN
-	:	'^='
-	;
+    :	'^='
+    ;
 
 MOD_ASSIGN
-	:	'%='
-	;
+    :	'%='
+    ;
 
 DECR	:	'--' 
-	;
-	
+    ;
+
 INCR	:	'++'
-	;
-	
+    ;
+
 ARROW
-	:	'->'
-	;
+    :	'->'
+    ;
 
 SEMICOLON
-	:	';'
-	;
+    :	';'
+    ;
 
 COLON
-	:	':'
-	;
+    :	':'
+    ;
 
 EQUALS
-	:	'=='
-	;
+    :	'=='
+    ;
 
 NOT_EQUALS
-	:	'!='
-	;
+    :	'!='
+    ;
 
 GREATER_EQUALS
-	:	'>='
-	;
+    :	'>='
+    ;
 
 LESS_EQUALS
-	:	'<='
-	;
+    :	'<='
+    ;
 
 GREATER
-	:	'>'
-	;
+    :	'>'
+    ;
 
 LESS
-	:	'<'
-	;
+    :	'<'
+    ;
 
 EQUALS_ASSIGN
-	:	'='
-	;
+    :	'='
+    ;
 
 LEFT_PAREN
         :	'('
@@ -233,85 +233,85 @@ RIGHT_CURLY
         ;
         
 COMMA	:	','
-	;
-	
+    ;
+
 DOT	:	'.'
-	;	
-	
+    ;
+
 DOUBLE_AMPER
-	:	'&&'
-	;
-	
+    :	'&&'
+    ;
+
 DOUBLE_PIPE
-	:	'||'
-	;
-	
+    :	'||'
+    ;
+
 QUESTION
-	:	'?'
-	;	
-	
+    :	'?'
+    ;
+
 NEGATION
-	:	'!'
-	;	
+    :	'!'
+    ;
 
 TILDE
-	:	'~'
-	;
-	
+    :	'~'
+    ;
+
 PIPE
-	:	'|'
-	;
-	
+    :	'|'
+    ;
+
 AMPER	
-	:	'&'	
-	;
-	
+    :	'&'
+    ;
+
 XOR
-	:	'^'
-	;	
-	
+    :	'^'
+    ;
+
 MOD	
-	:	'%'
-	;
-	
+    :	'%'
+    ;
+
 STAR	:	'*' 
-	;
-	
+    ;
+
 MINUS	:	'-' 
-	;
-	
+    ;
+
 PLUS	:	'+'
-	;
-	
+    ;
+
 SH_STYLE_SINGLE_LINE_COMMENT	
-	:	'#' (~('\r'|'\n'))* EOL?
+    :	'#' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; setText("//"+getText().substring(1));}
-	;
+    ;
         
         
 C_STYLE_SINGLE_LINE_COMMENT	
-	:	'//' (~('\r'|'\n'))* EOL?
+    :	'//' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; }
     ;
 
 MULTI_LINE_COMMENT
-	:	'/*' (options{greedy=false;} : .)* '*/'
+    :	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
-	;
+    ;
 
 ID	
-	:	IdentifierStart IdentifierPart*
-	|	'`' IdentifierStart IdentifierPart* '`'
-	{	state.text = $text.substring(1, $text.length() - 1);	}
-	;
+    :	IdentifierStart IdentifierPart*
+    |	'`' IdentifierStart IdentifierPart* '`'
+    {	state.text = $text.substring(1, $text.length() - 1);	}
+    ;
 
 // must come after the commentaries that use 2-character sequences with /	
 DIV	:	'/'	
-	;
+    ;
 
 MISC 	:
-		'\'' | '\\' | '$'
-	;
+        '\'' | '\\' | '$'
+    ;
 
 fragment
 IdentifierStart

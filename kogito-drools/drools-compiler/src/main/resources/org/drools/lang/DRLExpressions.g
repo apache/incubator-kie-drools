@@ -1,16 +1,16 @@
 parser grammar DRLExpressions;
               
 options { 
-	language = Java;
-	tokenVocab = DRLLexer;
+    language = Java;
+    tokenVocab = DRLLexer;
 }
   
 @header {
-	package org.drools.lang;
-	
-	import java.util.LinkedList;
-	import org.drools.compiler.DroolsParserException;
-	import org.drools.lang.ParserHelper;
+    package org.drools.lang;
+
+    import java.util.LinkedList;
+    import org.drools.compiler.DroolsParserException;
+    import org.drools.lang.ParserHelper;
 }
 
 @members {
@@ -52,31 +52,31 @@ catch (RecognitionException re) {
 //                      GENERAL RULES
 // --------------------------------------------------------
 literal
-	:	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
-	|	DECIMAL 		{	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
-	|	HEX     		{	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
-	|	FLOAT   		{	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
-	|	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
-	|	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
-	;
+    :	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
+    |	DECIMAL 		{	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	HEX     		{	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
+    |	FLOAT   		{	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
+    |	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
+    |	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+    ;
 
 typeList
-	:	type (COMMA type)*
-	;
-	
+    :	type (COMMA type)*
+    ;
+
 type
-	: 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-	|	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-	;
+    : 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
+    |	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
+    ;
 
 typeArguments
-	:	LESS typeArgument (COMMA typeArgument)* GREATER
-	;
-	
+    :	LESS typeArgument (COMMA typeArgument)* GREATER
+    ;
+
 typeArgument
-	:	type
-	|	QUESTION ((extends_key | super_key) type)?
-	;
+    :	type
+    |	QUESTION ((extends_key | super_key) type)?
+    ;
 
 // --------------------------------------------------------
 //                      EXPRESSIONS
@@ -84,56 +84,56 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-	:	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER | SEMICOLON )
-	;
+    :	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER | SEMICOLON )
+    ;
 
 // top level entry point for arbitrary expression parsing
 expression
-	:	conditionalExpression ((assignmentOperator) => assignmentOperator expression)? 
-	;
+    :	conditionalExpression ((assignmentOperator) => assignmentOperator expression)?
+    ;
 
 conditionalExpression
   : conditionalOrExpression ( QUESTION expression COLON expression )?
-	;
-	
+    ;
+
 conditionalOrExpression
   : conditionalAndExpression ( DOUBLE_PIPE 
      ( (operator)=> operator shiftExpression
      | conditionalAndExpression ) )*
-	;
+    ;
 
 conditionalAndExpression 
   : inclusiveOrExpression ( DOUBLE_AMPER 
     ( (operator)=> operator shiftExpression
     | inclusiveOrExpression ) )*
-	;
+    ;
 
 inclusiveOrExpression
   : exclusiveOrExpression ( PIPE
     ( (operator)=> operator shiftExpression
     | exclusiveOrExpression ) )*
-	;
+    ;
 
 exclusiveOrExpression
   : andExpression ( XOR 
     ( (operator)=> operator shiftExpression
     | andExpression ) )*
-	;
+    ;
 
 andExpression 
   : equalityExpression ( AMPER 
     ( (operator)=> operator shiftExpression
     | equalityExpression ) )*
-	;
+    ;
 
 equalityExpression 
   : instanceOfExpression ( ( EQUALS | NOT_EQUALS ) instanceOfExpression )*
-	;
+    ;
 
 instanceOfExpression 
   : inExpression (instanceof_key type)?
-	;
-	
+    ;
+
 inExpression
   : relationalExpression (not_key? in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
   ;
@@ -141,14 +141,14 @@ inExpression
 relationalExpression
   : shiftExpression ( (relationalOp)=> relationalOp shiftExpression )*
   ;
-	
+
 operator
   : ( EQUALS
     | NOT_EQUALS
     | relationalOp
     )
     ;
-  	
+
 relationalOp
   : ( LESS_EQUALS
     | GREATER_EQUALS 
@@ -157,24 +157,24 @@ relationalOp
     | not_key neg_operator_key
     | operator_key
     )
-	;
+    ;
 
 shiftExpression
   : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
-	;
+    ;
 
 shiftOp
-	:	(LESS LESS | GREATER GREATER GREATER | GREATER GREATER )
-	;
+    :	(LESS LESS | GREATER GREATER GREATER | GREATER GREATER )
+    ;
 
 additiveExpression
   :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
-	;
+    ;
 
 multiplicativeExpression
   :   unaryExpression ( ( STAR | DIV | MOD ) unaryExpression )*
-	;
-	
+    ;
+
 unaryExpression
     :   PLUS unaryExpression
     |	MINUS unaryExpression
@@ -237,9 +237,9 @@ mapEntry
     ;
 
 parExpression
-	:	LEFT_PAREN expression RIGHT_PAREN
-	;
-	
+    :	LEFT_PAREN expression RIGHT_PAREN
+    ;
+
 identifierSuffix
     :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
     |	((LEFT_SQUARE) => LEFT_SQUARE expression RIGHT_SQUARE)+ // can also be matched by selector, but do here
@@ -249,79 +249,79 @@ identifierSuffix
 //    |   DOT this_key
 //    |   DOT super_key arguments
 //    |   DOT new_key (nonWildcardTypeArguments)? innerCreator
-	;
-	
+    ;
+
 creator
-	:	nonWildcardTypeArguments? createdName
+    :	nonWildcardTypeArguments? createdName
         (arrayCreatorRest | classCreatorRest)
-	;
+    ;
 
 createdName
-	:	ID typeArguments?
+    :	ID typeArguments?
         ( DOT ID typeArguments?)*
         |	primitiveType
-	;
-	
+    ;
+
 innerCreator
-	:	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> ID classCreatorRest
-	;
+    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> ID classCreatorRest
+    ;
 
 arrayCreatorRest
-	:   LEFT_SQUARE 
-	(   RIGHT_SQUARE (LEFT_SQUARE RIGHT_SQUARE)* arrayInitializer
+    :   LEFT_SQUARE
+    (   RIGHT_SQUARE (LEFT_SQUARE RIGHT_SQUARE)* arrayInitializer
         |   expression RIGHT_SQUARE ({!helper.validateLT(2,"]")}?=>LEFT_SQUARE expression RIGHT_SQUARE)* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)*
         )
-	;
+    ;
 
 variableInitializer
-	:	arrayInitializer
-    	|   expression
-	;
-	
+    :	arrayInitializer
+        |   expression
+    ;
+
 arrayInitializer
-	:	LEFT_CURLY (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RIGHT_CURLY
-	;
+    :	LEFT_CURLY (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RIGHT_CURLY
+    ;
 
 classCreatorRest
-	:	arguments //classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
-	;
-	
+    :	arguments //classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
+    ;
+
 explicitGenericInvocation
-	:	nonWildcardTypeArguments arguments
-	;
-	
+    :	nonWildcardTypeArguments arguments
+    ;
+
 nonWildcardTypeArguments
-	:	LESS typeList GREATER
-	;
-	
+    :	LESS typeList GREATER
+    ;
+
 explicitGenericInvocationSuffix
-	:	super_key superSuffix
-	|   	ID arguments
-	;
+    :	super_key superSuffix
+    |   	ID arguments
+    ;
 
 selector
-	:   (DOT super_key)=>DOT super_key superSuffix
-	|   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
-	|   (DOT ID)=>DOT ID ((LEFT_PAREN) => arguments)?
-	//|   DOT this_key
-	|   (LEFT_SQUARE)=>LEFT_SQUARE expression RIGHT_SQUARE
-	;
-	
+    :   (DOT super_key)=>DOT super_key superSuffix
+    |   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
+    |   (DOT ID)=>DOT ID ((LEFT_PAREN) => arguments)?
+    //|   DOT this_key
+    |   (LEFT_SQUARE)=>LEFT_SQUARE expression RIGHT_SQUARE
+    ;
+
 superSuffix
-	:	arguments
-	|   	DOT ID ((LEFT_PAREN) => arguments)?
+    :	arguments
+    |   	DOT ID ((LEFT_PAREN) => arguments)?
         ;
 
 arguments
-	:	LEFT_PAREN expressionList? RIGHT_PAREN
-	;
+    :	LEFT_PAREN expressionList? RIGHT_PAREN
+    ;
 
 expressionList
   :   expression (COMMA expression)*
   ;
 
 assignmentOperator
-	:   EQUALS_ASSIGN
+    :   EQUALS_ASSIGN
   |   PLUS_ASSIGN
   |   MINUS_ASSIGN
   |   MULT_ASSIGN
@@ -333,74 +333,74 @@ assignmentOperator
   |   LESS LESS EQUALS_ASSIGN
   |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
   |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
-	;
+    ;
 
 // --------------------------------------------------------
 //                      KEYWORDS
 // --------------------------------------------------------
 extends_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}?=> id=ID
+    ;
 
 super_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=> id=ID
+    ;
 
 instanceof_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
+    ;
 
 boolean_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
+    ;
 
 char_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID
+    ;
 
 byte_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID
+    ;
 
 short_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID
+    ;
 
 int_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID
+    ;
 
 float_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID
+    ;
 
 long_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID
+    ;
 
 double_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID
+    ;
 
 void_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID
+    ;
 
 this_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}?=> id=ID
+    ;
 
 class_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}?=> id=ID
+    ;
 
 new_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID
+    ;
 
 not_key
-	:      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID
-	;
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID
+    ;
 
 in_key
   :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID

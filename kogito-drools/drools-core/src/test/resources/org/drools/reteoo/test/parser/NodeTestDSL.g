@@ -1,33 +1,33 @@
 grammar NodeTestDSL;
 
 options {
-	output=AST;
+    output=AST;
 }
 
 tokens {
-	VT_TEST_CASE;
-	VT_PARAMS;
-	VT_QUALIFIED_ID;
-	VT_SYMBOL;
-	VT_CHUNK;
-	
-	VK_TEST_CASE;
-	VK_IMPORT;
-	VK_SETUP;
-	VK_TEARDOWN;
-	VK_TEST;
+    VT_TEST_CASE;
+    VT_PARAMS;
+    VT_QUALIFIED_ID;
+    VT_SYMBOL;
+    VT_CHUNK;
+
+    VK_TEST_CASE;
+    VK_IMPORT;
+    VK_SETUP;
+    VK_TEARDOWN;
+    VK_TEST;
 }
 
 @parser::header {
-	package org.drools.reteoo.test.parser;
-	
-	import java.util.Map;
-	import java.util.HashMap;
-	import java.util.Stack;
+    package org.drools.reteoo.test.parser;
+
+    import java.util.Map;
+    import java.util.HashMap;
+    import java.util.Stack;
 }
 
 @lexer::header {
-	package org.drools.reteoo.test.parser;
+    package org.drools.reteoo.test.parser;
 }
 
 
@@ -35,200 +35,200 @@ tokens {
 }
 
 @parser::members {
-	private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
-	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
+    private Stack<Map<DroolsParaphraseTypes, String>> paraphrases = new Stack<Map<DroolsParaphraseTypes, String>>();
+    private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+    private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(tokenNames, paraphrases);
         
 
-	private boolean validateIdentifierKey(String text) {
-		return validateLT(1, text);
-	}
-	
-	private boolean validateLT(int LTNumber, String text) {
-		String text2Validate = retrieveLT( LTNumber );
-		return text2Validate != null && text2Validate.equalsIgnoreCase(text);
-	}
-	
-	private String retrieveLT(int LTNumber) {
-      		if (null == input)
-			return null;
-		if (null == input.LT(LTNumber))
-			return null;
-		if (null == input.LT(LTNumber).getText())
-			return null;
-	
-		return input.LT(LTNumber).getText();
-	}
-	
-	public void reportError(RecognitionException ex) {
-		// if we've already reported an error and have not matched a token
-		// yet successfully, don't report any errors.
-		if (state.errorRecovery) {
-			return;
-		}
-		state.errorRecovery = true;
-	
-		errors.add(errorMessageFactory.createDroolsException(ex));
-	}
-	
-	// return the raw RecognitionException errors 
-	public List<DroolsParserException> getErrors() {
-		return errors;
-	}
-	
-	// Return a list of pretty strings summarising the errors 
-	public List<String> getErrorMessages() {
-		List<String> messages = new ArrayList<String>(errors.size());
-	
-		for (DroolsParserException activeException : errors) {
-			messages.add(activeException.getMessage());
-		}
-	
-		return messages;
-	}
-	
-	// return true if any parser errors were accumulated 
-	public boolean hasErrors() {
-		return !errors.isEmpty();
-	}
-	
-	// Method that adds a paraphrase type into paraphrases stack.
-	private void pushParaphrases(DroolsParaphraseTypes type) {
-		Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
-		activeMap.put(type, "");
-		paraphrases.push(activeMap);
-	}
+    private boolean validateIdentifierKey(String text) {
+        return validateLT(1, text);
+    }
 
-	// Method that sets paraphrase value for a type into paraphrases stack.
-	private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
-		paraphrases.peek().put(type, value);
-	}
-	
+    private boolean validateLT(int LTNumber, String text) {
+        String text2Validate = retrieveLT( LTNumber );
+        return text2Validate != null && text2Validate.equalsIgnoreCase(text);
+    }
+
+    private String retrieveLT(int LTNumber) {
+              if (null == input)
+            return null;
+        if (null == input.LT(LTNumber))
+            return null;
+        if (null == input.LT(LTNumber).getText())
+            return null;
+
+        return input.LT(LTNumber).getText();
+    }
+
+    public void reportError(RecognitionException ex) {
+        // if we've already reported an error and have not matched a token
+        // yet successfully, don't report any errors.
+        if (state.errorRecovery) {
+            return;
+        }
+        state.errorRecovery = true;
+
+        errors.add(errorMessageFactory.createDroolsException(ex));
+    }
+
+    // return the raw RecognitionException errors
+    public List<DroolsParserException> getErrors() {
+        return errors;
+    }
+
+    // Return a list of pretty strings summarising the errors
+    public List<String> getErrorMessages() {
+        List<String> messages = new ArrayList<String>(errors.size());
+
+        for (DroolsParserException activeException : errors) {
+            messages.add(activeException.getMessage());
+        }
+
+        return messages;
+    }
+
+    // return true if any parser errors were accumulated
+    public boolean hasErrors() {
+        return !errors.isEmpty();
+    }
+
+    // Method that adds a paraphrase type into paraphrases stack.
+    private void pushParaphrases(DroolsParaphraseTypes type) {
+        Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
+        activeMap.put(type, "");
+        paraphrases.push(activeMap);
+    }
+
+    // Method that sets paraphrase value for a type into paraphrases stack.
+    private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
+        paraphrases.peek().put(type, value);
+    }
+
 
 }
  
 compilation_unit
-	:	test_case_statement
-		import_statement*
-		setup?
-		teardown?
-		test*
-		EOF
-		-> ^(VT_TEST_CASE test_case_statement import_statement* setup? teardown? test*) 
-	;
-	catch[ RecognitionException e] {
-		reportError( e );
-	}
+    :	test_case_statement
+        import_statement*
+        setup?
+        teardown?
+        test*
+        EOF
+        -> ^(VT_TEST_CASE test_case_statement import_statement* setup? teardown? test*)
+    ;
+    catch[ RecognitionException e] {
+        reportError( e );
+    }
 
 test_case_statement
-	: 	test_case_key^ name=STRING 
-	;
-	
+    : 	test_case_key^ name=STRING
+    ;
+
 import_statement
-	:	import_key^ import_target SEMI_COLON!
-	;	
-	
+    :	import_key^ import_target SEMI_COLON!
+    ;
+
 setup
-	:	setup_key^ step*
-	;
-	
+    :	setup_key^ step*
+    ;
+
 teardown
-	:	teardown_key^ step*
-	;
-	
+    :	teardown_key^ step*
+    ;
+
 test	
-	:	test_key^ name=STRING step*
-	;	
-	
+    :	test_key^ name=STRING step*
+    ;
+
 step
-	:	ID^ COLON! ( params SEMI_COLON! )+	
-	;
-	
+    :	ID^ COLON! ( params SEMI_COLON! )+
+    ;
+
 params
-	:	param_chunk (COMMA param_chunk)*
-	-> 	^(VT_PARAMS param_chunk+ )
-	;	
-	
+    :	param_chunk (COMMA param_chunk)*
+    -> 	^(VT_PARAMS param_chunk+ )
+    ;
+
 param_chunk
-	:	c=param_sequence
-	->	VT_CHUNK[$c.text]
-	;	
-	
+    :	c=param_sequence
+    ->	VT_CHUNK[$c.text]
+    ;
+
 param_sequence
-	:	param+
-	;	
-	
+    :	param+
+    ;
+
 param
-	:	( ID 
-		| STRING
-		| INT
-		| FLOAT
-		| MISC
-		| STAR
-		| square_chunk
-		| paren_chunk
-		| DOT
-		)
-	;	 
-	
+    :	( ID
+        | STRING
+        | INT
+        | FLOAT
+        | MISC
+        | STAR
+        | square_chunk
+        | paren_chunk
+        | DOT
+        )
+    ;
+
 import_target
-	: itm=import_target_matcher
-	-> VT_QUALIFIED_ID[$itm.text]
-	;	
-	
+    : itm=import_target_matcher
+    -> VT_QUALIFIED_ID[$itm.text]
+    ;
+
 import_target_matcher
-	: qualified_id_matcher (DOT STAR)?
-	;	
-	
+    : qualified_id_matcher (DOT STAR)?
+    ;
+
 qualified_id 
-	: qim=qualified_id_matcher
-	-> VT_QUALIFIED_ID[$qim.text]
-	;
-	
+    : qim=qualified_id_matcher
+    -> VT_QUALIFIED_ID[$qim.text]
+    ;
+
 qualified_id_matcher
-	: ID (DOT ID)* 
-	;	
-	
+    : ID (DOT ID)*
+    ;
+
 square_chunk
-	: cm=collection_matcher
-	;	
-	
+    : cm=collection_matcher
+    ;
+
 collection_matcher
-	:	LEFT_SQUARE params? RIGHT_SQUARE
-	;	
-	
+    :	LEFT_SQUARE params? RIGHT_SQUARE
+    ;
+
 paren_chunk
-	: cm=paren_matcher
-	;	
-	
+    : cm=paren_matcher
+    ;
+
 paren_matcher
-	:	LEFT_PAREN params? RIGHT_PAREN
-	;	
-	
+    :	LEFT_PAREN params? RIGHT_PAREN
+    ;
+
 test_case_key
-	:	{(validateIdentifierKey("TestCase"))}?=>  id=ID
-		->	VK_TEST_CASE[$id]
-	;
+    :	{(validateIdentifierKey("TestCase"))}?=>  id=ID
+        ->	VK_TEST_CASE[$id]
+    ;
 
 import_key
-	:	{(validateIdentifierKey("import"))}?=>  id=ID
-		->	VK_IMPORT[$id]
-	;
+    :	{(validateIdentifierKey("import"))}?=>  id=ID
+        ->	VK_IMPORT[$id]
+    ;
 
 setup_key
-	:	{(validateIdentifierKey("Setup"))}?=>  id=ID
-		->	VK_SETUP[$id]
-	;
+    :	{(validateIdentifierKey("Setup"))}?=>  id=ID
+        ->	VK_SETUP[$id]
+    ;
 
 teardown_key
-	:	{(validateIdentifierKey("TearDown"))}?=>  id=ID
-		->	VK_TEARDOWN[$id]
-	;
+    :	{(validateIdentifierKey("TearDown"))}?=>  id=ID
+        ->	VK_TEARDOWN[$id]
+    ;
 
 test_key
-	:	{(validateIdentifierKey("Test"))}?=>  id=ID
-		->	VK_TEST[$id]
-	;
+    :	{(validateIdentifierKey("Test"))}?=>  id=ID
+        ->	VK_TEST[$id]
+    ;
 
 WS      :       (	' '
                 |	'\t'
@@ -240,19 +240,19 @@ WS      :       (	' '
 
 fragment
 EOL 	:	     
-   		(       ( '\r\n' )=> '\r\n'  // Evil DOS
+           (       ( '\r\n' )=> '\r\n'  // Evil DOS
                 |       '\r'    // Macintosh
                 |       '\n'    // Unix (the right way)
                 )
         ;
         
 FLOAT
-	:	('-')?('0'..'9')+ '.' ('0'..'9')+
-	;
+    :	('-')?('0'..'9')+ '.' ('0'..'9')+
+    ;
 
 INT	
-	:	('-')?('0'..'9')+
-		;
+    :	('-')?('0'..'9')+
+        ;
 
 STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
@@ -285,36 +285,36 @@ UnicodeEscape
     ;
 
 SH_STYLE_SINGLE_LINE_COMMENT	
-	:	'#' (~('\r'|'\n'))* EOL?
+    :	'#' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; setText("//"+getText().substring(1));}
-	;
+    ;
         
 C_STYLE_SINGLE_LINE_COMMENT	
-	:	'//' (~('\r'|'\n'))* EOL?
+    :	'//' (~('\r'|'\n'))* EOL?
                 { $channel=HIDDEN; }
     ;
 
 MULTI_LINE_COMMENT
-	:	'/*' (options{greedy=false;} : .)* '*/'
+    :	'/*' (options{greedy=false;} : .)* '*/'
                 { $channel=HIDDEN; }
-	;
+    ;
 
 ID	
-	:	IdentifierStart IdentifierPart*
-	|	'`' IdentifierStart IdentifierPart* '`'
-	{	state.text = $text.substring(1, $text.length() - 1);	}
-	;
+    :	IdentifierStart IdentifierPart*
+    |	'`' IdentifierStart IdentifierPart* '`'
+    {	state.text = $text.substring(1, $text.length() - 1);	}
+    ;
 
 SEMI_COLON
-	: 	';'
-	;
+    : 	';'
+    ;
 
 COMMA	:	','
-	;
-	
+    ;
+
 DOT	:	'.'
-	;	
-	
+    ;
+
 LEFT_PAREN
         :	'('
         ;
@@ -332,18 +332,18 @@ RIGHT_SQUARE
         ;        
         
 COLON
-	:	':'
-	;        
-	
+    :	':'
+    ;
+
 STAR    :	'*'
-	;	
+    ;
 
 MISC 	:
-		'&&' | '||' | '<=' | '>=' | '==' | '!=' | '->' | 
-		'!' | '%' | '^' | '-' | '+'  | '?' | '/' | '\'' | '\\' | '|' | '&' | '$' |
-		'@' |  '=' | '>' |  '<' | '{' | '}' 
-	;
-	
+        '&&' | '||' | '<=' | '>=' | '==' | '!=' | '->' |
+        '!' | '%' | '^' | '-' | '+'  | '?' | '/' | '\'' | '\\' | '|' | '&' | '$' |
+        '@' |  '=' | '>' |  '<' | '{' | '}'
+    ;
+
 fragment
 IdentifierStart
     :   '\u0024'
