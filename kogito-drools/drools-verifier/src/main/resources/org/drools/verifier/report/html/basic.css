@@ -3,89 +3,89 @@
 
 ul,p,table
 {
-	padding:0px 0px 0px 20px;
-	width:600px;
-	background-color: #d2d7db;
-	text-align: left;
-	border-spacing: 0px;
-	border: 1px solid #aeb3b6;
-	border-collapse: collapse;
+    padding:0px 0px 0px 20px;
+    width:600px;
+    background-color: #d2d7db;
+    text-align: left;
+    border-spacing: 0px;
+    border: 1px solid #aeb3b6;
+    border-collapse: collapse;
 }
 
 body {
-	font-size:smaller;
-	font-family:"bitstream vera sans","dejavu sans" verdana,helvetica,sans-serif;
-	line-height:1.5em;
-	color:#444;
-	margin:0;
-	padding:0;
-	background:#FFF;
+    font-size:smaller;
+    font-family:"bitstream vera sans","dejavu sans" verdana,helvetica,sans-serif;
+    line-height:1.5em;
+    color:#444;
+    margin:0;
+    padding:0;
+    background:#FFF;
 }
 
 .content
 {
-	padding:0px 0px 10px 10px;
+    padding:0px 0px 10px 10px;
 }
 
 .headerBarBlue {
-	height:60px;
-	background:url(../images/jbossrules_hdrbkg_blue.gif) repeat-x;
+    height:60px;
+    background:url(../images/jbossrules_hdrbkg_blue.gif) repeat-x;
 }
 
 table.message
 {
-	width: 628px;
+    width: 628px;
 }
 
 table
 {
-	background-color: #d2d7db;
-	text-align: left;
-	border-spacing: 0px;
-	border: 1px solid #aeb3b6;
-	border-collapse: collapse;
+    background-color: #d2d7db;
+    text-align: left;
+    border-spacing: 0px;
+    border: 1px solid #aeb3b6;
+    border-collapse: collapse;
 }
 
 table a, table, tbody, tfoot, tr, th, td
 {
-	font-family: georgia, "times new roman", serif;
-	line-height: 1.5em;
-	font-size: 13px;
-	color: #55595c;
+    font-family: georgia, "times new roman", serif;
+    line-height: 1.5em;
+    font-size: 13px;
+    color: #55595c;
 }
 
 table caption
 {
-	border-top: 1px solid #aeb3b6;
-	padding: .5em 0;
-	font-size: 240%;
-	font-style: italic;
-	color: #d2d7db;
+    border-top: 1px solid #aeb3b6;
+    padding: .5em 0;
+    font-size: 240%;
+    font-style: italic;
+    color: #d2d7db;
 }
 
 table th
 {
-	width: 200px;
+    width: 200px;
 }
 
 tbody th
 {
-	color: #25c1e2;
-	font-style: italic;
-	background-color: #fff;
-	border-bottom: 1px solid #aeb3b6;
+    color: #25c1e2;
+    font-style: italic;
+    background-color: #fff;
+    border-bottom: 1px solid #aeb3b6;
 }
 
 td
 {
-	border: 1px dotted #fff;
-	padding: 0 2px;
+    border: 1px dotted #fff;
+    padding: 0 2px;
 }
 
 ul
 {
-	padding:0px 0px 0px 20px;
-	width:600px;
+    padding:0px 0px 0px 20px;
+    width:600px;
 }
 
 li
