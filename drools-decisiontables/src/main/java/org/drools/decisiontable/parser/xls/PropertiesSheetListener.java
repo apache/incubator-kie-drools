@@ -33,8 +33,6 @@ import org.drools.template.parser.DataListener;
  *
  * Could be easily adapted to accept multiple values per key but the semantics
  * were kept in line with Properties.
- *
- *
  */
 public class PropertiesSheetListener implements DataListener {
 

@@ -33,7 +33,6 @@ import org.drools.spi.Tuple;
 
 /**
  * An accumulator to execute "collect" CEs
- *
  */
 public class CollectAccumulator
     implements

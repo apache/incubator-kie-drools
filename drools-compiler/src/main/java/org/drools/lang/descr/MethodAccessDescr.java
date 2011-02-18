@@ -22,7 +22,6 @@ package org.drools.lang.descr;
  * As in:
  * 
  * variableName.methodName(argument list)
- *
  */
 public class MethodAccessDescr extends DeclarativeInvokerDescr {
 

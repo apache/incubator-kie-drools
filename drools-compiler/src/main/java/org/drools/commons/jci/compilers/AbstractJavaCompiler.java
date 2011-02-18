@@ -25,7 +25,6 @@ import org.drools.commons.jci.stores.ResourceStore;
 /**
  * Base class for compiler implementations. Provides just a few
  * convenience methods.
- * 
  */
 public abstract class AbstractJavaCompiler implements JavaCompiler {
 

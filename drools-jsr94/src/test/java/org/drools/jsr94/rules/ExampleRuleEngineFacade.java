@@ -54,7 +54,6 @@ package org.drools.jsr94.rules;
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 import java.io.InputStream;
@@ -74,7 +73,6 @@ import javax.rules.admin.RuleExecutionSet;
  * Builds up the JSR94 object structure. It'll simplify the task of building a
  * <code>RuleExecutionSet</code> and associated <code>RuntimeSession</code>
  * objects from a given <code>InputStream</code>.
- *
  */
 public class ExampleRuleEngineFacade {
     public static final String            RULE_SERVICE_PROVIDER = "http://drools.org/";

@@ -31,7 +31,6 @@ import org.drools.spi.Evaluator;
 
 /**
  * A registry class for all available evaluators
- *
  */
 public class EvaluatorRegistry
     implements
@@ -59,7 +58,6 @@ public class EvaluatorRegistry
      *                    classes. If it is null, try to obtain the context
      *                    classloader. If it is also null, uses the same classloader
      *                    that loaded this class.
-     *
      */
     public EvaluatorRegistry(ClassLoader classloader) {
         this.evaluators = new HashMap<String, EvaluatorDefinition>();

@@ -7,7 +7,6 @@ import static org.junit.Assert.*;
 
 /**
  * Test the dump/convert format utilities.
- * 
  */
 
 public class DumperTest {

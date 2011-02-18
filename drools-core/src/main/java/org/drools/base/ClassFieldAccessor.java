@@ -34,7 +34,6 @@ import org.drools.spi.WriteAccessor;
  * default values and a simpler interface for non-used parameters
  * like the working memory, when the field extractor is used outside
  * the working memory scope.
- *
  */
 public class ClassFieldAccessor
     implements

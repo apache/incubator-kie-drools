@@ -20,7 +20,6 @@ package org.drools.spi;
  * Function <code>Rule</code>.
  * 
  * @see org.drools.rule.Package
- * 
  */
 public interface Functions {
     String getText();

@@ -24,7 +24,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of an undefined datatype.
- * 
  */
 public final class UndefinedDataType implements DataType {
 

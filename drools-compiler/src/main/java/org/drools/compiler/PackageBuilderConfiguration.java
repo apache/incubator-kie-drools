@@ -525,7 +525,6 @@ public class PackageBuilderConfiguration
      *
      * @param className the name of the class for the implementation definition.
      *                  The class must implement the EvaluatorDefinition interface.
-     *
      */
     public void addEvaluatorDefinition(String className) {
         this.evaluatorRegistry.addEvaluatorDefinition( className );
@@ -537,7 +536,6 @@ public class PackageBuilderConfiguration
      * replace the previous one.
      *
      * @param def the evaluator definition to be added.
-     *
      */
     public void addEvaluatorDefinition(EvaluatorDefinition def) {
         this.evaluatorRegistry.addEvaluatorDefinition( def );

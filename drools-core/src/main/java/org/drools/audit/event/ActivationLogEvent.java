@@ -35,7 +35,6 @@ import java.io.ObjectOutput;
  * current state of the activation by storing a toString of the facts
  * bound in the activation.  If necessary, this event could be extended
  * to contain a map of declarations too.
- * 
  */
 public class ActivationLogEvent extends LogEvent {
 

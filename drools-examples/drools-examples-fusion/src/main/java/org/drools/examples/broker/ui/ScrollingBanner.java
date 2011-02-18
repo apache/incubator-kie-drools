@@ -31,7 +31,6 @@ import com.jgoodies.looks.FontSets;
 
 /**
  * A simple component to show the incoming stock ticks
- * 
  */
 public class ScrollingBanner extends JComponent
     implements

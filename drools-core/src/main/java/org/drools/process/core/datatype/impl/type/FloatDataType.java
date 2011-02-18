@@ -24,7 +24,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of a float datatype.
- * 
  */
 public final class FloatDataType
     implements

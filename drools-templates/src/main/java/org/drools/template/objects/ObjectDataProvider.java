@@ -16,7 +16,6 @@ import org.drools.template.parser.TemplateContainer;
  * It may be created with a collection of maps or objects. The template's
  * column names are used as keys or Bean-stype accessors to obtain the
  * actual parameters for the substitution.
- * 
  */
 public class ObjectDataProvider implements DataProvider {
 

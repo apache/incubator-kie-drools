@@ -28,7 +28,6 @@ import org.drools.template.parser.DecisionTableParseException;
  * Its objects are stored in a map in the main listener class, to track what type of values
  * you can expect to see in the rows directly below the column header, identified
  * by an ActionType.Code.
- * 
  */
 public class ActionType {
 

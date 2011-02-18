@@ -27,7 +27,6 @@ import org.drools.time.Trigger;
  * While a rule might have multiple DurationTimers, due to LHS CEP rules, there can only ever
  * be one timer attribute. Duration rules should be considered a priority over the one timer rule.
  * So the Timer cannot fire, until the maximum duration has passed.
- *
  */
 public class CompositeMaxDurationTimer
     implements

@@ -90,7 +90,6 @@ import org.drools.time.Interval;
  * 2s <= $eventA.startTimestamp - $eventB.startTimestamp <= 6s &&
  * 4s <= $eventB.endTimestamp - $eventA.endTimestamp <= 10s
  * </pre>
- * 
  */
 public class DuringEvaluatorDefinition
     implements

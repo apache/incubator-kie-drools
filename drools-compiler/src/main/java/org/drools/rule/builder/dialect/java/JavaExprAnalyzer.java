@@ -37,7 +37,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaParser;
 
 /**
  * Expression analyzer.
- * 
  */
 public class JavaExprAnalyzer {
     // ------------------------------------------------------------

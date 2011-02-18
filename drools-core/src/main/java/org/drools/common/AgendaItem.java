@@ -40,7 +40,6 @@ import org.drools.spi.Tuple;
 
 /**
  * Item entry in the <code>Agenda</code>.
- *
  */
 public class AgendaItem
     implements

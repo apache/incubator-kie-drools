@@ -39,9 +39,6 @@ import java.util.NoSuchElementException;
  * for ( LinkedListNode node = list.removeFirst(); node != null; node = list.removeFirst() ) {
  * }
  * </pre>
- *
- *
- *
  */
 public class LinkedList
     implements

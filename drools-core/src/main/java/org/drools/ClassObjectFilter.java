@@ -19,7 +19,6 @@ package org.drools;
 
 /**
  * Filters Objects by Class, only accepting Classes of the specified type
- *
  */
 public class ClassObjectFilter extends  org.drools.runtime.ClassObjectFilter {
 

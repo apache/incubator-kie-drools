@@ -28,8 +28,6 @@ import java.util.List;
  * this can never change. The EqualityKey has an internal datastructure
  * which references all the handles which are equal. It also records
  * Whether the referenced facts are JUSTIFIED or STATED
- *
- *
  */
 public class EqualityKey
     implements

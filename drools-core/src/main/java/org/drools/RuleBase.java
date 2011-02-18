@@ -94,13 +94,11 @@ public interface RuleBase
      * This locks the current RuleBase and all there referenced StatefulSessions. This should be
      * used when there is a number of dynamic RuleBase changes you wish to make, but cannot have any normal
      * WorkingMemory operations occuring inbetween.
-     *
      */
     void lock();
 
     /**
      * Unlocks the RuleBase and all of the referenced StatefulSessions.
-     *
      */
     void unlock();
 
@@ -168,7 +166,6 @@ public interface RuleBase
      *
      * Eg, if there is a delcared type of name "Driver", and the package name is "com.company".
      * Then the string you pass in would be "com.company.Driver".
-     *
      */
     public FactType getFactType(String string);
 }

@@ -98,7 +98,6 @@ public class MapBackedClassLoader extends ClassLoader {
      * over method calls to parent.loadClass(name, false); and c = findBootstrapClass0(name); which the default implementation
      * would first - hence why we call it "fastFindClass" instead of standard findClass, this indicates that we give it a
      * higher priority than normal.
-     *
      */
     public synchronized Class loadClass(final String name,
                                         final boolean resolve) throws ClassNotFoundException {

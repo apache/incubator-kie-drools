@@ -44,7 +44,6 @@ public interface DataListener {
      * @param rowNumber
      *            
      * @param columns
-     *            
      */
     public void newRow(int rowNumber,
                        int columns);

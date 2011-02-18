@@ -21,7 +21,6 @@ package org.drools.examples.conway.patterns;
  * 
  * @see ConwayPattern
  * @see org.drools.examples.conway.CellGridImpl
- * 
  */
 public class Pentadecathalon
     implements

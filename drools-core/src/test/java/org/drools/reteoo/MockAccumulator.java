@@ -32,8 +32,6 @@ import org.drools.spi.Tuple;
 
 /**
  * A Mock accumulate object.
- *
- *
  */
 public class MockAccumulator
     implements

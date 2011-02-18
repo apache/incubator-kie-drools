@@ -21,7 +21,6 @@ package org.drools.audit.event;
  * By default, all events are allowed.  You can filter out any of the
  * three types of working memory events by setting the allow boolean
  * for that type to false.
- * 
  */
 public class WorkingMemoryLogEventFilter
     implements

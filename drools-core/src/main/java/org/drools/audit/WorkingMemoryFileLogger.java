@@ -43,7 +43,6 @@ import com.thoughtworks.xstream.XStream;
  *  - logging to several files if log becomes too large
  *  - automatically write updates to file at certain time intervals
  *  - ...
- * 
  */
 public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 

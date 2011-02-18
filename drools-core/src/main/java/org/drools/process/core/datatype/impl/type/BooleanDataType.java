@@ -24,7 +24,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of a boolean datatype.
- * 
  */
 public final class BooleanDataType
     implements

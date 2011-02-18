@@ -29,8 +29,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * AND composite constraint, so the user can do things like:
  * 
  * Person( name == 'Edson' && surname == 'Tirelli' )
- * 
- *
  */
 public class AndConstraint extends AbstractCompositeConstraint {
 

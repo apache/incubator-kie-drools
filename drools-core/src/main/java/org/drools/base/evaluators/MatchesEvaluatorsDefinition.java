@@ -31,7 +31,6 @@ import org.drools.spi.InternalReadAccessor;
 
 /**
  * This class defines the matches evaluator
- *
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 

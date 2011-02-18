@@ -57,7 +57,6 @@ import org.mvel2.asm.Type;
  * This generates subclasses of BaseClassFieldExtractor to provide field extractors.
  * This should not be used directly, but via ClassFieldExtractor (which ensures that it is 
  * all nicely serializable).
- * 
  */
 
 public class ClassFieldAccessorFactory {

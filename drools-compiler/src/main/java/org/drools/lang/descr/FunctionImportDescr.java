@@ -18,7 +18,6 @@ package org.drools.lang.descr;
 
 /**
  * A descriptor for imported static functions
- * 
  */
 public class FunctionImportDescr extends ImportDescr {
 

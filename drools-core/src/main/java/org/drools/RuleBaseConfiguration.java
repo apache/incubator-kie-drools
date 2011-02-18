@@ -231,7 +231,6 @@ public class RuleBaseConfiguration
      * If a Thread.currentThread().getContextClassLoader() returns a non-null class loader,
      * it will be used as the parent class loader for this rulebase class loaders, otherwise,
      * the RuleBaseConfiguration.class.getClassLoader() class loader will be used.
-     *
      */
     public RuleBaseConfiguration() {
         init( null,

@@ -29,7 +29,6 @@ import java.util.List;
  * Example: 
  * A: x > 10
  * B: x == 100
- * 
  */
 public class Incompatibility
     implements

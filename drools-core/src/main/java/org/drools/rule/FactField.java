@@ -20,7 +20,6 @@ import org.drools.base.FieldAccessor;
 
 /**
  * An interface for Fact Fields
- * 
  */
 public interface FactField
     extends

@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating minimun values
- *
- *
  */
 public class MinAccumulateFunction implements AccumulateFunction {
 

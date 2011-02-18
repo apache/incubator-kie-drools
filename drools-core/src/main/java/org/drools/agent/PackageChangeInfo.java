@@ -24,8 +24,6 @@ import org.drools.rule.Package;
 
 /**
  * Contains the changes to packages.
- * 
- *
  */
 class PackageChangeInfo {
 

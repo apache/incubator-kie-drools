@@ -21,7 +21,6 @@ import org.drools.lang.descr.BaseDescr;
 /**
  * This exception is thrown when verifier tries to handle a descr that it is not
  * familiar with.
- * 
  */
 public class UnknownDescriptionException extends Exception {
     private static final long serialVersionUID = 510l;

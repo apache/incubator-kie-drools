@@ -193,7 +193,6 @@ public class GroupElementTest {
      *   OR1
      *   / \
      *  C1 C2
-     *
      */
     @Test
     public void testDeepNestedStructure() {
@@ -281,7 +280,6 @@ public class GroupElementTest {
      *   OR1  C3
      *   / \
      *  C1 C2
-     *
      */
     @Test
     public void testDeepNestedStructureWithMultipleElementsInRoot() {

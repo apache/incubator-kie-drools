@@ -20,7 +20,6 @@ import org.drools.common.NetworkNode;
 
 /**
  * A markup interface for terminal nodes
- * 
  */
 public interface TerminalNode
     extends

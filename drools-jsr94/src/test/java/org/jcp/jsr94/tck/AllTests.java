@@ -20,7 +20,6 @@
  * J S R  9 4
  *
  * Test Compatability Kit
- *
  */
 package org.jcp.jsr94.tck;
 
@@ -93,7 +92,6 @@ public class AllTests extends TestSuite {
      * Because the tck.conf relies on directory paths that are not universally the same from eclipse, maven
      * and ant this method create a tck.conf on the fly with the correct locations, it also create a jar
      * on the fly which it uses as the jar url location.
-     *
      */
     private static void setTckConf() {
         File jarFile = null;

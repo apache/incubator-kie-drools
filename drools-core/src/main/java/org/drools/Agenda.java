@@ -24,7 +24,6 @@ import org.drools.spi.RuleFlowGroup;
 
 /**
  * Agenda interface for the WorkingMemory
- *
  */
 public interface Agenda extends org.drools.runtime.rule.Agenda {
 
@@ -92,7 +91,6 @@ public interface Agenda extends org.drools.runtime.rule.Agenda {
 
     /**
      * Clears all Activations from the Agenda
-     * 
      */
     public void clearAndCancel();
 

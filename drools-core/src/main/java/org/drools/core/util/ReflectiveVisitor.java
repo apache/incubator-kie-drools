@@ -30,7 +30,6 @@ import org.drools.Visitor;
  *
  * Michael Neale says: I really hate this code. Not really a helpful use
  * of reflection, always annoys me.
- *
  */
 public abstract class ReflectiveVisitor
     implements

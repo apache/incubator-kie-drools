@@ -22,7 +22,6 @@ import org.drools.rule.RuleConditionElement;
 /**
  * This is a builder for the entry point pattern
  * source.
- *  
  */
 public class EntryPointBuilder
     implements

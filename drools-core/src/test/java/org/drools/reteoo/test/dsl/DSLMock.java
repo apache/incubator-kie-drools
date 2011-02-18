@@ -18,7 +18,6 @@ package org.drools.reteoo.test.dsl;
 
 /**
  * A markup interface for the mocks we created
- * 
  */
 public interface DSLMock {
 

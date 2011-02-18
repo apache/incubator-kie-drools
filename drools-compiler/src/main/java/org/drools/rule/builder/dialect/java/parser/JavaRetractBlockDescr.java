@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * A helper class used during java code parsing to identify
  * and handle retract() blocks
- * 
  */
 public class JavaRetractBlockDescr implements JavaBlockDescr {
     private int start;

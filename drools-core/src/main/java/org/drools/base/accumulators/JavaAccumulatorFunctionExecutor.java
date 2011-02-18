@@ -35,7 +35,6 @@ import org.drools.spi.Wireable;
 
 /**
  * A Java accumulator function executor implementation
- *
  */
 public class JavaAccumulatorFunctionExecutor
     implements

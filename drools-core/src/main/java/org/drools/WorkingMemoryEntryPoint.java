@@ -22,7 +22,6 @@ import org.drools.FactHandle;
 /**
  * An interface for instances that allow handling of entry-point-scoped
  * facts
- *  
  */
 public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.WorkingMemoryEntryPoint {
     /**

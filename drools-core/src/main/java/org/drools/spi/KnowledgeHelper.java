@@ -39,7 +39,6 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  * be modified without having to specify the facthandle, because they are not
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
- * 
  */
 public interface KnowledgeHelper
     extends

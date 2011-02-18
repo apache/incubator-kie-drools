@@ -21,7 +21,6 @@ import java.util.Collection;
 /**
  *
  * Cause for a Reason.
- * 
  */
 public interface Cause {
 

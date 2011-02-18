@@ -76,8 +76,6 @@ import org.drools.time.Interval;
  * $eventA : EventA( this before[ -3m30s, -2m ] $eventB )
  * $eventA : EventA( this before[ -2m, -3m30s ] $eventB )
  * </pre>
- * 
- *
  */
 public class BeforeEvaluatorDefinition
     implements

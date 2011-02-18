@@ -35,7 +35,6 @@ import org.mvel2.compiler.ExpressionCompiler;
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
  * expression. We use MVEL to resolve nested accessor expressions.
- *
  */
 public class MVELClassFieldReader extends BaseObjectClassFieldReader {
 

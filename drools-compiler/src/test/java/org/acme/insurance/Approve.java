@@ -2,7 +2,6 @@ package org.acme.insurance;
 
 /**
  * This is a simple fact class to mark something as approved.
- *
  */
 public class Approve {
 

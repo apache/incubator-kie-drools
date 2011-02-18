@@ -27,7 +27,6 @@ import org.drools.time.Trigger;
 /**
  * An event feeder reads an event data file and publishes
  * the read events to the consumer
- * 
  */
 public class EventFeeder {
 
@@ -46,7 +45,6 @@ public class EventFeeder {
     /**
      * For this simple demo, we are loading the
      * whole stream of events into the memory.
-     * 
      */
     public void feed() {
         if ( source.hasNext() ) {

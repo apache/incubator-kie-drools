@@ -37,7 +37,6 @@ import org.drools.io.internal.InternalResource;
 
 /**
  * Borrowed gratuitously from Spring under ASL2.0.
- *
  */
 public class FileSystemResource  extends BaseResource implements InternalResource, Externalizable {
     private File file;

@@ -39,7 +39,6 @@ import org.drools.spi.Wireable;
  * A predicate can be written as a top level constraint or be nested
  * inside inside a field constraint (and as so, must implement the
  * Restriction interface).
- *
  */
 public class PredicateConstraint extends MutableTypeConstraint
     implements

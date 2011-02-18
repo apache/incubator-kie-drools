@@ -39,8 +39,6 @@ import org.drools.time.Trigger;
 /**
  * A PseudoClockScheduler is a scheduler based on a user controlled clock 
  * that allows the user to explicitly control current time.
- * 
- *
  */
 public class PseudoClockScheduler
     implements
@@ -194,7 +192,6 @@ public class PseudoClockScheduler
     /**
      * An Scheduled Job class with all fields final to make it
      * multi-thread safe.
-     *  
      */
     public static final class ScheduledJob
         implements

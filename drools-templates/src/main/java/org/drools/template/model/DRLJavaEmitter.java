@@ -20,7 +20,6 @@ package org.drools.template.model;
  *
  * Classes that implement this interface should generate DRL fragments according
  * to the drools java semantic module.
- * 
  */
 public interface DRLJavaEmitter {
 

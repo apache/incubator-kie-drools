@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * An AST class to describe "collect" conditional element
- * 
- *
  */
 public class CollectDescr extends PatternSourceDescr
     implements

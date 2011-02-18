@@ -30,7 +30,6 @@ import org.drools.verifier.data.VerifierComponent;
  * Example "values between 1 and 9 can satisfy both":
  * A: x > 10 
  * B: x < 0 
- * 
  */
 public class Overlap
     implements

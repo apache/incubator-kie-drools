@@ -21,7 +21,6 @@ import org.drools.spi.AgendaFilter;
 
 /**
  * Filters activations based on a specified rule name suffix.
- * 
  */
 public class RuleNameEndsWithAgendaFilter
     implements

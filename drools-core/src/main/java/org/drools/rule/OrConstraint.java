@@ -29,8 +29,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * A class to implement Multi-Field OR constraints, so user can do:
  * 
  * Person( hair == 'blue' || eyes == 'blue' )
- * 
- *
  */
 public class OrConstraint extends AbstractCompositeConstraint {
 

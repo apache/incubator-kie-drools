@@ -32,7 +32,6 @@ import static org.junit.Assert.*;
 
 /**
  * Test the RuleRuntime implementation.
- *
  */
 public class RuleAdministratorTest extends RuleEngineTestBase {
     private RuleAdministrator ruleAdministrator;

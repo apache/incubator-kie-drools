@@ -80,7 +80,6 @@ import org.drools.rule.Package;
  *  There is also an AgentEventListener interface which you can provide which will call back when lifecycle
  *  events happen, or errors/warnings occur. As the updating happens in a background thread, this may be important.
  *  The default event listener logs to the System.err output stream.
- *
  */
 public class RuleAgent {
 
@@ -474,7 +473,6 @@ public class RuleAgent {
      * Return a current rulebase.
      * Depending on the configuration, this may be a new object each time
      * the rules are updated.
-     *
      */
     public synchronized RuleBase getRuleBase() {
         return this.ruleBase;
@@ -498,7 +496,6 @@ public class RuleAgent {
 
     /**
      * Will start polling. If polling is already running it does nothing.
-     *
      */
     public synchronized void startPolling() {
         if ( this.timer == null ) {

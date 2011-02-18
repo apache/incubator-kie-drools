@@ -22,7 +22,6 @@ import org.drools.time.JobHandle;
 
 /**
  * A JobHandle container for scheduling multiple jobs
- * 
  */
 public class MultiJobHandle
     implements

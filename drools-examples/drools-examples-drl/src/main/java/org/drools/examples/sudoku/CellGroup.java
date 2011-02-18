@@ -23,7 +23,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Abstract base class for all kinds of groups of related cells.
- *
  */
 public abstract class CellGroup extends SetOfNine {
 

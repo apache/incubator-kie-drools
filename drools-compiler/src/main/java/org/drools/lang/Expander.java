@@ -38,8 +38,6 @@ import org.drools.lang.dsl.DSLMapping;
  * language. For instance, java aware pre processing should be done in
  * drools-java semantic module, not in the parser itself. Expanders should 
  * be reusable across semantic languages. 
- * 
- *
  */
 public interface Expander {
 

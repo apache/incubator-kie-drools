@@ -31,7 +31,6 @@ import org.drools.rule.Rule;
  * As an <code>Activation</code>. Each <code>Activation</code> is assigned a number, this 
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
- * 
  */
 public interface Activation
     extends

@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 /**
  * A class to identify RuleBase partitions
- * 
  */
 public final class RuleBasePartitionId implements Serializable {
 

@@ -21,8 +21,6 @@ package org.drools;
  * has not matched any rules.
  * 
  * This class is not currently used.
- * 
- *
  */
 public class Otherwise {
 

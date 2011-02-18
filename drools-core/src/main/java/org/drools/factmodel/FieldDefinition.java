@@ -25,7 +25,6 @@ import org.drools.definition.type.FactField;
 
 /**
  * Declares a field to be dynamically generated.
- *
  */
 public class FieldDefinition
     implements
@@ -187,7 +186,6 @@ public class FieldDefinition
      * 
      * @param bean the target bean instance where the attribute shall be set
      * @param value the value to set the attribute to
-     * 
      */
     public void setValue(Object bean,
                          Object value) {
@@ -201,7 +199,6 @@ public class FieldDefinition
      * @param bean the target bean instance
      * 
      * @return target bean instance attribute value
-     *  
      */
     public Object getValue(Object bean) {
         return this.accessor.getValue( bean );

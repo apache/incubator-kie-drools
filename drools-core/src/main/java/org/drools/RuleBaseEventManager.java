@@ -22,7 +22,6 @@ import org.drools.event.RuleBaseEventListener;
 
 /**
  * The RuleBaseEventManager class is implemented by classes wishing to add,remove and get the various RuleBase EventListeners.
- *
  */
 public interface RuleBaseEventManager {
     /**

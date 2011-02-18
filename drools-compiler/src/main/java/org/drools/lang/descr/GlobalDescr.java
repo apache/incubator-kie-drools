@@ -18,7 +18,6 @@ package org.drools.lang.descr;
 
 /**
  * A descriptor class for globals.
- * 
  */
 public class GlobalDescr extends BaseDescr {
 

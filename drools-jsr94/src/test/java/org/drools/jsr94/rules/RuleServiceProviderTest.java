@@ -54,7 +54,6 @@ package org.drools.jsr94.rules;
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 import javax.rules.RuleRuntime;
@@ -69,7 +68,6 @@ import static org.junit.Assert.*;
 
 /**
  * Test the RuleServiceProvider implementation.
- *
  */
 public class RuleServiceProviderTest {
     /**

@@ -19,7 +19,6 @@ package org.drools.examples.broker.model;
 
 /**
  * A stock tick event informing of a state change due to some operation;
- * 
  */
 public class StockTick {
     private final String symbol;

@@ -21,7 +21,6 @@ import java.math.BigInteger;
 
 /**
  * Utility methods for math classes
- * 
  */
 public class MathUtils {
     

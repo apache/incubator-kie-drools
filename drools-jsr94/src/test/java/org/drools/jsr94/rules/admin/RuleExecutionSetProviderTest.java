@@ -37,7 +37,6 @@ import static org.junit.Assert.*;
 
 /**
  * Test the RuleExecutionSetProvider implementation.
- *
  */
 public class RuleExecutionSetProviderTest extends RuleEngineTestBase {
     private RuleAdministrator        ruleAdministrator;

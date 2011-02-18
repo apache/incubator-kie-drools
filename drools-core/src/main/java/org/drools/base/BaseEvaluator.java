@@ -28,8 +28,6 @@ import org.drools.time.Interval;
 
 /**
  * BaseEvaluator is an Object Comparator that is operator aware
- *
- *
  */
 public abstract class BaseEvaluator
     implements

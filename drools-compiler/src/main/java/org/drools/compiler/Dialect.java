@@ -30,7 +30,6 @@ import org.drools.rule.builder.SalienceBuilder;
  * expressions and blocks for a rule. This api is considered unstable, and
  * subject to change. Those wishing to implement their own dialects should look
  * ove the MVEL and Java dialect implementations.
- * 
  */
 public interface Dialect {
     String getId();

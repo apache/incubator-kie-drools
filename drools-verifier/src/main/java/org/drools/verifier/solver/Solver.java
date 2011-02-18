@@ -26,7 +26,6 @@ import org.drools.verifier.data.VerifierComponent;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.
- * 
  */
 class Solver {
 
@@ -77,7 +76,6 @@ class Solver {
 
     /**
      * Ends subSolvers data collection.
-     * 
      */
     protected void end() {
         if ( subSolver != null && subSolver.subSolver == null ) {

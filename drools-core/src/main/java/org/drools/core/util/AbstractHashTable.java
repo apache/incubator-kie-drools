@@ -261,7 +261,6 @@ public abstract class AbstractHashTable
 
     /**
      * Fast re-usable iterator
-     *
      */
     public static class HashTableIterator
         implements

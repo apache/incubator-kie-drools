@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * This interface is used by semantic modules that are compiled
  * to bytecode. 
- * 
  */
 public interface CompiledInvoker
     extends

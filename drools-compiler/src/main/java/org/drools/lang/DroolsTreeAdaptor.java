@@ -9,7 +9,6 @@ import org.antlr.runtime.tree.Tree;
  * This tree adaptor is a factory for DroolsTree.
  * 
  * DRLParser must use this tree adaptor.
- * 
  */
 public class DroolsTreeAdaptor extends CommonTreeAdaptor {
 

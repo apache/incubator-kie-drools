@@ -25,7 +25,6 @@ import java.io.ObjectOutput;
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the fact id and a String represention of the object
  * at the time the event was logged.
- * 
  */
 public class ObjectLogEvent extends LogEvent {
 

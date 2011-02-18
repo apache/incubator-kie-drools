@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating average values
- *
- *
  */
 public class AverageAccumulateFunction implements AccumulateFunction {
 

@@ -12,7 +12,6 @@ import java.util.Collection;
 
 /**
  * todo: document
- *
  */
 public class ObjectTypeNodeCompiler {
     private static final String NEWLINE = "\n";

@@ -34,7 +34,6 @@ import org.drools.time.SessionClock;
  * While this object can be serialised out, it cannot be serialised in. This is because
  * the RuleBase reference is transient. Please see the RuleBase interface for serializing
  * in WorkingMemories from an InputStream.
- *
  */
 public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryEntryPoint {
 
@@ -266,7 +265,6 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
 
     /**
      * Stops rule firing after the current rule finishes executing
-     *
      */
     public void halt();
 

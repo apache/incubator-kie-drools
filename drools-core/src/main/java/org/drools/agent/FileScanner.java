@@ -31,8 +31,6 @@ import org.drools.rule.Package;
 
 /**
  * This will monitor a file to a binary package.
- * 
- *
  */
 public class FileScanner extends PackageProvider {
 

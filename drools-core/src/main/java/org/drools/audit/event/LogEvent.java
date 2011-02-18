@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 /**
  * An event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
- * 
  */
 public class LogEvent { // implements Externalizable { This breaks XStream serialization !
 

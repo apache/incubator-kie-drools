@@ -43,7 +43,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * <code>RuleSession</code> pool.
  *
  * @see RuleSession
- *
  */
 abstract class AbstractRuleSessionImpl
     implements

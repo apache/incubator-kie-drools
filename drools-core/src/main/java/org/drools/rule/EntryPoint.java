@@ -31,8 +31,6 @@ import java.util.Map;
  * network is not shared among separate entry points
  * and this allows them to safelly run in parallel
  * and concurrent modes.
- *
- *
  */
 public class EntryPoint extends ConditionalElement
     implements

@@ -22,8 +22,6 @@ import org.antlr.runtime.Token;
 
 /**
  * An extension of the CommonToken class that keeps the char offset information
- * 
- *
  */
 public class DroolsToken extends CommonToken {
 

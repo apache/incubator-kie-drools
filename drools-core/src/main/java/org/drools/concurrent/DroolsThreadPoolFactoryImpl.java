@@ -23,7 +23,6 @@ package org.drools.concurrent;
  * enable Drools to directly instantiate thread pools
  * when running stand-alone or use managed thread pools
  * in JEE, Spring, or other similar managed environments 
- * 
  */
 public class DroolsThreadPoolFactoryImpl {
     

@@ -23,7 +23,6 @@ import org.drools.rule.RuleConditionElement;
 /**
  * An interface to define classes capable of building
  * specific conditional elements.
- * 
  */
 public interface RuleConditionBuilder extends EngineElementBuilder {
 

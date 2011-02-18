@@ -20,7 +20,6 @@ import org.drools.Service;
 
 /**
  * ProcessBuilderFactoryService is used by the PackageBuilder to "provide" it's concrete implementation.
- * 
  */
 public interface ProcessBuilderFactoryService extends Service {
 

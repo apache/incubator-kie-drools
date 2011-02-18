@@ -88,7 +88,6 @@ public class DroolsParserException extends CheckedDroolsException {
 
     /**
      * getter for error code
-     *
      */
     public String getErrorCode() {
         return errorCode;
@@ -96,7 +95,6 @@ public class DroolsParserException extends CheckedDroolsException {
 
     /**
      * getter for line number
-     *
      */
     public int getLineNumber() {
         return lineNumber;
@@ -104,7 +102,6 @@ public class DroolsParserException extends CheckedDroolsException {
 
     /**
      * getter for column position
-     *
      */
     public int getColumn() {
         return column;
@@ -112,7 +109,6 @@ public class DroolsParserException extends CheckedDroolsException {
 
     /**
      * getter for char offset
-     *
      */
     public int getOffset() {
         return offset;

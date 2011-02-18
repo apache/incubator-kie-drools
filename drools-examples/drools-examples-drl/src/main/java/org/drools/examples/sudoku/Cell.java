@@ -20,7 +20,6 @@ import java.util.Set;
 
 /**
  * Represents a single cell in the Sudoku grid.
- * 
  */
 public class Cell extends SetOfNine {
 

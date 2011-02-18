@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 /**
  * Class that represents a DroolsLanguage sentence. To be used by IDE.
- * 
  */
 @SuppressWarnings("unchecked")
 public class DroolsSentence {

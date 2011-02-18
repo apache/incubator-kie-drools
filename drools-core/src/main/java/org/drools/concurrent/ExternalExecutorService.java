@@ -40,7 +40,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * shutdown() and shutdownNow() to not shutdown the external pool. Also, we need
  * to maintain a list of tasks submitted to the external pool, so that they can
  * be properly cancelled on a shutdown.
- * 
  */
 public class ExternalExecutorService implements
         java.util.concurrent.ExecutorService {
@@ -247,7 +246,6 @@ public class ExternalExecutorService implements
      * Interface that defines the methods to be implemented by a task observer.
      * These methods are called whenever the observable task starts executing,
      * finishes executing, or raises a Throwable exception.
-     *
      */
     protected static interface TaskObserver {
 
@@ -267,7 +265,6 @@ public class ExternalExecutorService implements
      * An implementation of the TaskObserver interface that keeps a map of
      * submitted, but not executed tasks. Whenever one of the ObservableTasks is
      * executed, it is removed from the map.
-     *
      */
     protected static class TaskManager implements TaskObserver {
 
@@ -403,7 +400,6 @@ public class ExternalExecutorService implements
 
     /**
      * A super interface for ObservableTasks
-     *
      */
     protected static interface ObservableTask {
         public static enum TaskType {
@@ -427,7 +423,6 @@ public class ExternalExecutorService implements
     /**
      * This class is a wrapper around a Runnable task that will notify a
      * listener when the task starts executing and when it finishes executing.
-     *
      */
     protected static final class ObservableRunnable implements Runnable,
             ObservableTask {
@@ -467,7 +462,6 @@ public class ExternalExecutorService implements
     /**
      * This class is a wrapper around a Callable<V> task that will notify a
      * listener when the task starts executing and when it finishes executing.
-     *
      */
     protected static final class ObservableCallable<V> implements Callable<V>,
             ObservableTask {

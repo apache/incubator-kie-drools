@@ -22,7 +22,6 @@ import org.drools.time.impl.PseudoClockScheduler.ScheduledJob;
 
 /**
  * A default implementation for the JobHandle interface
- * 
  */
 public class DefaultJobHandle
     implements

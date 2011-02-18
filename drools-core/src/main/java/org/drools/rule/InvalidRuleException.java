@@ -18,7 +18,6 @@ package org.drools.rule;
 
 /**
  * Indicates an error regarding the semantic validity of a rule.
- * 
  */
 public class InvalidRuleException extends RuleConstructionException {
     private static final long serialVersionUID = 510l;

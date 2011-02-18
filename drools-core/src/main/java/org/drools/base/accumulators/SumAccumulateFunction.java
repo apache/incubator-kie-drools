@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of calculating sum of values
- *
- *
  */
 public class SumAccumulateFunction implements AccumulateFunction {
 

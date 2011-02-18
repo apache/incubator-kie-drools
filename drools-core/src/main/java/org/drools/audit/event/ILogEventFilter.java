@@ -18,7 +18,6 @@ package org.drools.audit.event;
 
 /**
  * An event filter that can be used to filter log events.
- * 
  */
 public interface ILogEventFilter {
 

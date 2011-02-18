@@ -17,7 +17,6 @@ import java.sql.SQLException;
  * a template using DefaultTemplateContainer.</p>
  *
  * To use simply you need a JDBC ResultSet - with the field names mapping to the field names used in the template !
- *
  */
 public class ResultSetGenerator {
 

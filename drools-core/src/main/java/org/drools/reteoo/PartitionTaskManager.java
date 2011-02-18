@@ -32,7 +32,6 @@ import org.drools.spi.PropagationContext;
  * A class to control the tasks for a given rulebase partition.
  * It requires a thread pool that is created in the working 
  * memory and injected in here.
- *
  */
 public class PartitionTaskManager {
 
@@ -377,7 +376,6 @@ public class PartitionTaskManager {
     /**
      * A markup action used to mark spots in the queue where
      * the next action must be executed at normal priority
-     * 
      */
     private static class YieldAction
         implements

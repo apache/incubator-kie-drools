@@ -27,8 +27,6 @@ import org.drools.examples.broker.model.StockTick;
 
 /**
  * A class to generate stock tick events
- * 
- *
  */
 public class EventGenerator {
     private static final String DATA_FILE = "src/main/resources/stocktickstream.dat";

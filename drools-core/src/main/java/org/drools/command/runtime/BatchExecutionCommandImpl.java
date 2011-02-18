@@ -72,8 +72,6 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement(name="batch-execution")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -144,8 +142,6 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
      * {@link InsertElementsCommand }
      * {@link QueryCommand }
      * {@link InsertObjectCommand }
-     * 
-     * 
      */
     public List<GenericCommand<?>> getCommands() {
         if (commands == null) {

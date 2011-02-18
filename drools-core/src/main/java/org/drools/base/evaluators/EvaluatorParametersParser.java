@@ -22,7 +22,6 @@ package org.drools.base.evaluators;
  * Evaluators may optionally have parameters. This parameters are passed into the
  * EvaluatorDefinition as a String that needs to eventually be parsed. This interface
  * defines the operations a parser implementation must expose. 
- * 
  */
 public interface EvaluatorParametersParser {
     

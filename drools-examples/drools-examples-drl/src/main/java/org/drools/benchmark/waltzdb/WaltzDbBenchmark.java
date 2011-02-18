@@ -37,7 +37,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This example is incomplete, it run's, but is no way near correct.
- *
  */
 public class WaltzDbBenchmark {
     public static void main(final String[] args) throws Exception {

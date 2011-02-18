@@ -40,8 +40,6 @@ import org.drools.spi.Activation;
  * collects them until it is activated again.
  * By default, <code>RuleFlowGroups</code> are automatically deactivated when there are no more
  * activations in the <code>RuleFlowGroup</code>.  However, this can be configured.
- *
- *
  */
 public class RuleFlowGroupImpl
     implements

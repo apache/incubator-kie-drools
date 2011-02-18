@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 
 /**
  * A panel to log information
- * 
  */
 public class LogPanel {
 

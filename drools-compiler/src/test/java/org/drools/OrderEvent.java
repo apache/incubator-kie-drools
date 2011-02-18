@@ -21,7 +21,6 @@ import java.io.Serializable;
 
 /**
  * A simple order event POJO
- * 
  */
 public class OrderEvent implements Serializable {
 

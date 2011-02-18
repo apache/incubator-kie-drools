@@ -23,7 +23,6 @@ package org.drools;
  * <code>CheckedDroolsException</code> for the user to decide how to respond.
  * 
  * @see RuntimeException
- * 
  */
 public class RuntimeDroolsException extends RuntimeException {
     private static final long serialVersionUID = 510l;

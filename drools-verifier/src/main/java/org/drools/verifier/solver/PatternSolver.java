@@ -21,7 +21,6 @@ import org.drools.verifier.components.Pattern;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.
- * 
  */
 class PatternSolver extends Solver {
 

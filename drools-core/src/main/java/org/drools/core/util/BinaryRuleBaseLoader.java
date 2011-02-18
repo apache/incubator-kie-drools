@@ -28,7 +28,6 @@ import org.drools.rule.Package;
  * This loads up rulebases from binary packages.
  * Can work with an existing or a new rulebase.
  * This is useful for deployment.
- *
  */
 public class BinaryRuleBaseLoader {
 

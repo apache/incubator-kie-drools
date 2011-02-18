@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 
 /**
  * A class to represent an import declaration. 
- *
  */
 public class ImportDeclaration implements Externalizable {
 

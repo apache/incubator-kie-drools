@@ -54,7 +54,6 @@ package org.drools.jsr94.rules;
  * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
- *
  */
 
 import java.io.IOException;
@@ -77,7 +76,6 @@ import static org.junit.Assert.*;
 
 /**
  * Base class for all drools JSR94 test cases.
- *
  */
 public abstract class RuleEngineTestBase {
     protected StatefulRuleSession     statefulSession;

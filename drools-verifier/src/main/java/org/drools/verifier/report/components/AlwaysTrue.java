@@ -21,8 +21,6 @@ import java.util.Collection;
 
 /**
  * Pattern, rule or similar that is always satisfied.
- * 
- *
  */
 public class AlwaysTrue
     implements

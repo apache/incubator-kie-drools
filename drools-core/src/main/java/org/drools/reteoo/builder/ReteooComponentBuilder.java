@@ -20,7 +20,6 @@ import org.drools.rule.RuleConditionElement;
 
 /**
  * An interface for Reteoo Component builders
- * 
  */
 public interface ReteooComponentBuilder {
 

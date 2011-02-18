@@ -34,7 +34,6 @@ import static org.mockito.Mockito.*;
 
 /**
  * Test case for PartitionTaskManager
- *
  */
 public class PartitionTaskManagerTest {
     private PartitionManager manager;

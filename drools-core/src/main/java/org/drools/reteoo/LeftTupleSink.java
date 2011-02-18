@@ -27,7 +27,6 @@ import org.drools.spi.PropagationContext;
  * <code>TupleSource</code>.
  *
  * @see LeftTupleSource
- *
  */
 public interface LeftTupleSink
     extends

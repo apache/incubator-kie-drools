@@ -35,7 +35,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Please note that for lists of small sizes, and few modifications, the CopyOnWriteArrayList
  * provides best performance. If the list is modified more often, than a simple ArrayList
  * with synchonized operations, and copying of the array for iteration is faster.
- *
  */
 public abstract class AbstractEventSupport<E extends EventListener> implements Externalizable {
 

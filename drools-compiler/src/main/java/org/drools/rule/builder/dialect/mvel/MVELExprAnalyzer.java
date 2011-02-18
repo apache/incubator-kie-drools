@@ -42,7 +42,6 @@ import org.mvel2.util.PropertyTools;
 
 /**
  * Expression analyzer.
- * 
  */
 public class MVELExprAnalyzer {
 

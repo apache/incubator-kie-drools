@@ -32,7 +32,6 @@ import java.util.NoSuchElementException;
  *
  * @since Commons Collections 1.0
  * @version $Revision$ $Date$
- *
  */
 public class ArrayIterator implements java.util.Iterator {
 

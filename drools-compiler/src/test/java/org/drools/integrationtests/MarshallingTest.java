@@ -876,7 +876,6 @@ public class MarshallingTest {
      *
      * But both cases after inserting associated data points (i.e data points which are used to fire/activate the removed rule)
      * session.fireAllRules() is throwing NoClassDefFoundError
-     *
      */
     @Test
     public void testSerializeAddRemove_NoClassDefFoundError() throws Exception {
@@ -1247,7 +1246,6 @@ public class MarshallingTest {
 
     /**
      * In this case we are dealing with facts which are not on the systems classpath.
-     *
      */
     @Test
     public void testSerializabilityWithJarFacts() throws Exception {

@@ -108,7 +108,6 @@ import org.drools.type.DateFormatsImpl;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- * 
  */
 public abstract class AbstractWorkingMemory
     implements
@@ -793,7 +792,6 @@ public abstract class AbstractWorkingMemory
      * @param handle
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
-     * 
      */
     public Object getObject(final org.drools.runtime.rule.FactHandle handle) {
         return this.defaultEntryPoint.getObject( handle );

@@ -38,7 +38,6 @@ import org.drools.spi.DeclarationScopeResolver;
 
 /**
  * A context for the current build
- * 
  */
 public class RuleBuildContext extends PackageBuildContext {
 

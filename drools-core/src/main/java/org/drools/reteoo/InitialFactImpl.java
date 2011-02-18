@@ -26,8 +26,6 @@ import org.drools.InitialFact;
 /**
  * We dont want users to be able to instantiate InitialFact so we expose it as
  * an interface and make the class and its constructor package protected
- *
- *
  */
 public final class InitialFactImpl
     implements

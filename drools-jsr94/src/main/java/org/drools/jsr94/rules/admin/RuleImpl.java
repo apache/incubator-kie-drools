@@ -30,7 +30,6 @@ import javax.rules.admin.Rule;
  * interface.
  *
  * @see Rule
- *
  */
 public class RuleImpl
     implements

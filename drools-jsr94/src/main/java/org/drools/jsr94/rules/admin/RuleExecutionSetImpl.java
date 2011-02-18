@@ -44,7 +44,6 @@ import org.drools.rule.Rule;
  * <code>RuleSession</code> interface.
  *
  * @see RuleExecutionSet
- *
  */
 public class RuleExecutionSetImpl
     implements

@@ -44,8 +44,6 @@ import java.util.List;
  * 
  * <p>The list accepts duplications and the order of the elements in the list is not
  * guaranteed.</p>
- *
- *
  */
 public class CollectListAccumulateFunction
     implements

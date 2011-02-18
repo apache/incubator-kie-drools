@@ -34,7 +34,6 @@ import java.util.*;
  * <li>{@link BetaNode}s</li>
  * <li>A {@link Map} for each set of hashed {@link AlphaNode}s. The keys are the hashed values, and the values are
  * the IDs of the alphas</li>
- *
  */
 class DeclarationsHandler extends AbstractCompilerHandler {
     private static final String PRIVATE_MODIFIER = "private";

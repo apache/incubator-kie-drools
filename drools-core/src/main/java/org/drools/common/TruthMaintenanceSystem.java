@@ -38,8 +38,6 @@ import org.drools.spi.PropagationContext;
  * EqualityKey. The EqualityKey has an internal datastructure which references
  * all the handles which are equal. Secondly It maintains another map tracking
  * the  justificiations for logically asserted facts.
- *
- *
  */
 public class TruthMaintenanceSystem {
 

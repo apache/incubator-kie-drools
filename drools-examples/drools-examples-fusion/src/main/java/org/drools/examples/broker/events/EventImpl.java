@@ -20,7 +20,6 @@ import java.util.Date;
 
 /**
  * A default implementation for Event
- * 
  */
 public class EventImpl<T> implements Event<T> {
     private final long timestamp;

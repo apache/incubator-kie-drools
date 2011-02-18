@@ -26,7 +26,6 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  * Factory Interface to return new <code>FactHandle</code>s
  * 
  *  @see FactHandle
- * 
  */
 public interface FactHandleFactory {
    /**

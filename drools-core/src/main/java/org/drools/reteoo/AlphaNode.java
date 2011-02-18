@@ -37,8 +37,6 @@ import org.drools.spi.PropagationContext;
  * objects where the <code>FieldConstraint</code>s have no dependencies on any other of the facts in the current <code>Rule</code>.
  *
  *  @see AlphaNodeFieldConstraint
- *
- *
  */
 public class AlphaNode extends ObjectSource
     implements
@@ -265,7 +263,6 @@ public class AlphaNode extends ObjectSource
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
-     *
      */
     private static class ObjectSinkUpdateAdapter
         implements

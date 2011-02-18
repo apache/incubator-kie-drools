@@ -28,7 +28,6 @@ import org.drools.spi.PropagationContext;
 
 /**
  * A length window behavior implementation
- * 
  */
 public class SlidingLengthWindow
     implements
@@ -159,7 +158,6 @@ public class SlidingLengthWindow
 
     /**
      * A Context object for length windows
-     * 
      */
     private static class SlidingLengthWindowContext
         implements

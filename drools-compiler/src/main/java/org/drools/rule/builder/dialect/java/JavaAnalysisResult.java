@@ -30,7 +30,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 
 /**
  * An analysis result implementation for the java dialect
- * 
  */
 public class JavaAnalysisResult implements AnalysisResult {
     

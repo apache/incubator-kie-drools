@@ -48,7 +48,6 @@ import org.drools.time.impl.Timer;
  * The <code>Test</code>s describe the circumstances that representrepresent
  * a match for this rule. The <code>Consequence</code> gets fired when the
  * Conditions match.
- *
  */
 public class Rule
     implements

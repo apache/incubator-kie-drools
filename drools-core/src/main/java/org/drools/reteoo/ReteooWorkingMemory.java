@@ -60,7 +60,6 @@ import org.drools.spi.PropagationContext;
 
 /**
  * Implementation of <code>WorkingMemory</code>.
- *
  */
 public class ReteooWorkingMemory extends AbstractWorkingMemory {
 

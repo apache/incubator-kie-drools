@@ -36,9 +36,6 @@ import org.drools.template.parser.DecisionTableParseException;
  * column, this is achieved by using "..." at the end of a cell value. If a cell
  * value ends with "..." then it will be taken as spanned from the previous
  * cell.
- * 
- * 
- * 
  */
 public class CsvParser implements DecisionTableParser {
 

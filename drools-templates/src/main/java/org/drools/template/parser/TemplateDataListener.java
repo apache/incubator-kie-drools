@@ -23,7 +23,6 @@ import org.drools.template.model.DRLOutput;
 
 /**
  * SheetListener for creating rules from a template
- * 
  */
 public class TemplateDataListener
     implements

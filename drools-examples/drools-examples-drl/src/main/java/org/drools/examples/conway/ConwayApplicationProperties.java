@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 
 /**
  * A utility class for retrieving application properties
- * 
  */
 public class ConwayApplicationProperties {
     private static final ConwayApplicationProperties ourInstance = new ConwayApplicationProperties();

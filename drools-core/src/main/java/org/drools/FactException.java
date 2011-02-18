@@ -18,7 +18,6 @@ package org.drools;
 
 /**
  * Base exception indicating an error in manipulating facts.
- * 
  */
 public class FactException extends RuntimeDroolsException {
     private static final long serialVersionUID = 510l;

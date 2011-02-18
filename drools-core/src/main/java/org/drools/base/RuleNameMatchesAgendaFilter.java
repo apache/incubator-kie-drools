@@ -24,7 +24,6 @@ import org.drools.spi.AgendaFilter;
 
 /**
  * Filters activations based on a specified regular expression.
- * 
  */
 public class RuleNameMatchesAgendaFilter
     implements

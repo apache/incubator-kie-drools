@@ -34,8 +34,6 @@ import org.drools.spi.DeclarationScopeResolver;
  * 
  * This class does not turn Exists into two Nots at this stage, that role is
  * delegated to the Builder.
- * 
- *
  */
 class LogicTransformer {
     private final Map               orTransformations = new HashMap();
@@ -56,7 +54,6 @@ class LogicTransformer {
 
     /**
      * sets up the parent->child transformations map
-     * 
      */
     private void initialize() {
         // these pairs will be transformed

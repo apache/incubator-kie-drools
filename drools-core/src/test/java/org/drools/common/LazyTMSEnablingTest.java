@@ -36,7 +36,6 @@ import org.junit.Test;
  * href="http://blog.athico.com/2010/09/lazily-enabled-truth-maintenace.html">
  * published here.</a>
  * </p>
- * 
  */
 public class LazyTMSEnablingTest {
 

@@ -14,7 +14,6 @@ import org.drools.rule.Package;
  * 
  * Default strict is true, which means all expressions and the consequence are type safe.
  * However dynamic mode is still used while executed nested accessors in the field constraints.
- *
  */
 public class MVELDialectConfiguration
     implements

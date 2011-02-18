@@ -23,7 +23,6 @@ import org.drools.WorkingMemory;
 /**
  * Used to provide a strategy for the StatelessSession global exportation, so that StatelessSessionResult can have accesso to
  * globals using during the execute(...) method that returned the StatelessSessionResult.
- *
  */
 public interface GlobalExporter extends Externalizable {
 

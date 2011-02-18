@@ -24,7 +24,6 @@ import java.io.ObjectOutput;
  * A ruleflow event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the process name and id.
- * 
  */
 public class RuleFlowLogEvent extends LogEvent {
 

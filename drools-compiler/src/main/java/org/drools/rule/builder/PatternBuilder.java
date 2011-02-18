@@ -97,7 +97,6 @@ import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * A builder for patterns
- * 
  */
 public class PatternBuilder
     implements

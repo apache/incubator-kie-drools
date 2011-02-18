@@ -22,7 +22,6 @@ import java.io.Serializable;
  * A <code>ConwayPattern</code> describes the state of a conway grid.
  * <code>ConwayPattern</code> objects are useful for persisting grid states
  * for recall later.
- * 
  */
 public interface ConwayPattern
     extends

@@ -24,8 +24,6 @@ import org.drools.rule.builder.dialect.mvel.MVELDialectConfiguration;
 
 /**
  * The Clips dialect.
- * 
- *
  */
 public class ClipsDialectConfiguration
     extends MVELDialectConfiguration {

@@ -27,7 +27,6 @@ import org.drools.verifier.data.VerifierComponent;
  * Object type that indicates a equivalence between two objects.
  * 
  * Equivalence happens when the LHS of the rules are redundant, but the LHS is different.
- * 
  */
 public class Equivalence
     implements

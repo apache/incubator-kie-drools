@@ -43,7 +43,6 @@ import org.mvel2.asm.Type;
  * 
  * This may be enhanced in the future to allow annotations or perhaps external meta data
  * configure the order of the indexes, as this may provide fine tuning options in special cases.
- * 
  */
 public class ClassFieldInspector {
 

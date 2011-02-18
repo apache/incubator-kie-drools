@@ -20,7 +20,6 @@ package org.drools.lang.descr;
 /**
  * An entry point descriptor for facts. This is part of the
  * support to multi-stream concurrent event assertion.
- * 
  */
 public class EntryPointDescr extends PatternSourceDescr {
 

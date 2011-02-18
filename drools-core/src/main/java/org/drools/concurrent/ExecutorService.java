@@ -21,7 +21,6 @@ import java.io.Externalizable;
 /**
  * This class instance is configed by the RuleBaseConfiguration and is responsible for thread management
  * of the async services.
- *
  */
 public interface ExecutorService extends Externalizable {
 
@@ -41,13 +40,11 @@ public interface ExecutorService extends Externalizable {
 
     /**
      * Shutdown this ExecutorService
-     *
      */
     void shutDown();
 
     /**
      * Startup this ExecutorService, typically called on first submit for lazy startup.
-     *
      */
     void startUp();
 }
