@@ -100,8 +100,8 @@ public class TruthMaintenanceSystem {
     //        public int compare(EqualityKey key1,
     //                           EqualityKey key2) {
     //            return key1.getFactHandle().getId() - key2.getFactHandle().getId();
-    //        }        
-    //    }        
+    //        }
+    //    }
     //    
     //    public void read(WMSerialisationInContext context) throws IOException {
     //        ObjectInputStream stream = context.stream;
@@ -115,9 +115,9 @@ public class TruthMaintenanceSystem {
     //                handle = ( InternalFactHandle ) context.wm.getFactHandle( stream.readInt() );
     //                key.addFactHandle( handle );
     //                handle.setEqualityKey( key );
-    //            } 
+    //            }
     //            put( key );
-    //        }        
+    //        }
     //    }
 
     //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {

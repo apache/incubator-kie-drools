@@ -113,10 +113,10 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 						
 						if (bytes == null) {
 							return null;
-						}						
+						}
 						
 						return new JciResource(pSourceName, bytes);
-					}    		
+					}
     			},
     			new ClassLoaderIClassLoader(pClassLoader),
     			new ResourceFinder() {
@@ -128,7 +128,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 						}
 						
 						return new JciResource(pResourceName, bytes);
-					}    		
+					}
     			},
     			new ResourceCreator() {
 					public OutputStream createResource( final String pResourceName ) throws IOException {
@@ -138,7 +138,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 					public boolean deleteResource( final String pResourceName ) {
 						pStore.remove(pResourceName);
 						return true;
-					}    				
+					}
     			},
     			pSettings.getSourceEncoding(),
     			false,
@@ -150,7 +150,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 								problemHandler.handle(problem);
 							}
 							problems.add(problem);
-						}    		
+						}
 			    	})    			
     			);
     	

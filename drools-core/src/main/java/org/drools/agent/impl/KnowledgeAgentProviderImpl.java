@@ -32,7 +32,7 @@ public class KnowledgeAgentProviderImpl implements KnowledgeAgentProvider {
     
     public KnowledgeAgentConfiguration newKnowledgeAgentConfiguration(Properties properties) {
         return new KnowledgeAgentConfigurationImpl(properties);
-    }    
+    }
 
     public KnowledgeAgent newKnowledgeAgent(String name,
                                             KnowledgeBase kbase) {

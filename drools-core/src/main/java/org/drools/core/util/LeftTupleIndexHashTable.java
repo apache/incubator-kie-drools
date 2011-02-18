@@ -110,7 +110,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     
 	public FastIterator fastIterator() {
 		return LinkedList.fastIterator;
-	}      
+	}
 
     public LeftTuple getFirst(final RightTuple rightTuple) {
         LeftTupleList bucket = get( rightTuple );
@@ -165,7 +165,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
          * @see org.drools.util.Iterator#next()
          */
         public Object next() {
-            while ( this.row < this.length ) {                
+            while ( this.row < this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
                     // iterate while there is no current bucket, trying each array position

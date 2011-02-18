@@ -31,7 +31,7 @@ public class Neighbor {
 
     public Cell getNeighbor() {
         return neighbor;
-    }       
+    }
     
     public String toString() {
         return "cell '"+ this.cell + "' neighbour '" + this.neighbor + "'";

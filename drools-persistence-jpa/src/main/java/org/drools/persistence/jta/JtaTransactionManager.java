@@ -184,7 +184,7 @@ public class JtaTransactionManager
             throw new RuntimeException( "Unable to rollback transaction",
                                         e );
         }
-    }    
+    }
 
     public int getStatus() {
         int s;

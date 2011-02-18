@@ -62,7 +62,7 @@ public class WorkItemInfo  {
     
     public int getVersion() {
         return this.version;
-    }    
+    }
 
     public String getName() {
         return name;

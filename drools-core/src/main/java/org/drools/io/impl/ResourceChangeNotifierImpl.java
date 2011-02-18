@@ -210,7 +210,7 @@ public class ResourceChangeNotifierImpl
         //            for ( ResourceChangeListener listener : listeners ) {
         //                listener.resourceModified( event );
         //            }
-        //        }        
+        //        }
     }
 
     public void start() {

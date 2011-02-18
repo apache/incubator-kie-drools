@@ -25,7 +25,7 @@ import org.drools.core.util.ClassUtils;
  */
 public class ExecutorServiceFactory {
     
-    public static ExecutorService createExecutorService(String className) {        
+    public static ExecutorService createExecutorService(String className) {
 
         try {
             ExecutorService service = ( ExecutorService ) ClassUtils.instantiateObject( className );
@@ -33,7 +33,7 @@ public class ExecutorServiceFactory {
             return service;
         } catch ( Throwable e ) {
             throw new RuntimeException("Unable to instantiate ExecutorService '" + className + "'", e );
-        }        
+        }
     }
 
 }

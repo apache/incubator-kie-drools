@@ -507,7 +507,7 @@ public class MVELDialect
                                                       Declaration[] previousDeclarations,
                                                       Declaration[] localDeclarations,
                                                       final Map<String, Class<?>> otherInputVariables,
-                                                      final PackageBuildContext context) {        
+                                                      final PackageBuildContext context) {
         String[] pkgImports  = this.packageImports.toArray( new String[this.packageImports.size()] );
 
         //String[] imports = new String[this.imports.size()];
@@ -550,7 +550,7 @@ public class MVELDialect
         for( Entry<String, Class<?>> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
             strList.add(  e.getKey() );
             resolvedInputs.put( e.getKey(), e.getValue() );
-        }                
+        }
         String[] globalIdentifiers = strList.toArray( new String[strList.size()] );
         
         if ( previousDeclarations != null ) {
@@ -570,8 +570,8 @@ public class MVELDialect
                     resolvedInputs.put( decl.getIdentifier(),
                                         decl.getExtractor().getExtractToClass() );
                 }
-            }        
-        }             
+            }
+        }
         
         // "not bound" identifiers could be drools, kcontext and rule
         // but in the case of accumulate it could be vars from the "init" section.        

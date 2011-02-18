@@ -66,7 +66,7 @@ public class ConcurrentRightTupleList
     
     public RightTuple getFirst(RightTuple rightTuple) {
         return this.first.get();
-    }     
+    }
 
     public RightTuple getLast(LeftTuple leftTuple) {
         return this.last.get();
@@ -159,12 +159,12 @@ public class ConcurrentRightTupleList
     
 	public FastIterator fastIterator() {
 		return LinkedList.fastIterator;
-	}      
+	}
 	
 	public FastIterator fullFastIterator() {
 		// TODO Auto-generated method stub
 		return null;
-	}    	
+	}
 
     public boolean matches(final Object object,
                            final int objectHashCode) {

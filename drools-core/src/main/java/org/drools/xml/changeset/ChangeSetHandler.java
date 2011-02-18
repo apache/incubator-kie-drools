@@ -39,7 +39,7 @@ public class ChangeSetHandler extends BaseAbstractHandler
             this.validPeers.add( null );
 
             this.allowNesting = true;
-        }        
+        }
     }
 
     public Object start(String uri,
@@ -62,10 +62,10 @@ public class ChangeSetHandler extends BaseAbstractHandler
 
         final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getCurrent();
         return changeSet;
-    }  
+    }
     
     public Class< ? > generateNodeFor() {
         return ChangeSetImpl.class;
-    }    
+    }
 
 }

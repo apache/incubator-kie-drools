@@ -191,5 +191,5 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                 }
             }
         }
-    }    
+    }
 }

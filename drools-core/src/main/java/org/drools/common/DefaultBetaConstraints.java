@@ -102,7 +102,7 @@ public class DefaultBetaConstraints
 		final BetaNodeFieldConstraint temp = constraints[p2];
 		constraints[p2] = constraints[p1];
 		constraints[p1] = temp;
-    }    
+    }
 
     public DefaultBetaConstraints(final BetaNodeFieldConstraint[] constraints,
                                   final RuleBaseConfiguration conf,

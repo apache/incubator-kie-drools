@@ -27,11 +27,11 @@ public class Tools {
 		return formattedDate(date);
 	}
 	
-	public static String formattedInterval(Calendar start, Calendar end){	
+	public static String formattedInterval(Calendar start, Calendar end){
 		return "["+Tools.formattedDate(start)+".."+Tools.formattedDate(end)+"]";
 	}
 	
-	public static String formattedInterval(long start, long end){	
+	public static String formattedInterval(long start, long end){
 		return "["+Tools.formattedDate(start)+".."+Tools.formattedDate(end)+"]";
 	}
 	

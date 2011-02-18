@@ -110,14 +110,14 @@ public class MVELExprAnalyzer {
                     if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), str ) != null ) {
                         continue;
                     }
-                }               
+                }
                 
                 Class cls = availableIdentifiers.getDeclarations().get( str );
                 if ( cls != null ) {
                     parserContext2.addInput( str,
                                              cls );
                     continue;
-                } 
+                }
                 
                 if ( cls == null ) {
                     cls = availableIdentifiers.getGlobals().get( str );
@@ -139,13 +139,13 @@ public class MVELExprAnalyzer {
                     if ( str.equals( "rule" ) ) {
                         parserContext2.addInput( "rule",
                                                  Rule.class );
-                    }                    
+                    }
                 }
             }
             
             if ( availableIdentifiers.getThisClass() != null ) {
                 parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
-            }            
+            }
 
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             Class returnType =  MVEL.analyze( expr,

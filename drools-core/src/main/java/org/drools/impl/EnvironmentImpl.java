@@ -30,7 +30,7 @@ public class EnvironmentImpl implements Environment {
     
     public void setDelegate(Environment delegate) {
         this.delegate = delegate;
-    }       
+    }
 	
 	public Object get(String identifier) {
 	    Object object = environment.get(identifier);

@@ -26,5 +26,5 @@ public class LessThanOrEqFunction  extends BaseInfixFunction  {
     
     public String getMappedSymbol() {
         return mappedSymbol;
-    }    
+    }
 }

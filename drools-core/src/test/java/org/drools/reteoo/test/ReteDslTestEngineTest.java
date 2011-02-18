@@ -447,7 +447,7 @@ public class ReteDslTestEngineTest {
                       handles.get( 3 ).getObject() );
         assertEquals( list,
                       handles.get( 4 ).getObject() );
-    }    
+    }
 
     @Test
     public void testBetaNodeAssertOperations() throws IOException {
@@ -683,7 +683,7 @@ public class ReteDslTestEngineTest {
 
         assertEquals( 1,
                       memory.getLeftTupleMemory().size() );
-    }    
+    }
     
     @Test
     public void testBetaNodeModifyOperations() throws IOException {
@@ -789,7 +789,7 @@ public class ReteDslTestEngineTest {
 
         NodeTestResult result = executeTest( str );
         Map<String, Object> map = result.context;
-    }    
+    }
 
     private void print(DslStep[] steps) {
         for ( DslStep command : steps ) {

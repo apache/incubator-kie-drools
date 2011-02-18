@@ -322,7 +322,7 @@ public static class InsertElementsConverter extends AbstractCollectionConverter
       }
       if ( entryPoint != null ) {
           cmd.setEntryPoint( entryPoint );
-      }      
+      }
       return cmd;
   }
 
@@ -1013,5 +1013,5 @@ public static class QueryResultsConverter extends AbstractCollectionConverter
   public boolean canConvert(Class clazz) {
       return QueryResults.class.isAssignableFrom( clazz );
   }
-}   
+}
 }

@@ -50,7 +50,7 @@ public class CommandExecutor implements Runnable, Externalizable {
     public CommandExecutor(WorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         this.queue = new LinkedBlockingQueue();
-    }        
+    }
     
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workingMemory   = (WorkingMemory)in.readObject();
@@ -70,7 +70,7 @@ public class CommandExecutor implements Runnable, Externalizable {
      */
     public void shutdown() {
         this.run = false;
-    }        
+    }
     
     /**
      * Submit a Command for execution
@@ -96,5 +96,5 @@ public class CommandExecutor implements Runnable, Externalizable {
                 return;
             }
         }
-    }        
+    }
 }

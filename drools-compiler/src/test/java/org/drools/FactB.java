@@ -16,7 +16,7 @@ public class FactB implements Serializable {
     
     public FactB( final Integer b ) {
         this.f2 = b;
-    }    
+    }
 
     public FactB(final String a,
                  final Integer b,

@@ -48,7 +48,7 @@ public class ModifyInterceptor
 
     public int doAfter(Object value,
                        ASTNode node,
-                       VariableResolverFactory factory) {        
+                       VariableResolverFactory factory) {
         ((DroolsMVELResolverFactory)factory).getKnowledgeHelper().update( value );
         return 0;
     }

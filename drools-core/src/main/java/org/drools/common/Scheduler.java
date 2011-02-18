@@ -63,7 +63,7 @@ final class Scheduler {
     
     public static void removeAgendaItem(final ScheduledAgendaItem item, final InternalAgenda agenda) {
         ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob( item.getJobHandle() );
-    }    
+    }
     
     public static class ActivationTimerJob implements Job {
         public void execute(JobContext ctx) {
@@ -79,7 +79,7 @@ final class Scheduler {
                 item.setActivated( true );
             }
             agenda.getWorkingMemory().fireAllRules();
-        }        
+        }
     }
     
     public static class ActivationTimerJobContext implements JobContext {
@@ -110,10 +110,10 @@ final class Scheduler {
 
         public void setJobHandle(JobHandle jobHandle) {
             this.jobHandle = jobHandle;
-        } 
+        }
         
         public Trigger getTrigger() {
             return trigger;
-        }        
-    }    
+        }
+    }
 }

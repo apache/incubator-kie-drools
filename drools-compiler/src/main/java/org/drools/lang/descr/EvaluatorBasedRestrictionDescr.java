@@ -34,7 +34,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
 	/**
      * Creates a new EvaluatorBasedRestriction
      */
-    public EvaluatorBasedRestrictionDescr(){    	
+    public EvaluatorBasedRestrictionDescr(){
     }
 
     /**

@@ -132,7 +132,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         for (int i = 0; i < compilationUnits.length; i++) {
             final String sourceFile = pSourceFiles[i];
             
-            if (pReader.isAvailable(sourceFile)) {            
+            if (pReader.isAvailable(sourceFile)) {
                 compilationUnits[i] = new CompilationUnit(pReader, sourceFile);
             } else {
                 // log.error("source not found " + sourceFile);
@@ -221,7 +221,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 
                 if (isPackage(pClazzName)) {
                     return null;
-                }                
+                }
                 
                 final String resourceName = ClassUtils.convertClassToResourcePath(pClazzName);
                 

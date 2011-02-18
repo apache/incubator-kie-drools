@@ -53,7 +53,7 @@ public class URLScanner extends PackageProvider {
 
     File        localCacheDir;
 
-    void configure(Properties config) {   	
+    void configure(Properties config) {
         username = config.getProperty( RuleAgent.USER_NAME );
         password = config.getProperty( RuleAgent.PASSWORD );
         enableBasicAuthentication = Boolean.parseBoolean(config.getProperty( RuleAgent.ENABLE_BASIC_AUTHENTICATION ));
@@ -88,7 +88,7 @@ public class URLScanner extends PackageProvider {
         if ( this.localCacheFileScanner != null ) {
             this.localCacheFileScanner.setAgentListener( listener );
         }
-    }    
+    }
 
     File[] getFiles(URL[] urls, File cacheDir) {
         File[] fs = new File[urls.length];

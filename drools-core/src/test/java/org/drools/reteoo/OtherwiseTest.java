@@ -196,7 +196,7 @@ public class OtherwiseTest {
         
         public String getName() {
             return "default";
-        }        
+        }
     }
 
 }

@@ -44,7 +44,7 @@ public class LispForm
 //        }
 //        builder.append(")");
 //        return builder.toString();
-//    }    
+//    }
     public int size() {
         return this.sExpressions.length;
     }
@@ -60,6 +60,6 @@ public class LispForm
         }
         builder.append(")");
         return builder.toString();
-    }  
+    }
     
 }

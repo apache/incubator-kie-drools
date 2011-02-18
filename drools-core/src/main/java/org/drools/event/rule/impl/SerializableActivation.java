@@ -55,7 +55,7 @@ public class SerializableActivation
             this.declarations = ((SerializableActivation)activation).declarations;
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
-        } 
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -90,7 +90,7 @@ public class SerializableActivation
         return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
     }
 
-    public List<String> getDeclarationIDs() { 
+    public List<String> getDeclarationIDs() {
         List<String> decls = new ArrayList<String>();
         for( Declaration decl : this.declarations ) {
             decls.add( decl.getIdentifier() );

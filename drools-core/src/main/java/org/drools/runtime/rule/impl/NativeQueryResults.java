@@ -59,7 +59,7 @@ public class NativeQueryResults
 	                if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
 	                    continue;
 	                }
-	            }	    
+	            }
 	            actualIds.add( declr.getIdentifier() );
 	    }
 	    return actualIds.toArray( new String[actualIds.size() ] );

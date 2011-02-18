@@ -57,7 +57,7 @@ public class ReteooMannersTest extends BaseMannersTest {
             //           public void beforeActivationFired(BeforeActivationFiredEvent event) {
             //               super.beforeActivationFired( event );
             //               System.out.println( event );
-            //           }           
+            //           }
 
             public void afterActivationFired(AfterActivationFiredEvent event) {
                 this.counter++;
@@ -90,14 +90,14 @@ public class ReteooMannersTest extends BaseMannersTest {
         //        while  (1==1){
         //            Thread.yield();
         //            Thread.sleep( 2000 );
-        //        }           
+        //        }
 
         //        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
         //        visitor.visit( ruleBase );
 
         //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
         //        
-        //        javax.swing.SwingUtilities.invokeLater(new Runnable() { 
+        //        javax.swing.SwingUtilities.invokeLater(new Runnable() {
         //        		public void run() {
         //        			viewer.showGUI();
         //        		}

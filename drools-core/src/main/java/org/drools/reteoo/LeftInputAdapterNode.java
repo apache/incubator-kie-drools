@@ -141,7 +141,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
             if ( object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
                 useLeftMemory = false;
-            } 
+            }
         }
         
         if ( !workingMemory.isSequential() ) {

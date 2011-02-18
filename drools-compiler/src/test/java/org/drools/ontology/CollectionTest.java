@@ -218,7 +218,7 @@ public class CollectionTest {
     //            return this.list.remove( o );
     //        }
     //
-    //        public E remove(int index) {         
+    //        public E remove(int index) {
     //            return ( E ) this.list.remove( index );
     //        }
     //

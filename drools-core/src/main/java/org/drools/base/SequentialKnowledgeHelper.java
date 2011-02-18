@@ -99,7 +99,7 @@ public class SequentialKnowledgeHelper
         return this.workingMemory;
     }
     
-    public KnowledgeRuntime getKnowledgeRuntime() {        
+    public KnowledgeRuntime getKnowledgeRuntime() {
         return new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) this.workingMemory );
      }
 
@@ -126,7 +126,7 @@ public class SequentialKnowledgeHelper
     
     public Object get(final Declaration declaration) {
         return declaration.getValue( workingMemory, this.tuple.get( declaration ).getObject() );
-    }    
+    }
 
     public Declaration getDeclaration(final String identifier) {
         return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
@@ -180,7 +180,7 @@ public class SequentialKnowledgeHelper
 		return null;
 	}
 
-    public void cancelRemainingPreviousLogicalDependencies() {       
+    public void cancelRemainingPreviousLogicalDependencies() {
     }
 
     public void insert(Object object) {

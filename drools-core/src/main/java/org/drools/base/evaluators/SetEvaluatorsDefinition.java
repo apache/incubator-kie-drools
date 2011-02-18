@@ -568,7 +568,7 @@ public class SetEvaluatorsDefinition
                 final Object value = extractor1.getValue( workingMemory,
                                                           object1 );
                 return col.contains( value );
-            } else if ( object.getClass().isArray() ) {                
+            } else if ( object.getClass().isArray() ) {
                 return getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,
@@ -674,7 +674,7 @@ public class SetEvaluatorsDefinition
                 final Object value = extractor1.getValue( workingMemory,
                                                           object1 );
                 return !col.contains( value );
-            } else if ( object.getClass().isArray() ) {                
+            } else if ( object.getClass().isArray() ) {
                 return !getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,

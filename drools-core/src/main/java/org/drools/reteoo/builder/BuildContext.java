@@ -471,7 +471,7 @@ public class BuildContext {
      *  
      * @return
      */
-    public RuleComponent peekRuleComponent() { 
+    public RuleComponent peekRuleComponent() {
         return this.ruleComponent.isEmpty() ? null : this.ruleComponent.peek();
     }
     

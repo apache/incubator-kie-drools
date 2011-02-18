@@ -40,7 +40,7 @@ import org.drools.spi.BetaNodeFieldConstraint;
 
 public class QuadroupleNonIndexSkipBetaConstraints 
     implements
-    BetaConstraints {    
+    BetaConstraints {
     private QuadroupleBetaConstraints constraints;
     
     private BetaNodeFieldConstraint constraint0;
@@ -50,7 +50,7 @@ public class QuadroupleNonIndexSkipBetaConstraints
     
     public QuadroupleNonIndexSkipBetaConstraints() {
 
-    }    
+    }
     
     public QuadroupleNonIndexSkipBetaConstraints(QuadroupleBetaConstraints constraints) {
         this.constraints = constraints;

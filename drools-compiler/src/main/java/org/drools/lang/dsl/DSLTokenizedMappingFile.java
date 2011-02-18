@@ -129,7 +129,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         //        }
 
         return errors.isEmpty();
-    }	
+    }
 
     private DSLMapping buildFileMapping(final List<ParserError> errors, final Reader dsl) throws IOException, RecognitionException{
         ANTLRReaderStream reader = new ANTLRReaderStream(dsl);

@@ -91,7 +91,7 @@ public class ReteooRuleBuilderTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );

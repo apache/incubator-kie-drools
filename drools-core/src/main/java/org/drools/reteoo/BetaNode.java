@@ -215,8 +215,8 @@ public abstract class BetaNode extends LeftTupleSource
                                     (InternalFactHandle) context.getFactHandle() );
         } else {
             return (RightTuple) it.next( null );
-        }        
-    }     
+        }
+    }
 
     public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();
@@ -345,10 +345,10 @@ public abstract class BetaNode extends LeftTupleSource
                                 leftTuple.setBlockedNext( null );
                                 leftTuple.unlinkFromLeftParent();
                                 leftTuple = temp;
-                            }                        
+                            }
                         }
                         rightTuple.unlinkFromRightParent();
-                    }                
+                    }
                     workingMemories[i].clearNodeMemory( this );
                 }
             }

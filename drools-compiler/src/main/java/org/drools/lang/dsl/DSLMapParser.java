@@ -2622,7 +2622,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end "any_key"
 
     // $ANTLR start synpred3_DSLMap
-    public final void synpred3_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred3_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: ( meta_section )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: meta_section
         {
@@ -2637,7 +2637,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred3_DSLMap
 
     // $ANTLR start synpred6_DSLMap
-    public final void synpred6_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred6_DSLMap_fragment() throws RecognitionException {
         DSLMapParser.condition_key_return value1 = null;
 
 
@@ -2655,7 +2655,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred6_DSLMap
 
     // $ANTLR start synpred7_DSLMap
-    public final void synpred7_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred7_DSLMap_fragment() throws RecognitionException {
         DSLMapParser.consequence_key_return value2 = null;
 
 
@@ -2673,7 +2673,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred7_DSLMap
 
     // $ANTLR start synpred8_DSLMap
-    public final void synpred8_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred8_DSLMap_fragment() throws RecognitionException {
         DSLMapParser.keyword_key_return value3 = null;
 
 
@@ -2691,7 +2691,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred8_DSLMap
 
     // $ANTLR start synpred12_DSLMap
-    public final void synpred12_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred12_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: ( literal )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: literal
         {
@@ -2706,7 +2706,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred12_DSLMap
 
     // $ANTLR start synpred15_DSLMap
-    public final void synpred15_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred15_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: ( literal )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: literal
         {
@@ -2721,7 +2721,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred15_DSLMap
 
     // $ANTLR start synpred16_DSLMap
-    public final void synpred16_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred16_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: ( EQUALS )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: EQUALS
         {
@@ -2732,7 +2732,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred16_DSLMap
 
     // $ANTLR start synpred17_DSLMap
-    public final void synpred17_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred17_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: ( COMMA )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: COMMA
         {
@@ -2743,7 +2743,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred17_DSLMap
 
     // $ANTLR start synpred21_DSLMap
-    public final void synpred21_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred21_DSLMap_fragment() throws RecognitionException {
         Token q=null;
 
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: ( COLON q= LITERAL )
@@ -2757,7 +2757,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred21_DSLMap
 
     // $ANTLR start synpred23_DSLMap
-    public final void synpred23_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred23_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: ( literal )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
         {
@@ -2772,7 +2772,7 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred23_DSLMap
 
     // $ANTLR start synpred25_DSLMap
-    public final void synpred25_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred25_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
         {

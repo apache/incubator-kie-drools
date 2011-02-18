@@ -65,7 +65,7 @@ public class InstancesHashcodedTest {
         
         return clazz;
         
-    }    
+    }
 	
     @Test
     public void testInstanceHashcodes() {

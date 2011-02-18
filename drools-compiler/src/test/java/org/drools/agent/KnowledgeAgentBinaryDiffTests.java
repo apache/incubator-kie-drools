@@ -351,7 +351,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {        
+    private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createAttributeRule( "rule1", attribute1 ) );
 

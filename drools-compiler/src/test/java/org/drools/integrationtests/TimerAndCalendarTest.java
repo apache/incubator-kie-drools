@@ -188,7 +188,7 @@ public class TimerAndCalendarTest {
         assertEquals( 2,
                       list.size() );
 
-    }    
+    }
     
     @Test
     public void testNoProtocolIntervalTimer() throws Exception {
@@ -305,7 +305,7 @@ public class TimerAndCalendarTest {
         timeService.advanceTime( 10, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
-    }    
+    }
     
     @Test
     public void testCronTimer() throws Exception {
@@ -362,7 +362,7 @@ public class TimerAndCalendarTest {
         timeService.advanceTime( 30, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
-    }        
+    }
     
     @Test
     public void testCalendarNormalRuleSingleCalendar() throws Exception {
@@ -389,13 +389,13 @@ public class TimerAndCalendarTest {
         Calendar calFalse = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return false;
-            }           
+            }
         };
         
         Calendar calTrue = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -434,7 +434,7 @@ public class TimerAndCalendarTest {
         ksession.insert( "o4" );
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
-    }   
+    }
     
     @Test
     public void testCalendarNormalRuleMultipleCalendars() throws Exception {
@@ -461,13 +461,13 @@ public class TimerAndCalendarTest {
         Calendar calFalse = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return false;
-            }           
+            }
         };
         
         Calendar calTrue = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -509,7 +509,7 @@ public class TimerAndCalendarTest {
         ksession.insert( "o4" );
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
-    }      
+    }
     
     @Test
     public void testCalendarsWithCron() throws Exception {
@@ -531,7 +531,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -561,7 +561,7 @@ public class TimerAndCalendarTest {
                 } else {
                     return true;
                 }
-            }           
+            }
         };
         
         Calendar cal2 = new Calendar() {
@@ -573,7 +573,7 @@ public class TimerAndCalendarTest {
                 } else {
                     return true;
                 }
-            }           
+            }
         };
         
         ksession.getCalendars().set( "cal1", cal1 );
@@ -599,7 +599,7 @@ public class TimerAndCalendarTest {
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
         assertEquals( 4, list.size() );
-    }   
+    }
     
     @Test
     public void testCalendarsWithIntervals() throws Exception {
@@ -621,7 +621,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -651,7 +651,7 @@ public class TimerAndCalendarTest {
                 } else {
                     return true;
                 }
-            }           
+            }
         };
         
         Calendar cal2 = new Calendar() {
@@ -663,7 +663,7 @@ public class TimerAndCalendarTest {
                 } else {
                     return true;
                 }
-            }           
+            }
         };
         
         ksession.getCalendars().set( "cal1", cal1 );
@@ -689,7 +689,7 @@ public class TimerAndCalendarTest {
         
         timeService.advanceTime( 60, TimeUnit.SECONDS );
         assertEquals( 4, list.size() );
-    }     
+    }
     
     @Test
     public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
@@ -711,7 +711,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -728,7 +728,7 @@ public class TimerAndCalendarTest {
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         long oneDay = 60 * 60 * 24;
@@ -775,7 +775,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -792,7 +792,7 @@ public class TimerAndCalendarTest {
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         long oneDay = 60 * 60 * 24;
@@ -817,7 +817,7 @@ public class TimerAndCalendarTest {
 
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
         assertEquals( 3, list.size() );
-    }    
+    }
     
     @Test
     public void testCalendarsWithCronAndStartAndEnd() throws Exception {
@@ -839,7 +839,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -856,7 +856,7 @@ public class TimerAndCalendarTest {
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         long oneDay = 60 * 60 * 24;
@@ -881,7 +881,7 @@ public class TimerAndCalendarTest {
 
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
         assertEquals( 3, list.size() );
-    }    
+    }
 
     @Test
     public void testCalendarsWithCronAndStartAndLimit() throws Exception {
@@ -903,7 +903,7 @@ public class TimerAndCalendarTest {
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );
             assertTrue( kbuilder.hasErrors() );
-        }      
+        }
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -920,7 +920,7 @@ public class TimerAndCalendarTest {
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
-            }           
+            }
         };
         
         long oneDay = 60 * 60 * 24;

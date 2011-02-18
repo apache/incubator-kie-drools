@@ -430,7 +430,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
         super.addPackages( pkgs );
         if ( this.getConfig().isSequential() ) {
             this.reteooBuilder.setOrdered( false );
-        }        
+        }
     }
 
     public void addPackage(final Package newPkg) {

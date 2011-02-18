@@ -58,15 +58,15 @@ public class ReaderResource  extends BaseResource implements InternalResource {
         } else {
             return new ReaderInputStream( this.reader);
         }
-    } 
+    }
     
     public long getLastModified() {
         throw new IllegalStateException( "reader does have a modified date" );
-    }    
+    }
     
     public long getLastRead() {
         throw new IllegalStateException( "reader does have a modified date" );
-    }        
+    }
     
     public Reader getReader() {
         return this.reader;
@@ -82,11 +82,11 @@ public class ReaderResource  extends BaseResource implements InternalResource {
 
     public Collection<Resource> listResources() {
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
-    }         
+    }
     
     public boolean hasURL() {
         return false;
-    }        
+    }
     
     public String toString() {
         return "[ReaderResource resource=" + this.reader + " encoding='" + this.encoding + "']";

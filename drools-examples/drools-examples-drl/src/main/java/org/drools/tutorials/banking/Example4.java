@@ -16,7 +16,7 @@
 
 package org.drools.tutorials.banking;
 
-public class Example4 {    
+public class Example4 {
     public static void main(String[] args) throws Exception {
         Object[] cashflows = {
             new Cashflow(new SimpleDate("01/01/2007"), 300.00),

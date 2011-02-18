@@ -66,7 +66,7 @@ public class DirectoryScanner extends PackageProvider {
 
 					tempPathToPackage.put(path, pathToPackage.get(path));
 					pathToPackage.remove(path);
-				} 
+				}
 			}
 			
 			if( pathToPackage.size() > 0 || files.length != tempPathToPackage.size() ) {

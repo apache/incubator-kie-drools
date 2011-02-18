@@ -24,11 +24,11 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     
     public KnowledgeBuilderConfiguration newKnowledgeBuilderConfiguration(Properties properties, ClassLoader... classLoaders) {
         return new PackageBuilderConfiguration(properties, classLoaders);
-    }   
+    }
     
     public DecisionTableConfiguration newDecisionTableConfiguration() {
         return new DecisionTableConfigurationImpl();
-    }    
+    }
     
 	public KnowledgeBuilder newKnowledgeBuilder() {
 		return new KnowledgeBuilderImpl( new PackageBuilder() );

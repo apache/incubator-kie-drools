@@ -51,7 +51,7 @@ import org.drools.spi.RuleBaseUpdateListenerFactory;
 public class ReteooStatefulSession extends ReteooWorkingMemory
     implements
     StatefulSession,
-    Externalizable { 
+    Externalizable {
 
     private static final long         serialVersionUID = 510l;
     private transient ExecutorService executor;
@@ -158,7 +158,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         final AssertObjects assertObjects = new AssertObjects( iterable );
         this.executor.submit( assertObjects );
         return assertObjects;
-    }    
+    }
 
     public Future asyncFireAllRules(final AgendaFilter agendaFilter) {
         final FireAllRules fireAllRules = new FireAllRules( agendaFilter );

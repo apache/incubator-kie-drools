@@ -74,7 +74,7 @@ public class MVELEnabledExpression
 
     public boolean getValue(final Tuple tuple,
                             final Rule rule,
-                            final WorkingMemory workingMemory) {        
+                            final WorkingMemory workingMemory) {
         VariableResolverFactory factory = unit.getFactory( null, rule, (LeftTuple) tuple, null, null, (InternalWorkingMemory) workingMemory );
 
         // do we have any functions for this namespace?
@@ -91,6 +91,6 @@ public class MVELEnabledExpression
     
     public String toString() {
         return this.unit.getExpression();
-    }    
+    }
 
 }

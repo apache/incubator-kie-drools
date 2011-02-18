@@ -114,7 +114,7 @@ public class DRLLexer extends Lexer {
     // delegates
     // delegators
 
-    public DRLLexer() {;} 
+    public DRLLexer() {;}
     public DRLLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
@@ -3810,7 +3810,7 @@ public class DRLLexer extends Lexer {
     }
 
     // $ANTLR start synpred1_DRLLexer
-    public final void synpred1_DRLLexer_fragment() throws RecognitionException {   
+    public final void synpred1_DRLLexer_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:56:14: ( '\\r\\n' )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:56:16: '\\r\\n'
         {

@@ -45,7 +45,7 @@ public class AssertFunction implements Function {
             
             FunctionHandlers.dump( slot.getSExpressions()[1], appendable);
             
-            if ( i != length -1 ) { 
+            if ( i != length -1 ) {
                 appendable.append( "," );
             }
         }

@@ -16,8 +16,8 @@
 
 package org.drools.tutorials.banking;
 
-public class Example6 {    
-    public static void main(String[] args) throws Exception {      
+public class Example6 {
+    public static void main(String[] args) throws Exception {
         Account acc1 = new Account(1);
         Account acc2 = new Account(2);
            

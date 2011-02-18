@@ -169,5 +169,5 @@ public class JavaDialectBinaryEqualityTest{
         assertEquals( new Person( "darth", 36 ), list.get( 0 ) );
         
         return kbase.getKnowledgePackage( "org.drools" );
-    }    
+    }
 }

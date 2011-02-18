@@ -28,7 +28,7 @@ public class DefaultSemanticModule implements SemanticModule {
         this.uri = uri;
         this.handlers = new HashMap<String, Handler>();
         this.handlersByClass = new HashMap<Class<?>, Handler>();
-    }    
+    }
 
     public String getUri() {
         return this.uri;

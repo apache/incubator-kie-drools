@@ -21,7 +21,7 @@ import java.io.Serializable;
 import org.drools.WorkingMemory;
 import org.drools.definition.rule.Rule;
 
-public interface Salience extends Serializable {    
+public interface Salience extends Serializable {
     public int getValue(final Tuple tuple,
                         final Rule rule,
                         final WorkingMemory workingMemory);

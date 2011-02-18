@@ -139,5 +139,5 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         
         assertEquals( leafs.length, foundLeafs.size() );
         assertEquals( Arrays.asList( leafs ), foundLeafs );
-    }    
+    }
 }

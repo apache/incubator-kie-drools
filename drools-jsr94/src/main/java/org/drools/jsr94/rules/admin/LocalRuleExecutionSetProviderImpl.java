@@ -149,7 +149,7 @@ public class LocalRuleExecutionSetProviderImpl
             
             if ( source == null ) {
                 source = "drl";
-            }            
+            }
             
             if ( dsrl == null ) {
                 if ( source.equals( Constants.RES_SOURCE_TYPE_XML ) || source.equals( "xml" ) ) {
@@ -169,7 +169,7 @@ public class LocalRuleExecutionSetProviderImpl
                         builder.addPackageFromDrl( ruleExecutionSetReader,
                                                    new StringReader( (String) dsrl ) );
                     }
-                }               
+                }
             }
             
             final Package pkg = builder.getPackage();
@@ -181,7 +181,7 @@ public class LocalRuleExecutionSetProviderImpl
         } catch ( final DroolsParserException e ) {
             throw new RuleExecutionSetCreateException( "cannot create rule execution set",
                                                        e );
-        } 
+        }
     }
     
     

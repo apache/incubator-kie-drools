@@ -23,7 +23,7 @@ public class ProcessRuntimeFactory {
 		return provider;
 	}
 
-	private static void loadProvider() {	    	    	    
+	private static void loadProvider() {
         ServiceRegistryImpl.getInstance().addDefault( ProcessRuntimeFactoryService.class, "org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl" );
         setProcessRuntimeFactoryService(ServiceRegistryImpl.getInstance().get( ProcessRuntimeFactoryService.class ) );
 	}

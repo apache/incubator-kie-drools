@@ -21,7 +21,7 @@ import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 
-public interface ParserHandler {  
+public interface ParserHandler {
     
     public void importHandler(ImportDescr descr);
     

@@ -37,7 +37,7 @@ implements RuleBaseUpdateListener {
     }
     
     public void beforeRuleBaseUnlocked(BeforeKnowledgeBaseUnlockedEvent event) {
-        if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) { 
+        if ( session.getRuleBase().getAdditionsSinceLock() > 0 ) {
             session.asyncFireAllRules();
         }
     }

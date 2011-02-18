@@ -465,9 +465,9 @@ public class CronExpression implements Serializable, Cloneable {
             boolean dayOfMSpec = !dom.contains(NO_SPEC);
             boolean dayOfWSpec = !dow.contains(NO_SPEC);
 
-            if (dayOfMSpec && !dayOfWSpec) { 
+            if (dayOfMSpec && !dayOfWSpec) {
                 // skip
-            } else if (dayOfWSpec && !dayOfMSpec) { 
+            } else if (dayOfWSpec && !dayOfMSpec) {
                 // skip
             } else {
                 throw new ParseException(
@@ -588,7 +588,7 @@ public class CronExpression implements Serializable, Cloneable {
                 return i + 1;
             } else if (c == '/'
                     && ((i + 1) >= s.length() || s.charAt(i + 1) == ' ' || s
-                            .charAt(i + 1) == '\t')) { 
+                            .charAt(i + 1) == '\t')) {
                 throw new ParseException("'/' must be followed by an integer.", i);
             } else if (c == '*') {
                 i++;
@@ -608,11 +608,11 @@ public class CronExpression implements Serializable, Cloneable {
                 }
                 if (incr > 59 && (type == SECOND || type == MINUTE)) {
                     throw new ParseException("Increment > 60 : " + incr, i);
-                } else if (incr > 23 && (type == HOUR)) { 
+                } else if (incr > 23 && (type == HOUR)) {
                     throw new ParseException("Increment > 24 : " + incr, i);
-                } else if (incr > 31 && (type == DAY_OF_MONTH)) { 
+                } else if (incr > 31 && (type == DAY_OF_MONTH)) {
                     throw new ParseException("Increment > 31 : " + incr, i);
-                } else if (incr > 7 && (type == DAY_OF_WEEK)) { 
+                } else if (incr > 7 && (type == DAY_OF_WEEK)) {
                     throw new ParseException("Increment > 7 : " + incr, i);
                 } else if (incr > 12 && (type == MONTH)) {
                     throw new ParseException("Increment > 12 : " + incr, i);
@@ -1220,9 +1220,9 @@ public class CronExpression implements Serializable, Cloneable {
                             day += 2;
                         } else if(dow == Calendar.SATURDAY) {
                             day -= 1;
-                        } else if(dow == Calendar.SUNDAY && day == ldom) { 
+                        } else if(dow == Calendar.SUNDAY && day == ldom) {
                             day -= 2;
-                        } else if(dow == Calendar.SUNDAY) { 
+                        } else if(dow == Calendar.SUNDAY) {
                             day += 1;
                         }
                     
@@ -1256,9 +1256,9 @@ public class CronExpression implements Serializable, Cloneable {
                         day += 2;
                     } else if(dow == Calendar.SATURDAY) {
                         day -= 1;
-                    } else if(dow == Calendar.SUNDAY && day == ldom) { 
+                    } else if(dow == Calendar.SUNDAY && day == ldom) {
                         day -= 2;
-                    } else if(dow == Calendar.SUNDAY) { 
+                    } else if(dow == Calendar.SUNDAY) {
                         day += 1;
                     }
                         
@@ -1516,7 +1516,7 @@ public class CronExpression implements Serializable, Cloneable {
      * NOT YET IMPLEMENTED: Returns the time before the given time
      * that the <code>CronExpression</code> matches.
      */ 
-    protected Date getTimeBefore(Date endTime) { 
+    protected Date getTimeBefore(Date endTime) {
         // TODO: implement QUARTZ-423
         return null;
     }
@@ -1576,7 +1576,7 @@ public class CronExpression implements Serializable, Cloneable {
             buildExpression(cronExpression);
         } catch (Exception ignore) {
         } // never happens
-    }    
+    }
     
     public Object clone() {
         CronExpression copy = null;
@@ -1588,7 +1588,7 @@ public class CronExpression implements Serializable, Cloneable {
             throw new IncompatibleClassChangeError("Not Cloneable.");
         }
         return copy;
-    }        
+    }
 }
 
 class ValueSet {

@@ -40,7 +40,7 @@ public class JavaCompilerSettings {
     /** @deprecated */
     private boolean verbose = false;
 
-    public JavaCompilerSettings() {    	
+    public JavaCompilerSettings() {
     }
     
     public JavaCompilerSettings( final JavaCompilerSettings pSettings ) {

@@ -52,7 +52,7 @@ public class JaxbFlatQueryResultsAdapter extends XmlAdapter<Object[], ArrayList<
 				subList = new ArrayList<Object>(list.length);
 				for (Object obj : list) {
 					subList.add(obj);
-				} 
+				}
 			} else {
 				subList = new ArrayList<Object>(Arrays.asList(new Object[] {o}));
 			}

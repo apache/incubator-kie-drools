@@ -51,7 +51,7 @@ public class MVELReturnValueBuilder
                       final ReturnValueRestrictionDescr returnValueRestrictionDescr,
                       final AnalysisResult analysis) {
 
-        try {  
+        try {
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
             
             Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
@@ -79,7 +79,7 @@ public class MVELReturnValueBuilder
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'returnValue' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );
-        }            
+        }
     }
 
 }

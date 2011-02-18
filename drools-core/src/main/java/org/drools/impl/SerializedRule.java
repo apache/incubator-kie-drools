@@ -79,10 +79,10 @@ public class SerializedRule
     @Deprecated
     public Map<String, Object> getMetaAttributes() {
         return Collections.unmodifiableMap( this.metaAttributes );
-    }    
+    }
 
     public Map<String, Object> getMetaData() {
         return Collections.unmodifiableMap( this.metaAttributes );
-    }    
+    }
 
 }

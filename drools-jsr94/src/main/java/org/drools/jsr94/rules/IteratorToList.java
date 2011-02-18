@@ -27,5 +27,5 @@ class IteratorToList {
             list.add( it.next() );
         }
         return list;
-    }    
+    }
 }

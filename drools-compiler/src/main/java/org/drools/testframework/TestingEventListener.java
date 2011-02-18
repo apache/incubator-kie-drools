@@ -220,6 +220,6 @@ class NilConsequence implements Consequence {
     
     public String getName() {
         return "default";
-    }    
+    }
 }
 

@@ -54,7 +54,7 @@ public class Query extends Rule {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         this.parameters = ( Declaration[] ) in.readObject();
-    }    
+    }
 
     /**
      * Override this as Queries will NEVER have a consequence, and it should

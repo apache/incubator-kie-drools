@@ -377,7 +377,7 @@ public class Rule
         }
         if ( this.dateEffective == null && this.dateExpires == null ) {
             return true;
-        } else {            
+        } else {
             Calendar now = Calendar.getInstance();
             now.setTimeInMillis( workingMemory.getSessionClock().getCurrentTime() );
 
@@ -773,6 +773,6 @@ public class Rule
         classReader.accept( visit, org.mvel2.asm.ClassReader.SKIP_DEBUG  );
         org.mvel2.asm.util.TraceMethodVisitor trace = visit.getTrace();
         return trace.getText();
-    } 
+    }
 
 }

@@ -22,7 +22,7 @@ public class ProcessDescr extends BaseDescr
     public ProcessDescr(String name) {
         super();
         this.name = name;
-    }    
+    }
     
     public Resource getResource() {
         return resource;

@@ -74,7 +74,7 @@ public class ClipsLexer extends Lexer {
     // delegates
     // delegators
 
-    public ClipsLexer() {;} 
+    public ClipsLexer() {;}
     public ClipsLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
@@ -1974,7 +1974,7 @@ public class ClipsLexer extends Lexer {
     }
 
     // $ANTLR start synpred1_Clips
-    public final void synpred1_Clips_fragment() throws RecognitionException {   
+    public final void synpred1_Clips_fragment() throws RecognitionException {
         // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:831:14: ( '\\r\\n' )
         // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:831:16: '\\r\\n'
         {

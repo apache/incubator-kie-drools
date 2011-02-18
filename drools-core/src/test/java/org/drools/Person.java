@@ -147,8 +147,8 @@ public class Person {
         public static class Nested2 {
             public static class Nested3 {
                 
-            }   
-        }        
+            }
+        }
     }
 
     public int hashCode() {
@@ -204,6 +204,6 @@ public class Person {
 
     public void setLikes(String likes) {
         this.likes = likes;
-    }        
+    }
     
 }

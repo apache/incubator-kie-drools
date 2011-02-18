@@ -23,7 +23,7 @@ import org.drools.clips.LispAtom;
 import org.drools.clips.LispForm;
 import org.drools.clips.SExpression;
 
-public class SwitchFunction implements Function {     
+public class SwitchFunction implements Function {
     private static String name = "switch";
     
     public String getName() {
@@ -50,7 +50,7 @@ public class SwitchFunction implements Function {
         appendable.append( ") {" );
         for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
             FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
-        }        
+        }
         appendable.append( "}" );
         
         for ( int i = 3, length = sExpressions.length-1; i < length; i++ ) {
@@ -73,15 +73,15 @@ public class SwitchFunction implements Function {
             appendable.append( ") {" );
             for ( int j = 3, length = caseForm.getSExpressions().length; j < length; j++ ) {
                 FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
-            }        
+            }
             appendable.append( "}" );
         } else {
             appendable.append( " else { " );
             for ( int j = 1, length = caseForm.getSExpressions().length; j < length; j++ ) {
                 FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
-            }        
+            }
             appendable.append( "}" );
-        }  
+        }
     }
     
 }

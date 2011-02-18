@@ -34,7 +34,7 @@ public class ActivationCancelledEvent extends ActivationEvent {
     
     public ActivationCancelledCause getCause() {
         return cause;
-    }      
+    }
 
     public String toString() {
         return "<==[ActivationCancelled(" + getActivation().getActivationNumber() + "): rule=" + getActivation().getRule().getName() + "; tuple=" + getActivation().getTuple() + "]";

@@ -22,9 +22,9 @@ public class MinusFunction  extends BaseInfixFunction {
 
     public String getName() {
         return name;
-    }  
+    }
     
     public String getMappedSymbol() {
         return mappedSymbol;
-    }    
+    }
 }

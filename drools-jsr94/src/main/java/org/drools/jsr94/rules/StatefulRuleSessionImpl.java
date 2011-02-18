@@ -119,7 +119,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      * Initialize this <code>RuleSession</code>
      * with a new <code>WorkingMemory</code>.
      */
-    protected void initSession(SessionConfiguration conf) {        
+    protected void initSession(SessionConfiguration conf) {
         this.session = this.getRuleExecutionSet().newStatefulSession( conf );
 
         final Map props = this.getProperties();
@@ -129,8 +129,8 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
                 this.session.setGlobal( (String) entry.getKey(),
                                             entry.getValue() );
             }
-        }               
-    }    
+        }
+    }
 
     // ----------------------------------------------------------------------
     // Instance methods
@@ -313,7 +313,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     public List getObjects() throws InvalidRuleSessionException {
         checkRuleSessionValidity();
         return getObjects( getRuleExecutionSet().getObjectFilter() );
-    }    
+    }
     
     /**
      * Returns a <code>List</code> over the objects in rule session state of
@@ -340,7 +340,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         checkRuleSessionValidity();
         
         return IteratorToList.convert( this.session.iterateObjects( new ObjectFilterAdapter( filter ) ) );
-    }     
+    }
 
     /**
      * Resets this rule session. Calling this method will bring the rule session
@@ -370,7 +370,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         }
         this.session = null;
         super.release();
-    }    
+    }
     
     /**
      * Ensures this <code>RuleSession</code> is not
@@ -382,5 +382,5 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         if ( this.session == null ) {
             throw new InvalidRuleSessionException( "invalid rule session" );
         }
-    }    
+    }
 }

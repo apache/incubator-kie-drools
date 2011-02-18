@@ -50,7 +50,7 @@ public class CompositeMaxDurationTrigger
             return next;
         } else {
             return trigger.nextFireTime();
-        }        
+        }
     }
 
 }

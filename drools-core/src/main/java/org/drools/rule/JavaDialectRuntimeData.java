@@ -538,13 +538,13 @@ public class JavaDialectRuntimeData
         }
 
         public Class< ? > loadClass(final String name,
-                                    final boolean resolve) throws ClassNotFoundException {  
+                                    final boolean resolve) throws ClassNotFoundException {
             Class< ? > cls = fastFindClass( name );
             
             if ( cls == null ) {
                 final CompositeClassLoader parent = ( CompositeClassLoader ) getParent();
                 cls = parent.loadClass( name, resolve, this );
-            }        
+            }
             
             if ( cls == null ) {
                 throw new ClassNotFoundException("Unable to load class: " + name);
@@ -582,7 +582,7 @@ public class JavaDialectRuntimeData
                 
                 if ( cls != null ) {
                     resolveClass( cls );
-                }                    
+                }
             }
             
             return cls;

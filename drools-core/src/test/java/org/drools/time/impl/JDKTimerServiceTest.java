@@ -51,7 +51,7 @@ public class JDKTimerServiceTest {
         Thread.sleep( 500 );
         timeService.shutdown();
         assertEquals( 1, ctx.getList().size() );
-    }    
+    }
     
     @Test
     public void testRepeatedExecutionJob() throws Exception {
@@ -64,7 +64,7 @@ public class JDKTimerServiceTest {
         Thread.sleep( 500 );
         timeService.shutdown();
         assertEquals( 3, ctx.getList().size() );
-    }    
+    }
         
     
     @Test
@@ -79,7 +79,7 @@ public class JDKTimerServiceTest {
 		Thread.sleep( 1000 );
         timeService.shutdown();
 		assertEquals( 4, ctx.getList().size() );
-	}	
+	}
 	
 	public static class HelloWorldJob implements Job {
         public void execute(JobContext c) {
@@ -89,7 +89,7 @@ public class JDKTimerServiceTest {
                 ctx.timeService.removeJob( ctx.getJobHandle() );
             }
             ctx.getList().add( ((HelloWorldJobContext)ctx).getMessage() + " : " + counter);
-        }	    
+        }
 	}
 	
 	public static class HelloWorldJobContext implements JobContext {
@@ -151,7 +151,7 @@ public class JDKTimerServiceTest {
             for( int i = delay.length-1; i >= 0; i-- ) {
                 this.stack.push( new Date( delay[i] ) );
             }
-        }	    
+        }
 
         public Date hasNextFireTime() {
             return this.stack.isEmpty() ? null : this.stack.peek();

@@ -180,11 +180,11 @@ public class EvalCondition extends ConditionalElement
 
     public List getNestedElements() {
         return Collections.EMPTY_LIST;
-    }    
+    }
     
     public boolean isPatternScopeDelimiter() {
         return true;
-    }    
+    }
 
     /**
      * @inheritDoc

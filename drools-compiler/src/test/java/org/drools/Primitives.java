@@ -122,7 +122,7 @@ public class Primitives
 
     public void setArrayAttribute(final Object[] arrayAttribute) {
         this.arrayAttribute = arrayAttribute;
-    }          
+    }
     
     public boolean[] getPrimitiveBooleanArray() {
         return primitiveBooleanArray;

@@ -50,8 +50,8 @@ public class AddHandler extends BaseAbstractHandler
             this.validPeers.add( Collection.class );
 
             this.allowNesting = true;
-        }        
-    }    
+        }
+    }
     
     public Object start(String uri,
                         String localName,

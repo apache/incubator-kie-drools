@@ -67,7 +67,7 @@ public class NonCloningQueryViewListener
     public void rowUpdated(final Rule rule,
                            final LeftTuple tuple,
             final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {    	
+            final InternalWorkingMemory workingMemory) {
     }
 
 }

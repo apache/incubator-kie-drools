@@ -49,7 +49,7 @@ public class PrintStreamSystemEventListener
     public void debug(String message,
                       Object object) {
         print.println( "[" +  time() + ":debug] " + message + " object=" + object );
-    }    
+    }
 
      public void exception(String message, Throwable e) {
         print.println( "[" +  time() + ":exception] " + message );
@@ -68,7 +68,7 @@ public class PrintStreamSystemEventListener
     public void info(String message,
                      Object object) {
         print.println( "[" +  time() + ":info] " + message + " object=" + object);
-    }    
+    }
 
     public void warning(String message) {
         print.println( "[" +  time() + ":warning] " + message );

@@ -27,7 +27,7 @@ public class XmlPackageReader {
             this.parser = new ExtensibleXmlParser();
         } else {
             this.parser = new ExtensibleXmlParser( parser );
-        }      
+        }
         this.parser.setSemanticModules( modules );
     }
     

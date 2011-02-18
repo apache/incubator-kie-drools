@@ -182,7 +182,7 @@ public class ModifyCommand
 //                addAll(elems);
 //            }
 //        }
-//    }    
+//    }
     
     public static class JaxbSetterAdapter extends XmlAdapter<SetterImpl[], List<SetterImpl>> {
 
@@ -196,5 +196,5 @@ public class ModifyCommand
             return Arrays.asList( v );
         }
 
-    }    
+    }
 }

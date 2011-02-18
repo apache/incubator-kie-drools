@@ -24,7 +24,7 @@ public class JpaPersistenceContextManager
     public JpaPersistenceContextManager(Environment env) {
         this.env = env;
         this.emf = ( EntityManagerFactory ) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
-    }    
+    }
     
     public PersistenceContext getApplicationScopedPersistenceContext() {
         if ( this.appScopedEntityManager == null ) {
@@ -42,14 +42,14 @@ public class JpaPersistenceContextManager
                               this.appScopedEntityManager );
             } else {
                 internalAppScopedEntityManager = false;
-            }            
+            }
         }
         return new JpaPersistenceContext( appScopedEntityManager );
     }
 
     public PersistenceContext getCommandScopedPersistenceContext() {
         return new JpaPersistenceContext( this.cmdScopedEntityManager );
-    }    
+    }
 
     public void beginCommandScopedEntityManager() {
         EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );

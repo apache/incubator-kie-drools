@@ -181,7 +181,7 @@ public class RuleExecutionSetImpl
      */
     public StatelessSession newStatelessSession() {
         return this.ruleBase.newStatelessSession();
-    }    
+    }
 
     // JSR94 interface methods start here -------------------------------------
 

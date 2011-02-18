@@ -74,7 +74,7 @@ public class RightTupleIndexHashTableIteratorTest {
         registry.addEvaluatorDefinition( new SetEvaluatorsDefinition() );
         registry.addEvaluatorDefinition( new MatchesEvaluatorsDefinition() );
         registry.addEvaluatorDefinition( new SoundslikeEvaluatorsDefinition() );
-    }    
+    }
     
     @Test
     public void test1() {
@@ -141,7 +141,7 @@ public class RightTupleIndexHashTableIteratorTest {
                 }
                 list.add( entries.toArray() );
             }
-        }        
+        }
         assertEquals( 5, list.size() );
         
         Object[] entries = (Object[]) list.get( 0 );
@@ -239,7 +239,7 @@ public class RightTupleIndexHashTableIteratorTest {
         return new VariableConstraint( extractor,
                                        declaration,
                                        evaluator );
-    }    
+    }
     
     public static class Foo {
         private String val;

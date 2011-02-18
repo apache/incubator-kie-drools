@@ -48,8 +48,8 @@ public class MemoryResourceReader implements ResourceReader {
     public void remove( final String pResourceName ) {
         if (resources != null) {
             resources.remove(pResourceName);
-        }    
-    }    
+        }
+    }
     
 
     public byte[] getBytes( final String pResourceName ) {

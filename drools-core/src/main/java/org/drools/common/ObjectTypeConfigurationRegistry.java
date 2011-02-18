@@ -68,7 +68,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
                 objectTypeConf = new ClassObjectTypeConf( entrypoint,
                                                           (Class<?>) key,
                                                           this.ruleBase );
-            }            
+            }
         }
         ObjectTypeConf existing = this.typeConfMap.putIfAbsent( key, objectTypeConf );
         if ( existing != null ) {

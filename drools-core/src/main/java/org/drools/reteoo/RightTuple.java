@@ -83,7 +83,7 @@ public class RightTuple
             this.handlePrevious = last;
             last.setHandleNext( this );
             this.handle.setLastRightTuple( this );
-        }        
+        }
     }
 
     public void unlinkFromRightParent() {

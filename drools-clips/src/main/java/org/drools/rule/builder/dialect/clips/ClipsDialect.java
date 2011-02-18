@@ -61,7 +61,7 @@ public class ClipsDialect extends MVELDialect {
     private static Map                           builders;
     static {
         initBuilder();
-    }    
+    }
 
     public final static String                   ID                   = "clips";
 
@@ -123,7 +123,7 @@ public class ClipsDialect extends MVELDialect {
 
         builders.put( EntryPointDescr.class,
                       ENTRY_POINT_BUILDER );
-    }    
+    }
 
     public String getId() {
         return ID;
@@ -135,7 +135,7 @@ public class ClipsDialect extends MVELDialect {
     
     public RuleConditionBuilder getBuilder(final Class clazz) {
         return (RuleConditionBuilder) this.builders.get( clazz );
-    }    
+    }
 
     public ConsequenceBuilder getConsequenceBuilder() {
         return this.CONSEQUENCE_BUILDER;

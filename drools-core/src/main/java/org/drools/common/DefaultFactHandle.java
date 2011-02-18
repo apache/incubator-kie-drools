@@ -116,7 +116,7 @@ public class DefaultFactHandle
         this.recency = recency;
         this.object = object;
         this.disconnected = true;
-    }    
+    }
         
     // ----------------------------------------------------------------------
     // Instance members
@@ -158,7 +158,7 @@ public class DefaultFactHandle
     
     public int getIdentityHashCode() {
         return this.identityHashCode;
-    }    
+    }
     
     private void setIdentityHashCode() {
         this.identityHashCode = System.identityHashCode( this.object );
@@ -263,7 +263,7 @@ public class DefaultFactHandle
 
     public void setLastRightTuple(RightTuple lastRightTuple) {
         this.lastRightTuple = lastRightTuple;
-    }    
+    }
 
     public void setFirstLeftTuple(LeftTuple firstLeftTuple) {
         this.firstLeftTuple = firstLeftTuple;
@@ -334,5 +334,5 @@ public class DefaultFactHandle
         this.recency = Long.parseLong( elements[4] );
         this.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null : new DisconnectedWorkingMemoryEntryPoint( elements[5].trim() );
         this.disconnected = true;
-    }    
+    }
 }

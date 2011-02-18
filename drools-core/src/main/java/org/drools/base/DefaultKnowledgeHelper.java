@@ -201,7 +201,7 @@ public class DefaultKnowledgeHelper
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         return handle;
-    }    
+    }
     
     public void update(final FactHandle handle,
                        final Object newObject){
@@ -213,14 +213,14 @@ public class DefaultKnowledgeHelper
             this.getIdentityMap().put( newObject,
                                        handle );
         }
-    }    
+    }
     
     public void update(final FactHandle handle) {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
                                                                                                   ((InternalFactHandle)handle).getObject(),
                                                                                                   this.rule,
                                                                                                   this.activation );
-    }    
+    }
 
     
     public void update( Object object ) {

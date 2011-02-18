@@ -55,7 +55,7 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
         Iterator<ParameterDefinition> iterator = parameters.iterator();
         while (iterator.hasNext()) {
         	addParameter(iterator.next());
-        }        
+        }
     }
     
     public void addParameter(ParameterDefinition parameter) {
@@ -83,7 +83,7 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
         Iterator<ParameterDefinition> it = results.iterator();
         while (it.hasNext()) {
         	addResult(it.next());
-        }   
+        }
     }
     
     public void addResult(ParameterDefinition result) {

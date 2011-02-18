@@ -161,7 +161,7 @@ public class SimpleAgendaGroup
                     SalienceGroup newGroup = new SalienceGroup( salience );
                     this.salienceGroups.insertAfter( group.getPrevious(), newGroup );
                     group = newGroup;
-                }                
+                }
             }
             
         } else {
@@ -186,7 +186,7 @@ public class SimpleAgendaGroup
         // optimisation to find out it's the lowest, and thus add get or add it.
         if ( salience  == lastGroup.getSalience() ) {
             group = lastGroup;
-        } else {        
+        } else {
             // don't check for !
             for ( group = (SalienceGroup) this.salienceGroups.getFirst(); group != null &&  group.getSalience() != salience; group = (SalienceGroup) group.getNext() ) {
             }

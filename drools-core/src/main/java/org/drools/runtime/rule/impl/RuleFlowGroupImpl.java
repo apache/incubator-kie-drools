@@ -56,6 +56,6 @@ public class RuleFlowGroupImpl implements RuleFlowGroup, Externalizable {
 
     public void clear() {
         this.agenda.clearAndCancelRuleFlowGroup( this.name );
-    }    
+    }
 
 }

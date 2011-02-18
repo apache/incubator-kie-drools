@@ -799,7 +799,7 @@ public class QueryTest {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
         assertTrue( names.contains( "darth" ) );
-    }    
+    }
 
     @Test
     public void testOpenQuery() throws Exception {

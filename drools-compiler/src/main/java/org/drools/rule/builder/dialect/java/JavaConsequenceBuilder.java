@@ -279,7 +279,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                              "Incorrect syntax for expression: " + d.getTargetExpression() + "\n" ) );
 
                return false;
-           }  
+           }
            
            Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
            
@@ -310,13 +310,13 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                declrString = d.getTargetExpression().substring( 1,d.getTargetExpression().length() -1 ).trim();
            } else {
                declrString = d.getTargetExpression();
-           }        
+           }
            String obj = declrString;
            Declaration declr = decls.get( declrString );
            
            consequence.append( "{ " );
            
-           if ( declr == null  ) {   
+           if ( declr == null  ) {
                obj = "__obj__";
                consequence.append( retString );
                consequence.append( " " );
@@ -346,10 +346,10 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                rewriteUpdateDescr( d, originalBlock, consequence, declr, obj );
            } else if ( d instanceof JavaRetractBlockDescr ) {
                rewriteRetractDescr( d, originalBlock, consequence, declr, obj );
-           } 
+           }
 
            return declr != null;
-       }    
+       }
     
     private boolean rewriteModifyDescr(final RuleBuildContext context,
                                        JavaBlockDescr d,
@@ -365,7 +365,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                           null,
                                                           "Block missing after modify" + d.getTargetExpression() + " ?\n" ) );
             return false;
-        }        
+        }
 
         addLineBreaks( consequence,
                        originalBlock.substring( 0,
@@ -396,35 +396,35 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
            }
            
            return declr != null;
-       }    
+       }
     
     private boolean rewriteUpdateDescr(JavaBlockDescr d,
                                        String originalBlock,
                                        StringBuilder consequence,
                                        Declaration declr,
-                                       String obj) {           
+                                       String obj) {
            if ( declr != null && !declr.isInternalFact() ) {
                consequence.append( "drools.update( " + obj + "__Handle__ ); }" );
            } else {
                consequence.append( "drools.update( " + obj + "__Handle2__ ); }" );
-           }     
+           }
            
            return declr != null;
-       }   
+       }
     
     private boolean rewriteRetractDescr(JavaBlockDescr d,
                                         String originalBlock,
                                         StringBuilder consequence,
                                         Declaration declr,
-                                        String obj) {                      
+                                        String obj) {
         if ( declr != null && !declr.isInternalFact() ) {
                consequence.append( "drools.retract( " + obj + "__Handle__ ); }" );
            } else {
                consequence.append( "drools.retract( " + obj + "__Handle2__ ); }" );
-           }      
+           }
            
            return declr != null;
-       }     
+       }
 
     /**
      * @param consequence

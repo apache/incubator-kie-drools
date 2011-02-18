@@ -60,7 +60,7 @@ public class DroolsMVELKnowledgeHelper
 
     public Object getValue() {
         return this.factory.getKnowledgeHelper();
-    }    
+    }
 
     public void setValue(final Object value) {
         throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType() + "' is final, it cannot be set" );

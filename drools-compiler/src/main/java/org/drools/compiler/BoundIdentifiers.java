@@ -19,7 +19,7 @@ public class BoundIdentifiers {
         this.declarations = declarations;
         this.globals = globals;
         this.thisClass  = thisClass;
-    }    
+    }
     
     public Map<String, Class<?>> getDeclarations() {
         return declarations;

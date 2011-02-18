@@ -54,6 +54,6 @@ public class SerializableAgendaGroup implements AgendaGroup, Externalizable {
 
     public void setFocus() {
         throw new UnsupportedOperationException();
-    }    
+    }
 
 }

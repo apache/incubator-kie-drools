@@ -47,7 +47,7 @@ public class FunctionHandlers {
              appendable,
              false);
     }
-    public static void dump(SExpression sExpression, Appendable appendable, boolean root) {              
+    public static void dump(SExpression sExpression, Appendable appendable, boolean root) {
         if ( sExpression instanceof LispAtom ) {
             appendable.append( ( ( LispAtom ) sExpression).getValue() );
         } else {
@@ -71,7 +71,7 @@ public class FunctionHandlers {
                 }
                 appendable.append( ")" );
             }
-        }    
+        }
         if ( root ) {
             appendable.append( ";\n" );
         }

@@ -68,7 +68,7 @@ public class RuleRemovalContext
         return cleanupAdapter;
     }
 
-    public static interface CleanupAdapter { 
+    public static interface CleanupAdapter {
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory);
     }

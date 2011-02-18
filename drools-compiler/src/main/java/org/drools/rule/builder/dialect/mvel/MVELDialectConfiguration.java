@@ -68,6 +68,6 @@ public class MVELDialectConfiguration
         final String prop = this.conf.getChainedProperties().getProperty( "drools.dialect.mvel.langLevel",
                                                                           "4" );
         return Integer.valueOf( prop ).intValue();
-    }    
+    }
 
 }

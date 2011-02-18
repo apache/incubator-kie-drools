@@ -419,7 +419,7 @@ public class ClipsShell
     
             if ( pkg != null ) {
                 // only time this will be null is if we have yet to do any packagedescr work
-                try {                
+                try {
     
                     for ( Iterator it = pkg.getImports().entrySet().iterator(); it.hasNext(); ) {
                         Entry entry = (Entry) it.next();

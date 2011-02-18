@@ -168,7 +168,7 @@ public class KnowledgeBaseImpl
         
 		ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
 		return new StatefulKnowledgeSessionImpl( session, this );
-    }  
+    }
     
     public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions()
     {
@@ -188,9 +188,9 @@ public class KnowledgeBaseImpl
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, null );
     }
     
-    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {        
+    public StatelessKnowledgeSession newStatelessKnowledgeSession(KnowledgeSessionConfiguration conf) {
         return new StatelessKnowledgeSessionImpl( (InternalRuleBase) this.ruleBase, null, conf );
-    } 
+    }
 
     public void removeKnowledgePackage(String packageName) {
         this.ruleBase.removePackage( packageName );
@@ -206,7 +206,7 @@ public class KnowledgeBaseImpl
                             String queryName) {
         this.ruleBase.removeQuery( packageName,
                                    queryName );
-    }    
+    }
 
     public void removeFunction(String packageName,
                            String ruleName) {

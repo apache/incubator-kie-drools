@@ -46,8 +46,8 @@ public class ResourceHandler extends BaseAbstractHandler
             this.validPeers.add( Resource.class );
 
             this.allowNesting = true;
-        }        
-    }    
+        }
+    }
     
     public Object start(String uri,
                         String localName,

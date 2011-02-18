@@ -220,7 +220,7 @@ public class DroolsParserExceptionFactory {
 										.getValue()));
 					}
 				}
-			}			
+			}
 		}
 		return sb.toString();
 	}

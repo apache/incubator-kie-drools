@@ -61,8 +61,8 @@ public class DefinitionHandler extends BaseAbstractHandler
             this.validPeers.add( DefinitionHandler.DefinitionHandlerData.class );
 
             this.allowNesting = true;
-        }        
-    }    
+        }
+    }
     
     public Object start(String uri,
                         String localName,

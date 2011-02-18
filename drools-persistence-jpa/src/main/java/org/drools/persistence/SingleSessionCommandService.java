@@ -62,7 +62,7 @@ public class SingleSessionCommandService
         // @TODO log a warning that all transactions will be locally scoped using the EntityTransaction
         //        if ( env.get( EnvironmentName.TRANSACTION_MANAGER ) == null ) {
         //            throw new IllegalArgumentException( "Environment must have an EntityManagerFactory" );
-        //        }        
+        //        }
     }
 
     public SingleSessionCommandService(RuleBase ruleBase,

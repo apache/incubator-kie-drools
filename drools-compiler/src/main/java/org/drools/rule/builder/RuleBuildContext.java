@@ -78,7 +78,7 @@ public class RuleBuildContext extends PackageBuildContext {
             this.rule = new Query( ruleDescr.getName() );
         } else {
             this.rule = new Rule( ruleDescr.getName() );
-        }        
+        }
         this.rule.setPackage( pkg.getName() );
         this.rule.setDialect( ruleDescr.getDialect() );
         
@@ -91,7 +91,7 @@ public class RuleBuildContext extends PackageBuildContext {
         Dialect dialect = getDialect();
         if ( dialect != null ) {
             dialect.init( ruleDescr );
-        } 
+        }
         
       
     }

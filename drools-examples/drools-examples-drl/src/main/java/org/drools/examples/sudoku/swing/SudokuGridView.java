@@ -93,7 +93,7 @@ public class SudokuGridView
          for (int col=0; col<textFields[row].length; col++) {
             refreshValue(row, col);
          }
-      }      
+      }
    }
    
    private void refreshValue(int row, int col){
@@ -105,7 +105,7 @@ public class SudokuGridView
        refreshValues();
    }
    
-   public void cellModified(SudokuGridEvent ev){       
+   public void cellModified(SudokuGridEvent ev){
       refreshValue(ev.getRow(), ev.getCol());
    }
    
@@ -133,7 +133,7 @@ public class SudokuGridView
          while (fontMetrics.getAscent() > height){
             font = new Font(font.getName(), font.getStyle(), font.getSize()-2);
             fontMetrics = textField.getGraphics().getFontMetrics(font);
-         }         
+         }
       }
       else{
          //

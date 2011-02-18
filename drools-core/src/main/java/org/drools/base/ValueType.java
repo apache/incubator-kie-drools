@@ -289,7 +289,7 @@ public class ValueType
     /* (non-Javadoc)
      * @see org.drools.base.ValueTypeInterface#isEvent()
      */
-    public boolean isEvent() { 
+    public boolean isEvent() {
         return this.classType == EventFactHandle.class;
     }
 

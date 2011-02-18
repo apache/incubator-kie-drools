@@ -45,14 +45,14 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
     
     public PropagationContext getPropagationContext() {
         return this.propagationContext;
-    }   
+    }
     
     public void writeExternal(ObjectOutput out) throws IOException {
         new SerializablePropagationContext( propagationContext ).writeExternal( out );
-    } 
+    }
     
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {        
+                                            ClassNotFoundException {
         this.kruntime = null; // null because we don't serialise this
         this.propagationContext = new SerializablePropagationContext();
         ((SerializablePropagationContext)this.propagationContext).readExternal( in );

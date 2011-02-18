@@ -8,7 +8,7 @@ import org.drools.rule.Package;
  * This Class api is subject to change.
  *
  */
-public interface DialectConfiguration {    
+public interface DialectConfiguration {
     
     public void init(PackageBuilderConfiguration  configuration);
     

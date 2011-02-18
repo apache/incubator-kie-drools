@@ -161,7 +161,7 @@ public class PatternBuilder
                 // it's a query so delegate to the QueryElementBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
                 return qeBuilder.build( context, descr, prefixPattern );
-            } else { 
+            } else {
                 // this isn't a query either, so log an error
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,
@@ -187,7 +187,7 @@ public class PatternBuilder
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
                 context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) objectType),
                                                                                   (PatternExtractor) pattern.getDeclaration().getExtractor() );
-            }                      
+            }
         } else {
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
@@ -203,7 +203,7 @@ public class PatternBuilder
                    pattern,
                    (FieldConstraintDescr) varDescr,
                    null );
-        }          
+        }
 
         if ( objectType instanceof ClassObjectType ) {
             // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
@@ -346,7 +346,7 @@ public class PatternBuilder
             if ( identifiers.length == 2 && ((pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) || ("this".equals( identifiers[0] ))) ) {
                 // we have a self reference, so, it is fine to do direct access
                 fieldName = identifiers[1];
-            } 
+            }
 //             else {
 //                rewriteToEval( context,
 //                               pattern,
@@ -905,7 +905,7 @@ public class PatternBuilder
             implicit = this.createDeclarationObject( context,
                                                      parts[1],
                                                      (Pattern) context.getBuildStack().peek() );
-        } 
+        }
         if ( implicit == null ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                                       parts[0] );
@@ -923,7 +923,7 @@ public class PatternBuilder
                                                                   "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                     return null;
                 }
-            }            
+            }
         }
         
         if ( implicit != null ) {
@@ -944,7 +944,7 @@ public class PatternBuilder
             return new VariableRestriction( extractor,
                                             implicit,
                                             evaluator );
-        }        
+        }
 
 //        // if only 2 parts, it may be a composed direct property access
 //        if ( parts.length == 2 ) {
@@ -1060,7 +1060,7 @@ public class PatternBuilder
         if ( analysis == null ) {
             // something bad happened
             return null;
-        }        
+        }
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();

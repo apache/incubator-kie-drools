@@ -34,7 +34,7 @@ public class QueryElementFactHandle
 	
     public QueryElementFactHandle(Object object) {
         this.object = object;
-    }    
+    }
 
     public int getId() {
         return -1;

@@ -72,7 +72,7 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
     
     public Map<String, Object> getFactHandles() {
         return this.facts;
-    }    
+    }
     
     public void setFactHandles(HashMap<String, Object> facts) {
         this.facts = facts;

@@ -115,7 +115,7 @@ public class UnificationRestriction
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.vr.setReadAccessor( readAccessor );
         this.declaration = vr.getRequiredDeclarations()[0];
-    }    
+    }
     
     public static class UnificationContextEntry implements ContextEntry {
         private ContextEntry contextEntry;
@@ -161,7 +161,7 @@ public class UnificationRestriction
             if ( !(object instanceof Variable) ) {
                 this.variable = null;
                 this.contextEntry.updateFromTuple( workingMemory, tuple );
-            } else {                
+            } else {
                 this.variable = (Variable) object;
             }
         }

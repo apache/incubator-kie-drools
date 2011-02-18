@@ -58,7 +58,7 @@ public class ReteooBuilderTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         Rule rule0 = new Rule( "rule0" );

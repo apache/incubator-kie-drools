@@ -61,7 +61,7 @@ public class RightTupleList
         this.index = index;
         this.hashCode = hashCode;
         this.next = next;
-    }    
+    }
 
     public RightTupleList(RightTupleList p, final Entry next) {
         this.index = p.index;
@@ -77,7 +77,7 @@ public class RightTupleList
     
     public RightTuple getFirst(RightTuple leftTuple) {
         return this.first;
-    }     
+    }
 
     public RightTuple getLast(LeftTuple leftTuple) {
         return this.last;
@@ -170,7 +170,7 @@ public class RightTupleList
     
 	public FastIterator fullFastIterator() {
     	return LinkedList.fastIterator; // contains no state, so ok to be static
-	}    
+	}
     
     public Iterator iterator() {
         if ( this.iterator == null ) {
@@ -240,7 +240,7 @@ public class RightTupleList
         }
 
         return tuples;
-    }     
+    }
 
     public int hashCode() {
         return this.hashCode;

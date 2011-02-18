@@ -41,7 +41,7 @@ public class SerializablePlaceholderResolverStrategy
 
     public void setIndex(int index) {
         this.index = index;
-    }    
+    }
 
     public Object read(ObjectInputStream os) throws IOException,
                                                        ClassNotFoundException {

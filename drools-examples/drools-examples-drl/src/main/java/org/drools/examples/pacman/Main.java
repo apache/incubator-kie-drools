@@ -139,7 +139,7 @@ public class Main {
                         contents = new CellContents( cell,
                                                      CellType.POWER_PILL );
                         break;
-                    }                    
+                    }
                     case '_' : {
                         contents = new CellContents( cell,
                                                      CellType.EMPTY );

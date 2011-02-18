@@ -68,7 +68,7 @@ public abstract class BaseKnowledgeAgentTest {
         ((ResourceChangeScannerImpl) ResourceFactory.getResourceChangeScannerService()).reset();
 
         server.stop();
-    } 
+    }
     
 
 
@@ -100,7 +100,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
             }
             
-            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {                              
+            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
             }
             
             public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
@@ -127,7 +127,7 @@ public abstract class BaseKnowledgeAgentTest {
             throw new RuntimeException( "Unable to wait for latch countdown", e);
         }
         
-        if ( latch.getCount() > 0 ) {            
+        if ( latch.getCount() > 0 ) {
             throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
         }
         
@@ -156,7 +156,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
             }
             
-            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {                              
+            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
             }
             
             public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
@@ -183,7 +183,7 @@ public abstract class BaseKnowledgeAgentTest {
             throw new RuntimeException( "Unable to wait for latch countdown", e);
         }
         
-        if ( latch.getCount() > 0 ) {            
+        if ( latch.getCount() > 0 ) {
             throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
         }
         
@@ -206,7 +206,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void beforeResourceProcessed(BeforeResourceProcessedEvent event) {
             }
             
-            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {                              
+            public void beforeChangeSetProcessed(BeforeChangeSetProcessedEvent event) {
             }
             
             public void beforeChangeSetApplied(BeforeChangeSetAppliedEvent event) {
@@ -233,12 +233,12 @@ public abstract class BaseKnowledgeAgentTest {
             throw new RuntimeException( "Unable to wait for latch countdown", e);
         }
         
-        if ( latch.getCount() > 0 ) {            
+        if ( latch.getCount() > 0 ) {
             throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
         }
         
         kagent.removeEventListener( l );
-    }   
+    }
     
 
     public static void writePackage(Object pkg,
@@ -250,7 +250,7 @@ public abstract class BaseKnowledgeAgentTest {
                 Thread.sleep( 1000 );
             } catch (Exception e) {
                 throw new RuntimeException( "Unable to sleep" );
-            }            
+            }
         }
         FileOutputStream out = new FileOutputStream( p1file );
         try {
@@ -370,11 +370,11 @@ public abstract class BaseKnowledgeAgentTest {
             rhs = "list.add( drools.getRule().getName()+\"-V" + version + "\");\n";
         }
         return createCustomRule(header, packageName, ruleNames, attribute, lhs, rhs  );
-    }     
+    }
     
     public String createLhsRule(String[] ruleNames, String lhs) {
         return createVersionedRule( null, ruleNames, null, lhs, null );
-    }    
+    }
     
     public String createLhsRule(String ruleName, String lhs) {
         return createVersionedRule( null, new String[] { ruleName }, null, lhs, null );
@@ -392,22 +392,22 @@ public abstract class BaseKnowledgeAgentTest {
     public String createDefaultRule(String[] rulesNames) {
         return createDefaultRule( rulesNames,
                                   null );
-    }    
+    }
     
     public String createDefaultRule(String ruleName,
                                     String packageName) {
         return createVersionedRule( packageName,  new String[] { ruleName }, null, null, null );
-    }     
+    }
 
     public String createDefaultRule(String[] ruleNames,
                                     String packageName) {
         return createVersionedRule( packageName, ruleNames, null, null, null );
-    }  
+    }
     
     public String createAttributeRule(String ruleName,
                                       String attribute) {
         return createVersionedRule( null, new String[] { ruleName }, attribute, null, null );
-    }  
+    }
 
     public String createCommonDSLRRule(String[] ruleNames) {
         StringBuilder sb = new StringBuilder();
@@ -461,7 +461,7 @@ public abstract class BaseKnowledgeAgentTest {
       sb.append("}\n");
     
       return sb.toString();
-    }    
+    }
     
     public String createCommonQuery(String name, String[] patterns){
         StringBuilder sb = new StringBuilder();

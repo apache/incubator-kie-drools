@@ -64,7 +64,7 @@ public class ReteooRuleBaseMultiThreadedTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         });
         pkg.addRule(rule);
 

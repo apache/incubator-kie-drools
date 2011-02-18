@@ -172,7 +172,7 @@ public class EntryPointNode extends ObjectSource
             cachedNodes[i].modifyObject( handle,
                                          modifyPreviousTuples,
                                          context, workingMemory );
-        }     
+        }
         modifyPreviousTuples.retractTuples( context, workingMemory );
         
       
@@ -185,7 +185,7 @@ public class EntryPointNode extends ObjectSource
         // this method was silently failing, so I am now throwing an exception to make
         // sure no one calls it by mistake
         throw new UnsupportedOperationException( "This method should NEVER EVER be called" );
-    }    
+    }
 
     /**
      * This is the entry point into the network for all asserted Facts. Iterates a cache

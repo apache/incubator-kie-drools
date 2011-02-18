@@ -45,11 +45,11 @@ public class ChangeSetImpl implements ChangeSet {
     
     public void setResourcesAdded(Collection<Resource> resourcesAdded) {
         this.resourcesAdded = resourcesAdded;
-    }    
+    }
 
     public Collection<Resource> getResourcesAdded() {
         return resourcesAdded;
-    }    
+    }
 
     public Collection<Resource> getResourcesModified() {
         return resourcesModified;
