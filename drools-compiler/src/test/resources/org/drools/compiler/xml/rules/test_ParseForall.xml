@@ -4,15 +4,15 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
-	<global identifier="results" type="java.util.List" />
+  <global identifier="results" type="java.util.List" />
 
 <rule name="simple_rule">
-	<rule-attribute name="salience" value="10" />
-	<rule-attribute name="no-loop" value="true" />
-	<rule-attribute name="agenda-group" value="agenda-group" />
-	<rule-attribute name="activation-group" value="activation-group" />
+  <rule-attribute name="salience" value="10" />
+  <rule-attribute name="no-loop" value="true" />
+  <rule-attribute name="agenda-group" value="agenda-group" />
+  <rule-attribute name="activation-group" value="activation-group" />
 
-	<lhs>
+  <lhs>
         <forall>
             <pattern object-type="State">
                 <field-binding field-name="state" identifier="state" />
@@ -32,7 +32,7 @@
 
     </lhs>
     <rhs>
-		results.add("OK");
-	</rhs>
+    results.add("OK");
+  </rhs>
 </rule>
 </package>

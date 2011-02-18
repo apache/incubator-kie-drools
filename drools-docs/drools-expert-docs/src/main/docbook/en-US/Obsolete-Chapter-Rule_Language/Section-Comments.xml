@@ -22,7 +22,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Language/single_line_comment.svg"
+    <imagedata align="center" fileref="images/Chapter-Rule_Language/single_line_comment.svg"
                      format="SVG" />
         </imageobject>
       </mediaobject>
@@ -52,7 +52,7 @@ end
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Language/multi_line_comment.svg"
+    <imagedata align="center" fileref="images/Chapter-Rule_Language/multi_line_comment.svg"
                      format="SVG" />
         </imageobject>
       </mediaobject>

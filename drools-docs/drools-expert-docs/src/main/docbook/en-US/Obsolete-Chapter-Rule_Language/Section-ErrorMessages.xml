@@ -260,7 +260,7 @@
 
       <para>This error is associated with the "eval" clause, where its
       expression may not be terminated with a semi-colon. Check this
-	example:</para>
+  example:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -291,7 +291,7 @@
       <para>The recognizer came to a (..)+ EBNF subrule that must match an
       alternative at least once, but the subrule did not match anything.
       Simply put: the parser has entered a branch from where there is no
-	way out. This example tries to illustrates it:</para>
+  way out. This example tries to illustrates it:</para>
 
       <example>
         <programlisting>1: template test_error

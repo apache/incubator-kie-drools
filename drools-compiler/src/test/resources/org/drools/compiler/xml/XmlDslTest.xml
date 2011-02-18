@@ -1,29 +1,29 @@
 <process  xmlns="http://drools.org/drools-5.0/process"
           xmlns:mydsl="http://domain/org/mydsl"
-	      xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-	      xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd" 
+        xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
           name="process name" id="process name" type="RuleFlow" package-name="org.domain" >
           
     <header>
         <imports>
-    		<import name="java.util.List" />    
-        </imports>        					
-	        
+        <import name="java.util.List" />
+        </imports>                  
+
         <globals>
             <global identifier="list" type="List" />        
         </globals>
     </header>      
     
     <nodes>              
-	    <start id="1" name="start node" />
-	    
-	    <actionNode id="2" name="action node" >
-	      <action type="expression" dialect="java">list.add( "action node was here" );</action>
-	    </actionNode>	    
-	    
-	    <mydsl:store id="3" name="store node">dsl was here</mydsl:store>
-	    
-	    <end id="4" name="end node" />
+      <start id="1" name="start node" />
+
+      <actionNode id="2" name="action node" >
+        <action type="expression" dialect="java">list.add( "action node was here" );</action>
+      </actionNode>
+
+      <mydsl:store id="3" name="store node">dsl was here</mydsl:store>
+
+      <end id="4" name="end node" />
     </nodes>
     
     <connections>

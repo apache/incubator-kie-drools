@@ -4,23 +4,23 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools-5.0.xsd">
          
-	<import name="org.drools.jsr94.rules.Person" />
+  <import name="org.drools.jsr94.rules.Person" />
 
-	<rule name="FindSisters">	
-	    <lhs>	
-		    <pattern object-type="Person" identifier="$person1">
-			    <field-binding field-name="name" identifier="$name1" />		
-			</pattern>
-	
-			<pattern object-type="Person" identifier="$person2">
-				<field-binding field-name="name" identifier="$name2" />		
-			</pattern>
-			<eval>$person1.hasSister($person2)</eval>
-		</lhs>
-		
-	    <rhs>
-        	System.out.println($person1.getName() + " and " + $person2.getName() +" are sisters");
-        	insert( $person1.getName() + " and " + $person2.getName() +" are sisters");	    
-		</rhs>
-	</rule>
+  <rule name="FindSisters">
+      <lhs>  
+        <pattern object-type="Person" identifier="$person1">
+          <field-binding field-name="name" identifier="$name1" />
+      </pattern>
+
+      <pattern object-type="Person" identifier="$person2">
+        <field-binding field-name="name" identifier="$name2" />
+      </pattern>
+      <eval>$person1.hasSister($person2)</eval>
+    </lhs>
+
+      <rhs>
+          System.out.println($person1.getName() + " and " + $person2.getName() +" are sisters");
+          insert( $person1.getName() + " and " + $person2.getName() +" are sisters");
+    </rhs>
+  </rule>
 </package>

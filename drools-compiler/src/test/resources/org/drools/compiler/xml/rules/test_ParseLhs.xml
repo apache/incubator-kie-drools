@@ -4,55 +4,55 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
          
-	<import name="java.util.HashMap" />
-	<import name="org.drools.*" />	
-	
-	<global identifier="x" type="com.sample.X" />		
-	<global identifier="yada" type="com.sample.Yada" />
-	
-	<function return-type="void" name="myFunc">
-	    <parameter identifier="foo" type="Bar" />
-	    <parameter identifier="bada" type="Bing" />
-	    	    
-	    <body>
-	    	System.out.println("hello world");
-		</body>		
-	</function>
-	
-	<rule name="my rule">
-		<lhs>
+  <import name="java.util.HashMap" />
+  <import name="org.drools.*" />
+
+  <global identifier="x" type="com.sample.X" />    
+  <global identifier="yada" type="com.sample.Yada" />
+
+  <function return-type="void" name="myFunc">
+      <parameter identifier="foo" type="Bar" />
+      <parameter identifier="bada" type="Bing" />
+
+      <body>
+        System.out.println("hello world");
+    </body>
+  </function>
+
+  <rule name="my rule">
+    <lhs>
 
             <and-conditional-element></and-conditional-element>
 
             <or-conditional-element></or-conditional-element>
 
             <pattern object-type="Foo" >
-			</pattern>							
-				
-			<pattern identifier="bar" object-type="Bar" >			
-			</pattern>		
-									
-			<pattern object-type="Foo">
-			    <field-constraint field-name="field1">
-				    <literal-restriction       evaluator="==" value="value1" />
-    				<return-value-restriction  evaluator="==">1==1</return-value-restriction>				    
-	    			<variable-restriction      evaluator="==" identifier="var1" />								
-				</field-constraint>
-											
-				<predicate field-name="field1" identifier="var1">1==1</predicate>
-														
-				<field-binding field-name="field1" identifier="var1" />				
-			</pattern>		
-			
-			<not>
-				<pattern object-type="Bar" />			
-			</not>
-			
-			<exists>
-				<pattern object-type="Bar" />							
-			</exists>		
-			
-			<and-conditional-element>
+      </pattern>
+
+      <pattern identifier="bar" object-type="Bar" >
+      </pattern>
+
+      <pattern object-type="Foo">
+          <field-constraint field-name="field1">
+            <literal-restriction       evaluator="==" value="value1" />
+            <return-value-restriction  evaluator="==">1==1</return-value-restriction>
+            <variable-restriction      evaluator="==" identifier="var1" />
+        </field-constraint>
+
+        <predicate field-name="field1" identifier="var1">1==1</predicate>
+
+        <field-binding field-name="field1" identifier="var1" />
+      </pattern>
+
+      <not>
+        <pattern object-type="Bar" />
+      </not>
+
+      <exists>
+        <pattern object-type="Bar" />
+      </exists>
+
+      <and-conditional-element>
                 <pattern object-type="Yada"/>
                 <or-conditional-element>
                     <pattern object-type="Bar"/>
@@ -66,10 +66,10 @@
                     <pattern object-type="Foo"/>
                 </and-conditional-element>
             </or-conditional-element>
-			<eval>1==1</eval>
-		</lhs>
-		
-	    <rhs>
-		</rhs>
-	</rule>
+      <eval>1==1</eval>
+    </lhs>
+
+      <rhs>
+    </rhs>
+  </rule>
 </package>

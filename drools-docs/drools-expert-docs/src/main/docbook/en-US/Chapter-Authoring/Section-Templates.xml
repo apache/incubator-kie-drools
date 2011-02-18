@@ -251,7 +251,7 @@ end template</programlisting>
 public class ParamSet {
     //...
     private EnumSet&lt;ItemCode&gt; codeSet;
-	
+
     public ParamSet( String f, int l, int u, EnumSet&lt;ItemCode&gt; cs ){...}
 
     public String getField() { return field; }
@@ -266,7 +266,7 @@ public class ParamSet {
              conn = " ||";
         }
         return sb.toString();
-    }	
+    }
 }</programlisting>
 
         <para>Note that the method <code>getCodes()</code> does returns the
@@ -282,10 +282,10 @@ public class ParamSet {
 
         <programlisting language="java">
 public class Expander {
-	
+
     public void expand( KnowledgeBase kBase, InputStream is, Collection&lt;?&gt; act )
         throws Exception {
-        ObjectDataCompiler converter = new ObjectDataCompiler();		
+        ObjectDataCompiler converter = new ObjectDataCompiler();
         String drl = converter.compile( act, is );
         
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

@@ -48,7 +48,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata width="100%"
+    <imagedata width="100%"
                      fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway1.png" />
         </imageobject>
       </mediaobject>
@@ -100,7 +100,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata width="100%"
+    <imagedata width="100%"
                      fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway2.png" />
         </imageobject>
       </mediaobject>
@@ -183,7 +183,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway_ruleflow_generation.png" />
+    <imagedata fileref="images/Chapter-Examples/ConwaysGameOfLifeExample/conway_ruleflow_generation.png" />
         </imageobject>
       </mediaobject>
     </figure>

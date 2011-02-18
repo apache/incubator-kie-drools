@@ -44,7 +44,7 @@
 
 // this will parse and compile in one step
 kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
-				HelloWorldExample.class), ResourceType.DRL);
+        HelloWorldExample.class), ResourceType.DRL);
 
 // Check the builder for errors
 if (kbuilder.hasErrors()) {

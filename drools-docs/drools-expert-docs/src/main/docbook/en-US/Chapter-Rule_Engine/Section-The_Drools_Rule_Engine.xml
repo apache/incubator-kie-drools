@@ -27,7 +27,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Authoring.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/Authoring.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -47,7 +47,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Runtime.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/Runtime.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -61,7 +61,7 @@
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/PackageBuilder.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/PackageBuilder.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -110,7 +110,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
       <title>PackageBuilderConfiguration</title>
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/PackageBuilderConfiguration.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/PackageBuilderConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -142,7 +142,7 @@ PackageBuilderErrors errors = builder.getErrors();</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/JavaDialectConfiguration.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/JavaDialectConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -210,7 +210,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/MVELDialectConfiguration.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/MVELDialectConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -225,7 +225,7 @@ PackageBuilder builder = new PackageBuilder( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBaseFactory.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBaseFactory.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -247,7 +247,7 @@ ruleBase.addPackage( pkg  );        </programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBase.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBase.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -304,7 +304,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBaseConfiguration.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleBaseConfiguration.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -319,7 +319,7 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/WorkingMemory.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/WorkingMemory.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -668,7 +668,7 @@ public void setState(final String newState) {
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/StatefulSession.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/StatefulSession.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -692,7 +692,7 @@ public void setState(final String newState) {
       <title>StatelessSession</title>
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/StatelessSession.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/StatelessSession.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -743,7 +743,7 @@ session.execute( new Cheese( "cheddar" ) );</programlisting>
       <mediaobject>
 
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/StatelessSessionResult.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/StatelessSessionResult.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -788,7 +788,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Agenda.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/Agenda.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -824,7 +824,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/Two_Phase.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/Two_Phase.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -894,7 +894,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
         <title>AgendaFilters</title>
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Engine/AgendaFilter.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Engine/AgendaFilter.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -948,7 +948,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/WorkingMemoryEventListener.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/WorkingMemoryEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -959,7 +959,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/AgendaEventListener.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/AgendaEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -970,7 +970,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleFlowEventListener.png"
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/RuleFlowEventListener.png"
                      format="PNG" />
         </imageobject>
       </mediaobject>
@@ -984,7 +984,7 @@ List list = ( List ) result.getGlobal( "list" );</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Engine/EventManager.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Engine/EventManager.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>

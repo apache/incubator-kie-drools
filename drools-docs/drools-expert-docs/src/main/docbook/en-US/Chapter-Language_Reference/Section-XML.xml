@@ -83,7 +83,7 @@
 &lt;rule-attribute name="activation-group" value="activation-group" /&gt;
 
 &lt;lhs&gt;
-		&lt;pattern identifier="foo2" object-type="Bar" &gt;
+    &lt;pattern identifier="foo2" object-type="Bar" &gt;
             &lt;or-constraint-connective&gt;
                 &lt;and-constraint-connective&gt;
                     &lt;field-constraint field-name="a"&gt;
@@ -200,7 +200,7 @@
 &lt;/rule&gt;
 
 &lt;/package&gt;
-	
+
 </programlisting>
     </example>
 
@@ -261,7 +261,7 @@
     list1.add( $cheese );
 &lt;/rhs&gt;
 &lt;/rule&gt;
-	</programlisting>
+  </programlisting>
     </example>
 
     <para>In the above detail of the rule we see that the rule has LHS
@@ -273,20 +273,20 @@
 
 
 <!--
-	TODO: explain about 
-	
-	conditional-element 
-	constraint-connective
-	restriction-connective
-	
-	accumulate and external functions
+  TODO: explain about
+
+  conditional-element
+  constraint-connective
+  restriction-connective
+
+  accumulate and external functions
 -->
 
     <para>A key element of the LHS is the Pattern element. This allows you to
     specify a type (class) and perhaps bind a variable to an instance of that
     class. Nested under the pattern object are constraints and restrictions
-	that have to be met. The Predicate and Return Value constraints 
-	allow Java expressions to be embedded.</para>
+  that have to be met. The Predicate and Return Value constraints
+  allow Java expressions to be embedded.</para>
 
     <para>That leaves the conditional elements, not, exists, and, or etc. They
     work like their DRL counterparts. Elements that are nested under and an

@@ -3,8 +3,8 @@
             xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >
             
     <add >
-	    <resource source='classpath:org/drools/compiler/xml/changeset/changeset1Test.drl' type='DRL' />
-	    <resource source='classpath:org/drools/compiler/xml/changeset/changeset2Test.drl' type='DRL' />
+      <resource source='classpath:org/drools/compiler/xml/changeset/changeset1Test.drl' type='DRL' />
+      <resource source='classpath:org/drools/compiler/xml/changeset/changeset2Test.drl' type='DRL' />
     </add>
     
 </change-set>
