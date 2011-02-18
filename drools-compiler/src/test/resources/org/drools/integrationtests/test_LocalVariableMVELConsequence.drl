@@ -4,9 +4,9 @@ global java.util.List results;
  
 rule "test local variable in mvel consequence"
     dialect "mvel"
-	when
-		$p : Person( $likes : likes ) 
-	then
-	    Cheese c = new Cheese( $likes );
-	    results.add( c );
+    when
+        $p : Person( $likes : likes )
+    then
+        Cheese c = new Cheese( $likes );
+        results.add( c );
 end

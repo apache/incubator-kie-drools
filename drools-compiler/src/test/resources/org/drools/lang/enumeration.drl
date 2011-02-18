@@ -1,6 +1,6 @@
 
 rule simple_rule 
   when
-  	Foo(bar == Foo.BAR)
+      Foo(bar == Foo.BAR)
   then
 end

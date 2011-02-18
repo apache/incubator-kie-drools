@@ -6,8 +6,8 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "Hello World"
-	when
-		Message() and Cheese()
-	then
-		list.add("hola");
+    when
+        Message() and Cheese()
+    then
+        list.add("hola");
 end

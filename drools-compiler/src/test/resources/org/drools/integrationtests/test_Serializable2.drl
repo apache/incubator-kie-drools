@@ -3,29 +3,29 @@ package org.drools;
 global java.util.List list
 
 rule "single index"
-	salience 10
+    salience 10
     when
         Primitives( $b : bytePrimitive )
         Primitives( bytePrimitive == $b )
     then
-		list.add( "1" );
+        list.add( "1" );
 end    
 
 rule "double index"
-	salience 8
+    salience 8
     when
         Primitives( $b : bytePrimitive, $s : shortPrimitive )
         Primitives( bytePrimitive == $b, shortPrimitive == $s )
     then
-		list.add( "2" );
+        list.add( "2" );
 end    
 
 rule "triple index"
-	salience 6
+    salience 6
     when
         Primitives( $b : bytePrimitive, $s : shortPrimitive, $i : intPrimitive )
         Primitives( bytePrimitive == $b, shortPrimitive == $s, intPrimitive == $i )
     then
-		list.add( "3" );
+        list.add( "3" );
 end    
 

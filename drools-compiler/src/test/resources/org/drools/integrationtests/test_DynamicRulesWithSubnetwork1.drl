@@ -6,5 +6,5 @@ rule "like book"
     when
         OrderItem( type:type == OrderItem.TYPE_BOOK, price >= 15 )
     then
-		results.add( type );
+        results.add( type );
 end  

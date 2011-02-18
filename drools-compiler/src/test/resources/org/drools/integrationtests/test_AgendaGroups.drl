@@ -5,69 +5,69 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "test MAIN 1"
-	salience  10
+    salience  10
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "MAIN" );
-		drools.setFocus( "group1" );
+        list.add( "MAIN" );
+        drools.setFocus( "group1" );
 end 
 
 rule "test MAIN 2"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "MAIN" );
+        list.add( "MAIN" );
 end 
 
 rule "test group1 1"
-	agenda-group "group1"
+    agenda-group "group1"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "group1" );
+        list.add( "group1" );
 end  
 
 rule "test group1 2"
-	agenda-group "group1"
+    agenda-group "group1"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "group1" );
+        list.add( "group1" );
 end  
 
 rule "test group2"
-	agenda-group "group2"
+    agenda-group "group2"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "group2" );
+        list.add( "group2" );
 end  
 
 rule "test group3 1"
-	salience 5
-	agenda-group "group3"
-	auto-focus true
-		
+    salience 5
+    agenda-group "group3"
+    auto-focus true
+
     when
-    	Cheese( )
-    then    	
-		list.add( "group3" );
-		drools.setFocus( "group4" );		
+        Cheese( )
+    then
+        list.add( "group3" );
+        drools.setFocus( "group4" );
 end  
 
 rule "test group3 2"
-	agenda-group "group3"
+    agenda-group "group3"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "group3" );
+        list.add( "group3" );
 end  
 
 rule "test group4"
-	agenda-group "group4"
+    agenda-group "group4"
     when
-    	Cheese( )
+        Cheese( )
     then
-		list.add( "group4" );
+        list.add( "group4" );
 end

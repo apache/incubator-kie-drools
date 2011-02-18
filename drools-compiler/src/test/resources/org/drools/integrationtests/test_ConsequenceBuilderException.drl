@@ -3,10 +3,10 @@ package org.drools;
 global java.util.List results;
 
 rule "error compiling consequence"
-	when
-	then
-	    // this must generate a compile error, but not NPE
-	    results.add(message without quotes);
+    when
+    then
+        // this must generate a compile error, but not NPE
+        results.add(message without quotes);
 end
 
 rule "another test"

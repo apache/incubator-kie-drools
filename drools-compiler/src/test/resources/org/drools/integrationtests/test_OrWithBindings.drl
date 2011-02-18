@@ -5,13 +5,13 @@ import org.drools.Cheese
 
 global java.util.List results
 
-rule "MyRule"	
-	when
-		c : (Cheese( type == "stilton") or 
-		     Cheese( type == "brie" ) or 
-		     Cheese( type == "muzzarella" ) )
-		p : Person()
-	then 
-		results.add(c);
-		results.add(p);		
+rule "MyRule"
+    when
+        c : (Cheese( type == "stilton") or
+             Cheese( type == "brie" ) or
+             Cheese( type == "muzzarella" ) )
+        p : Person()
+    then
+        results.add(c);
+        results.add(p);
 end

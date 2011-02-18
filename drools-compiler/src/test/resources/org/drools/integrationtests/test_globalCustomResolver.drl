@@ -11,13 +11,13 @@ rule "global rule test"
     when
         eval( "stilton".equals( string ) )
     then
-		list.add( new Integer(5) );
+        list.add( new Integer(5) );
 end    
 
 rule "global rule test with cheese"
     when
-    	Cheese( price == 100 );
+        Cheese( price == 100 );
         eval( "stilton".equals( string ) )
     then
-		list.add( new Integer(6) );
+        list.add( new Integer(6) );
 end    

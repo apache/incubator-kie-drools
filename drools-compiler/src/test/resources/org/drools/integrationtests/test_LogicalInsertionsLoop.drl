@@ -10,9 +10,9 @@ rule "r"
     when
         not Person()
     then
-    	if (l.size() < 10)
-    	{
-    		l.add(new Integer(0));
-    		insertLogical( a );
-    	}
+        if (l.size() < 10)
+        {
+            l.add(new Integer(0));
+            insertLogical( a );
+        }
 end

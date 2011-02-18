@@ -27,35 +27,35 @@ package org.drools.verifier.overlaps
 
 
 rule "Overlap I"
-	
-	when
-		Person( 
-			age > 10, 
-			age > 1 
-		)
-	then
-	 
+
+    when
+        Person(
+            age > 10,
+            age > 1
+        )
+    then
+
 end
 
 rule "Overlap II"
-	when
-		Monkey( hasBanana == true )
-		Monkey( hasBanana == true )
-	then 
-		
+    when
+        Monkey( hasBanana == true )
+        Monkey( hasBanana == true )
+    then
+
 end
 /*
 rule "Overlap III A"
-	when
-		Player( position < 10 )
-	then 
-		
+    when
+        Player( position < 10 )
+    then
+
 end
 
 rule "Overlap III B"
-	when
-		Player( position == 1 )
-	then 
-		
+    when
+        Player( position == 1 )
+    then
+
 end
 */

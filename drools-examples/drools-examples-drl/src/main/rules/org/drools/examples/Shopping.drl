@@ -26,39 +26,39 @@ import org.drools.examples.ShoppingExample.Discount
 rule "Purchase notification"
     salience 10
 
-	when
-		$c : Customer()
-		$p : Purchase( customer == $c)	    
-	then
-	    System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
-end	 
+    when
+        $c : Customer()
+        $p : Purchase( customer == $c)
+    then
+        System.out.println( "Customer " + $c.name + " just purchased " + $p.product.name );
+end
  
 rule "Discount removed notification"
-	when
-	    $c : Customer()
-		not Discount( customer == $c )
-	then
-		$c.discount = 0;
-		System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
+    when
+        $c : Customer()
+        not Discount( customer == $c )
+    then
+        $c.discount = 0;
+        System.out.println( "Customer " + $c.name + " now has a discount of " + $c.discount );
 end
 
 rule "Discount awarded notification"
-	when
-	    $c : Customer()
-		$d : Discount( customer == $c )
-	then
-		System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
+    when
+        $c : Customer()
+        $d : Discount( customer == $c )
+    then
+        System.out.println( "Customer " + $c.name + " now has a discount of " + $d.amount );
 end
 
-rule "Apply 10% discount if total purcahses is over 100"			
-	no-loop true	
-	dialect "java"
+rule "Apply 10% discount if total purcahses is over 100"
+    no-loop true
+    dialect "java"
     when
-		$c : Customer()
-		$i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ), 
-		                                                            sum( $price ) )
+        $c : Customer()
+        $i : Double(doubleValue  > 100) from accumulate ( Purchase( customer == $c, $price : product.price ),
+                                                                    sum( $price ) )
     then
-  		$c.setDiscount( 10 );
-		insertLogical( new Discount($c, 10) );	
-		System.out.println( "Customer " + $c.getName() + " now has a shopping total of " + $i );
+          $c.setDiscount( 10 );
+        insertLogical( new Discount($c, 10) );
+        System.out.println( "Customer " + $c.getName() + " now has a shopping total of " + $i );
 end

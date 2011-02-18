@@ -21,11 +21,11 @@ import org.drools.jsr94.rules.Person;
 expander sisters_expander.dsl
 
 rule "FindSisters"
-	
-	when
-		#conditions
-		There is a Person
-		There is a second Person and they are sisters
-	then 
-		Leave a comment in the WorkingMemory
+
+    when
+        #conditions
+        There is a Person
+        There is a second Person and they are sisters
+    then
+        Leave a comment in the WorkingMemory
 end

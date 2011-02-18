@@ -3,20 +3,20 @@ package TrafficControl
 import org.drools.*
 
 rule "Target Retract"
-	salience -100
-	when
+    salience -100
+    when
       $tgt1 : Target( $label1 : label, $time : time )
       Target( label == $label1, time > $time )
-	then
+    then
       retract( $tgt1 );
 end
 
 rule "Close Assert"
-	when
+    when
       Target( $label : label, $time : time, $lat : lat, $lon : lon )
       Target( $label2 : label, time == $time, $lat2 : lat, $lon2 : lon )
       eval( $label.compareTo( $label2 ) < 0 )
-	then
+    then
       float s1 =  $lat.floatValue() - $lat2.floatValue();
       float s2 =  $lon.floatValue() - $lon2.floatValue();
       double distance = Math.sqrt( s1*s1 + s2*s2 );
@@ -33,20 +33,20 @@ rule "Close Assert"
 end
 
 rule "Close Retract"
-	salience -100
-	when
+    salience -100
+    when
       $cls : Close( $label : label, $label2 : label2, $time : time )
       Close( label == $label, label2 == $label2, time > $time )
-	then
+    then
       retract( $cls );
 end
 
 rule "Approach Begin"
-	when
+    when
       $cls1 : Close( $label : label, $label2 : label2, $time : time, $distance : distance, $bearing : bearing )
       not Approach( label == $label, label2 == $label2 )
       $cls2 : Close( label == $label, label2 == $label2, $time2 : time > $time, $distance2 : distance < $distance, $bearing2 : bearing )
-	then
+    then
       Approach a = new Approach();
       a.label = $label;
       a.label2 = $label2;
@@ -61,11 +61,11 @@ rule "Approach Begin"
 end
 
 rule "Approach Continue"
-	no-loop true
-	when
+    no-loop true
+    when
       $app : Approach( $label : label, $label2 : label2, $time2 : time2, $distance2 : distance2 )
       Close( label == $label, label2 == $label2, $time3 : time > $time2, $distance3 : distance <=  $distance2, $bearing3 : bearing )
-	then
+    then
       $app.distance2 = $distance3;
       $app.bearing2 = $bearing3;
       $app.time2 = $time3;
@@ -73,11 +73,11 @@ rule "Approach Continue"
 end
 
 rule "Danger Distance Warning"
-	when
+    when
       Approach( $label : label, $label2 : label2, $distance2 : distance2, $time2 : time2, $bearing2 : bearing2 )
       Target( label == $label, time == $time2, $speed : speed, $course : course )
       eval( $distance2.floatValue() <= 5.2 )
-	then
+    then
       //System.out.println( "Danger Distance Warning "+$label+" "+$label2+" distance: "+$distance2 );
 end
 

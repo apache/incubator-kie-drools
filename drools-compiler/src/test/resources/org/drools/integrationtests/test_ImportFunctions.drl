@@ -12,34 +12,34 @@ function String getString4( String string ) {
 }
 
 rule "test rule1"
-	salience 30
+    salience 30
     when
         Cheese()
     then
-		list.add( getString1( "rule1" ) );
+        list.add( getString1( "rule1" ) );
 end    
 
 rule "test rule2"
-	salience 20
+    salience 20
     when
         Cheese( type == ( getString2("stilton") ) );
     then
-		list.add( getString3( "rule", new Integer( 2 ) ) );
+        list.add( getString3( "rule", new Integer( 2 ) ) );
 end    
 
 rule "test rule3"
-	salience 10
+    salience 10
     when
         Cheese( $type : type);
         eval( $type.equals( getString1( "stilton" ) ) );
     then
-		list.add( getString2( "rule3" ) );
+        list.add( getString2( "rule3" ) );
 end    
 
 rule "test rule4"
-	salience 0
+    salience 0
     when
         Cheese();
     then
-		list.add( getString4( "rule4" ) );
+        list.add( getString4( "rule4" ) );
 end    

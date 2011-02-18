@@ -3,11 +3,11 @@ package org.drools
 global java.util.List results;
 
 rule "test jira jbrules 2055"
-	when
-		$c : Cheese( $type : type )
-		$p : Person( likes == $type ) 
-	then
-	    results.add( $type );
-	    retract( $c ); 
-	    modify( $p ) { setLikes( "brie" ) } 
+    when
+        $c : Cheese( $type : type )
+        $p : Person( likes == $type )
+    then
+        results.add( $type );
+        retract( $c );
+        modify( $p ) { setLikes( "brie" ) }
 end

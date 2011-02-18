@@ -6,9 +6,9 @@ function String[] yourFunction(String args[]) {
 
 rule "new rule"
 
-	when
-		Something()
-	then
-		yourFunction(new String[3] {"a","b","c"});
-		
+    when
+        Something()
+    then
+        yourFunction(new String[3] {"a","b","c"});
+
 end

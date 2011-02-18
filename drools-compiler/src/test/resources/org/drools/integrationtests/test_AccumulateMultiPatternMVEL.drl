@@ -5,11 +5,11 @@ global java.util.List results;
 rule "MultiPatternAccumulate" salience 80
     dialect "mvel"
     when
-    	$cheesery    : Cheesery( totalAmount > 30 ) 
-    	                       from accumulate( $person : Person( $likes: likes) and $cheese : Cheese( type == $likes ),
+        $cheesery    : Cheesery( totalAmount > 30 )
+                               from accumulate( $person : Person( $likes: likes) and $cheese : Cheese( type == $likes ),
                                                 init( Cheesery cheesery = new Cheesery(); ),
-    	                                        action( cheesery.addCheese( $cheese ); ),
-    	                                        reverse( cheesery.removeCheese( $cheese ); ),
+                                                action( cheesery.addCheese( $cheese ); ),
+                                                reverse( cheesery.removeCheese( $cheese ); ),
                                                 result( cheesery ) );
     then
         results.add( $cheesery );

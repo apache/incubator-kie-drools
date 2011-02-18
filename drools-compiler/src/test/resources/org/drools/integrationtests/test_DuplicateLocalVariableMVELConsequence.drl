@@ -4,23 +4,23 @@ global java.util.List results;
 
 rule "test local variable in mvel consequence - same type"
     dialect "mvel"
-	when
-		$p : Person( $likes : likes ) 
-	then
-	    Cheese c = new Cheese( $likes );
-	    results.add( c );
-	    // bellow should raise a duplicate local variable declaration
-	    Cheese c = new Cheese( "stilton" );
+    when
+        $p : Person( $likes : likes )
+    then
+        Cheese c = new Cheese( $likes );
+        results.add( c );
+        // bellow should raise a duplicate local variable declaration
+        Cheese c = new Cheese( "stilton" );
 end
 
 
 rule "test local variable in mvel consequence - different type"
     dialect "mvel"
-	when
-		$p : Person( $likes : likes ) 
-	then
-	    Cheese c = new Cheese( $likes );
-	    results.add( c );
-	    // bellow should raise a duplicate local variable declaration
-	    String c = new String( "stilton" );
+    when
+        $p : Person( $likes : likes )
+    then
+        Cheese c = new Cheese( $likes );
+        results.add( c );
+        // bellow should raise a duplicate local variable declaration
+        String c = new String( "stilton" );
 end

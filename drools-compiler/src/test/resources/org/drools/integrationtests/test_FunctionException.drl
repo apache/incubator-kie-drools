@@ -3,12 +3,12 @@ package org.drools.test;
 import org.drools.Cheese;
 
 function void throwException() {
-	throw new Exception( "this should throw an exception" );
+    throw new Exception( "this should throw an exception" );
 }
 
 rule "Throw Function Exception"
     when
-    	cheese : Cheese( )
+        cheese : Cheese( )
     then
-		throwException();
+        throwException();
 end  

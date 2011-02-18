@@ -5,7 +5,7 @@ import org.drools.Cheese;
 
 rule "not rule test"
 when
-	foo
+    foo
 then
-	System.err.println("hey");
+    System.err.println("hey");
 end

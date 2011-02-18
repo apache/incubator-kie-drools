@@ -5,12 +5,12 @@ import java.util.ArrayList;
 global java.util.List results;
 
 rule "shadow proxy on collections"
-	when
-		$list : ArrayList() from collect( Cheesery() )
-	then
-	    Cheesery $c = (Cheesery) $list.get( 0 );
-	    Cheese cheese = new Cheese( "stilton", 10 );
-		$c.getCheeses().add( cheese );
-		results.add( cheese );
+    when
+        $list : ArrayList() from collect( Cheesery() )
+    then
+        Cheesery $c = (Cheesery) $list.get( 0 );
+        Cheese cheese = new Cheese( "stilton", 10 );
+        $c.getCheeses().add( cheese );
+        results.add( cheese );
 end
 

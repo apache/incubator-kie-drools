@@ -4,9 +4,9 @@ import function abd.def.x
 import function qed.wah.*
 
 rule simple_rule 
-  when  		  	
-  	not ( Cheese(type == "stilton") )
-  	exists ( Foo() )
+  when
+      not ( Cheese(type == "stilton") )
+      exists ( Foo() )
   then
-	funky();
+    funky();
 end

@@ -6,12 +6,12 @@ rule "like OrderItem"
     when
         OrderItem( t:type )
     then
-		results.add( t );
+        results.add( t );
 end    
 
 rule "like OrderItem2"
     when
         OrderItem( t:type )
     then
-		results.add( t );
+        results.add( t );
 end    

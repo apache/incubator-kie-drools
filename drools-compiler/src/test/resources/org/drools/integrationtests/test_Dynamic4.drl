@@ -11,5 +11,5 @@ rule "Who likes Stilton"
         $person:Person( likes == $type )
     then
         $person.setStatus("Who likes Stilton ok");    
-		list.add( $person );		
+        list.add( $person );
 end    

@@ -45,63 +45,63 @@ global VerifierReport result;
 # Finds rule possibilities that are always true.
 #
 # Dependencies:
-#	Needs at least one of the following packages or rules to fire:
-# 		package org.drools.verifier.alwaysTrue;
-#			rule "Pattern possibility that is always true"
+#    Needs at least one of the following packages or rules to fire:
+#         package org.drools.verifier.alwaysTrue;
+#            rule "Pattern possibility that is always true"
 #
 #
 rule "Rule possibility that is always true"
-	when
-		$r :VerifierRule()
+    when
+        $r :VerifierRule()
 
-		$rp :SubRule(
-			rulePath == $r.path
-		)
-		
-		# Each pattern possibility in rule possibility needs to be always true.
-		forall(
-			$pp :SubPattern(
-				this memberOf $rp.items
-			)
-				
-			AlwaysTrue(
-				cause == $pp
-			)
-		)
-	then 
-		insert( new AlwaysTrue( $rp ));
+        $rp :SubRule(
+            rulePath == $r.path
+        )
+
+        # Each pattern possibility in rule possibility needs to be always true.
+        forall(
+            $pp :SubPattern(
+                this memberOf $rp.items
+            )
+
+            AlwaysTrue(
+                cause == $pp
+            )
+        )
+    then
+        insert( new AlwaysTrue( $rp ));
 end
 
 #
 # Finds rules that are always true.
 #
 # Dependencies:
-#	Needs at least one of the following packages or rules to fire:
-# 		package org.drools.verifier.alwaysTrue;
-#			rule "Rule possibility that is always true"
+#    Needs at least one of the following packages or rules to fire:
+#         package org.drools.verifier.alwaysTrue;
+#            rule "Rule possibility that is always true"
 #
 #
 rule "Rule that is always true"
-	when
-		$r :VerifierRule()
+    when
+        $r :VerifierRule()
 
-		forall(
-			$rp :SubRule(
-				rulePath == $r.path
-			)
-			
-			AlwaysTrue(
-				cause == $rp
-			)
-		)
-	then 
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getPath(), $r.getName());
-		
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.WARNING,
-								MessageType.ALWAYS_TRUE,
-								$r,
-								$r + " is always satisfied." ) );
+        forall(
+            $rp :SubRule(
+                rulePath == $r.path
+            )
+
+            AlwaysTrue(
+                cause == $rp
+            )
+        )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $r.getPath(), $r.getName());
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.WARNING,
+                                MessageType.ALWAYS_TRUE,
+                                $r,
+                                $r + " is always satisfied." ) );
 end

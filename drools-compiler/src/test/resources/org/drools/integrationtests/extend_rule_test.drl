@@ -11,7 +11,7 @@ rule "test rule 1"
     when
         c: Cheese( type == "stilton" )
     then
-		list.add( new String ("rule 1") );        
+        list.add( new String ("rule 1") );
 end 
 
 rule "test rule 2" extends "test rule 1"
@@ -19,14 +19,14 @@ rule "test rule 2" extends "test rule 1"
     when
         Cheese( price <= 6.00) from c
     then
-		list.add( new String ("rule 2") );       
+        list.add( new String ("rule 2") );
 end 
 
 rule "test rule 3" extends "test rule 2"
     when
         Cheese( price > 1.00 ) from c
     then
-		list.add( new String ("rule 3") );         
+        list.add( new String ("rule 3") );
 end 
 
 rule "test rule 1b"
@@ -34,7 +34,7 @@ rule "test rule 1b"
     when
         c: Cheese( type == "cheddar" )
     then
-		list.add( new String ("rule 1b") );        
+        list.add( new String ("rule 1b") );
 end 
 
 rule "test rule 2b" extends "test rule 1b"
@@ -43,7 +43,7 @@ rule "test rule 2b" extends "test rule 1b"
 
         Cheese( price < 5.00) from return ([c])
     then
-		list.add( new String ("rule 2b") );       
+        list.add( new String ("rule 2b") );
 end 
 
    
@@ -53,20 +53,20 @@ rule "test rule 4"
     when
         Cheese( price > 1.00 , price < 6.00) 
     then
-		list.add( new String ("rule 4") );         
+        list.add( new String ("rule 4") );
 end 
 
 rule "test rule 5" 
-	
+
     when
         Cheese( type == "stilton" )
     then
-	       
+
 end  
 
 rule "test rule 6" extends "test rule 5"
     when
         Cheese( type == "stilton" )
     then
-		      
+
 end  

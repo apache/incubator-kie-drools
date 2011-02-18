@@ -8,5 +8,5 @@ rule "rule2"
         Cheese( type : type, price : price -> (price < 3))
         #Cheese( type : type, price < 3)
     then
-		insertLogical( new  Person( type ) );
+        insertLogical( new  Person( type ) );
 end

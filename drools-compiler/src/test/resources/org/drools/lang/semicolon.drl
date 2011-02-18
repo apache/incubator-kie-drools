@@ -11,9 +11,9 @@ then
 end;
 
 query "query1"
-	Pattern5();
-	Pattern6();
-	Pattern7();
+    Pattern5();
+    Pattern6();
+    Pattern7();
 end;
 
 rule "rule2"

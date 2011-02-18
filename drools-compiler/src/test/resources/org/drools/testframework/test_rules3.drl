@@ -7,10 +7,10 @@ declare Coolness
 end
 
 rule "rule1"
-	when
-		c: Coolness(num == 42)
-	then
-		System.out.println("it worked");
+    when
+        c: Coolness(num == 42)
+    then
+        System.out.println("it worked");
 end
 
 

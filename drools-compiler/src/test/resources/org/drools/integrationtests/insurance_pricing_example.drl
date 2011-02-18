@@ -2,176 +2,176 @@ package org.acme.insurance;
 #generated from Decision Table
 #From row number: 10
 /*rule "Pricing bracket_10"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "LOW", priorClaims == "1")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(450);
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "LOW", priorClaims == "1")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(450);
 end
 
 #From row number: 11
 rule "Pricing bracket_11"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "MED")
-		policy: Policy(type == "FIRE_THEFT")
-	then
-		policy.setBasePrice(200);
-		// System.out.println("Priors not relevant");
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "MED")
+        policy: Policy(type == "FIRE_THEFT")
+    then
+        policy.setBasePrice(200);
+        // System.out.println("Priors not relevant");
 end
 
 #From row number: 12
 rule "Pricing bracket_12"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "MED", priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(300);
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "MED", priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(300);
 end
 
 #From row number: 13
 rule "Pricing bracket_13"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "LOW")
-		policy: Policy(type == "FIRE_THEFT")
-	then
-		policy.setBasePrice(150);
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "LOW")
+        policy: Policy(type == "FIRE_THEFT")
+    then
+        policy.setBasePrice(150);
 end
 
 #From row number: 14
 rule "Pricing bracket_14"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "LOW", priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(150);
-		// System.out.println("Safe driver discount");
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "LOW", priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(150);
+        // System.out.println("Safe driver discount");
 end
 
 #From row number: 15
 rule "Pricing bracket_15"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "MED", priorClaims == "1")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(700);
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "MED", priorClaims == "1")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(700);
 end
 
 #From row number: 16
 rule "Pricing bracket_16"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "HIGH", priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(700);
-		// System.out.println("Location risk");
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "HIGH", priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(700);
+        // System.out.println("Location risk");
 end
 
 #From row number: 17
 rule "Pricing bracket_17"
-	
-	when
-		Driver(age >= 18, age <= 24, locationRiskProfile == "HIGH")
-		policy: Policy(type == "FIRE_THEFT")
-	then
-		policy.setBasePrice(550);
-		// System.out.println("Location risk");
+
+    when
+        Driver(age >= 18, age <= 24, locationRiskProfile == "HIGH")
+        policy: Policy(type == "FIRE_THEFT")
+    then
+        policy.setBasePrice(550);
+        // System.out.println("Location risk");
 end
 */
 #From row number: 18
 rule "Pricing bracket_18"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(120);
-		// System.out.println("Cheapest possible");
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(120);
+        // System.out.println("Cheapest possible");
 end
 /*
 #From row number: 19
 rule "Pricing bracket_19"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "1")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(300);
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "1")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(300);
 end
 
 #From row number: 20
 rule "Pricing bracket_20"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "2")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.setBasePrice(590);
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "2")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.setBasePrice(590);
 end
 
 #From row number: 21
 rule "Pricing bracket_21"
-	
-	when
-		Driver(age >= 25, age <= 35, priorClaims == "3")
-		policy: Policy(type == "THIRD_PARTY")
-	then
-		policy.setBasePrice(800);
-		// System.out.println("High risk");
+
+    when
+        Driver(age >= 25, age <= 35, priorClaims == "3")
+        policy: Policy(type == "THIRD_PARTY")
+    then
+        policy.setBasePrice(800);
+        // System.out.println("High risk");
 end
 
 #From row number: 30
 rule "Discounts_30"
-	
-	when
-		Driver(age >= 18, age <= 24, priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.applyDiscount(1);
+
+    when
+        Driver(age >= 18, age <= 24, priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.applyDiscount(1);
 end
 
 #From row number: 31
 rule "Discounts_31"
-	
-	when
-		Driver(age >= 18, age <= 24, priorClaims == "0")
-		policy: Policy(type == "FIRE_THEFT")
-	then
-		policy.applyDiscount(2);
+
+    when
+        Driver(age >= 18, age <= 24, priorClaims == "0")
+        policy: Policy(type == "FIRE_THEFT")
+    then
+        policy.applyDiscount(2);
 end
 */
 #From row number: 32
 rule "Discounts_32"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "1")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.applyDiscount(5);
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "1")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.applyDiscount(5);
 end
 
 #From row number: 33
 rule "Discounts_33"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "2")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.applyDiscount(1);
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "2")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.applyDiscount(1);
 end
 
 #From row number: 34
 rule "Discounts_34"
-	
-	when
-		Driver(age >= 25, age <= 30, priorClaims == "0")
-		policy: Policy(type == "COMPREHENSIVE")
-	then
-		policy.applyDiscount(20);
+
+    when
+        Driver(age >= 25, age <= 30, priorClaims == "0")
+        policy: Policy(type == "COMPREHENSIVE")
+    then
+        policy.applyDiscount(20);
 end

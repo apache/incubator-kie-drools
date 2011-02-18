@@ -4,9 +4,9 @@ global java.util.List results;
 
 rule "test auto bindings errors"
 when
-	$p : Person( $name : name );
-	// direct access to properties of non-pattern bindings is not supported
-	Cheese( price == $name.length )
+    $p : Person( $name : name );
+    // direct access to properties of non-pattern bindings is not supported
+    Cheese( price == $name.length )
 then
     results.add( $p );
 end

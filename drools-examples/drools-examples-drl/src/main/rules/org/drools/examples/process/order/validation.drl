@@ -20,39 +20,39 @@ global CustomerService customerService
 global ItemCatalog itemCatalog
 
 rule "Invalid customer id" ruleflow-group "validate" lock-on-active true
-	when
-		o: Order( )
-		not (Customer( ) from customerService.getCustomer(o.getCustomerId()))
-	then 
-	    System.err.println("Invalid customer id found!");
-		o.addError("Invalid customer id");
+    when
+        o: Order( )
+        not (Customer( ) from customerService.getCustomer(o.getCustomerId()))
+    then
+        System.err.println("Invalid customer id found!");
+        o.addError("Invalid customer id");
 end
 
 rule "Invalid item id" ruleflow-group "validate" lock-on-active true
-	when
-		o: Order( )
-		i: Order.OrderItem( ) from o.getOrderItems()
-		not (Item( ) from itemCatalog.getItem(i.getItemId()))
-	then 
-	    System.err.println("Invalid item id found!");
-		o.addError("Invalid item id " + i.getItemId());
+    when
+        o: Order( )
+        i: Order.OrderItem( ) from o.getOrderItems()
+        not (Item( ) from itemCatalog.getItem(i.getItemId()))
+    then
+        System.err.println("Invalid item id found!");
+        o.addError("Invalid item id " + i.getItemId());
 end
  
 rule "Minimal age" ruleflow-group "validate" lock-on-active true
-	when
-		o: Order( )
-		c: Customer( ) from customerService.getCustomer(o.getCustomerId())
-		oi: Order.OrderItem( ) from o.getOrderItems()
-		i: Item( minimalAge > (c.getAge()) ) from itemCatalog.getItem(oi.getItemId())
-	then 
-	    System.err.println("Minimal age violated!");
-	    o.addError("Minimal age not met for item " + i.getItemId());
+    when
+        o: Order( )
+        c: Customer( ) from customerService.getCustomer(o.getCustomerId())
+        oi: Order.OrderItem( ) from o.getOrderItems()
+        i: Item( minimalAge > (c.getAge()) ) from itemCatalog.getItem(oi.getItemId())
+    then
+        System.err.println("Minimal age violated!");
+        o.addError("Minimal age not met for item " + i.getItemId());
 end
 
 rule "Update order " ruleflow-group "validate"
-		 lock-on-active true salience -1
-	when
-		o: Order( )
-	then 
-	    update(o);
+         lock-on-active true salience -1
+    when
+        o: Order( )
+    then
+        update(o);
 end

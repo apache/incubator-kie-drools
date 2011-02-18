@@ -1,9 +1,9 @@
 package org.drools
 
 rule "Supply cheese for for every person when there already exists someone of the same status and they are older"
-	when
-		p : Person($status : status, $age : age)
-		exists Person(status == $status, age > $age);
-	then
+    when
+        p : Person($status : status, $age : age)
+        exists Person(status == $status, age > $age);
+    then
         insertLogical(new Cheese("Cheese for person with age " + $age, 0));
 end

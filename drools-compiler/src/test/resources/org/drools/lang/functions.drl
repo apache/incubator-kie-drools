@@ -2,24 +2,24 @@
 import java.lang.String
 
 function String functionA(String s, Integer i) {
-	
-	foo();
+
+    foo();
 
 }
 
 function void functionB() {
-	bar();	
+    bar();
 }
 
 
 rule something 
-	when
-	then
+    when
+    then
 end
 
 rule "one more thing"
-	when
-	then
+    when
+    then
 end
 
 

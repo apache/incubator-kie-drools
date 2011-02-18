@@ -23,151 +23,151 @@ package org.drools.verifier.consequence
 
 
 rule "Incoherent patterns 1"
-	when
-		IncoherencePattern1( a == 1 ) 
-		not IncoherencePattern1( a == 1 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern1( a == 1 )
+        not IncoherencePattern1( a == 1 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 2"
-	when
-		IncoherencePattern2( a matches "text" ) 
-		not IncoherencePattern2( a matches "text" ) 
-	then 
-		# Test
+    when
+        IncoherencePattern2( a matches "text" )
+        not IncoherencePattern2( a matches "text" )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 3"
-	when
-		$o :Object()
-		IncoherencePattern3( a not contains $o ) 
-		not IncoherencePattern3( a not contains $o ) 
-	then 
-		# Test
+    when
+        $o :Object()
+        IncoherencePattern3( a not contains $o )
+        not IncoherencePattern3( a not contains $o )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 4"
-	when
-		$list :ListItem()
-		IncoherencePattern4( a memberOf $list ) 
-		not IncoherencePattern4( a memberOf $list ) 
-	then 
-		# Test
+    when
+        $list :ListItem()
+        IncoherencePattern4( a memberOf $list )
+        not IncoherencePattern4( a memberOf $list )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 5"
-	when
-		$var :Object()
-		IncoherencePattern5( a != $var ) 
-		not IncoherencePattern5( a != $var ) 
-	then 
-		# Test
+    when
+        $var :Object()
+        IncoherencePattern5( a != $var )
+        not IncoherencePattern5( a != $var )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 6"
-	when
-		$var :Object()
-		IncoherencePattern6( a > $var ) 
-		not IncoherencePattern6( a > $var ) 
-	then 
-		# Test
+    when
+        $var :Object()
+        IncoherencePattern6( a > $var )
+        not IncoherencePattern6( a > $var )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 7"
-	when
-		IncoherencePattern7( a > 11 ) 
-		not IncoherencePattern7( a > 11 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern7( a > 11 )
+        not IncoherencePattern7( a > 11 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 8"
-	when
-		IncoherencePattern8( a > 11 ) 
-		not IncoherencePattern8( a > 1 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern8( a > 11 )
+        not IncoherencePattern8( a > 1 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 9"
-	when
-		IncoherencePattern9( a <= 1 ) 
-		not IncoherencePattern9( a < 11 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern9( a <= 1 )
+        not IncoherencePattern9( a < 11 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 10"
-	when
-		IncoherencePattern10( a < 1 ) 
-		not IncoherencePattern10( a != 1 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern10( a < 1 )
+        not IncoherencePattern10( a != 1 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 11"
-	when
-		$var :Object()
-		IncoherencePattern11( a < $var ) 
-		not IncoherencePattern11( a != $var ) 
-	then 
-		# Test
+    when
+        $var :Object()
+        IncoherencePattern11( a < $var )
+        not IncoherencePattern11( a != $var )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 12"
-	when
-		IncoherencePattern12( a == 1 ) 
-		not IncoherencePattern12( a > 0 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern12( a == 1 )
+        not IncoherencePattern12( a > 0 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 13"
-	when
-		$var :Object()
-		IncoherencePattern13( a == $var ) 
-		not IncoherencePattern13( a >= $var ) 
-	then 
-		# Test
+    when
+        $var :Object()
+        IncoherencePattern13( a == $var )
+        not IncoherencePattern13( a >= $var )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 14"
-	when
-		IncoherencePattern14( a == -1 ) 
-		not IncoherencePattern14( a < 0 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern14( a == -1 )
+        not IncoherencePattern14( a < 0 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 15"
-	when
-		IncoherencePattern15( a >= 1 ) 
-		not IncoherencePattern15( a != 1 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern15( a >= 1 )
+        not IncoherencePattern15( a != 1 )
+    then
+        # Test
 end
 
 rule "Incoherent patterns 16"
-	when
-		IncoherencePattern16( a == 101 ) 
-		not IncoherencePattern16( a >= 101 ) 
-	then 
-		# Test
+    when
+        IncoherencePattern16( a == 101 )
+        not IncoherencePattern16( a >= 101 )
+    then
+        # Test
 end
 
 rule "This is not an incoherent pattern 1"
-	when
-		not Something( abc > 1 )
-		Something( abc < 1 )
-	then
-		# Test
+    when
+        not Something( abc > 1 )
+        Something( abc < 1 )
+    then
+        # Test
 end
 
 rule "This is not an incoherent pattern 2"
-	when
-		not Something( abc == 1 )
-		Something( abc == 2 )
-	then
-		# Test
+    when
+        not Something( abc == 1 )
+        Something( abc == 2 )
+    then
+        # Test
 end

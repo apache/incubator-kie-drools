@@ -1,8 +1,8 @@
 package org.drools;
 
-rule test_rule extends rule1	
-	when
-		$foo : foo()
-	then
-		
+rule test_rule extends rule1
+    when
+        $foo : foo()
+    then
+
 end

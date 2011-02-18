@@ -3,7 +3,7 @@ package org.drools;
 global java.util.List results;
 
 rule "test equality support"
-	salience 10
+    salience 10
 when
     $p : PersonWithEquals( name == "bob" )
 then

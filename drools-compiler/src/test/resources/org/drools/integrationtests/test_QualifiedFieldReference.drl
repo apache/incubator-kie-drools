@@ -4,8 +4,8 @@ global java.util.List results;
 
 rule "test qualified field reference"
 when
-	$p : Person( $p.name == "bob" );
-	$c : Cheese( $c.type == $p.likes )
+    $p : Person( $p.name == "bob" );
+    $c : Cheese( $c.type == $p.likes )
 then
     results.add( $p );
 end

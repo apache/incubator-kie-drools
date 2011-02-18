@@ -2,8 +2,8 @@
 
 rule simple_rule 
   when
-  	Person(age > 30 && < 40)
-  	Vehicle(type not in ( "sedan", "wagon" ), age < 3)
+      Person(age > 30 && < 40)
+      Vehicle(type not in ( "sedan", "wagon" ), age < 3)
   then
-	consequence();
+    consequence();
 end

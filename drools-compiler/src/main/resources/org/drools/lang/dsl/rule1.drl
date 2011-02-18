@@ -3,10 +3,10 @@ package foo
 expander foo
 
 rule "new rule"
-	activation-group "boo"
-	when
-		line 1
-		line 2
-	then
-		line 3
+    activation-group "boo"
+    when
+        line 1
+        line 2
+    then
+        line 3
 end

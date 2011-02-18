@@ -2,29 +2,29 @@ package mortgages
 
 
 declare LoanApplication
-	amount: Integer
-	approved: Boolean
-	deposit: Integer
-	approvedRate: Integer
-	lengthYears: Integer
-	explanation: String
-	insuranceCost: Integer
+    amount: Integer
+    approved: Boolean
+    deposit: Integer
+    approvedRate: Integer
+    lengthYears: Integer
+    explanation: String
+    insuranceCost: Integer
 end
 
 declare Applicant
-	age: Integer
-	name: String
-	creditRating: String
+    age: Integer
+    name: String
+    creditRating: String
 end
 
 declare IncomeSource
-	amount: Integer
-	type: String
+    amount: Integer
+    type: String
 end
 
 declare Bankruptcy
-	amountOwed: Integer
-	yearOfOccurrence: Integer
+    amountOwed: Integer
+    yearOfOccurrence: Integer
 end
 
 
@@ -34,13 +34,13 @@ end
 
 rule 'Try it again'
        dialect "mvel"
-	when
-		( Applicant( creditRating == "OK" ) or Applicant( creditRating == "Sub prime" ) )
-		app : LoanApplication( )
-	then
-		app.setApproved( false );
-		app.setExplanation( "Only AB" );
-		retract( app );
+    when
+        ( Applicant( creditRating == "OK" ) or Applicant( creditRating == "Sub prime" ) )
+        app : LoanApplication( )
+    then
+        app.setApproved( false );
+        app.setExplanation( "Only AB" );
+        retract( app );
 
 end
 

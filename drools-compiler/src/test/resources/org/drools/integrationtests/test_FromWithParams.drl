@@ -8,9 +8,9 @@ global java.util.List list;
 global java.lang.Object globalObject;
 
 rule "test from"
-	when
-		$person : Person()
-		$object : Object() from testObject.toList(globalObject, $person, "literal", 42, [ $person : globalObject, "key1" : [ "key2" : "value2"]], [$person, 42, ["x", "y"]])		
-	then
-		list.add( $object );
+    when
+        $person : Person()
+        $object : Object() from testObject.toList(globalObject, $person, "literal", 42, [ $person : globalObject, "key1" : [ "key2" : "value2"]], [$person, 42, ["x", "y"]])
+    then
+        list.add( $object );
 end

@@ -4,32 +4,32 @@ global java.util.List results;
 
 
 rule "eval rewrite"
-	when
-		$o : OrderItem( order.number == 10 )
-	then
-	    results.add( $o );
+    when
+        $o : OrderItem( order.number == 10 )
+    then
+        results.add( $o );
 end
 
 rule "eval rewrite2"
-	when
-		$o1 : OrderItem( order.number == 11, $seq : seq == 1 )
-		$o2 : OrderItem( order.number == $o1.order.number, seq != $seq )
-	then
-		results.add( $o2 );
+    when
+        $o1 : OrderItem( order.number == 11, $seq : seq == 1 )
+        $o2 : OrderItem( order.number == $o1.order.number, seq != $seq )
+    then
+        results.add( $o2 );
 end
 
 rule "eval rewrite3"
-	when
-		$o1 : OrderItem( order.number == 12, seq == 1 )
-		$o : Order( items[(Integer) 1] == $o1 )
-	then
-		results.add( $o );
+    when
+        $o1 : OrderItem( order.number == 12, seq == 1 )
+        $o : Order( items[(Integer) 1] == $o1 )
+    then
+        results.add( $o );
 end
 
 rule "eval rewrite4"
-	when
-		OrderItem( $nbr : order.number == 13, seq == 1 )
-		$o : Order( number == $nbr )
-	then
-		results.add( $o );
+    when
+        OrderItem( $nbr : order.number == 13, seq == 1 )
+        $o : Order( number == $nbr )
+    then
+        results.add( $o );
 end

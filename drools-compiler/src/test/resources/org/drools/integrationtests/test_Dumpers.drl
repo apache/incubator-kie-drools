@@ -9,46 +9,46 @@ function boolean testIllegalChars() {
 }
 
 rule "test MAIN 1"
-	salience  10
+    salience  10
     when
-    	Cheese( $type : type -> ( 3 < 4 && 4 > 3 ),
-    	        price < ( new Integer( 100 ) ) )
-    	eval( 3 < 4 && 4 > 3 )
+        Cheese( $type : type -> ( 3 < 4 && 4 > 3 ),
+                price < ( new Integer( 100 ) ) )
+        eval( 3 < 4 && 4 > 3 )
         eval( testIllegalChars() )
     then
         // lets also make sure that special chars are converted
         if ( 3 < 4 && 4 > 3 ) {
-			list.add( "MAIN" );
-			drools.setFocus( "agenda group 1" );
-		}
-		
+            list.add( "MAIN" );
+            drools.setFocus( "agenda group 1" );
+        }
+
 end 
 
 rule "test group1 1"
-	agenda-group "agenda group 1"
+    agenda-group "agenda group 1"
     when
-    	Cheese( $price : price )
+        Cheese( $price : price )
     then
-		list.add( "1 1" );
+        list.add( "1 1" );
 end  
 
 rule "test group3 1"
-	salience 5
-	agenda-group "agenda group 3"
-	activation-group "activation group 3"
-	auto-focus true		
+    salience 5
+    agenda-group "agenda group 3"
+    activation-group "activation group 3"
+    auto-focus true
     when
-    	Cheese( )
-    then    	
-		list.add( "3 1" );		
+        Cheese( )
+    then
+        list.add( "3 1" );
 end 
 
 
 rule "test group3 2"
-	agenda-group "agenda group 3"
-	activation-group "activation group 3"		
+    agenda-group "agenda group 3"
+    activation-group "activation group 3"
     when
-    	Cheese( $type : type, $price : price )
-    then    	
-		list.add( "3 2" );
+        Cheese( $type : type, $price : price )
+    then
+        list.add( "3 2" );
 end 

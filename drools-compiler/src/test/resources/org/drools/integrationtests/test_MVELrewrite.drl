@@ -4,8 +4,8 @@ global java.util.List results;
 
 rule "test mvel rewrite"
     dialect "mvel"
-	when
-		$c : Cheesery( cheeses.size == 2 )
-	then
-		results.add( $c );
+    when
+        $c : Cheesery( cheeses.size == 2 )
+    then
+        results.add( $c );
 end

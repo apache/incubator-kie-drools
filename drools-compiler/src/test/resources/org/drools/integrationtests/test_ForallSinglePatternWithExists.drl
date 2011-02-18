@@ -2,12 +2,12 @@ package org.drools;
 
 global java.util.List results;
 
-rule "test forall single pattern"	
-	when
-	    Order( )
-	    $p1 : Person( )
-	    forall( Cheese( price == $p1.age ) )
-	    exists( OrderItem() or Order() )
-	then 
-		results.add("OK");		
+rule "test forall single pattern"
+    when
+        Order( )
+        $p1 : Person( )
+        forall( Cheese( price == $p1.age ) )
+        exists( OrderItem() or Order() )
+    then
+        results.add("OK");
 end

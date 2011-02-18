@@ -1,7 +1,7 @@
 rule blah
  when 
-	Col1() from doIt1( foo,bar,42,"hello",[ a : "b"], [a, "b", 42] ).doIt2(bar, [a, "b", 42]).field["key"]
-	Col2()
+    Col1() from doIt1( foo,bar,42,"hello",[ a : "b"], [a, "b", 42] ).doIt2(bar, [a, "b", 42]).field["key"]
+    Col2()
  then
-	partay();
-end	
+    partay();
+end

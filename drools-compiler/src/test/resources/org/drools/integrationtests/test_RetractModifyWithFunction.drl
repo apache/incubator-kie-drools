@@ -9,19 +9,19 @@ rule "test modify"
     salience 10
     no-loop
 when
-	$c1 : Cheese( type == "stilton" )
+    $c1 : Cheese( type == "stilton" )
     $c2 : Cheese( type == "muzzarella" )
 then
- 	Cheese x = getMin( $c1, $c2 );
- 	x.setPrice( $c1.getPrice() + $c2.getPrice() );
-	update( x );
-	// testing stuff after the ) ;
+     Cheese x = getMin( $c1, $c2 );
+     x.setPrice( $c1.getPrice() + $c2.getPrice() );
+    update( x );
+    // testing stuff after the ) ;
 end
 
 rule "test retract"
 when
-	$c1 : Cheese( type == "stilton" )
-	$c2 : Cheese( type == "muzzarella" )
+    $c1 : Cheese( type == "stilton" )
+    $c2 : Cheese( type == "muzzarella" )
 then
     // stuff before the retract( getMin( $c1, $c2 ) );
     retract( getMin( $c1, $c2 ) );

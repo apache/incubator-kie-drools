@@ -7,14 +7,14 @@ import org.drools.Cheese;
 global java.util.List list
 
 function void addFive(List list) {
-	list.add( new Integer(5) );
+    list.add( new Integer(5) );
 }
 
 rule "global rule test"
     when
         Cheese( )
     then
-		addFive( list );
-		// Calling methods does not mess with function calls
-		// System.out.println(list);
+        addFive( list );
+        // Calling methods does not mess with function calls
+        // System.out.println(list);
 end    

@@ -11,22 +11,22 @@ end
 declare Person
     name : String @key()
     last : String @key()
-	age: int
-	likes: Cheese
+    age: int
+    likes: Cheese
 end
 
 rule "simple rule"
     when
         Cheese( type == "stilton" )
     then
-		list.add( new Integer(5) );
-		cg.setType("nothing");
+        list.add( new Integer(5) );
+        cg.setType("nothing");
 end
 
 rule "another"
     when
         $cheese : Cheese( type == "stilton" )
-     	$person : Person( age== 7, likes == $cheese )
+         $person : Person( age== 7, likes == $cheese )
     then
-    	list.add( $person );
+        list.add( $person );
 end

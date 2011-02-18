@@ -28,19 +28,19 @@ rule "not s then i"
     when
         not String()
     then
-    	if (l.size() < 10) {
-    		l.add(new Integer(0));
-    		System.out.println("Logical assert i");
-	   		insertLogical(i);
-	   	}
+        if (l.size() < 10) {
+            l.add(new Integer(0));
+            System.out.println("Logical assert i");
+               insertLogical(i);
+           }
 end
 rule "i then s"
-	when
-		Integer()
-	then
-    	if (l.size() < 10) {
-	   		l.add(new Integer(0));
-    		System.out.println("Logical assert s");	   		
-			insertLogical(s);
-	   	}
+    when
+        Integer()
+    then
+        if (l.size() < 10) {
+               l.add(new Integer(0));
+            System.out.println("Logical assert s");
+            insertLogical(s);
+           }
 end

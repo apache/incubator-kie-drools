@@ -6,23 +6,23 @@ import org.drools.Person
 global Person p
 
 rule "rule1"
-	when
-		c: Cheese()
-	then
-		p.setName("rule1");
+    when
+        c: Cheese()
+    then
+        p.setName("rule1");
 end
 
 rule "rule2"
-	when
-		c: Cheese()
-	then
-		p.setStatus("rule2");
+    when
+        c: Cheese()
+    then
+        p.setStatus("rule2");
 end
 
 rule "rule3"
-	when
-		c: Cheese()
-	then
-	    p.setAge(42);
+    when
+        c: Cheese()
+    then
+        p.setAge(42);
 
 end

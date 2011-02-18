@@ -3,10 +3,10 @@
 
 rule simple_rule 
   when
-	Foo(
-	  bar == baz, la==laz
-	  )
+    Foo(
+      bar == baz, la==laz
+      )
   then
-	Kapow
-	Poof
+    Kapow
+    Poof
 end

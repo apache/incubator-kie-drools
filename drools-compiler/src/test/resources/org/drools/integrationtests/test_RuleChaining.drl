@@ -1,39 +1,39 @@
 package com.sample
  
 declare Some
-	field : int
+    field : int
 end
  
 rule "init"
 salience 9999
     dialect "mvel"
-	when	
-	then
-	    with( s0 = new Some() ) {
-	        field = 0
-	    }
-		insertLogical(s0);
-		with( s1 = new Some() ) {
-		    field = 1
-		}
-		insertLogical(s1); 		
+    when
+    then
+        with( s0 = new Some() ) {
+            field = 0
+        }
+        insertLogical(s0);
+        with( s1 = new Some() ) {
+            field = 1
+        }
+        insertLogical(s1);
 end
 
 
 rule "r1"
 salience 100
 when
-	Some( field == 0 )
-	Some( $f : field == 1)
+    Some( field == 0 )
+    Some( $f : field == 1)
 then
-	// noop		
+    // noop
 end
 
 
 rule "r2"
 salience 10
-when	
-	 $s : Some( $f : field == 0 )
+when
+     $s : Some( $f : field == 0 )
 then
-	// noop		
+    // noop
 end

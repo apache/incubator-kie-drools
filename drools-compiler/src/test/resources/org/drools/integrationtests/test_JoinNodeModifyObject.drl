@@ -9,44 +9,44 @@ global java.util.List errors;
  
 rule "Order1"
 salience 210
-	when
-	    # testing join node + eval
-		n1 : IndexedNumber($nb1 : number);
-		n2 : IndexedNumber(number < $nb1);
-		eval(n1.getIndex() < n2.getIndex());
-	then
-		if ( ! (n1.getIndex() < n2.getIndex())) {
-		    errors.add("{1} Shouldn't fire for: " + n1 + " " + n2);
+    when
+        # testing join node + eval
+        n1 : IndexedNumber($nb1 : number);
+        n2 : IndexedNumber(number < $nb1);
+        eval(n1.getIndex() < n2.getIndex());
+    then
+        if ( ! (n1.getIndex() < n2.getIndex())) {
+            errors.add("{1} Shouldn't fire for: " + n1 + " " + n2);
         }
-end		
+end
 
 rule "Order2"
 salience 200
-	when
-	    #testing pure join nodes
-		n1 : IndexedNumber($nb1 : number, $index : index);
-		n2 : IndexedNumber(number < $nb1, index > $index );
-	then
-		if ( ! (n1.getIndex() < n2.getIndex())) {
-		    errors.add("{2} Shouldn't fire for: " + n1 + " " + n2);
+    when
+        #testing pure join nodes
+        n1 : IndexedNumber($nb1 : number, $index : index);
+        n2 : IndexedNumber(number < $nb1, index > $index );
+    then
+        if ( ! (n1.getIndex() < n2.getIndex())) {
+            errors.add("{2} Shouldn't fire for: " + n1 + " " + n2);
         }
-		swap(n1, n2);
-		update(n1);
-		update(n2);
-end		
+        swap(n1, n2);
+        update(n1);
+        update(n2);
+end
 
 rule "Debug"
 salience 10
-	when
-		n : IndexedNumber($idx : index);
-		not IndexedNumber(index < $idx);
-	then
-		orderedNumbers.add(n);
-		retract(n);
+    when
+        n : IndexedNumber($idx : index);
+        not IndexedNumber(index < $idx);
+    then
+        orderedNumbers.add(n);
+        retract(n);
 end
 
 function void swap(IndexedNumber n1, IndexedNumber n2) {
-	int tmp = n1.getIndex();
-	n1.setIndex(n2.getIndex());
-	n2.setIndex(tmp);
+    int tmp = n1.getIndex();
+    n1.setIndex(n2.getIndex());
+    n2.setIndex(tmp);
 }

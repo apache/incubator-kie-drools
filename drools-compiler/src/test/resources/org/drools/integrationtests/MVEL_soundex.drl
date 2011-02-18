@@ -6,8 +6,8 @@ import org.drools.Cheese
 
 
 rule "Hello World"
-	when
-		c : Cheese( eval(type soundslike "foobar"), type soundslike "foo bar" )
-	then
-		c.setPrice(42);
+    when
+        c : Cheese( eval(type soundslike "foobar"), type soundslike "foo bar" )
+    then
+        c.setPrice(42);
 end

@@ -2,7 +2,7 @@
 rule rule1 
   ruleflow-group "a group"
   when
-  	not Cheese(type == "stilton")
+      not Cheese(type == "stilton")
   then
-	funky();
+    funky();
 end

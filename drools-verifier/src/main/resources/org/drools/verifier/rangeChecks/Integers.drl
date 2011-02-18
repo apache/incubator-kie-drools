@@ -32,31 +32,31 @@ global VerifierReport result;
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar > 42 ) 
-#						and Foo( <= 42 || == 42 ) is missing.
+#                        and Foo( <= 42 || == 42 ) is missing.
 #
 rule "Range check for integers, if smaller than or equal is missing"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.INT )
-		
-		# Foo( bar > 42 )
-		$r :NumberRestriction( 
-			fieldPath == $f.path, 
-			operator == Operator.GREATER
-		)
-		
-		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value 
-		)
-	then
-		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
-	
-		result.add( gap );
-		insert( gap );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.INT )
+
+        # Foo( bar > 42 )
+        $r :NumberRestriction(
+            fieldPath == $f.path,
+            operator == Operator.GREATER
+        )
+
+        # Check if Foo( bar == 42 || <= 42 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+    then
+        Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -64,31 +64,31 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar < 42 ) 
-#						and in Foo( >= 42 || == 42 ) is missing.
+#                        and in Foo( >= 42 || == 42 ) is missing.
 #
 rule "Range check for integers, if greater than or equal is missing"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.INT )
-		
-		# Foo( bar > 42 )
-		$r :NumberRestriction( 
-			fieldPath == $f.path, 
-			operator == Operator.LESS
-		)
-		
-		# Check if Foo( bar == 42 || <= 42 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value 
-		)
-	then
-		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
-		
-		result.add( gap );
-		insert( gap );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.INT )
+
+        # Foo( bar > 42 )
+        $r :NumberRestriction(
+            fieldPath == $f.path,
+            operator == Operator.LESS
+        )
+
+        # Check if Foo( bar == 42 || <= 42 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+    then
+        Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -96,41 +96,41 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == 42 || bar <= 42 ) 
-# 					and no Foo( bar > 42 || >= 42 || >= 43 || == 43 ) 
-#						then Foo( bar > 42 ) is missing.
+#                     and no Foo( bar > 42 || >= 42 || >= 43 || == 43 )
+#                        then Foo( bar > 42 ) is missing.
 #
 rule "Range check for integers, equal and greater than"
-	@verifying_scopes("knowledge-package", "decision-table")
-	dialect "mvel" 
-	when
-		$f :Field( fieldType == Field.INT )
+    @verifying_scopes("knowledge-package", "decision-table")
+    dialect "mvel"
+    when
+        $f :Field( fieldType == Field.INT )
 
-		# Foo( bar == 42 ) 
-		$r :NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
-		)
+        # Foo( bar == 42 )
+        $r :NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
+        )
 
-		# Check if Foo( bar > 42 || >= 42 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value 
-		)
-		
-		# Check if Foo( bar == 43 || >= 43 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == ( $r.value + 1 ) 
-		)
-	then
-		Gap gap =  new Gap( $f, Operator.GREATER, $r );
-		
-		result.add( gap );
-		insert( gap );
+        # Check if Foo( bar > 42 || >= 42 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+
+        # Check if Foo( bar == 43 || >= 43 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == ( $r.value + 1 )
+        )
+    then
+        Gap gap =  new Gap( $f, Operator.GREATER, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -138,39 +138,39 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == 42 || bar >= 42 ) 
-# 					and no Foo( bar < 42 || <= 42 || <= 41 || == 41 ) 
-#						then Foo( bar < 42 ) is missing.
+#                     and no Foo( bar < 42 || <= 42 || <= 41 || == 41 )
+#                        then Foo( bar < 42 ) is missing.
 #
 rule "Range check for integers, equal and smaller than"
-	@verifying_scopes("knowledge-package", "decision-table")
-	dialect "mvel" 
-	when
-		$f :Field( fieldType == Field.INT )
+    @verifying_scopes("knowledge-package", "decision-table")
+    dialect "mvel"
+    when
+        $f :Field( fieldType == Field.INT )
 
-		# Foo( bar == 42 ) 
-		$r :NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
-		)
+        # Foo( bar == 42 )
+        $r :NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
+        )
 
-		# Check if Foo( bar < 42 || <= 42 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value 
-		)
-		
-		# Check if Foo( bar == 41 || <= 41 ) is missing.
-		not	NumberRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == ( $r.value - 1 ) 
-		)
-	then
-		Gap gap =  new Gap( $f, Operator.LESS, $r );
-		
-		result.add( gap );
-		insert( gap );
+        # Check if Foo( bar < 42 || <= 42 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+
+        # Check if Foo( bar == 41 || <= 41 ) is missing.
+        not	NumberRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == ( $r.value - 1 )
+        )
+    then
+        Gap gap =  new Gap( $f, Operator.LESS, $r );
+
+        result.add( gap );
+        insert( gap );
 end

@@ -8,10 +8,10 @@ import org.drools.Address
 
 
 rule "test something"
-	
-	when
-		p: Person( name=="Michael", addresses != null)
-	then
-		p.setName("goo");
-		System.out.println(p.getName());	
+
+    when
+        p: Person( name=="Michael", addresses != null)
+    then
+        p.setName("goo");
+        System.out.println(p.getName());
 end

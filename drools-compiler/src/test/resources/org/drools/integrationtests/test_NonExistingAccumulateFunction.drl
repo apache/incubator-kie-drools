@@ -3,7 +3,7 @@ package org.drools;
 rule "Accumulate non existing function - Java"
     dialect "java"
     when
-    	$val : Number() from accumulate( $st : StockTick(),
+        $val : Number() from accumulate( $st : StockTick(),
                                          nonExistingFunction( 1 ) );
     then
         // no-op
@@ -12,7 +12,7 @@ end
 rule "Accumulate non existing function - MVEL"
     dialect "mvel"
     when
-    	$val : Number() from accumulate( $st : StockTick(),
+        $val : Number() from accumulate( $st : StockTick(),
                                          nonExistingFunction( 1 ) );
     then
         // no-op

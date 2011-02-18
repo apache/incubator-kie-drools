@@ -7,11 +7,11 @@ declare Coolness
 end
 
 rule "rule1"
-	ruleflow-group "asdf"
-	when
-		c: Coolness(num == 42)
-	then
-		System.out.println("it worked");
+    ruleflow-group "asdf"
+    when
+        c: Coolness(num == 42)
+    then
+        System.out.println("it worked");
 end
 
 

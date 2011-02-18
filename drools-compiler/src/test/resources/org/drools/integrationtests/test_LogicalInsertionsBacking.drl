@@ -6,5 +6,5 @@ rule "Cheese => type"
     when
         Cheese( type : type )
     then
-		insertLogical( type );
+        insertLogical( type );
 end

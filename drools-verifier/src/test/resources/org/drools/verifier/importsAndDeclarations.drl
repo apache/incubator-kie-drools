@@ -22,7 +22,7 @@ import org.test.Rambo;
 
 
 declare Person
-	sex : String
+    sex : String
 end
 
 declare VoiceCall

@@ -44,34 +44,34 @@ global VerifierReport result;
 # Example: Pattern( a == "b", a != "b" )
 #
 rule "Opposite LiteralRestrictions"
-	when
-		$left :LiteralRestriction(
-			# Not >= and <=, because ( a <=, a >= ) works.
-			# And not < or > because they are handled in a separate rule.
-			( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
-		)
+    when
+        $left :LiteralRestriction(
+            # Not >= and <=, because ( a <=, a >= ) works.
+            # And not < or > because they are handled in a separate rule.
+            ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
+        )
 
-		$right :LiteralRestriction(
-			fieldPath == $left.fieldPath,
-			valueType == $left.valueType,
-			path != $left.path,
-			# Operator needs to be reversed to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $left.getOperator() )),
-			valueAsString == $left.valueAsString
-		)
+        $right :LiteralRestriction(
+            fieldPath == $left.fieldPath,
+            valueType == $left.valueType,
+            path != $left.path,
+            # Operator needs to be reversed to what the other one has.
+            eval( operator == MissingRange.getReversedOperator( $left.getOperator() )),
+            valueAsString == $left.valueAsString
+        )
 
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-			left == $left, 
-			right == $right 
-		)
-		not Opposites( 
-			right == $left, 
-			left == $right 
-		)
-	then
-		System.out.println( $left + " " + $right );
-		insert( new Opposites( $left, $right ));
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $left,
+            right == $right
+        )
+        not Opposites(
+            right == $left,
+            left == $right
+        )
+    then
+        System.out.println( $left + " " + $right );
+        insert( new Opposites( $left, $right ));
 end
 
 #
@@ -81,31 +81,31 @@ end
 # Example: Pattern( a >= 10 && a < 10 )
 #
 rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
-	when
-		$left :LiteralRestriction(
-			operator == Operator.GREATER_OR_EQUAL 
-		)
+    when
+        $left :LiteralRestriction(
+            operator == Operator.GREATER_OR_EQUAL
+        )
 
-		$right :LiteralRestriction(
-			restrictionType == $left.restrictionType,
-			fieldPath == $left.fieldPath,
-			valueType == $left.valueType,
-			operator == Operator.LESS,
-			path != $left.path,
-			valueAsString == $left.valueAsString
-		)
-		
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-	        left == $left,
-			right == $right 
-		)
-		not Opposites( 
-			right == $left, 
-			left == $right 
-		)
-	then
-		insert( new Opposites( $left, $right ));
+        $right :LiteralRestriction(
+            restrictionType == $left.restrictionType,
+            fieldPath == $left.fieldPath,
+            valueType == $left.valueType,
+            operator == Operator.LESS,
+            path != $left.path,
+            valueAsString == $left.valueAsString
+        )
+
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $left,
+            right == $right
+        )
+        not Opposites(
+            right == $left,
+            left == $right
+        )
+    then
+        insert( new Opposites( $left, $right ));
 end
 
 #
@@ -115,31 +115,31 @@ end
 # Example: Pattern( a > 10 && a <= 10 )
 #
 rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
-	when
-		$left :LiteralRestriction(
-			operator == Operator.GREATER
-		)
+    when
+        $left :LiteralRestriction(
+            operator == Operator.GREATER
+        )
 
-		$right :LiteralRestriction(
-			restrictionType == $left.restrictionType,
-			fieldPath == $left.fieldPath,
-			valueType == $left.valueType,
-			operator == Operator.LESS_OR_EQUAL,
-			path != $left.path,
-			valueAsString == $left.valueAsString 
-		)
+        $right :LiteralRestriction(
+            restrictionType == $left.restrictionType,
+            fieldPath == $left.fieldPath,
+            valueType == $left.valueType,
+            operator == Operator.LESS_OR_EQUAL,
+            path != $left.path,
+            valueAsString == $left.valueAsString
+        )
 
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-			left == $left, 
-			right == $right 
-		)
-		not Opposites( 
-			right == $left, 
-			left == $right 
-		)
-	then
-		insert( new Opposites( $left, $right ));
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $left,
+            right == $right
+        )
+        not Opposites(
+            right == $left,
+            left == $right
+        )
+    then
+        insert( new Opposites( $left, $right ));
 end
 
 
@@ -150,32 +150,32 @@ end
 # Example: Pattern( a < 10 && a > 9 )
 #
 rule "Opposite LiteralRestrictions with ranges, less - greater for numbers"
-	when
-		$left :NumberRestriction(
-			operator == Operator.LESS,
-			( valueType == Field.INT || == Field.DATE )
-		)
+    when
+        $left :NumberRestriction(
+            operator == Operator.LESS,
+            ( valueType == Field.INT || == Field.DATE )
+        )
 
-		$right :NumberRestriction(
-			restrictionType == $left.restrictionType,
-			fieldPath == $left.fieldPath,
-			valueType == $left.valueType,
-			operator == Operator.GREATER,
-			path != $left.path,
-			value > $left.value
-		)
-		
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-			left == $left, 
-			right == $right 
-		)
-		not Opposites( 
-			right == $left, 
-			left == $right 
-		)
-	then
-		insert( new Opposites( $left, $right ));
+        $right :NumberRestriction(
+            restrictionType == $left.restrictionType,
+            fieldPath == $left.fieldPath,
+            valueType == $left.valueType,
+            operator == Operator.GREATER,
+            path != $left.path,
+            value > $left.value
+        )
+
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $left,
+            right == $right
+        )
+        not Opposites(
+            right == $left,
+            left == $right
+        )
+    then
+        insert( new Opposites( $left, $right ));
 end
 
 #
@@ -185,32 +185,32 @@ end
 # Example: Pattern( a >= 10 && a <= 9 )
 #
 rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
-	when
-		$left :NumberRestriction(
-			operator == Operator.GREATER_OR_EQUAL,
-			( valueType == Field.INT || == Field.DATE )
-		)
+    when
+        $left :NumberRestriction(
+            operator == Operator.GREATER_OR_EQUAL,
+            ( valueType == Field.INT || == Field.DATE )
+        )
 
-		$right :NumberRestriction(
-			restrictionType == $left.restrictionType,
-			fieldPath == $left.fieldPath,
-			valueType == $left.valueType,
-			operator == Operator.LESS_OR_EQUAL,
-			path != $left.path,
-			value < $left.value
-		)
-		
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-			left == $left, 
-			right == $right 
-		)
-		not Opposites( 
-			right == $left, 
-			left == $right 
-		)
-	then
-		insert( new Opposites( $left, $right ));
+        $right :NumberRestriction(
+            restrictionType == $left.restrictionType,
+            fieldPath == $left.fieldPath,
+            valueType == $left.valueType,
+            operator == Operator.LESS_OR_EQUAL,
+            path != $left.path,
+            value < $left.value
+        )
+
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $left,
+            right == $right
+        )
+        not Opposites(
+            right == $left,
+            left == $right
+        )
+    then
+        insert( new Opposites( $left, $right ));
 end
 
 #
@@ -220,28 +220,28 @@ end
 # Example: Pattern( a contains $o, a not contains $o )
 #
 rule "Opposite VariableRestrictions"
-	when
-		$r1 :VariableRestriction()
+    when
+        $r1 :VariableRestriction()
 
-		$r2 :VariableRestriction(
-			fieldPath == $r1.fieldPath,
-			path != $r1.path,
-			variable.objectTypePath == $r1.variable.objectTypePath,
-			variable.objectTypeType == $r1.variable.objectTypeType,
-			# Operator needs to be reverse to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
-		)
-		
-		# Check that there is not already a pair with these values.
-		not Opposites( 
-			left == $r1, 
-			right == $r2 
-		)
-		not Opposites( 
-			right == $r1, 
-			left == $r2 
-		)
-	then
-		insert( new Opposites( $r1, $r2 ) );
+        $r2 :VariableRestriction(
+            fieldPath == $r1.fieldPath,
+            path != $r1.path,
+            variable.objectTypePath == $r1.variable.objectTypePath,
+            variable.objectTypeType == $r1.variable.objectTypeType,
+            # Operator needs to be reverse to what the other one has.
+            eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
+        )
+
+        # Check that there is not already a pair with these values.
+        not Opposites(
+            left == $r1,
+            right == $r2
+        )
+        not Opposites(
+            right == $r1,
+            left == $r2
+        )
+    then
+        insert( new Opposites( $r1, $r2 ) );
 end
 

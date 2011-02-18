@@ -11,6 +11,6 @@ rule "predicate rule test"
         // We have no autoboxing of primtives, so have to do by hand
         person2 : Person( $age2:age -> ( $age2 == ( $age1 + two.intValue() ) ) )
     then
-		list.add( $person1 );
-		list.add( person2 );		
+        list.add( $person1 );
+        list.add( person2 );
 end    

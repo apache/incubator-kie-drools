@@ -10,16 +10,16 @@ global List list3;
 global Cheesery cheesery;
 
 rule "test from using a global"
-	when
-		$cheese : Cheese() from cheesery.getCheeses()		
-	then
-		list1.add( $cheese );
+    when
+        $cheese : Cheese() from cheesery.getCheeses()
+    then
+        list1.add( $cheese );
 end
 
 rule "test from using a global against a map lookup"
-	when
-	    Person( $stilton : type == "stilton" )
-		$cheese : Cheese( type == $stilton ) from cheesery.getCheeseMap["stilton"]	
-	then
-		list1.add( $cheese );
+    when
+        Person( $stilton : type == "stilton" )
+        $cheese : Cheese( type == $stilton ) from cheesery.getCheeseMap["stilton"]
+    then
+        list1.add( $cheese );
 end

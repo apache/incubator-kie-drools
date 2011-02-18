@@ -22,28 +22,28 @@ import org.drools.WorkingMemory
 import org.drools.FactHandle
 
 function void updateIfExists(WorkingMemory workingMemory, Object o) {
-	FactHandle factHandle = workingMemory.getFactHandle(o);
-	if (factHandle != null) {
-		workingMemory.update(factHandle, o);
-	} 
+    FactHandle factHandle = workingMemory.getFactHandle(o);
+    if (factHandle != null) {
+        workingMemory.update(factHandle, o);
+    }
 }
 
 rule "Execute Pending Work Item" salience 20
-	when
-	    workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0 )
-	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
-	then 
-		((org.drools.process.instance.WorkItemManager) 
-			workItemNodeInstance.getProcessInstance().getKnowledgeRuntime()
-				.getWorkItemManager()).internalExecuteWorkItem(workItem);
-		workItemNodeInstance.internalSetWorkItemId(workItem.getId());
-		updateIfExists(drools.getWorkingMemory(), workItemNodeInstance);
+    when
+        workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0 )
+        workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
+    then
+        ((org.drools.process.instance.WorkItemManager)
+            workItemNodeInstance.getProcessInstance().getKnowledgeRuntime()
+                .getWorkItemManager()).internalExecuteWorkItem(workItem);
+        workItemNodeInstance.internalSetWorkItemId(workItem.getId());
+        updateIfExists(drools.getWorkingMemory(), workItemNodeInstance);
 end
 
 rule "Complete WorkItemNodeInstance" salience 20
-	when
-	    workItemNodeInstance: WorkItemNodeInstance( )
-		WorkItemImpl( state == WorkItemImpl.COMPLETED ) from workItemNodeInstance.getWorkItem()
-	then
-		workItemNodeInstance.triggerCompleted();
+    when
+        workItemNodeInstance: WorkItemNodeInstance( )
+        WorkItemImpl( state == WorkItemImpl.COMPLETED ) from workItemNodeInstance.getWorkItem()
+    then
+        workItemNodeInstance.triggerCompleted();
 end

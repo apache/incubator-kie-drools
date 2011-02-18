@@ -27,910 +27,910 @@ import org.drools.benchmark.waltzdb.Illegal;
 /*
 # Reverse the edges
 #(p reverse_edges
-#	(stage ^value duplicate)
-#	(line ^p1 <p1> ^p2 <p2>)
-#	-->
-#	(make edge ^p1 <p1> ^p2 <p2> ^joined false)
+#    (stage ^value duplicate)
+#    (line ^p1 <p1> ^p2 <p2>)
+#    -->
+#    (make edge ^p1 <p1> ^p2 <p2> ^joined false)
 #   (make edge ^p1 <p2> ^p2 <p1> ^joined false)
-#	(remove 2))
+#    (remove 2))
 */
 rule "reverse_edges"
-	when
-		Stage( value == Stage.DUPLICATE )
-		$line : Line( $p1:p1, $p2:p2 )
-	then
-		System.out.println( "Edge " + $p1 + " " + $p2 );
-		System.out.println( "Edge " + $p2 + " " + $p1 );
-		insert( new Edge( $p1, $p2, false ) );
-		insert( new Edge( $p2, $p1, false ) );
-		retract( $line ); 
+    when
+        Stage( value == Stage.DUPLICATE )
+        $line : Line( $p1:p1, $p2:p2 )
+    then
+        System.out.println( "Edge " + $p1 + " " + $p2 );
+        System.out.println( "Edge " + $p2 + " " + $p1 );
+        insert( new Edge( $p1, $p2, false ) );
+        insert( new Edge( $p2, $p1, false ) );
+        retract( $line );
 end
 # Reversing is done
 #(p done_reversing
-#	(stage ^value duplicate)
-#	- (line)
-#	-->
-#	(modify 1 ^value detect_junctions))
+#    (stage ^value duplicate)
+#    - (line)
+#    -->
+#    (modify 1 ^value detect_junctions))
 rule "done_reversing"
-	when
-		$stage : Stage( value == Stage.DUPLICATE )
-		not ( Line( ) )
-	then
-		modify( $stage ) {setValue( Stage.DETECT_JUNCTIONS )}
-		System.out.println( "Stage.DETECT_JUNCTIONS" );
+    when
+        $stage : Stage( value == Stage.DUPLICATE )
+        not ( Line( ) )
+    then
+        modify( $stage ) {setValue( Stage.DETECT_JUNCTIONS )}
+        System.out.println( "Stage.DETECT_JUNCTIONS" );
 end
 
 /*
 (p make_3_junction
-	(stage ^value detect_junctions)
-	(edge ^p1 <base_point> ^p2 <p1> ^joined false)
-	(edge ^p1 <base_point> ^p2 {<p2> <> <p1>} ^joined false)
-	(edge ^p1 <base_point> ^p2 {<p3> <> <p1> <> <p2>} ^joined false)
-	-->
-	(make junction
-		^type 3j
-		^name (make_3_junction <base_point> <p1> <p2> <p3>)
-		^base_point <base_point>
-		^visited no)
-	(modify 2 ^type 3j ^joined true)
-	(modify 3 ^type 3j ^joined true)
-	(modify 4 ^type 3j ^joined true))
+    (stage ^value detect_junctions)
+    (edge ^p1 <base_point> ^p2 <p1> ^joined false)
+    (edge ^p1 <base_point> ^p2 {<p2> <> <p1>} ^joined false)
+    (edge ^p1 <base_point> ^p2 {<p3> <> <p1> <> <p2>} ^joined false)
+    -->
+    (make junction
+        ^type 3j
+        ^name (make_3_junction <base_point> <p1> <p2> <p3>)
+        ^base_point <base_point>
+        ^visited no)
+    (modify 2 ^type 3j ^joined true)
+    (modify 3 ^type 3j ^joined true)
+    (modify 4 ^type 3j ^joined true))
 */
 rule "make_3_junction"
-	when
-		Stage( value == Stage.DETECT_JUNCTIONS )
-		$edge1 : Edge( $basePoint : p1, $p1 : p2, joined == false )
-		$edge2 : Edge( p1 == $basePoint, $p2 : p2 != $p1, joined == false )
-		$edge3 : Edge( p1 == $basePoint, $p3 : p2 != $p1, p2 != $p2, joined == false )
-	then
-		Junction junction = new Junction( $basePoint, "3j", "make_3_junction " + $basePoint + " " + $p1 + " " + " " + $p2 + " " + $p3, "no" );
-		insert( junction );
-		System.out.println( junction.toString( ) );
-		modify( $edge1 ) {setJoined( true ), setType( "3j" )}
-		modify( $edge2 ) {setJoined( true ), setType( "3j" )}
-		modify( $edge3 ) {setJoined( true ), setType( "3j" )}
+    when
+        Stage( value == Stage.DETECT_JUNCTIONS )
+        $edge1 : Edge( $basePoint : p1, $p1 : p2, joined == false )
+        $edge2 : Edge( p1 == $basePoint, $p2 : p2 != $p1, joined == false )
+        $edge3 : Edge( p1 == $basePoint, $p3 : p2 != $p1, p2 != $p2, joined == false )
+    then
+        Junction junction = new Junction( $basePoint, "3j", "make_3_junction " + $basePoint + " " + $p1 + " " + " " + $p2 + " " + $p3, "no" );
+        insert( junction );
+        System.out.println( junction.toString( ) );
+        modify( $edge1 ) {setJoined( true ), setType( "3j" )}
+        modify( $edge2 ) {setJoined( true ), setType( "3j" )}
+        modify( $edge3 ) {setJoined( true ), setType( "3j" )}
 end
 /*
 (p make_L
-	(stage ^value detect_junctions)
-	(edge ^p1 <base_point> ^p2 <p2> ^joined false)
-	(edge ^p1 <base_point> ^p2 {<p3> <> <p2>} ^joined false)
-	- (edge ^p1 <base_point> ^p2 {<> <p2> <> <p3>})
-	-->
-	(make junction
-		^type 2j
-		^name L
-		^base_point <base_point>
-		^p1 <p2>
-		^p2 <p3>
-		^visited no)
-	(modify 2 ^type 2j ^joined true)
-	(modify 3 ^type 2j ^joined true))
+    (stage ^value detect_junctions)
+    (edge ^p1 <base_point> ^p2 <p2> ^joined false)
+    (edge ^p1 <base_point> ^p2 {<p3> <> <p2>} ^joined false)
+    - (edge ^p1 <base_point> ^p2 {<> <p2> <> <p3>})
+    -->
+    (make junction
+        ^type 2j
+        ^name L
+        ^base_point <base_point>
+        ^p1 <p2>
+        ^p2 <p3>
+        ^visited no)
+    (modify 2 ^type 2j ^joined true)
+    (modify 3 ^type 2j ^joined true))
 
 */
 rule "make_L"
-	when
-		Stage( value == Stage.DETECT_JUNCTIONS )
-		$edge1 : Edge( $basePoint : p1, $p2 : p2, joined == false )
-		$edge2 : Edge( p1 == $basePoint, $p3 : p2 != $p2, joined == false )
-		not( Edge( p1 == $basePoint, p2 != $p2, p2 != $p3 ) )
-	then
-		Junction junction = new Junction( "2j", "L", $basePoint, $p2, $p3, "no" );
-		insert( junction );
-		System.out.println( junction.toString() );
-		modify( $edge1 ) {setJoined( true ), setType( "2j" )}
-		modify( $edge2 ) {setJoined( true ), setType( "2j" )}
+    when
+        Stage( value == Stage.DETECT_JUNCTIONS )
+        $edge1 : Edge( $basePoint : p1, $p2 : p2, joined == false )
+        $edge2 : Edge( p1 == $basePoint, $p3 : p2 != $p2, joined == false )
+        not( Edge( p1 == $basePoint, p2 != $p2, p2 != $p3 ) )
+    then
+        Junction junction = new Junction( "2j", "L", $basePoint, $p2, $p3, "no" );
+        insert( junction );
+        System.out.println( junction.toString() );
+        modify( $edge1 ) {setJoined( true ), setType( "2j" )}
+        modify( $edge2 ) {setJoined( true ), setType( "2j" )}
 end
 
 /*
 (p done_detecting
-	(stage ^value detect_junctions)
-	- (edge ^joined false)
-	-->
-	(modify 1 ^value find_initial_boundary))
+    (stage ^value detect_junctions)
+    - (edge ^joined false)
+    -->
+    (modify 1 ^value find_initial_boundary))
 
 */
 rule "done_detecting"
-	when
-		$stage : Stage( value == Stage.DETECT_JUNCTIONS )
-		not( Edge ( joined == false ) )
-	then
-		modify( $stage ) {setValue( Stage.FIND_INITIAL_BOUNDARY )}
-		System.out.println( "Stage: FIND_INITIAL_BOUNDARY" );
+    when
+        $stage : Stage( value == Stage.DETECT_JUNCTIONS )
+        not( Edge ( joined == false ) )
+    then
+        modify( $stage ) {setValue( Stage.FIND_INITIAL_BOUNDARY )}
+        System.out.println( "Stage: FIND_INITIAL_BOUNDARY" );
 end
 
 /*
 (p initial_boundary_junction_L
-	(stage ^value find_initial_boundary)
+    (stage ^value find_initial_boundary)
         (junction ^type 2j ^base_point <bp> ^p1 <p1> ^p2 <p2>)
-	(edge ^p1 <bp> ^p2 <p1>)
-	(edge ^p1 <bp> ^p2 <p2>)
-	-(junction ^base_point > <bp>)
-	-->
+    (edge ^p1 <bp> ^p2 <p1>)
+    (edge ^p1 <bp> ^p2 <p2>)
+    -(junction ^base_point > <bp>)
+    -->
         (modify 2 ^visited yes)
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 1)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name B ^l_id 1)
-	(modify 1 ^value find_second_boundary))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 1)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name B ^l_id 1)
+    (modify 1 ^value find_second_boundary))
 */
 rule "initial_boundary_junction_L"
-	when
-		$stage : Stage( value == Stage.FIND_INITIAL_BOUNDARY ) 
-		$junction : Junction( type == "2j", $basePoint : basePoint, $p1 : p1, $p2 : p2 )
-		Edge( p1 == $basePoint, p2 == $p1 )
-		Edge( p1 == $basePoint, p2 == $p2 )
-		not Junction( type == "2j", basePoint > $basePoint )//type == "2j" not in original
-	then
-		modify( $junction ) {setVisited( "yes" )}
-		insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
-		insert( new EdgeLabel( $basePoint, $p2, "B", "1" ) );
-		modify( $stage ) {setValue( Stage.FIND_SECOND_BOUDARY )}
-		System.out.println( "Stage.FIND_SECOND_BOUDARY" );
+    when
+        $stage : Stage( value == Stage.FIND_INITIAL_BOUNDARY )
+        $junction : Junction( type == "2j", $basePoint : basePoint, $p1 : p1, $p2 : p2 )
+        Edge( p1 == $basePoint, p2 == $p1 )
+        Edge( p1 == $basePoint, p2 == $p2 )
+        not Junction( type == "2j", basePoint > $basePoint )//type == "2j" not in original
+    then
+        modify( $junction ) {setVisited( "yes" )}
+        insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
+        insert( new EdgeLabel( $basePoint, $p2, "B", "1" ) );
+        modify( $stage ) {setValue( Stage.FIND_SECOND_BOUDARY )}
+        System.out.println( "Stage.FIND_SECOND_BOUDARY" );
 end
 /*
 
 (p initial_boundary_junction_arrow
-	(stage ^value find_initial_boundary)
-	(junction ^type 3j ^name arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
-	(edge ^p1 <bp> ^p2 <p1>)
-	(edge ^p1 <bp> ^p2 <p2>)
-	(edge ^p1 <bp> ^p2 <p3>)
-	-(junction ^base_point > <bp>)
-	-->
+    (stage ^value find_initial_boundary)
+    (junction ^type 3j ^name arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+    (edge ^p1 <bp> ^p2 <p1>)
+    (edge ^p1 <bp> ^p2 <p2>)
+    (edge ^p1 <bp> ^p2 <p3>)
+    -(junction ^base_point > <bp>)
+    -->
         (modify 2 ^visited yes)
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 14)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name + ^l_id 14)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name B ^l_id 14)
-	(modify 1 ^value find_second_boundary))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 14)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name + ^l_id 14)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name B ^l_id 14)
+    (modify 1 ^value find_second_boundary))
 
 */
 rule "initial_boundary_junction_arrow"
-	when
-		$stage : Stage( value == Stage.FIND_INITIAL_BOUNDARY )
-		$junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
-		$edge1 : Edge( p1 == $basePoint, p2 == $p1 )
-		$edge2 : Edge( p1 == $basePoint, p2 == $p2 )
+    when
+        $stage : Stage( value == Stage.FIND_INITIAL_BOUNDARY )
+        $junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
+        $edge1 : Edge( p1 == $basePoint, p2 == $p1 )
+        $edge2 : Edge( p1 == $basePoint, p2 == $p2 )
         $edge3 : Edge( p1 == $basePoint, p2 == $p3 ) //@FIXME, is this correct? I changed edge2 to edge3
-		not ( Junction( basePoint > $basePoint ) )
-	then
-		modify( $junction ) {setVisited( "yes" )}
-		insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
-		insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
-		insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
-		modify( $stage ) {setValue( Stage.FIND_SECOND_BOUDARY )}
-		System.out.println( "Stage.FIND_SECOND_BOUDARY" );
+        not ( Junction( basePoint > $basePoint ) )
+    then
+        modify( $junction ) {setVisited( "yes" )}
+        insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
+        insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
+        insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
+        modify( $stage ) {setValue( Stage.FIND_SECOND_BOUDARY )}
+        System.out.println( "Stage.FIND_SECOND_BOUDARY" );
 end
 
 /*
 (p second_boundary_junction_L
-	(stage ^value find_second_boundary)
+    (stage ^value find_second_boundary)
         (junction ^type 2j ^base_point <bp> ^p1 <p1> ^p2 <p2>)
-	(edge ^p1 <bp> ^p2 <p1>)
-	(edge ^p1 <bp> ^p2 <p2>)
-	-(junction ^base_point < <bp>)
-	-->
+    (edge ^p1 <bp> ^p2 <p1>)
+    (edge ^p1 <bp> ^p2 <p2>)
+    -(junction ^base_point < <bp>)
+    -->
         (modify 2 ^visited yes)
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 1)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name B ^l_id 1)
-	(modify 1 ^value labeling))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 1)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name B ^l_id 1)
+    (modify 1 ^value labeling))
  
 
 */
 rule "second_boundary_junction_L"
-	when
-		$stage : Stage( value == Stage.FIND_SECOND_BOUDARY )
-		$junction : Junction( type == "2j", $basePoint : basePoint, $p1 : p1, $p2 : p2 )
-		Edge( p1 == $basePoint, p2 == $p1)
-		Edge( p1 == $basePoint, p2 == $p2)
-		not (Junction ( basePoint < $basePoint ) )
-	then
-		modify( $junction ) {setVisited( "yes" )}
-		insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
-		insert( new EdgeLabel($basePoint, $p2, "B", "1" ) );
-		modify( $stage ) {setValue( Stage.LABELING )}
-		System.out.println( "Stage.LABELING" );
+    when
+        $stage : Stage( value == Stage.FIND_SECOND_BOUDARY )
+        $junction : Junction( type == "2j", $basePoint : basePoint, $p1 : p1, $p2 : p2 )
+        Edge( p1 == $basePoint, p2 == $p1)
+        Edge( p1 == $basePoint, p2 == $p2)
+        not (Junction ( basePoint < $basePoint ) )
+    then
+        modify( $junction ) {setVisited( "yes" )}
+        insert( new EdgeLabel( $basePoint, $p1, "B", "1" ) );
+        insert( new EdgeLabel($basePoint, $p2, "B", "1" ) );
+        modify( $stage ) {setValue( Stage.LABELING )}
+        System.out.println( "Stage.LABELING" );
 end
 
 /*
 
 (p second_boundary_junction_arrow
-	(stage ^value find_second_boundary)
-	(junction ^type 3j ^name arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
-	(edge ^p1 <bp> ^p2 <p1>)
-	(edge ^p1 <bp> ^p2 <p2>)
-	(edge ^p1 <bp> ^p2 <p3>)
-	-(junction ^base_point < <bp>)
-	-->
+    (stage ^value find_second_boundary)
+    (junction ^type 3j ^name arrow ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+    (edge ^p1 <bp> ^p2 <p1>)
+    (edge ^p1 <bp> ^p2 <p2>)
+    (edge ^p1 <bp> ^p2 <p3>)
+    -(junction ^base_point < <bp>)
+    -->
         (modify 2 ^visited yes)
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 14)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name + ^l_id 14)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name B ^l_id 14)
-	(modify 1 ^value labeling))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name B ^l_id 14)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name + ^l_id 14)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name B ^l_id 14)
+    (modify 1 ^value labeling))
 
 */
 rule "second_boundary_junction_arrow"
-	when
-		$stage : Stage( value == Stage.FIND_SECOND_BOUDARY )
-		$junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
-		Edge( p1 == $basePoint, p2 == $p1 )
-		Edge( p1 == $basePoint, p2 == $p2 )
-		Edge( p1 == $basePoint, p2 == $p3 )
-		not ( Junction( basePoint < $basePoint ) )
-	then
-		modify( $junction ) {setVisited( "yes" )}
-		insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
-		insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
-		insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
-		modify( $stage ) {setValue( Stage.LABELING )}
-		System.out.println( "Stage.LABELING" );
+    when
+        $stage : Stage( value == Stage.FIND_SECOND_BOUDARY )
+        $junction : Junction( type == "3j", name == "arrow", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
+        Edge( p1 == $basePoint, p2 == $p1 )
+        Edge( p1 == $basePoint, p2 == $p2 )
+        Edge( p1 == $basePoint, p2 == $p3 )
+        not ( Junction( basePoint < $basePoint ) )
+    then
+        modify( $junction ) {setVisited( "yes" )}
+        insert( new EdgeLabel( $basePoint, $p1, "B", "14" ) );
+        insert( new EdgeLabel( $basePoint, $p2, "+", "14" ) );
+        insert( new EdgeLabel( $basePoint, $p3, "B", "14" ) );
+        modify( $stage ) {setValue( Stage.LABELING )}
+        System.out.println( "Stage.LABELING" );
 end
 
 /*
 (p start_visit_3_junction
-	(stage ^value labeling)
-	(junction ^base_point <bp> ^type 3j ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited no)
-	-->
-	(modify 1 ^value visiting_3j)
-	(modify 2 ^visited now)) 
+    (stage ^value labeling)
+    (junction ^base_point <bp> ^type 3j ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited no)
+    -->
+    (modify 1 ^value visiting_3j)
+    (modify 2 ^visited now))
 
 */
 rule "start_visit_3_junction"
-	when
-		$stage : Stage( value == Stage.LABELING )
-		$junction : Junction( type == "3j", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "no" )
-	then
-		modify( $stage ) {setValue( Stage.VISITING_3J )}
-		modify( $junction ) {setVisited( "now" )}
-		System.out.println( "Stage.VISITING_3J" );
+    when
+        $stage : Stage( value == Stage.LABELING )
+        $junction : Junction( type == "3j", $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "no" )
+    then
+        modify( $stage ) {setValue( Stage.VISITING_3J )}
+        modify( $junction ) {setVisited( "now" )}
+        System.out.println( "Stage.VISITING_3J" );
 end
 
 /*
 (p visit_3j_0
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	(edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    (edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_0"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_1
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	(edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    (edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_1"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_2
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	(edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    (edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_2"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
-		EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
+        EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_3
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	(edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    (edge_label ^p1 <p3> ^p2 <bp> ^l_name <n3>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_3"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
-		EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
+        EdgeLabel( p1 == $p3, p2 == $basePoint, labelName == $n3 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_4
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	-(edge_label ^p1 <p3> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    -(edge_label ^p1 <p3> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_4"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		not ( EdgeLabel( p1 == $p3, p2 == $basePoint) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        not ( EdgeLabel( p1 == $p3, p2 == $basePoint) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_5
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	-(edge_label ^p1 <p3> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    -(edge_label ^p1 <p3> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_5"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label(name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_6
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	-(edge_label ^p1 <p3> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    -(edge_label ^p1 <p3> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_6"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p visit_3j_7
-	(stage ^value visiting_3j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	-(edge_label ^p1 <p3> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
+    (stage ^value visiting_3j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2> ^n3 <n3>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    -(edge_label ^p1 <p3> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p3> ^l_name <n3> ^l_id <id>))
 
 */
 rule "visit_3j_7"
-	when
-		Stage( value == Stage.VISITING_3J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-		insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
+    when
+        Stage( value == Stage.VISITING_3J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, $p3 : p3, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2, $n3 : n3 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $p3, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p3 + " " + $n3 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+        insert( new EdgeLabel( $basePoint, $p3, $n3, $id ) );
 end
 
 /*
 
 (p start_visit_2_junction
-	(stage ^value labeling)
-	(junction ^base_point <bp> ^type 2j ^p1 <p1> ^p2 <p2> ^visited no)
-	-->
-	(modify 1 ^value visiting_2j)
-	(modify 2 ^visited now)) 
+    (stage ^value labeling)
+    (junction ^base_point <bp> ^type 2j ^p1 <p1> ^p2 <p2> ^visited no)
+    -->
+    (modify 1 ^value visiting_2j)
+    (modify 2 ^visited now))
 
 */
 rule "start_visit_2_junction"
-	when
-		$stage : Stage( value == Stage.LABELING )
-		$junction : Junction( $basePoint : basePoint, type == "2j", $p1 : p1, $p2 : p2, visited == "no" )
-	then
-		modify( $stage ) {setValue( Stage.VISITING_2J )}
-		System.out.println( "Stage.VISITING_2J" );
-		modify( $junction ) {setVisited( "now" )}
+    when
+        $stage : Stage( value == Stage.LABELING )
+        $junction : Junction( $basePoint : basePoint, type == "2j", $p1 : p1, $p2 : p2, visited == "no" )
+    then
+        modify( $stage ) {setValue( Stage.VISITING_2J )}
+        System.out.println( "Stage.VISITING_2J" );
+        modify( $junction ) {setVisited( "now" )}
 end
 
 /*
 
 (p visit_2j_0
-	(stage ^value visiting_2j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
+    (stage ^value visiting_2j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
 
 */
 rule "visit_2j_0"
-	when
-		Stage( value == Stage.VISITING_2J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-		Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+    when
+        Stage( value == Stage.VISITING_2J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
 
 (p visit_2j_1
-	(stage ^value visiting_2j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	(edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
+    (stage ^value visiting_2j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    (edge_label ^p1 <p2> ^p2 <bp> ^l_name <n2>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
 
 */
 rule "visit_2j_1"
-	when
-		Stage( value == Stage.VISITING_2J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
-end	
+    when
+        Stage( value == Stage.VISITING_2J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $n2 )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+end
 
 /*
 
 (p visit_2j_2
-	(stage ^value visiting_2j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
-	(edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
+    (stage ^value visiting_2j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
+    (edge_label ^p1 <p1> ^p2 <bp> ^l_name <n1>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
 
 */
 rule "visit_2j_2"
-	when
-		Stage( value == Stage.VISITING_2J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-		Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
-		EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+    when
+        Stage( value == Stage.VISITING_2J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label( name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        EdgeLabel( p1 == $p1, p2 == $basePoint, labelName == $n1 )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
 
 (p visit_2j_3
-	(stage ^value visiting_2j)
-	(junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
-	(label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
-	-(edge_label ^p1 <p1> ^p2 <bp>)
-	-(edge_label ^p1 <p2> ^p2 <bp>)
-	-(edge_label ^p1 <bp> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	; (write edge_label <bp> <p3> <n3> <id> (crlf))
-	(make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
-	(make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
+    (stage ^value visiting_2j)
+    (junction ^name <n> ^base_point <bp> ^p1 <p1> ^p2 <p2> ^visited now)
+    (label ^name <n> ^id <id> ^n1 <n1> ^n2 <n2>)
+    -(edge_label ^p1 <p1> ^p2 <bp>)
+    -(edge_label ^p1 <p2> ^p2 <bp>)
+    -(edge_label ^p1 <bp> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    ; (write edge_label <bp> <p3> <n3> <id> (crlf))
+    (make edge_label ^p1 <bp> ^p2 <p1> ^l_name <n1> ^l_id <id>)
+    (make edge_label ^p1 <bp> ^p2 <p2> ^l_name <n2> ^l_id <id>))
 
 */
 rule "visit_2j_3"
-	when
-		Stage( value == Stage.VISITING_2J )
-		Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
-		Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
-		not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
-		not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
-	then
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
-		System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
-		insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
-		insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
+    when
+        Stage( value == Stage.VISITING_2J )
+        Junction( $name : name, $basePoint : basePoint, $p1 : p1, $p2 : p2, visited == "now" )
+        Label(name == $name, $id : id, $n1 : n1, $n2 : n2 )
+        not ( EdgeLabel( p1 == $p1, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint ) )
+        not ( EdgeLabel( p1 == $basePoint, labelId == $id ) )
+    then
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p1 + " " + $n1 + " " + $id );
+        System.out.println( "EdgeLabel " + $basePoint + " " + $p2 + " " + $n2 + " " + $id );
+        insert( new EdgeLabel( $basePoint, $p1, $n1, $id ) );
+        insert( new EdgeLabel( $basePoint, $p2, $n2, $id ) );
 end
 
 /*
 
 (p end_visit
-	(stage ^value << visiting_3j visiting_2j >>)
-	(junction ^visited now)
-	-->
-	(modify 1 ^value marking))
+    (stage ^value << visiting_3j visiting_2j >>)
+    (junction ^visited now)
+    -->
+    (modify 1 ^value marking))
 
 */
 rule "end_visit"
-	when
-		$stage : ( Stage( value == Stage.VISITING_2J ) || Stage( value == Stage.VISITING_3J ) )
-		$junction : Junction( visited == "now" )
-	then
-		modify( $stage ) {setValue( Stage.MARKING )}
-		System.out.println( "Stage.MARKING" );
+    when
+        $stage : ( Stage( value == Stage.VISITING_2J ) || Stage( value == Stage.VISITING_3J ) )
+        $junction : Junction( visited == "now" )
+    then
+        modify( $stage ) {setValue( Stage.MARKING )}
+        System.out.println( "Stage.MARKING" );
 end
 /*
 (p marking
-	(stage ^value marking)
-	(junction ^base_point <bp> ^visited now)
-	(edge ^p1 <p> ^p2 <bp>)
-	(junction ^base_point <p> ^visited yes)
-	-->
-	(modify 4 ^visited check))
+    (stage ^value marking)
+    (junction ^base_point <bp> ^visited now)
+    (edge ^p1 <p> ^p2 <bp>)
+    (junction ^base_point <p> ^visited yes)
+    -->
+    (modify 4 ^visited check))
 
 */
 rule "marking"
-	when
-		Stage( value == Stage.MARKING )
-		Junction( $basePoint : basePoint, visited == "now" )
-		Edge( $p1 : p1, p2 == $basePoint )
-		$junction : Junction( basePoint == $p1, visited == "yes" )
-	then
-		modify( $junction ) {setVisited( "check" )}
+    when
+        Stage( value == Stage.MARKING )
+        Junction( $basePoint : basePoint, visited == "now" )
+        Edge( $p1 : p1, p2 == $basePoint )
+        $junction : Junction( basePoint == $p1, visited == "yes" )
+    then
+        modify( $junction ) {setVisited( "check" )}
 end
 
 /*
 
 (p stop_marking
-	(stage ^value marking)
-	(junction ^base_point <bp> ^visited now)
-	-->
-	(modify 2 ^visited yes))
+    (stage ^value marking)
+    (junction ^base_point <bp> ^visited now)
+    -->
+    (modify 2 ^visited yes))
 */
 rule "stop_marking"
-	when
-		Stage( value == Stage.MARKING )
-		$junction : Junction( $basePoint : basePoint, visited == "now" )
-	then
-		modify( $junction ) {setVisited( "yes" )}
+    when
+        Stage( value == Stage.MARKING )
+        $junction : Junction( $basePoint : basePoint, visited == "now" )
+    then
+        modify( $junction ) {setVisited( "yes" )}
 end
-		
+
 /*
 (p start_checking
-	(stage ^value marking)
-	-->
-	(modify 1 ^value checking))
+    (stage ^value marking)
+    -->
+    (modify 1 ^value checking))
 */
 rule "start_checking"
-	when
-		$stage : Stage( value == Stage.MARKING )
-	then
-		modify( $stage ) {setValue( Stage.CHECKING )}
-		System.out.println( "Stage.CHECKING" );
+    when
+        $stage : Stage( value == Stage.MARKING )
+    then
+        modify( $stage ) {setValue( Stage.CHECKING )}
+        System.out.println( "Stage.CHECKING" );
 end
 
 /*
 (p checking
-	(stage ^value checking)
-	(junction  ^base_point <bp> ^visited check)
-	(edge_label ^p1 <bp> ^p2 <p> ^l_name <n> ^l_id <id>)
-	(junction ^base_point <p> ^visited yes)
-	-(edge_label ^p1 <p> ^p2 <bp> ^l_name <n>)
-	-->
-	(modify 1 ^value remove_label)
-	(make illegal ^bp <bp> ^l_id <id>))
+    (stage ^value checking)
+    (junction  ^base_point <bp> ^visited check)
+    (edge_label ^p1 <bp> ^p2 <p> ^l_name <n> ^l_id <id>)
+    (junction ^base_point <p> ^visited yes)
+    -(edge_label ^p1 <p> ^p2 <bp> ^l_name <n>)
+    -->
+    (modify 1 ^value remove_label)
+    (make illegal ^bp <bp> ^l_id <id>))
 */
 rule "checking1"
-	when
-		$stage : Stage( value == Stage.CHECKING )
-		$junction : Junction( $basePoint : basePoint, visited == "check" )
-		EdgeLabel( p1 == $basePoint, $p2 : p2, $labelName : labelName, $labelId : labelId )
-		Junction( basePoint == $p2, visited == "yes" )
-		not ( EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $labelName ) ) 
-	then
-		modify( $stage ) {setValue( Stage.REMOVE_LABEL )}
-		System.out.println( "Stage.REMOVE_LABEL" );
-		insert ( new Illegal( $basePoint, $labelId ) );
+    when
+        $stage : Stage( value == Stage.CHECKING )
+        $junction : Junction( $basePoint : basePoint, visited == "check" )
+        EdgeLabel( p1 == $basePoint, $p2 : p2, $labelName : labelName, $labelId : labelId )
+        Junction( basePoint == $p2, visited == "yes" )
+        not ( EdgeLabel( p1 == $p2, p2 == $basePoint, labelName == $labelName ) )
+    then
+        modify( $stage ) {setValue( Stage.REMOVE_LABEL )}
+        System.out.println( "Stage.REMOVE_LABEL" );
+        insert ( new Illegal( $basePoint, $labelId ) );
 end
 /*
 (p remove_label_3j
-	(stage ^value remove_label)
-	(illegal ^bp <bp> ^l_id <id>)
-	(junction ^type 3j ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
-	(edge_label ^p1 <bp> ^p2 <p1> ^l_id <id>)
-	(edge_label ^p1 <bp> ^p2 <p2> ^l_id <id>)
-	(edge_label ^p1 <bp> ^p2 <p3> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <id> (crlf))
-	; (write edge_label <bp> <p2> <id> (crlf))
-	; (write edge_label <bp> <p2> <id> (crlf))
-	(modify 1 ^value checking)
-	(remove 2)
-	(remove 4)
-	(remove 5)
-	(remove 6))
+    (stage ^value remove_label)
+    (illegal ^bp <bp> ^l_id <id>)
+    (junction ^type 3j ^base_point <bp> ^p1 <p1> ^p2 <p2> ^p3 <p3>)
+    (edge_label ^p1 <bp> ^p2 <p1> ^l_id <id>)
+    (edge_label ^p1 <bp> ^p2 <p2> ^l_id <id>)
+    (edge_label ^p1 <bp> ^p2 <p3> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <id> (crlf))
+    ; (write edge_label <bp> <p2> <id> (crlf))
+    (modify 1 ^value checking)
+    (remove 2)
+    (remove 4)
+    (remove 5)
+    (remove 6))
 */
 rule "remove_label_3j"
-	when
-		$stage : Stage( value == Stage.REMOVE_LABEL )
-		$illegal : Illegal( $basePoint : basePoint, $labelId : labelId )
-		Junction( type == "3j", basePoint == $basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
-		$edgeLabel1 : EdgeLabel( p1 == $basePoint, p2 == $p1, labelId == $labelId )
-		$edgeLabel2 : EdgeLabel( p1 == $basePoint, p2 == $p2, labelId == $labelId )
-		$edgeLabel3 : EdgeLabel( p1 == $basePoint, p2 == $p3, labelId == $labelId )
-	then
-		modify( $stage ) {setValue( Stage.CHECKING )}
-		System.out.println( "Stage.CHECKING" );
-		retract( $illegal );
-		retract( $edgeLabel1 );
-		retract( $edgeLabel2 );
-		retract( $edgeLabel3 );
+    when
+        $stage : Stage( value == Stage.REMOVE_LABEL )
+        $illegal : Illegal( $basePoint : basePoint, $labelId : labelId )
+        Junction( type == "3j", basePoint == $basePoint, $p1 : p1, $p2 : p2, $p3 : p3 )
+        $edgeLabel1 : EdgeLabel( p1 == $basePoint, p2 == $p1, labelId == $labelId )
+        $edgeLabel2 : EdgeLabel( p1 == $basePoint, p2 == $p2, labelId == $labelId )
+        $edgeLabel3 : EdgeLabel( p1 == $basePoint, p2 == $p3, labelId == $labelId )
+    then
+        modify( $stage ) {setValue( Stage.CHECKING )}
+        System.out.println( "Stage.CHECKING" );
+        retract( $illegal );
+        retract( $edgeLabel1 );
+        retract( $edgeLabel2 );
+        retract( $edgeLabel3 );
 end
 
 /*
 (p remove_edge_2j
-	(stage ^value remove_label)
-	(illegal ^bp <bp> ^l_id <id>)
-	(junction ^type 2j ^base_point <bp> ^p1 <p1> ^p2 <p2>)
-	(edge_label ^p1 <bp> ^p2 <p1> ^l_id <id>)
-	(edge_label ^p1 <bp> ^p2 <p2> ^l_id <id>)
-	-->
-	; (write edge_label <bp> <p1> <n1> <id> (crlf))
-	; (write edge_label <bp> <p2> <n2> <id> (crlf))
-	(modify 1 ^value checking)
-	(remove 2)
-	(remove 4)
-	(remove 5))
+    (stage ^value remove_label)
+    (illegal ^bp <bp> ^l_id <id>)
+    (junction ^type 2j ^base_point <bp> ^p1 <p1> ^p2 <p2>)
+    (edge_label ^p1 <bp> ^p2 <p1> ^l_id <id>)
+    (edge_label ^p1 <bp> ^p2 <p2> ^l_id <id>)
+    -->
+    ; (write edge_label <bp> <p1> <n1> <id> (crlf))
+    ; (write edge_label <bp> <p2> <n2> <id> (crlf))
+    (modify 1 ^value checking)
+    (remove 2)
+    (remove 4)
+    (remove 5))
 */
 rule "remove_edge_2j"
-	when
-		$stage : Stage( value == Stage.REMOVE_LABEL )
-		$illegal : Illegal( $basePoint : basePoint, $labelId : labelId )
-		Junction( type == "2j", basePoint == $basePoint,$p1 : p1, $p2 : p2 )
-		$edgeLabel1 : EdgeLabel( p1 == $basePoint, p2 == $p1, labelId == $labelId )
-		$edgeLabel2 : EdgeLabel( p1 == $basePoint, p2 == $p2, labelId == $labelId )
-	then
-		modify( $stage ) {setValue( Stage.CHECKING )}
-		System.out.println( "Stage.CHECKING" );
-		retract( $illegal );
-		retract( $edgeLabel1 );
-		retract( $edgeLabel2 );
+    when
+        $stage : Stage( value == Stage.REMOVE_LABEL )
+        $illegal : Illegal( $basePoint : basePoint, $labelId : labelId )
+        Junction( type == "2j", basePoint == $basePoint,$p1 : p1, $p2 : p2 )
+        $edgeLabel1 : EdgeLabel( p1 == $basePoint, p2 == $p1, labelId == $labelId )
+        $edgeLabel2 : EdgeLabel( p1 == $basePoint, p2 == $p2, labelId == $labelId )
+    then
+        modify( $stage ) {setValue( Stage.CHECKING )}
+        System.out.println( "Stage.CHECKING" );
+        retract( $illegal );
+        retract( $edgeLabel1 );
+        retract( $edgeLabel2 );
 end
 
 /*
 (p checking
-	(stage ^value checking)
-	(junction  ^base_point <bp> ^visited check)
-	-->
-	(modify 2 ^visited yes))
-	
+    (stage ^value checking)
+    (junction  ^base_point <bp> ^visited check)
+    -->
+    (modify 2 ^visited yes))
+
 */
 rule "checking2"
-	when
-		Stage( value == Stage.CHECKING )
-		$junction : Junction( $basePoint : basePoint, visited == "check" )
-	then
-		modify( $junction ) {setVisited( "yes" )}
+    when
+        Stage( value == Stage.CHECKING )
+        $junction : Junction( $basePoint : basePoint, visited == "check" )
+    then
+        modify( $junction ) {setVisited( "yes" )}
 end
 
 /*
 (p stop_checking
-	(stage ^value checking)
-	-->
-	(modify 1 ^value labeling))
+    (stage ^value checking)
+    -->
+    (modify 1 ^value labeling))
 */
 rule "stop_checking"
-	when
-		$stage : Stage( value == Stage.CHECKING )
-	then
-		modify( $stage ) {setValue( Stage.LABELING )}
-		System.out.println( "Stage.LABELING" );
+    when
+        $stage : Stage( value == Stage.CHECKING )
+    then
+        modify( $stage ) {setValue( Stage.LABELING )}
+        System.out.println( "Stage.LABELING" );
 end
 /*
 (p done_labeling
-	(stage ^value labeling)
-	-->
-	(modify 1 ^value printing))
+    (stage ^value labeling)
+    -->
+    (modify 1 ^value printing))
 */
 rule "done_labeling"
-	when
-		$stage : Stage( value == Stage.LABELING )
-	then
-		modify( $stage ) {setValue( Stage.PRINTING )}
-		System.out.println( "Stage.PRINTING" );
+    when
+        $stage : Stage( value == Stage.LABELING )
+    then
+        modify( $stage ) {setValue( Stage.PRINTING )}
+        System.out.println( "Stage.PRINTING" );
 end
 
 /*
 (p done
-	(stage ^value printing)
-	-->
-	(halt))
+    (stage ^value printing)
+    -->
+    (halt))
 */
 rule "done"
-	when
-		Stage( value == Stage.PRINTING )
-	then
-		System.out.println( "Finished" );
+    when
+        Stage( value == Stage.PRINTING )
+    then
+        System.out.println( "Finished" );
 end

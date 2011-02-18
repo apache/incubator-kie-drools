@@ -3,15 +3,15 @@ package HelloWorld
 global java.util.List list;
 
 rule "Hello World 1"
-	when
-		$m : org.drools.Message(list contains "hello",
-					text:message == "hola",
-					number in (1, 2, 3, 4, 50, 0),
-					birthday > "10-Jul-1974",
-					message matches ".*ho.*",
-					list excludes "wax")
-	then
-	    // putting in a complex consequence, to make sure it picks up the variabels correctly
-       	list.add( $m );
-		$m.setFired(true);
+    when
+        $m : org.drools.Message(list contains "hello",
+                    text:message == "hola",
+                    number in (1, 2, 3, 4, 50, 0),
+                    birthday > "10-Jul-1974",
+                    message matches ".*ho.*",
+                    list excludes "wax")
+    then
+        // putting in a complex consequence, to make sure it picks up the variabels correctly
+           list.add( $m );
+        $m.setFired(true);
 end

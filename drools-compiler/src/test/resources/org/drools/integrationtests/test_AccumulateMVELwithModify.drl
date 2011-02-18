@@ -6,8 +6,8 @@ rule "Accumulate with modify"
         dialect "mvel"
     when
         $o : Order( total == 0 )
-    	Number( $total : doubleValue ) from accumulate(  
-    	      OrderItem( order == $o, $p : price ),
+        Number( $total : doubleValue ) from accumulate(
+              OrderItem( order == $o, $p : price ),
               sum( $p ) )
     then
         modify( $o ) { total = $total }

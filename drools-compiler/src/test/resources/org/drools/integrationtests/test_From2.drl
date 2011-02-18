@@ -12,8 +12,8 @@ global List list3;
 global Cheesery cheesery;
 
 rule "test from using a global against a map lookup"
-	when
-		$cheese : Cheese( type == "stilton" ) from cheesery.getCheeseMap["stilton"]	
-	then
-		list1.add( $cheese );
+    when
+        $cheese : Cheese( type == "stilton" ) from cheesery.getCheeseMap["stilton"]
+    then
+        list1.add( $cheese );
 end

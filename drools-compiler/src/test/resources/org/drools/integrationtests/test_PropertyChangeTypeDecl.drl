@@ -12,5 +12,5 @@ rule simple
     when
         State( )
     then
-		list.add("fired");
+        list.add("fired");
 end   

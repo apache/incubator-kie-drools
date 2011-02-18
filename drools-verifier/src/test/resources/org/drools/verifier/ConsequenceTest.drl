@@ -19,21 +19,21 @@ package com.misc.someData
 import com.sample.DroolsTest.Message;
 
 rule "Missing consequence 1"
-	when
-		Foo()
-	then
+    when
+        Foo()
+    then
 end
 
 rule "Has a consequence 1"
-	when
-		Foo()
-	then
-		System.out.println("Test");
+    when
+        Foo()
+    then
+        System.out.println("Test");
 end
 
 rule "Missing consequence 2"
-	when
-		Foo()
-	then
-		// System.out.println("Test");
+    when
+        Foo()
+    then
+        // System.out.println("Test");
 end

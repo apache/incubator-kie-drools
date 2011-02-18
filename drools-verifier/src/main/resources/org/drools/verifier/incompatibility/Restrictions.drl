@@ -34,22 +34,22 @@ import org.drools.base.evaluators.Operator;
 # Example: IncorencePattern( a < 1 && a == 10 )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
-	when
-		$r1 :NumberRestriction(
-			operator == Operator.EQUAL
-		)
+    when
+        $r1 :NumberRestriction(
+            operator == Operator.EQUAL
+        )
 
-		$r2 :NumberRestriction(
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			path != $r1.path,
-			value < $r1.value
-		)
+        $r2 :NumberRestriction(
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
+            path != $r1.path,
+            value < $r1.value
+        )
 
-	then
-		insert( new Incompatibility( $r1, $r2 ) );
+    then
+        insert( new Incompatibility( $r1, $r2 ) );
 end
 
 #
@@ -59,22 +59,22 @@ end
 # Example: IncorencePattern( a > 10 && a == 1 )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
-	when
-		$r1 :NumberRestriction(
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
-		)
+    when
+        $r1 :NumberRestriction(
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
+        )
 
-		$r2 :NumberRestriction(
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			operator == Operator.EQUAL,
-			path != $r1.path,
-			value < $r1.value
-		)
+        $r2 :NumberRestriction(
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            operator == Operator.EQUAL,
+            path != $r1.path,
+            value < $r1.value
+        )
 
-	then
-		insert( new Incompatibility( $r1, $r2 ) );
+    then
+        insert( new Incompatibility( $r1, $r2 ) );
 end
 
 #
@@ -84,22 +84,22 @@ end
 # Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
 #
 rule "Incompatible LiteralRestrictions with ranges in pattern possibility, impossible range"
-	when
-		$r1 :LiteralRestriction(
-			operator == Operator.LESS
-		)
+    when
+        $r1 :LiteralRestriction(
+            operator == Operator.LESS
+        )
 
-		$r2 :LiteralRestriction(
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			operator == Operator.GREATER,
-			path != $r1.path,
-			valueAsString == $r1.valueAsString
-		)
+        $r2 :LiteralRestriction(
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            operator == Operator.GREATER,
+            path != $r1.path,
+            valueAsString == $r1.valueAsString
+        )
 
-	then
-		insert( new Incompatibility( $r1, $r2 ) );
+    then
+        insert( new Incompatibility( $r1, $r2 ) );
 end
 
 #
@@ -109,18 +109,18 @@ end
 # Example: Pattern( a > $var, a < $var )
 #
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
-	when
-		$r1 :VariableRestriction(
-			operator == Operator.LESS
-		)
+    when
+        $r1 :VariableRestriction(
+            operator == Operator.LESS
+        )
 
-		$r2 :VariableRestriction(
-			fieldPath == $r1.fieldPath,
-			operator == Operator.GREATER,
-			variable.objectTypePath == $r1.variable.objectTypePath,
-			variable.objectTypeType == $r1.variable.objectTypeType,
-			path != $r1.path
-		)
-	then
-		insert( new Incompatibility( $r1, $r2 ) );
+        $r2 :VariableRestriction(
+            fieldPath == $r1.fieldPath,
+            operator == Operator.GREATER,
+            variable.objectTypePath == $r1.variable.objectTypePath,
+            variable.objectTypeType == $r1.variable.objectTypeType,
+            path != $r1.path
+        )
+    then
+        insert( new Incompatibility( $r1, $r2 ) );
 end

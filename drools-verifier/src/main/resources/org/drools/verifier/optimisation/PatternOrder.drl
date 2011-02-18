@@ -50,40 +50,40 @@ global VerifierReport result;
 # Type: Note
 # Dependencies: None
 # Example: 
-#		eval(function( $something )) 
-#		Pattern()
+#        eval(function( $something ))
+#        Pattern()
 #
 rule "Optimise evals inside pattern"
-	when
-		$subRule : SubRule()
-		
-		$eval :Eval(
-			this memberOf $subRule.items
-		)
+    when
+        $subRule : SubRule()
 
-		$subPattern : SubPattern(
-			this memberOf $subRule.items,
-			patternPath == $subPattern.patternPath,
-			pattern.orderNumber > $eval.orderNumber,
-			$pattern : pattern
-		)
-	then	
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put(  $subRule.getRule().getPath(), 
-							$subRule.getRule().getName());
-	
-		Collection list = new ArrayList();
-		list.add( $eval );
-		list.add( $pattern );
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.NOTE,
-								MessageType.OPTIMISATION,
-								$subRule.getRule(),
-								"Rule \"" + $subRule.getRuleName() +
-								"\" would be more effective if the less expensive component, (" +
-								$pattern +
-								"), could be before (" +
-								$eval + ").",
-								list ) );
+        $eval :Eval(
+            this memberOf $subRule.items
+        )
+
+        $subPattern : SubPattern(
+            this memberOf $subRule.items,
+            patternPath == $subPattern.patternPath,
+            pattern.orderNumber > $eval.orderNumber,
+            $pattern : pattern
+        )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put(  $subRule.getRule().getPath(),
+                            $subRule.getRule().getName());
+
+        Collection list = new ArrayList();
+        list.add( $eval );
+        list.add( $pattern );
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.NOTE,
+                                MessageType.OPTIMISATION,
+                                $subRule.getRule(),
+                                "Rule \"" + $subRule.getRuleName() +
+                                "\" would be more effective if the less expensive component, (" +
+                                $pattern +
+                                "), could be before (" +
+                                $eval + ").",
+                                list ) );
 end

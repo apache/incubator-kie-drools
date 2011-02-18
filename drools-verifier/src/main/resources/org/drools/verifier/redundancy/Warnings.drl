@@ -47,214 +47,214 @@ import java.util.HashMap;
 
 
 rule "Find redundant LHS"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Check that VerifierRule $left and $right have redundant fields.
-		$left :VerifierRule()
-		
-		$right :VerifierRule( 
-			path != $left.path 
-		)
-		
-		$leftSubRules : ArrayList() 
-			from collect( 
-				SubRule(
-					rulePath == $left.path
-				)
-			)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Check that VerifierRule $left and $right have redundant fields.
+        $left :VerifierRule()
 
-		$rightSubRules : ArrayList() 
-			from collect( 
-				SubRule(
-					rulePath == $right.path
-				)
-			)
-		
-		forall (
-			$subRule :SubRule(
-			) from $leftSubRules 
-			
-			Subsumption(
-				left == $subRule,
-				right memberOf $rightSubRules
-			) 
-		)
-		forall (
-			$subRule :SubRule(
-			) from $rightSubRules 
-			
-			Subsumption(
-				left == $subRule,
-				right memberOf $leftSubRules
-			) 
-		)
-	then
+        $right :VerifierRule(
+            path != $left.path
+        )
+
+        $leftSubRules : ArrayList()
+            from collect(
+                SubRule(
+                    rulePath == $left.path
+                )
+            )
+
+        $rightSubRules : ArrayList()
+            from collect(
+                SubRule(
+                    rulePath == $right.path
+                )
+            )
+
+        forall (
+            $subRule :SubRule(
+            ) from $leftSubRules
+
+            Subsumption(
+                left == $subRule,
+                right memberOf $rightSubRules
+            )
+        )
+        forall (
+            $subRule :SubRule(
+            ) from $rightSubRules
+
+            Subsumption(
+                left == $subRule,
+                right memberOf $leftSubRules
+            )
+        )
+    then
 end
 
 rule "Find equivalent Rules" extends "Find redundant LHS"
-	# This rule needs to fire after "Find redundant rules"
-	# or the not Reduncancy( ... ) does not check correctly.
-	salience -1
-	when
-		
-		not Equivalence(
-			items contains $left,
-			items contains $right
-		)
-		
-		# RHS should not be redundant		
-		$leftConsequence : Consequence(
-			path == $left.consequencePath,
-			consequenceType == $left.consequenceType
-		)
-		$rightConsequence : Consequence(
-			path == $right.consequencePath,
-			consequenceType == $right.consequenceType
-		)
-		not Redundancy(
-			items contains $leftConsequence,
-			items contains $rightConsequence
-		)
-		
-		$causes : ArrayList()
-        	from collect( 
-              	Subsumption( 
-              		left memberOf $rightSubRules, 
-              		right memberOf $leftSubRules 
-              	) 
+    # This rule needs to fire after "Find redundant rules"
+    # or the not Reduncancy( ... ) does not check correctly.
+    salience -1
+    when
+
+        not Equivalence(
+            items contains $left,
+            items contains $right
+        )
+
+        # RHS should not be redundant
+        $leftConsequence : Consequence(
+            path == $left.consequencePath,
+            consequenceType == $left.consequenceType
+        )
+        $rightConsequence : Consequence(
+            path == $right.consequencePath,
+            consequenceType == $right.consequenceType
+        )
+        not Redundancy(
+            items contains $leftConsequence,
+            items contains $rightConsequence
+        )
+
+        $causes : ArrayList()
+            from collect(
+                  Subsumption(
+                      left memberOf $rightSubRules,
+                      right memberOf $leftSubRules
+                  )
             )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
-		impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
-		Equivalence equivalence = new Equivalence( $left, $right, $causes );
-		insert( equivalence );
+        Equivalence equivalence = new Equivalence( $left, $right, $causes );
+        insert( equivalence );
 
-		result.add(new VerifierMessage(
-						impactedRules,
-						Severity.WARNING, 
-						MessageType.EQUIVALANCE,
-						null, 
-						"Rule is equivalent to rule " + $right.getName() + ".", 
-						equivalence ) );
+        result.add(new VerifierMessage(
+                        impactedRules,
+                        Severity.WARNING,
+                        MessageType.EQUIVALANCE,
+                        null,
+                        "Rule is equivalent to rule " + $right.getName() + ".",
+                        equivalence ) );
 end
 
 
 #
 # Dependencies:
 #
-#	Needs at least one rule from these packages:
-#		package org.drools.verifier.equivalency.rules
-#			rule "Find equivalent Rules"
-#		package org.drools.verifier.redundancy.rules
-#			rule "Find redundant Rules, strong redundancy"
+#    Needs at least one rule from these packages:
+#        package org.drools.verifier.equivalency.rules
+#            rule "Find equivalent Rules"
+#        package org.drools.verifier.redundancy.rules
+#            rule "Find redundant Rules, strong redundancy"
 #
-#	And this rule:
-#		package org.drools.verifier.redundancy.possibilities
-#			rule "Find rule possibility redundancy"
+#    And this rule:
+#        package org.drools.verifier.redundancy.possibilities
+#            rule "Find rule possibility redundancy"
 #
 rule "Find redundant rules" extends "Find redundant LHS"
-	when
-		
-		not Redundancy(
-			items contains $left,
-			items contains $right
-		)
-		
-		# RHS needs to be redundant		
-		$leftConsequence : Consequence(
-			path == $left.consequencePath,
-			consequenceType == $left.consequenceType
-		)
-		$rightConsequence : Consequence(
-			path == $right.consequencePath,
-			consequenceType == $right.consequenceType
-		)
-		exists Redundancy(
-			items contains $leftConsequence,
-			items contains $rightConsequence
-		)
+    when
 
-		$causes : ArrayList()
-        	from collect( 
-              	Subsumption( 
-              		(
-              			left memberOf $rightSubRules 
-              			&& 
-              			right memberOf $leftSubRules
-              		) || (
-	              		right memberOf $rightSubRules
-	              		&& 
-    	          		left memberOf $leftSubRules 
-              		) 
-              	) 
+        not Redundancy(
+            items contains $left,
+            items contains $right
+        )
+
+        # RHS needs to be redundant
+        $leftConsequence : Consequence(
+            path == $left.consequencePath,
+            consequenceType == $left.consequenceType
+        )
+        $rightConsequence : Consequence(
+            path == $right.consequencePath,
+            consequenceType == $right.consequenceType
+        )
+        exists Redundancy(
+            items contains $leftConsequence,
+            items contains $rightConsequence
+        )
+
+        $causes : ArrayList()
+            from collect(
+                  Subsumption(
+                      (
+                          left memberOf $rightSubRules
+                          &&
+                          right memberOf $leftSubRules
+                      ) || (
+                          right memberOf $rightSubRules
+                          &&
+                          left memberOf $leftSubRules
+                      )
+                  )
             )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
-		impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
-		
-		Redundancy redundancy = new Redundancy( $left, $right, $causes );
-		insert( redundancy );
-		
-		result.add(new VerifierMessage(
-						impactedRules,
-						Severity.WARNING, 
-						MessageType.REDUNDANCY,
-						null, 
-						"Rules " + $right.getName() + " and " + $left.getName() + " are redundant.", 
-						redundancy ) );
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
+
+        Redundancy redundancy = new Redundancy( $left, $right, $causes );
+        insert( redundancy );
+
+        result.add(new VerifierMessage(
+                        impactedRules,
+                        Severity.WARNING,
+                        MessageType.REDUNDANCY,
+                        null,
+                        "Rules " + $right.getName() + " and " + $left.getName() + " are redundant.",
+                        redundancy ) );
 end
 
 
 #
 # Dependencies:
 #
-#	Needs at least one rule from these packages:
-#		package org.drools.verifier.equivalency.rules
-#			rule "Find equivalent Rules"
-#		package org.drools.verifier.redundancy.rules
-#			rule "Find redundant Rules, strong redundancy"
+#    Needs at least one rule from these packages:
+#        package org.drools.verifier.equivalency.rules
+#            rule "Find equivalent Rules"
+#        package org.drools.verifier.redundancy.rules
+#            rule "Find redundant Rules, strong redundancy"
 #
-#	And this rule:
-#		package org.drools.verifier.redundancy.possibilities
-#			rule "Find rule possibility redundancy"
+#    And this rule:
+#        package org.drools.verifier.redundancy.possibilities
+#            rule "Find rule possibility redundancy"
 #
 rule "Find subsumptant rule possibilities from different rules"
-	@verifying_scopes("knowledge-package", "decision-table")
-	salience -100
-	when
-		$left :VerifierRule()
-		$right :VerifierRule( 
-			path != $left.path 
-		)
-		
-		$subsumption :Subsumption(
-			left == $left,
-			right == $right
-		)
-		
-		# No redundacy
-		not Subsumption(
-			left == $subsumption.right,
-			right == $subsumption.left
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    salience -100
+    when
+        $left :VerifierRule()
+        $right :VerifierRule(
+            path != $left.path
+        )
 
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $left.getPath(), $left.getName());
-		impactedRules.put( $right.getPath(), $right.getName());
-		
-		Collection causes = new ArrayList();
-		causes.add( $subsumption );
+        $subsumption :Subsumption(
+            left == $left,
+            right == $right
+        )
 
-		result.add(new VerifierMessage(
-						impactedRules,
-						Severity.WARNING, 
-						MessageType.SUBSUMPTION,
-						null, 
-						"Rules are subsumptant.", 
-						causes ) );
+        # No redundacy
+        not Subsumption(
+            left == $subsumption.right,
+            right == $subsumption.left
+        )
+
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $left.getPath(), $left.getName());
+        impactedRules.put( $right.getPath(), $right.getName());
+
+        Collection causes = new ArrayList();
+        causes.add( $subsumption );
+
+        result.add(new VerifierMessage(
+                        impactedRules,
+                        Severity.WARNING,
+                        MessageType.SUBSUMPTION,
+                        null,
+                        "Rules are subsumptant.",
+                        causes ) );
 end
 

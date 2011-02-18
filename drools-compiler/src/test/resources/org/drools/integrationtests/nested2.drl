@@ -8,11 +8,11 @@ import org.drools.SecondClass.AlternativeKey;
 #declare any global variables here
 
 rule "Second Class"
-	
-	when
-		SecondClass()
-		SecondClass.AlternativeKey()
-	then 
-		System.out.println("Second class!");
-		
+
+    when
+        SecondClass()
+        SecondClass.AlternativeKey()
+    then
+        System.out.println("Second class!");
+
 end

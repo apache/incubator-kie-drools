@@ -20,17 +20,17 @@ import java.util.Date
 import java.util.Calendar
 
 function int getHourOfDate(Date date) {
-	Calendar calendar = Calendar.getInstance();
-	calendar.setTime(date);
-	return calendar.get(Calendar.HOUR_OF_DAY);
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    return calendar.get(Calendar.HOUR_OF_DAY);
 }
 
 rule "5% discount if order includes laptop and order after 18h" ruleflow-group "discount"
-	when
-		o: Order( date: date )
-		eval( getHourOfDate(date) >= 18 )
-		Order.OrderItem( itemId == "I-5432" ) from o.getOrderItems() 
-	then
-		System.out.println("Applying a 5% discount");
-		o.setDiscountPercentage(5);
+    when
+        o: Order( date: date )
+        eval( getHourOfDate(date) >= 18 )
+        Order.OrderItem( itemId == "I-5432" ) from o.getOrderItems()
+    then
+        System.out.println("Applying a 5% discount");
+        o.setDiscountPercentage(5);
 end

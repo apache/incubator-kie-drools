@@ -4,16 +4,16 @@ import org.drools.Person
 import org.drools.CheeseEqual;
 
 rule "assert"
-	salience 10
-	whennamenotationon( name == "person" )
-	then
-		insertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
+    salience 10
+    whennamenotationon( name == "person" )
+    then
+        insertLogical( new CheeseEqual( p.getName(), p.getAge() ) );
 end
 
 rule "modify"
-	no-loop true
-	whenannotationp : Person( name == "person" )	
-		c : CheeseEqual(price == 2)
-	then
-		update( p );
+    no-loop true
+    whenannotationp : Person( name == "person" )
+        c : CheeseEqual(price == 2)
+    then
+        update( p );
 end

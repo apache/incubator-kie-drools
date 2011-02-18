@@ -5,10 +5,10 @@ global java.util.List results;
 rule "Accumulate with bound var " salience 100
     when
         Cheese( type == "stilton", $price : price )
-    	$totalAmount : Number() from accumulate(  $c : Cheese( type == "brie" ),
+        $totalAmount : Number() from accumulate(  $c : Cheese( type == "brie" ),
                                                   init( int total = 0; ),
-    	                                          action( total += $c.getPrice() + $price; ),
-    	                                          reverse( total -= $c.getPrice() + $price; ),
+                                                  action( total += $c.getPrice() + $price; ),
+                                                  reverse( total -= $c.getPrice() + $price; ),
                                                   result( new Integer( total ) ) );
     then
         //System.out.println("Total amount = US$ "+$totalAmount );

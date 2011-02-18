@@ -5,11 +5,11 @@ global java.util.List results;
 global java.lang.Double factor;
 
 rule "test implicit declarations"
-	when
- 	    // implicit binding
-		Cheese( type == "stilton", eval( price < 20*factor ) ) 
-		// late declaration
-		Cheese( price < ( price * factor ), eval( price < price * factor ), price : price  ) 
-	then
-		results.add( "Rule Fired" );
+    when
+         // implicit binding
+        Cheese( type == "stilton", eval( price < 20*factor ) )
+        // late declaration
+        Cheese( price < ( price * factor ), eval( price < price * factor ), price : price  )
+    then
+        results.add( "Rule Fired" );
 end

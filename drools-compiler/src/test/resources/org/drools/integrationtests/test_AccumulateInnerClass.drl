@@ -6,9 +6,9 @@ global java.util.List results;
 
 rule "Accumulate Inner Class" 
     when
-    	$totalAmount : Number() from accumulate( $inner : InnerClass( $val : intAttr ),
+        $totalAmount : Number() from accumulate( $inner : InnerClass( $val : intAttr ),
                                                   init( int total = 0; ),
-    	                                          action( total += $val; ),
+                                                  action( total += $val; ),
                                                   result( new Integer( total ) ) );
     then
         //System.out.println("Total amount = US$ "+$totalAmount );

@@ -4,34 +4,34 @@ import org.drools.Cheese
 
 
 rule "rule1"
-	when
-		c1: Cheese(price == 1)
-	then
-		c1.setType("rule1");
+    when
+        c1: Cheese(price == 1)
+    then
+        c1.setType("rule1");
 end
 
 rule "rule2"
-	when
-		c1: Cheese(price == 1)
-		c2: Cheese(price == 2)
-	then
-		c1.setType("rule2");
-		c2.setType("rule2");
+    when
+        c1: Cheese(price == 1)
+        c2: Cheese(price == 2)
+    then
+        c1.setType("rule2");
+        c2.setType("rule2");
 end
 
 rule "rule3"
-	when
-		c1: Cheese(price == 42)
+    when
+        c1: Cheese(price == 42)
     then
-    	c1.setType("rule3");
+        c1.setType("rule3");
 end
 
 rule "rule4"
-	when
-		c1 : Cheese(price == 46)
-		not Cheese(price == 42)
-	then
-		c1.setType("rule4");
+    when
+        c1 : Cheese(price == 46)
+        not Cheese(price == 42)
+    then
+        c1.setType("rule4");
 end
 
 

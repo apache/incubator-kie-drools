@@ -5,9 +5,9 @@ global java.util.List results;
 rule "test final class 3"
     dialect "mvel"
     salience 10
-	when
-		$p : PersonFinal( name == "bob" )
-	then
-		results.add("Final OK");
+    when
+        $p : PersonFinal( name == "bob" )
+    then
+        results.add("Final OK");
 end
 

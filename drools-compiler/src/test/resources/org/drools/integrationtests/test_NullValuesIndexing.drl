@@ -3,10 +3,10 @@ package org.drools.test;
 import org.drools.Person;
 
 rule "Test Null Values"
-	when
-		person1: Person( $name:name )
-		person2: Pannotationn( name == $name )
-	then
-		person1.setStatus("OK"); 
-		person2.setStatus("OK");
+    when
+        person1: Person( $name:name )
+        person2: Pannotationn( name == $name )
+    then
+        person1.setStatus("OK");
+        person2.setStatus("OK");
 end

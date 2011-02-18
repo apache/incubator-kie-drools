@@ -4,8 +4,8 @@ import org.drools.event.rule.WorkingMemoryEventListener
 
 rule "remove listener"
 when
-	listener : WorkingMemoryEventListener();
+    listener : WorkingMemoryEventListener();
 then
-	drools.getKnowledgeRuntime().removeEventListener(listener);
-	retract(listener);
+    drools.getKnowledgeRuntime().removeEventListener(listener);
+    retract(listener);
 end

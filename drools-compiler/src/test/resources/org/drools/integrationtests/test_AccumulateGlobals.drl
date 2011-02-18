@@ -5,10 +5,10 @@ global Integer globalValue;
 
 rule "Accumulate globals"
     when
-    	$totalAmount : Number() from accumulate(  Cheese( type == "brie" ),
+        $totalAmount : Number() from accumulate(  Cheese( type == "brie" ),
                                                   init( int total = 0; ),
-    	                                          action( total += globalValue.intValue(); ),
-    	                                          reverse( total -= globalValue.intValue(); ),
+                                                  action( total += globalValue.intValue(); ),
+                                                  reverse( total -= globalValue.intValue(); ),
                                                   result( new Integer( total ) ) );
     then
         results.add($totalAmount);

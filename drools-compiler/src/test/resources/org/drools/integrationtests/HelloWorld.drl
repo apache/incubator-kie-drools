@@ -6,24 +6,24 @@ package HelloWorld
 global java.util.List list;
 
 rule "Hello World"
-	when
-		$m : org.drools.Message(list contains "hello", 
-					text:message == "hola", 
-					number > 40, 
-					birthday > "10-Jul-1974", 
-					message matches ".*ho.*",
-					list excludes "wax")
-	then
-	    // putting in a complex consequence, to make sure it picks up the variabels correctly
-		if (1==1)  {
-			int a = 0;
-		}
-		try {
-			//System.out.println("hello world with collections " + $m.getMessage());
-	    } catch  ( Exception e ) {
-	    
-	    } finally {
-	        list.add( $m );
-	    }
-		$m.setFired(true); 
+    when
+        $m : org.drools.Message(list contains "hello",
+                    text:message == "hola",
+                    number > 40,
+                    birthday > "10-Jul-1974",
+                    message matches ".*ho.*",
+                    list excludes "wax")
+    then
+        // putting in a complex consequence, to make sure it picks up the variabels correctly
+        if (1==1)  {
+            int a = 0;
+        }
+        try {
+            //System.out.println("hello world with collections " + $m.getMessage());
+        } catch  ( Exception e ) {
+
+        } finally {
+            list.add( $m );
+        }
+        $m.setFired(true);
 end

@@ -19,41 +19,41 @@ package org.drools.examples
 import org.drools.examples.State;
  
 rule Bootstrap
-	when
-		a : State(name == "A", state == State.NOTRUN )
-	then
-		System.out.println(a.getName() + " finished" );
-		a.setState( State.FINISHED );
+    when
+        a : State(name == "A", state == State.NOTRUN )
+    then
+        System.out.println(a.getName() + " finished" );
+        a.setState( State.FINISHED );
 end
 
  
 rule "A to B"
-	when
-		State(name == "A", state == State.FINISHED )
-		b : State(name == "B", state == State.NOTRUN )		
-	then
-		System.out.println(b.getName() + " finished" );
-		b.setState( State.FINISHED );
+    when
+        State(name == "A", state == State.FINISHED )
+        b : State(name == "B", state == State.NOTRUN )
+    then
+        System.out.println(b.getName() + " finished" );
+        b.setState( State.FINISHED );
 end
 
 rule "B to C"
-		agenda-group "B to C"
-		auto-focus true				
-	when
-		State(name == "B", state == State.FINISHED )			
-		c : State(name == "C", state == State.NOTRUN )
-	then
-		System.out.println(c.getName() + " finished" );
-		c.setState( State.FINISHED );
-		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
+        agenda-group "B to C"
+        auto-focus true
+    when
+        State(name == "B", state == State.FINISHED )
+        c : State(name == "C", state == State.NOTRUN )
+    then
+        System.out.println(c.getName() + " finished" );
+        c.setState( State.FINISHED );
+        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "B to D" ).setFocus();
 end
 
 rule "B to D"
-	agenda-group "B to D"
-	when
-		State(name == "B", state == State.FINISHED )			
-		d : State(name == "D", state == State.NOTRUN )
-	then
-		System.out.println(d.getName() + " finished" );
-		d.setState( State.FINISHED );
+    agenda-group "B to D"
+    when
+        State(name == "B", state == State.FINISHED )
+        d : State(name == "D", state == State.NOTRUN )
+    then
+        System.out.println(d.getName() + " finished" );
+        d.setState( State.FINISHED );
 end

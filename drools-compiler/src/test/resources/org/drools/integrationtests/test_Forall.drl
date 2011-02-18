@@ -2,11 +2,11 @@ package org.drools;
 
 global java.util.List results;
 
-rule "test nested CEs"	
-	when
-	    forall( State( $state : state )
-	            Person( status == $state, $likes : likes )
-	            Cheese( type == $likes ) )
-	then 
-		results.add("OK");		
+rule "test nested CEs"
+    when
+        forall( State( $state : state )
+                Person( status == $state, $likes : likes )
+                Cheese( type == $likes ) )
+    then
+        results.add("OK");
 end

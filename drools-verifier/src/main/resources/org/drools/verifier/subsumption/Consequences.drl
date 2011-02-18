@@ -27,14 +27,14 @@ global VerifierReport result;
 #
 #
 rule "Subsumptant consequences"
-	when
-		$left :TextConsequence()
-		
-		$right :TextConsequence(
-			path != $left.path,
-			text == $left.text
-		)	
-		
-	then 
-		insert( new Subsumption( $left, $right ) );
+    when
+        $left :TextConsequence()
+
+        $right :TextConsequence(
+            path != $left.path,
+            text == $left.text
+        )
+
+    then
+        insert( new Subsumption( $left, $right ) );
 end

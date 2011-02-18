@@ -5,8 +5,8 @@ import java.util.Map;
 global java.util.List results;
 
 rule "map access"
-	when
-		$m : Map( this['name'] == "Edson", this.surname == "Tirelli", this.age == 28 )
-	then
-		results.add( $m );
+    when
+        $m : Map( this['name'] == "Edson", this.surname == "Tirelli", this.age == 28 )
+    then
+        results.add( $m );
 end

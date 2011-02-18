@@ -19,17 +19,17 @@ global FeeResult result;
 
 template "Fee Schedule"
 rule "Fee Schedule_@{row.rowNumber}"
-	agenda-group "@{FEE_SCHEDULE_TYPE}"
-	when
-		FeeEvent(productType == "@{PRODUCT_TYPE}",
-			activityType == "@{ACTIVITY_TYPE}",
-			feeType == "@{FEE_TYPE}",
-			txParty == "@{OWNING_PARTY}",
-			entityBranch == "@{ENTITY_BRANCH}",
-			amount @{LC_AMOUNT},
-			ccy == "@{CCY}"
-		)
-	then
-		result.setSchedule(new FeeSchedule("@{FEE_SCHEDULE_ID}", "@{FEE_SCHEDULE_TYPE}", @{AMOUNT}));
+    agenda-group "@{FEE_SCHEDULE_TYPE}"
+    when
+        FeeEvent(productType == "@{PRODUCT_TYPE}",
+            activityType == "@{ACTIVITY_TYPE}",
+            feeType == "@{FEE_TYPE}",
+            txParty == "@{OWNING_PARTY}",
+            entityBranch == "@{ENTITY_BRANCH}",
+            amount @{LC_AMOUNT},
+            ccy == "@{CCY}"
+        )
+    then
+        result.setSchedule(new FeeSchedule("@{FEE_SCHEDULE_ID}", "@{FEE_SCHEDULE_TYPE}", @{AMOUNT}));
 end
 end template

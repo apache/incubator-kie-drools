@@ -9,10 +9,10 @@ global java.util.List results;
 rule "Constraints everywhere" salience 80
     when
         $person      : Person( $likes : likes )
-    	$cheesery    : Cheesery( totalAmount > 20 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes ),
+        $cheesery    : Cheesery( totalAmount > 20 )
+                               from accumulate( $cheese : Cheese( type == $likes ),
                                                 init( Cheesery cheesery = new Cheesery(); ),
-    	                                        action( cheesery.addCheese( $cheese ); ),
+                                                action( cheesery.addCheese( $cheese ); ),
                                                 result( cheesery ) );
     then
         //System.out.println($person.getName() +" is spending a lot buying cheese ( US$ "+$cheesery.getTotalAmount()+" )!");

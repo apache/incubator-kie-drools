@@ -22,20 +22,20 @@ global java.util.List list
  
 rule "Hello World"
     dialect "mvel"
-	when
-		m : Message( status == Message.HELLO, message : message )
-	then
-	System.out.println( message );
-//	 	modify ( m ) { setMessage( "Goodbyte cruel world" ),
-//	                   setStatus( Message.GOODBYE ) };
-	modify ( m ) { message = "Goodbyte cruel world",
-	               status = Message.GOODBYE };	               
+    when
+        m : Message( status == Message.HELLO, message : message )
+    then
+        System.out.println( message );
+//	      modify ( m ) { setMessage( "Goodbyte cruel world" ),
+//                       setStatus( Message.GOODBYE ) };
+    modify ( m ) { message = "Goodbyte cruel world",
+                   status = Message.GOODBYE };
 end
 
 rule "Good Bye"
     dialect "java"
-	when
-		Message( status == Message.GOODBYE, message : message )
-	then
-		System.out.println( message ); 	
+    when
+        Message( status == Message.GOODBYE, message : message )
+    then
+        System.out.println( message );
 end

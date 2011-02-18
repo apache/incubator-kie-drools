@@ -27,17 +27,17 @@ package org.drools.verifier.report.components
 
 
 rule "Your First Rule"
-	when
-		Person( name == "Toni" )
-	then 
+    when
+        Person( name == "Toni" )
+    then
         System.out.println( "*******************" );
-		
+
 end
 
 rule "Your Second Rule"
-	when
-		Person( name == "Toni" )
-	then 
+    when
+        Person( name == "Toni" )
+    then
         System.out.println( "*******************" );
-		
+
 end

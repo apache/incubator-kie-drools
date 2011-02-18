@@ -7,7 +7,7 @@ global java.util.List results;
 
 rule "Collect Test" salience 70
     when
-    	$cheeseList  : ArrayList(size == 1) from collect( Cheese( ) );
+        $cheeseList  : ArrayList(size == 1) from collect( Cheese( ) );
     then
         results.add($cheeseList);
 end

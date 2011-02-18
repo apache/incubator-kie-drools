@@ -5,10 +5,10 @@ import java.util.ArrayList;
 global java.util.List results;
 
 rule "test collect with nested from"
-	when
-		$cheesery : Cheesery()
-	    $person : Person( $likes : likes )
-		$list : ArrayList() from collect( Cheese( type == $likes ) from $cheesery.getCheeses() )
-	then
-		results.add( $list );
+    when
+        $cheesery : Cheesery()
+        $person : Person( $likes : likes )
+        $list : ArrayList() from collect( Cheese( type == $likes ) from $cheesery.getCheeses() )
+    then
+        results.add( $list );
 end

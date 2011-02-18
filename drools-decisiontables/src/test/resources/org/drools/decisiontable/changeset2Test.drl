@@ -3,7 +3,7 @@ package org.drools.test
 global java.util.List list;
 
 rule "rule2"
-	salience 5
+    salience 5
 when
 then
     list.add( "rule2" );

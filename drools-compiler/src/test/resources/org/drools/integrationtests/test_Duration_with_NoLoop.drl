@@ -6,10 +6,10 @@ import org.drools.Person;
 global java.util.List list;
 
 rule delayed
-	timer 100
-	no-loop true
+    timer 100
+    no-loop true
     when
         cheese : Cheese( )
     then
-		list.add( cheese );
+        list.add( cheese );
 end   

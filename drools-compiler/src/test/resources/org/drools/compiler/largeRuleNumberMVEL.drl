@@ -12,3402 +12,3401 @@ global java.util.List list;
 
 
 
-rule "Cheese_1"	
-	when
-		$c : Cheese( price == 1 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_1"
+    when
+        $c : Cheese( price == 1 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_1"
-	when 
-		$p : Person(name == "p1")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p1")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_2"	
-	when
-		$c : Cheese( price == 2 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_2"
+    when
+        $c : Cheese( price == 2 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_2"
-	when 
-		$p : Person(name == "p2")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p2")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_3"	
-	when
-		$c : Cheese( price == 3 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_3"
+    when
+        $c : Cheese( price == 3 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_3"
-	when 
-		$p : Person(name == "p3")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p3")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_4"	
-	when
-		$c : Cheese( price == 4 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_4"
+    when
+        $c : Cheese( price == 4 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_4"
-	when 
-		$p : Person(name == "p4")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p4")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_5"	
-	when
-		$c : Cheese( price == 5 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_5"
+    when
+        $c : Cheese( price == 5 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_5"
-	when 
-		$p : Person(name == "p5")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p5")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_6"	
-	when
-		$c : Cheese( price == 6 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_6"
+    when
+        $c : Cheese( price == 6 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_6"
-	when 
-		$p : Person(name == "p6")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p6")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_7"	
-	when
-		$c : Cheese( price == 7 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_7"
+    when
+        $c : Cheese( price == 7 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_7"
-	when 
-		$p : Person(name == "p7")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p7")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_8"	
-	when
-		$c : Cheese( price == 8 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_8"
+    when
+        $c : Cheese( price == 8 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_8"
-	when 
-		$p : Person(name == "p8")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p8")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_9"	
-	when
-		$c : Cheese( price == 9 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_9"
+    when
+        $c : Cheese( price == 9 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_9"
-	when 
-		$p : Person(name == "p9")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p9")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_10"	
-	when
-		$c : Cheese( price == 10 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_10"
+    when
+        $c : Cheese( price == 10 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_10"
-	when 
-		$p : Person(name == "p10")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p10")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_11"	
-	when
-		$c : Cheese( price == 11 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_11"
+    when
+        $c : Cheese( price == 11 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_11"
-	when 
-		$p : Person(name == "p11")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p11")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_12"	
-	when
-		$c : Cheese( price == 12 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_12"
+    when
+        $c : Cheese( price == 12 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_12"
-	when 
-		$p : Person(name == "p12")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p12")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_13"	
-	when
-		$c : Cheese( price == 13 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_13"
+    when
+        $c : Cheese( price == 13 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_13"
-	when 
-		$p : Person(name == "p13")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p13")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_14"	
-	when
-		$c : Cheese( price == 14 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_14"
+    when
+        $c : Cheese( price == 14 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_14"
-	when 
-		$p : Person(name == "p14")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p14")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_15"	
-	when
-		$c : Cheese( price == 15 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_15"
+    when
+        $c : Cheese( price == 15 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_15"
-	when 
-		$p : Person(name == "p15")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p15")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_16"	
-	when
-		$c : Cheese( price == 16 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_16"
+    when
+        $c : Cheese( price == 16 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_16"
-	when 
-		$p : Person(name == "p16")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p16")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_17"	
-	when
-		$c : Cheese( price == 17 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_17"
+    when
+        $c : Cheese( price == 17 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_17"
-	when 
-		$p : Person(name == "p17")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p17")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_18"	
-	when
-		$c : Cheese( price == 18 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_18"
+    when
+        $c : Cheese( price == 18 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_18"
-	when 
-		$p : Person(name == "p18")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p18")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_19"	
-	when
-		$c : Cheese( price == 19 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_19"
+    when
+        $c : Cheese( price == 19 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_19"
-	when 
-		$p : Person(name == "p19")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p19")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_20"	
-	when
-		$c : Cheese( price == 20 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_20"
+    when
+        $c : Cheese( price == 20 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_20"
-	when 
-		$p : Person(name == "p20")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p20")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_21"	
-	when
-		$c : Cheese( price == 21 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_21"
+    when
+        $c : Cheese( price == 21 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_21"
-	when 
-		$p : Person(name == "p21")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p21")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_22"	
-	when
-		$c : Cheese( price == 22 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_22"
+    when
+        $c : Cheese( price == 22 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_22"
-	when 
-		$p : Person(name == "p22")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p22")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_23"	
-	when
-		$c : Cheese( price == 23 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_23"
+    when
+        $c : Cheese( price == 23 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_23"
-	when 
-		$p : Person(name == "p23")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p23")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_24"	
-	when
-		$c : Cheese( price == 24 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_24"
+    when
+        $c : Cheese( price == 24 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_24"
-	when 
-		$p : Person(name == "p24")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p24")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_25"	
-	when
-		$c : Cheese( price == 25 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_25"
+    when
+        $c : Cheese( price == 25 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_25"
-	when 
-		$p : Person(name == "p25")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p25")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_26"	
-	when
-		$c : Cheese( price == 26 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_26"
+    when
+        $c : Cheese( price == 26 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_26"
-	when 
-		$p : Person(name == "p26")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p26")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_27"	
-	when
-		$c : Cheese( price == 27 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_27"
+    when
+        $c : Cheese( price == 27 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_27"
-	when 
-		$p : Person(name == "p27")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p27")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_28"	
-	when
-		$c : Cheese( price == 28 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_28"
+    when
+        $c : Cheese( price == 28 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_28"
-	when 
-		$p : Person(name == "p28")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p28")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_29"	
-	when
-		$c : Cheese( price == 29 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_29"
+    when
+        $c : Cheese( price == 29 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_29"
-	when 
-		$p : Person(name == "p29")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p29")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_30"	
-	when
-		$c : Cheese( price == 30 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_30"
+    when
+        $c : Cheese( price == 30 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_30"
-	when 
-		$p : Person(name == "p30")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p30")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_31"	
-	when
-		$c : Cheese( price == 31 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_31"
+    when
+        $c : Cheese( price == 31 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_31"
-	when 
-		$p : Person(name == "p31")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p31")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_32"	
-	when
-		$c : Cheese( price == 32 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_32"
+    when
+        $c : Cheese( price == 32 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_32"
-	when 
-		$p : Person(name == "p32")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p32")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_33"	
-	when
-		$c : Cheese( price == 33 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_33"
+    when
+        $c : Cheese( price == 33 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_33"
-	when 
-		$p : Person(name == "p33")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p33")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_34"	
-	when
-		$c : Cheese( price == 34 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_34"
+    when
+        $c : Cheese( price == 34 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_34"
-	when 
-		$p : Person(name == "p34")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p34")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_35"	
-	when
-		$c : Cheese( price == 35 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_35"
+    when
+        $c : Cheese( price == 35 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_35"
-	when 
-		$p : Person(name == "p35")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p35")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_36"	
-	when
-		$c : Cheese( price == 36 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_36"
+    when
+        $c : Cheese( price == 36 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_36"
-	when 
-		$p : Person(name == "p36")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p36")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_37"	
-	when
-		$c : Cheese( price == 37 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_37"
+    when
+        $c : Cheese( price == 37 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_37"
-	when 
-		$p : Person(name == "p37")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p37")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_38"	
-	when
-		$c : Cheese( price == 38 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_38"
+    when
+        $c : Cheese( price == 38 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_38"
-	when 
-		$p : Person(name == "p38")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p38")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_39"	
-	when
-		$c : Cheese( price == 39 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_39"
+    when
+        $c : Cheese( price == 39 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_39"
-	when 
-		$p : Person(name == "p39")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p39")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_40"	
-	when
-		$c : Cheese( price == 40 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_40"
+    when
+        $c : Cheese( price == 40 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_40"
-	when 
-		$p : Person(name == "p40")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p40")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_41"	
-	when
-		$c : Cheese( price == 41 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_41"
+    when
+        $c : Cheese( price == 41 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_41"
-	when 
-		$p : Person(name == "p41")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p41")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_42"	
-	when
-		$c : Cheese( price == 42 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_42"
+    when
+        $c : Cheese( price == 42 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_42"
-	when 
-		$p : Person(name == "p42")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p42")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_43"	
-	when
-		$c : Cheese( price == 43 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_43"
+    when
+        $c : Cheese( price == 43 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_43"
-	when 
-		$p : Person(name == "p43")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p43")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_44"	
-	when
-		$c : Cheese( price == 44 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_44"
+    when
+        $c : Cheese( price == 44 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_44"
-	when 
-		$p : Person(name == "p44")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p44")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_45"	
-	when
-		$c : Cheese( price == 45 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_45"
+    when
+        $c : Cheese( price == 45 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_45"
-	when 
-		$p : Person(name == "p45")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p45")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_46"	
-	when
-		$c : Cheese( price == 46 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_46"
+    when
+        $c : Cheese( price == 46 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_46"
-	when 
-		$p : Person(name == "p46")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p46")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_47"	
-	when
-		$c : Cheese( price == 47 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_47"
+    when
+        $c : Cheese( price == 47 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_47"
-	when 
-		$p : Person(name == "p47")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p47")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_48"	
-	when
-		$c : Cheese( price == 48 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_48"
+    when
+        $c : Cheese( price == 48 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_48"
-	when 
-		$p : Person(name == "p48")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p48")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_49"	
-	when
-		$c : Cheese( price == 49 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_49"
+    when
+        $c : Cheese( price == 49 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_49"
-	when 
-		$p : Person(name == "p49")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p49")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_50"	
-	when
-		$c : Cheese( price == 50 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_50"
+    when
+        $c : Cheese( price == 50 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_50"
-	when 
-		$p : Person(name == "p50")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p50")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_51"	
-	when
-		$c : Cheese( price == 51 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_51"
+    when
+        $c : Cheese( price == 51 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_51"
-	when 
-		$p : Person(name == "p51")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p51")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_52"	
-	when
-		$c : Cheese( price == 52 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_52"
+    when
+        $c : Cheese( price == 52 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_52"
-	when 
-		$p : Person(name == "p52")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p52")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_53"	
-	when
-		$c : Cheese( price == 53 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_53"
+    when
+        $c : Cheese( price == 53 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_53"
-	when 
-		$p : Person(name == "p53")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p53")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_54"	
-	when
-		$c : Cheese( price == 54 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_54"
+    when
+        $c : Cheese( price == 54 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_54"
-	when 
-		$p : Person(name == "p54")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p54")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_55"	
-	when
-		$c : Cheese( price == 55 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_55"
+    when
+        $c : Cheese( price == 55 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_55"
-	when 
-		$p : Person(name == "p55")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p55")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_56"	
-	when
-		$c : Cheese( price == 56 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_56"
+    when
+        $c : Cheese( price == 56 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_56"
-	when 
-		$p : Person(name == "p56")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p56")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_57"	
-	when
-		$c : Cheese( price == 57 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_57"
+    when
+        $c : Cheese( price == 57 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_57"
-	when 
-		$p : Person(name == "p57")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p57")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_58"	
-	when
-		$c : Cheese( price == 58 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_58"
+    when
+        $c : Cheese( price == 58 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_58"
-	when 
-		$p : Person(name == "p58")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p58")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_59"	
-	when
-		$c : Cheese( price == 59 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_59"
+    when
+        $c : Cheese( price == 59 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_59"
-	when 
-		$p : Person(name == "p59")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p59")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_60"	
-	when
-		$c : Cheese( price == 60 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_60"
+    when
+        $c : Cheese( price == 60 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_60"
-	when 
-		$p : Person(name == "p60")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p60")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_61"	
-	when
-		$c : Cheese( price == 61 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_61"
+    when
+        $c : Cheese( price == 61 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_61"
-	when 
-		$p : Person(name == "p61")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p61")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_62"	
-	when
-		$c : Cheese( price == 62 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_62"
+    when
+        $c : Cheese( price == 62 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_62"
-	when 
-		$p : Person(name == "p62")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p62")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_63"	
-	when
-		$c : Cheese( price == 63 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_63"
+    when
+        $c : Cheese( price == 63 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_63"
-	when 
-		$p : Person(name == "p63")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p63")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_64"	
-	when
-		$c : Cheese( price == 64 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_64"
+    when
+        $c : Cheese( price == 64 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_64"
-	when 
-		$p : Person(name == "p64")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p64")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_65"	
-	when
-		$c : Cheese( price == 65 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_65"
+    when
+        $c : Cheese( price == 65 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_65"
-	when 
-		$p : Person(name == "p65")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p65")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_66"	
-	when
-		$c : Cheese( price == 66 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_66"
+    when
+        $c : Cheese( price == 66 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_66"
-	when 
-		$p : Person(name == "p66")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p66")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_67"	
-	when
-		$c : Cheese( price == 67 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_67"
+    when
+        $c : Cheese( price == 67 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_67"
-	when 
-		$p : Person(name == "p67")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p67")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_68"	
-	when
-		$c : Cheese( price == 68 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_68"
+    when
+        $c : Cheese( price == 68 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_68"
-	when 
-		$p : Person(name == "p68")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p68")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_69"	
-	when
-		$c : Cheese( price == 69 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_69"
+    when
+        $c : Cheese( price == 69 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_69"
-	when 
-		$p : Person(name == "p69")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p69")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_70"	
-	when
-		$c : Cheese( price == 70 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_70"
+    when
+        $c : Cheese( price == 70 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_70"
-	when 
-		$p : Person(name == "p70")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p70")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_71"	
-	when
-		$c : Cheese( price == 71 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_71"
+    when
+        $c : Cheese( price == 71 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_71"
-	when 
-		$p : Person(name == "p71")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p71")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_72"	
-	when
-		$c : Cheese( price == 72 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_72"
+    when
+        $c : Cheese( price == 72 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_72"
-	when 
-		$p : Person(name == "p72")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p72")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_73"	
-	when
-		$c : Cheese( price == 73 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_73"
+    when
+        $c : Cheese( price == 73 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_73"
-	when 
-		$p : Person(name == "p73")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p73")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_74"	
-	when
-		$c : Cheese( price == 74 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_74"
+    when
+        $c : Cheese( price == 74 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_74"
-	when 
-		$p : Person(name == "p74")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p74")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_75"	
-	when
-		$c : Cheese( price == 75 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_75"
+    when
+        $c : Cheese( price == 75 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_75"
-	when 
-		$p : Person(name == "p75")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p75")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_76"	
-	when
-		$c : Cheese( price == 76 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_76"
+    when
+        $c : Cheese( price == 76 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_76"
-	when 
-		$p : Person(name == "p76")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p76")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_77"	
-	when
-		$c : Cheese( price == 77 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_77"
+    when
+        $c : Cheese( price == 77 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_77"
-	when 
-		$p : Person(name == "p77")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p77")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_78"	
-	when
-		$c : Cheese( price == 78 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_78"
+    when
+        $c : Cheese( price == 78 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_78"
-	when 
-		$p : Person(name == "p78")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p78")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_79"	
-	when
-		$c : Cheese( price == 79 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_79"
+    when
+        $c : Cheese( price == 79 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_79"
-	when 
-		$p : Person(name == "p79")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p79")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_80"	
-	when
-		$c : Cheese( price == 80 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_80"
+    when
+        $c : Cheese( price == 80 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_80"
-	when 
-		$p : Person(name == "p80")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p80")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_81"	
-	when
-		$c : Cheese( price == 81 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_81"
+    when
+        $c : Cheese( price == 81 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_81"
-	when 
-		$p : Person(name == "p81")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p81")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_82"	
-	when
-		$c : Cheese( price == 82 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_82"
+    when
+        $c : Cheese( price == 82 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_82"
-	when 
-		$p : Person(name == "p82")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p82")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_83"	
-	when
-		$c : Cheese( price == 83 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_83"
+    when
+        $c : Cheese( price == 83 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_83"
-	when 
-		$p : Person(name == "p83")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p83")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_84"	
-	when
-		$c : Cheese( price == 84 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_84"
+    when
+        $c : Cheese( price == 84 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_84"
-	when 
-		$p : Person(name == "p84")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p84")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_85"	
-	when
-		$c : Cheese( price == 85 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_85"
+    when
+        $c : Cheese( price == 85 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_85"
-	when 
-		$p : Person(name == "p85")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p85")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_86"	
-	when
-		$c : Cheese( price == 86 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_86"
+    when
+        $c : Cheese( price == 86 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_86"
-	when 
-		$p : Person(name == "p86")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p86")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_87"	
-	when
-		$c : Cheese( price == 87 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_87"
+    when
+        $c : Cheese( price == 87 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_87"
-	when 
-		$p : Person(name == "p87")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p87")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_88"	
-	when
-		$c : Cheese( price == 88 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_88"
+    when
+        $c : Cheese( price == 88 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_88"
-	when 
-		$p : Person(name == "p88")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p88")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_89"	
-	when
-		$c : Cheese( price == 89 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_89"
+    when
+        $c : Cheese( price == 89 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_89"
-	when 
-		$p : Person(name == "p89")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p89")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_90"	
-	when
-		$c : Cheese( price == 90 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_90"
+    when
+        $c : Cheese( price == 90 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_90"
-	when 
-		$p : Person(name == "p90")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p90")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_91"	
-	when
-		$c : Cheese( price == 91 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_91"
+    when
+        $c : Cheese( price == 91 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_91"
-	when 
-		$p : Person(name == "p91")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p91")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_92"	
-	when
-		$c : Cheese( price == 92 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_92"
+    when
+        $c : Cheese( price == 92 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_92"
-	when 
-		$p : Person(name == "p92")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p92")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_93"	
-	when
-		$c : Cheese( price == 93 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_93"
+    when
+        $c : Cheese( price == 93 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_93"
-	when 
-		$p : Person(name == "p93")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p93")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_94"	
-	when
-		$c : Cheese( price == 94 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_94"
+    when
+        $c : Cheese( price == 94 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_94"
-	when 
-		$p : Person(name == "p94")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p94")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_95"	
-	when
-		$c : Cheese( price == 95 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_95"
+    when
+        $c : Cheese( price == 95 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_95"
-	when 
-		$p : Person(name == "p95")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p95")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_96"	
-	when
-		$c : Cheese( price == 96 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_96"
+    when
+        $c : Cheese( price == 96 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_96"
-	when 
-		$p : Person(name == "p96")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p96")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_97"	
-	when
-		$c : Cheese( price == 97 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_97"
+    when
+        $c : Cheese( price == 97 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_97"
-	when 
-		$p : Person(name == "p97")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p97")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_98"	
-	when
-		$c : Cheese( price == 98 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_98"
+    when
+        $c : Cheese( price == 98 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_98"
-	when 
-		$p : Person(name == "p98")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p98")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_99"	
-	when
-		$c : Cheese( price == 99 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_99"
+    when
+        $c : Cheese( price == 99 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_99"
-	when 
-		$p : Person(name == "p99")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p99")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_100"	
-	when
-		$c : Cheese( price == 100 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_100"
+    when
+        $c : Cheese( price == 100 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_100"
-	when 
-		$p : Person(name == "p100")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p100")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_101"	
-	when
-		$c : Cheese( price == 101 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_101"
+    when
+        $c : Cheese( price == 101 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_101"
-	when 
-		$p : Person(name == "p101")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p101")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_102"	
-	when
-		$c : Cheese( price == 102 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_102"
+    when
+        $c : Cheese( price == 102 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_102"
-	when 
-		$p : Person(name == "p102")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p102")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_103"	
-	when
-		$c : Cheese( price == 103 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_103"
+    when
+        $c : Cheese( price == 103 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_103"
-	when 
-		$p : Person(name == "p103")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p103")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_104"	
-	when
-		$c : Cheese( price == 104 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_104"
+    when
+        $c : Cheese( price == 104 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_104"
-	when 
-		$p : Person(name == "p104")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p104")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_105"	
-	when
-		$c : Cheese( price == 105 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_105"
+    when
+        $c : Cheese( price == 105 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_105"
-	when 
-		$p : Person(name == "p105")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p105")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_106"	
-	when
-		$c : Cheese( price == 106 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_106"
+    when
+        $c : Cheese( price == 106 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_106"
-	when 
-		$p : Person(name == "p106")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p106")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_107"	
-	when
-		$c : Cheese( price == 107 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_107"
+    when
+        $c : Cheese( price == 107 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_107"
-	when 
-		$p : Person(name == "p107")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p107")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_108"	
-	when
-		$c : Cheese( price == 108 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_108"
+    when
+        $c : Cheese( price == 108 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_108"
-	when 
-		$p : Person(name == "p108")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p108")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_109"	
-	when
-		$c : Cheese( price == 109 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_109"
+    when
+        $c : Cheese( price == 109 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_109"
-	when 
-		$p : Person(name == "p109")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p109")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_110"	
-	when
-		$c : Cheese( price == 110 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_110"
+    when
+        $c : Cheese( price == 110 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_110"
-	when 
-		$p : Person(name == "p110")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p110")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_111"	
-	when
-		$c : Cheese( price == 111 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_111"
+    when
+        $c : Cheese( price == 111 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_111"
-	when 
-		$p : Person(name == "p111")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p111")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_112"	
-	when
-		$c : Cheese( price == 112 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_112"
+    when
+        $c : Cheese( price == 112 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_112"
-	when 
-		$p : Person(name == "p112")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p112")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_113"	
-	when
-		$c : Cheese( price == 113 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_113"
+    when
+        $c : Cheese( price == 113 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_113"
-	when 
-		$p : Person(name == "p113")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p113")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_114"	
-	when
-		$c : Cheese( price == 114 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_114"
+    when
+        $c : Cheese( price == 114 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_114"
-	when 
-		$p : Person(name == "p114")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p114")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_115"	
-	when
-		$c : Cheese( price == 115 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_115"
+    when
+        $c : Cheese( price == 115 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_115"
-	when 
-		$p : Person(name == "p115")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p115")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_116"	
-	when
-		$c : Cheese( price == 116 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_116"
+    when
+        $c : Cheese( price == 116 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_116"
-	when 
-		$p : Person(name == "p116")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p116")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_117"	
-	when
-		$c : Cheese( price == 117 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_117"
+    when
+        $c : Cheese( price == 117 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_117"
-	when 
-		$p : Person(name == "p117")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p117")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_118"	
-	when
-		$c : Cheese( price == 118 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_118"
+    when
+        $c : Cheese( price == 118 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_118"
-	when 
-		$p : Person(name == "p118")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p118")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_119"	
-	when
-		$c : Cheese( price == 119 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_119"
+    when
+        $c : Cheese( price == 119 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_119"
-	when 
-		$p : Person(name == "p119")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p119")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_120"	
-	when
-		$c : Cheese( price == 120 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_120"
+    when
+        $c : Cheese( price == 120 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_120"
-	when 
-		$p : Person(name == "p120")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p120")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_121"	
-	when
-		$c : Cheese( price == 121 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_121"
+    when
+        $c : Cheese( price == 121 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_121"
-	when 
-		$p : Person(name == "p121")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p121")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_122"	
-	when
-		$c : Cheese( price == 122 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_122"
+    when
+        $c : Cheese( price == 122 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_122"
-	when 
-		$p : Person(name == "p122")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p122")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_123"	
-	when
-		$c : Cheese( price == 123 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_123"
+    when
+        $c : Cheese( price == 123 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_123"
-	when 
-		$p : Person(name == "p123")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p123")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_124"	
-	when
-		$c : Cheese( price == 124 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_124"
+    when
+        $c : Cheese( price == 124 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_124"
-	when 
-		$p : Person(name == "p124")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p124")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_125"	
-	when
-		$c : Cheese( price == 125 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_125"
+    when
+        $c : Cheese( price == 125 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_125"
-	when 
-		$p : Person(name == "p125")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p125")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_126"	
-	when
-		$c : Cheese( price == 126 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_126"
+    when
+        $c : Cheese( price == 126 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_126"
-	when 
-		$p : Person(name == "p126")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p126")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_127"	
-	when
-		$c : Cheese( price == 127 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_127"
+    when
+        $c : Cheese( price == 127 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_127"
-	when 
-		$p : Person(name == "p127")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p127")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_128"	
-	when
-		$c : Cheese( price == 128 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_128"
+    when
+        $c : Cheese( price == 128 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_128"
-	when 
-		$p : Person(name == "p128")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p128")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_129"	
-	when
-		$c : Cheese( price == 129 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_129"
+    when
+        $c : Cheese( price == 129 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_129"
-	when 
-		$p : Person(name == "p129")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p129")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_130"	
-	when
-		$c : Cheese( price == 130 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_130"
+    when
+        $c : Cheese( price == 130 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_130"
-	when 
-		$p : Person(name == "p130")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p130")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_131"	
-	when
-		$c : Cheese( price == 131 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_131"
+    when
+        $c : Cheese( price == 131 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_131"
-	when 
-		$p : Person(name == "p131")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p131")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_132"	
-	when
-		$c : Cheese( price == 132 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_132"
+    when
+        $c : Cheese( price == 132 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_132"
-	when 
-		$p : Person(name == "p132")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p132")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_133"	
-	when
-		$c : Cheese( price == 133 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_133"
+    when
+        $c : Cheese( price == 133 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_133"
-	when 
-		$p : Person(name == "p133")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p133")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_134"	
-	when
-		$c : Cheese( price == 134 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_134"
+    when
+        $c : Cheese( price == 134 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_134"
-	when 
-		$p : Person(name == "p134")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p134")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_135"	
-	when
-		$c : Cheese( price == 135 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_135"
+    when
+        $c : Cheese( price == 135 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_135"
-	when 
-		$p : Person(name == "p135")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p135")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_136"	
-	when
-		$c : Cheese( price == 136 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_136"
+    when
+        $c : Cheese( price == 136 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_136"
-	when 
-		$p : Person(name == "p136")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p136")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_137"	
-	when
-		$c : Cheese( price == 137 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_137"
+    when
+        $c : Cheese( price == 137 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_137"
-	when 
-		$p : Person(name == "p137")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p137")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_138"	
-	when
-		$c : Cheese( price == 138 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_138"
+    when
+        $c : Cheese( price == 138 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_138"
-	when 
-		$p : Person(name == "p138")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p138")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_139"	
-	when
-		$c : Cheese( price == 139 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_139"
+    when
+        $c : Cheese( price == 139 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_139"
-	when 
-		$p : Person(name == "p139")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p139")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_140"	
-	when
-		$c : Cheese( price == 140 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_140"
+    when
+        $c : Cheese( price == 140 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_140"
-	when 
-		$p : Person(name == "p140")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p140")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_141"	
-	when
-		$c : Cheese( price == 141 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_141"
+    when
+        $c : Cheese( price == 141 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_141"
-	when 
-		$p : Person(name == "p141")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p141")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_142"	
-	when
-		$c : Cheese( price == 142 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_142"
+    when
+        $c : Cheese( price == 142 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_142"
-	when 
-		$p : Person(name == "p142")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p142")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_143"	
-	when
-		$c : Cheese( price == 143 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_143"
+    when
+        $c : Cheese( price == 143 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_143"
-	when 
-		$p : Person(name == "p143")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p143")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_144"	
-	when
-		$c : Cheese( price == 144 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_144"
+    when
+        $c : Cheese( price == 144 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_144"
-	when 
-		$p : Person(name == "p144")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p144")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_145"	
-	when
-		$c : Cheese( price == 145 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_145"
+    when
+        $c : Cheese( price == 145 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_145"
-	when 
-		$p : Person(name == "p145")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p145")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_146"	
-	when
-		$c : Cheese( price == 146 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_146"
+    when
+        $c : Cheese( price == 146 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_146"
-	when 
-		$p : Person(name == "p146")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p146")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_147"	
-	when
-		$c : Cheese( price == 147 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_147"
+    when
+        $c : Cheese( price == 147 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_147"
-	when 
-		$p : Person(name == "p147")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p147")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_148"	
-	when
-		$c : Cheese( price == 148 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_148"
+    when
+        $c : Cheese( price == 148 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_148"
-	when 
-		$p : Person(name == "p148")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p148")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_149"	
-	when
-		$c : Cheese( price == 149 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_149"
+    when
+        $c : Cheese( price == 149 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_149"
-	when 
-		$p : Person(name == "p149")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p149")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_150"	
-	when
-		$c : Cheese( price == 150 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_150"
+    when
+        $c : Cheese( price == 150 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_150"
-	when 
-		$p : Person(name == "p150")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p150")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_151"	
-	when
-		$c : Cheese( price == 151 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_151"
+    when
+        $c : Cheese( price == 151 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_151"
-	when 
-		$p : Person(name == "p151")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p151")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_152"	
-	when
-		$c : Cheese( price == 152 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_152"
+    when
+        $c : Cheese( price == 152 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_152"
-	when 
-		$p : Person(name == "p152")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p152")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_153"	
-	when
-		$c : Cheese( price == 153 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_153"
+    when
+        $c : Cheese( price == 153 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_153"
-	when 
-		$p : Person(name == "p153")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p153")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_154"	
-	when
-		$c : Cheese( price == 154 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_154"
+    when
+        $c : Cheese( price == 154 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_154"
-	when 
-		$p : Person(name == "p154")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p154")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_155"	
-	when
-		$c : Cheese( price == 155 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_155"
+    when
+        $c : Cheese( price == 155 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_155"
-	when 
-		$p : Person(name == "p155")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p155")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_156"	
-	when
-		$c : Cheese( price == 156 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_156"
+    when
+        $c : Cheese( price == 156 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_156"
-	when 
-		$p : Person(name == "p156")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p156")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_157"	
-	when
-		$c : Cheese( price == 157 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_157"
+    when
+        $c : Cheese( price == 157 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_157"
-	when 
-		$p : Person(name == "p157")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p157")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_158"	
-	when
-		$c : Cheese( price == 158 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_158"
+    when
+        $c : Cheese( price == 158 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_158"
-	when 
-		$p : Person(name == "p158")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p158")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_159"	
-	when
-		$c : Cheese( price == 159 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_159"
+    when
+        $c : Cheese( price == 159 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_159"
-	when 
-		$p : Person(name == "p159")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p159")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_160"	
-	when
-		$c : Cheese( price == 160 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_160"
+    when
+        $c : Cheese( price == 160 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_160"
-	when 
-		$p : Person(name == "p160")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p160")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_161"	
-	when
-		$c : Cheese( price == 161 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_161"
+    when
+        $c : Cheese( price == 161 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_161"
-	when 
-		$p : Person(name == "p161")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p161")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_162"	
-	when
-		$c : Cheese( price == 162 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_162"
+    when
+        $c : Cheese( price == 162 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_162"
-	when 
-		$p : Person(name == "p162")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p162")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_163"	
-	when
-		$c : Cheese( price == 163 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_163"
+    when
+        $c : Cheese( price == 163 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_163"
-	when 
-		$p : Person(name == "p163")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p163")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_164"	
-	when
-		$c : Cheese( price == 164 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_164"
+    when
+        $c : Cheese( price == 164 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_164"
-	when 
-		$p : Person(name == "p164")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p164")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_165"	
-	when
-		$c : Cheese( price == 165 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_165"
+    when
+        $c : Cheese( price == 165 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_165"
-	when 
-		$p : Person(name == "p165")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p165")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_166"	
-	when
-		$c : Cheese( price == 166 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_166"
+    when
+        $c : Cheese( price == 166 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_166"
-	when 
-		$p : Person(name == "p166")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p166")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_167"	
-	when
-		$c : Cheese( price == 167 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_167"
+    when
+        $c : Cheese( price == 167 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_167"
-	when 
-		$p : Person(name == "p167")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p167")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_168"	
-	when
-		$c : Cheese( price == 168 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_168"
+    when
+        $c : Cheese( price == 168 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_168"
-	when 
-		$p : Person(name == "p168")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p168")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_169"	
-	when
-		$c : Cheese( price == 169 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_169"
+    when
+        $c : Cheese( price == 169 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_169"
-	when 
-		$p : Person(name == "p169")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p169")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_170"	
-	when
-		$c : Cheese( price == 170 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_170"
+    when
+        $c : Cheese( price == 170 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_170"
-	when 
-		$p : Person(name == "p170")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p170")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_171"	
-	when
-		$c : Cheese( price == 171 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_171"
+    when
+        $c : Cheese( price == 171 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_171"
-	when 
-		$p : Person(name == "p171")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p171")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_172"	
-	when
-		$c : Cheese( price == 172 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_172"
+    when
+        $c : Cheese( price == 172 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_172"
-	when 
-		$p : Person(name == "p172")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p172")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_173"	
-	when
-		$c : Cheese( price == 173 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_173"
+    when
+        $c : Cheese( price == 173 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_173"
-	when 
-		$p : Person(name == "p173")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p173")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_174"	
-	when
-		$c : Cheese( price == 174 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_174"
+    when
+        $c : Cheese( price == 174 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_174"
-	when 
-		$p : Person(name == "p174")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p174")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_175"	
-	when
-		$c : Cheese( price == 175 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_175"
+    when
+        $c : Cheese( price == 175 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_175"
-	when 
-		$p : Person(name == "p175")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p175")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_176"	
-	when
-		$c : Cheese( price == 176 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_176"
+    when
+        $c : Cheese( price == 176 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_176"
-	when 
-		$p : Person(name == "p176")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p176")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_177"	
-	when
-		$c : Cheese( price == 177 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_177"
+    when
+        $c : Cheese( price == 177 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_177"
-	when 
-		$p : Person(name == "p177")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p177")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_178"	
-	when
-		$c : Cheese( price == 178 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_178"
+    when
+        $c : Cheese( price == 178 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_178"
-	when 
-		$p : Person(name == "p178")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p178")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_179"	
-	when
-		$c : Cheese( price == 179 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_179"
+    when
+        $c : Cheese( price == 179 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_179"
-	when 
-		$p : Person(name == "p179")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p179")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_180"	
-	when
-		$c : Cheese( price == 180 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_180"
+    when
+        $c : Cheese( price == 180 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_180"
-	when 
-		$p : Person(name == "p180")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p180")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_181"	
-	when
-		$c : Cheese( price == 181 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_181"
+    when
+        $c : Cheese( price == 181 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_181"
-	when 
-		$p : Person(name == "p181")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p181")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_182"	
-	when
-		$c : Cheese( price == 182 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_182"
+    when
+        $c : Cheese( price == 182 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_182"
-	when 
-		$p : Person(name == "p182")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p182")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_183"	
-	when
-		$c : Cheese( price == 183 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_183"
+    when
+        $c : Cheese( price == 183 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_183"
-	when 
-		$p : Person(name == "p183")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p183")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_184"	
-	when
-		$c : Cheese( price == 184 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_184"
+    when
+        $c : Cheese( price == 184 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_184"
-	when 
-		$p : Person(name == "p184")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p184")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_185"	
-	when
-		$c : Cheese( price == 185 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_185"
+    when
+        $c : Cheese( price == 185 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_185"
-	when 
-		$p : Person(name == "p185")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p185")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_186"	
-	when
-		$c : Cheese( price == 186 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_186"
+    when
+        $c : Cheese( price == 186 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_186"
-	when 
-		$p : Person(name == "p186")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p186")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_187"	
-	when
-		$c : Cheese( price == 187 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_187"
+    when
+        $c : Cheese( price == 187 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_187"
-	when 
-		$p : Person(name == "p187")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p187")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_188"	
-	when
-		$c : Cheese( price == 188 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_188"
+    when
+        $c : Cheese( price == 188 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_188"
-	when 
-		$p : Person(name == "p188")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p188")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_189"	
-	when
-		$c : Cheese( price == 189 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_189"
+    when
+        $c : Cheese( price == 189 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_189"
-	when 
-		$p : Person(name == "p189")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p189")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_190"	
-	when
-		$c : Cheese( price == 190 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_190"
+    when
+        $c : Cheese( price == 190 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_190"
-	when 
-		$p : Person(name == "p190")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p190")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_191"	
-	when
-		$c : Cheese( price == 191 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_191"
+    when
+        $c : Cheese( price == 191 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_191"
-	when 
-		$p : Person(name == "p191")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p191")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_192"	
-	when
-		$c : Cheese( price == 192 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_192"
+    when
+        $c : Cheese( price == 192 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_192"
-	when 
-		$p : Person(name == "p192")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p192")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_193"	
-	when
-		$c : Cheese( price == 193 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_193"
+    when
+        $c : Cheese( price == 193 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_193"
-	when 
-		$p : Person(name == "p193")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p193")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_194"	
-	when
-		$c : Cheese( price == 194 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_194"
+    when
+        $c : Cheese( price == 194 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_194"
-	when 
-		$p : Person(name == "p194")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p194")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_195"	
-	when
-		$c : Cheese( price == 195 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_195"
+    when
+        $c : Cheese( price == 195 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_195"
-	when 
-		$p : Person(name == "p195")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p195")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_196"	
-	when
-		$c : Cheese( price == 196 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_196"
+    when
+        $c : Cheese( price == 196 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_196"
-	when 
-		$p : Person(name == "p196")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p196")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_197"	
-	when
-		$c : Cheese( price == 197 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_197"
+    when
+        $c : Cheese( price == 197 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_197"
-	when 
-		$p : Person(name == "p197")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p197")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_198"	
-	when
-		$c : Cheese( price == 198 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_198"
+    when
+        $c : Cheese( price == 198 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_198"
-	when 
-		$p : Person(name == "p198")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p198")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_199"	
-	when
-		$c : Cheese( price == 199 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_199"
+    when
+        $c : Cheese( price == 199 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_199"
-	when 
-		$p : Person(name == "p199")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p199")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
 
 
-rule "Cheese_200"	
-	when
-		$c : Cheese( price == 200 )
-	then 
-		list.add( $c.getType() );
+rule "Cheese_200"
+    when
+        $c : Cheese( price == 200 )
+    then
+        list.add( $c.getType() );
 end
 
 rule "Person and cheese_200"
-	when 
-		$p : Person(name == "p200")
-		$c : Cheese(price == 1)
-	then
-		list.add($p.getName());
-	
+    when
+        $p : Person(name == "p200")
+        $c : Cheese(price == 1)
+    then
+        list.add($p.getName());
+
 end
-		

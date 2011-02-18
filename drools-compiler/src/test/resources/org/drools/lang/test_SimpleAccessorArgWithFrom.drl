@@ -3,8 +3,8 @@ rule blah
 
  when 
 
-	Col1() from something.doIt["key"]
-	Col2()
+    Col1() from something.doIt["key"]
+    Col2()
  then
-	partay();
-end	
+    partay();
+end

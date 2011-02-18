@@ -20,7 +20,7 @@ import java.lang.Object;
 
 rule "debug"
     when
-    	$obj : Object ( )
+        $obj : Object ( )
     then
-    	System.out.println("Engine 2 Asserted object: " + $obj);
+        System.out.println("Engine 2 Asserted object: " + $obj);
 end

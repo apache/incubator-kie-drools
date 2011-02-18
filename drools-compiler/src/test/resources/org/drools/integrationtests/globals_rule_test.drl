@@ -12,5 +12,5 @@ rule "global rule test"
         eval( string.equals( "stilton" ) )
         eval( $type.equals( string ) )
     then
-		list.add( new Integer(5) );
+        list.add( new Integer(5) );
 end    

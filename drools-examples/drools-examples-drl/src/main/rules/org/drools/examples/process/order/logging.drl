@@ -22,11 +22,11 @@ import org.jbpm.process.core.context.variable.VariableScope
 import org.jbpm.process.instance.context.variable.VariableScopeInstance
 
 rule "Log the execution of 'Correct Order'" salience 25
-	when
-		workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0, node.name == "Correct Order" )
-	    workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
-	then 
-		VariableScopeInstance variableScopeInstance =
-			(VariableScopeInstance) workItemNodeInstance.getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
-		System.out.println("LOGGING: Requesting the correction of " + variableScopeInstance.getVariable("order"));
+    when
+        workItemNodeInstance: WorkItemNodeInstance( workItemId <= 0, node.name == "Correct Order" )
+        workItem: WorkItemImpl( state == WorkItemImpl.PENDING ) from workItemNodeInstance.getWorkItem()
+    then
+        VariableScopeInstance variableScopeInstance =
+            (VariableScopeInstance) workItemNodeInstance.getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);
+        System.out.println("LOGGING: Requesting the correction of " + variableScopeInstance.getVariable("order"));
 end

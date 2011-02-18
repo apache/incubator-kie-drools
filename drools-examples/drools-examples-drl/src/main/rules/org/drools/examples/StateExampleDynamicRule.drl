@@ -19,10 +19,10 @@ package org.drools.examples
 import org.drools.examples.State;
 
 rule "D to E"
-	when
-		State(name == "D", state == State.FINISHED )			
-		e : State(name == "E", state == State.NOTRUN )
-	then
-		System.out.println(e.getName() + " finished" );
-		e.setState( State.FINISHED );
+    when
+        State(name == "D", state == State.FINISHED )
+        e : State(name == "E", state == State.NOTRUN )
+    then
+        System.out.println(e.getName() + " finished" );
+        e.setState( State.FINISHED );
 end

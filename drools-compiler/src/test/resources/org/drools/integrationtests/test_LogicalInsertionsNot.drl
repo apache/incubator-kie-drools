@@ -9,5 +9,5 @@ rule "r"
     when
         not Person()
     then
-   		insertLogical(cheese);
+           insertLogical(cheese);
 end

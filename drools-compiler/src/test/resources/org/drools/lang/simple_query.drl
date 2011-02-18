@@ -4,5 +4,5 @@ query "simple_query"
     foo3 : Bar(a==3)
     foo4 : Bar(a4:a==4)
     Baz()
-	
+
 end

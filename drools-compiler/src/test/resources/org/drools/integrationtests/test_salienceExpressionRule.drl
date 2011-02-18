@@ -10,7 +10,7 @@ rule "Salience rule 1"
     when
         Person( )
     then
-		list.add( "Rule 1" );
+        list.add( "Rule 1" );
 end    
 
 # this rule shall fire second, since rule 3 has higher salience
@@ -19,8 +19,8 @@ rule "Salience rule 2"
     when
  annotation   p : Person( name == "bob" )
     then
-		list.add( "Rule 2" );
-		retract( p );
+        list.add( "Rule 2" );
+        retract( p );
 end    
 
 # this rule shall fire first since it has the higher salience
@@ -29,7 +29,7 @@ rule "Salience rule 3"
  annotationhen
         p : Person( name == "mic")
     then
-		list.add( "Rule 3" );
-	    retract( p );
+        list.add( "Rule 3" );
+        retract( p );
 end    
 

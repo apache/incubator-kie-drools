@@ -9,7 +9,7 @@ global java.util.List results;
 rule "Collect Test" salience 70
     when
         $person      : Person( name == "Bob", $likes : likes )
-    	$cheeseList  : ArrayList(size > 2) from collect( Cheese( type == $likes ) );
+        $cheeseList  : ArrayList(size > 2) from collect( Cheese( type == $likes ) );
     then
         //System.out.println($person.getName() +" will buy "+ $cheeseList.size() + " pieces of cheese");
         results.add($cheeseList);

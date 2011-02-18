@@ -6,27 +6,27 @@ import org.drools.Sensor;
 global java.util.List sensors;
 
 rule "BindsTest1_returnValue"
-	when
-		$sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
-		$sensor2 : Sensor( $temp2 : temperature, pressure < ( $temp1 + $temp2 ) )
-	then 
-	    sensors.add( $sensor1 );
+    when
+        $sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
+        $sensor2 : Sensor( $temp2 : temperature, pressure < ( $temp1 + $temp2 ) )
+    then
+        sensors.add( $sensor1 );
 end
 
 rule "BindsTest2_predicate"
-	when
-		$sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
-		$sensor2 : Sensor( $temp2 : temperature, $p : pressure -> ( $p < ($temp1 + $temp2 ) ) )
-	then 
-	    sensors.add( $sensor1 );
+    when
+        $sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
+        $sensor2 : Sensor( $temp2 : temperature, $p : pressure -> ( $p < ($temp1 + $temp2 ) ) )
+    then
+        sensors.add( $sensor1 );
 end
 
 rule "BindsTest3_eval"
-	when
-		$sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
-		$sensor2 : Sensor( $temp2 : temperature, $p : pressure )
-		eval( $p < $temp1 + $temp2 )
-	then 
-	    sensors.add( $sensor1 );
+    when
+        $sensor1 : Sensor( $temp1 : temperature, pressure < $temp1 )
+        $sensor2 : Sensor( $temp2 : temperature, $p : pressure )
+        eval( $p < $temp1 + $temp2 )
+    then
+        sensors.add( $sensor1 );
 end
 

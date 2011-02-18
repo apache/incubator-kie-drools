@@ -2,15 +2,15 @@
 
 
 rule simple_rule 
-		#attributes keywork (and colon) is totally optional
-		salience 42
-		agenda-group "my_group"
-		no-loop 
-		duration 42
-		activation-group "my_activation_group"
-		lock-on-active true
-	when
-		Foo()
-	then
-		bar();
+        #attributes keywork (and colon) is totally optional
+        salience 42
+        agenda-group "my_group"
+        no-loop
+        duration 42
+        activation-group "my_activation_group"
+        lock-on-active true
+    when
+        Foo()
+    then
+        bar();
 end

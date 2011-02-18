@@ -20,127 +20,127 @@ import com.sample.DroolsTest.Message;
 
 
 rule "Check time 1"
-	when
-		    Time( startDate > "1-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Time( startDate > "1-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 2"
-	when
-		    Foo( startDate <= "10-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( startDate <= "10-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 3"
-	when
-		    Foo( startDate > "10-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( startDate > "10-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 4"
-	when
-		    Foo( startDate < "20-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( startDate < "20-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 5"
-	when
-		    Foo( startDate > "27-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( startDate > "27-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 6"
-	when
-		    Foo( startDate <= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( startDate <= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 7"
-	when
-		    Foo( endDate < "10-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate < "10-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 8"
-	when
-		    Foo( endDate == "11-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate == "11-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 9"
-	when
-		    Foo( endDate >= "11-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate >= "11-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 10"
-	when
-		    Foo( endDate < "20-Jan-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate < "20-Jan-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 11"
-	when
-		    Foo( endDate >= "20-Jan-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate >= "20-Jan-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 12"
-	when
-		    Foo( endDate < "13-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate < "13-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 13"
-	when
-		    Foo( endDate == "13-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate == "13-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 14"
-	when
-		    Foo( endDate == "14-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate == "14-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 15"
-	when
-		    Foo( endDate == "15-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate == "15-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 16"
-	when
-		    Foo( endDate == "25-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate == "25-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 17"
-	when
-		    Foo( endDate < "26-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate < "26-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Check time 18"
-	when
-		    Foo( endDate >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo( endDate >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end

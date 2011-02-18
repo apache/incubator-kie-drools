@@ -5,35 +5,35 @@ import org.drools.Cheese
 global java.util.List list
 
 rule "rule1"
-	when
-		c: Cheese()
-	then
-		System.out.println("rule1---");
-		c.setType("rule1");
+    when
+        c: Cheese()
+    then
+        System.out.println("rule1---");
+        c.setType("rule1");
 end
 
 rule "rule2"
-	when
-		c: Cheese()
-	then
-		c.setType("rule2");
-		System.out.println("rule2---");
+    when
+        c: Cheese()
+    then
+        c.setType("rule2");
+        System.out.println("rule2---");
 end
 
 rule "rule3"
-	when
-		c: Cheese()
-	then
-		//we are not using a list, but thats cool, we won't fire this rule...
-		list.add("rule3");
-		c.setType("rule3");
-		System.out.println("rule3---");
+    when
+        c: Cheese()
+    then
+        //we are not using a list, but thats cool, we won't fire this rule...
+        list.add("rule3");
+        c.setType("rule3");
+        System.out.println("rule3---");
 end
 
 rule "rule4"
-	when
-		not Cheese()
-	then
-		System.err.println("whee");
+    when
+        not Cheese()
+    then
+        System.err.println("whee");
 end
 

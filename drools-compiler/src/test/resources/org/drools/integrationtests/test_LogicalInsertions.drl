@@ -9,21 +9,21 @@ rule justifier1
     when
         cheese : Cheese( type == "brie" )
     then
-	    insertLogical( new  Person( "jane" ) );
-		list.add( cheese );
+        insertLogical( new  Person( "jane" ) );
+        list.add( cheese );
 end   
 
 rule justifier2
     when
         cheese : Cheese( type == "provolone" )
     then
-		insertLogical( new  Person( "jane" ) );
-		list.add( cheese );
+        insertLogical( new  Person( "jane" ) );
+        list.add( cheese );
 end   
 
 rule justified
     when
         person : Person( )
     then
-		list.add( person );
+        list.add( person );
 end 

@@ -1,7 +1,7 @@
 
 rule simple_rule 
   when
-  	not Cheese(type == "stilton")
+      not Cheese(type == "stilton")
   then
-	funky();
+    funky();
 end

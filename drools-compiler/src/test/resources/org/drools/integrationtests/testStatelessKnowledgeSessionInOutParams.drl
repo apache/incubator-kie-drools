@@ -16,7 +16,7 @@ rule "rule1"
     when
         Cheese( this == inCheese, $type : type )
     then
-		list.add( "rule1 " + $type );        
+        list.add( "rule1 " + $type );
 end    
 
 // test Global in Parameter
@@ -25,7 +25,7 @@ rule "rule2"
     when
         Cheese( $type : type == "stilton" )
     then
-		list.add( "rule2 " + $type );      
+        list.add( "rule2 " + $type );
 end  
 
 // test Global out Parameter
@@ -36,7 +36,7 @@ rule "rule3"
         Cheese brie = new Cheese("brie", 50);
         insert( brie );
         list.add( "rule3 brie" ); 
-		drools.getWorkingMemory().setGlobal("outCheese", brie);
+        drools.getWorkingMemory().setGlobal("outCheese", brie);
 end  
 
 // test Global in Parameter

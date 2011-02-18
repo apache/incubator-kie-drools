@@ -5,11 +5,11 @@ import org.drools.Person
 
 global java.util.List results
 
-rule "Exists with Bindings"	
-	when
-		exists Cheese()
-		c: Cheese( $type : type );
-		p: Person( likes == $type );
-	then 
-		results.add( $type );		
+rule "Exists with Bindings"
+    when
+        exists Cheese()
+        c: Cheese( $type : type );
+        p: Person( likes == $type );
+    then
+        results.add( $type );
 end

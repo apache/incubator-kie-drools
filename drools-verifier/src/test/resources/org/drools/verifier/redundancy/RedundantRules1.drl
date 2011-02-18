@@ -17,19 +17,19 @@
 package com.sample
 
 rule "Test 1"
-	when
-		    Person( 
-		    	name == "Toni" 
-		     )
-	then
-		System.out.println( "Test" );
+    when
+            Person(
+                name == "Toni"
+             )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Test 2"
-	when
-		    Person( 
-		    	name == "Toni" 
-		     )
-	then
-		System.out.println( "Test" );
+    when
+            Person(
+                name == "Toni"
+             )
+    then
+        System.out.println( "Test" );
 end

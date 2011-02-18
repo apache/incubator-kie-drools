@@ -5,31 +5,31 @@ import org.drools.Cheese
 global java.util.List list
 
 rule "rule1"
-	when
-		c: Cheese()
-	then
-		list.add("rule1");
+    when
+        c: Cheese()
+    then
+        list.add("rule1");
 
 end
 
 rule "rule2"
-	when
-		c: Cheese()
-	then
-		list.add("rule2");
+    when
+        c: Cheese()
+    then
+        list.add("rule2");
 end
 
 rule "rule3"
-	when
-		c: Cheese()
-	then
-		list.add("rule3");
+    when
+        c: Cheese()
+    then
+        list.add("rule3");
 end
 
 rule "rule4"
-	when
-		not Cheese()
-	then
-		list.add("rule4");
+    when
+        not Cheese()
+    then
+        list.add("rule4");
 
 end

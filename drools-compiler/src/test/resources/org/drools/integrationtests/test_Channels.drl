@@ -2,7 +2,7 @@ package org.drools;
 
 rule "a rule using a channel"
 when
-	Cheese( $type : type, price > 10 )
+    Cheese( $type : type, price > 10 )
 then
     channels["someChannel"].send( $type );
 end

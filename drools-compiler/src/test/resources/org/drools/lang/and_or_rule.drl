@@ -6,5 +6,5 @@ rule simple_rule
     Person(name == "mark") and Cheese(type == "stilton")
     Person(name == "mark") or Cheese(type == "stilton")
   then
-	System.out.println( "Mark and Michael" );
+    System.out.println( "Mark and Michael" );
 end

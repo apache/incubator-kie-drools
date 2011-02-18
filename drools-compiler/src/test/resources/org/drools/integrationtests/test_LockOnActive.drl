@@ -5,20 +5,20 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "test group1 1"
-	agenda-group "group1"
-	lock-on-active true
+    agenda-group "group1"
+    lock-on-active true
     when
-    	Cheese( type == "brie" )
+        Cheese( type == "brie" )
     then
-		list.add( "group1" );
+        list.add( "group1" );
 end  
 
 rule "test group2 ruleflow2"
-	agenda-group "group2"
-	ruleflow-group "ruleflow2"
-	lock-on-active true
+    agenda-group "group2"
+    ruleflow-group "ruleflow2"
+    lock-on-active true
     when
-    	Cheese(  type == "cheddar" )
+        Cheese(  type == "cheddar" )
     then
-		list.add( "group1" );
+        list.add( "group1" );
 end  

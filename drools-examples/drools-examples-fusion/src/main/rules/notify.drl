@@ -22,8 +22,8 @@ import org.drools.runtime.rule.FactHandle
 rule "Portfolio action no longer needed"
         dialect "mvel"
         ruleflow-group "notify"
-	when
-		$pa : PortfolioAction()
-	then
-		retract( $pa );
+    when
+        $pa : PortfolioAction()
+    then
+        retract( $pa );
 end

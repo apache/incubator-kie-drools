@@ -4,8 +4,8 @@ import org.drools.Cheese;
 import org.drools.Person;
 
 rule "test1"
-	no-loop true
-	when
+    no-loop true
+    when
         cheese : Cheese( price == 15 )
         $p : Person( cheese == cheese )
     then

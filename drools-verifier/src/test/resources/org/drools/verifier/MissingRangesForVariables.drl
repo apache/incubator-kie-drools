@@ -22,140 +22,140 @@ import com.sample.DroolsTest.Message;
 # These rules have gaps
 #
 rule "Missing variable range 1a, warning"
-	when
-		    $s :Something( )
-		    Foo1w( value > $s.a.b.c.d )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo1w( value > $s.a.b.c.d )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 1b, warning"
-	when
-		    $s :Something( )
-		    Foo1w( value < $s.a.b.c.d )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo1w( value < $s.a.b.c.d )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 2a, warning"
-	when
-		    $s :Something( )
-		    Foo2w( value > $s.bar )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo2w( value > $s.bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 2b, warning"
-	when
-		    $s :Something( )
-		    Foo2w( value < $s.bar )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo2w( value < $s.bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 3a, warning"
-	when
-		    Something( $bar :bar)
-		    Foo3w( value > $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo3w( value > $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 3b, warning"
-	when
-		    Something( $bar :bar)
-		    Foo3w( value < $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo3w( value < $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 4a, warning"
-	when
-		    Something( $bar :bar)
-		    Foo4w( value > $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo4w( value > $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 4b, warning"
-	when
-		    Something( $bar :bar)
-		    Foo4w( value == $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo4w( value == $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 5a, warning"
-	when
-		    Something( $bar :bar)
-		    Foo5w( value < $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo5w( value < $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 5b, warning"
-	when
-		    Something( $bar :bar)
-		    Foo5w( value == $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo5w( value == $bar )
+    then
+        System.out.println( "Test" );
 end
 */
 #
 # These rules have no gaps
 #
 rule "Missing variable range 1a, covers all"
-	when
-		    $s :Something( )
-		    Foo1a( value >= $s.a.b.c.d )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo1a( value >= $s.a.b.c.d )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 1b, covers all"
-	when
-		    $s :Something()
-		    Foo1a( value < $s.a.b.c.d )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something()
+            Foo1a( value < $s.a.b.c.d )
+    then
+        System.out.println( "Test" );
 end
 /*
 rule "Missing variable range 2a, covers all"
-	when
-		    $s :Something()
-		    Foo2a( value > $s.bar )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something()
+            Foo2a( value > $s.bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 2b, covers all"
-	when
-		    $s :Something( )
-		    Foo2a( value =< $s.bar )
-	then
-		System.out.println( "Test" );
+    when
+            $s :Something( )
+            Foo2a( value =< $s.bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 3a, covers all"
-	when
-		    Something( $bar :bar)
-		    Foo3a( value > $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo3a( value > $bar )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Missing variable range 3b, covers all"
-	when
-		    Something( $bar :bar)
-		    Foo3a( value == $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo3a( value == $bar )
+    then
+        System.out.println( "Test" );
 end
 rule "Missing variable range 3c, covers all"
-	when
-		    Something( $bar :bar)
-		    Foo3a( value < $bar )
-	then
-		System.out.println( "Test" );
+    when
+            Something( $bar :bar)
+            Foo3a( value < $bar )
+    then
+        System.out.println( "Test" );
 end
 */

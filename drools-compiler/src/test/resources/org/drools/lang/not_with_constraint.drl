@@ -10,5 +10,5 @@ rule "not rule test"
         $person : Person( $likes:like )
         not Cheese( type == $likes )
     then
-		list.add( $person );
+        list.add( $person );
 end    

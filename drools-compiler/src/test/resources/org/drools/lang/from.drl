@@ -10,5 +10,5 @@ rule using_from
     Kah() from la.wa(42, 42.42, false, null)
     Bam(a=="c") 
   then
-  	whee();
+      whee();
 end

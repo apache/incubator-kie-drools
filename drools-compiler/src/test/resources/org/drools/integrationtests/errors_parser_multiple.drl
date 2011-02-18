@@ -5,24 +5,24 @@ impot org.drools.Cheese;
 
 rulex "eval rule test"
     when
-    	#some bad stuff here
+        #some bad stuff here
         Stilton()
-		Cheese()
-		Poison()
+        Cheese()
+        Poison()
     hen
-    	#this is an error
+        #this is an error
         list.add( ;
 end 
 
 
 rule "eval rule test"
     when
-    	#some bad stuff here
+        #some bad stuff here
         Stilton()
-		Cheese()
-		Poison()
+        Cheese()
+        Poison()
     then
-    	#this is an error
+        #this is an error
         list.add( ;
     
 end 

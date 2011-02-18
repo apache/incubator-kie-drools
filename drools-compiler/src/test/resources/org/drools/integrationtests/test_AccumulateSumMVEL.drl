@@ -9,8 +9,8 @@ rule "Test sum" salience 80
     dialect "mvel"
     when
         $person : Person( $likes : likes )
-    	$sum    : Number( doubleValue >= 10 ) 
-    	                       from accumulate( Cheese( type == $likes, $price : price  ),
+        $sum    : Number( doubleValue >= 10 )
+                               from accumulate( Cheese( type == $likes, $price : price  ),
                                                 sum( $price ) );
     then
         results.add( $sum );

@@ -3,15 +3,15 @@ package la
 
 rule simple_rule 
   when
-  	Baz()
+      Baz()
   then
-  	//woot
-  	first
-  	
-  	#
-  	
-  	/* lala
-  	
-  	*/
-  	second  
+      //woot
+      first
+
+      #
+
+      /* lala
+
+      */
+      second
 end

@@ -3,8 +3,8 @@ package org.drools;
 global java.util.List list 
  
 rule "new rule"
-	when
-		o: Object() from list
-	then
-		System.out.println(o);
+    when
+        o: Object() from list
+    then
+        System.out.println(o);
 end

@@ -5,10 +5,10 @@ import java.util.ArrayList
 global java.util.List results; 
  
 rule "Apply Discount on all books"
-	when
-		$order : Order()
-		$items : ArrayList() from collect (OrderItem(type == OrderItem.TYPE_BOOK) from $order.itemsValues)
-	then
-	    results.add( $items );
+    when
+        $order : Order()
+        $items : ArrayList() from collect (OrderItem(type == OrderItem.TYPE_BOOK) from $order.itemsValues)
+    then
+        results.add( $items );
 end
 
