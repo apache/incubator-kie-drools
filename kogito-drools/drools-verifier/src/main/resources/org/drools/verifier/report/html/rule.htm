@@ -1,15 +1,15 @@
 
 <div>
-	<h2>Rule</h2>
-	<div>
-		Name: @{rule.name}<br/>
-	</div>
-	<div>
-		Patterns:
-		<ul>
-			@foreach{objectType:objectTypes}
-			<li><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.path}.htm">@{objectType.name}</a></li>
-			@end{}
-		</ul>
-	</div>
+  <h2>Rule</h2>
+  <div>
+    Name: @{rule.name}<br/>
+  </div>
+  <div>
+    Patterns:
+    <ul>
+      @foreach{objectType:objectTypes}
+      <li><a href="@{sourceFolder}/@{objectTypeFolder}/@{objectType.path}.htm">@{objectType.name}</a></li>
+      @end{}
+    </ul>
+  </div>
 </div>
