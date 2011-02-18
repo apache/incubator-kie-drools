@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for Remove Identities option.
  * 
- * drools.removeIdentities = &lt;true|false&gt; 
+ * drools.removeIdentities = &lt;true|false&gt;
  * 
  * DEFAULT = false
  * 

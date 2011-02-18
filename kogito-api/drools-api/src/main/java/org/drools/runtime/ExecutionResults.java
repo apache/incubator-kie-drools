@@ -32,6 +32,6 @@ public interface ExecutionResults {
 
     Object getValue(String identifier);
     
-    Object getFactHandle(String identifier); 
+    Object getFactHandle(String identifier);
 
 }

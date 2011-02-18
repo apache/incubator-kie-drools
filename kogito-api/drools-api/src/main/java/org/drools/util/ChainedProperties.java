@@ -91,7 +91,7 @@ public class ChainedProperties
                         this.props );
         loadProperties( getResources( "/META-INF/drools." + confFileName,
                                       confClassLoader ),
-                        this.props );   
+                        this.props );
 
         confClassLoader = ClassLoader.getSystemClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
@@ -100,7 +100,7 @@ public class ChainedProperties
                             this.props );
             loadProperties( getResources( "/META-INF/drools." + confFileName,
                                           confClassLoader ),
-                            this.props );            
+                            this.props );
         }
 
         if ( !populateDefaults ) {
@@ -114,7 +114,7 @@ public class ChainedProperties
                         this.defaultProps );
         loadProperties( getResources( "/META-INF/drools.default." + confFileName,
                                       confClassLoader ),
-                        this.defaultProps );  
+                        this.defaultProps );
 
         confClassLoader = ClassLoader.getSystemClassLoader();
         if ( confClassLoader != null && confClassLoader != classLoader ) {
@@ -123,7 +123,7 @@ public class ChainedProperties
                             this.defaultProps );
             loadProperties( getResources( "/META-INF/drools.default." + confFileName,
                                           confClassLoader ),
-                            this.defaultProps );            
+                            this.defaultProps );
         }
     }
 

@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for indexLeftBetaMemory option.
  * 
- * drools.indexLeftBetaMemory = &lt;true|false&gt; 
+ * drools.indexLeftBetaMemory = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 

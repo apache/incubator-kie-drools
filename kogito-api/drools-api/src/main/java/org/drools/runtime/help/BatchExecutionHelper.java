@@ -228,7 +228,7 @@ import com.thoughtworks.xstream.XStream;
  * inTransformer.setReceiver( batchExecution );
  *
  * Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline( ksession );
- * pipeline.setReceiver( inTransformer );  
+ * pipeline.setReceiver( inTransformer );
  * </pre>
  * 
  * <p>
@@ -239,7 +239,7 @@ import com.thoughtworks.xstream.XStream;
  *   &lt;result identifier='outStilton'&gt;
  *     &lt;org.drools.Cheese&gt;
  *       &lt;type&gt;stilton&lt;/type&gt;
- *       &lt;oldPrice&gt;0&lt;/oldPrice&gt;        
+ *       &lt;oldPrice&gt;0&lt;/oldPrice&gt;
  *       &lt;price&gt;30&lt;/price&gt;
  *     &lt;/org.drools.Cheese&gt;
  *   &lt;/result&gt;

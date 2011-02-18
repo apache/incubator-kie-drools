@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for Sequential option.
  * 
- * drools.sequential = &lt;true|false&gt; 
+ * drools.sequential = &lt;true|false&gt;
  * 
  * DEFAULT = false
  * 

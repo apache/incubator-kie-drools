@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for ShareBetaNodes option.
  * 
- * drools.shareBetaNodes = &lt;true|false&gt; 
+ * drools.shareBetaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 

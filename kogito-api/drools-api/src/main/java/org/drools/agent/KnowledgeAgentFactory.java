@@ -40,7 +40,7 @@ import org.drools.io.ResourceFactory;
  * <pre>
  * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "MyAgent" );
  * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) );
- * KnowledgeBase kbase = kagent.getKnowledgeBase();    
+ * KnowledgeBase kbase = kagent.getKnowledgeBase();
  * </pre>
  * 
  * <p>If you wish to change the polling time of the scanner, this can be done with the ResourceChangeScannerService on the ResourceFactory</p>

@@ -37,7 +37,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newFileSystemResource( fileName ), ResourceType.DRL );
- * assertFalse( kbuilder.hasErrors() );     
+ * assertFalse( kbuilder.hasErrors() );
  * if (kbuilder.hasErrors() ) {
  *     System.out.println( kbuilder.getErrors() );
  * }

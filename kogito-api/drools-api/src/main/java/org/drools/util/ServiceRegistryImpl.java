@@ -79,7 +79,7 @@ public class ServiceRegistryImpl
     synchronized void registerInstance(Service service, Map map) {  
         //this.context.getProperties().put( "org.dr, value )
         System.out.println( "regInstance : " + map );
-        String[] values = ( String[] ) map.get( "objectClass" );        
+        String[] values = ( String[] ) map.get( "objectClass" );
 
         for ( String v : values ) {
             System.out.println( v );
@@ -135,7 +135,7 @@ public class ServiceRegistryImpl
 //      BundleContext bc = this.context.getBundleContext();
 //      
 //      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
-//      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );     
+//      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
 //      System.out.println( "conf admin : " + admin );
 //        //context.
 //    //    log = (LogService) context.locateService("LOG");
@@ -180,7 +180,7 @@ public class ServiceRegistryImpl
         addDefault(  MarshallerProvider.class,
                      "org.drools.marshalling.impl.MarshallerProviderImpl");
 //        addDefault( SystemE.class,
-//        "org.drools.io.impl.ResourceFactoryServiceImpl" );        
+//        "org.drools.io.impl.ResourceFactoryServiceImpl" );
     }
 
     public synchronized void addDefault(Class cls,
