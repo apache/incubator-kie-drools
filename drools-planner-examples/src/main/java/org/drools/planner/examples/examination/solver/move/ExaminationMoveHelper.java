@@ -49,7 +49,7 @@ public class ExaminationMoveHelper {
         if (exam.getExamCoincidence() != null) {
             for (Exam coincidenceExam : exam.getExamCoincidence().getCoincidenceExamSet()) {
                 if (!exam.equals(coincidenceExam)) {
-                    FactHandle factHandle = workingMemory.getFactHandle(coincidenceExam);                   
+                    FactHandle factHandle = workingMemory.getFactHandle(coincidenceExam);
                     coincidenceExam.setPeriod(period);
                     workingMemory.update(factHandle, coincidenceExam);
                 }

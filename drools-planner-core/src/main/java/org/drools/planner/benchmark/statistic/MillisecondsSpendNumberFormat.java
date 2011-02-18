@@ -25,7 +25,7 @@ class MillisecondsSpendNumberFormat extends NumberFormat {
     private final static long DAY_MILLIS = 3600000L * 24L;
     private final static long HOUR_MILLIS = 3600000L;
     private final static long MINUTE_MILLIS = 60000L;
-    private final static long SECOND_MILLIS = 1000L; 
+    private final static long SECOND_MILLIS = 1000L;
 
     public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
         return format((long) number, toAppendTo, pos);
