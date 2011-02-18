@@ -1,15 +1,15 @@
 @declare{"getMethodBytecode"}
     public java.util.List getMethodBytecode() {
-    	return org.drools.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" ); 
+        return org.drools.rule.Rule.getMethodBytecode(getClass(), "@{ruleClassName}", "@{package}", "@{methodName}", "@{ (package + '.' + ruleClassName).replace( '.', '/' ) + '.class' }" );
     }
 @end{}
 
 
 @declare{"equals"}
     public boolean equals(Object object) {
-    	if ( object == null || !(object instanceof  org.drools.spi.CompiledInvoker) ) {
-    		return false;
-    	}
+        if ( object == null || !(object instanceof  org.drools.spi.CompiledInvoker) ) {
+            return false;
+        }
         return org.drools.core.util.asm.MethodComparator.compareBytecode( getMethodBytecode(), (( org.drools.spi.CompiledInvoker ) object).getMethodBytecode() );
     }
 @end{}
@@ -192,7 +192,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
         ((@{ruleClassName}.@{className})context).init(
             @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}@end{","} );
+            @foreach{identifier : globals} @{identifier}@end{","} );
 
     }
 
@@ -223,7 +223,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
             innerDeclarations,
             handle.getObject()@if{declarations != empty},@end{}
             @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty},@end{}
-	        @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
+            @foreach{identifier: globals} @{identifier}@end{","}@if{innerDeclarations != empty},@end{}
             @foreach{declr : innerDeclarations} @{declr.identifier}@end{","});
     }
 
@@ -253,7 +253,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
             workingMemory,
             handle,
             handle.getObject()@if{globals != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}@end{","});
+            @foreach{identifier : globals} @{identifier}@end{","});
     }
 
     public Object getResult(java.lang.Object workingMemoryContext,
@@ -269,7 +269,7 @@ public class @{invokerClassName} implements org.drools.spi.Accumulator, org.droo
 
         return ((@{ruleClassName}.@{className})context).getResult(
             @foreach{declr : declarations} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}@end{","} );
+            @foreach{identifier : globals} @{identifier}@end{","} );
     }
 
     public boolean supportsReverse() {
@@ -312,8 +312,8 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
 {
     private static final long serialVersionUID  = 510l;
 
-	private final String consequenceName = "@{consequenceName}";		
-		    
+    private final String consequenceName = "@{consequenceName}";
+
     public String getName() {
         return this.consequenceName;
     }
@@ -336,8 +336,8 @@ public class @{invokerClassName} implements org.drools.spi.Consequence, org.droo
             knowledgeHelper@if{declarations != empty},@end{}
             @foreach{declr : declarations} @{declr.identifier}, @{declr.identifier}__Handle__
             @end{","}@if{globals != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}
-	        @end{","} );
+            @foreach{identifier : globals} @{identifier}
+            @end{","} );
     }
     
 
@@ -372,11 +372,11 @@ public class @{invokerClassName} implements org.drools.spi.Action, org.drools.sp
         @end{}
 
         @{processClassName}.@{methodName} (
-	        knowledgeHelper@if{globals != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}
-	        @end{","}@if{variables != empty},@end{}
-	        @foreach{identifier : variables} @{identifier}
-	        @end{","}, context );
+            knowledgeHelper@if{globals != empty},@end{}
+            @foreach{identifier : globals} @{identifier}
+            @end{","}@if{variables != empty},@end{}
+            @foreach{identifier : variables} @{identifier}
+            @end{","}, context );
     }
     
     public java.util.List getMethodBytecode() {
@@ -401,11 +401,11 @@ public class @{invokerClassName} implements org.drools.spi.ReturnValueEvaluator,
         @end{}
 
         return @{processClassName}.@{methodName} (
-	        processContext@if{globals != empty},@end{}
-	        @foreach{identifier : globals} @{identifier}
-	        @end{","}@if{variables != empty},@end{}
-	        @foreach{identifier : variables} @{identifier}
-	        @end{","} );
+            processContext@if{globals != empty},@end{}
+            @foreach{identifier : globals} @{identifier}
+            @end{","}@if{variables != empty},@end{}
+            @foreach{identifier : variables} @{identifier}
+            @end{","} );
     }
     
     public java.util.List getMethodBytecode() {
