@@ -40,18 +40,18 @@ public class StringRestriction extends LiteralRestriction {
     @Override
     public String getValueAsString() {
         if (value == null) {
-        	return "";
+            return "";
         } else {
-        	return value;
+            return value;
         }
     }
 
     @Override
     public String getValueType() {
         if (value == null) {
-        	return Field.UNKNOWN;
+            return Field.UNKNOWN;
         } else {
-        	return value.getClass().getName();
+            return value.getClass().getName();
         }
     }
 }

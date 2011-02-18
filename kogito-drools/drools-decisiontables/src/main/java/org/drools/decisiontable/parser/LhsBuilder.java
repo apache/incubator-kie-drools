@@ -146,7 +146,7 @@ public class LhsBuilder implements SourceBuilder {
         String content = (String) this.constraints.get( key );
         if( content == null ){
             throw new DecisionTableParseException( "No code snippet for CONDITION in cell " +
-            	RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
+                RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
         }
         SnippetBuilder snip = new SnippetBuilder( content );
         String result = snip.build( value );
@@ -195,8 +195,8 @@ public class LhsBuilder implements SourceBuilder {
      */
     public FieldType calcFieldType(String content) {
         if (!SnippetBuilder.getType(content).equals(
-        		SnippetBuilder.SnippetType.SINGLE)) {
-        	return FieldType.NORMAL_FIELD;
+                SnippetBuilder.SnippetType.SINGLE)) {
+            return FieldType.NORMAL_FIELD;
         }
        for ( String op : operators ) {
             if (content.endsWith( op )) {

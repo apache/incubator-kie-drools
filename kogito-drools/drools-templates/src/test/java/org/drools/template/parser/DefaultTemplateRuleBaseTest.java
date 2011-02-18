@@ -21,33 +21,33 @@ public class DefaultTemplateRuleBaseTest {
     public void testSimpleTemplate() throws Exception
     {
         TemplateContainer tc = new TemplateContainer() {
-        	private Column[] columns = new Column[] {
-        			new LongColumn("column1"),
-        			new LongColumn("column2"),
-        			new StringColumn("column3")
-        	};
+            private Column[] columns = new Column[] {
+                    new LongColumn("column1"),
+                    new LongColumn("column2"),
+                    new StringColumn("column3")
+            };
 
-        	public Column[] getColumns() {
-        		return columns;
-        	}
+            public Column[] getColumns() {
+                return columns;
+            }
 
-        	public String getHeader() {
-        		return null;
-        	}
+            public String getHeader() {
+                return null;
+            }
 
-        	public Map<String, RuleTemplate> getTemplates() {
-        		Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
-        		RuleTemplate ruleTemplate = new RuleTemplate("template1", this);
-        		ruleTemplate.addColumn("column1 == 10");
-        		ruleTemplate.addColumn("column2 < 5 || > 20");
-        		ruleTemplate.addColumn("column3 == \"xyz\"");
-        		templates.put("template1", ruleTemplate);
-        		return templates;
-        	}
+            public Map<String, RuleTemplate> getTemplates() {
+                Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
+                RuleTemplate ruleTemplate = new RuleTemplate("template1", this);
+                ruleTemplate.addColumn("column1 == 10");
+                ruleTemplate.addColumn("column2 < 5 || > 20");
+                ruleTemplate.addColumn("column3 == \"xyz\"");
+                templates.put("template1", ruleTemplate);
+                return templates;
+            }
 
-        	public Column getColumn(String name) {
-        		return columns[Integer.parseInt(name.substring(6)) - 1];
-        	}
+            public Column getColumn(String name) {
+                return columns[Integer.parseInt(name.substring(6)) - 1];
+            }
 
         };
         DefaultTemplateRuleBase ruleBase = new DefaultTemplateRuleBase(tc);

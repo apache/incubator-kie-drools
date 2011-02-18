@@ -33,7 +33,7 @@ public class BeforeFunctionRemovedEventImpl extends KnowledgeBaseEventImpl imple
     @Override
     public String toString() {
         return "==>[BeforeFunctionRemovedEventImpl: getFunction()=" + getFunction() + ", getKnowledgeBase()="
-        		+ getKnowledgeBase() + "]";
+                + getKnowledgeBase() + "]";
     }
 
 }

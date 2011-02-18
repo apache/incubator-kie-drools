@@ -133,12 +133,12 @@ public class RuleAdministratorImpl
     throws RuleExecutionSetDeregistrationException {
 
         try {
-        	if ( this.repository.getRuleExecutionSet(bindUri, properties) == null ) {
-        	    throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
-        	}
+            if ( this.repository.getRuleExecutionSet(bindUri, properties) == null ) {
+                throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
+            }
         } catch (RuleExecutionSetRepositoryException e) {
-        	String s = "Error while retrieving rule execution set bound to: " + bindUri;
-        	throw new RuleExecutionSetDeregistrationException(s, e);
+            String s = "Error while retrieving rule execution set bound to: " + bindUri;
+            throw new RuleExecutionSetDeregistrationException(s, e);
         }
 
         repository.unregisterRuleExecutionSet(bindUri, properties);

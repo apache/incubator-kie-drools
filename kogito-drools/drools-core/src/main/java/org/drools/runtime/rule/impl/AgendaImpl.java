@@ -79,7 +79,7 @@ public class AgendaImpl
     }
 
     public boolean isRuleActiveInRuleFlowGroup(
-        	String ruleflowGroupName, String ruleName, long processInstanceId) {
+            String ruleflowGroupName, String ruleName, long processInstanceId) {
         return this.agenda.isRuleActiveInRuleFlowGroup(ruleflowGroupName, ruleName, processInstanceId);
     }
 }

@@ -52,75 +52,75 @@ public class DefaultTemplateContainer implements TemplateContainer {
 
     private void validateTemplate() {
         if (columns.size() == 0) {
-        	throw new DecisionTableParseException("Missing header columns");
+            throw new DecisionTableParseException("Missing header columns");
         }
         if (templates.size() == 0) {
-        	throw new DecisionTableParseException("Missing templates");
+            throw new DecisionTableParseException("Missing templates");
         }
 
     }
 
     private void parseTemplate(final InputStream templateStream) {
         try {
-        	final ColumnFactory cf = new ColumnFactory();
-        	final BufferedReader templateReader = new BufferedReader(
-        			new InputStreamReader(templateStream));
-        	String line = null;
-        	StringBuffer header = new StringBuffer();
-        	boolean inTemplate = false;
-        	boolean inHeader = false;
-        	boolean inContents = false;
-        	RuleTemplate template = null;
-        	StringBuffer contents = new StringBuffer();
-        	while ((line = templateReader.readLine()) != null) {
-        		if (line.trim().length() > 0) {
-        			if (line.startsWith("template header")) {
-        				inHeader = true;
-        			} else if (line.startsWith("template")) {
-        				inTemplate = true;
-        				String quotedName = line.substring(8).trim();
-        				quotedName = quotedName.substring(1, quotedName
-        						.length() - 1);
-        				template = new RuleTemplate(quotedName, this);
-        				addTemplate(template);
+            final ColumnFactory cf = new ColumnFactory();
+            final BufferedReader templateReader = new BufferedReader(
+                    new InputStreamReader(templateStream));
+            String line = null;
+            StringBuffer header = new StringBuffer();
+            boolean inTemplate = false;
+            boolean inHeader = false;
+            boolean inContents = false;
+            RuleTemplate template = null;
+            StringBuffer contents = new StringBuffer();
+            while ((line = templateReader.readLine()) != null) {
+                if (line.trim().length() > 0) {
+                    if (line.startsWith("template header")) {
+                        inHeader = true;
+                    } else if (line.startsWith("template")) {
+                        inTemplate = true;
+                        String quotedName = line.substring(8).trim();
+                        quotedName = quotedName.substring(1, quotedName
+                                .length() - 1);
+                        template = new RuleTemplate(quotedName, this);
+                        addTemplate(template);
 
-        			} else if (line.startsWith("package")) {
-        				if (inHeader == false) {
-        					throw new DecisionTableParseException(
-        							"Missing header");
-        				}
-        				inHeader = false;
-        				header.append(line).append("\n");
-        			} else if (inHeader) {
-        				addColumn(cf.getColumn(line.trim()));
-        			} else if (!inTemplate && !inHeader) {
-        				header.append(line).append("\n");
-        			} else if (!inContents && line.startsWith("rule")) {
-        				inContents = true;
-        				contents.append(line).append("\n");
-        			} else if (line.equals("end template")) {
-        				template.setContents(contents.toString());
-        				contents.setLength(0);
-        				inTemplate = false;
-        				inContents = false;
-        			} else if (inContents) {
-        				contents.append(line).append("\n");
-        			} else if (inTemplate) {
-        				template.addColumn(line.trim());
-        			}
-        		}
+                    } else if (line.startsWith("package")) {
+                        if (inHeader == false) {
+                            throw new DecisionTableParseException(
+                                    "Missing header");
+                        }
+                        inHeader = false;
+                        header.append(line).append("\n");
+                    } else if (inHeader) {
+                        addColumn(cf.getColumn(line.trim()));
+                    } else if (!inTemplate && !inHeader) {
+                        header.append(line).append("\n");
+                    } else if (!inContents && line.startsWith("rule")) {
+                        inContents = true;
+                        contents.append(line).append("\n");
+                    } else if (line.equals("end template")) {
+                        template.setContents(contents.toString());
+                        contents.setLength(0);
+                        inTemplate = false;
+                        inContents = false;
+                    } else if (inContents) {
+                        contents.append(line).append("\n");
+                    } else if (inTemplate) {
+                        template.addColumn(line.trim());
+                    }
+                }
 
-        	}
-        	if (inTemplate) {
-        		throw new DecisionTableParseException("Missing end template");
-        	}
-        	this.header = header.toString();
+            }
+            if (inTemplate) {
+                throw new DecisionTableParseException("Missing end template");
+            }
+            this.header = header.toString();
 
         } catch (IOException e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         } finally {
-        	if (templateStream != null)
-        		closeStream(templateStream);
+            if (templateStream != null)
+                closeStream(templateStream);
         }
     }
 
@@ -162,11 +162,11 @@ public class DefaultTemplateContainer implements TemplateContainer {
 
     private void closeStream(final InputStream stream) {
         try {
-        	stream.close();
+            stream.close();
         } catch (final Exception e) {
-        	System.err.print("WARNING: Wasn't able to "
-        			+ "correctly close stream for decision table. "
-        			+ e.getMessage());
+            System.err.print("WARNING: Wasn't able to "
+                    + "correctly close stream for decision table. "
+                    + e.getMessage());
         }
     }
 

@@ -668,19 +668,19 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public void afterRuleFlowGroupActivated(
-        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
         }
 
         public void afterRuleFlowGroupDeactivated(
-        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         }
 
         public void beforeRuleFlowGroupActivated(
-        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+                RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
         }
 
         public void beforeRuleFlowGroupDeactivated(
-        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+                RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         }
     }
 

@@ -114,10 +114,10 @@ public class RuleRuntimeImpl
      */
     public List getRegistrations() {
         try {
-        	return this.repository.getRegistrations();
+            return this.repository.getRegistrations();
         } catch (RuleExecutionSetRepositoryException e) {
-        	String s = "Error while retrieving list of registrations";
-        	throw new RuntimeException(s, e);
+            String s = "Error while retrieving list of registrations";
+            throw new RuntimeException(s, e);
         }
     }
 }

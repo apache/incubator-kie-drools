@@ -47,7 +47,7 @@ public class Path {
 
     public String toString() {
         return "[Path id=" + this.id + ", seat=" + this.seat + ", guest="
-        		+ this.guestName + "]";
+                + this.guestName + "]";
     }
 
 }

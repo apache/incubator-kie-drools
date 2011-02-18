@@ -22,18 +22,18 @@ public class SourcePackageProvider implements FileLoader {
 
         PackageBuilder b = new PackageBuilder();
         try {
-        	b.addPackageFromDrl(new InputStreamReader(fin));
+            b.addPackageFromDrl(new InputStreamReader(fin));
 
-        	fin.close();
+            fin.close();
 
-        	if (b.hasErrors()) {
-        		throw new RuntimeDroolsException(
-        				"Error building rules from source: " + b.getErrors());
-        	} else {
-        		return b.getPackage();
-        	}
+            if (b.hasErrors()) {
+                throw new RuntimeDroolsException(
+                        "Error building rules from source: " + b.getErrors());
+            } else {
+                return b.getPackage();
+            }
         } catch (DroolsParserException e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
     }

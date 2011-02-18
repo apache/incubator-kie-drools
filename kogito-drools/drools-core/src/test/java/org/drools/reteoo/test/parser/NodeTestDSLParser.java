@@ -103,67 +103,67 @@ public class NodeTestDSLParser extends Parser {
             
 
         private boolean validateIdentifierKey(String text) {
-        	return validateLT(1, text);
+            return validateLT(1, text);
         }
 
         private boolean validateLT(int LTNumber, String text) {
-        	String text2Validate = retrieveLT( LTNumber );
-        	return text2Validate != null && text2Validate.equalsIgnoreCase(text);
+            String text2Validate = retrieveLT( LTNumber );
+            return text2Validate != null && text2Validate.equalsIgnoreCase(text);
         }
 
         private String retrieveLT(int LTNumber) {
-              	if (null == input)
-        		return null;
-        	if (null == input.LT(LTNumber))
-        		return null;
-        	if (null == input.LT(LTNumber).getText())
-        		return null;
+                  if (null == input)
+                return null;
+            if (null == input.LT(LTNumber))
+                return null;
+            if (null == input.LT(LTNumber).getText())
+                return null;
 
-        	return input.LT(LTNumber).getText();
+            return input.LT(LTNumber).getText();
         }
 
         public void reportError(RecognitionException ex) {
-        	// if we've already reported an error and have not matched a token
-        	// yet successfully, don't report any errors.
-        	if (state.errorRecovery) {
-        		return;
-        	}
-        	state.errorRecovery = true;
+            // if we've already reported an error and have not matched a token
+            // yet successfully, don't report any errors.
+            if (state.errorRecovery) {
+                return;
+            }
+            state.errorRecovery = true;
 
-        	errors.add(errorMessageFactory.createDroolsException(ex));
+            errors.add(errorMessageFactory.createDroolsException(ex));
         }
 
         // return the raw RecognitionException errors
         public List<DroolsParserException> getErrors() {
-        	return errors;
+            return errors;
         }
 
         // Return a list of pretty strings summarising the errors
         public List<String> getErrorMessages() {
-        	List<String> messages = new ArrayList<String>(errors.size());
+            List<String> messages = new ArrayList<String>(errors.size());
 
-        	for (DroolsParserException activeException : errors) {
-        		messages.add(activeException.getMessage());
-        	}
+            for (DroolsParserException activeException : errors) {
+                messages.add(activeException.getMessage());
+            }
 
-        	return messages;
+            return messages;
         }
 
         // return true if any parser errors were accumulated
         public boolean hasErrors() {
-        	return !errors.isEmpty();
+            return !errors.isEmpty();
         }
 
         // Method that adds a paraphrase type into paraphrases stack.
         private void pushParaphrases(DroolsParaphraseTypes type) {
-        	Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
-        	activeMap.put(type, "");
-        	paraphrases.push(activeMap);
+            Map<DroolsParaphraseTypes, String> activeMap = new HashMap<DroolsParaphraseTypes, String>();
+            activeMap.put(type, "");
+            paraphrases.push(activeMap);
         }
 
         // Method that sets paraphrase value for a type into paraphrases stack.
         private void setParaphrasesValue(DroolsParaphraseTypes type, String value) {
-        	paraphrases.peek().put(type, value);
+            paraphrases.peek().put(type, value);
         }
 
 
@@ -383,7 +383,7 @@ public class NodeTestDSLParser extends Parser {
         }
         catch ( RecognitionException e) {
 
-                	reportError( e );
+                    reportError( e );
 
         }
         finally {

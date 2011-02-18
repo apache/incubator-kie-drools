@@ -92,7 +92,7 @@ public class MVELDumperTest {
     }
 
     private Object parse(String parserRuleName, String treeRuleName,
-        	final String text) throws Exception {
+            final String text) throws Exception {
         return newParser(parserRuleName, treeRuleName, newCharStream(text));
     }
 
@@ -101,56 +101,56 @@ public class MVELDumperTest {
     }
 
     private Object newParser(String parserRuleName, String treeRuleName,
-        	final CharStream charStream) {
+            final CharStream charStream) {
         return execTreeParser(parserRuleName, treeRuleName, charStream);
     }
 
     public Object execTreeParser(String testRuleName, String testTreeRuleName,
-        	CharStream charStream) {
+            CharStream charStream) {
         Object treeRuleReturn = null;
         try {
-        	DRLLexer lexer = new DRLLexer(charStream);
-        	CommonTokenStream tokens = new CommonTokenStream(lexer);
-        	DRLParser parser = new DRLParser(tokens);
-        	/** Use Reflection to get rule method from parser */
-        	Method ruleName = Class.forName("org.drools.lang.DRLParser")
-        			.getMethod(testRuleName);
+            DRLLexer lexer = new DRLLexer(charStream);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            DRLParser parser = new DRLParser(tokens);
+            /** Use Reflection to get rule method from parser */
+            Method ruleName = Class.forName("org.drools.lang.DRLParser")
+                    .getMethod(testRuleName);
 
-        	/** Invoke grammar rule, and get the return value */
-        	Object ruleReturn = ruleName.invoke(parser);
+            /** Invoke grammar rule, and get the return value */
+            Object ruleReturn = ruleName.invoke(parser);
 
-        	if (treeRuleReturn != null) {
-        		/** If return object is instanceof AST, get the toStringTree */
-        		if (treeRuleReturn.toString().indexOf(
-        				testTreeRuleName + "_return") > 0) {
-        			try { // NullPointerException may happen here...
-        				Class _treeReturn = Class
-        						.forName("org.drools.lang.DescrBuilderTree"
-        								+ "$" + testTreeRuleName + "_return");
-        				Field[] fields = _treeReturn.getDeclaredFields();
-        				for (Field field : fields) {
-        					if (field.getType().getName().contains(
-        							"org.drools.lang.descr.")) {
-        						return field.get(treeRuleReturn);
-        					}
-        				}
-        			} catch (Exception e) {
-        				System.err.println(e);
-        			}
-        		}
-        	}
+            if (treeRuleReturn != null) {
+                /** If return object is instanceof AST, get the toStringTree */
+                if (treeRuleReturn.toString().indexOf(
+                        testTreeRuleName + "_return") > 0) {
+                    try { // NullPointerException may happen here...
+                        Class _treeReturn = Class
+                                .forName("org.drools.lang.DescrBuilderTree"
+                                        + "$" + testTreeRuleName + "_return");
+                        Field[] fields = _treeReturn.getDeclaredFields();
+                        for (Field field : fields) {
+                            if (field.getType().getName().contains(
+                                    "org.drools.lang.descr.")) {
+                                return field.get(treeRuleReturn);
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.err.println(e);
+                    }
+                }
+            }
         } catch (ClassNotFoundException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (SecurityException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (NoSuchMethodException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (IllegalAccessException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (InvocationTargetException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
         return treeRuleReturn;
     }

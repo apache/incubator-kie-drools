@@ -18,7 +18,7 @@ public class BPMN2ProcessFactory {
 
     public static synchronized BPMN2ProcessProvider getBPMN2ProcessProvider() {
         if (provider == null) {
-        	loadProvider();
+            loadProvider();
         }
         return provider;
     }

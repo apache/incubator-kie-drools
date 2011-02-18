@@ -42,7 +42,7 @@ public class ArrayCell implements Cell {
 
     public void addValue(Map<String, Object> vars) {
         for (int i = 0; i < values.length; i++) {
-        	vars.put(column.getName() + i, values[i]);
+            vars.put(column.getName() + i, values[i]);
         }
     }
 
@@ -61,10 +61,10 @@ public class ArrayCell implements Cell {
     public void insert(StatefulSession session) {
         session.insert(this);
         for (int i = 0; i < values.length; i++) {
-        	Cell cell = column.getType().createCell(row);
-        	cell.setValue(values[i]);
-        	cell.setIndex(i);
-        	cell.insert(session);
+            Cell cell = column.getType().createCell(row);
+            cell.setValue(values[i]);
+            cell.setIndex(i);
+            cell.insert(session);
         }
     }
 

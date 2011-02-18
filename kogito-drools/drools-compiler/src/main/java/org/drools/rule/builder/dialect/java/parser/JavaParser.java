@@ -238,11 +238,11 @@ public class JavaParser extends Parser {
         private String source = "unknown";
 
         public void setSource(String source) {
-        	this.source = source;
+            this.source = source;
         }
 
         public String getSource() {
-        	return this.source;
+            return this.source;
         }
 
         public void reportError(RecognitionException ex) {
@@ -254,32 +254,32 @@ public class JavaParser extends Parser {
                     }
                     state.errorRecovery = true;
 
-        	errors.add( ex );
+            errors.add( ex );
         }
 
              /** return the raw RecognitionException errors */
              public List getErrors() {
-             	return errors;
+                 return errors;
              }
 
              /** Return a list of pretty strings summarising the errors */
              public List getErrorMessages() {
-             	List messages = new ArrayList();
-         	for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
-                  		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
-                  	}
-                  	return messages;
+                 List messages = new ArrayList();
+             for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+                          messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+                      }
+                      return messages;
              }
 
              /** return true if any parser errors were accumulated */
              public boolean hasErrors() {
-          	return ! errors.isEmpty();
+              return ! errors.isEmpty();
              }
 
              /** This will take a RecognitionException, and create a sensible error message out of it */
              public String createErrorMessage(RecognitionException e)
             {
-        	StringBuilder message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
                     message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                     if ( e instanceof MismatchedTokenException ) {
                             MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -297,7 +297,7 @@ public class JavaParser extends Parser {
                     }
                     else if ( e instanceof NoViableAltException ) {
                             NoViableAltException nvae = (NoViableAltException)e;
-        		message.append( "Unexpected token '" + e.token.getText() + "'" );
+                message.append( "Unexpected token '" + e.token.getText() + "'" );
                             /*
                             message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
                                                                " state "+nvae.stateNumber+
@@ -329,7 +329,7 @@ public class JavaParser extends Parser {
                             FailedPredicateException fpe = (FailedPredicateException)e;
                             message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                                fpe.predicateText+"}?");
-        	}
+            }
                        return message.toString();
             }
 
@@ -2981,9 +2981,9 @@ public class JavaParser extends Parser {
 
 
 
-            	if( this.localVariableLevel == 1 ) { // we only want top level local vars
-            		((variableDeclarator_scope)variableDeclarator_stack.peek()).ident = new JavaLocalDeclarationDescr.IdentifierDescr();
-            	}
+                if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                    ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+                }
 
         try {
             if ( state.backtracking>0 && alreadyParsedRule(input, 39) ) { return ; }
@@ -2998,13 +2998,13 @@ public class JavaParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
                
-                  		if( this.localVariableLevel == 1 ) { // we only want top level local vars
-                  			((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setIdentifier( (id!=null?id.getText():null) );
-                  			((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setStart( ((CommonToken)id).getStartIndex() - 1 );
-                  			if( (rest!=null?((Token)rest.stop):null) != null ) {
-                     				((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setEnd( ((CommonToken)(rest!=null?((Token)rest.stop):null)).getStopIndex() );
-                  			}
-                  		}
+                          if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                              ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setIdentifier( (id!=null?id.getText():null) );
+                              ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setStart( ((CommonToken)id).getStartIndex() - 1 );
+                              if( (rest!=null?((Token)rest.stop):null) != null ) {
+                                     ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident.setEnd( ((CommonToken)(rest!=null?((Token)rest.stop):null)).getStopIndex() );
+                              }
+                          }
 
             }
 
@@ -3013,7 +3013,7 @@ public class JavaParser extends Parser {
             if ( state.backtracking==0 ) {
 
                           if( this.localVariableLevel == 1 ) { // we only want top level local vars
-                          	((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addIdentifier( ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident );
+                              ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addIdentifier( ((variableDeclarator_scope)variableDeclarator_stack.peek()).ident );
                           }
 
             }
@@ -5770,8 +5770,8 @@ public class JavaParser extends Parser {
                     if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 );
-                      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) );
+                                  ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 );
+                                  ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) );
 
                     }
 
@@ -6425,10 +6425,10 @@ public class JavaParser extends Parser {
                     if ( state.backtracking==0 ) {
 
                                   d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                          	    d.setType( JavaBlockDescr.BlockType.EXIT );
-                              	d.setStart( ((CommonToken)s).getStartIndex() );
+                                  d.setType( JavaBlockDescr.BlockType.EXIT );
+                                  d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                              	this.blocks.add( d );
+                                  this.blocks.add( d );
                               
                     }
 
@@ -6443,11 +6443,11 @@ public class JavaParser extends Parser {
                     c=(Token)match(input,42,FOLLOW_42_in_epStatement2824); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                          	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                          	    d.setType( JavaBlockDescr.BlockType.ENTRY );
-                          	    d.setStart( ((CommonToken)s).getStartIndex() );
+                                  d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
+                                  d.setType( JavaBlockDescr.BlockType.ENTRY );
+                                  d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                          	    this.blocks.add( d );
+                                  this.blocks.add( d );
                               
                     }
 
@@ -6462,11 +6462,11 @@ public class JavaParser extends Parser {
                     c=(Token)match(input,42,FOLLOW_42_in_epStatement2860); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
 
-                          	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
-                          	    d.setType( JavaBlockDescr.BlockType.CHANNEL );
-                          	    d.setStart( ((CommonToken)s).getStartIndex() );
+                                  d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
+                                  d.setType( JavaBlockDescr.BlockType.CHANNEL );
+                                  d.setStart( ((CommonToken)s).getStartIndex() );
                                   d.setEnd( ((CommonToken)c).getStopIndex() );
-                          	    this.blocks.add( d );
+                                  this.blocks.add( d );
                               
                     }
 

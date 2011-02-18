@@ -275,37 +275,37 @@ public class SlidingWindow {
 
     public double getWorkingFridgesRatio() {
         if (getOverallFridgesCount() == 0)
-        	return 0;
+            return 0;
         return (double)getWorkingFridgesCount()/getOverallFridgesCount();
     }
 
     public double getDefectiveFridgesRatio() {
         if (getOverallFridgesCount() == 0)
-        	return 0;
+            return 0;
         return (double)getDefectiveFridgesCount()/getOverallFridgesCount();
     }
 
     public double getWorkingFreezersRatio() {
         if (getOverallFreezersCount() == 0)
-        	return 0;
+            return 0;
         return (double)getWorkingFreezersCount()/getOverallFreezersCount();
     }
 
     public double getDefectiveFreezersRatio() {
         if (getOverallFreezersCount() == 0)
-        	return 0;
+            return 0;
         return (double)getDefectiveFreezersCount()/getOverallFreezersCount();
     }
 
     public double getWorkingDevicesRatio() {
         if (getOverallDevicesCount() == 0)
-        	return 0;
+            return 0;
         return (double)getWorkingDevicesCount()/getOverallDevicesCount();
     }
 
     public double getDefectiveDevicesRatio() {
         if (getOverallDevicesCount() == 0)
-        	return 0;
+            return 0;
         return (double)getDefectiveDevicesCount()/getOverallDevicesCount();
     }*/
 

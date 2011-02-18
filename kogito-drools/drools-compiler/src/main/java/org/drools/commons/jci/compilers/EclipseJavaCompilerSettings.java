@@ -70,7 +70,7 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         super(pSettings);
 
         if (pSettings instanceof EclipseJavaCompilerSettings) {
-        	defaultEclipseSettings.putAll(((EclipseJavaCompilerSettings)pSettings).toNativeSettings());
+            defaultEclipseSettings.putAll(((EclipseJavaCompilerSettings)pSettings).toNativeSettings());
         }
     }
     
@@ -93,7 +93,7 @@ public final class EclipseJavaCompilerSettings extends JavaCompilerSettings {
         final String nativeVersion = (String) nativeVersions.get(pVersion);
 
         if (nativeVersion == null) {
-        	throw new RuntimeException("unknown version " + pVersion);
+            throw new RuntimeException("unknown version " + pVersion);
         }
 
         return nativeVersion;

@@ -114,63 +114,63 @@ public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener
     }
 
     public void fireBeforeRuleFlowGroupActivated(
-        	final RuleFlowGroup ruleFlowGroup,
-        	final InternalWorkingMemory workingMemory) {
+            final RuleFlowGroup ruleFlowGroup,
+            final InternalWorkingMemory workingMemory) {
         final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-        	final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
-        			ruleFlowGroup);
+            final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
+                    ruleFlowGroup);
 
-        	do {
-        		iter.next().beforeRuleFlowGroupActivated(event, workingMemory);
-        	} while (iter.hasNext());
+            do {
+                iter.next().beforeRuleFlowGroupActivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireAfterRuleFlowGroupActivated(
-        	final RuleFlowGroup ruleFlowGroup,
-        	final InternalWorkingMemory workingMemory) {
+            final RuleFlowGroup ruleFlowGroup,
+            final InternalWorkingMemory workingMemory) {
         final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-        	final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
-        			ruleFlowGroup);
+            final RuleFlowGroupActivatedEvent event = new RuleFlowGroupActivatedEvent(
+                    ruleFlowGroup);
 
-        	do {
-        		iter.next().afterRuleFlowGroupActivated(event, workingMemory);
-        	} while (iter.hasNext());
+            do {
+                iter.next().afterRuleFlowGroupActivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireBeforeRuleFlowGroupDeactivated(
-        	final RuleFlowGroup ruleFlowGroup,
-        	final InternalWorkingMemory workingMemory) {
+            final RuleFlowGroup ruleFlowGroup,
+            final InternalWorkingMemory workingMemory) {
         final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-        	final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
-        			ruleFlowGroup);
+            final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
+                    ruleFlowGroup);
 
-        	do {
-        		iter.next()
-        				.beforeRuleFlowGroupDeactivated(event, workingMemory);
-        	} while (iter.hasNext());
+            do {
+                iter.next()
+                        .beforeRuleFlowGroupDeactivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 
     public void fireAfterRuleFlowGroupDeactivated(
-        	final RuleFlowGroup ruleFlowGroup,
-        	final InternalWorkingMemory workingMemory) {
+            final RuleFlowGroup ruleFlowGroup,
+            final InternalWorkingMemory workingMemory) {
         final Iterator<AgendaEventListener> iter = getEventListenersIterator();
 
         if (iter.hasNext()) {
-        	final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
-        			ruleFlowGroup);
+            final RuleFlowGroupDeactivatedEvent event = new RuleFlowGroupDeactivatedEvent(
+                    ruleFlowGroup);
 
-        	do {
-        		iter.next().afterRuleFlowGroupDeactivated(event, workingMemory);
-        	} while (iter.hasNext());
+            do {
+                iter.next().afterRuleFlowGroupDeactivated(event, workingMemory);
+            } while (iter.hasNext());
         }
     }
 

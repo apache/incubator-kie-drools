@@ -37,7 +37,7 @@ public class AbortProcessInstanceCommand implements GenericCommand<Object> {
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         if (processInstanceId == null) {
-        	return null;
+            return null;
         }
         ksession.abortProcessInstance(processInstanceId);
         return null;

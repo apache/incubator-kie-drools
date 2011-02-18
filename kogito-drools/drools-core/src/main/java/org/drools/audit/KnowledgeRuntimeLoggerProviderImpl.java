@@ -25,7 +25,7 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
     public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session, String fileName) {
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
         if (fileName != null) {
-        	logger.setFileName(fileName);
+            logger.setFileName(fileName);
         }
         return new KnowledgeRuntimeFileLoggerWrapper(logger);
     }
@@ -33,7 +33,7 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
     public KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session, String fileName, int interval) {
         ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger(session);
         if (fileName != null) {
-        	logger.setFileName(fileName);
+            logger.setFileName(fileName);
         }
         logger.start(interval);
         return new KnowledgeRuntimeThreadedFileLoggerWrapper(logger);
@@ -49,11 +49,11 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
         private WorkingMemoryFileLogger logger;
 
         public KnowledgeRuntimeFileLoggerWrapper(WorkingMemoryFileLogger logger) {
-        	this.logger = logger;
+            this.logger = logger;
         }
 
         public void close() {
-        	logger.writeToDisk();
+            logger.writeToDisk();
         }
 
     }
@@ -63,12 +63,12 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
         private ThreadedWorkingMemoryFileLogger logger;
 
         public KnowledgeRuntimeThreadedFileLoggerWrapper(ThreadedWorkingMemoryFileLogger logger) {
-        	this.logger = logger;
+            this.logger = logger;
         }
 
         public void close() {
-        	logger.stop();
-        	logger.writeToDisk();
+            logger.stop();
+            logger.writeToDisk();
         }
 
     }
@@ -78,11 +78,11 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
         // private WorkingMemoryConsoleLogger logger;
 
         public KnowledgeRuntimeConsoleLoggerWrapper(WorkingMemoryConsoleLogger logger) {
-        	// this.logger = logger;
+            // this.logger = logger;
         }
 
         public void close() {
-        	// Do nothing
+            // Do nothing
         }
 
     }

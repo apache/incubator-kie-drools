@@ -43,7 +43,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
 
         for ( Package pkg : pkgs ) {
-        	list.add( new KnowledgePackageImp( pkg ) );
+            list.add( new KnowledgePackageImp( pkg ) );
         }
 
         return list;
@@ -52,10 +52,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public KnowledgeBase newKnowledgeBase() {
         KnowledgeBuilderErrors errors = getErrors();
         if (errors.size() > 0) {
-        	for (KnowledgeBuilderError error: errors) {
-        		System.err.println(error);
-        	}
-        	throw new IllegalArgumentException("Could not parse knowledge.");
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Could not parse knowledge.");
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(getKnowledgePackages());

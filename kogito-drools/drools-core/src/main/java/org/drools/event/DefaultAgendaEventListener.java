@@ -56,22 +56,22 @@ public class DefaultAgendaEventListener
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	                                WorkingMemory workingMemory) {
+                                            WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
     public void afterRuleFlowGroupDeactivated(
-        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	                                 WorkingMemory workingMemory) {
+                                             WorkingMemory workingMemory) {
         // intentionally left blank
     }
 
     public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-        	                                   WorkingMemory workingMemory) {
+                                               WorkingMemory workingMemory) {
         // intentionally left blank
     }
 }

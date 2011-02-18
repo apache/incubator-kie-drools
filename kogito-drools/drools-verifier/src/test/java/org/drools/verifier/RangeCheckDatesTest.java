@@ -49,108 +49,108 @@ public class RangeCheckDatesTest extends TestBase {
     @Test
     public void testSmallerOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("rangeChecks/Dates.drl"));
+                .getResourceAsStream("rangeChecks/Dates.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Range check for dates, if smaller than or equal is missing"));
+                "Range check for dates, if smaller than or equal is missing"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingRangesForDates.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingRangesForDates.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         StatelessSessionResult sessionResult = session
-        		.executeWithResults(testData);
+                .executeWithResults(testData);
 
         Iterator<Object> iter = sessionResult.iterateObjects();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof Gap) {
-        		rulesThatHadErrors.add(((Gap) o).getRuleName());
-        	}
-        	// System.out.println(o);
+            Object o = (Object) iter.next();
+            if (o instanceof Gap) {
+                rulesThatHadErrors.add(((Gap) o).getRuleName());
+            }
+            // System.out.println(o);
         }
 
         assertTrue(rulesThatHadErrors.remove("Date gap rule 4a"));
         assertTrue(rulesThatHadErrors.remove("Date gap rule 5a"));
 
         if (!rulesThatHadErrors.isEmpty()) {
-        	for (String string : rulesThatHadErrors) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 
     @Test
     public void testGreaterOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("rangeChecks/Dates.drl"));
+                .getResourceAsStream("rangeChecks/Dates.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Range check for dates, if greater than or equal is missing"));
+                "Range check for dates, if greater than or equal is missing"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingRangesForDates.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingRangesForDates.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         StatelessSessionResult sessionResult = session
-        		.executeWithResults(testData);
+                .executeWithResults(testData);
 
         Iterator<Object> iter = sessionResult.iterateObjects();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof Gap) {
-        		rulesThatHadErrors.add(((Gap) o).getRuleName());
-        	}
-        	// System.out.println(o);
+            Object o = (Object) iter.next();
+            if (o instanceof Gap) {
+                rulesThatHadErrors.add(((Gap) o).getRuleName());
+            }
+            // System.out.println(o);
         }
 
         assertTrue(rulesThatHadErrors.remove("Date gap rule 4b"));
         assertTrue(rulesThatHadErrors.remove("Date gap rule 5b"));
 
         if (!rulesThatHadErrors.isEmpty()) {
-        	for (String string : rulesThatHadErrors) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 
     @Test
     public void testEqualAndGreaterThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("rangeChecks/Dates.drl"));
+                .getResourceAsStream("rangeChecks/Dates.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Range check for dates, equal and greater than"));
+                "Range check for dates, equal and greater than"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingRangesForDates.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingRangesForDates.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         StatelessSessionResult sessionResult = session
-        		.executeWithResults(testData);
+                .executeWithResults(testData);
 
         Iterator<Object> iter = sessionResult.iterateObjects();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof Gap) {
-        		rulesThatHadErrors.add(((Gap) o).getRuleName());
-        	}
-        	// System.out.println(o);
+            Object o = (Object) iter.next();
+            if (o instanceof Gap) {
+                rulesThatHadErrors.add(((Gap) o).getRuleName());
+            }
+            // System.out.println(o);
         }
 
         assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
@@ -158,39 +158,39 @@ public class RangeCheckDatesTest extends TestBase {
         assertTrue(rulesThatHadErrors.remove("Date gap rule 3"));
 
         if (!rulesThatHadErrors.isEmpty()) {
-        	for (String string : rulesThatHadErrors) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 
     @Test
     public void testEqualAndSmallerThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("rangeChecks/Dates.drl"));
+                .getResourceAsStream("rangeChecks/Dates.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Range check for dates, equal and smaller than"));
+                "Range check for dates, equal and smaller than"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingRangesForDates.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingRangesForDates.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         StatelessSessionResult sessionResult = session
-        		.executeWithResults(testData);
+                .executeWithResults(testData);
 
         Iterator<Object> iter = sessionResult.iterateObjects();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof Gap) {
-        		rulesThatHadErrors.add(((Gap) o).getRuleName());
-        	}
-        	// System.out.println(o);
+            Object o = (Object) iter.next();
+            if (o instanceof Gap) {
+                rulesThatHadErrors.add(((Gap) o).getRuleName());
+            }
+            // System.out.println(o);
         }
 
         assertTrue(rulesThatHadErrors.remove("Date gap rule 1"));
@@ -198,9 +198,9 @@ public class RangeCheckDatesTest extends TestBase {
         assertTrue(rulesThatHadErrors.remove("Date gap rule 2"));
 
         if (!rulesThatHadErrors.isEmpty()) {
-        	for (String string : rulesThatHadErrors) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : rulesThatHadErrors) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 }

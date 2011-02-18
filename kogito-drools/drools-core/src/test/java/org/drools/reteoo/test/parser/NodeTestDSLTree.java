@@ -98,7 +98,7 @@ public class NodeTestDSLTree extends TreeParser {
         NodeTestCase testCase = null;
 
         public NodeTestCase getTestCase() {
-        	return testCase;
+            return testCase;
         }
 
 

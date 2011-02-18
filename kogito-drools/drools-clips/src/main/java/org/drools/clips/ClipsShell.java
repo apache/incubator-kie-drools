@@ -174,28 +174,28 @@ public class ClipsShell
             if (isBalancedBrackets(buf)) {
                 String exp = buf.toString();
                 if (exp.startsWith("(save ")) {
-                	String file = getFileName(exp);
-                	System.out.println("Saving transcript to [" + file + "]");
-                	writeFile(file, sessionLog);
-                	sessionLog = new StringBuffer();
-                	System.out.print("Drools>");
+                    String file = getFileName(exp);
+                    System.out.println("Saving transcript to [" + file + "]");
+                    writeFile(file, sessionLog);
+                    sessionLog = new StringBuffer();
+                    System.out.print("Drools>");
                 } else {
-                	sessionLog.append(cmd + "\n");
+                    sessionLog.append(cmd + "\n");
 
-                	if (exp.startsWith("(load ")) {
-                		String file = getFileName(exp);
-                		System.out.println("Loading transcript from [" + file + "]");
-                		exp = loadFile(file);
-                	}
+                    if (exp.startsWith("(load ")) {
+                        String file = getFileName(exp);
+                        System.out.println("Loading transcript from [" + file + "]");
+                        exp = loadFile(file);
+                    }
 
-                	shell.eval(exp);
-                	String output = new String(out.toByteArray());
-                	if (output != null && output.trim().length() > 0) {
-                		System.out.println(output);
-                	}
-                	out.reset();
-                	System.out.print("Drools>");
-                	buf = new StringBuffer();
+                    shell.eval(exp);
+                    String output = new String(out.toByteArray());
+                    if (output != null && output.trim().length() > 0) {
+                        System.out.println(output);
+                    }
+                    out.reset();
+                    System.out.print("Drools>");
+                    buf = new StringBuffer();
                 }
             }
         }
@@ -229,7 +229,7 @@ public class ClipsShell
     private static String getFileName(String exp) {
         char qt = '\'';
         if (exp.contains("\"")) {
-        	qt = '"';
+            qt = '"';
         }
         String file = exp.substring(exp.indexOf(qt) + 1, exp.lastIndexOf(qt));
         return file;
@@ -238,18 +238,18 @@ public class ClipsShell
     private static void writeFile(String file, StringBuffer sessionLog) {
         FileOutputStream fout;
         try {
-        	File f = new File(file);
-        	if (!f.exists()) {
-        		f.createNewFile();
-        	}
-        	fout = new FileOutputStream(f);
-        	fout.write(sessionLog.toString().getBytes());
-        	fout.flush();
-        	fout.close();
+            File f = new File(file);
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            fout = new FileOutputStream(f);
+            fout.write(sessionLog.toString().getBytes());
+            fout.flush();
+            fout.close();
         } catch (FileNotFoundException e) {
-        	System.err.println("File " + file + " does not exist.");
+            System.err.println("File " + file + " does not exist.");
         } catch (IOException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         }
 
 
@@ -259,8 +259,8 @@ public class ClipsShell
         char[] cs = buf.toString().toCharArray();
         int stack = 0;
         for (int i = 0; i < cs.length; i++) {
-        	if (cs[i] == '(') stack++;
-        	if (cs[i] == ')') stack--;
+            if (cs[i] == '(') stack++;
+            if (cs[i] == ')') stack--;
         }
         return stack == 0;
     }

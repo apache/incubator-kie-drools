@@ -42,15 +42,15 @@ public interface AgendaEventListener
                            WorkingMemory workingMemory);
 
     void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	                          WorkingMemory workingMemory);
+                                      WorkingMemory workingMemory);
 
     void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	                         WorkingMemory workingMemory);
+                                     WorkingMemory workingMemory);
 
     void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-        	                            WorkingMemory workingMemory);
+                                        WorkingMemory workingMemory);
 
     void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
-        	                           WorkingMemory workingMemory);
+                                       WorkingMemory workingMemory);
 
 }

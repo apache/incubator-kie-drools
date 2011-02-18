@@ -41,73 +41,73 @@ public class MissingEqualityTest extends TestBase {
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("MissingEquality.drl"));
+                .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Missing restriction in LiteralRestrictions"));
+                "Missing restriction in LiteralRestrictions"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingEqualityTest.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         session.executeWithResults(testData);
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
-        		Severity.WARNING).iterator();
+                Severity.WARNING).iterator();
 
         Collection<String> ruleNames = new ArrayList<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof VerifierMessage) {
-        		Cause cause = ((VerifierMessage) o).getFaulty();
-        		String name = ((LiteralRestriction) cause).getRuleName();
+            Object o = (Object) iter.next();
+            if (o instanceof VerifierMessage) {
+                Cause cause = ((VerifierMessage) o).getFaulty();
+                String name = ((LiteralRestriction) cause).getRuleName();
 
-        		ruleNames.add(name);
-        	}
+                ruleNames.add(name);
+            }
         }
 
         assertTrue(ruleNames.remove("Missing equality 1"));
         assertTrue(ruleNames.remove("Missing equality 2"));
 
         if (!ruleNames.isEmpty()) {
-        	for (String string : ruleNames) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : ruleNames) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 
     @Test
     public void testMissingEqualityInVariableRestrictions() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
-        		.getResourceAsStream("MissingEquality.drl"));
+                .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-        		"Missing restriction in VariableRestrictions"));
+                "Missing restriction in VariableRestrictions"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
-        		.getResourceAsStream("MissingEqualityTest.drl"), result
-        		.getVerifierData());
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
 
         session.setGlobal("result", result);
 
         session.executeWithResults(testData);
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
-        		Severity.WARNING).iterator();
+                Severity.WARNING).iterator();
 
         Collection<String> ruleNames = new ArrayList<String>();
         while (iter.hasNext()) {
-        	Object o = (Object) iter.next();
-        	if (o instanceof VerifierMessage) {
-        		Cause cause = ((VerifierMessage) o).getFaulty();
-        		String name = ((VariableRestriction) cause).getRuleName();
+            Object o = (Object) iter.next();
+            if (o instanceof VerifierMessage) {
+                Cause cause = ((VerifierMessage) o).getFaulty();
+                String name = ((VariableRestriction) cause).getRuleName();
 
-        		ruleNames.add(name);
-        	}
+                ruleNames.add(name);
+            }
         }
 
         assertTrue(ruleNames.remove("Missing equality 3"));
@@ -116,9 +116,9 @@ public class MissingEqualityTest extends TestBase {
         assertTrue(ruleNames.remove("Missing equality 6"));
 
         if (!ruleNames.isEmpty()) {
-        	for (String string : ruleNames) {
-        		fail("Rule " + string + " caused an error.");
-        	}
+            for (String string : ruleNames) {
+                fail("Rule " + string + " caused an error.");
+            }
         }
     }
 }

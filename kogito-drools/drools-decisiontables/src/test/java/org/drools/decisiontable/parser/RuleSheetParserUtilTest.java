@@ -39,7 +39,7 @@ public class RuleSheetParserUtilTest {
         final String row = "  RuleTable       This is my rule name";
         final String result = RuleSheetParserUtil.getRuleName( row );
         assertEquals( "This is my rule name",
-        		result );
+                result );
     }
 
     /**
@@ -50,10 +50,10 @@ public class RuleSheetParserUtilTest {
     public void testInvalidRuleName() {
         final String row = "RuleTable       This is my rule name (type class)";
         try {
-        	final String result = RuleSheetParserUtil.getRuleName( row );
-        	fail( "should have failed, but get result: " + result );
+            final String result = RuleSheetParserUtil.getRuleName( row );
+            fail( "should have failed, but get result: " + result );
         } catch ( final IllegalArgumentException e ) {
-        	assertNotNull( e.getMessage() );
+            assertNotNull( e.getMessage() );
         }
     }
 
@@ -96,15 +96,15 @@ public class RuleSheetParserUtilTest {
         final List<Global> varList = RuleSheetParserUtil.getVariableList( varCells );
         assertNotNull( varList );
         assertEquals( 3,
-        		varList.size() );
+                varList.size() );
         Global var = varList.get( 0 );
         assertEquals( "Var1",
-        		var.getClassName() );
+                var.getClassName() );
         var = varList.get( 2 );
         assertEquals( "Var3",
-        		var.getClassName() );
+                var.getClassName() );
         assertEquals( "var3",
-        		var.getIdentifier() );
+                var.getIdentifier() );
     }
 
     @Test
@@ -112,10 +112,10 @@ public class RuleSheetParserUtilTest {
         List<String> varCells = new ArrayList<String>();
         varCells.add( "class1, object2" );
         try {
-        	RuleSheetParserUtil.getVariableList( varCells );
-        	fail( "should not work" );
+            RuleSheetParserUtil.getVariableList( varCells );
+            fail( "should not work" );
         } catch ( final DecisionTableParseException e ) {
-        	assertNotNull( e.getMessage() );
+            assertNotNull( e.getMessage() );
         }
     }
 

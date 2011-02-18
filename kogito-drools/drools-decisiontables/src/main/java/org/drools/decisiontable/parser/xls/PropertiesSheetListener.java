@@ -74,7 +74,7 @@ public class PropertiesSheetListener implements DataListener {
      */
     public void finishSheet() {
         for ( String[] keyValue : _rowProperties.values() ) {
-        	this._properties.addProperty( keyValue[0], new String[]{ keyValue[1], keyValue[2] } );
+            this._properties.addProperty( keyValue[0], new String[]{ keyValue[1], keyValue[2] } );
         }
         // Discard to avoid repeated addition of properties,
         // since finishSheet may be called more than once.
@@ -90,7 +90,7 @@ public class PropertiesSheetListener implements DataListener {
      *            The Colum number.
      */
     public void newRow(final int rowNumber,
-        	final int columns) {
+            final int columns) {
         // nothing to do.
     }
 
@@ -100,22 +100,22 @@ public class PropertiesSheetListener implements DataListener {
      * @see my.hssf.util.SheetListener#newCell(int, int, java.lang.String)
      */
     public void newCell(final int row,
-        	final int column,
-        	final String value,
-        	final int mergedColStart) {
+            final int column,
+            final String value,
+            final int mergedColStart) {
         if ( emptyCellValue( value ) ) {
-        	return;
+            return;
         }
         final Integer rowInt = new Integer( row );
         if ( this._rowProperties.containsKey( rowInt ) ) {
-        	final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
-        	if ( keyValue[1] == PropertiesSheetListener.EMPTY_STRING ) {
-        		keyValue[1] = value;
-        		keyValue[2] = RuleSheetParserUtil.rc2name(row, column);
-        	}
+            final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
+            if ( keyValue[1] == PropertiesSheetListener.EMPTY_STRING ) {
+                keyValue[1] = value;
+                keyValue[2] = RuleSheetParserUtil.rc2name(row, column);
+            }
         } else {
-        	final String[] keyValue = {value, PropertiesSheetListener.EMPTY_STRING, RuleSheetParserUtil.rc2name(row, column+1) };
-        	this._rowProperties.put( rowInt, keyValue );
+            final String[] keyValue = {value, PropertiesSheetListener.EMPTY_STRING, RuleSheetParserUtil.rc2name(row, column+1) };
+            this._rowProperties.put( rowInt, keyValue );
         }
     }
 
@@ -127,55 +127,55 @@ public class PropertiesSheetListener implements DataListener {
     public static class CaseInsensitiveMap extends HashMap<String,List<String[]>> {
 
         private List<String[]> getPropertyCell(String key) {
-        	return super.get( key.toLowerCase() );
+            return super.get( key.toLowerCase() );
         }
 
         public void addProperty( String key, String[] value ){
-        	key = key.toLowerCase();
-        	List<String[]> r  = getPropertyCell( key );
-        	if( r == null ){
-        		r = new ArrayList<String[]>();
-        	}
-        	r.add( value );
-        	super.put( key, r );
+            key = key.toLowerCase();
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null ){
+                r = new ArrayList<String[]>();
+            }
+            r.add( value );
+            super.put( key, r );
         }
 
         private List<String> getList( String key, int index ) {
-        	List<String[]> pcList  = getPropertyCell( key );
+            List<String[]> pcList  = getPropertyCell( key );
             if( pcList == null ) return null;
-        	List<String> r = new ArrayList<String>();
-        	for( String[] pc: pcList ){
-        		r.add( pc[index] );
-        	}
-        	return r;
+            List<String> r = new ArrayList<String>();
+            for( String[] pc: pcList ){
+                r.add( pc[index] );
+            }
+            return r;
         }
 
         public List<String> getProperty(String key) {
-        	return getList( key, 0 );
+            return getList( key, 0 );
         }
 
         public List<String> getPropertyCells(String key) {
-        	return getList( key, 1 );
+            return getList( key, 1 );
         }
 
         private String getSingle( String key, int index ){
-        	List<String[]> r  = getPropertyCell( key );
-        	if( r == null || r.size() == 0 ) return null;
-        	return r.get( 0 )[index];
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null || r.size() == 0 ) return null;
+            return r.get( 0 )[index];
         }
 
         public String getSingleProperty( String key ){
-        	return getSingle( key, 0 );
+            return getSingle( key, 0 );
         }
 
         public String getSinglePropertyCell( String key ){
-        	return getSingle( key, 1 );
+            return getSingle( key, 1 );
         }
 
         public String getSingleProperty( String key, String defaultValue ){
-        	String r = getSingleProperty( key );
-        	if( r == null || r == "" ) r = defaultValue;
-        	return r;
+            String r = getSingleProperty( key );
+            if( r == null || r == "" ) r = defaultValue;
+            return r;
         }
 
     }

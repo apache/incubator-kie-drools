@@ -18,7 +18,7 @@ public class ProcessRuntimeFactory {
 
     public static synchronized ProcessRuntimeFactoryService getProcessRuntimeFactoryService() {
         if (provider == null) {
-        	loadProvider();
+            loadProvider();
         }
         return provider;
     }

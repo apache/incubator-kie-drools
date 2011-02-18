@@ -13,7 +13,7 @@ public class DefaultTemplateContainerTest {
     @Test
     public void testParseTemplate() {
         InputStream is = DefaultTemplateContainerTest.class
-        		.getResourceAsStream("/templates/test_template_simple.drl");
+                .getResourceAsStream("/templates/test_template_simple.drl");
         DefaultTemplateContainer t = new DefaultTemplateContainer(is);
         assertEquals("package This_is_a_ruleset;\n", t.getHeader());
         assertEquals(1, t.getColumns().length);
@@ -28,14 +28,14 @@ public class DefaultTemplateContainerTest {
         assertEquals("name", column.getName());
         String contents = template.getContents();
         assertTrue(contents
-        		.startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
+                .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
     }
 
     @Test
     public void testParseTemplateConditions() {
         InputStream is = DefaultTemplateContainerTest.class
-        		.getResourceAsStream("/templates/test_template_conditions.drl");
+                .getResourceAsStream("/templates/test_template_conditions.drl");
         DefaultTemplateContainer t = new DefaultTemplateContainer(is);
         assertEquals("package This_is_a_ruleset;\n", t.getHeader());
         assertEquals(1, t.getColumns().length);
@@ -51,63 +51,63 @@ public class DefaultTemplateContainerTest {
         assertEquals("== \"name1\"", templateColumn.getCondition());
         String contents = template.getContents();
         assertTrue(contents
-        		.startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
+                .startsWith("rule \"How cool is @{name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
     }
 
     @Test
     public void testParseTemplateNoHeader() {
         try {
-        	InputStream is = DefaultTemplateContainerTest.class
-        			.getResourceAsStream("/templates/test_template_invalid1.drl");
-        	new DefaultTemplateContainer(is);
-        	fail("DecisionTableParseException expected");
+            InputStream is = DefaultTemplateContainerTest.class
+                    .getResourceAsStream("/templates/test_template_invalid1.drl");
+            new DefaultTemplateContainer(is);
+            fail("DecisionTableParseException expected");
         } catch (DecisionTableParseException expected) {
-        	assertEquals("Missing header", expected.getMessage());
+            assertEquals("Missing header", expected.getMessage());
         }
     }
 
     @Test
     public void testParseTemplateNoHeaderColumns() {
         try {
-        	InputStream is = DefaultTemplateContainerTest.class
-        			.getResourceAsStream("/templates/test_template_invalid2.drl");
-        	new DefaultTemplateContainer(is);
-        	fail("DecisionTableParseException expected");
+            InputStream is = DefaultTemplateContainerTest.class
+                    .getResourceAsStream("/templates/test_template_invalid2.drl");
+            new DefaultTemplateContainer(is);
+            fail("DecisionTableParseException expected");
         } catch (DecisionTableParseException expected) {
-        	assertEquals("Missing header columns", expected.getMessage());
+            assertEquals("Missing header columns", expected.getMessage());
         }
     }
 
     @Test
     public void testParseTemplateNoTemplates() {
         try {
-        	InputStream is = DefaultTemplateContainerTest.class
-        			.getResourceAsStream("/templates/test_template_invalid3.drl");
-        	new DefaultTemplateContainer(is);
-        	fail("DecisionTableParseException expected");
+            InputStream is = DefaultTemplateContainerTest.class
+                    .getResourceAsStream("/templates/test_template_invalid3.drl");
+            new DefaultTemplateContainer(is);
+            fail("DecisionTableParseException expected");
         } catch (DecisionTableParseException expected) {
-        	assertEquals("Missing templates", expected.getMessage());
+            assertEquals("Missing templates", expected.getMessage());
         }
     }
 
     @Test
     public void testParseTemplateNoEndTemplate() {
         try {
-        	InputStream is = DefaultTemplateContainerTest.class
-        			.getResourceAsStream("/templates/test_template_invalid4.drl");
-        	new DefaultTemplateContainer(is);
-        	fail("DecisionTableParseException expected");
+            InputStream is = DefaultTemplateContainerTest.class
+                    .getResourceAsStream("/templates/test_template_invalid4.drl");
+            new DefaultTemplateContainer(is);
+            fail("DecisionTableParseException expected");
         } catch (DecisionTableParseException expected) {
-        	assertEquals("Missing end template", expected.getMessage());
+            assertEquals("Missing end template", expected.getMessage());
         }
     }
 
     @Test
     public void testNullInputStream() {
         try {
-        	new DefaultTemplateContainer((InputStream) null);
-        	fail("NullPointerException expected");
+            new DefaultTemplateContainer((InputStream) null);
+            fail("NullPointerException expected");
         } catch (NullPointerException expected) {
         }
     }
@@ -115,8 +115,8 @@ public class DefaultTemplateContainerTest {
     @Test
     public void testInvalidTemplatePath() {
         try {
-        	new DefaultTemplateContainer("invalid path");
-        	fail("NullPointerException expected");
+            new DefaultTemplateContainer("invalid path");
+            fail("NullPointerException expected");
         } catch (NullPointerException expected) {
         }
     }
@@ -124,7 +124,7 @@ public class DefaultTemplateContainerTest {
     @Test
     public void testParseComplexTemplate() {
         InputStream is = DefaultTemplateContainerTest.class
-        		.getResourceAsStream("/templates/test_template_complex.drl");
+                .getResourceAsStream("/templates/test_template_complex.drl");
         DefaultTemplateContainer t = new DefaultTemplateContainer(is);
         assertEquals("package This_is_a_ruleset;\n", t.getHeader());
         Column[] columnList = t.getColumns();
@@ -147,7 +147,7 @@ public class DefaultTemplateContainerTest {
 
         String contents = template.getContents();
         assertTrue(contents
-        		.startsWith("rule \"How cool is @{first_name} @{row.rowNumber}\""));
+                .startsWith("rule \"How cool is @{first_name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
 
         template = (RuleTemplate) templates.get("template2");
@@ -160,7 +160,7 @@ public class DefaultTemplateContainerTest {
         assertEquals("last_name", column2.getName());
         contents = template.getContents();
         assertTrue(contents
-        		.startsWith("rule \"How uncool is @{first_name} @{row.rowNumber}\""));
+                .startsWith("rule \"How uncool is @{first_name} @{row.rowNumber}\""));
         assertTrue(contents.endsWith("then\nend\n"));
 
 

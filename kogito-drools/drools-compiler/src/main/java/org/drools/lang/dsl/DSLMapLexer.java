@@ -48,11 +48,11 @@ public class DSLMapLexer extends Lexer {
         private List<ParserError> errors = new ArrayList<ParserError>();
 
         public void reportError(RecognitionException ex) {
-        	errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
+            errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
         }
 
         public List<ParserError> getErrors() {
-        	return errors;
+            return errors;
         }
 
         /** Override this method to not output mesages */

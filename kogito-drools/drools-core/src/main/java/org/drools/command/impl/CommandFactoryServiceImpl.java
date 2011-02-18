@@ -117,7 +117,7 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     }
 
     public Command newSetGlobal(String identifier, Object object,
-        	String outIdentifier) {
+            String outIdentifier) {
         SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
         cmd.setOutIdentifier(outIdentifier);
         return cmd;
@@ -142,7 +142,7 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     }
 
     public Command newStartProcess(String processId,
-        	Map<String, Object> parameters) {
+            Map<String, Object> parameters) {
         StartProcessCommand startProcess = new StartProcessCommand();
         startProcess.setProcessId(processId);
         startProcess.setParameters((HashMap<String, Object>) parameters);

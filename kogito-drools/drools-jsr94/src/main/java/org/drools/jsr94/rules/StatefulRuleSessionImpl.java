@@ -97,11 +97,11 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
         RuleExecutionSetImpl ruleSet = null;
         
         try {
-        	ruleSet = (RuleExecutionSetImpl)
-        	repository.getRuleExecutionSet(bindUri, properties);
+            ruleSet = (RuleExecutionSetImpl)
+            repository.getRuleExecutionSet(bindUri, properties);
         } catch (RuleExecutionSetRepositoryException e) {
-        	String s = "Error while retrieving rule execution set bound to: " + bindUri;
-        	throw new RuleSessionCreateException(s, e);
+            String s = "Error while retrieving rule execution set bound to: " + bindUri;
+            throw new RuleSessionCreateException(s, e);
         }
 
         if ( ruleSet == null ) {

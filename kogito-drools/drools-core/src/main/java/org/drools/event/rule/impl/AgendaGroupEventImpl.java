@@ -56,6 +56,6 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
     @Override
     public String toString() {
         return "==>[AgendaGroupEventImpl: getAgendaGroup()=" + getAgendaGroup() + ", getKnowledgeRuntime()="
-        		+ getKnowledgeRuntime() + "]";
+                + getKnowledgeRuntime() + "]";
     }
 }

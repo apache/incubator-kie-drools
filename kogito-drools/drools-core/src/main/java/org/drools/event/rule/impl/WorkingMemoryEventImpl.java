@@ -61,6 +61,6 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
     @Override
     public String toString() {
         return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKnowledgeRuntime()
-        		+ ", getPropagationContext()=" + getPropagationContext() + "]";
+                + ", getPropagationContext()=" + getPropagationContext() + "]";
     }
 }

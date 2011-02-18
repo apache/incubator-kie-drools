@@ -35,7 +35,7 @@ import org.drools.template.model.SnippetBuilder;
  */
 class DefaultTemplateColumn implements TemplateColumn {
     private static final Pattern COLUMN_PATTERN = Pattern
-        	.compile("^(!?)([a-zA-Z0-9_]*)(\\[([0-9]+)\\])?\\s*(.*)");
+            .compile("^(!?)([a-zA-Z0-9_]*)(\\[([0-9]+)\\])?\\s*(.*)");
 
     private boolean notCondition;
 
@@ -51,14 +51,14 @@ class DefaultTemplateColumn implements TemplateColumn {
         templateContainer = tc;
         Matcher matcher = COLUMN_PATTERN.matcher(columnString);
         if (!matcher.matches())
-        	throw new IllegalArgumentException("column " + columnString
-        			+ " is not valid");
+            throw new IllegalArgumentException("column " + columnString
+                    + " is not valid");
         notCondition = !StringUtils.isEmpty(matcher.group(1));
         columnName = matcher.group(2);
         String indexString = matcher.group(4);
         condition = matcher.group(5);
         if (!StringUtils.isEmpty(indexString)) {
-        	index = Integer.parseInt(indexString);
+            index = Integer.parseInt(indexString);
         }
     }
 
@@ -68,7 +68,7 @@ class DefaultTemplateColumn implements TemplateColumn {
         column.getCondition(condition, index);
 
         if (notCondition) {
-        	conditionString.append("not ");
+            conditionString.append("not ");
         }
         conditionString.append("exists ");
         conditionString.append(column.getCondition(condition, index));
@@ -80,7 +80,7 @@ class DefaultTemplateColumn implements TemplateColumn {
 
     private void createColumnCondition(final Rule rule, final String value) {
         SnippetBuilder colSnip = new SnippetBuilder(
-        		"$param : Column(name == \"$param\")");
+                "$param : Column(name == \"$param\")");
         Condition colCondition = new Condition();
         colCondition.setSnippet(colSnip.build(value));
         rule.addCondition(colCondition);

@@ -56,8 +56,8 @@ public class TestRuleExecutionSetRepository
      * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
      */
     public RuleExecutionSet getRuleExecutionSet(
-        	String bindUri,
-        	Map properties)
+            String bindUri,
+            Map properties)
     throws RuleExecutionSetRepositoryException {
         String s = "Implementation outstanding";
         throw new UnsupportedOperationException(s);
@@ -67,9 +67,9 @@ public class TestRuleExecutionSetRepository
      * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
      */
     public void registerRuleExecutionSet(
-        	String bindUri,
-        	RuleExecutionSet ruleSet,
-        	Map properties)
+            String bindUri,
+            RuleExecutionSet ruleSet,
+            Map properties)
     throws RuleExecutionSetRegisterException {
         String s = "Implementation outstanding";
         throw new UnsupportedOperationException(s);
@@ -79,8 +79,8 @@ public class TestRuleExecutionSetRepository
      * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
      */
     public void unregisterRuleExecutionSet(
-        	String bindUri,
-        	Map properties)
+            String bindUri,
+            Map properties)
     throws RuleExecutionSetDeregistrationException {
         String s = "Implementation outstanding";
         throw new UnsupportedOperationException(s);

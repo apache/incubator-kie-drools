@@ -16,7 +16,7 @@ public class ProcessMarshallerFactory {
 
     public static synchronized ProcessMarshallerFactoryService getProcessMarshallerFactoryService() {
         if (service == null) {
-        	loadProvider();
+            loadProvider();
         }
         return service;
     }

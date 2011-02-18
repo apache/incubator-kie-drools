@@ -107,7 +107,7 @@ public class Status {
      */
     public void switchCurrentValue(int oldValue, int newValue, long sinceWhen) {
         if (this.currentValue == oldValue)
-        	this.setCurrentValue(newValue, sinceWhen);
+            this.setCurrentValue(newValue, sinceWhen);
     }
 
     /**

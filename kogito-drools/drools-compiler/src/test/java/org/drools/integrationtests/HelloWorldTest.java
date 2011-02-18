@@ -88,14 +88,14 @@ public class HelloWorldTest {
     private KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(
-        	ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
-        	ResourceType.DRL);
+            ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
+            ResourceType.DRL);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
-        	for (KnowledgeBuilderError error: errors) {
-        		System.err.println(error);
-        	}
-        	throw new IllegalArgumentException("Could not parse knowledge.");
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Could not parse knowledge.");
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

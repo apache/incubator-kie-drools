@@ -73,23 +73,23 @@ public class DefaultBetaConstraints
         int indexable = 0;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             if ( DefaultBetaConstraints.isIndexable( constraints[i] ) ) {
-            	indexable++;
-            	final boolean isUnification = ((VariableConstraint) constraints[i]).getRestriction() instanceof UnificationRestriction ;
-            	if ( isUnification ) {
-            		if (  firstUnification == -1 ) {
-            			// Finds the first unification constraint
-            			firstUnification = i;
-            		}
-            	} else {
-            		if ( firstUnification != -1 ) {
-            			// We have a unification constraint before a normal constraint, so swap
-            			swap(constraints, i, firstUnification);
-            			break;
-            		} else {
-            			// The first constraint is not a unification, do nothing
-            			break;
-            		}
-            	}
+                indexable++;
+                final boolean isUnification = ((VariableConstraint) constraints[i]).getRestriction() instanceof UnificationRestriction ;
+                if ( isUnification ) {
+                    if (  firstUnification == -1 ) {
+                        // Finds the first unification constraint
+                        firstUnification = i;
+                    }
+                } else {
+                    if ( firstUnification != -1 ) {
+                        // We have a unification constraint before a normal constraint, so swap
+                        swap(constraints, i, firstUnification);
+                        break;
+                    } else {
+                        // The first constraint is not a unification, do nothing
+                        break;
+                    }
+                }
             }
         }
 

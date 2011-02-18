@@ -43,18 +43,18 @@ abstract class ReportVisitor {
     protected static String readFile(String fileName) {
         StringBuffer str = new StringBuffer("");
         try {
-        	BufferedReader reader = new BufferedReader(new InputStreamReader(
-        			ReportVisitor.class.getResourceAsStream(fileName)));
-        	String line = null;
-        	while ((line = reader.readLine()) != null) {
-        		str.append(line);
-        		str.append("\n");
-        	}
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    ReportVisitor.class.getResourceAsStream(fileName)));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                str.append(line);
+                str.append("\n");
+            }
         } catch (IOException e) {
-        	e.printStackTrace();
+            e.printStackTrace();
         } catch (NullPointerException e) {
-        	System.err.println("File " + fileName + " was not found.");
-        	e.printStackTrace();
+            System.err.println("File " + fileName + " was not found.");
+            e.printStackTrace();
         }
         return str.toString();
     }

@@ -75,15 +75,15 @@ public class ExternalExecutorService implements
      * this executor is externally maintained.
      */
     public boolean awaitTermination(long timeout, TimeUnit unit)
-        	throws InterruptedException {
+            throws InterruptedException {
         try {
-        	lock.lockInterruptibly();
-        	if (!this.shutdown) {
-        		isShutdown.await();
-        	}
-        	return shutdown;
+            lock.lockInterruptibly();
+            if (!this.shutdown) {
+                isShutdown.await();
+            }
+            return shutdown;
         } finally {
-        	lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -93,69 +93,69 @@ public class ExternalExecutorService implements
     public void execute(Runnable command) {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	service.execute(taskManager.trackTask(command));
-        	return;
+            service.execute(taskManager.trackTask(command));
+            return;
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
      * {@inheritDoc}
      */
     public List invokeAll(Collection tasks, long timeout, TimeUnit unit)
-        	throws InterruptedException {
+            throws InterruptedException {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	return service.invokeAll(taskManager.trackTasks(tasks), timeout,
-        			unit);
+            return service.invokeAll(taskManager.trackTasks(tasks), timeout,
+                    unit);
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
      * {@inheritDoc}
      */
     public List invokeAll(Collection tasks)
-        	throws InterruptedException {
+            throws InterruptedException {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	return service.invokeAll(taskManager.trackTasks(tasks));
+            return service.invokeAll(taskManager.trackTasks(tasks));
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
      * {@inheritDoc}
      */
     public Object invokeAny(Collection tasks,
-        	long timeout, TimeUnit unit) throws InterruptedException,
-        	ExecutionException, TimeoutException {
+            long timeout, TimeUnit unit) throws InterruptedException,
+            ExecutionException, TimeoutException {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	// since the tasks are either executed or cancelled, there is no
-        	// need to track them
-        	return service.invokeAny(tasks, timeout, unit);
+            // since the tasks are either executed or cancelled, there is no
+            // need to track them
+            return service.invokeAny(tasks, timeout, unit);
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
      * {@inheritDoc}
      */
     public Object invokeAny(Collection tasks)
-        	throws InterruptedException, ExecutionException {
+            throws InterruptedException, ExecutionException {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	// since the tasks are either executed or cancelled, there is no
-        	// need to track them
-        	return service.invokeAny(tasks);
+            // since the tasks are either executed or cancelled, there is no
+            // need to track them
+            return service.invokeAny(tasks);
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
@@ -164,9 +164,9 @@ public class ExternalExecutorService implements
     public boolean isShutdown() {
         lock.lock();
         try {
-        	return shutdown;
+            return shutdown;
         } finally {
-        	lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -176,11 +176,11 @@ public class ExternalExecutorService implements
     public boolean isTerminated() {
         lock.lock();
         try {
-        	// for an externally managed service, shutdown and terminated have
-        	// the same semantics
-        	return shutdown;
+            // for an externally managed service, shutdown and terminated have
+            // the same semantics
+            return shutdown;
         } finally {
-        	lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -190,12 +190,12 @@ public class ExternalExecutorService implements
     public void shutdown() {
         lock.lock();
         try {
-        	shutdown = true;
-        	delegate.set(null);
-        	taskManager.cleanUpTasks();
-        	isShutdown.signalAll();
+            shutdown = true;
+            delegate.set(null);
+            taskManager.cleanUpTasks();
+            isShutdown.signalAll();
         } finally {
-        	lock.unlock();
+            lock.unlock();
         }
     }
 
@@ -214,10 +214,10 @@ public class ExternalExecutorService implements
     public <T> Future<T> submit(Callable<T> task) {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	return service.submit(taskManager.trackTask(task));
+            return service.submit(taskManager.trackTask(task));
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
@@ -226,10 +226,10 @@ public class ExternalExecutorService implements
     public <T> Future<T> submit(Runnable task, T result) {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	return service.submit(taskManager.trackTask(task), result);
+            return service.submit(taskManager.trackTask(task), result);
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
@@ -238,10 +238,10 @@ public class ExternalExecutorService implements
     public Future<?> submit(Runnable task) {
         ExecutorService service = delegate.get();
         if (service != null) {
-        	return service.submit(taskManager.trackTask(task));
+            return service.submit(taskManager.trackTask(task));
         }
         throw new RejectedExecutionException(
-        		"Execution service is terminated. No more tasks can be executed.");
+                "Execution service is terminated. No more tasks can be executed.");
     }
 
     /**
@@ -262,7 +262,7 @@ public class ExternalExecutorService implements
         public void afterTaskFinishes(Callable<?> task, Thread thread);
 
         public void taskExceptionRaised(Runnable task, Thread thread,
-        		Throwable t);
+                Throwable t);
     }
 
     /**
@@ -281,36 +281,36 @@ public class ExternalExecutorService implements
         private Condition empty = lock.newCondition();
 
         public TaskManager() {
-        	this.tasks = new ConcurrentHashMap<Object, ObservableTask>();
+            this.tasks = new ConcurrentHashMap<Object, ObservableTask>();
         }
 
         public void waitUntilEmpty() {
-        	// System.out.println("Will wait for empty...");
-        	lock.lock();
-        	try {
-        		if (!tasks.isEmpty()) {
-        			// System.out.println("Not empty yet...");
-        			try {
-        				// wait until it is empty
-        				empty.await();
-        				// System.out.println("it is now");
-        			} catch (InterruptedException e) {
-        				// System.out.println("interruped...");
-        				Thread.currentThread().interrupt();
-        			}
-        		} else {
-        			// System.out.println("Already empty...");
-        		}
-        	} finally {
-        		lock.unlock();
-        	}
+            // System.out.println("Will wait for empty...");
+            lock.lock();
+            try {
+                if (!tasks.isEmpty()) {
+                    // System.out.println("Not empty yet...");
+                    try {
+                        // wait until it is empty
+                        empty.await();
+                        // System.out.println("it is now");
+                    } catch (InterruptedException e) {
+                        // System.out.println("interruped...");
+                        Thread.currentThread().interrupt();
+                    }
+                } else {
+                    // System.out.println("Already empty...");
+                }
+            } finally {
+                lock.unlock();
+            }
         }
 
         public void cleanUpTasks() {
-        	for (ObservableTask task : tasks.values()) {
-        		task.cancel();
-        	}
-        	tasks.clear();
+            for (ObservableTask task : tasks.values()) {
+                task.cancel();
+            }
+            tasks.clear();
         }
 
         /**
@@ -323,11 +323,11 @@ public class ExternalExecutorService implements
          * @return the observable instance of the given task
          */
         public Runnable trackTask(Runnable task) {
-        	// System.out.println("Tracking task = "+System.identityHashCode(
-        	// task )+" : "+task);
-        	ObservableRunnable obs = new ObservableRunnable(task, this);
-        	tasks.put(task, obs);
-        	return obs;
+            // System.out.println("Tracking task = "+System.identityHashCode(
+            // task )+" : "+task);
+            ObservableRunnable obs = new ObservableRunnable(task, this);
+            tasks.put(task, obs);
+            return obs;
         }
 
         /**
@@ -340,9 +340,9 @@ public class ExternalExecutorService implements
          * @return the observable instance of the given task
          */
         public <T> Callable<T> trackTask(Callable<T> task) {
-        	ObservableCallable<T> obs = new ObservableCallable<T>(task, this);
-        	tasks.put(task, obs);
-        	return obs;
+            ObservableCallable<T> obs = new ObservableCallable<T>(task, this);
+            tasks.put(task, obs);
+            return obs;
         }
 
         /**
@@ -355,52 +355,52 @@ public class ExternalExecutorService implements
          * @return the collection of ObservableCallable<T> tasks
          */
         public Collection trackTasks(
-        		Collection tasksToTrack) {
-        	Collection results = new ArrayList(
-        			tasksToTrack.size());
-        	for (Callable<Runnable> task : (Collection<Callable<Runnable>>)tasksToTrack) {
-        		results.add(trackTask(task));
-        	}
-        	return results;
+                Collection tasksToTrack) {
+            Collection results = new ArrayList(
+                    tasksToTrack.size());
+            for (Callable<Runnable> task : (Collection<Callable<Runnable>>)tasksToTrack) {
+                results.add(trackTask(task));
+            }
+            return results;
         }
 
         public void afterTaskFinishes(Runnable task, Thread thread) {
-        	lock.lock();
-        	try {
-        		// System.out.println("Task finished = "+System.identityHashCode(
-        		// task )+" : "+task);
-        		this.tasks.remove(task);
-        		if (this.tasks.isEmpty()) {
-        			empty.signalAll();
-        		}
-        	} finally {
-        		lock.unlock();
-        	}
+            lock.lock();
+            try {
+                // System.out.println("Task finished = "+System.identityHashCode(
+                // task )+" : "+task);
+                this.tasks.remove(task);
+                if (this.tasks.isEmpty()) {
+                    empty.signalAll();
+                }
+            } finally {
+                lock.unlock();
+            }
         }
 
         public void afterTaskFinishes(Callable<?> task, Thread thread) {
-        	lock.lock();
-        	try {
-        		this.tasks.remove(task);
-        		if (this.tasks.isEmpty()) {
-        			empty.signalAll();
-        		}
-        	} finally {
-        		lock.unlock();
-        	}
+            lock.lock();
+            try {
+                this.tasks.remove(task);
+                if (this.tasks.isEmpty()) {
+                    empty.signalAll();
+                }
+            } finally {
+                lock.unlock();
+            }
         }
 
         public void beforeTaskStarts(Runnable task, Thread thread) {
-        	// nothing to do for now
+            // nothing to do for now
         }
 
         public void beforeTaskStarts(Callable<?> task, Thread thread) {
-        	// nothing to do for now
+            // nothing to do for now
         }
 
         public void taskExceptionRaised(Runnable task, Thread thread,
-        		Throwable t) {
-        	// nothing to do for now
+                Throwable t) {
+            // nothing to do for now
         }
     }
 
@@ -411,7 +411,7 @@ public class ExternalExecutorService implements
      */
     protected static interface ObservableTask {
         public static enum TaskType {
-        	CALLABLE, RUNNABLE
+            CALLABLE, RUNNABLE
         }
 
         /**
@@ -435,37 +435,37 @@ public class ExternalExecutorService implements
      * @author etirelli
      */
     protected static final class ObservableRunnable implements Runnable,
-        	ObservableTask {
+            ObservableTask {
         private final Runnable delegate;
         private final TaskObserver handler;
         private volatile boolean cancel;
 
         public ObservableRunnable(Runnable delegate, TaskObserver handler) {
-        	this.delegate = delegate;
-        	this.handler = handler;
-        	this.cancel = false;
+            this.delegate = delegate;
+            this.handler = handler;
+            this.cancel = false;
         }
 
         public void run() {
-        	if (!cancel) {
-        		try {
-        			handler.beforeTaskStarts(delegate, Thread.currentThread());
-        			delegate.run();
-        		} catch (Throwable t) {
-        			handler.taskExceptionRaised(delegate, Thread
-        					.currentThread(), t);
-        		} finally {
-        			handler.afterTaskFinishes(delegate, Thread.currentThread());
-        		}
-        	}
+            if (!cancel) {
+                try {
+                    handler.beforeTaskStarts(delegate, Thread.currentThread());
+                    delegate.run();
+                } catch (Throwable t) {
+                    handler.taskExceptionRaised(delegate, Thread
+                            .currentThread(), t);
+                } finally {
+                    handler.afterTaskFinishes(delegate, Thread.currentThread());
+                }
+            }
         }
 
         public TaskType getType() {
-        	return TaskType.RUNNABLE;
+            return TaskType.RUNNABLE;
         }
 
         public void cancel() {
-        	this.cancel = true;
+            this.cancel = true;
         }
     }
 
@@ -476,35 +476,35 @@ public class ExternalExecutorService implements
      * @author etirelli
      */
     protected static final class ObservableCallable<V> implements Callable<V>,
-        	ObservableTask {
+            ObservableTask {
         private final Callable<V> delegate;
         private final TaskObserver handler;
         private volatile boolean cancel;
 
         public ObservableCallable(Callable<V> delegate, TaskObserver handler) {
-        	this.delegate = delegate;
-        	this.handler = handler;
+            this.delegate = delegate;
+            this.handler = handler;
         }
 
         public V call() throws Exception {
-        	if (!cancel) {
-        		try {
-        			handler.beforeTaskStarts(delegate, Thread.currentThread());
-        			V result = delegate.call();
-        			return result;
-        		} finally {
-        			handler.afterTaskFinishes(delegate, Thread.currentThread());
-        		}
-        	}
-        	return null;
+            if (!cancel) {
+                try {
+                    handler.beforeTaskStarts(delegate, Thread.currentThread());
+                    V result = delegate.call();
+                    return result;
+                } finally {
+                    handler.afterTaskFinishes(delegate, Thread.currentThread());
+                }
+            }
+            return null;
         }
 
         public TaskType getType() {
-        	return TaskType.CALLABLE;
+            return TaskType.CALLABLE;
         }
 
         public void cancel() {
-        	this.cancel = true;
+            this.cancel = true;
         }
     }
 }

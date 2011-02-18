@@ -63,7 +63,7 @@ public class StatusChangedEvent extends Event {
      */
     public String getParamOldValue() {
         if (this.getParameters().containsKey(PROPERTY_FIELD_NAMES[OLD_VALUE]))
-        	return this.getParamValue(PROPERTY_FIELD_NAMES[OLD_VALUE]);
+            return this.getParamValue(PROPERTY_FIELD_NAMES[OLD_VALUE]);
         return null;
     }
 
@@ -72,7 +72,7 @@ public class StatusChangedEvent extends Event {
      */
     public String getParamNewValue() {
         if (this.getParameters().containsKey(PROPERTY_FIELD_NAMES[NEW_VALUE]))
-        	return this.getParamValue(PROPERTY_FIELD_NAMES[NEW_VALUE]);
+            return this.getParamValue(PROPERTY_FIELD_NAMES[NEW_VALUE]);
         return null;
     }
 }

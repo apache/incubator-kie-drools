@@ -48,14 +48,14 @@ public class PerformanceTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         // start a new process instance
         for (int i = 0; i < 100; i++) {
-        	ksession.startProcess("com.sample.empty", null);
+            ksession.startProcess("com.sample.empty", null);
         }
         System.out.println("Starting ... ");
 
         Thread.sleep(1000);
         long start = System.nanoTime();
         for (int i = 0; i < 10000; i++) {
-        	ksession.startProcess("com.sample.empty", null);
+            ksession.startProcess("com.sample.empty", null);
         }
         long end = System.nanoTime() - start;
         System.out.println("Total time = " + (end / 1000000) + "ms");
@@ -107,10 +107,10 @@ public class PerformanceTest {
         kbuilder.add(ResourceFactory.newClassPathResource("empty.rf", PerformanceTest.class), ResourceType.DRF);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if (errors.size() > 0) {
-        	for (KnowledgeBuilderError error: errors) {
-        		System.err.println(error);
-        	}
-        	throw new IllegalArgumentException("Could not parse knowledge.");
+            for (KnowledgeBuilderError error: errors) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Could not parse knowledge.");
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

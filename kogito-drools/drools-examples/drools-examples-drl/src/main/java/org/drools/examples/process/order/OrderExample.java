@@ -102,9 +102,9 @@ public class OrderExample extends JFrame {
         panel.add(label, c);
         
         itemComboBox = new JComboBox(new Object[] {
-        	new ItemInfo("PC game", "I-9876", 50.0D),
-        	new ItemInfo("Laptop", "I-5432", 500.0D),
-        	new ItemInfo("Book", "Unknown", 5.0D),
+            new ItemInfo("PC game", "I-9876", 50.0D),
+            new ItemInfo("Laptop", "I-5432", 500.0D),
+            new ItemInfo("Book", "Unknown", 5.0D),
         });
         c = new GridBagConstraints();
         c.gridx = 1;
@@ -146,9 +146,9 @@ public class OrderExample extends JFrame {
         
         JButton createOrderButton = new JButton("Create");
         createOrderButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		createOrder();
-        	}
+            public void actionPerformed(ActionEvent e) {
+                createOrder();
+            }
         });
         c = new GridBagConstraints();
         c.gridy = 4;
@@ -157,13 +157,13 @@ public class OrderExample extends JFrame {
         
         final JCheckBox checkBox = new JCheckBox("Debugging output");
         checkBox.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		if (checkBox.isSelected()) {
-        			addDebugRules();
-        		} else {
-        			removeDebugRules();
-        		}
-        	}
+            public void actionPerformed(ActionEvent e) {
+                if (checkBox.isSelected()) {
+                    addDebugRules();
+                } else {
+                    removeDebugRules();
+                }
+            }
         });
         c = new GridBagConstraints();
         c.gridwidth = 2;
@@ -176,65 +176,65 @@ public class OrderExample extends JFrame {
 
     private void createWorkingMemory() {
         try {
-        	kbase = createKnowledgeBase();
-        	ksession = kbase.newStatefulKnowledgeSession();
-        	logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/order");
+            kbase = createKnowledgeBase();
+            ksession = kbase.newStatefulKnowledgeSession();
+            logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/order");
 
-        	CustomerService customerService = new DefaultCustomerService();
-        	Customer c = new Customer("A-12345");
-        	Calendar birthday = Calendar.getInstance();
-        	birthday.set(1982, 1, 1);
-        	c.setBirthday(birthday.getTime());
-        	c.setFirstName("John");
-        	c.setLastName("Doe");
-        	customerService.addCustomer(c);
-        	ksession.setGlobal("customerService", customerService);
+            CustomerService customerService = new DefaultCustomerService();
+            Customer c = new Customer("A-12345");
+            Calendar birthday = Calendar.getInstance();
+            birthday.set(1982, 1, 1);
+            c.setBirthday(birthday.getTime());
+            c.setFirstName("John");
+            c.setLastName("Doe");
+            customerService.addCustomer(c);
+            ksession.setGlobal("customerService", customerService);
 
-        	ItemCatalog itemCatalog = new DefaultItemCatalog();
-        	Item i = new Item("I-9876");
-        	i.setName("PC game");
-        	i.setMinimalAge(18);
-        	itemCatalog.addItem(i);
-        	i = new Item("I-5432");
-        	i.setName("Laptop");
-        	itemCatalog.addItem(i);
-        	ksession.setGlobal("itemCatalog", itemCatalog);
+            ItemCatalog itemCatalog = new DefaultItemCatalog();
+            Item i = new Item("I-9876");
+            i.setName("PC game");
+            i.setMinimalAge(18);
+            itemCatalog.addItem(i);
+            i = new Item("I-5432");
+            i.setName("Laptop");
+            itemCatalog.addItem(i);
+            ksession.setGlobal("itemCatalog", itemCatalog);
 
-        	ksession.getWorkItemManager().registerWorkItemHandler("Shipping", new ShippingWorkItemHandler(ksession));
+            ksession.getWorkItemManager().registerWorkItemHandler("Shipping", new ShippingWorkItemHandler(ksession));
 
-        	ksession.getWorkItemManager().registerWorkItemHandler("Email", new WorkItemHandler() {
-        		public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        			System.out.println("***********************************************************");
-        			System.out.println("Sending email:");
-        			System.out.println("From: " + workItem.getParameter("From"));
-        			System.out.println("To: " + workItem.getParameter("To"));
-        			System.out.println("Subject: " + workItem.getParameter("Subject"));
-        			System.out.println("Text: ");
-        			System.out.println(workItem.getParameter("Text"));
-        			System.out.println("***********************************************************");
-        	        manager.completeWorkItem(workItem.getId(), null);
-        	    }
-        	    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        	    }
-        	});
+            ksession.getWorkItemManager().registerWorkItemHandler("Email", new WorkItemHandler() {
+                public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                    System.out.println("***********************************************************");
+                    System.out.println("Sending email:");
+                    System.out.println("From: " + workItem.getParameter("From"));
+                    System.out.println("To: " + workItem.getParameter("To"));
+                    System.out.println("Subject: " + workItem.getParameter("Subject"));
+                    System.out.println("Text: ");
+                    System.out.println(workItem.getParameter("Text"));
+                    System.out.println("***********************************************************");
+                    manager.completeWorkItem(workItem.getId(), null);
+                }
+                public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+                }
+            });
 
-        	UIWorkItemHandler handler = new UIWorkItemHandler();
-        	ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
-        	handler.setVisible(true);
+            UIWorkItemHandler handler = new UIWorkItemHandler();
+            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+            handler.setVisible(true);
 
         } catch (Throwable t) {
-        	t.printStackTrace();
+            t.printStackTrace();
         }
     }
 
     private void addDebugRules() {
         try {
-        	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             kbuilder.add(ResourceFactory.newClassPathResource(
-            	"logging.drl", OrderExample.class), ResourceType.DRL );
-        	kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+                "logging.drl", OrderExample.class), ResourceType.DRL );
+            kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         } catch (Throwable t) {
-        	t.printStackTrace();
+            t.printStackTrace();
         }
     }
 
@@ -265,17 +265,17 @@ public class OrderExample extends JFrame {
     private static KnowledgeBase createKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"RuleSetExample.rf", OrderExample.class), ResourceType.DRF );
+            "RuleSetExample.rf", OrderExample.class), ResourceType.DRF );
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"workflow_rules.drl", OrderExample.class), ResourceType.DRL );
+            "workflow_rules.drl", OrderExample.class), ResourceType.DRL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"validation.drl", OrderExample.class), ResourceType.DRL );
+            "validation.drl", OrderExample.class), ResourceType.DRL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"assignment.dsl", OrderExample.class), ResourceType.DSL );
+            "assignment.dsl", OrderExample.class), ResourceType.DSL );
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"assignment.dslr", OrderExample.class), ResourceType.DSLR );
+            "assignment.dslr", OrderExample.class), ResourceType.DSLR );
         kbuilder.add(ResourceFactory.newClassPathResource(
-        	"discount.drl", OrderExample.class), ResourceType.DRL );
+            "discount.drl", OrderExample.class), ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
@@ -286,21 +286,21 @@ public class OrderExample extends JFrame {
         private String itemId;
         private double price;
         public ItemInfo(String name, String itemId, double price) {
-        	this.name = name;
-        	this.itemId = itemId;
-        	this.price = price;
+            this.name = name;
+            this.itemId = itemId;
+            this.price = price;
         }
         public String getName() {
-        	return name;
+            return name;
         }
         public String getItemId() {
-        	return itemId;
+            return itemId;
         }
         public double getPrice() {
-        	return price;
+            return price;
         }
         public String toString() {
-        	return name;
+            return name;
         }
     }
 }

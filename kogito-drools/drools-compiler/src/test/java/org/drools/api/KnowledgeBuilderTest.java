@@ -74,18 +74,18 @@ public class KnowledgeBuilderTest {
 
     public Rule getRule(Collection<Rule> rules, String name) {
         for ( Rule rule : rules ) {
-        	if ( rule.getName().equals( name ) ) {
-        		return rule;
-        	}
+            if ( rule.getName().equals( name ) ) {
+                return rule;
+            }
         }
         return null;
     }
 
     public KnowledgePackage getKnowledgePackage(Collection<KnowledgePackage> pkgs, String name) {
         for ( KnowledgePackage pkg : pkgs ) {
-        	if ( pkg.getName().equals( name ) ) {
-        		return pkg;
-        	}
+            if ( pkg.getName().equals( name ) ) {
+                return pkg;
+            }
         }
         return null;
     }

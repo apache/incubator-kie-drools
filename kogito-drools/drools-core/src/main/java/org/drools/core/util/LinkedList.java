@@ -282,7 +282,7 @@ public class LinkedList
     
     public static class LinkedListFastIterator implements FastIterator {
         public Entry next(Entry object) {
-        	return object.getNext();
+            return object.getNext();
         }
     }
 

@@ -64,8 +64,8 @@ public abstract class PackageProvider {
     }
 
     static void removePackages(	Collection<String> removedPackages,
-        						RuleBase rb,
-        						AgentEventListener listener ) {
+                                RuleBase rb,
+                                AgentEventListener listener ) {
 
         for (String name : removedPackages) {
             listener.info( "Removing package called " + name );
@@ -74,18 +74,18 @@ public abstract class PackageProvider {
     }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
-        	AgentEventListener listener) {
+            AgentEventListener listener) {
         applyChanges(rb, removeExistingPackages, changes, null, listener);
     }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
-        						Collection<String> removed, AgentEventListener listener) {
+                                Collection<String> removed, AgentEventListener listener) {
         if ( changes == null && removed == null ) return;
 
         rb.lock();
         
         if(removed != null ) {
-        	removePackages(removed, rb, listener);
+            removePackages(removed, rb, listener);
         }
 
         if( changes != null ) {

@@ -46,31 +46,31 @@ public class TestingEventListener implements AgendaEventListener {
 
     public AgendaFilter getAgendaFilter(final HashSet<String> ruleNames, final boolean inclusive) {
         return new AgendaFilter() {
-        	public boolean accept(Activation activation) {
-        		if (ruleNames.size() ==0) return true;
-        		String ruleName = activation.getRule().getName();
+            public boolean accept(Activation activation) {
+                if (ruleNames.size() ==0) return true;
+                String ruleName = activation.getRule().getName();
 
-        		http://www.wtf.com
+                http://www.wtf.com
 
-        		//jdelong: please don't want to see records of cancelled activations
+                //jdelong: please don't want to see records of cancelled activations
 
-        		if (inclusive) {
-        			if (ruleNames.contains(ruleName)) {
-        				return true;
-        			} else {
-        				//record(activation.getRule(), firingCounts);
-        				return false;
-        			}
+                if (inclusive) {
+                    if (ruleNames.contains(ruleName)) {
+                        return true;
+                    } else {
+                        //record(activation.getRule(), firingCounts);
+                        return false;
+                    }
 
-        		} else {
-        			if (!ruleNames.contains(ruleName)) {
-        				return true;
-        			} else {
-        				//record(activation.getRule(), firingCounts);
-        				return false;
-        			}
-        		}
-        	}
+                } else {
+                    if (!ruleNames.contains(ruleName)) {
+                        return true;
+                    } else {
+                        //record(activation.getRule(), firingCounts);
+                        return false;
+                    }
+                }
+            }
         };
     }
 
@@ -147,9 +147,9 @@ public class TestingEventListener implements AgendaEventListener {
         this.totalFires++;
         String name = rule.getName();
         if (!counts.containsKey(name)) {
-        	counts.put(name, 1);
+            counts.put(name, 1);
         } else {
-        	counts.put(name, counts.get(name) + 1);
+            counts.put(name, counts.get(name) + 1);
         }
     }
 
@@ -170,34 +170,34 @@ public class TestingEventListener implements AgendaEventListener {
         String[] r = new String[firingCounts.size()];
         int i = 0;
         for (Iterator iterator = firingCounts.entrySet().iterator(); iterator.hasNext();) {
-        	Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
-        	r[i] = e.getKey() + " [" + e.getValue() + "]";
-        	i++;
+            Entry<String, Integer> e = (Entry<String, Integer>) iterator.next();
+            r[i] = e.getKey() + " [" + e.getValue() + "]";
+            i++;
         }
 
         return r;
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void afterRuleFlowGroupDeactivated(
-        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
-        	WorkingMemory workingMemory) {
+            WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }
 
     public void beforeRuleFlowGroupDeactivated(
-        	RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+            RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
         // TODO Auto-generated method stub
 
     }

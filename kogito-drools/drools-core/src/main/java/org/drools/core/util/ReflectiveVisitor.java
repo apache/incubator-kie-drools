@@ -60,7 +60,7 @@ public abstract class ReflectiveVisitor
 
     private Method getMethod(final Class<?> clazz) {
         if (methodCacheContains(clazz)) {
-        	return getMethodFromCache(clazz);
+            return getMethodFromCache(clazz);
         }
 
         Class<?> newClazz = clazz;
@@ -72,7 +72,7 @@ public abstract class ReflectiveVisitor
             methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
             try {
                 method = getClass().getMethod(methodName,
-                		new Class[] { newClazz });
+                        new Class[] { newClazz });
             } catch (final NoSuchMethodException e) {
                 newClazz = newClazz.getSuperclass();
             }
@@ -86,7 +86,7 @@ public abstract class ReflectiveVisitor
                 methodName = "visit" + methodName.substring( methodName.lastIndexOf( '.' ) + 1 );
                 try {
                     method = getClass().getMethod(methodName,
-                    		new Class[] { interfaces[i] });
+                            new Class[] { interfaces[i] });
                 } catch (final NoSuchMethodException e) {
                     // swallow
                 }

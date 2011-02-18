@@ -24,7 +24,7 @@ public class LongQueueable extends BaseQueueable
     private final Long value;
 
     public LongQueueable(Queue queue,
-        				 final long value) {
+                         final long value) {
         super( queue );
         this.value = new Long( value );
     }

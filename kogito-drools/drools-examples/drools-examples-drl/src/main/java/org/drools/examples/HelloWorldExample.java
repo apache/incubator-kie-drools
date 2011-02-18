@@ -40,28 +40,28 @@ public class HelloWorldExample {
 
     public static final void main(final String[] args) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-        		.newKnowledgeBuilder();
+                .newKnowledgeBuilder();
 
         // this will parse and compile in one step
         kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
-        		HelloWorldExample.class), ResourceType.DRL);
+                HelloWorldExample.class), ResourceType.DRL);
 
         // Check the builder for errors
         if (kbuilder.hasErrors()) {
-        	System.out.println(kbuilder.getErrors().toString());
-        	throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
+            System.out.println(kbuilder.getErrors().toString());
+            throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
         }
 
         // get the compiled packages (which are serializable)
         final Collection<KnowledgePackage> pkgs = kbuilder
-        		.getKnowledgePackages();
+                .getKnowledgePackages();
 
         // add the packages to a knowledgebase (deploy the knowledge packages).
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(pkgs);
 
         final StatefulKnowledgeSession ksession = kbase
-        		.newStatefulKnowledgeSession();
+                .newStatefulKnowledgeSession();
         ksession.setGlobal("list", new ArrayList<Object>());
 
         ksession.addEventListener(new DebugAgendaEventListener());
@@ -69,7 +69,7 @@ public class HelloWorldExample {
 
         // setup the audit logging
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
-        		.newFileLogger(ksession, "log/helloworld");
+                .newFileLogger(ksession, "log/helloworld");
 
         final Message message = new Message();
         message.setMessage("Hello World");
@@ -96,28 +96,28 @@ public class HelloWorldExample {
         }
 
         public String getMessage() {
-        	return this.message;
+            return this.message;
         }
 
         public void setMessage(final String message) {
-        	this.message = message;
+            this.message = message;
         }
 
         public int getStatus() {
-        	return this.status;
+            return this.status;
         }
 
         public void setStatus(final int status) {
-        	this.status = status;
+            this.status = status;
         }
 
         public static Message doSomething(Message message) {
-        	return message;
+            return message;
         }
 
         public boolean isSomething(String msg, List<Object> list) {
-        	list.add(this);
-        	return this.message.equals(msg);
+            list.add(this);
+            return this.message.equals(msg);
         }
     }
 

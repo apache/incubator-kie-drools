@@ -91,22 +91,22 @@ public class PackageBuilderThreadSafetyTest {
         if (!exceptions.isEmpty()) {
             System.err.println("------->EXCEPTION(s) DURING THREAD TEST : <-------------------");
             for (Iterator<Exception> iterator = exceptions.iterator(); iterator.hasNext();) {
-        		Exception name = iterator.next();
-        		exceptionBuf.append(name + name.getMessage() + "\n");
-        	}
+                Exception name = iterator.next();
+                exceptionBuf.append(name + name.getMessage() + "\n");
+            }
         }
 
         StringBuilder errorBuf = new StringBuilder();
         if (!errors.isEmpty()) {
             System.err.println("------->ERROR(s) DURING THREAD TEST : <-------------------");
             for (Iterator<PackageBuilderErrors> iterator = errors.iterator(); iterator.hasNext();) {
-        		PackageBuilderErrors e = iterator.next();
-        		for (int i = 0; i < e.getErrors().length; i++) {
-        			DroolsError de = e.getErrors()[i];
-        			errorBuf.append(de.getMessage() + "\n");
-        		}
+                PackageBuilderErrors e = iterator.next();
+                for (int i = 0; i < e.getErrors().length; i++) {
+                    DroolsError de = e.getErrors()[i];
+                    errorBuf.append(de.getMessage() + "\n");
+                }
 
-        	}
+            }
         }
 
 

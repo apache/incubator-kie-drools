@@ -73,7 +73,7 @@ public class Order {
     public double getPrice() {
         double price = 0;
         for (OrderItem item: orderItems) {
-        	price += item.getAmount() * item.getPrice();
+            price += item.getAmount() * item.getPrice();
         }
         return price;
     }
@@ -84,7 +84,7 @@ public class Order {
 
     public void addError(String error) {
         if (errorList == null) {
-        	errorList = new ArrayList<String>();
+            errorList = new ArrayList<String>();
         }
         errorList.add(error);
     }
@@ -108,21 +108,21 @@ public class Order {
         private double price;
 
         public OrderItem(String itemId, int amount, double price) {
-        	this.itemId = itemId;
-        	this.amount = amount;
-        	this.price = price;
+            this.itemId = itemId;
+            this.amount = amount;
+            this.price = price;
         }
 
         public String getItemId() {
-        	return itemId;
+            return itemId;
         }
 
         public int getAmount() {
-        	return amount;
+            return amount;
         }
 
         public double getPrice() {
-        	return price;
+            return price;
         }
 
     }

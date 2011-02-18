@@ -47,7 +47,7 @@ public class SnippetBuilder {
     public static final String PARAM_STRING = PARAM_PREFIX + PARAM_SUFFIX;
     public static final String PARAM_FORALL_STRING = "forall";
     public static final Pattern PARAM_FORALL_PATTERN = Pattern
-        	.compile(PARAM_FORALL_STRING + "\\(([^{}]*)\\)\\{([^{}]+)\\}");
+            .compile(PARAM_FORALL_STRING + "\\(([^{}]*)\\)\\{([^{}]+)\\}");
 
     private final String        _template;
     
@@ -72,11 +72,11 @@ public class SnippetBuilder {
     public static SnippetType getType(String template) {
         Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(template);
         if (forallMatcher.find())
-        	return SnippetType.FORALL;
+            return SnippetType.FORALL;
         else if (template.indexOf(PARAM_PREFIX + "1") != -1)
-        	return SnippetType.INDEXED;
+            return SnippetType.INDEXED;
         else if (template.indexOf(PARAM_STRING) != -1)
-        	return SnippetType.PARAM;
+            return SnippetType.PARAM;
         return SnippetType.SINGLE;
     }
     
@@ -89,11 +89,11 @@ public class SnippetBuilder {
     public String build(final String cellValue) {
         switch (type) {
         case FORALL:
-        	return buildForAll(cellValue);
+            return buildForAll(cellValue);
         case INDEXED:
-        	return buildMulti(cellValue);
+            return buildMulti(cellValue);
         default:
-        	return buildSingle(cellValue);
+            return buildSingle(cellValue);
         }
     }
 
@@ -102,19 +102,19 @@ public class SnippetBuilder {
         Map<String, String> replacements = new HashMap<String, String>();
         Matcher forallMatcher = PARAM_FORALL_PATTERN.matcher(_template);
         while (forallMatcher.find()) {
-        	replacements.put(forallMatcher.group(), "");
-        	for (int paramNumber = 0; paramNumber < cellVals.length; paramNumber++) {
-        		replacements.put(forallMatcher.group(), replacements
-        				.get(forallMatcher.group())
-        				+ (paramNumber == 0 ? "" : " " + forallMatcher.group(1)
-        						+ " ")
-        				+ replace(forallMatcher.group(2), PARAM_PREFIX,
-        						cellVals[paramNumber].trim(), 256));
-        	}
+            replacements.put(forallMatcher.group(), "");
+            for (int paramNumber = 0; paramNumber < cellVals.length; paramNumber++) {
+                replacements.put(forallMatcher.group(), replacements
+                        .get(forallMatcher.group())
+                        + (paramNumber == 0 ? "" : " " + forallMatcher.group(1)
+                                + " ")
+                        + replace(forallMatcher.group(2), PARAM_PREFIX,
+                                cellVals[paramNumber].trim(), 256));
+            }
         }
         String result = _template;
         for (String key : replacements.keySet())
-        	result = replace(result, key, replacements.get(key), 256);
+            result = replace(result, key, replacements.get(key), 256);
         return result.equals("") ? _template : result;
     }
 
@@ -150,7 +150,7 @@ public class SnippetBuilder {
     private String buildSingle(final String cellValue) {
 
         return replace( this._template,
-            			PARAM_STRING,
+                        PARAM_STRING,
                         cellValue,
                         256 );
 

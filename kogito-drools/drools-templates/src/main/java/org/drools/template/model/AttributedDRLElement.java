@@ -35,22 +35,22 @@ public abstract class AttributedDRLElement extends DRLElement {
 
     protected AttributedDRLElement( final Integer salience ){
         if( salience != null ){
-        	this._attr2value.put( "salience", Integer.toString( salience ) );
+            this._attr2value.put( "salience", Integer.toString( salience ) );
         }
     }
 
     protected void renderDRL(final DRLOutput out) {
         for( Map.Entry<String, String> entry: _attr2value.entrySet() ){
-        	String attribute = entry.getKey();
-        	String value = entry.getValue();
-        	out.writeLine( "\t" + attribute + " " + value );
+            String attribute = entry.getKey();
+            String value = entry.getValue();
+            out.writeLine( "\t" + attribute + " " + value );
         }
     }
 
     protected String asStringLiteral( String value ){
         // Keep the quotes if they come in the right places.
         if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() >= 2 ){
-        	value = value.substring( 1, value.length() - 1 );
+            value = value.substring( 1, value.length() - 1 );
         }
         return '"' + value.replaceAll( "\"", Matcher.quoteReplacement( "\\\"" ) ) + '"';
     }

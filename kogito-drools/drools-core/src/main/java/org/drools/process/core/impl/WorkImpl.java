@@ -48,7 +48,7 @@ public class WorkImpl implements Work, Serializable {
     
     public void setParameter(String name, Object value) {
         if (name == null) {
-        	throw new NullPointerException("Parameter name is null");
+            throw new NullPointerException("Parameter name is null");
         }
         parameters.put(name, value);
     }

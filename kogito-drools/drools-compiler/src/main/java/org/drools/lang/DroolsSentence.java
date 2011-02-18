@@ -111,7 +111,7 @@ public class DroolsSentence {
      */
     public void addContent(DroolsToken token) {
         if (startOffset == -1) {
-        	startOffset = token.getStartIndex();
+            startOffset = token.getStartIndex();
         }
         endOffset = token.getStopIndex();
         this.content.add(token);

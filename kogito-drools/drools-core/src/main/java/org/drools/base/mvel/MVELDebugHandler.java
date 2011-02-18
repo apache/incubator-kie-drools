@@ -94,11 +94,11 @@ public final class MVELDebugHandler {
         }
 
         public int onBreak(Frame frame) {
-        	if (verbose) {
-        	    System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
+            if (verbose) {
+                System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
             }
-        	return MVELDebugHandler.onBreak(frame);
-        	// This call is supposed to be catched by the remote debugger
+            return MVELDebugHandler.onBreak(frame);
+            // This call is supposed to be catched by the remote debugger
         }
 
     }

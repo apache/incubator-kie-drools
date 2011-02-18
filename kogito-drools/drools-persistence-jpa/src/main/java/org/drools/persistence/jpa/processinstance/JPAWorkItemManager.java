@@ -100,7 +100,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         if (this.workItems != null) {
             workItemInfo = this.workItems.get(id);
             if (workItemInfo != null) {
-            	workItemInfo = context.merge(workItemInfo);
+                workItemInfo = context.merge(workItemInfo);
             }
         }
         
@@ -187,7 +187,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void clearWorkItems() {
         if (workItems != null) {
-        	workItems.clear();
+            workItems.clear();
         }
     }
 

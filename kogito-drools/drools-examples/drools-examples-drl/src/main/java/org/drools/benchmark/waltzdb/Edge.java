@@ -57,23 +57,23 @@ public class Edge {
 
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         final Edge other = (Edge) obj;
         if (joined != other.joined)
-        	return false;
+            return false;
         if (p1 != other.p1)
-        	return false;
+            return false;
         if (p2 != other.p2)
-        	return false;
+            return false;
         if (type == null) {
-        	if (other.type != null)
-        		return false;
+            if (other.type != null)
+                return false;
         } else if (!type.equals(other.type))
-        	return false;
+            return false;
         return true;
     }
     public boolean isJoined() {

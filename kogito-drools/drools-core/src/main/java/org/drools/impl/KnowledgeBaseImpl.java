@@ -175,11 +175,11 @@ public class KnowledgeBaseImpl
         Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
         StatefulSession[] sss = this.ruleBase.getStatefulSessions();
         if (sss != null) {
-        	for (StatefulSession ss : sss) {
-        		if (ss instanceof ReteooStatefulSession) {
-            		c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
-        		}
-        	}
+            for (StatefulSession ss : sss) {
+                if (ss instanceof ReteooStatefulSession) {
+                    c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+                }
+            }
         }
         return c;
     }

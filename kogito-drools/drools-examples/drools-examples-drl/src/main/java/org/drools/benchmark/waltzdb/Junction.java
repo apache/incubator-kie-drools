@@ -120,35 +120,35 @@ public class Junction {
 
     public boolean equals(Object obj) {
         if (this == obj)
-        	return true;
+            return true;
         if (obj == null)
-        	return false;
+            return false;
         if (getClass() != obj.getClass())
-        	return false;
+            return false;
         final Junction other = (Junction) obj;
         if (basePoint != other.basePoint)
-        	return false;
+            return false;
         if (name == null) {
-        	if (other.name != null)
-        		return false;
+            if (other.name != null)
+                return false;
         } else if (!name.equals(other.name))
-        	return false;
+            return false;
         if (p1 != other.p1)
-        	return false;
+            return false;
         if (p2 != other.p2)
-        	return false;
+            return false;
         if (p3 != other.p3)
-        	return false;
+            return false;
         if (type == null) {
-        	if (other.type != null)
-        		return false;
+            if (other.type != null)
+                return false;
         } else if (!type.equals(other.type))
-        	return false;
+            return false;
         if (visited == null) {
-        	if (other.visited != null)
-        		return false;
+            if (other.visited != null)
+                return false;
         } else if (!visited.equals(other.visited))
-        	return false;
+            return false;
         return true;
     }
 }

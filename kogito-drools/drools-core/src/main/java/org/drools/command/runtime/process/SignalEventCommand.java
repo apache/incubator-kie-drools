@@ -90,19 +90,19 @@ public class SignalEventCommand implements GenericCommand<Object> {
         if (processInstanceId == -1) {
             ksession.signalEvent(eventType, event);
         } else {
-        	ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
-        	if (processInstance != null) {
-        		processInstance.signalEvent(eventType, event);
-        	}
+            ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+            if (processInstance != null) {
+                processInstance.signalEvent(eventType, event);
+            }
         }
         return null;
     }
 
     public String toString() {
         if (processInstanceId == -1) {
-        	return "ksession.signalEvent(" + eventType + ", " + event + ");";
+            return "ksession.signalEvent(" + eventType + ", " + event + ");";
         } else {
-        	return "ksession.signalEvent(" + processInstanceId + ", " + eventType + ", " + event + ");";
+            return "ksession.signalEvent(" + processInstanceId + ", " + eventType + ", " + event + ");";
         }
     }
 

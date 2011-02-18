@@ -76,7 +76,7 @@ public class ActionType {
             return colShort;
         }
         public int getMaxCount() {
-        	return maxCount;
+            return maxCount;
         }
     }
 
@@ -143,12 +143,12 @@ public class ActionType {
 
             int count = 0;
             for( ActionType at: actionTypeMap.values() ){
-            	if( at.getCode() == code ) count++;
+                if( at.getCode() == code ) count++;
             }
             if( count >= code.getMaxCount() ){
-            	throw new DecisionTableParseException( "Maximum number of " +
-            			code.getColHeader() + "/" + code.getColShort() + " columns is " +
-            			code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name(row, column) );
+                throw new DecisionTableParseException( "Maximum number of " +
+                        code.getColHeader() + "/" + code.getColShort() + " columns is " +
+                        code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name(row, column) );
             }
             actionTypeMap.put( new Integer( column ), new ActionType( code ) );
         } else {
@@ -163,7 +163,7 @@ public class ActionType {
      */
     public void addTemplate(int row, int column, String content) {
         if( this.sourceBuilder == null ){
-        	throw new DecisionTableParseException(
+            throw new DecisionTableParseException(
                     "Unexpected content \"" + content + "\" in cell " +
                     RuleSheetParserUtil.rc2name(row, column) + ", leave this cell blank" );
         }

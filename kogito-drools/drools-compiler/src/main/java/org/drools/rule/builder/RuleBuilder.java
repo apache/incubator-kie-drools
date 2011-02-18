@@ -320,7 +320,7 @@ public class RuleBuilder {
                 period = TimeUtils.parseTimeString( times[1] );
             } else {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-                		"Incorrect number of arguments for interval timer '" + timerString + "'" );
+                        "Incorrect number of arguments for interval timer '" + timerString + "'" );
                 context.getErrors().add( err );
                 return;
             }

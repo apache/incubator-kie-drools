@@ -55,8 +55,8 @@ public class FactPopulatorTest {
         final DumbFact d = new DumbFact();
         d.setAge(42);
         Map m = new HashMap() {{
-        		put("d", d);
-        		put("val", "42");
+                put("d", d);
+                put("val", "42");
         }};
 
         assertTrue(MVEL.evalToBoolean("d.age == val", m));

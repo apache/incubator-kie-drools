@@ -43,31 +43,31 @@ public class ObjectDataProvider implements DataProvider {
         String Field = Character.toUpperCase( field.charAt( 0 ) ) + field.substring( 1 );
         String getter = "get" + Field;
         try {
-        	return clazz.getMethod( getter );
+            return clazz.getMethod( getter );
         } catch (SecurityException e) {
-        	return null;
+            return null;
         } catch (NoSuchMethodException e) {
         }
         getter = "is" + Field;
         try {
-        	return clazz.getMethod( getter );
+            return clazz.getMethod( getter );
         } catch (SecurityException e) {
-        	return null;
+            return null;
         } catch (NoSuchMethodException e) {
         }
         getter = field;
         try {
-        	return clazz.getMethod( getter );
+            return clazz.getMethod( getter );
         } catch (Exception e) {
-        	return null;
+            return null;
         }
     }
 
     private Field getField( Class<?> clazz, String field ){
         try {
-        	return clazz.getField( field );
+            return clazz.getField( field );
         } catch (Exception e) {
-        	return null;
+            return null;
         }
     }
 
@@ -76,8 +76,8 @@ public class ObjectDataProvider implements DataProvider {
         Map<String,Object> map = (Map)obj;
         String[] values = new String[columns.length];
         for( int iCol = 0; iCol < columns.length; iCol++ ){
-        	Object target = map.get( columns[iCol].getName() );
-        	values[iCol] = target == null ? null : target.toString();
+            Object target = map.get( columns[iCol].getName() );
+            values[iCol] = target == null ? null : target.toString();
         }
         return values;
     }
@@ -86,22 +86,22 @@ public class ObjectDataProvider implements DataProvider {
         Class<?> clazz = obj.getClass();
         String[] values = new String[columns.length];
         for( int iCol = 0; iCol < columns.length; iCol++ ){
-        	String fieldName = columns[iCol].getName();
-        	Object val = null;
-        	try {
-        		Method method = getMethod( clazz, fieldName );
-        		if( method != null ){
-        			val = method.invoke( obj );
-        		} else {
-        			Field field = getField( clazz, fieldName );
-        			if( field != null ){
-        				val = field.get( obj );
-        			}
-        		}
-        	} catch (Exception e) {
-        		// leave it null
-        	}
-        	values[iCol] = val == null ? null : val.toString();
+            String fieldName = columns[iCol].getName();
+            Object val = null;
+            try {
+                Method method = getMethod( clazz, fieldName );
+                if( method != null ){
+                    val = method.invoke( obj );
+                } else {
+                    Field field = getField( clazz, fieldName );
+                    if( field != null ){
+                        val = field.get( obj );
+                    }
+                }
+            } catch (Exception e) {
+                // leave it null
+            }
+            values[iCol] = val == null ? null : val.toString();
         }
         return values;
     }
@@ -109,9 +109,9 @@ public class ObjectDataProvider implements DataProvider {
     public String[] next() {
         Object obj = iter.next();
         if( obj instanceof Map ){
-        	return nextFromMap( obj );
+            return nextFromMap( obj );
         } else {
-        	return nextFromObject( obj );
+            return nextFromObject( obj );
         }
     }
 }

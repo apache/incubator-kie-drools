@@ -16,21 +16,21 @@ public class DefaultGeneratorTest {
         Map<String, RuleTemplate> t = new HashMap<String, RuleTemplate>();
         TemplateContainer tc = new TemplateContainer() {
 
-        	public Column getColumn(String name) {
-        		return null;
-        	}
+            public Column getColumn(String name) {
+                return null;
+            }
 
-        	public Column[] getColumns() {
-        		return null;
-        	}
+            public Column[] getColumns() {
+                return null;
+            }
 
-        	public String getHeader() {
-        		return null;
-        	}
+            public String getHeader() {
+                return null;
+            }
 
-        	public Map<String, RuleTemplate> getTemplates() {
-        		return null;
-        	}
+            public Map<String, RuleTemplate> getTemplates() {
+                return null;
+            }
 
         };
         RuleTemplate rt1 = new RuleTemplate("rt1", tc);

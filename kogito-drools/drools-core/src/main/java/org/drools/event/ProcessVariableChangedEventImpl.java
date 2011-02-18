@@ -33,8 +33,8 @@ public class ProcessVariableChangedEventImpl extends ProcessEvent implements Pro
     private Object newValue;
 
     public ProcessVariableChangedEventImpl(final String id, final String instanceId,
-        	final Object oldValue, final Object newValue,
-        	final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
+            final Object oldValue, final Object newValue,
+            final ProcessInstance processInstance, KnowledgeRuntime kruntime) {
         super( processInstance, kruntime );
         this.id = id;
         this.instanceId = instanceId;

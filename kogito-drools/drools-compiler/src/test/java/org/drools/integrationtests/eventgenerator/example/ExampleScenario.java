@@ -52,13 +52,13 @@ public class ExampleScenario {
         // this will parse and compile in one step
         // NOTE: There are 2 methods here, the one argument one is for normal DRL.
         try {
-        		builder.addPackageFromDrl(source);
+                builder.addPackageFromDrl(source);
         } catch (DroolsParserException e) {
-        	// TODO Auto-generated catch block
-        	e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         } catch (IOException e) {
-        	// TODO Auto-generated catch block
-        	e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         // get the compiled package (which is serializable)
         Package pkg = builder.getPackage();
@@ -70,10 +70,10 @@ public class ExampleScenario {
         //	add the package to a rulebase (deploy the rule package).
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         try {
-        	ruleBase.addPackage (pkg);
+            ruleBase.addPackage (pkg);
         } catch (Exception e) {
-        	// TODO Auto-generated catch block
-        	e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         wm = ruleBase.newStatefulSession();
         // create a new Working Memory Logger, that logs to file.
@@ -98,16 +98,16 @@ public class ExampleScenario {
         //create fab resources and add them to working memory
         for (int i = 0; i < NUMBER_RESOURCES; i++){
 
-        	Resource res = new Resource("mach"+i);
-        	resources.add(res);
-        	wm.insert(res.getOpStatus());
+            Resource res = new Resource("mach"+i);
+            resources.add(res);
+            wm.insert(res.getOpStatus());
 
-        	SlidingWindow sw = new SlidingWindow(0, res.getId(), PseudoSessionClock.timeInMinutes(10), PseudoSessionClock.timeInMinutes(2));
-        	//GlobalWorkingMemory.getInstance().insert(new Event(Event.SLIDING_WINDOW, res.getId(), systemTime, systemTime));
-        	wm.insert(sw);
+            SlidingWindow sw = new SlidingWindow(0, res.getId(), PseudoSessionClock.timeInMinutes(10), PseudoSessionClock.timeInMinutes(2));
+            //GlobalWorkingMemory.getInstance().insert(new Event(Event.SLIDING_WINDOW, res.getId(), systemTime, systemTime));
+            wm.insert(sw);
 
-        	// add eventSenders to EventGenerator
-        	myGenerator.addEventSource("Conveyor"+i, new ProductionEvent(res.getId()), MIN_OCCUR_PRODUCTION_EVENT, AVG_OCCUR_PRODUCTION_EVENT, 0, 0);
+            // add eventSenders to EventGenerator
+            myGenerator.addEventSource("Conveyor"+i, new ProductionEvent(res.getId()), MIN_OCCUR_PRODUCTION_EVENT, AVG_OCCUR_PRODUCTION_EVENT, 0, 0);
         }
 
         // start generating events
@@ -115,10 +115,10 @@ public class ExampleScenario {
         
         BufferedReader waiter = new BufferedReader(new InputStreamReader(System.in));
         try {
-        	waiter.readLine();
+            waiter.readLine();
         } catch (IOException e) {
-        	// TODO Auto-generated catch block
-        	e.printStackTrace();
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         // stop logging
         //logger.writeToDisk();

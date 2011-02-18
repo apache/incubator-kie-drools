@@ -35,7 +35,7 @@ public class BeforeRuleAddedEventImpl extends KnowledgeBaseEventImpl implements 
     @Override
     public String toString() {
         return "==>[BeforeRuleAddedEventImpl: getRule()=" + getRule() + ", getKnowledgeBase()=" + getKnowledgeBase()
-        		+ "]";
+                + "]";
     }
 
 }

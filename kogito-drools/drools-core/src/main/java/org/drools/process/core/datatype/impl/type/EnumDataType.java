@@ -88,32 +88,32 @@ public class EnumDataType implements DataType {
 
     public Map<String, Object> getValueMap() {
         if (this.valueMap == null) {
-        	try {
-        		this.valueMap = new HashMap<String, Object>();
-        		if (className == null) {
-        			return null;
-        		}
-        		Class<?> clazz = Class.forName(className);
+            try {
+                this.valueMap = new HashMap<String, Object>();
+                if (className == null) {
+                    return null;
+                }
+                Class<?> clazz = Class.forName(className);
                 if (!clazz.isEnum()) {
-                	return null;
+                    return null;
                 }
                 Object[] values = (Object[]) clazz.getMethod("values", null).invoke(clazz, null);
                 for (Object value: values) {
-                	this.valueMap.put(value.toString(), value);
+                    this.valueMap.put(value.toString(), value);
                 }
-        	} catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(
                     "Could not find data type " + className);
-        	} catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 throw new IllegalArgumentException(
                     "IllegalAccessException " + e);
-        	} catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 throw new IllegalArgumentException(
                     "InvocationTargetException " + e);
-        	} catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 throw new IllegalArgumentException(
                     "NoSuchMethodException " + e);
-        	}
+            }
 
         }
         return this.valueMap;

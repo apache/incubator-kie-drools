@@ -89,21 +89,21 @@ public class DRLLexer extends Lexer {
          *  custom Token objects.
          */
         public Token emit() {
-        	Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
-        	t.setLine(state.tokenStartLine);
-        	t.setText(state.text);
-        	t.setCharPositionInLine(state.tokenStartCharPositionInLine);
-        	emit(t);
-        	return t;
+            Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
+            t.setLine(state.tokenStartLine);
+            t.setText(state.text);
+            t.setCharPositionInLine(state.tokenStartCharPositionInLine);
+            emit(t);
+            return t;
         }
 
         public void reportError(RecognitionException ex) {
-        	errors.add(errorMessageFactory.createDroolsException(ex));
+            errors.add(errorMessageFactory.createDroolsException(ex));
         }
 
         /** return the raw DroolsParserException errors */
         public List<DroolsParserException> getErrors() {
-        	return errors;
+            return errors;
         }
 
         /** Overrided this method to not output mesages */

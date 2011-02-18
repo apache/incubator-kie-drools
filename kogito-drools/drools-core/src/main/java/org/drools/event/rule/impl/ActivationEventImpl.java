@@ -59,6 +59,6 @@ public class ActivationEventImpl implements ActivationEvent, Externalizable {
     @Override
     public String toString() {
         return "==>[ActivationEventImpl: getActivation()=" + getActivation() + ", getKnowledgeRuntime()="
-        		+ getKnowledgeRuntime() + "]";
+                + getKnowledgeRuntime() + "]";
     }
 }

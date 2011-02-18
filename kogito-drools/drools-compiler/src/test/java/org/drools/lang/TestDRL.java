@@ -1647,62 +1647,62 @@ public class TestDRL {
         CharStream input;
         /** Set up ANTLR input stream based on input source, file or String */
         if ( isFile==true ) {
-        	input = new ANTLRFileStream(testInput);
+            input = new ANTLRFileStream(testInput);
         }
         else {
-        	input = new ANTLRStringStream(testInput);
+            input = new ANTLRStringStream(testInput);
         }
         try {
-        	DRLLexer lexer = new DRLLexer(input);
-        	CommonTokenStream tokens = new CommonTokenStream(lexer);
-        	DRLParser parser = new DRLParser(tokens);
-        	/** Use Reflection to get rule method from parser */
-        	Method ruleName = Class.forName("org.drools.lang.DRLParser").getMethod(testRuleName);
+            DRLLexer lexer = new DRLLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            DRLParser parser = new DRLParser(tokens);
+            /** Use Reflection to get rule method from parser */
+            Method ruleName = Class.forName("org.drools.lang.DRLParser").getMethod(testRuleName);
 
-        	/** Start of I/O Redirecting */
-        	PipedInputStream pipedIn = new PipedInputStream();
-        	PipedOutputStream pipedOut = new PipedOutputStream();
-        	PipedInputStream pipedErrIn = new PipedInputStream();
-        	PipedOutputStream pipedErrOut = new PipedOutputStream();
-        	try {
-        		pipedOut.connect(pipedIn);
-        		pipedErrOut.connect(pipedErrIn);
-        	}
-        	catch(IOException e) {
-        		System.err.println("connection failed...");
-        		System.exit(1);
-        	}
-        	PrintStream console = System.out;
-        	PrintStream consoleErr = System.err;
-        	PrintStream ps = new PrintStream(pipedOut);
-        	PrintStream ps2 = new PrintStream(pipedErrOut);
-        	System.setOut(ps);
-        	System.setErr(ps2);
-        	/** End of redirecting */
+            /** Start of I/O Redirecting */
+            PipedInputStream pipedIn = new PipedInputStream();
+            PipedOutputStream pipedOut = new PipedOutputStream();
+            PipedInputStream pipedErrIn = new PipedInputStream();
+            PipedOutputStream pipedErrOut = new PipedOutputStream();
+            try {
+                pipedOut.connect(pipedIn);
+                pipedErrOut.connect(pipedErrIn);
+            }
+            catch(IOException e) {
+                System.err.println("connection failed...");
+                System.exit(1);
+            }
+            PrintStream console = System.out;
+            PrintStream consoleErr = System.err;
+            PrintStream ps = new PrintStream(pipedOut);
+            PrintStream ps2 = new PrintStream(pipedErrOut);
+            System.setOut(ps);
+            System.setErr(ps2);
+            /** End of redirecting */
 
-        	/** Invoke grammar rule, and store if there is a return value */
-        	Object ruleReturn = ruleName.invoke(parser);
-        	String astString = null;
-        	/** If rule has return value, determine if it's an AST */
-        	if ( ruleReturn!=null ) {
-        		/** If return object is instanceof AST, get the toStringTree */
-        		if ( ruleReturn.toString().indexOf(testRuleName+"_return")>0 ) {
-        			try {	// NullPointerException may happen here...
-        				Class _return = Class.forName("org.drools.lang.DRLParser"+"$"+testRuleName+"_return");
-        				Method[] methods = _return.getDeclaredMethods();
-                    	for(Method method : methods) {
-        	                if ( method.getName().equals("getTree") ) {
-        	                	Method returnName = _return.getMethod("getTree");
-                            	CommonTree tree = (CommonTree) returnName.invoke(ruleReturn);
-                            	astString = tree.toStringTree();
-        	                }
-        	            }
-        			}
-        			catch(Exception e) {
-                    	System.err.println(e);
+            /** Invoke grammar rule, and store if there is a return value */
+            Object ruleReturn = ruleName.invoke(parser);
+            String astString = null;
+            /** If rule has return value, determine if it's an AST */
+            if ( ruleReturn!=null ) {
+                /** If return object is instanceof AST, get the toStringTree */
+                if ( ruleReturn.toString().indexOf(testRuleName+"_return")>0 ) {
+                    try {	// NullPointerException may happen here...
+                        Class _return = Class.forName("org.drools.lang.DRLParser"+"$"+testRuleName+"_return");
+                        Method[] methods = _return.getDeclaredMethods();
+                        for(Method method : methods) {
+                            if ( method.getName().equals("getTree") ) {
+                                Method returnName = _return.getMethod("getTree");
+                                CommonTree tree = (CommonTree) returnName.invoke(ruleReturn);
+                                astString = tree.toStringTree();
+                            }
+                        }
                     }
-        		}
-        	}
+                    catch(Exception e) {
+                        System.err.println(e);
+                    }
+                }
+            }
 // @FIXME etirelli !!!
 //			org.antlr.gunit.gUnitExecuter.StreamVacuum stdoutVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedIn);
 //			org.antlr.gunit.gUnitExecuter.StreamVacuum stderrVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedErrIn);
@@ -1738,20 +1738,20 @@ public class TestDRL {
 //				return null;
 //			}
         } catch (ClassNotFoundException e) {
-        	e.printStackTrace(); System.exit(1);
+            e.printStackTrace(); System.exit(1);
         } catch (SecurityException e) {
-        	e.printStackTrace(); System.exit(1);
+            e.printStackTrace(); System.exit(1);
         } catch (NoSuchMethodException e) {
-        	e.printStackTrace(); System.exit(1);
+            e.printStackTrace(); System.exit(1);
         } catch (IllegalAccessException e) {
-        	e.printStackTrace(); System.exit(1);
+            e.printStackTrace(); System.exit(1);
         } catch (InvocationTargetException e) {
-        	this.stderr = "error";
-        	return e.getCause().toString();
+            this.stderr = "error";
+            return e.getCause().toString();
 //		} catch (InterruptedException e) {
 //			e.printStackTrace(); System.exit(1);
         } catch (Exception e) {
-        	e.printStackTrace(); System.exit(1);
+            e.printStackTrace(); System.exit(1);
         }
         return stdout;
     }
@@ -1759,23 +1759,23 @@ public class TestDRL {
     // Modify the return value if the expected token type is OK or FAIL
     public Object examineParserExecResult(int tokenType, Object retVal) {
         if ( tokenType==27 ) {	// expected Token: OK
-        	if ( this.stderr==null ) {
-        		return "OK";
-        	}
-        	else {
-        		return "FAIL";
-        	}
+            if ( this.stderr==null ) {
+                return "OK";
+            }
+            else {
+                return "FAIL";
+            }
         }
         else if ( tokenType==28 ) {	// expected Token: FAIL
-        	if ( this.stderr!=null ) {
-        		return "FAIL";
-        	}
-        	else {
-        		return "OK";
-        	}
+            if ( this.stderr!=null ) {
+                return "FAIL";
+            }
+            else {
+                return "OK";
+            }
         }
         else {	// return the same object for the other token types
-        	return retVal;
+            return retVal;
         }
     }
 

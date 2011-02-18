@@ -158,12 +158,12 @@ public class MVELDumper extends ReflectiveVisitor {
         } else if(op == Operator.determineOperator( "matches", false )) {
             evaluator = "~=";
             if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-            	return evaluatorPrefix( evaluator ) +
+                return evaluatorPrefix( evaluator ) +
                 this.fieldName + " " + 
                 evaluator( evaluator ) + " " + 
                 value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
             } else {
-            	return evaluatorPrefix( evaluator ) +
+                return evaluatorPrefix( evaluator ) +
                 this.fieldName + " " + 
                 evaluator( evaluator ) + " " + 
                 value +

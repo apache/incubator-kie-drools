@@ -77,12 +77,12 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
      */
     private String getDTRules(Map<String, RuleTemplate> templates) {
         org.drools.template.model.Package p = new org.drools.template.model.Package(
-        		DefaultTemplateRuleBase.class.getPackage().getName());
+                DefaultTemplateRuleBase.class.getPackage().getName());
         addImports(p);
         addGlobals(p);
         int i = 1;
         for ( RuleTemplate template : templates.values() ) {
-        	createTemplateRule(p, i++, template);
+            createTemplateRule(p, i++, template);
         }
         DRLOutput out = new DRLOutput();
         p.renderDRL(out);
@@ -102,7 +102,7 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 
     private void createColumnConditions(RuleTemplate template, Rule rule) {
         for ( TemplateColumn column : template.getColumns() ) {
-        	column.addCondition(rule);
+            column.addCondition(rule);
         }
     }
 
@@ -135,19 +135,19 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     private RuleBase readRule(String drl) {
         try {
 //			System.out.println(drl);
-        	// read in the source
-        	Reader source = new StringReader(drl);
-        	PackageBuilder builder = new PackageBuilder();
-        	builder.addPackageFromDrl(source);
-        	Package pkg = builder.getPackage();
+            // read in the source
+            Reader source = new StringReader(drl);
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl(source);
+            Package pkg = builder.getPackage();
 
-        	// add the package to a rulebase (deploy the rule package).
-        	RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        	ruleBase.addPackage(pkg);
-        	return ruleBase;
+            // add the package to a rulebase (deploy the rule package).
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage(pkg);
+            return ruleBase;
 
         } catch (Exception e) {
-        	throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 

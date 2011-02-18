@@ -69,9 +69,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
         this.rule = new Rule("test-rule");
         this.context = new PropagationContextImpl(0,
-        		PropagationContext.ASSERTION, null, null, null);
+                PropagationContext.ASSERTION, null, null, null);
         this.workingMemory = new ReteooWorkingMemory(1,
-        		(ReteooRuleBase) RuleBaseFactory.newRuleBase());
+                (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
         this.tupleSource = new MockTupleSource(4);
         this.objectSource = new MockObjectSource(4);
@@ -80,15 +80,15 @@ public class JoinNodeTest extends DroolsTestCase {
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
-        		.newRuleBase();
+                .newRuleBase();
         BuildContext buildContext = new BuildContext(ruleBase, ruleBase
-        		.getReteooBuilder().getIdGenerator());
+                .getReteooBuilder().getIdGenerator());
 
         this.node = new JoinNode(15, this.tupleSource, this.objectSource,
-        		new DefaultBetaConstraints(
-        				new BetaNodeFieldConstraint[] { this.constraint },
-        				configuration), Behavior.EMPTY_BEHAVIOR_LIST,
-        		buildContext);
+                new DefaultBetaConstraints(
+                        new BetaNodeFieldConstraint[] { this.constraint },
+                        configuration), Behavior.EMPTY_BEHAVIOR_LIST,
+                buildContext);
 
         this.node.addTupleSink(this.sink);
 
@@ -108,12 +108,12 @@ public class JoinNodeTest extends DroolsTestCase {
         final Field objectFfield = ObjectSource.class.getDeclaredField("sink");
         objectFfield.setAccessible(true);
         ObjectSinkPropagator objectSink = (ObjectSinkPropagator) objectFfield
-        		.get(this.objectSource);
+                .get(this.objectSource);
 
         final Field tupleField = LeftTupleSource.class.getDeclaredField("sink");
         tupleField.setAccessible(true);
         LeftTupleSinkPropagator tupleSink = (LeftTupleSinkPropagator) tupleField
-        		.get(this.tupleSource);
+                .get(this.tupleSource);
 
         assertEquals(15, this.node.getId());
 
@@ -140,21 +140,21 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
-        		(ReteooRuleBase) RuleBaseFactory.newRuleBase());
+                (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
         final MockObjectSource objectSource = new MockObjectSource(1);
         final MockTupleSource tupleSource = new MockTupleSource(1);
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
-        		.newRuleBase();
+                .newRuleBase();
         BuildContext buildContext = new BuildContext(ruleBase, ruleBase
-        		.getReteooBuilder().getIdGenerator());
+                .getReteooBuilder().getIdGenerator());
         final JoinNode joinNode = new JoinNode(2, tupleSource, objectSource,
-        		EmptyBetaConstraints.getInstance(),
-        		Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
+                EmptyBetaConstraints.getInstance(),
+                Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
 
         final BetaMemory memory = (BetaMemory) workingMemory
-        		.getNodeMemory(joinNode);
+                .getNodeMemory(joinNode);
 
         assertNotNull(memory);
     }
@@ -185,7 +185,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals(2, this.memory.getLeftTupleMemory().size());
 
         LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst(
-        		(LeftTuple) null);
+                (LeftTuple) null);
 
         assertEquals(tuple0, leftTuple);
         assertEquals(tuple1, leftTuple.getNext());
@@ -205,23 +205,23 @@ public class JoinNodeTest extends DroolsTestCase {
         conf.setSequential(true);
 
         this.workingMemory = new ReteooWorkingMemory(1,
-        		(ReteooRuleBase) RuleBaseFactory.newRuleBase(conf));
+                (ReteooRuleBase) RuleBaseFactory.newRuleBase(conf));
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
-        		.newRuleBase();
+                .newRuleBase();
         BuildContext buildContext = new BuildContext(ruleBase, ruleBase
-        		.getReteooBuilder().getIdGenerator());
+                .getReteooBuilder().getIdGenerator());
         buildContext.setTupleMemoryEnabled(false);
         buildContext.setObjectTypeNodeMemoryEnabled(false);
 
         // override setup, so its working in sequential mode
         this.node = new JoinNode(
-        		15,
-        		this.tupleSource,
-        		this.objectSource,
-        		new DefaultBetaConstraints(
-        				new BetaNodeFieldConstraint[] { this.constraint }, conf),
-        		Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
+                15,
+                this.tupleSource,
+                this.objectSource,
+                new DefaultBetaConstraints(
+                        new BetaNodeFieldConstraint[] { this.constraint }, conf),
+                Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
 
         this.node.addTupleSink(this.sink);
 
@@ -244,7 +244,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals(1, this.memory.getRightTupleMemory().size());
 
         assertEquals(new LeftTuple(tuple0, f0.getFirstRightTuple(), this.sink,
-        		true), ((Object[]) this.sink.getAsserted().get(0))[0]);
+                true), ((Object[]) this.sink.getAsserted().get(0))[0]);
     }
 
     /**
@@ -258,7 +258,7 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
-        		.insert("test0");
+                .insert("test0");
 
         // assert object, should add one to right memory
         this.node.assertObject(f0, this.context, this.workingMemory);
@@ -267,16 +267,16 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // check new objects/handles still assert
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory
-        		.insert("test1");
+                .insert("test1");
         this.node.assertObject(f1, this.context, this.workingMemory);
         assertEquals(2, this.memory.getRightTupleMemory().size());
 
         RightTuple rightTuple = this.memory.getRightTupleMemory().getFirst(
-        		new LeftTuple(f0, this.node, true), null);
+                new LeftTuple(f0, this.node, true), null);
 
         final InternalFactHandle rf0 = rightTuple.getFactHandle();
         final InternalFactHandle rf1 = ((RightTuple) rightTuple.getNext())
-        		.getFactHandle();
+                .getFactHandle();
 
         assertEquals(f0, rf0);
         assertEquals(f1, rf1);
@@ -294,7 +294,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
-        		.insert("test0");
+                .insert("test0");
         this.node.assertObject(f0, this.context, this.workingMemory);
 
         // assert tuple, should add left memory should be 2
@@ -305,7 +305,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals(1, this.sink.getAsserted().size());
 
         assertEquals(new LeftTuple(tuple1, f0.getFirstRightTuple(), this.sink,
-        		true), ((Object[]) this.sink.getAsserted().get(0))[0]);
+                true), ((Object[]) this.sink.getAsserted().get(0))[0]);
 
         final DefaultFactHandle f2 = new DefaultFactHandle(2, "cheese");
         final LeftTuple tuple2 = new LeftTuple(f2, this.node, true);
@@ -313,10 +313,10 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertEquals(2, this.sink.getAsserted().size());
         assertEquals(new LeftTuple(tuple2, f0.getFirstRightTuple(), this.sink,
-        		true), ((Object[]) this.sink.getAsserted().get(1))[0]);
+                true), ((Object[]) this.sink.getAsserted().get(1))[0]);
 
         final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory
-        		.insert("test2");
+                .insert("test2");
         this.node.assertObject(f3, this.context, this.workingMemory);
 
         assertEquals(4, this.sink.getAsserted().size());
@@ -326,9 +326,9 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getAsserted().get(3))[0]);
 
         assertTrue(tuples.contains(new LeftTuple(tuple1, f3
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
         assertTrue(tuples.contains(new LeftTuple(tuple2, f3
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
     }
 
     /**
@@ -344,38 +344,38 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // setup 2 tuples 3 fact handles
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
-        		.insert("test0");
+                .insert("test0");
         this.node.assertObject(f0, this.context, this.workingMemory);
 
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory
-        		.insert("test1");
+                .insert("test1");
         final LeftTuple tuple1 = new LeftTuple(f1, this.node, true);
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
 
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory
-        		.insert("test2");
+                .insert("test2");
         final LeftTuple tuple2 = new LeftTuple(f2, this.node, true);
         this.node.assertLeftTuple(tuple2, this.context, this.workingMemory);
 
         final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory
-        		.insert("test3");
+                .insert("test3");
         this.node.assertObject(f3, this.context, this.workingMemory);
 
         final DefaultFactHandle f4 = (DefaultFactHandle) this.workingMemory
-        		.insert("test4");
+                .insert("test4");
         this.node.assertObject(f4, this.context, this.workingMemory);
 
         assertLength(6, this.sink.getAsserted());
 
         // Double check the item is in memory
         final BetaMemory memory = (BetaMemory) this.workingMemory
-        		.getNodeMemory(this.node);
+                .getNodeMemory(this.node);
         assertTrue(memory.getRightTupleMemory().contains(
-        		f0.getFirstRightTuple()));
+                f0.getFirstRightTuple()));
 
         // Retract an object, check propagations and memory
         this.node.retractRightTuple(f0.getFirstRightTuple(), this.context,
-        		this.workingMemory);
+                this.workingMemory);
         assertLength(2, this.sink.getRetracted());
 
         List tuples = new ArrayList();
@@ -383,13 +383,13 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getRetracted().get(1))[0]);
 
         assertTrue(tuples.contains(new LeftTuple(tuple1, f0
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
         assertTrue(tuples.contains(new LeftTuple(tuple1, f0
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
 
         // Now check the item is no longer in memory
         assertFalse(memory.getRightTupleMemory().contains(
-        		f0.getFirstRightTuple()));
+                f0.getFirstRightTuple()));
 
         this.node.retractLeftTuple(tuple2, this.context, this.workingMemory);
         assertEquals(4, this.sink.getRetracted().size());
@@ -399,9 +399,9 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getRetracted().get(3))[0]);
 
         assertTrue(tuples.contains(new LeftTuple(tuple2, f3
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
         assertTrue(tuples.contains(new LeftTuple(tuple2, f4
-        		.getFirstRightTuple(), this.sink, true)));
+                .getFirstRightTuple(), this.sink, true)));
     }
 
     @Test
@@ -411,7 +411,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
-        		.insert("test0");
+                .insert("test0");
         this.node.assertObject(f0, this.context, this.workingMemory);
 
         // assert tuple, should add left memory should be 2
@@ -423,7 +423,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertLength(0, this.sink.getAsserted());
 
         this.node.retractRightTuple(f0.getFirstRightTuple(), this.context,
-        		this.workingMemory);
+                this.workingMemory);
         assertLength(0, this.sink.getRetracted());
     }
 
@@ -433,16 +433,16 @@ public class JoinNodeTest extends DroolsTestCase {
         when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
-        		(ReteooRuleBase) RuleBaseFactory.newRuleBase());
+                (ReteooRuleBase) RuleBaseFactory.newRuleBase());
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory
-        		.newRuleBase();
+                .newRuleBase();
         BuildContext buildContext = new BuildContext(ruleBase, ruleBase
-        		.getReteooBuilder().getIdGenerator());
+                .getReteooBuilder().getIdGenerator());
 
         final JoinNode joinNode = new JoinNode(1, this.tupleSource,
-        		this.objectSource, EmptyBetaConstraints.getInstance(),
-        		Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
+                this.objectSource, EmptyBetaConstraints.getInstance(),
+                Behavior.EMPTY_BEHAVIOR_LIST, buildContext);
 
         // Add the first tuple sink and assert a tuple and object
         // The sink has no memory
@@ -457,7 +457,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         final String string1 = "string1";
         final DefaultFactHandle string1Handle = new DefaultFactHandle(1,
-        		string1);
+                string1);
 
         joinNode.assertObject(string1Handle, this.context, workingMemory);
 
