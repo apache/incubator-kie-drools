@@ -48,7 +48,7 @@ rule "Range check for doubles, if smaller than or equal is missing"
         )
 
         # Check if Foo( bar == 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -80,7 +80,7 @@ rule "Range check for doubles, if greater than or equal is missing"
         )
 
         # Check if Foo( bar == 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -113,7 +113,7 @@ rule "Range check for doubles, equal and greater than"
         )
 
         # Check if Foo( bar > 42 || >= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -146,7 +146,7 @@ rule "Range check for doubles, equal and smaller than"
         )
 
         # Check if Foo( bar < 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
