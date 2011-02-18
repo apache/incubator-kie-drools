@@ -15,8 +15,8 @@
   <name>Drools Expert and Fusion Documentation</name>
 
   <modules>
-    <module>drools-docs-expert</module>
-    <module>drools-docs-fusion</module>
+    <module>drools-expert-docs</module>
+    <module>drools-fusion-docs</module>
   </modules>
 
 </project>
