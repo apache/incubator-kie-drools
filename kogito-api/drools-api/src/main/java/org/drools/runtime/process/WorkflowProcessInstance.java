@@ -29,17 +29,17 @@ public interface WorkflowProcessInstance
     ProcessInstance,
     NodeInstanceContainer {
 
-	/**
-	 * Returns the value of the variable with the given name.  Note
-	 * that only variables in the process-level scope will be searched.
-	 * Returns <code>null</code> if the value of the variable is null
-	 * or if the variable cannot be found.
-	 *  
-	 * @param name the name of the variable
-	 * @return the value of the variable, or <code>null</code> if it cannot be found
-	 */
-	Object getVariable(String name);
-	
-	void setVariable(String name, Object value);
+    /**
+     * Returns the value of the variable with the given name.  Note
+     * that only variables in the process-level scope will be searched.
+     * Returns <code>null</code> if the value of the variable is null
+     * or if the variable cannot be found.
+     *
+     * @param name the name of the variable
+     * @return the value of the variable, or <code>null</code> if it cannot be found
+     */
+    Object getVariable(String name);
+
+    void setVariable(String name, Object value);
 
 }

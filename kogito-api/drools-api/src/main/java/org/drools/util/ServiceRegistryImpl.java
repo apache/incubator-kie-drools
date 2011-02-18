@@ -48,7 +48,7 @@ import org.drools.marshalling.MarshallerProvider;
 public class ServiceRegistryImpl
     implements
     ServiceRegistry {
-	private static ServiceRegistry instance = new ServiceRegistryImpl();
+    private static ServiceRegistry instance = new ServiceRegistryImpl();
 
     private Map<String, Callable< ? >> registry        = new HashMap<String, Callable< ? >>();
     private Map<String, Callable< ? >> defaultServices = new HashMap<String, Callable< ? >>();
@@ -64,7 +64,7 @@ public class ServiceRegistryImpl
     /* (non-Javadoc)
      * @see org.drools.util.internal.ServiceRegistry#registerLocator(java.lang.String, java.util.concurrent.Callable)
      */
-	public synchronized void registerLocator(Class cls, Callable cal) {
+    public synchronized void registerLocator(Class cls, Callable cal) {
         this.registry.put( cls.getName(),
                            cal );
     }

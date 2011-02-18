@@ -67,7 +67,7 @@ import org.drools.util.ServiceRegistryImpl;
  *    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
  *    &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
  *    &lt;properties&gt;
- *          &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;	        
+ *          &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
  *          &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
  *          &lt;property name="hibernate.hbm2ddl.auto" value="update" /&gt;
  *          &lt;property name="hibernate.show_sql" value="true" /&gt;

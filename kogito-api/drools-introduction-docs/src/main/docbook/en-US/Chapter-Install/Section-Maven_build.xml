@@ -59,10 +59,10 @@ mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assem
   <section>
     <title>Building the Manual</title>
 
-	<para>
-		The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or 
-		cding into the main directory.
-	</para>
+  <para>
+    The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or
+    cding into the main directory.
+  </para>
 
     <para>Drools uses <indexterm>
         <primary>docbook</primary>

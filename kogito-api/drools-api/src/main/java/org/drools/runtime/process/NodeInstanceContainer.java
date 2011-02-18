@@ -24,12 +24,12 @@ import java.util.Collection;
  */
 public interface NodeInstanceContainer {
 
-	/**
-	 * Returns all node instances that are currently active
-	 * within this container.
-	 * 
-	 * @return the list of node instances currently active
-	 */
+    /**
+     * Returns all node instances that are currently active
+     * within this container.
+     *
+     * @return the list of node instances currently active
+     */
     Collection<NodeInstance> getNodeInstances();
     
     /**

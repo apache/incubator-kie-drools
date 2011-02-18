@@ -44,10 +44,10 @@
     up JBoss Rules</para>
 
     <itemizedlist>
-	<listitem>
-        <para>drools-api.jar - this provides the interfaces 
-	and factories. Drools-api also helps clearly show what is intended 
-	as a user api and what is just an engine api.</para>
+      <listitem>
+        <para>drools-api.jar - this provides the interfaces
+        and factories. Drools-api also helps clearly show what is intended
+        as a user api and what is just an engine api.</para>
       </listitem>
       <listitem>
         <para>drools-core.jar - this is the core engine, runtime component.
@@ -136,8 +136,8 @@
       <para>Open the Help-&gt;Software updates...-&gt;Available Software-&gt;Add Site...
       from the help menu. Location is:</para>
 
-	  <programlisting>http://download.eclipse.org/tools/gef/updates/releases/</programlisting>
-	
+    <programlisting>http://download.eclipse.org/tools/gef/updates/releases/</programlisting>
+
       <para>Next you choose the GEF plug-in:</para>
 
       <screenshot>
@@ -185,7 +185,7 @@
     <para><ulink url="http://www.jboss.org/drools/">http://www.jboss.org/drools/</ulink></para> 
     </section>  
     <section>
-		<title>Drools Runtimes</title>
+      <title>Drools Runtimes</title>
   <para>A Drools runtime is a collection of jars on your file system that represent
     one specific release of the Drools project jars. To create a runtime, you must 
     point the IDE to the release of your choice.  If you want to create a new runtime
@@ -312,7 +312,7 @@
       </mediaobject>
 
     </section> 
-	</section>
+  </section>
 </section>
 <!--
     <section>
@@ -364,7 +364,7 @@
 
       <para>Step 4: This screen is where you enter in the remote site details.
       You give it a name eg "JBoss Drools" and the url. <programlisting> Check the Drools IDE Update Site section of the Drools Downloads webpage: 
-				http://labs.jboss.com/drools/downloads.html</programlisting>
+        http://labs.jboss.com/drools/downloads.html</programlisting>
       <screenshot>
           <info>New remote site</info>
 

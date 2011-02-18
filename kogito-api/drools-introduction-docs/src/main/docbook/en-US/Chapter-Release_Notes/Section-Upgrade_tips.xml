@@ -254,7 +254,7 @@ end
     <title>Rule flow Update for 4.0.2</title>
 
     <para>
-    	The Rule flow feature was updated for 4.0.2, and now all your ruleflows must declare a package name.
+      The Rule flow feature was updated for 4.0.2, and now all your ruleflows must declare a package name.
     </para>
 
   <figure>

@@ -20,13 +20,13 @@ package org.drools.event.process;
 public interface ProcessVariableChangedEvent
     extends
     ProcessEvent {
-	
-	String getVariableId();
-	
-	String getVariableInstanceId();
-	
-	Object getOldValue();
-	
-	Object getNewValue();
+
+    String getVariableId();
+
+    String getVariableInstanceId();
+
+    Object getOldValue();
+
+    Object getNewValue();
 
 }

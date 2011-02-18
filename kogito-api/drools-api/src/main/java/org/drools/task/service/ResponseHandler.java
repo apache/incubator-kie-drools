@@ -18,6 +18,6 @@ package org.drools.task.service;
 
 public interface ResponseHandler {
 
-	public void setError(RuntimeException error);
+    public void setError(RuntimeException error);
 
 }

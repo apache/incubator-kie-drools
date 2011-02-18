@@ -70,7 +70,7 @@ ANT_HOME=D:\java\apache-ant-1.7
 MAVEN_HOME=D:\java\maven-2.0.9
 
 </literallayout>
-	<para>
-		Past releases used to have an ant based build mechanism, but now maven is mandatory, although Ant is used internally in maven for document building proposes
-	</para>
+  <para>
+    Past releases used to have an ant based build mechanism, but now maven is mandatory, although Ant is used internally in maven for document building proposes
+  </para>
 </section>
