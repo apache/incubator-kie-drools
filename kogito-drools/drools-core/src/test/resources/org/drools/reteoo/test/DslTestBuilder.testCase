@@ -4,40 +4,39 @@ Setup
     LeftTupleSource: left; 
     ObjectSource: right;
     LeftTupleSink: sink;
-	CollectNode:
-	    col, left, right, java.util.ArrayList;
-    	source, type, ==, l1;
+    CollectNode:
+        col, left, right, java.util.ArrayList;
+        source, type, ==, l1;
     Binding:
         l1, 0, org.drools.Person, likes;
-	Facts:
-    	org.drools.Person('darth', 35, "brie"), org.drools.Person('bobba', 36, 'stilton'),
-    	org.drools.Cheese('brie', 10), org.drools.Cheese('brie', 12),
-    	org.drools.Cheese('stilton', 15), org.drools.Cheese('muzzarella', 12);
+    Facts:
+        org.drools.Person('darth', 35, "brie"), org.drools.Person('bobba', 36, 'stilton'),
+        org.drools.Cheese('brie', 10), org.drools.Cheese('brie', 12),
+        org.drools.Cheese('stilton', 15), org.drools.Cheese('muzzarella', 12);
 
 TearDown
  
 Test "test 1"
-	assert :
-    	left, [h0];
-	col :
-    	leftMemory, [[h0]];
-	sink :
-    	verify, assert, count, 1; 
-    	verify, assert, tuple0[1], is(empty());
-	retract :
-    	left, [h0];   
-	col :
-    	leftMemory, [];
-	sink :
-    	verify, retract, count, 1;
-    	verify, retract, tuple0[1], is(empty());
+    assert :
+        left, [h0];
+    col :
+        leftMemory, [[h0]];
+    sink :
+        verify, assert, count, 1;
+        verify, assert, tuple0[1], is(empty());
+    retract :
+        left, [h0];
+    col :
+        leftMemory, [];
+    sink :
+        verify, retract, count, 1;
+        verify, retract, tuple0[1], is(empty());
 
 Test "another test"
-	assert :
-    	left,[h2];
-	col :
-    	leftMemory, [[h2]];
-	sink :
-    	verify, assert, count, 1; 
-    	verify, assert, tuple0[1], is(empty());
-   	
+    assert :
+        left,[h2];
+    col :
+        leftMemory, [[h2]];
+    sink :
+        verify, assert, count, 1;
+        verify, assert, tuple0[1], is(empty());
