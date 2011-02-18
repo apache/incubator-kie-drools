@@ -230,7 +230,7 @@ public class ResourceChangeNotifierImpl
     
     public void reset() {
         this.subscriptions.clear();
-        this.monitors.clear();        
+        this.monitors.clear();
     }
 
     private Thread           thread;

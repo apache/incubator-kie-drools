@@ -28,9 +28,9 @@ public interface PropagationContext
     Externalizable,
     org.drools.runtime.rule.PropagationContext {    
 
-    public Rule getRuleOrigin();    
+    public Rule getRuleOrigin();
     
-    public FactHandle getFactHandleOrigin();    
+    public FactHandle getFactHandleOrigin();
 
     public LeftTuple getLeftTupleOrigin();
 

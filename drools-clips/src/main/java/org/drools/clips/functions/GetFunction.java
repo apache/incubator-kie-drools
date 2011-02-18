@@ -38,7 +38,7 @@ public class GetFunction
         String name = ((LispAtom) sExpressions[1]).getValue();
 
         String field = ((LispAtom) sExpressions[2]).getValue().trim();
-        field = field.substring( 1, field.length() -1  );                
+        field = field.substring( 1, field.length() -1  );
 
         appendable.append( name );
         appendable.append( "." );

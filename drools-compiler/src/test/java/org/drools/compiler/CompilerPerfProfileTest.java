@@ -22,7 +22,7 @@ public class CompilerPerfProfileTest {
         System.gc();
         Thread.sleep( 100 );
         
-        build("MVEL", "largeRuleNumberMVEL.drl", true);        
+        build("MVEL", "largeRuleNumberMVEL.drl", true);
 
         System.gc();
         Thread.sleep( 100 );

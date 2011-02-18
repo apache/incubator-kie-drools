@@ -44,7 +44,7 @@ public class CallFunction
         String name = ((LispAtom) sExpressions[offset+1]).getValue();
 
         String field = ((LispAtom) sExpressions[offset+2]).getValue().trim();
-        field = field.substring( 1, field.length() -1  );                
+        field = field.substring( 1, field.length() -1  );
 
         appendable.append( name );
         appendable.append( "." );
@@ -52,12 +52,12 @@ public class CallFunction
         
         appendable.append( "(" );
         for ( int i = offset+3, length = sExpressions.length; i < length; i++) {            
-            FunctionHandlers.dump( sExpressions[i], appendable );         
+            FunctionHandlers.dump( sExpressions[i], appendable );
             
             if ( i != length -1 ) { 
                 appendable.append( ", " );
             }
         }        
-        appendable.append( ")" );        
+        appendable.append( ")" );
     }
 }

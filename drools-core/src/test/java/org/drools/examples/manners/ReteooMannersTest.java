@@ -95,7 +95,7 @@ public class ReteooMannersTest extends BaseMannersTest {
         //        final MemoryVisitor visitor = new MemoryVisitor( (InternalWorkingMemory) workingMemory );
         //        visitor.visit( ruleBase );
 
-        //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase); 
+        //        final ReteooJungViewer viewer = new ReteooJungViewer(ruleBase);
         //        
         //        javax.swing.SwingUtilities.invokeLater(new Runnable() { 
         //        		public void run() {

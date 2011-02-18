@@ -24,7 +24,7 @@ public class AgendaImpl
     implements
     InternalAgenda {
 	
-    private org.drools.common.InternalAgenda agenda;    
+    private org.drools.common.InternalAgenda agenda;
     
     public AgendaImpl(org.drools.common.InternalAgenda agenda) {
         super();

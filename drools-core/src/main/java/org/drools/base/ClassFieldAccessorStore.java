@@ -125,7 +125,7 @@ public class ClassFieldAccessorStore
         if( exists == false ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
-                             entry );   
+                             entry );
         }
 
         return entry.getClassFieldReader();
@@ -157,7 +157,7 @@ public class ClassFieldAccessorStore
         if( exists == false ) {
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
-                             entry );   
+                             entry );
         }        
         
         return entry.getClassFieldWriter();
@@ -318,7 +318,7 @@ public class ClassFieldAccessorStore
                     ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.get( entry.getKey() );
                     if ( lookupEntry == null ) {
                                                 // Create new entry with correct ClassObjectType and targets
-                        lookupEntry = new ClassObjectTypeLookupEntry(  cache.getClassObjectType( ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType() ) );                        
+                        lookupEntry = new ClassObjectTypeLookupEntry(  cache.getClassObjectType( ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType() ) );
                         
                         this.lookup.put( entry.getKey(),
                                          lookupEntry );
@@ -326,7 +326,7 @@ public class ClassFieldAccessorStore
                     } 
                     
                     for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
-                        ((AcceptsClassObjectType) target).setClassObjectType( lookupEntry.getClassObjectType() );                            
+                        ((AcceptsClassObjectType) target).setClassObjectType( lookupEntry.getClassObjectType() );
                         lookupEntry.addAccessorTarget( target );
                     }
                 }
@@ -337,7 +337,7 @@ public class ClassFieldAccessorStore
                     //                        lookupEntry = ( ObjectExtractorLookupEntry )  entry.getValue();
                     //                        this.lookup.put( entry.getKey(),
                     //                                         lookupEntry );
-                    //                        wire( lookupEntry.getObjectExtractor() );                       
+                    //                        wire( lookupEntry.getObjectExtractor() );
                     //                    } else {
                     //                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
                     //                            ((Declaration)target).setReadAccessor( lookupEntry.getObjectExtractor() );
@@ -352,7 +352,7 @@ public class ClassFieldAccessorStore
                     //                        lookupEntry = ( GlobalExtractorLookupEntry )  entry.getValue();
                     //                        this.lookup.put( entry.getKey(),
                     //                                         lookupEntry );
-                    //                        wire( lookupEntry.getGlobalExtractor() );  
+                    //                        wire( lookupEntry.getGlobalExtractor() );
                     //                    } else {
                     //                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
                     //                            ((Declaration)target).setReadAccessor( lookupEntry.getGlobalExtractor() );

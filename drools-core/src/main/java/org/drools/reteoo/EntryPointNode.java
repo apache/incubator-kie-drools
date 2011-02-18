@@ -166,7 +166,7 @@ public class EntryPointNode extends ObjectSource
         handle.setFirstLeftTuple( null );
         handle.setFirstRightTuple( null );
         handle.setLastLeftTuple( null );
-        handle.setLastRightTuple( null ); 
+        handle.setLastRightTuple( null );
         
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,

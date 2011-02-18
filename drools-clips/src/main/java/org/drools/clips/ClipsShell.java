@@ -153,7 +153,7 @@ public class ClipsShell
     public static void main(String[] args) throws Exception {
         ClipsShell shell = new ClipsShell();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        shell.addRouter( "t", new PrintStream( out ) );    
+        shell.addRouter( "t", new PrintStream( out ) );
         
         StringBuffer buf = new StringBuffer();
         System.out.print("Drools>");
@@ -403,7 +403,7 @@ public class ClipsShell
         
         ClassLoader tempClassLoader = Thread.currentThread().getContextClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );        
+            Thread.currentThread().setContextClassLoader( ((InternalRuleBase)ruleBase).getRootClassLoader() );
 
             ParserContext context = new ParserContext();
             

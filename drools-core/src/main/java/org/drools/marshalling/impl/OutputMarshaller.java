@@ -80,7 +80,7 @@ public class OutputMarshaller {
     public static void writeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
         
-        final boolean multithread = wm.isPartitionManagersActive(); 
+        final boolean multithread = wm.isPartitionManagersActive();
         // is multi-thread active?
         if( multithread ) {
             context.writeBoolean( true );
@@ -404,7 +404,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         // right tuples created in a "FromNode" have no sink, so we need to handle that appropriatelly
-        int id = rightTuple.getRightTupleSink() != null ? rightTuple.getRightTupleSink().getId() : -1; 
+        int id = rightTuple.getRightTupleSink() != null ? rightTuple.getRightTupleSink().getId() : -1;
         stream.writeInt( id );
         //context.out.println( "RightTuple sinkId:" + (rightTuple.getRightTupleSink() != null ? rightTuple.getRightTupleSink().getId() : -1) );
     }
@@ -766,7 +766,7 @@ public class OutputMarshaller {
                 
                 stream.writeInt(notNullValues.size());
                 for (String key : parameters.keySet()) {
-                    Object object = parameters.get(key); 
+                    Object object = parameters.get(key);
                     if(object != null){
                         stream.writeUTF(key);
                         int index = context.objectMarshallingStrategyStore.getStrategy(object);

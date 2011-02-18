@@ -144,6 +144,6 @@ public interface Agenda extends org.drools.runtime.rule.Agenda {
     
     ActivationGroup getActivationGroup(String name);
     
-    RuleFlowGroup getRuleFlowGroup(String name);    
+    RuleFlowGroup getRuleFlowGroup(String name);
 
 }

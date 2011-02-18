@@ -48,7 +48,7 @@ public class CommandExecutor implements Runnable, Externalizable {
     }
 
     public CommandExecutor(WorkingMemory workingMemory) {
-        this.workingMemory = workingMemory;            
+        this.workingMemory = workingMemory;
         this.queue = new LinkedBlockingQueue();
     }        
     

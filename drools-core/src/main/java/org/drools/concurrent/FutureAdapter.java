@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class FutureAdapter implements Future {
-    org.drools.concurrent.Future future; 
+    org.drools.concurrent.Future future;
     
     public FutureAdapter(org.drools.concurrent.Future future) {
         this.future = future;

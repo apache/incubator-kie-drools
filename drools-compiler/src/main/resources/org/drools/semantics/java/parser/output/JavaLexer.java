@@ -152,7 +152,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:11:7: ( 'package' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:11:9: 'package'
             {
-            match("package"); 
+            match("package");
 
 
             }
@@ -173,7 +173,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:12:7: ( ';' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:12:9: ';'
             {
-            match(';'); 
+            match(';');
 
             }
 
@@ -193,7 +193,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:13:7: ( 'import' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:13:9: 'import'
             {
-            match("import"); 
+            match("import");
 
 
             }
@@ -214,7 +214,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:14:7: ( 'static' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:14:9: 'static'
             {
-            match("static"); 
+            match("static");
 
 
             }
@@ -235,7 +235,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:15:7: ( '.' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:15:9: '.'
             {
-            match('.'); 
+            match('.');
 
             }
 
@@ -255,7 +255,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:16:7: ( '*' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:16:9: '*'
             {
-            match('*'); 
+            match('*');
 
             }
 
@@ -275,7 +275,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:17:7: ( 'class' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:17:9: 'class'
             {
-            match("class"); 
+            match("class");
 
 
             }
@@ -296,7 +296,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:18:7: ( 'extends' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:18:9: 'extends'
             {
-            match("extends"); 
+            match("extends");
 
 
             }
@@ -317,7 +317,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:19:7: ( 'implements' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:19:9: 'implements'
             {
-            match("implements"); 
+            match("implements");
 
 
             }
@@ -338,7 +338,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:20:7: ( '<' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:20:9: '<'
             {
-            match('<'); 
+            match('<');
 
             }
 
@@ -358,7 +358,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:21:7: ( ',' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:21:9: ','
             {
-            match(','); 
+            match(',');
 
             }
 
@@ -378,7 +378,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:22:7: ( '>' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:22:9: '>'
             {
-            match('>'); 
+            match('>');
 
             }
 
@@ -398,7 +398,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:23:7: ( '&' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:23:9: '&'
             {
-            match('&'); 
+            match('&');
 
             }
 
@@ -418,7 +418,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:24:7: ( '{' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:24:9: '{'
             {
-            match('{'); 
+            match('{');
 
             }
 
@@ -438,7 +438,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:25:7: ( '}' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:25:9: '}'
             {
-            match('}'); 
+            match('}');
 
             }
 
@@ -458,7 +458,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:26:7: ( 'interface' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:26:9: 'interface'
             {
-            match("interface"); 
+            match("interface");
 
 
             }
@@ -479,7 +479,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:27:7: ( 'void' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:27:9: 'void'
             {
-            match("void"); 
+            match("void");
 
 
             }
@@ -500,7 +500,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:28:7: ( '[' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:28:9: '['
             {
-            match('['); 
+            match('[');
 
             }
 
@@ -520,7 +520,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:29:7: ( ']' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:29:9: ']'
             {
-            match(']'); 
+            match(']');
 
             }
 
@@ -540,7 +540,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:30:7: ( 'throws' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:30:9: 'throws'
             {
-            match("throws"); 
+            match("throws");
 
 
             }
@@ -561,7 +561,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:31:7: ( '=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:31:9: '='
             {
-            match('='); 
+            match('=');
 
             }
 
@@ -581,7 +581,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:32:7: ( 'public' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:32:9: 'public'
             {
-            match("public"); 
+            match("public");
 
 
             }
@@ -602,7 +602,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:33:7: ( 'protected' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:33:9: 'protected'
             {
-            match("protected"); 
+            match("protected");
 
 
             }
@@ -623,7 +623,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:34:7: ( 'private' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:34:9: 'private'
             {
-            match("private"); 
+            match("private");
 
 
             }
@@ -644,7 +644,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:35:7: ( 'abstract' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:35:9: 'abstract'
             {
-            match("abstract"); 
+            match("abstract");
 
 
             }
@@ -665,7 +665,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:36:7: ( 'final' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:36:9: 'final'
             {
-            match("final"); 
+            match("final");
 
 
             }
@@ -686,7 +686,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:37:7: ( 'native' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:37:9: 'native'
             {
-            match("native"); 
+            match("native");
 
 
             }
@@ -707,7 +707,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:38:7: ( 'synchronized' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:38:9: 'synchronized'
             {
-            match("synchronized"); 
+            match("synchronized");
 
 
             }
@@ -728,7 +728,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:39:7: ( 'transient' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:39:9: 'transient'
             {
-            match("transient"); 
+            match("transient");
 
 
             }
@@ -749,7 +749,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:40:7: ( 'volatile' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:40:9: 'volatile'
             {
-            match("volatile"); 
+            match("volatile");
 
 
             }
@@ -770,7 +770,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:41:7: ( 'strictfp' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:41:9: 'strictfp'
             {
-            match("strictfp"); 
+            match("strictfp");
 
 
             }
@@ -791,7 +791,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:42:7: ( 'boolean' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:42:9: 'boolean'
             {
-            match("boolean"); 
+            match("boolean");
 
 
             }
@@ -812,7 +812,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:43:7: ( 'char' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:43:9: 'char'
             {
-            match("char"); 
+            match("char");
 
 
             }
@@ -833,7 +833,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:44:7: ( 'byte' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:44:9: 'byte'
             {
-            match("byte"); 
+            match("byte");
 
 
             }
@@ -854,7 +854,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:45:7: ( 'short' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:45:9: 'short'
             {
-            match("short"); 
+            match("short");
 
 
             }
@@ -875,7 +875,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:46:7: ( 'int' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:46:9: 'int'
             {
-            match("int"); 
+            match("int");
 
 
             }
@@ -896,7 +896,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:47:7: ( 'long' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:47:9: 'long'
             {
-            match("long"); 
+            match("long");
 
 
             }
@@ -917,7 +917,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:48:7: ( 'float' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:48:9: 'float'
             {
-            match("float"); 
+            match("float");
 
 
             }
@@ -938,7 +938,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:49:7: ( 'double' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:49:9: 'double'
             {
-            match("double"); 
+            match("double");
 
 
             }
@@ -959,7 +959,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:50:7: ( '?' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:50:9: '?'
             {
-            match('?'); 
+            match('?');
 
             }
 
@@ -979,7 +979,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:51:7: ( 'super' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:51:9: 'super'
             {
-            match("super"); 
+            match("super");
 
 
             }
@@ -1000,7 +1000,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:52:7: ( '(' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:52:9: '('
             {
-            match('('); 
+            match('(');
 
             }
 
@@ -1020,7 +1020,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:53:7: ( ')' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:53:9: ')'
             {
-            match(')'); 
+            match(')');
 
             }
 
@@ -1040,7 +1040,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:54:7: ( '...' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:54:9: '...'
             {
-            match("..."); 
+            match("...");
 
 
             }
@@ -1061,7 +1061,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:55:7: ( 'null' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:55:9: 'null'
             {
-            match("null"); 
+            match("null");
 
 
             }
@@ -1082,7 +1082,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:56:7: ( 'true' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:56:9: 'true'
             {
-            match("true"); 
+            match("true");
 
 
             }
@@ -1103,7 +1103,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:57:7: ( 'false' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:57:9: 'false'
             {
-            match("false"); 
+            match("false");
 
 
             }
@@ -1124,7 +1124,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:58:7: ( '@' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:58:9: '@'
             {
-            match('@'); 
+            match('@');
 
             }
 
@@ -1144,7 +1144,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:59:7: ( 'default' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:59:9: 'default'
             {
-            match("default"); 
+            match("default");
 
 
             }
@@ -1165,7 +1165,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:60:7: ( 'assert' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:60:9: 'assert'
             {
-            match("assert"); 
+            match("assert");
 
 
             }
@@ -1186,7 +1186,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:61:7: ( ':' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:61:9: ':'
             {
-            match(':'); 
+            match(':');
 
             }
 
@@ -1206,7 +1206,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:62:7: ( 'if' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:62:9: 'if'
             {
-            match("if"); 
+            match("if");
 
 
             }
@@ -1227,7 +1227,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:63:7: ( 'else' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:63:9: 'else'
             {
-            match("else"); 
+            match("else");
 
 
             }
@@ -1248,7 +1248,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:64:7: ( 'for' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:64:9: 'for'
             {
-            match("for"); 
+            match("for");
 
 
             }
@@ -1269,7 +1269,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:65:7: ( 'while' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:65:9: 'while'
             {
-            match("while"); 
+            match("while");
 
 
             }
@@ -1290,7 +1290,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:66:7: ( 'do' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:66:9: 'do'
             {
-            match("do"); 
+            match("do");
 
 
             }
@@ -1311,7 +1311,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:67:7: ( 'try' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:67:9: 'try'
             {
-            match("try"); 
+            match("try");
 
 
             }
@@ -1332,7 +1332,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:68:7: ( 'finally' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:68:9: 'finally'
             {
-            match("finally"); 
+            match("finally");
 
 
             }
@@ -1353,7 +1353,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:69:7: ( 'switch' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:69:9: 'switch'
             {
-            match("switch"); 
+            match("switch");
 
 
             }
@@ -1374,7 +1374,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:70:7: ( 'return' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:70:9: 'return'
             {
-            match("return"); 
+            match("return");
 
 
             }
@@ -1395,7 +1395,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:71:7: ( 'throw' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:71:9: 'throw'
             {
-            match("throw"); 
+            match("throw");
 
 
             }
@@ -1416,7 +1416,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:72:7: ( 'break' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:72:9: 'break'
             {
-            match("break"); 
+            match("break");
 
 
             }
@@ -1437,7 +1437,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:73:7: ( 'continue' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:73:9: 'continue'
             {
-            match("continue"); 
+            match("continue");
 
 
             }
@@ -1458,7 +1458,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:74:7: ( 'modify' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:74:9: 'modify'
             {
-            match("modify"); 
+            match("modify");
 
 
             }
@@ -1479,7 +1479,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:75:7: ( 'update' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:75:9: 'update'
             {
-            match("update"); 
+            match("update");
 
 
             }
@@ -1500,7 +1500,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:76:7: ( 'retract' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:76:9: 'retract'
             {
-            match("retract"); 
+            match("retract");
 
 
             }
@@ -1521,7 +1521,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:77:7: ( 'exitPoints' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:77:9: 'exitPoints'
             {
-            match("exitPoints"); 
+            match("exitPoints");
 
 
             }
@@ -1542,7 +1542,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:78:7: ( 'entryPoints' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:78:9: 'entryPoints'
             {
-            match("entryPoints"); 
+            match("entryPoints");
 
 
             }
@@ -1563,7 +1563,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:79:7: ( 'channels' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:79:9: 'channels'
             {
-            match("channels"); 
+            match("channels");
 
 
             }
@@ -1584,7 +1584,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:80:7: ( 'catch' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:80:9: 'catch'
             {
-            match("catch"); 
+            match("catch");
 
 
             }
@@ -1605,7 +1605,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:81:7: ( 'case' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:81:9: 'case'
             {
-            match("case"); 
+            match("case");
 
 
             }
@@ -1626,7 +1626,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:82:7: ( '+=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:82:9: '+='
             {
-            match("+="); 
+            match("+=");
 
 
             }
@@ -1647,7 +1647,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:83:7: ( '-=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:83:9: '-='
             {
-            match("-="); 
+            match("-=");
 
 
             }
@@ -1668,7 +1668,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:84:7: ( '*=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:84:9: '*='
             {
-            match("*="); 
+            match("*=");
 
 
             }
@@ -1689,7 +1689,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:85:7: ( '/=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:85:9: '/='
             {
-            match("/="); 
+            match("/=");
 
 
             }
@@ -1710,7 +1710,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:86:7: ( '&=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:86:9: '&='
             {
-            match("&="); 
+            match("&=");
 
 
             }
@@ -1731,7 +1731,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:87:8: ( '|=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:87:10: '|='
             {
-            match("|="); 
+            match("|=");
 
 
             }
@@ -1752,7 +1752,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:88:8: ( '^=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:88:10: '^='
             {
-            match("^="); 
+            match("^=");
 
 
             }
@@ -1773,7 +1773,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:89:8: ( '%=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:89:10: '%='
             {
-            match("%="); 
+            match("%=");
 
 
             }
@@ -1794,7 +1794,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:90:8: ( '||' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:90:10: '||'
             {
-            match("||"); 
+            match("||");
 
 
             }
@@ -1815,7 +1815,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:91:8: ( '&&' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:91:10: '&&'
             {
-            match("&&"); 
+            match("&&");
 
 
             }
@@ -1836,7 +1836,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:92:8: ( '|' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:92:10: '|'
             {
-            match('|'); 
+            match('|');
 
             }
 
@@ -1856,7 +1856,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:93:8: ( '^' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:93:10: '^'
             {
-            match('^'); 
+            match('^');
 
             }
 
@@ -1876,7 +1876,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:94:8: ( '==' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:94:10: '=='
             {
-            match("=="); 
+            match("==");
 
 
             }
@@ -1897,7 +1897,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:95:8: ( '!=' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:95:10: '!='
             {
-            match("!="); 
+            match("!=");
 
 
             }
@@ -1918,7 +1918,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:96:8: ( 'instanceof' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:96:10: 'instanceof'
             {
-            match("instanceof"); 
+            match("instanceof");
 
 
             }
@@ -1939,7 +1939,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:97:8: ( '+' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:97:10: '+'
             {
-            match('+'); 
+            match('+');
 
             }
 
@@ -1959,7 +1959,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:98:8: ( '-' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:98:10: '-'
             {
-            match('-'); 
+            match('-');
 
             }
 
@@ -1979,7 +1979,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:99:8: ( '/' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:99:10: '/'
             {
-            match('/'); 
+            match('/');
 
             }
 
@@ -1999,7 +1999,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:100:8: ( '%' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:100:10: '%'
             {
-            match('%'); 
+            match('%');
 
             }
 
@@ -2019,7 +2019,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:101:8: ( '++' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:101:10: '++'
             {
-            match("++"); 
+            match("++");
 
 
             }
@@ -2040,7 +2040,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:102:8: ( '--' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:102:10: '--'
             {
-            match("--"); 
+            match("--");
 
 
             }
@@ -2061,7 +2061,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:103:8: ( '~' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:103:10: '~'
             {
-            match('~'); 
+            match('~');
 
             }
 
@@ -2081,7 +2081,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:104:8: ( '!' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:104:10: '!'
             {
-            match('!'); 
+            match('!');
 
             }
 
@@ -2101,7 +2101,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:105:8: ( 'this' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:105:10: 'this'
             {
-            match("this"); 
+            match("this");
 
 
             }
@@ -2122,7 +2122,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:106:8: ( 'new' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:106:10: 'new'
             {
-            match("new"); 
+            match("new");
 
 
             }
@@ -2143,7 +2143,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1024:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1024:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
-            match('0'); 
+            match('0');
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
                 input.consume();
 
@@ -2169,7 +2169,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1024:28: HexDigit
             	    {
-            	    mHexDigit(); 
+            	    mHexDigit();
 
             	    }
             	    break;
@@ -2194,7 +2194,7 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1024:38: IntegerTypeSuffix
                     {
-                    mIntegerTypeSuffix(); 
+                    mIntegerTypeSuffix();
 
                     }
                     break;
@@ -2240,14 +2240,14 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1026:19: '0'
                     {
-                    match('0'); 
+                    match('0');
 
                     }
                     break;
                 case 2 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1026:25: '1' .. '9' ( '0' .. '9' )*
                     {
-                    matchRange('1','9'); 
+                    matchRange('1','9');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1026:34: ( '0' .. '9' )*
                     loop3:
                     do {
@@ -2263,7 +2263,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1026:34: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2290,7 +2290,7 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1026:45: IntegerTypeSuffix
                     {
-                    mIntegerTypeSuffix(); 
+                    mIntegerTypeSuffix();
 
                     }
                     break;
@@ -2316,7 +2316,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1028:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1028:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
-            match('0'); 
+            match('0');
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1028:20: ( '0' .. '7' )+
             int cnt6=0;
             loop6:
@@ -2333,7 +2333,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1028:21: '0' .. '7'
             	    {
-            	    matchRange('0','7'); 
+            	    matchRange('0','7');
 
             	    }
             	    break;
@@ -2358,7 +2358,7 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1028:32: IntegerTypeSuffix
                     {
-                    mIntegerTypeSuffix(); 
+                    mIntegerTypeSuffix();
 
                     }
                     break;
@@ -2452,7 +2452,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1037:10: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2466,7 +2466,7 @@ public class JavaLexer extends Lexer {
                         cnt8++;
                     } while (true);
 
-                    match('.'); 
+                    match('.');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1037:25: ( '0' .. '9' )*
                     loop9:
                     do {
@@ -2482,7 +2482,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1037:26: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2503,7 +2503,7 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1037:37: Exponent
                             {
-                            mExponent(); 
+                            mExponent();
 
                             }
                             break;
@@ -2521,7 +2521,7 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1037:47: FloatTypeSuffix
                             {
-                            mFloatTypeSuffix(); 
+                            mFloatTypeSuffix();
 
                             }
                             break;
@@ -2534,7 +2534,7 @@ public class JavaLexer extends Lexer {
                 case 2 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1038:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    match('.'); 
+                    match('.');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1038:13: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
@@ -2551,7 +2551,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1038:14: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2576,7 +2576,7 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1038:25: Exponent
                             {
-                            mExponent(); 
+                            mExponent();
 
                             }
                             break;
@@ -2594,7 +2594,7 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1038:35: FloatTypeSuffix
                             {
-                            mFloatTypeSuffix(); 
+                            mFloatTypeSuffix();
 
                             }
                             break;
@@ -2623,7 +2623,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1039:10: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2637,7 +2637,7 @@ public class JavaLexer extends Lexer {
                         cnt15++;
                     } while (true);
 
-                    mExponent(); 
+                    mExponent();
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1039:30: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
@@ -2649,7 +2649,7 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1039:30: FloatTypeSuffix
                             {
-                            mFloatTypeSuffix(); 
+                            mFloatTypeSuffix();
 
                             }
                             break;
@@ -2678,7 +2678,7 @@ public class JavaLexer extends Lexer {
                     	case 1 :
                     	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1040:10: '0' .. '9'
                     	    {
-                    	    matchRange('0','9'); 
+                    	    matchRange('0','9');
 
                     	    }
                     	    break;
@@ -2703,14 +2703,14 @@ public class JavaLexer extends Lexer {
                         case 1 :
                             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1040:21: Exponent
                             {
-                            mExponent(); 
+                            mExponent();
 
                             }
                             break;
 
                     }
 
-                    mFloatTypeSuffix(); 
+                    mFloatTypeSuffix();
 
                     }
                     break;
@@ -2781,7 +2781,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1044:34: '0' .. '9'
             	    {
-            	    matchRange('0','9'); 
+            	    matchRange('0','9');
 
             	    }
             	    break;
@@ -2836,7 +2836,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1050:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1050:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
             {
-            match('\''); 
+            match('\'');
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1050:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
@@ -2857,7 +2857,7 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1050:16: EscapeSequence
                     {
-                    mEscapeSequence(); 
+                    mEscapeSequence();
 
                     }
                     break;
@@ -2879,7 +2879,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            match('\''); 
+            match('\'');
 
             }
 
@@ -2899,7 +2899,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1054:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1054:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
             {
-            match('\"'); 
+            match('\"');
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1054:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
             loop23:
             do {
@@ -2918,7 +2918,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1054:14: EscapeSequence
             	    {
-            	    mEscapeSequence(); 
+            	    mEscapeSequence();
 
             	    }
             	    break;
@@ -2943,7 +2943,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            match('\"'); 
+            match('\"');
 
             }
 
@@ -3011,7 +3011,7 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
-                    match('\\'); 
+                    match('\\');
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
                         input.consume();
 
@@ -3027,14 +3027,14 @@ public class JavaLexer extends Lexer {
                 case 2 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1060:9: UnicodeEscape
                     {
-                    mUnicodeEscape(); 
+                    mUnicodeEscape();
 
                     }
                     break;
                 case 3 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:9: OctalEscape
                     {
-                    mOctalEscape(); 
+                    mOctalEscape();
 
                     }
                     break;
@@ -3097,25 +3097,25 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:14: ( '0' .. '3' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:15: '0' .. '3'
                     {
-                    matchRange('0','3'); 
+                    matchRange('0','3');
 
                     }
 
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:25: ( '0' .. '7' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:26: '0' .. '7'
                     {
-                    matchRange('0','7'); 
+                    matchRange('0','7');
 
                     }
 
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:36: ( '0' .. '7' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1066:37: '0' .. '7'
                     {
-                    matchRange('0','7'); 
+                    matchRange('0','7');
 
                     }
 
@@ -3125,18 +3125,18 @@ public class JavaLexer extends Lexer {
                 case 2 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:14: ( '0' .. '7' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:15: '0' .. '7'
                     {
-                    matchRange('0','7'); 
+                    matchRange('0','7');
 
                     }
 
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:25: ( '0' .. '7' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:26: '0' .. '7'
                     {
-                    matchRange('0','7'); 
+                    matchRange('0','7');
 
                     }
 
@@ -3146,11 +3146,11 @@ public class JavaLexer extends Lexer {
                 case 3 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1068:9: '\\\\' ( '0' .. '7' )
                     {
-                    match('\\'); 
+                    match('\\');
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1068:14: ( '0' .. '7' )
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1068:15: '0' .. '7'
                     {
-                    matchRange('0','7'); 
+                    matchRange('0','7');
 
                     }
 
@@ -3171,12 +3171,12 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
-            match('\\'); 
-            match('u'); 
-            mHexDigit(); 
-            mHexDigit(); 
-            mHexDigit(); 
-            mHexDigit(); 
+            match('\\');
+            match('u');
+            mHexDigit();
+            mHexDigit();
+            mHexDigit();
+            mHexDigit();
 
             }
 
@@ -3194,7 +3194,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1076:5: ( 'enum' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1076:7: 'enum'
             {
-            match("enum"); 
+            match("enum");
 
             if ( !enumIsKeyword ) _type=Identifier;
 
@@ -3216,7 +3216,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1080:5: ( Letter ( Letter | JavaIDDigit )* )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1080:9: Letter ( Letter | JavaIDDigit )*
             {
-            mLetter(); 
+            mLetter();
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1080:16: ( Letter | JavaIDDigit )*
             loop26:
             do {
@@ -3346,7 +3346,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1127:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1127:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
-            match("/*"); 
+            match("/*");
 
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1127:14: ( options {greedy=false; } : . )*
             loop27:
@@ -3375,7 +3375,7 @@ public class JavaLexer extends Lexer {
             	case 1 :
             	    // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1127:42: .
             	    {
-            	    matchAny(); 
+            	    matchAny();
 
             	    }
             	    break;
@@ -3385,7 +3385,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            match("*/"); 
+            match("*/");
 
             _channel=HIDDEN;
 
@@ -3407,7 +3407,7 @@ public class JavaLexer extends Lexer {
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1131:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1131:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
-            match("//"); 
+            match("//");
 
             // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1131:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
@@ -3453,14 +3453,14 @@ public class JavaLexer extends Lexer {
                 case 1 :
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1131:26: '\\r'
                     {
-                    match('\r'); 
+                    match('\r');
 
                     }
                     break;
 
             }
 
-            match('\n'); 
+            match('\n');
             _channel=HIDDEN;
 
             }
@@ -3481,749 +3481,749 @@ public class JavaLexer extends Lexer {
             case 1 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:10: T__24
                 {
-                mT__24(); 
+                mT__24();
 
                 }
                 break;
             case 2 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:16: T__25
                 {
-                mT__25(); 
+                mT__25();
 
                 }
                 break;
             case 3 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:22: T__26
                 {
-                mT__26(); 
+                mT__26();
 
                 }
                 break;
             case 4 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:28: T__27
                 {
-                mT__27(); 
+                mT__27();
 
                 }
                 break;
             case 5 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:34: T__28
                 {
-                mT__28(); 
+                mT__28();
 
                 }
                 break;
             case 6 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:40: T__29
                 {
-                mT__29(); 
+                mT__29();
 
                 }
                 break;
             case 7 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:46: T__30
                 {
-                mT__30(); 
+                mT__30();
 
                 }
                 break;
             case 8 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:52: T__31
                 {
-                mT__31(); 
+                mT__31();
 
                 }
                 break;
             case 9 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:58: T__32
                 {
-                mT__32(); 
+                mT__32();
 
                 }
                 break;
             case 10 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:64: T__33
                 {
-                mT__33(); 
+                mT__33();
 
                 }
                 break;
             case 11 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:70: T__34
                 {
-                mT__34(); 
+                mT__34();
 
                 }
                 break;
             case 12 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:76: T__35
                 {
-                mT__35(); 
+                mT__35();
 
                 }
                 break;
             case 13 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:82: T__36
                 {
-                mT__36(); 
+                mT__36();
 
                 }
                 break;
             case 14 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:88: T__37
                 {
-                mT__37(); 
+                mT__37();
 
                 }
                 break;
             case 15 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:94: T__38
                 {
-                mT__38(); 
+                mT__38();
 
                 }
                 break;
             case 16 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:100: T__39
                 {
-                mT__39(); 
+                mT__39();
 
                 }
                 break;
             case 17 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:106: T__40
                 {
-                mT__40(); 
+                mT__40();
 
                 }
                 break;
             case 18 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:112: T__41
                 {
-                mT__41(); 
+                mT__41();
 
                 }
                 break;
             case 19 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:118: T__42
                 {
-                mT__42(); 
+                mT__42();
 
                 }
                 break;
             case 20 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:124: T__43
                 {
-                mT__43(); 
+                mT__43();
 
                 }
                 break;
             case 21 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:130: T__44
                 {
-                mT__44(); 
+                mT__44();
 
                 }
                 break;
             case 22 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:136: T__45
                 {
-                mT__45(); 
+                mT__45();
 
                 }
                 break;
             case 23 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:142: T__46
                 {
-                mT__46(); 
+                mT__46();
 
                 }
                 break;
             case 24 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:148: T__47
                 {
-                mT__47(); 
+                mT__47();
 
                 }
                 break;
             case 25 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:154: T__48
                 {
-                mT__48(); 
+                mT__48();
 
                 }
                 break;
             case 26 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:160: T__49
                 {
-                mT__49(); 
+                mT__49();
 
                 }
                 break;
             case 27 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:166: T__50
                 {
-                mT__50(); 
+                mT__50();
 
                 }
                 break;
             case 28 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:172: T__51
                 {
-                mT__51(); 
+                mT__51();
 
                 }
                 break;
             case 29 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:178: T__52
                 {
-                mT__52(); 
+                mT__52();
 
                 }
                 break;
             case 30 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:184: T__53
                 {
-                mT__53(); 
+                mT__53();
 
                 }
                 break;
             case 31 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:190: T__54
                 {
-                mT__54(); 
+                mT__54();
 
                 }
                 break;
             case 32 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:196: T__55
                 {
-                mT__55(); 
+                mT__55();
 
                 }
                 break;
             case 33 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:202: T__56
                 {
-                mT__56(); 
+                mT__56();
 
                 }
                 break;
             case 34 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:208: T__57
                 {
-                mT__57(); 
+                mT__57();
 
                 }
                 break;
             case 35 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:214: T__58
                 {
-                mT__58(); 
+                mT__58();
 
                 }
                 break;
             case 36 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:220: T__59
                 {
-                mT__59(); 
+                mT__59();
 
                 }
                 break;
             case 37 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:226: T__60
                 {
-                mT__60(); 
+                mT__60();
 
                 }
                 break;
             case 38 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:232: T__61
                 {
-                mT__61(); 
+                mT__61();
 
                 }
                 break;
             case 39 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:238: T__62
                 {
-                mT__62(); 
+                mT__62();
 
                 }
                 break;
             case 40 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:244: T__63
                 {
-                mT__63(); 
+                mT__63();
 
                 }
                 break;
             case 41 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:250: T__64
                 {
-                mT__64(); 
+                mT__64();
 
                 }
                 break;
             case 42 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:256: T__65
                 {
-                mT__65(); 
+                mT__65();
 
                 }
                 break;
             case 43 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:262: T__66
                 {
-                mT__66(); 
+                mT__66();
 
                 }
                 break;
             case 44 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:268: T__67
                 {
-                mT__67(); 
+                mT__67();
 
                 }
                 break;
             case 45 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:274: T__68
                 {
-                mT__68(); 
+                mT__68();
 
                 }
                 break;
             case 46 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:280: T__69
                 {
-                mT__69(); 
+                mT__69();
 
                 }
                 break;
             case 47 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:286: T__70
                 {
-                mT__70(); 
+                mT__70();
 
                 }
                 break;
             case 48 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:292: T__71
                 {
-                mT__71(); 
+                mT__71();
 
                 }
                 break;
             case 49 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:298: T__72
                 {
-                mT__72(); 
+                mT__72();
 
                 }
                 break;
             case 50 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:304: T__73
                 {
-                mT__73(); 
+                mT__73();
 
                 }
                 break;
             case 51 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:310: T__74
                 {
-                mT__74(); 
+                mT__74();
 
                 }
                 break;
             case 52 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:316: T__75
                 {
-                mT__75(); 
+                mT__75();
 
                 }
                 break;
             case 53 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:322: T__76
                 {
-                mT__76(); 
+                mT__76();
 
                 }
                 break;
             case 54 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:328: T__77
                 {
-                mT__77(); 
+                mT__77();
 
                 }
                 break;
             case 55 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:334: T__78
                 {
-                mT__78(); 
+                mT__78();
 
                 }
                 break;
             case 56 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:340: T__79
                 {
-                mT__79(); 
+                mT__79();
 
                 }
                 break;
             case 57 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:346: T__80
                 {
-                mT__80(); 
+                mT__80();
 
                 }
                 break;
             case 58 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:352: T__81
                 {
-                mT__81(); 
+                mT__81();
 
                 }
                 break;
             case 59 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:358: T__82
                 {
-                mT__82(); 
+                mT__82();
 
                 }
                 break;
             case 60 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:364: T__83
                 {
-                mT__83(); 
+                mT__83();
 
                 }
                 break;
             case 61 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:370: T__84
                 {
-                mT__84(); 
+                mT__84();
 
                 }
                 break;
             case 62 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:376: T__85
                 {
-                mT__85(); 
+                mT__85();
 
                 }
                 break;
             case 63 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:382: T__86
                 {
-                mT__86(); 
+                mT__86();
 
                 }
                 break;
             case 64 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:388: T__87
                 {
-                mT__87(); 
+                mT__87();
 
                 }
                 break;
             case 65 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:394: T__88
                 {
-                mT__88(); 
+                mT__88();
 
                 }
                 break;
             case 66 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:400: T__89
                 {
-                mT__89(); 
+                mT__89();
 
                 }
                 break;
             case 67 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:406: T__90
                 {
-                mT__90(); 
+                mT__90();
 
                 }
                 break;
             case 68 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:412: T__91
                 {
-                mT__91(); 
+                mT__91();
 
                 }
                 break;
             case 69 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:418: T__92
                 {
-                mT__92(); 
+                mT__92();
 
                 }
                 break;
             case 70 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:424: T__93
                 {
-                mT__93(); 
+                mT__93();
 
                 }
                 break;
             case 71 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:430: T__94
                 {
-                mT__94(); 
+                mT__94();
 
                 }
                 break;
             case 72 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:436: T__95
                 {
-                mT__95(); 
+                mT__95();
 
                 }
                 break;
             case 73 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:442: T__96
                 {
-                mT__96(); 
+                mT__96();
 
                 }
                 break;
             case 74 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:448: T__97
                 {
-                mT__97(); 
+                mT__97();
 
                 }
                 break;
             case 75 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:454: T__98
                 {
-                mT__98(); 
+                mT__98();
 
                 }
                 break;
             case 76 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:460: T__99
                 {
-                mT__99(); 
+                mT__99();
 
                 }
                 break;
             case 77 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:466: T__100
                 {
-                mT__100(); 
+                mT__100();
 
                 }
                 break;
             case 78 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:473: T__101
                 {
-                mT__101(); 
+                mT__101();
 
                 }
                 break;
             case 79 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:480: T__102
                 {
-                mT__102(); 
+                mT__102();
 
                 }
                 break;
             case 80 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:487: T__103
                 {
-                mT__103(); 
+                mT__103();
 
                 }
                 break;
             case 81 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:494: T__104
                 {
-                mT__104(); 
+                mT__104();
 
                 }
                 break;
             case 82 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:501: T__105
                 {
-                mT__105(); 
+                mT__105();
 
                 }
                 break;
             case 83 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:508: T__106
                 {
-                mT__106(); 
+                mT__106();
 
                 }
                 break;
             case 84 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:515: T__107
                 {
-                mT__107(); 
+                mT__107();
 
                 }
                 break;
             case 85 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:522: T__108
                 {
-                mT__108(); 
+                mT__108();
 
                 }
                 break;
             case 86 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:529: T__109
                 {
-                mT__109(); 
+                mT__109();
 
                 }
                 break;
             case 87 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:536: T__110
                 {
-                mT__110(); 
+                mT__110();
 
                 }
                 break;
             case 88 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:543: T__111
                 {
-                mT__111(); 
+                mT__111();
 
                 }
                 break;
             case 89 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:550: T__112
                 {
-                mT__112(); 
+                mT__112();
 
                 }
                 break;
             case 90 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:557: T__113
                 {
-                mT__113(); 
+                mT__113();
 
                 }
                 break;
             case 91 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:564: T__114
                 {
-                mT__114(); 
+                mT__114();
 
                 }
                 break;
             case 92 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:571: T__115
                 {
-                mT__115(); 
+                mT__115();
 
                 }
                 break;
             case 93 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:578: T__116
                 {
-                mT__116(); 
+                mT__116();
 
                 }
                 break;
             case 94 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:585: T__117
                 {
-                mT__117(); 
+                mT__117();
 
                 }
                 break;
             case 95 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:592: T__118
                 {
-                mT__118(); 
+                mT__118();
 
                 }
                 break;
             case 96 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:599: T__119
                 {
-                mT__119(); 
+                mT__119();
 
                 }
                 break;
             case 97 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:606: HexLiteral
                 {
-                mHexLiteral(); 
+                mHexLiteral();
 
                 }
                 break;
             case 98 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:617: DecimalLiteral
                 {
-                mDecimalLiteral(); 
+                mDecimalLiteral();
 
                 }
                 break;
             case 99 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:632: OctalLiteral
                 {
-                mOctalLiteral(); 
+                mOctalLiteral();
 
                 }
                 break;
             case 100 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:645: FloatingPointLiteral
                 {
-                mFloatingPointLiteral(); 
+                mFloatingPointLiteral();
 
                 }
                 break;
             case 101 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:666: CharacterLiteral
                 {
-                mCharacterLiteral(); 
+                mCharacterLiteral();
 
                 }
                 break;
             case 102 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:683: StringLiteral
                 {
-                mStringLiteral(); 
+                mStringLiteral();
 
                 }
                 break;
             case 103 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:697: ENUM
                 {
-                mENUM(); 
+                mENUM();
 
                 }
                 break;
             case 104 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:702: Identifier
                 {
-                mIdentifier(); 
+                mIdentifier();
 
                 }
                 break;
             case 105 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:713: WS
                 {
-                mWS(); 
+                mWS();
 
                 }
                 break;
             case 106 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:716: COMMENT
                 {
-                mCOMMENT(); 
+                mCOMMENT();
 
                 }
                 break;
             case 107 :
                 // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:724: LINE_COMMENT
                 {
-                mLINE_COMMENT(); 
+                mLINE_COMMENT();
 
                 }
                 break;

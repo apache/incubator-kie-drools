@@ -50,5 +50,5 @@ public final class Constants {
     public static final String RES_RULEBASE_CONFIG = "javax.rules.admin.RuleExecutionSet.ruleBaseConfiguration";
     
     /** <code>RuleExecutionSet</code> package builder config constant. */
-    public static final String RES_PACKAGEBUILDER_CONFIG = "javax.rules.admin.RuleExecutionSet.packageBuilderConfiguration";    
+    public static final String RES_PACKAGEBUILDER_CONFIG = "javax.rules.admin.RuleExecutionSet.packageBuilderConfiguration";
 }

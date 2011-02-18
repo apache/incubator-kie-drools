@@ -256,7 +256,7 @@ public class JavaParser extends Parser {
                     }
                     state.errorRecovery = true;
 
-    		errors.add( ex ); 
+    		errors.add( ex );
     	}
          	
          	/** return the raw RecognitionException errors */
@@ -281,7 +281,7 @@ public class JavaParser extends Parser {
          	/** This will take a RecognitionException, and create a sensible error message out of it */
          	public String createErrorMessage(RecognitionException e)
             {
-    		StringBuilder message = new StringBuilder();		
+    		StringBuilder message = new StringBuilder();
                     message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                     if ( e instanceof MismatchedTokenException ) {
                             MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -5772,8 +5772,8 @@ public class JavaParser extends Parser {
             	    if (state.failed) return ;
             	    if ( state.backtracking==0 ) {
             	       
-            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 ); 
-            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) ); 
+            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(variableModifier1!=null?((Token)variableModifier1.start):null)).getStartIndex() - 1 );
+            	      	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.addModifier( (variableModifier1!=null?input.toString(variableModifier1.start,variableModifier1.stop):null) );
             	      	    
             	    }
 
@@ -5792,9 +5792,9 @@ public class JavaParser extends Parser {
             if (state.failed) return ;
             if ( state.backtracking==0 ) {
                
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(type2!=null?((Token)type2.start):null)).getStartIndex() - 1 ); 
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setType( (type2!=null?input.toString(type2.start,type2.stop):null) ); 
-              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setEnd( ((CommonToken)(type2!=null?((Token)type2.stop):null)).getStopIndex() ); 
+              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.updateStart( ((CommonToken)(type2!=null?((Token)type2.start):null)).getStartIndex() - 1 );
+              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setType( (type2!=null?input.toString(type2.start,type2.stop):null) );
+              	        ((localVariableDeclaration_scope)localVariableDeclaration_stack.peek()).descr.setEnd( ((CommonToken)(type2!=null?((Token)type2.stop):null)).getStopIndex() );
               	    
             }
             pushFollow(FOLLOW_variableDeclarators_in_localVariableDeclaration2376);
@@ -6311,7 +6311,7 @@ public class JavaParser extends Parser {
                     state._fsp--;
                     if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                       d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) ); 
+                       d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) );
                     }
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:700:9: ( ',' e= expression )*
                     loop114:
@@ -6335,7 +6335,7 @@ public class JavaParser extends Parser {
                     	    state._fsp--;
                     	    if (state.failed) return ;
                     	    if ( state.backtracking==0 ) {
-                    	       d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) ); 
+                    	       d.getExpressions().add( (e!=null?input.toString(e.start,e.stop):null) );
                     	    }
 
                     	    }
@@ -6355,7 +6355,7 @@ public class JavaParser extends Parser {
             c=(Token)match(input,38,FOLLOW_38_in_modifyStatement2728); if (state.failed) return ;
             if ( state.backtracking==0 ) {
 
-                          d.setEnd( ((CommonToken)c).getStopIndex() ); 
+                          d.setEnd( ((CommonToken)c).getStopIndex() );
                       
             }
 
@@ -6406,7 +6406,7 @@ public class JavaParser extends Parser {
             }
             if ( state.backtracking==0 ) {
 
-                          d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+                          d.setEnd( ((CommonToken)$c).getStopIndex() );
                       
             }
 
@@ -6457,7 +6457,7 @@ public class JavaParser extends Parser {
             }
             if ( state.backtracking==0 ) {
 
-                          d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+                          d.setEnd( ((CommonToken)$c).getStopIndex() );
                       
             }
 
@@ -6531,7 +6531,7 @@ public class JavaParser extends Parser {
                           	    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
                       		    d.setType( JavaBlockDescr.BlockType.EXIT );
                       	    	d.setStart( ((CommonToken)s).getStartIndex() );
-                                  d.setEnd( ((CommonToken)c).getStopIndex() ); 
+                                  d.setEnd( ((CommonToken)c).getStopIndex() );
                       	    	this.blocks.add( d );
                               
                     }
@@ -6550,7 +6550,7 @@ public class JavaParser extends Parser {
                       		    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
                       		    d.setType( JavaBlockDescr.BlockType.ENTRY );
                       		    d.setStart( ((CommonToken)s).getStartIndex() );
-                                  d.setEnd( ((CommonToken)c).getStopIndex() ); 
+                                  d.setEnd( ((CommonToken)c).getStopIndex() );
                       		    this.blocks.add( d );
                               
                     }
@@ -6569,7 +6569,7 @@ public class JavaParser extends Parser {
                       		    d = new JavaInterfacePointsDescr( (id!=null?id.getText():null) );
                       		    d.setType( JavaBlockDescr.BlockType.CHANNEL );
                       		    d.setStart( ((CommonToken)s).getStartIndex() );
-                                  d.setEnd( ((CommonToken)c).getStopIndex() ); 
+                                  d.setEnd( ((CommonToken)c).getStopIndex() );
                       		    this.blocks.add( d );
                               
                     }
@@ -8922,7 +8922,7 @@ public class JavaParser extends Parser {
                     {
                     i=(Token)match(input,Identifier,FOLLOW_Identifier_in_primary4133); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                       if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( (i!=null?i.getText():null) );  
+                       if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( (i!=null?i.getText():null) );
                     }
                     // C:\\dev\\drools\\git\\refactor-memory-iteration\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:950:126: ( '.' Identifier )*
                     loop158:

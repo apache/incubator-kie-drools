@@ -228,7 +228,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         doPropagateModifyLeftTuple( factHandle,
                                     modifyPreviousTuples,
                                     context,
-                                    workingMemory );  
+                                    workingMemory );
     }
 
     public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,

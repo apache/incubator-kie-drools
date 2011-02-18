@@ -30,7 +30,7 @@ public class RuleBaseUpdateListenerFactory {
             RuleBaseUpdateListener listener = ( RuleBaseUpdateListener ) ClassUtils.instantiateObject( className );
             listener.setSession( session );
             
-            return listener;            
+            return listener;
         } catch ( Throwable e ) {
             throw new RuntimeException("Unable to instantiate RuleBaseUpdateListener '" + className + "'", e );
         }        

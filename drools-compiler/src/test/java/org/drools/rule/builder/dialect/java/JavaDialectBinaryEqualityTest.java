@@ -41,7 +41,7 @@ public class JavaDialectBinaryEqualityTest{
         
         Rule rule1 = ((KnowledgePackageImp)pkg1).pkg.getRule( "rule1" );
         Rule rule2 = ((KnowledgePackageImp)pkg2).pkg.getRule( "rule1" );
-        Rule rule3 = ((KnowledgePackageImp)pkg3).pkg.getRule( "rule1" );               
+        Rule rule3 = ((KnowledgePackageImp)pkg3).pkg.getRule( "rule1" );
         
         // test return value
         Pattern p1 = ( Pattern ) rule1.getLhs().getChildren().get( 0 );
@@ -56,7 +56,7 @@ public class JavaDialectBinaryEqualityTest{
         
         Pattern p3 = ( Pattern ) rule3.getLhs().getChildren().get( 0 );
         ReturnValueConstraint rvc3 = ( ReturnValueConstraint ) p3.getConstraints().get( 1 );
-        ReturnValueExpression rve3 = rvc3.getExpression();                
+        ReturnValueExpression rve3 = rvc3.getExpression();
         assertNotSame( rve1, rve3 );
         assertThat(rve1, not( equalTo( rve3 ) ) );
         
@@ -70,7 +70,7 @@ public class JavaDialectBinaryEqualityTest{
         assertEquals( pe1, pe2 );
         
         PredicateConstraint pc3 = ( PredicateConstraint )  p3.getConstraints().get( 2 );
-        PredicateExpression pe3 = ( PredicateExpression ) pc3.getPredicateExpression();        
+        PredicateExpression pe3 = ( PredicateExpression ) pc3.getPredicateExpression();
         assertNotSame( pe1, pe3 );
         assertThat(pe1, not( equalTo( pe3 ) ) );
         
@@ -81,25 +81,25 @@ public class JavaDialectBinaryEqualityTest{
         EvalCondition ec2 = ( EvalCondition ) rule2.getLhs().getChildren().get( 1 );
         EvalExpression ee2 =( EvalExpression) ec2.getEvalExpression();
         assertNotSame( ee1, ee2 );
-        assertEquals(ee1, ee2 );        
+        assertEquals(ee1, ee2 );
         
         EvalCondition ec3 = ( EvalCondition ) rule3.getLhs().getChildren().get( 1 );
         EvalExpression ee3 =( EvalExpression) ec3.getEvalExpression();
         assertNotSame( ee1,ee3 );
-        assertThat(ee1, not( equalTo( ee3 ) ) );        
+        assertThat(ee1, not( equalTo( ee3 ) ) );
         
         // test consequence
         assertNotSame( rule1.getConsequence(), rule2.getConsequence() );
         assertEquals(rule1.getConsequence(), rule2.getConsequence() );
         assertNotSame( rule1.getConsequence(), rule3.getConsequence() );
-        assertThat(rule1.getConsequence(), not( equalTo( rule3.getConsequence() ) ) ); 
+        assertThat(rule1.getConsequence(), not( equalTo( rule3.getConsequence() ) ) );
         
         // check LHS equals
         assertNotSame(  rule1.getLhs(), rule2.getLhs() );
-        assertEquals( rule1.getLhs(), rule2.getLhs() );  
+        assertEquals( rule1.getLhs(), rule2.getLhs() );
         
         assertNotSame( rule1.getLhs(), rule3.getLhs() );
-        assertThat(rule1.getLhs(), not( equalTo( rule3.getLhs() ) ) );         
+        assertThat(rule1.getLhs(), not( equalTo( rule3.getLhs() ) ) );
     }
     
     public KnowledgePackage getKnowledgePackage1() {

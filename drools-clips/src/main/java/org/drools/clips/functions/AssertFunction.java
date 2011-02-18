@@ -34,16 +34,16 @@ public class AssertFunction implements Function {
         
         String type = ((LispAtom) form.getSExpressions()[0]).getValue();
         
-        appendable.append("insert( with ( new " + type + "() ) {");        
+        appendable.append("insert( with ( new " + type + "() ) {");
         
         for ( int i = 1, length = form.getSExpressions().length; i < length; i++) {
             LispForm slot =  ( LispForm) form.getSExpressions()[i];
                                                                                 
-            appendable.append( ( ( LispAtom ) slot.getSExpressions()[0]).getValue() );            
+            appendable.append( ( ( LispAtom ) slot.getSExpressions()[0]).getValue() );
             
             appendable.append( " = " );
             
-            FunctionHandlers.dump( slot.getSExpressions()[1], appendable);  
+            FunctionHandlers.dump( slot.getSExpressions()[1], appendable);
             
             if ( i != length -1 ) { 
                 appendable.append( "," );

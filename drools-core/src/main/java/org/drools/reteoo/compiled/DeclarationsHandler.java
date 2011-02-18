@@ -104,7 +104,7 @@ class DeclarationsHandler extends AbstractCompilerHandler {
     @Override
     public void startNonHashedAlphaNode(AlphaNode alphaNode) {
         builder.append(getVariableDeclaration(alphaNode)).append(NEWLINE);
-        builder.append(getContextVariableDeclaration(alphaNode)).append(NEWLINE);        
+        builder.append(getContextVariableDeclaration(alphaNode)).append(NEWLINE);
     }
 
     @Override

@@ -49,7 +49,7 @@ public class TupleIterationTest {
         LeftTuple t1_2_2 = new LeftTuple(t1_2, null, true);
         LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null, true);
 
-        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);        
+        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);
 
         LeftTuple t2_1 = new LeftTuple(t2, null, true);
         LeftTuple t2_2 = new LeftTuple(t2, null, true);
@@ -79,7 +79,7 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         iterator.traverse( t0, t0, onLeaf );
         
         assertEquals( leafs.length, foundLeafs.size() );
-        assertEquals( Arrays.asList( leafs ), foundLeafs );        
+        assertEquals( Arrays.asList( leafs ), foundLeafs );
     }
     
     @Test
@@ -108,7 +108,7 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         LeftTuple t1_2_2 = new LeftTuple(t1_2, null, true);
         LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null, true);
 
-        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);        
+        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);
 
         LeftTuple t2_1 = new LeftTuple(t2, null, true);
         LeftTuple t2_2 = new LeftTuple(t2, null, true);
@@ -138,6 +138,6 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
         iterator.traverse( t0, t0, onLeaf );
         
         assertEquals( leafs.length, foundLeafs.size() );
-        assertEquals( Arrays.asList( leafs ), foundLeafs );        
+        assertEquals( Arrays.asList( leafs ), foundLeafs );
     }    
 }

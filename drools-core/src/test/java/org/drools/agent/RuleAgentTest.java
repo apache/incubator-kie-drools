@@ -434,7 +434,7 @@ public class RuleAgentTest {
     //        KnowledgeBase kbase = kagent.getKnowledgeBase();
     //        
     //        assertEquals( 2,
-    //                      kbase.getKnowledgePackages().size() );        
+    //                      kbase.getKnowledgePackages().size() );
     //
     //        KnowledgeBase kbase_ = kagent.getKnowledgeBase();
     //        assertSame( kbase,

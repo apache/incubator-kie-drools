@@ -24,7 +24,7 @@ import org.drools.clips.LispForm;
 import org.drools.clips.SExpression;
 
 public class IfFunction implements Function {
-    private static final String name = "if";       
+    private static final String name = "if";
 
     public String getName() {
         return name;
@@ -60,7 +60,7 @@ public class IfFunction implements Function {
                 }
                 FunctionHandlers.dump( sExpressions[i], appendable, true );
             }        
-            appendable.append( "}" );  
+            appendable.append( "}" );
         }             
     }
 }

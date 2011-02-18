@@ -200,9 +200,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
     public Object read(final InputSource in) throws SAXException,
                                             IOException {
         if ( this.docFragment == null ) {
-            DocumentBuilderFactory f;            
+            DocumentBuilderFactory f;
             try {
-                f =  DocumentBuilderFactory.newInstance();                
+                f =  DocumentBuilderFactory.newInstance();
             } catch ( FactoryConfigurationError e ) {
                 // obscure JDK1.5 bug where FactoryFinder in the JRE returns a null ClassLoader, so fall back to hard coded xerces.
                 // https://stg.network.org/bugzilla/show_bug.cgi?id=47169
@@ -240,7 +240,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
                     factory = (SAXParserFactory) Class.forName( "org.apache.xerces.jaxp.SAXParserFactoryImpl" ).newInstance();
                 } catch ( Exception e1 ) {
                     throw new RuntimeException( "Unable to create new DOM Document",
-                                                e1 );                   
+                                                e1 );
                 }
             } catch ( Exception e ) {
                 throw new RuntimeException( "Unable to create new DOM Document",
@@ -516,7 +516,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         final Element element = this.document.createElement( tagName );
 
-        //final DefaultConfiguration config = new DefaultConfiguration( tagName );        
+        //final DefaultConfiguration config = new DefaultConfiguration( tagName );
 
         final int numAttrs = attrs.getLength();
 

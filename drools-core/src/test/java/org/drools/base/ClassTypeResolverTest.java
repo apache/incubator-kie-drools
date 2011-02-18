@@ -253,19 +253,19 @@ public class ClassTypeResolverTest {
         final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
         
         // single nesting
-        resolver.addImport( "org.drools.Person.Nested1" );    
+        resolver.addImport( "org.drools.Person.Nested1" );
         assertEquals( org.drools.Person.Nested1.class,
                       resolver.resolveType( "Nested1" ) );
         
         // double nesting
-        resolver.addImport( "org.drools.Person.Nested1.Nested2" );    
+        resolver.addImport( "org.drools.Person.Nested1.Nested2" );
         assertEquals( org.drools.Person.Nested1.Nested2.class,
-                      resolver.resolveType( "Nested2" ) );        
+                      resolver.resolveType( "Nested2" ) );
         
         // triple nesting
-        resolver.addImport( "org.drools.Person.Nested1.Nested2.Nested3" );    
+        resolver.addImport( "org.drools.Person.Nested1.Nested2.Nested3" );
         assertEquals( org.drools.Person.Nested1.Nested2.Nested3.class,
-                      resolver.resolveType( "Nested3" ) );          
+                      resolver.resolveType( "Nested3" ) );
         
     }
     

@@ -90,7 +90,7 @@ public class MVELExprAnalyzer {
             MVEL.analysisCompile( expr,
                                   parserContext1 );
 
-            Set<String> requiredInputs = parserContext1.getInputs().keySet();            
+            Set<String> requiredInputs = parserContext1.getInputs().keySet();
 
             // now, set the required input types and compile again
             final ParserContext parserContext2 = new ParserContext( conf );
@@ -101,7 +101,7 @@ public class MVELExprAnalyzer {
             if ( localTypes != null ) {
                 for ( Entry<String, Class<?>> entry : localTypes.entrySet() ) {
                     parserContext2.addInput( entry.getKey(),
-                                             entry.getValue() );                    
+                                             entry.getValue() );
                 }
             }
             
@@ -115,7 +115,7 @@ public class MVELExprAnalyzer {
                 Class cls = availableIdentifiers.getDeclarations().get( str );
                 if ( cls != null ) {
                     parserContext2.addInput( str,
-                                             cls );    
+                                             cls );
                     continue;
                 } 
                 
@@ -149,7 +149,7 @@ public class MVELExprAnalyzer {
 
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             Class returnType =  MVEL.analyze( expr,
-                                              parserContext2 );            
+                                              parserContext2 );
 
             result = analyze( parserContext2.getInputs().keySet(),
                               availableIdentifiers );

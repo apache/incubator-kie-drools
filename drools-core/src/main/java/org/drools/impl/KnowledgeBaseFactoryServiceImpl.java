@@ -46,11 +46,11 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     }        
     
     public KnowledgeBase newKnowledgeBase() {       
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase() );      
+        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase() );
     }   
     
     public KnowledgeBase newKnowledgeBase( String kbaseId ) {       
-        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );      
+        return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );
     }   
     
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {

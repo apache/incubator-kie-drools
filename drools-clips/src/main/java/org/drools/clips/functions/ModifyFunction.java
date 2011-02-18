@@ -37,11 +37,11 @@ public class ModifyFunction implements Function {
         
         for ( int i = 2, length = sExpressions.length; i < length; i++) {
             LispForm setter = (LispForm) sExpressions[i];
-            appendable.append( ( ( LispAtom ) setter.getSExpressions()[0]).getValue() );            
+            appendable.append( ( ( LispAtom ) setter.getSExpressions()[0]).getValue() );
             
             appendable.append( " = " );
             
-            FunctionHandlers.dump( setter.getSExpressions()[1], appendable);  
+            FunctionHandlers.dump( setter.getSExpressions()[1], appendable);
             
             if ( i != length -1 ) { 
                 appendable.append( "," );

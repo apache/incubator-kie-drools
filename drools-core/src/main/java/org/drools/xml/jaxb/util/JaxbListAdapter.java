@@ -26,7 +26,7 @@ public class JaxbListAdapter extends XmlAdapter<JaxbListWrapper, List> {
     @Override
     public JaxbListWrapper marshal(List v) throws Exception {
         if ( v == null ) {
-            return new JaxbListWrapper( new Object[0] ); 
+            return new JaxbListWrapper( new Object[0] );
         }
         return new JaxbListWrapper( v.toArray( new Object[v.size()]) );
     }

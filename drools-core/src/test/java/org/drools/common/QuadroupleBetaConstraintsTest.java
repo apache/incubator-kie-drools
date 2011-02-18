@@ -59,21 +59,21 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.NOT_EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.NOT_EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );          
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
     }   
 
     @Test
@@ -90,35 +90,35 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.NOT_EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.NOT_EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );    
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );   
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );        
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
     }    
 
     @Test
@@ -135,21 +135,21 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );  
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
         
         constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );           
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
     }      
     
     @Test
@@ -159,7 +159,7 @@ public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint constraint4 = ( VariableConstraint ) getConstraint( "cheeseType3", Operator.EQUAL, "type", Cheese.class );
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3, constraint4 };
-        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );         
+        checkBetaConstraints( constraints, QuadroupleBetaConstraints.class );
     }     
 
 }

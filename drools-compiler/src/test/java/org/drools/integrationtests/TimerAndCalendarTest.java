@@ -224,28 +224,28 @@ public class TimerAndCalendarTest {
         
         ksession.setGlobal( "list", list );
         
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( 15, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() );   
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
         timeService.advanceTime( 3, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() );  
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
         timeService.advanceTime( 2, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 3, list.size() );                   
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
     }
     
     @Test
@@ -283,28 +283,28 @@ public class TimerAndCalendarTest {
         
         ksession.setGlobal( "list", list );
         
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( 20, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( 15, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() );   
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
         timeService.advanceTime( 3, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() );  
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
         timeService.advanceTime( 2, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 3, list.size() );                   
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
     }    
     
     @Test
@@ -344,24 +344,24 @@ public class TimerAndCalendarTest {
         
         ksession.setGlobal( "list", list );
   
-        ksession.fireAllRules();        
-        assertEquals( 0, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
                 
         timeService.advanceTime( 10, TimeUnit.SECONDS );
-        ksession.fireAllRules();        
-        assertEquals( 0, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
                  
-        timeService.advanceTime( 10, TimeUnit.SECONDS );            
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
-        timeService.advanceTime( 30, TimeUnit.SECONDS );   
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 30, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
-        timeService.advanceTime( 30, TimeUnit.SECONDS );  
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() );                   
+        timeService.advanceTime( 30, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
     }        
     
     @Test
@@ -396,10 +396,10 @@ public class TimerAndCalendarTest {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };        
+        };
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );              
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
@@ -412,28 +412,28 @@ public class TimerAndCalendarTest {
         
         ksession.getCalendars().set( "cal1", calTrue );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );     
-        ksession.setGlobal( "list", list );        
-        ksession.insert( "o1" );        
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+        ksession.setGlobal( "list", list );
+        ksession.insert( "o1" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
                 
         timeService.advanceTime( 10, TimeUnit.SECONDS );
         ksession.insert( "o2" );
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
         
-        ksession.getCalendars().set( "cal1", calFalse );        
-        timeService.advanceTime( 10, TimeUnit.SECONDS );        
+        ksession.getCalendars().set( "cal1", calFalse );
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
         ksession.insert( "o3" );
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
         
-        ksession.getCalendars().set( "cal1", calTrue );        
+        ksession.getCalendars().set( "cal1", calTrue );
         timeService.advanceTime( 30, TimeUnit.SECONDS );
         ksession.insert( "o4" );
-        ksession.fireAllRules();        
-        assertEquals( 3, list.size() );                    
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
     }   
     
     @Test
@@ -442,7 +442,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\", \"cal2\"\n";      
+        str += "  calendars \"cal1\", \"cal2\"\n";
         str += "when \n";
         str += "  String()\n";
         str += "then \n";
@@ -468,10 +468,10 @@ public class TimerAndCalendarTest {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };        
+        };
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );              
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
@@ -485,30 +485,30 @@ public class TimerAndCalendarTest {
         ksession.getCalendars().set( "cal1", calTrue );
         ksession.getCalendars().set( "cal2", calTrue );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );     
-        ksession.setGlobal( "list", list );        
-        ksession.insert( "o1" );        
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
+        ksession.setGlobal( "list", list );
+        ksession.insert( "o1" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
 
-        ksession.getCalendars().set( "cal2", calFalse );        
+        ksession.getCalendars().set( "cal2", calFalse );
         timeService.advanceTime( 10, TimeUnit.SECONDS );
         ksession.insert( "o2" );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
                 
-        ksession.getCalendars().set( "cal1", calFalse );            
-        timeService.advanceTime( 10, TimeUnit.SECONDS );    
+        ksession.getCalendars().set( "cal1", calFalse );
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
         ksession.insert( "o3" );
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); 
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
         
         ksession.getCalendars().set( "cal1", calTrue );
-        ksession.getCalendars().set( "cal2", calTrue );        
+        ksession.getCalendars().set( "cal2", calTrue );
         timeService.advanceTime( 30, TimeUnit.SECONDS );
         ksession.insert( "o4" );
-        ksession.fireAllRules();        
-        assertEquals( 2, list.size() );                    
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
     }      
     
     @Test
@@ -517,7 +517,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\", \"cal2\"\n";           
+        str += "  calendars \"cal1\", \"cal2\"\n";
         str += "  timer (cron:15 * * * * ?) ";
         str += "when \n";
         str += "then \n";
@@ -562,7 +562,7 @@ public class TimerAndCalendarTest {
                     return true;
                 }
             }           
-        };  
+        };
         
         Calendar cal2 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
@@ -574,7 +574,7 @@ public class TimerAndCalendarTest {
                     return true;
                 }
             }           
-        };          
+        };
         
         ksession.getCalendars().set( "cal1", cal1 );
         ksession.getCalendars().set( "cal2", cal2 );
@@ -582,23 +582,23 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list", list );
                          
         ksession.fireAllRules();
-        timeService.advanceTime( 20, TimeUnit.SECONDS );       
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        assertEquals( 1, list.size() );
                       
-        timeService.advanceTime( 60, TimeUnit.SECONDS );                      
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 1, list.size() );
              
-        timeService.advanceTime( 60, TimeUnit.SECONDS );                  
-        assertEquals( 2, list.size() ); 
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
         
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 2, list.size() );  
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
         
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 4, list.size() );          
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 4, list.size() );
     }   
     
     @Test
@@ -607,7 +607,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\", \"cal2\"\n";           
+        str += "  calendars \"cal1\", \"cal2\"\n";
         str += "  timer (15s 60s) "; //int: protocol is assumed
         str += "when \n";
         str += "then \n";
@@ -652,7 +652,7 @@ public class TimerAndCalendarTest {
                     return true;
                 }
             }           
-        };  
+        };
         
         Calendar cal2 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
@@ -664,7 +664,7 @@ public class TimerAndCalendarTest {
                     return true;
                 }
             }           
-        };          
+        };
         
         ksession.getCalendars().set( "cal1", cal1 );
         ksession.getCalendars().set( "cal2", cal2 );
@@ -672,23 +672,23 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list", list );
                          
         ksession.fireAllRules();
-        timeService.advanceTime( 20, TimeUnit.SECONDS );       
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        assertEquals( 1, list.size() );
                       
-        timeService.advanceTime( 60, TimeUnit.SECONDS );                      
-        assertEquals( 1, list.size() ); 
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 1, list.size() );
              
-        timeService.advanceTime( 60, TimeUnit.SECONDS );                  
-        assertEquals( 2, list.size() ); 
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
         
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 2, list.size() );  
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
         
-        timeService.advanceTime( 60, TimeUnit.SECONDS );         
-        assertEquals( 4, list.size() );          
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        assertEquals( 4, list.size() );
     }     
     
     @Test
@@ -697,7 +697,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\"\n";           
+        str += "  calendars \"cal1\"\n";
         str += "  timer (0d 1d start=3-JAN-2010 end=5-JAN-2010) "; //int: protocol is assumed
         str += "when \n";
         str += "then \n";
@@ -723,36 +723,36 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
         DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
-        Date date = df.parse( "1-JAN-2010" );      
+        Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };  
+        };
         
-        long oneDay = 60 * 60 * 24;        
-        ksession.getCalendars().set( "cal1", cal1 );        
+        long oneDay = 60 * 60 * 24;
+        ksession.getCalendars().set( "cal1", cal1 );
         ksession.setGlobal( "list", list );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() ); 
+        assertEquals( 0, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
-        assertEquals( 0, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 0, list.size() );
                       
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );  // day 3
-        assertEquals( 1, list.size() ); 
+        assertEquals( 1, list.size() );
              
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                  
-        assertEquals( 2, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
-        assertEquals( 3, list.size() );     
+        assertEquals( 3, list.size() );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
     }
     
     @Test
@@ -761,7 +761,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\"\n";           
+        str += "  calendars \"cal1\"\n";
         str += "  timer (0d 1d start=3-JAN-2010 repeat-limit=4) "; //int: protocol is assumed
         str += "when \n";
         str += "then \n";
@@ -787,36 +787,36 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
         DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
-        Date date = df.parse( "1-JAN-2010" );      
+        Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };  
+        };
         
-        long oneDay = 60 * 60 * 24;        
-        ksession.getCalendars().set( "cal1", cal1 );        
+        long oneDay = 60 * 60 * 24;
+        ksession.getCalendars().set( "cal1", cal1 );
         ksession.setGlobal( "list", list );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() ); 
+        assertEquals( 0, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
-        assertEquals( 0, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 0, list.size() );
                       
         timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
-        assertEquals( 1, list.size() ); 
+        assertEquals( 1, list.size() );
              
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                 
-        assertEquals( 2, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
-        assertEquals( 3, list.size() );     
+        assertEquals( 3, list.size() );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
     }    
     
     @Test
@@ -825,7 +825,7 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\"\n";           
+        str += "  calendars \"cal1\"\n";
         str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 end=5-JAN-2010) ";
         str += "when \n";
         str += "then \n";
@@ -857,30 +857,30 @@ public class TimerAndCalendarTest {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };  
+        };
         
-        long oneDay = 60 * 60 * 24;        
-        ksession.getCalendars().set( "cal1", cal1 );        
+        long oneDay = 60 * 60 * 24;
+        ksession.getCalendars().set( "cal1", cal1 );
         ksession.setGlobal( "list", list );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() ); 
+        assertEquals( 0, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
-        assertEquals( 0, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 0, list.size() );
                       
         timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
-        assertEquals( 1, list.size() ); 
+        assertEquals( 1, list.size() );
              
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );
-        assertEquals( 2, list.size() ); 
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5  
-        assertEquals( 3, list.size() );     
+        assertEquals( 3, list.size() );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );              
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
     }    
 
     @Test
@@ -889,8 +889,8 @@ public class TimerAndCalendarTest {
         str += "package org.simple \n";
         str += "global java.util.List list \n";
         str += "rule xxx \n";
-        str += "  calendars \"cal1\"\n";           
-        str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 repeat-limit=4) "; 
+        str += "  calendars \"cal1\"\n";
+        str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 repeat-limit=4) ";
         str += "when \n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
@@ -915,36 +915,36 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
         DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
-        Date date = df.parse( "1-JAN-2010" );      
+        Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
             public boolean isTimeIncluded(long timestamp) {
                 return true;
             }           
-        };  
+        };
         
-        long oneDay = 60 * 60 * 24;        
-        ksession.getCalendars().set( "cal1", cal1 );        
+        long oneDay = 60 * 60 * 24;
+        ksession.getCalendars().set( "cal1", cal1 );
         ksession.setGlobal( "list", list );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );                           
+        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
-        assertEquals( 0, list.size() ); 
+        assertEquals( 0, list.size() );
         
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS ); 
-        assertEquals( 0, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 0, list.size() );
                       
         timeService.advanceTime( oneDay, TimeUnit.SECONDS ); // day 3  
-        assertEquals( 1, list.size() ); 
+        assertEquals( 1, list.size() );
              
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );                 
-        assertEquals( 2, list.size() ); 
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 2, list.size() );
         
         timeService.advanceTime( oneDay, TimeUnit.SECONDS );   // day 5    
-        assertEquals( 3, list.size() );     
+        assertEquals( 3, list.size() );
 
-        timeService.advanceTime( oneDay, TimeUnit.SECONDS );               
-        assertEquals( 3, list.size() );  
+        timeService.advanceTime( oneDay, TimeUnit.SECONDS );
+        assertEquals( 3, list.size() );
     }
     
     @Test

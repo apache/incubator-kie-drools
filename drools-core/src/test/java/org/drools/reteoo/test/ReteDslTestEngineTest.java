@@ -86,7 +86,7 @@ public class ReteDslTestEngineTest {
                       test1.getName() );
         assertEquals( 19,
                       test1.getLine() );
-        DslStep[] steps = test1.getSteps().toArray( new DslStep[0] ); 
+        DslStep[] steps = test1.getSteps().toArray( new DslStep[0] );
         assertEquals( 6, 
                       steps.length );
         
@@ -122,7 +122,7 @@ public class ReteDslTestEngineTest {
                       test1.getName() );
         assertEquals( 35,
                       test1.getLine() );
-        steps = test1.getSteps().toArray( new DslStep[0] ); 
+        steps = test1.getSteps().toArray( new DslStep[0] );
         assertEquals( 3, 
                       steps.length );
         
@@ -440,7 +440,7 @@ public class ReteDslTestEngineTest {
         assertEquals( 1,
                       handles.get( 0 ).getObject() );
         assertEquals( 2,
-                      handles.get( 1 ).getObject() );        
+                      handles.get( 1 ).getObject() );
         assertEquals( p,
                       handles.get( 2 ).getObject() );
         assertEquals( "good bye",
@@ -653,7 +653,7 @@ public class ReteDslTestEngineTest {
         str += "    otn3, [h4];\n";
         str += "join1:\n";
         str += "    leftMemory, [[h1]];\n";
-        str += "    leftMemory, [[h3]];\n";        
+        str += "    leftMemory, [[h3]];\n";
         str += "    rightMemory, [h0, h2];\n";
         str += "join2:\n";
         str += "    leftMemory, [[h1, h0],\n";
@@ -707,7 +707,7 @@ public class ReteDslTestEngineTest {
         str += "Facts:\n";
         str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),\n";
         str += "    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),\n";
-        str += "    new org.drools.Person('dave', 36);\n";        
+        str += "    new org.drools.Person('dave', 36);\n";
         str += "assert:\n";
         str += "    otn1, [h1, h3, h4];\n";
         str += "    otn2, [h0, h2];\n";
@@ -718,9 +718,9 @@ public class ReteDslTestEngineTest {
         str += "join2:\n";
         str += "    leftMemory, [[h1, h0], [h3, h0],\n";
         str += "                [h1, h2], [h3, h2]];\n";
-        str += "    rightMemory, [];\n";  
+        str += "    rightMemory, [];\n";
         str += "With:\n";
-        str += "    h1, age = 36;\n";       
+        str += "    h1, age = 36;\n";
         str += "modify:\n";
         str += "    otn1, [h1];\n";
         str += "join1:\n";
@@ -745,7 +745,7 @@ public class ReteDslTestEngineTest {
                       memory.getRightTupleMemory().size() );
 
         assertEquals( 3,
-                      memory.getLeftTupleMemory().size() );  
+                      memory.getLeftTupleMemory().size() );
         
         JoinNode join2 = (JoinNode) map.get( "join2" );
 
@@ -754,7 +754,7 @@ public class ReteDslTestEngineTest {
                       memory.getRightTupleMemory().size() );
 
         assertEquals( 2,
-                      memory.getLeftTupleMemory().size() );         
+                      memory.getLeftTupleMemory().size() );
     }
     
     @Test
@@ -772,20 +772,20 @@ public class ReteDslTestEngineTest {
         str += "    not0, lian0, otn1;\n";
         str += "    age, !=, p1;\n";
         str += "LeftTupleSink:\n";
-        str += "    sink, not0;\n";  
+        str += "    sink, not0;\n";
         str += "Facts:\n";
         str += "    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35);\n";
         str += "assert:\n";
         str += "    otn0, [h0];\n";
         str += "    otn1, [h1];\n";
         str += "sink:\n";
-        str += "    verify, assertLeft, count, 1;\n";    
+        str += "    verify, assertLeft, count, 1;\n";
         str += "With:\n";
         str += "    h1, age = 36;\n";
         str += "modify:\n";
         str += "    otn1, [h1];\n";
         str += "sink:\n";
-        str += "    verify, retractLeft, count, 1;\n";         
+        str += "    verify, retractLeft, count, 1;\n";
 
         NodeTestResult result = executeTest( str );
         Map<String, Object> map = result.context;

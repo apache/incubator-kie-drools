@@ -92,7 +92,7 @@ public class TruthMaintenanceSystem {
     //            }
     //            stream.writeInt( PersisterEnums.END );
     //        }
-    //        stream.writeInt( PersisterEnums.END );        
+    //        stream.writeInt( PersisterEnums.END );
     //    }
     //    
     //    public static class EqualityKeySorter implements Comparator<EqualityKey> {
@@ -109,7 +109,7 @@ public class TruthMaintenanceSystem {
     //        while ( stream.readInt() == PersisterEnums.EQUALITY_KEY ) {
     //            int status = stream.readInt();
     //            InternalFactHandle handle = ( InternalFactHandle ) context.handles.get( stream.readInt() );
-    //            EqualityKey key = new EqualityKey(handle, status);     
+    //            EqualityKey key = new EqualityKey(handle, status);
     //            handle.setEqualityKey( key );
     //            while ( stream.readInt() == PersisterEnums.FACT_HANDLE ) {
     //                handle = ( InternalFactHandle ) context.wm.getFactHandle( stream.readInt() );
@@ -227,13 +227,13 @@ public class TruthMaintenanceSystem {
         }
 
         public LogicalRetractCallback(MarshallerReaderContext context) throws IOException {
-            this.tms = context.wm.getTruthMaintenanceSystem();            
+            this.tms = context.wm.getTruthMaintenanceSystem();
             
             this.handle = context.handles.get( context.readInt() );
             this.context = context.propagationContexts.get( context.readLong() );
             this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
             
-            this.set = ( Set ) this.tms.getJustifiedMap().get( handle.getId() ); 
+            this.set = ( Set ) this.tms.getJustifiedMap().get( handle.getId() );
            
             for ( Iterator it = this.set.iterator(); it.hasNext(); ) {
                 LogicalDependency node = ( LogicalDependency ) it.next();

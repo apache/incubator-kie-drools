@@ -26,7 +26,7 @@ public class SessionInfo {
     private int                version;
 
     private Date               startDate;
-    private Date               lastModificationDate;    
+    private Date               lastModificationDate;
     
     @Lob
     private byte[]             rulesByteArray;

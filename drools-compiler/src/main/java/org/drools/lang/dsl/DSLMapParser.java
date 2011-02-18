@@ -108,7 +108,7 @@ public class DSLMapParser extends Parser {
     		
     		String text2Validate = input.LT(LTNumber).getText();
     		if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
-    			text2Validate = text2Validate.substring(1, text2Validate.length() - 1); 
+    			text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
     		}
 
     		return text2Validate.equalsIgnoreCase(text);
@@ -404,7 +404,7 @@ public class DSLMapParser extends Parser {
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_key_section.add(key_section6.getTree());
-            EQUALS7=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_entry327); if (state.failed) return retval; 
+            EQUALS7=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_entry327); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS7);
 
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:57: ( value_section )?
@@ -451,7 +451,7 @@ public class DSLMapParser extends Parser {
                 case 1 :
                     // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:73: EOL
                     {
-                    EOL9=(Token)match(input,EOL,FOLLOW_EOL_in_entry333); if (state.failed) return retval; 
+                    EOL9=(Token)match(input,EOL,FOLLOW_EOL_in_entry333); if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_EOL.add(EOL9);
 
 
@@ -460,7 +460,7 @@ public class DSLMapParser extends Parser {
                 case 2 :
                     // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:77: EOF
                     {
-                    EOF10=(Token)match(input,EOF,FOLLOW_EOF_in_entry335); if (state.failed) return retval; 
+                    EOF10=(Token)match(input,EOF,FOLLOW_EOF_in_entry335); if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_EOF.add(EOF10);
 
 
@@ -572,7 +572,7 @@ public class DSLMapParser extends Parser {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:131:2: ( LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:131:4: LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE
             {
-            LEFT_SQUARE11=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_scope_section382); if (state.failed) return retval; 
+            LEFT_SQUARE11=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_scope_section382); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LEFT_SQUARE.add(LEFT_SQUARE11);
 
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:132:3: (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key )
@@ -661,7 +661,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            RIGHT_SQUARE12=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_scope_section423); if (state.failed) return retval; 
+            RIGHT_SQUARE12=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_scope_section423); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE12);
 
 
@@ -770,7 +770,7 @@ public class DSLMapParser extends Parser {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:2: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:4: LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE
             {
-            LEFT_SQUARE13=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_meta_section463); if (state.failed) return retval; 
+            LEFT_SQUARE13=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_meta_section463); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LEFT_SQUARE.add(LEFT_SQUARE13);
 
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:16: ( LITERAL )?
@@ -784,7 +784,7 @@ public class DSLMapParser extends Parser {
                 case 1 :
                     // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: LITERAL
                     {
-                    LITERAL14=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_meta_section465); if (state.failed) return retval; 
+                    LITERAL14=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_meta_section465); if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_LITERAL.add(LITERAL14);
 
 
@@ -793,7 +793,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            RIGHT_SQUARE15=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_meta_section468); if (state.failed) return retval; 
+            RIGHT_SQUARE15=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_meta_section468); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE15);
 
 
@@ -1032,7 +1032,7 @@ public class DSLMapParser extends Parser {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_key_chunk.add(cb.getTree());
                     if ( state.backtracking==0 ) {
-                       text = (cb!=null?input.toString(cb.start,cb.stop):null); 
+                       text = (cb!=null?input.toString(cb.start,cb.stop):null);
                     }
 
 
@@ -1347,7 +1347,7 @@ public class DSLMapParser extends Parser {
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_value_chunk.add(vc.getTree());
                     if ( state.backtracking==0 ) {
-                       text = (vc!=null?input.toString(vc.start,vc.stop):null); 
+                       text = (vc!=null?input.toString(vc.start,vc.stop):null);
                     }
 
 
@@ -1635,16 +1635,16 @@ public class DSLMapParser extends Parser {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:196:2: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:196:4: lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY
             {
-            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition682); if (state.failed) return retval; 
+            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition682); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( state.backtracking==0 ) {
                
               		CommonToken back2 =  (CommonToken)input.LT(-2);
-              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
+              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
               		
             }
-            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition693); if (state.failed) return retval; 
+            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition693); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
 
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:15: ( ( COLON q= LITERAL )? COLON pat= pattern )?
@@ -1681,10 +1681,10 @@ public class DSLMapParser extends Parser {
                         case 1 :
                             // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: COLON q= LITERAL
                             {
-                            COLON24=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition698); if (state.failed) return retval; 
+                            COLON24=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition698); if (state.failed) return retval;
                             if ( state.backtracking==0 ) stream_COLON.add(COLON24);
 
-                            q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition702); if (state.failed) return retval; 
+                            q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition702); if (state.failed) return retval;
                             if ( state.backtracking==0 ) stream_LITERAL.add(q);
 
 
@@ -1693,7 +1693,7 @@ public class DSLMapParser extends Parser {
 
                     }
 
-                    COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition706); if (state.failed) return retval; 
+                    COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition706); if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_COLON.add(COLON25);
 
                     pushFollow(FOLLOW_pattern_in_variable_definition710);
@@ -1711,7 +1711,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition719); if (state.failed) return retval; 
+            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition719); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( state.backtracking==0 ) {
@@ -2220,19 +2220,19 @@ public class DSLMapParser extends Parser {
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:232:2: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
             // src/main/resources/org/drools/lang/dsl/DSLMap.g:232:4: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
             {
-            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1194); if (state.failed) return retval; 
+            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1194); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( state.backtracking==0 ) {
 
               		CommonToken back2 =  (CommonToken)input.LT(-2);
-              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
+              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
               		
             }
-            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1205); if (state.failed) return retval; 
+            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1205); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
 
-            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1209); if (state.failed) return retval; 
+            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1209); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( state.backtracking==0 ) {
@@ -2359,7 +2359,7 @@ public class DSLMapParser extends Parser {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "condition_key", "validateIdentifierKey(\"condition\")||validateIdentifierKey(\"when\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1342); if (state.failed) return retval; 
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1342); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2431,7 +2431,7 @@ public class DSLMapParser extends Parser {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "consequence_key", "validateIdentifierKey(\"consequence\")||validateIdentifierKey(\"then\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1365); if (state.failed) return retval; 
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1365); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2503,7 +2503,7 @@ public class DSLMapParser extends Parser {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "keyword_key", "validateIdentifierKey(\"keyword\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1388); if (state.failed) return retval; 
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1388); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2575,7 +2575,7 @@ public class DSLMapParser extends Parser {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "any_key", "validateIdentifierKey(\"*\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1411); if (state.failed) return retval; 
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1411); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 

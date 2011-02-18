@@ -26,7 +26,7 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ? >>
     extends
     DescrBuilder<AccumulateDescr> {
     
-    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source(); 
+    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source();
 
     public AccumulateDescrBuilder<P> function( String name, String[] parameters);
     

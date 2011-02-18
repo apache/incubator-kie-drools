@@ -114,7 +114,7 @@ public class ExistsNode extends BetaNode {
             }
         }
 
-        FastIterator it = getRightIterator( rightMemory ); 
+        FastIterator it = getRightIterator( rightMemory );
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),

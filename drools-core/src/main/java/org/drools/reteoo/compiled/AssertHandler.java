@@ -56,7 +56,7 @@ class AssertHandler extends AbstractCompilerHandler {
     private final boolean alphaNetContainsHashedField;
 
     private final StringBuilder builder;
-    private final String factClassName;    
+    private final String factClassName;
 
     AssertHandler(StringBuilder builder, String factClassName) {
         this(builder, factClassName, false);

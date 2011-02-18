@@ -40,7 +40,7 @@ public class SignalEventCommand implements GenericCommand<Object> {
 	
 	@XmlElement(name="event")
 	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
-	private Object event;	
+	private Object event;
 	
     public SignalEventCommand() {
     }   	

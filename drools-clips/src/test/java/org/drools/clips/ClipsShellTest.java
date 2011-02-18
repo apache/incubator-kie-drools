@@ -42,7 +42,7 @@ public class ClipsShellTest {
     public void setUp() {
 
 
-        this.shell = new ClipsShell();        
+        this.shell = new ClipsShell();
         this.baos = new ByteArrayOutputStream();
         PrintStream p = new PrintStream( baos );
         shell.addRouter( "t",
@@ -411,7 +411,7 @@ public class ClipsShellTest {
         str += "  (slot age";
         str += "    (type String) ) ";
         str += "  (slot location";
-        str += "    (type String) ) ";        
+        str += "    (type String) ) ";
         str += "  (slot cheese";
         str += "    (type String) ) ";
         str += ")";
@@ -432,6 +432,6 @@ public class ClipsShellTest {
         this.shell.eval( "(run)" );
         
         assertEquals( "send some cheddar to mark",
-                      new String( this.baos.toByteArray() ) );        
+                      new String( this.baos.toByteArray() ) );
     }
 }

@@ -60,7 +60,7 @@ public class MVELDialectRuntimeData
         invokerLookups = (Map<Wireable, MVELCompileable>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
             // we need a wireList for serialisation
-            wireList = new ArrayList<Wireable>( invokerLookups.keySet() );          
+            wireList = new ArrayList<Wireable>( invokerLookups.keySet() );
         }
     }
 
@@ -81,7 +81,7 @@ public class MVELDialectRuntimeData
             //            
             //            // now wire up the target
             //            Wireable target = entry.getKey();
-            //            target.wire( component );   
+            //            target.wire( component );
             //            System.out.println( component );
         }
     }

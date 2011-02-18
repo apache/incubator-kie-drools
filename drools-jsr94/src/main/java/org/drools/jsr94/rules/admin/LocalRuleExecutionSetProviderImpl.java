@@ -90,7 +90,7 @@ public class LocalRuleExecutionSetProviderImpl
                                                       InputType.XLS );
                 return createRuleExecutionSet( new StringReader( drl ), properties );
             } else {
-                return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);                
+                return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
             }
         } else         
             return createRuleExecutionSet( new InputStreamReader( ruleExecutionSetStream ), properties);
@@ -126,7 +126,7 @@ public class LocalRuleExecutionSetProviderImpl
             
             PackageBuilder builder = null;
             if ( config != null ) {
-                builder = new PackageBuilder(config);    
+                builder = new PackageBuilder(config);
             } else {
                 builder = new PackageBuilder();
             }
@@ -138,7 +138,7 @@ public class LocalRuleExecutionSetProviderImpl
                 dsrl = properties.get( Constants.RES_DSL );
                 if ( dsrl ==  null ) {
                     // check for old legacy name ending
-                    dsrl = properties.get( "dsl" );    
+                    dsrl = properties.get( "dsl" );
                 }
                 source = ( String ) properties.get( Constants.RES_SOURCE );
                 if ( source == null ) {
@@ -164,7 +164,7 @@ public class LocalRuleExecutionSetProviderImpl
                 } else {
                     if  ( dsrl instanceof Reader ) {
                         builder.addPackageFromDrl( ruleExecutionSetReader,
-                                                   (Reader) dsrl );                        
+                                                   (Reader) dsrl );
                     } else {
                         builder.addPackageFromDrl( ruleExecutionSetReader,
                                                    new StringReader( (String) dsrl ) );

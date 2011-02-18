@@ -200,7 +200,7 @@ public class QueryElementNode extends LeftTupleSource
             }        
 
             QueryElementFactHandle handle = new QueryElementFactHandle(objects );
-            RightTuple rightTuple = new RightTuple( handle ); 
+            RightTuple rightTuple = new RightTuple( handle );
             
             this.sink.createChildLeftTuplesforQuery( this.leftTuple, 
                                                      rightTuple, 

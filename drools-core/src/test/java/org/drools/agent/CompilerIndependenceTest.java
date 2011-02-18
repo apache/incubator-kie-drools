@@ -127,7 +127,7 @@ public class CompilerIndependenceTest {
 //        boolean success = false;
 //        while ( !(success = f.setLastModified(t)) && count < 10 ) {
 //            count++;
-//            System.gc();            
+//            System.gc();
 //            Thread.sleep( 100 );
 //        }
 //        

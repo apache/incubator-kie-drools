@@ -319,7 +319,7 @@ public class NodeTestDSLParser extends Parser {
                 }
             } while (true);
 
-            EOF6=(Token)match(input,EOF,FOLLOW_EOF_in_compilation_unit131);  
+            EOF6=(Token)match(input,EOF,FOLLOW_EOF_in_compilation_unit131);
             stream_EOF.add(EOF6);
 
 
@@ -423,7 +423,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             root_0 = (Object)adaptor.becomeRoot(test_case_key7.getTree(), root_0);
-            name=(Token)match(input,STRING,FOLLOW_STRING_in_test_case_statement177); 
+            name=(Token)match(input,STRING,FOLLOW_STRING_in_test_case_statement177);
             name_tree = (Object)adaptor.create(name);
             adaptor.addChild(root_0, name_tree);
 
@@ -487,7 +487,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             adaptor.addChild(root_0, import_target9.getTree());
-            SEMI_COLON10=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_import_statement195); 
+            SEMI_COLON10=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_import_statement195);
 
             }
 
@@ -718,7 +718,7 @@ public class NodeTestDSLParser extends Parser {
             state._fsp--;
 
             root_0 = (Object)adaptor.becomeRoot(test_key15.getTree(), root_0);
-            name=(Token)match(input,STRING,FOLLOW_STRING_in_test247); 
+            name=(Token)match(input,STRING,FOLLOW_STRING_in_test247);
             name_tree = (Object)adaptor.create(name);
             adaptor.addChild(root_0, name_tree);
 
@@ -808,11 +808,11 @@ public class NodeTestDSLParser extends Parser {
             {
             root_0 = (Object)adaptor.nil();
 
-            ID17=(Token)match(input,ID,FOLLOW_ID_in_step263); 
+            ID17=(Token)match(input,ID,FOLLOW_ID_in_step263);
             ID17_tree = (Object)adaptor.create(ID17);
             root_0 = (Object)adaptor.becomeRoot(ID17_tree, root_0);
 
-            COLON18=(Token)match(input,COLON,FOLLOW_COLON_in_step266); 
+            COLON18=(Token)match(input,COLON,FOLLOW_COLON_in_step266);
             // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:144:15: ( params SEMI_COLON )+
             int cnt8=0;
             loop8:
@@ -829,7 +829,7 @@ public class NodeTestDSLParser extends Parser {
             	    state._fsp--;
 
             	    adaptor.addChild(root_0, params19.getTree());
-            	    SEMI_COLON20=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_step273); 
+            	    SEMI_COLON20=(Token)match(input,SEMI_COLON,FOLLOW_SEMI_COLON_in_step273);
 
             	    }
             	    break;
@@ -911,7 +911,7 @@ public class NodeTestDSLParser extends Parser {
             	case 1 :
             	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:148:17: COMMA param_chunk
             	    {
-            	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_params293);  
+            	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_params293);
             	    stream_COMMA.add(COMMA22);
 
             	    pushFollow(FOLLOW_param_chunk_in_params295);
@@ -1226,7 +1226,7 @@ public class NodeTestDSLParser extends Parser {
                 case 1 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:162:6: ID
                     {
-                    ID25=(Token)match(input,ID,FOLLOW_ID_in_param359); 
+                    ID25=(Token)match(input,ID,FOLLOW_ID_in_param359);
                     ID25_tree = (Object)adaptor.create(ID25);
                     adaptor.addChild(root_0, ID25_tree);
 
@@ -1236,7 +1236,7 @@ public class NodeTestDSLParser extends Parser {
                 case 2 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:163:5: STRING
                     {
-                    STRING26=(Token)match(input,STRING,FOLLOW_STRING_in_param366); 
+                    STRING26=(Token)match(input,STRING,FOLLOW_STRING_in_param366);
                     STRING26_tree = (Object)adaptor.create(STRING26);
                     adaptor.addChild(root_0, STRING26_tree);
 
@@ -1246,7 +1246,7 @@ public class NodeTestDSLParser extends Parser {
                 case 3 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:164:5: INT
                     {
-                    INT27=(Token)match(input,INT,FOLLOW_INT_in_param372); 
+                    INT27=(Token)match(input,INT,FOLLOW_INT_in_param372);
                     INT27_tree = (Object)adaptor.create(INT27);
                     adaptor.addChild(root_0, INT27_tree);
 
@@ -1256,7 +1256,7 @@ public class NodeTestDSLParser extends Parser {
                 case 4 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:165:5: FLOAT
                     {
-                    FLOAT28=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_param378); 
+                    FLOAT28=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_param378);
                     FLOAT28_tree = (Object)adaptor.create(FLOAT28);
                     adaptor.addChild(root_0, FLOAT28_tree);
 
@@ -1266,7 +1266,7 @@ public class NodeTestDSLParser extends Parser {
                 case 5 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:166:5: MISC
                     {
-                    MISC29=(Token)match(input,MISC,FOLLOW_MISC_in_param384); 
+                    MISC29=(Token)match(input,MISC,FOLLOW_MISC_in_param384);
                     MISC29_tree = (Object)adaptor.create(MISC29);
                     adaptor.addChild(root_0, MISC29_tree);
 
@@ -1276,7 +1276,7 @@ public class NodeTestDSLParser extends Parser {
                 case 6 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:167:5: STAR
                     {
-                    STAR30=(Token)match(input,STAR,FOLLOW_STAR_in_param390); 
+                    STAR30=(Token)match(input,STAR,FOLLOW_STAR_in_param390);
                     STAR30_tree = (Object)adaptor.create(STAR30);
                     adaptor.addChild(root_0, STAR30_tree);
 
@@ -1310,7 +1310,7 @@ public class NodeTestDSLParser extends Parser {
                 case 9 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:170:5: DOT
                     {
-                    DOT33=(Token)match(input,DOT,FOLLOW_DOT_in_param408); 
+                    DOT33=(Token)match(input,DOT,FOLLOW_DOT_in_param408);
                     DOT33_tree = (Object)adaptor.create(DOT33);
                     adaptor.addChild(root_0, DOT33_tree);
 
@@ -1451,11 +1451,11 @@ public class NodeTestDSLParser extends Parser {
                 case 1 :
                     // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:180:26: DOT STAR
                     {
-                    DOT35=(Token)match(input,DOT,FOLLOW_DOT_in_import_target_matcher450); 
+                    DOT35=(Token)match(input,DOT,FOLLOW_DOT_in_import_target_matcher450);
                     DOT35_tree = (Object)adaptor.create(DOT35);
                     adaptor.addChild(root_0, DOT35_tree);
 
-                    STAR36=(Token)match(input,STAR,FOLLOW_STAR_in_import_target_matcher452); 
+                    STAR36=(Token)match(input,STAR,FOLLOW_STAR_in_import_target_matcher452);
                     STAR36_tree = (Object)adaptor.create(STAR36);
                     adaptor.addChild(root_0, STAR36_tree);
 
@@ -1579,7 +1579,7 @@ public class NodeTestDSLParser extends Parser {
             {
             root_0 = (Object)adaptor.nil();
 
-            ID37=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher488); 
+            ID37=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher488);
             ID37_tree = (Object)adaptor.create(ID37);
             adaptor.addChild(root_0, ID37_tree);
 
@@ -1604,11 +1604,11 @@ public class NodeTestDSLParser extends Parser {
             	case 1 :
             	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:189:8: DOT ID
             	    {
-            	    DOT38=(Token)match(input,DOT,FOLLOW_DOT_in_qualified_id_matcher491); 
+            	    DOT38=(Token)match(input,DOT,FOLLOW_DOT_in_qualified_id_matcher491);
             	    DOT38_tree = (Object)adaptor.create(DOT38);
             	    adaptor.addChild(root_0, DOT38_tree);
 
-            	    ID39=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher493); 
+            	    ID39=(Token)match(input,ID,FOLLOW_ID_in_qualified_id_matcher493);
             	    ID39_tree = (Object)adaptor.create(ID39);
             	    adaptor.addChild(root_0, ID39_tree);
 
@@ -1719,7 +1719,7 @@ public class NodeTestDSLParser extends Parser {
             {
             root_0 = (Object)adaptor.nil();
 
-            LEFT_SQUARE40=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_collection_matcher524); 
+            LEFT_SQUARE40=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_collection_matcher524);
             LEFT_SQUARE40_tree = (Object)adaptor.create(LEFT_SQUARE40);
             adaptor.addChild(root_0, LEFT_SQUARE40_tree);
 
@@ -1746,7 +1746,7 @@ public class NodeTestDSLParser extends Parser {
 
             }
 
-            RIGHT_SQUARE42=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_collection_matcher529); 
+            RIGHT_SQUARE42=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_collection_matcher529);
             RIGHT_SQUARE42_tree = (Object)adaptor.create(RIGHT_SQUARE42);
             adaptor.addChild(root_0, RIGHT_SQUARE42_tree);
 
@@ -1848,7 +1848,7 @@ public class NodeTestDSLParser extends Parser {
             {
             root_0 = (Object)adaptor.nil();
 
-            LEFT_PAREN43=(Token)match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_paren_matcher557); 
+            LEFT_PAREN43=(Token)match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_paren_matcher557);
             LEFT_PAREN43_tree = (Object)adaptor.create(LEFT_PAREN43);
             adaptor.addChild(root_0, LEFT_PAREN43_tree);
 
@@ -1875,7 +1875,7 @@ public class NodeTestDSLParser extends Parser {
 
             }
 
-            RIGHT_PAREN45=(Token)match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_paren_matcher562); 
+            RIGHT_PAREN45=(Token)match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_paren_matcher562);
             RIGHT_PAREN45_tree = (Object)adaptor.create(RIGHT_PAREN45);
             adaptor.addChild(root_0, RIGHT_PAREN45_tree);
 
@@ -1925,7 +1925,7 @@ public class NodeTestDSLParser extends Parser {
             if ( !(((validateIdentifierKey("TestCase")))) ) {
                 throw new FailedPredicateException(input, "test_case_key", "(validateIdentifierKey(\"TestCase\"))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_test_case_key581);  
+            id=(Token)match(input,ID,FOLLOW_ID_in_test_case_key581);
             stream_ID.add(id);
 
 
@@ -1992,7 +1992,7 @@ public class NodeTestDSLParser extends Parser {
             if ( !(((validateIdentifierKey("import")))) ) {
                 throw new FailedPredicateException(input, "import_key", "(validateIdentifierKey(\"import\"))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_import_key605);  
+            id=(Token)match(input,ID,FOLLOW_ID_in_import_key605);
             stream_ID.add(id);
 
 
@@ -2059,7 +2059,7 @@ public class NodeTestDSLParser extends Parser {
             if ( !(((validateIdentifierKey("Setup")))) ) {
                 throw new FailedPredicateException(input, "setup_key", "(validateIdentifierKey(\"Setup\"))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_setup_key629);  
+            id=(Token)match(input,ID,FOLLOW_ID_in_setup_key629);
             stream_ID.add(id);
 
 
@@ -2126,7 +2126,7 @@ public class NodeTestDSLParser extends Parser {
             if ( !(((validateIdentifierKey("TearDown")))) ) {
                 throw new FailedPredicateException(input, "teardown_key", "(validateIdentifierKey(\"TearDown\"))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_teardown_key653);  
+            id=(Token)match(input,ID,FOLLOW_ID_in_teardown_key653);
             stream_ID.add(id);
 
 
@@ -2193,7 +2193,7 @@ public class NodeTestDSLParser extends Parser {
             if ( !(((validateIdentifierKey("Test")))) ) {
                 throw new FailedPredicateException(input, "test_key", "(validateIdentifierKey(\"Test\"))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_test_key677);  
+            id=(Token)match(input,ID,FOLLOW_ID_in_test_key677);
             stream_ID.add(id);
 
 

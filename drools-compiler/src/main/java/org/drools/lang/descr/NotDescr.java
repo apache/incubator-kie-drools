@@ -50,9 +50,9 @@ public class NotDescr extends BaseDescr
 
     public void addOrMerge(BaseDescr baseDescr) {
         if( baseDescr instanceof NotDescr ) {
-            this.descrs.addAll( ((NotDescr)baseDescr).getDescrs() ); 
+            this.descrs.addAll( ((NotDescr)baseDescr).getDescrs() );
         } else {
-            this.descrs.add( baseDescr );        
+            this.descrs.add( baseDescr );
         }
     }
 

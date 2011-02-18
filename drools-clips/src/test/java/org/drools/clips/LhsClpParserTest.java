@@ -107,7 +107,7 @@ public class LhsClpParserTest {
         // then, we have a field constraint
         FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) colList.get( 1 );
         assertEquals( "name",
-                      fieldConstraintDescr.getFieldName() );                        
+                      fieldConstraintDescr.getFieldName() );
         RestrictionConnectiveDescr root = (RestrictionConnectiveDescr) fieldConstraintDescr.getRestriction();
         assertEquals( 1,
                       root.getRestrictions().size() );
@@ -139,14 +139,14 @@ public class LhsClpParserTest {
                       retDescr.getEvaluator() );
         
         LispForm lispForm = ( LispForm ) retDescr.getContent();
-        assertEquals("(+ 2 3)", lispForm.toString() );                         
+        assertEquals("(+ 2 3)", lispForm.toString() );
 
         // ----------------
         // this is how it would be compatible to our core engine 
         PredicateDescr predicateDescr = (PredicateDescr) colList.get( 2 );
         
         lispForm = ( LispForm ) predicateDescr.getContent();
-        assertEquals("(< 1 2)", lispForm.toString() );                
+        assertEquals("(< 1 2)", lispForm.toString() );
 
         // -----------------
         // Parse the second column
@@ -308,7 +308,7 @@ public class LhsClpParserTest {
         assertEquals( "==",
                       litDescr.getEvaluator() );
         assertEquals( "ppp",
-                      litDescr.getText() );              
+                      litDescr.getText() );
         
         col = (PatternDescr) andDescr.getDescrs().get( 1 );
         assertEquals( "person",
@@ -320,7 +320,7 @@ public class LhsClpParserTest {
         assertEquals( "==",
                       litDescr.getEvaluator() );
         assertEquals( "yyy",
-                      litDescr.getText() );  
+                      litDescr.getText() );
     }
     
     @Test
@@ -337,7 +337,7 @@ public class LhsClpParserTest {
 
         EvalDescr evalDescr = (EvalDescr) lhsList.get( 0 );
         LispForm lispForm = ( LispForm ) evalDescr.getContent();
-        assertEquals("(< 9.0 1.3)", lispForm.toString() );                          
+        assertEquals("(< 9.0 1.3)", lispForm.toString() );
     }
 
     @Test
@@ -353,7 +353,7 @@ public class LhsClpParserTest {
         
         AttributeDescr dialect = ( AttributeDescr ) attributes.get( "dialect" );
         assertEquals( "dialect", dialect.getName() );
-        assertEquals( "clips", dialect.getValue() );        
+        assertEquals( "clips", dialect.getValue() );
         
         AttributeDescr salience = ( AttributeDescr ) attributes.get( "salience" );
         assertEquals( "salience", salience.getName() );

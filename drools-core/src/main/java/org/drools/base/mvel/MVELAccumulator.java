@@ -119,7 +119,7 @@ public class MVELAccumulator
                      Tuple leftTuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
-        Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];        
+        Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
         VariableResolverFactory factory = initUnit.getFactory( null, null, (LeftTuple) leftTuple, localVars, null, (InternalWorkingMemory) workingMemory );
         
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -145,7 +145,7 @@ public class MVELAccumulator
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();        
+        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         VariableResolverFactory factory = actionUnit.getFactory( null, null, (LeftTuple) leftTuple, localVars, null, (InternalWorkingMemory) workingMemory );
 
         if ( reverse != null ) {
@@ -176,8 +176,8 @@ public class MVELAccumulator
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        Object[] localVars = ((MVELAccumulatorContext) context).shadow.remove( handle.getId() );        
-        VariableResolverFactory factory = actionUnit.getFactory( null, null, (LeftTuple) leftTuple, localVars, null, (InternalWorkingMemory) workingMemory );        
+        Object[] localVars = ((MVELAccumulatorContext) context).shadow.remove( handle.getId() );
+        VariableResolverFactory factory = actionUnit.getFactory( null, null, (LeftTuple) leftTuple, localVars, null, (InternalWorkingMemory) workingMemory );
         
 
         MVEL.executeExpression( this.reverse,
@@ -193,7 +193,7 @@ public class MVELAccumulator
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
-        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();        
+        Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         VariableResolverFactory factory = actionUnit.getFactory( null, null, (LeftTuple) leftTuple, localVars, null, (InternalWorkingMemory) workingMemory );
 
         final Object result = MVEL.executeExpression( this.result,

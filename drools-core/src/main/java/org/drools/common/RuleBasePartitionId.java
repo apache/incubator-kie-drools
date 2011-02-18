@@ -69,6 +69,6 @@ public final class RuleBasePartitionId implements Serializable {
     }
 
     public String toString() {
-        return "Partition::"+this.id;    
+        return "Partition::"+this.id;
     }
 }

@@ -186,7 +186,7 @@ public class DRLExpressions extends Parser {
                     {
                     STRING1=(Token)match(input,STRING,FOLLOW_STRING_in_literal74); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(STRING1, DroolsEditorType.STRING_CONST);	
+                      	helper.emit(STRING1, DroolsEditorType.STRING_CONST);
                     }
 
                     }
@@ -196,7 +196,7 @@ public class DRLExpressions extends Parser {
                     {
                     DECIMAL2=(Token)match(input,DECIMAL,FOLLOW_DECIMAL_in_literal86); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(DECIMAL2, DroolsEditorType.NUMERIC_CONST);	
+                      	helper.emit(DECIMAL2, DroolsEditorType.NUMERIC_CONST);
                     }
 
                     }
@@ -206,7 +206,7 @@ public class DRLExpressions extends Parser {
                     {
                     HEX3=(Token)match(input,HEX,FOLLOW_HEX_in_literal95); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(HEX3, DroolsEditorType.NUMERIC_CONST);	
+                      	helper.emit(HEX3, DroolsEditorType.NUMERIC_CONST);
                     }
 
                     }
@@ -216,7 +216,7 @@ public class DRLExpressions extends Parser {
                     {
                     FLOAT4=(Token)match(input,FLOAT,FOLLOW_FLOAT_in_literal108); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(FLOAT4, DroolsEditorType.NUMERIC_CONST);	
+                      	helper.emit(FLOAT4, DroolsEditorType.NUMERIC_CONST);
                     }
 
                     }
@@ -226,7 +226,7 @@ public class DRLExpressions extends Parser {
                     {
                     BOOL5=(Token)match(input,BOOL,FOLLOW_BOOL_in_literal119); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(BOOL5, DroolsEditorType.BOOLEAN_CONST);	
+                      	helper.emit(BOOL5, DroolsEditorType.BOOLEAN_CONST);
                     }
 
                     }
@@ -236,7 +236,7 @@ public class DRLExpressions extends Parser {
                     {
                     NULL6=(Token)match(input,NULL,FOLLOW_NULL_in_literal133); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	helper.emit(NULL6, DroolsEditorType.NULL_CONST);	
+                      	helper.emit(NULL6, DroolsEditorType.NULL_CONST);
                     }
 
                     }

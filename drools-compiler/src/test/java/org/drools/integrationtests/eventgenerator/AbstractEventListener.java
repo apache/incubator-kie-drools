@@ -23,7 +23,7 @@ public abstract class AbstractEventListener {
 
 	public void addEventToWM (Event ev){
 		wm.insert(ev);
-		wm.fireAllRules();	
+		wm.fireAllRules();
 	}
 	
 	// send generated event and execute corresponding actions

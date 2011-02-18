@@ -45,7 +45,7 @@ public class GetFactHandlesCommand
     }
 
     public Collection<FactHandle> execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();        
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
 
         if ( filter != null ) {
             Collection<FactHandle> factHandles = ksession.getFactHandles( this.filter );

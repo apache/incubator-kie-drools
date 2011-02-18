@@ -54,8 +54,8 @@ final class Scheduler {
         
         Trigger trigger = item.getRule().getTimer().createTrigger( ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().getCurrentTime(), calendarNames, calendars);
         
-        ActivationTimerJob job = new ActivationTimerJob();        
-        ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );        
+        ActivationTimerJob job = new ActivationTimerJob();
+        ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                 
         JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
         item.setJobHandle( jobHandle );
@@ -78,14 +78,14 @@ final class Scheduler {
                 // so reset the activated to true here
                 item.setActivated( true );
             }
-            agenda.getWorkingMemory().fireAllRules();            
+            agenda.getWorkingMemory().fireAllRules();
         }        
     }
     
     public static class ActivationTimerJobContext implements JobContext {
         private JobHandle jobHandle;
         private ScheduledAgendaItem scheduledAgendaItem;
-        private Agenda agenda;          
+        private Agenda agenda;
         private Trigger trigger;
         
         public ActivationTimerJobContext(Trigger trigger,

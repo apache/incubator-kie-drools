@@ -28,7 +28,7 @@ public class KnowledgeSessionTest {
 		str += "rule rule2\n";
 		str += "when\n";
 		str += "then\n";
-		str += "end\n";				
+		str += "end\n";
 		builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 		
 		str = "package org.test2\n";
@@ -39,7 +39,7 @@ public class KnowledgeSessionTest {
 		str += "rule rule4\n";
 		str += "when\n";
 		str += "then\n";
-		str += "end\n";			
+		str += "end\n";
 		builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 		
 		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();

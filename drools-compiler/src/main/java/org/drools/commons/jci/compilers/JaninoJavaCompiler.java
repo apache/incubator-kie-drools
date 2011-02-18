@@ -94,7 +94,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 		public void close() throws IOException {
 			super.close();
 
-			final byte[] bytes = toByteArray();		
+			final byte[] bytes = toByteArray();
 
 			store.write(name, bytes);
 		}
@@ -152,7 +152,7 @@ public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 							problems.add(problem);
 						}    		
 			    	})    			
-    			);            	
+    			);
     	
     	compiler.setCompileErrorHandler(new ErrorHandler() {
 			public void handleError( final String pMessage, final Location pLocation ) throws CompileException {

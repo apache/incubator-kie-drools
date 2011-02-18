@@ -50,7 +50,7 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
                                             ClassNotFoundException {
         this.agendaGroup = new SerializableAgendaGroup( );
         ((SerializableAgendaGroup)this.agendaGroup).readExternal( in );
-        this.kruntime = null; // we null this as it isn't serializable; 
+        this.kruntime = null; // we null this as it isn't serializable;
     }
 
 	@Override

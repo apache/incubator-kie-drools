@@ -29,5 +29,5 @@ public interface RightTupleSink extends Sink {
     
     public void modifyRightTuple(final RightTuple rightTuple,
                                  final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory);    
+                                 final InternalWorkingMemory workingMemory);
 }

@@ -69,8 +69,8 @@ public class CellGridImpl implements CellGrid {
             }
         }
 
-        delegate.init();        
-        //delegate.killAll();        
+        delegate.init();
+        //delegate.killAll();
     }
 
     /* (non-Javadoc)
@@ -168,7 +168,7 @@ public class CellGridImpl implements CellGrid {
     public void updateCell(Cell cell, CellState state) {
         cell.setCellState( state );
         this.session.update( this.session.getFactHandle( cell ),
-                             cell );                
+                             cell );
     }
 
     /* (non-Javadoc)

@@ -81,7 +81,7 @@ public class MVELDataProvider
         expr = unit.getCompiledExpression( classLoader );
         
 //        @TODO URGENT DO NOT FORGET!!!!
-//        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();        
+//        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
 //        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
     }
 

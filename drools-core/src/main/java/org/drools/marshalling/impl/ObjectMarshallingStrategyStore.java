@@ -29,7 +29,7 @@ public class ObjectMarshallingStrategyStore {
     } 
     
     public ObjectMarshallingStrategy getStrategy(int index) {
-        return this.strategiesList[ index ];        
+        return this.strategiesList[ index ];
     }
     
     public int getStrategy(Object object) {

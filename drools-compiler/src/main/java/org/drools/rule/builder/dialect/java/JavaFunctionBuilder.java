@@ -78,7 +78,7 @@ public class JavaFunctionBuilder
                   functionDescr.getParameterNames() );
         
         vars.put("hashCode",
-                new Integer(functionDescr.getText().hashCode() ) );        
+                new Integer(functionDescr.getText().hashCode() ) );
 
         // Check that all the parameters are resolvable
         final Map params = new HashMap();

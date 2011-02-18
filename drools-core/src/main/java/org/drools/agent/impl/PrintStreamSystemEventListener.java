@@ -67,7 +67,7 @@ public class PrintStreamSystemEventListener
     
     public void info(String message,
                      Object object) {
-        print.println( "[" +  time() + ":info] " + message + " object=" + object);        
+        print.println( "[" +  time() + ":info] " + message + " object=" + object);
     }    
 
     public void warning(String message) {

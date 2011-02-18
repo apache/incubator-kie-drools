@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
  * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class PartitionTaskManagerTest {
-    private PartitionManager manager; 
+    private PartitionManager manager;
     private PartitionTaskManager taskManager;
     private InternalWorkingMemory workingMemory;
 
@@ -59,7 +59,7 @@ public class PartitionTaskManagerTest {
 
         ExternalExecutorService service = new ExternalExecutorService( Executors.newSingleThreadExecutor() );
         // set the pool
-        manager.setPool( service );  
+        manager.setPool( service );
 
         service.waitUntilEmpty();
         
@@ -75,7 +75,7 @@ public class PartitionTaskManagerTest {
         
         ExternalExecutorService service = new ExternalExecutorService( Executors.newSingleThreadExecutor() );
         // set the pool
-        manager.setPool( service ); 
+        manager.setPool( service );
         
         // fire scenario
         taskManager.enqueue( action );
@@ -100,7 +100,7 @@ public class PartitionTaskManagerTest {
         ExecutorService pool = Executors.newSingleThreadExecutor();
         ExternalExecutorService service = new ExternalExecutorService( pool );
         // set the pool
-        manager.setPool( service ); 
+        manager.setPool( service );
         
         // enqueue after setting the pool
         taskManager.enqueue( action );

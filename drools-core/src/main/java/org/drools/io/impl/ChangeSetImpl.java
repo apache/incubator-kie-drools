@@ -25,7 +25,7 @@ import org.drools.io.Resource;
 public class ChangeSetImpl implements ChangeSet {
     private Collection<Resource> resourcesRemoved = Collections.<Resource>emptyList();
     private Collection<Resource> resourcesAdded = Collections.<Resource>emptyList();
-    private Collection<Resource> resourcesModified = Collections.<Resource>emptyList();    
+    private Collection<Resource> resourcesModified = Collections.<Resource>emptyList();
 
     //Map of removed kdefinitions. The key is the resource and the string is
     //the knowledgeDefinition's name.

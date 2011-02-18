@@ -45,7 +45,7 @@ public class ClassBuilderTest {
     
     @Before
     public void setUp() throws Exception {
-        data = new JavaDialectRuntimeData();        
+        data = new JavaDialectRuntimeData();
     }
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
@@ -57,10 +57,10 @@ public class ClassBuilderTest {
         
         this.store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
-        store.setEagerWire( true );            
+        store.setEagerWire( true );
         
         Class clazz = classLoader.loadClass( classDef.getClassName() );
-        classDef.setDefinedClass( clazz );    
+        classDef.setDefinedClass( clazz );
         
         return clazz;
         

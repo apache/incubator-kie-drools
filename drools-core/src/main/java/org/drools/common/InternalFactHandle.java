@@ -63,13 +63,13 @@ public interface InternalFactHandle
 
     public RightTuple getLastRightTuple();
 
-    public void setLastRightTuple(RightTuple rightTuple);    
+    public void setLastRightTuple(RightTuple rightTuple);
         
     public void setFirstLeftTuple(LeftTuple leftTuple);
     
     public LeftTuple getFirstLeftTuple();
     
-    public void setLastLeftTuple(LeftTuple leftTuple);    
+    public void setLastLeftTuple(LeftTuple leftTuple);
     
     public LeftTuple getLastLeftTuple();
     

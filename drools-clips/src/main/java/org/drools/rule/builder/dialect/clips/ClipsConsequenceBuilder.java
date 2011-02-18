@@ -39,7 +39,7 @@ public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
                                    true );
         }
         
-        context.getRuleDescr().setConsequence( builder.toString() );      
+        context.getRuleDescr().setConsequence( builder.toString() );
         
         super.build(  context, consequenceName );
         
@@ -52,7 +52,7 @@ public class ClipsConsequenceBuilder extends MVELConsequenceBuilder  {
 //        }
 //        
 //        rhs.replaceTempTokens( vars );
-//        rule.setConsequence( rhs );        
+//        rule.setConsequence( rhs );
     }
 
 }

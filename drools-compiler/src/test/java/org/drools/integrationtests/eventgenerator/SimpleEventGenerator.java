@@ -170,7 +170,7 @@ class EventOccurrence{
 	public EventOccurrence(String eventSenderId, Event ev, long evMinDur, long avgOccur, long earliestStart, long maxDuration, int maxItems) {
 		this.eventSenderId = eventSenderId;
 		this.evMinDur = evMinDur;
-		this.evDeviation = 2*(avgOccur-evMinDur); 
+		this.evDeviation = 2*(avgOccur-evMinDur);
 		
 		this.event = ev;
 		this.event.setTimes(earliestStart);

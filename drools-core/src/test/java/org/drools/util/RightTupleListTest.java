@@ -34,7 +34,7 @@ public class RightTupleListTest {
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
-                                                             stilton1 );                        
+                                                             stilton1 );
         
         assertNull( map.getFirst( new LeftTuple( h1, null,
                                                  true ), null ) );

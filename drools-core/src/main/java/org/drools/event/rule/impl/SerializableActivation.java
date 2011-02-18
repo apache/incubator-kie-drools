@@ -50,7 +50,7 @@ public class SerializableActivation
         this.factHandles = activation.getFactHandles();
         this.propgationContext = activation.getPropagationContext();
         if ( activation instanceof AgendaItem ) {
-            declarations = ((org.drools.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getDeclarations(); 
+            declarations = ((org.drools.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
         } else {
@@ -86,7 +86,7 @@ public class SerializableActivation
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = ((org.drools.rule.Rule)this.rule).getDeclaration( variableName ); 
+        Declaration decl = ((org.drools.rule.Rule)this.rule).getDeclaration( variableName );
         return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getPattern().getOffset())).getObject() );
     }
 

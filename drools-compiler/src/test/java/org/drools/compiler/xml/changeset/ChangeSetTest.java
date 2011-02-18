@@ -61,7 +61,7 @@ public class ChangeSetTest {
         str += "        <resource source='http://www.domain.com/test.xls' type='DTABLE' >";
         str += "            <decisiontable-conf worksheet-name='sheet10' input-type='XLS' />";
         str += "        </resource>";
-        str += "    </add> ";        
+        str += "    </add> ";
         str += "</change-set>";
 
         StringReader reader = new StringReader( str );
@@ -79,7 +79,7 @@ public class ChangeSetTest {
         resource =  ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 1 );
         
         assertEquals( "http://www.domain.com/test.xls",
-                      resource.getURL().toString() );        
+                      resource.getURL().toString() );
         assertEquals( ResourceType.DTABLE,
                       resource.getResourceType() );
         DecisionTableConfiguration dtConf = (DecisionTableConfiguration) resource.getConfiguration();
@@ -122,7 +122,7 @@ public class ChangeSetTest {
         str += "xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
         str += "    <add> ";
         str += "        <resource source='http://localhost:8081/jboss-brms/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication='enabled' username='admin' password='pwd'/>";
-        str += "    </add> ";        
+        str += "    </add> ";
         str += "</change-set>";
 
         StringReader reader = new StringReader( str );

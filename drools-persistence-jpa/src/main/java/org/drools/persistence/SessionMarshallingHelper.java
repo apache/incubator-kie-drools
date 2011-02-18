@@ -39,7 +39,7 @@ public class SessionMarshallingHelper {
             // use strategies if provided in the environment
             this.marshaller = MarshallerFactory.newMarshaller( kbase, strategies );
         } else {
-            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;  
+            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;
         }
     }
 
@@ -61,7 +61,7 @@ public class SessionMarshallingHelper {
             // use strategies if provided in the environment
             this.marshaller = MarshallerFactory.newMarshaller( kbase, strategies );
         } else {
-            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;  
+            this.marshaller = MarshallerFactory.newMarshaller( kbase ) ;
         }
         
     }
@@ -86,11 +86,11 @@ public class SessionMarshallingHelper {
         try {
             if ( this.ksession != null ) {
                 this.marshaller.unmarshall( bais,
-                                            this.ksession );                
+                                            this.ksession );
             } else {
                 this.ksession = this.marshaller.unmarshall( bais,
                                                             this.conf,
-                                                            this.env );                
+                                                            this.env );
             }
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to load session snapshot",

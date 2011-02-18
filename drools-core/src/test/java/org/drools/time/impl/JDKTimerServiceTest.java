@@ -44,23 +44,23 @@ public class JDKTimerServiceTest {
     public void testSingleExecutionJob() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
+        TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
-        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
+        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 500 );
         timeService.shutdown();
-        assertEquals( 1, ctx.getList().size() ); 
+        assertEquals( 1, ctx.getList().size() );
     }    
     
     @Test
     public void testRepeatedExecutionJob() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
+        TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
-        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);        
+        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 500 );
         timeService.shutdown();
         assertEquals( 3, ctx.getList().size() );
@@ -71,11 +71,11 @@ public class JDKTimerServiceTest {
     public void testRepeatedExecutionJobWithRemove() throws Exception {
     	SessionConfiguration config = new SessionConfiguration();
     	config.setClockType(ClockType.REALTIME_CLOCK);
-        TimerService timeService = TimerServiceFactory.getTimerService( config ); 
+        TimerService timeService = TimerServiceFactory.getTimerService( config );
 		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
 		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
 		ctx.setLimit( 3 );
-		timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);		
+		timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
 		Thread.sleep( 1000 );
         timeService.shutdown();
 		assertEquals( 4, ctx.getList().size() );
@@ -99,7 +99,7 @@ public class JDKTimerServiceTest {
 	    
 	    private List list;
 	    
-	    private int counter;	    
+	    private int counter;
 	    private int limit;
 	    
 	    public HelloWorldJobContext(String message, TimerService timeService) {

@@ -65,7 +65,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      */
     Object getGlobal(String identifier);
 
-    Environment getEnvironment(); 
+    Environment getEnvironment();
 
     /**
      * Sets the GlobalResolver instance to be used when resolving globals, replaces the current GlobalResolver.
@@ -207,7 +207,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResults getQueryResults(String query, Object... arguments);  
+    public QueryResults getQueryResults(String query, Object... arguments);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

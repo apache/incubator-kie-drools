@@ -100,7 +100,7 @@ public class DroolsEventListTest {
         
         assertEquals( 2, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );        
+        assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
 
         // alter the price to put the last row back in
         stilton3.setPrice( 3 );
@@ -109,7 +109,7 @@ public class DroolsEventListTest {
         assertEquals( 3, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
         assertEquals( 2, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );  
+        assertEquals( 3, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );
         
         // alter the price to remove the middle row
         stilton2.setPrice( 4 );
@@ -117,7 +117,7 @@ public class DroolsEventListTest {
         
         assertEquals( 2, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );  
+        assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
         
         // alter the price to add the previous middle rows to the end
         cheddar2.setPrice( 4 );
@@ -126,13 +126,13 @@ public class DroolsEventListTest {
         assertEquals( 3, sorted.size() );
         assertEquals( 1, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
         assertEquals( 3, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
-        assertEquals( 4, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );          
+        assertEquals( 4, ((Cheese)sorted.get( 2 ).get( "stilton" )).getPrice() );
             
         // Check a standard retract
         ksession.retract( s1Fh );
         assertEquals( 2, sorted.size() );
         assertEquals( 3, ((Cheese)sorted.get( 0 ).get( "stilton" )).getPrice() );
-        assertEquals( 4, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );           
+        assertEquals( 4, ((Cheese)sorted.get( 1 ).get( "stilton" )).getPrice() );
 
         // Close the query, we should get removed events for each row
         query.close();

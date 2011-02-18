@@ -126,7 +126,7 @@ public class MVELAccumulateBuilder
                 final MVELAnalysisResult initCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                        accumDescr,
                                                                                                        accumDescr.getInitCode(),
-                                                                                                       boundIds);                                
+                                                                                                       boundIds);
 
                 final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
                                                                                                          accumDescr,

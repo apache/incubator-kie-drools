@@ -138,7 +138,7 @@ public class RuleTest {
         WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
-        ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );        
+        ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );
         
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_TRUE );

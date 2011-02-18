@@ -51,9 +51,9 @@ public class StatefulSessionTest {
         StatefulSession session = getSession();
 
         final Cheese stilton = new Cheese( "stilton",
-                                           5 );        
+                                           5 );
 
-        Future futureAssert = session.asyncInsert( stilton );               
+        Future futureAssert = session.asyncInsert( stilton );
         Future futureFireAllRules = session.asyncFireAllRules();
         
         int i = 0;
@@ -90,7 +90,7 @@ public class StatefulSessionTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
         Command insertCmd = CommandFactory.newInsert( stilton, "outStilton" );
         Command fireCmd = CommandFactory.newFireAllRules();
@@ -100,7 +100,7 @@ public class StatefulSessionTest {
         ExecutionResults result = (ExecutionResults) ksession.execute( cmds );
         stilton = ( Cheese ) result.getValue( "outStilton" );
         assertEquals( 30,
-                      stilton.getPrice() );      
+                      stilton.getPrice() );
         
         Object o = ksession.getObject( (FactHandle) result.getFactHandle( "outStilton" ) );
         assertSame( o, stilton );
@@ -111,9 +111,9 @@ public class StatefulSessionTest {
         StatefulSession session = getSession();
 
         final Cheese stilton = new Cheese( "stilton",
-                                           5 );        
+                                           5 );
 
-        Future futureAssert = session.asyncInsert( new Object[] { stilton } );                
+        Future futureAssert = session.asyncInsert( new Object[] { stilton } );
         Future futureFireAllRules = session.asyncFireAllRules();
         
         int i = 0;
@@ -129,7 +129,7 @@ public class StatefulSessionTest {
         assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
 
         assertEquals( "stilton",
-                      list.get( 0 ) );        
+                      list.get( 0 ) );
     } 
     
     @Test
@@ -137,7 +137,7 @@ public class StatefulSessionTest {
         StatefulSession session = getSession();
 
         final Cheese stilton = new Cheese( "stilton",
-                                           5 );        
+                                           5 );
 
         List collection = new ArrayList();
         collection.add( stilton );
@@ -165,7 +165,7 @@ public class StatefulSessionTest {
         StatefulSession session = getExceptionSession();
 
         final Cheese brie = new Cheese( "brie",
-                                        12 );      
+                                        12 );
 
         Future futureAssert = session.asyncInsert( brie );
 
@@ -179,7 +179,7 @@ public class StatefulSessionTest {
         }   
         
 
-        assertTrue( futureAssert.getObject() instanceof FactHandle );        
+        assertTrue( futureAssert.getObject() instanceof FactHandle );
         assertTrue( futureFireAllRules.exceptionThrown() );
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }
@@ -190,9 +190,9 @@ public class StatefulSessionTest {
         StatefulSession session = getExceptionSession();
 
         final Cheese brie = new Cheese( "brie",
-                                        12 );      
+                                        12 );
 
-        Future futureAssert = session.asyncInsert( new Object[] { brie } );                
+        Future futureAssert = session.asyncInsert( new Object[] { brie } );
         Future futureFireAllRules = session.asyncFireAllRules();
         
         int i = 0;
@@ -204,7 +204,7 @@ public class StatefulSessionTest {
         }        
                        
         assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );        
+        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }   
     
@@ -214,11 +214,11 @@ public class StatefulSessionTest {
         StatefulSession session = getExceptionSession();
 
         final Cheese brie = new Cheese( "brie",
-                                        12 );      
+                                        12 );
 
         List collection = new ArrayList();
         collection.add( brie );
-        Future futureAssert = session.asyncInsert( collection );             
+        Future futureAssert = session.asyncInsert( collection );
         Future futureFireAllRules = session.asyncFireAllRules();
         
         int i = 0;
@@ -230,7 +230,7 @@ public class StatefulSessionTest {
         }        
                        
         assertTrue( futureAssert.getObject() instanceof List );
-        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );        
+        assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
         assertTrue( futureFireAllRules.getException() instanceof Exception );
     }    
     

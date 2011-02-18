@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 public class CronExpressionTest extends SerializationTestSupport {
     private static final String[] VERSIONS = new String[] {"1.5.2"};
 
-    private static final TimeZone EST_TIME_ZONE = TimeZone.getTimeZone("US/Eastern"); 
+    private static final TimeZone EST_TIME_ZONE = TimeZone.getTimeZone("US/Eastern");
 
     /**
      * Get the object to serialize when generating serialized file for future

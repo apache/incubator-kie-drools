@@ -34,7 +34,7 @@ public interface SudokuGridModel {
    /**
     * The number of colums that make up a zone within the Grid
     */
-   public static int INNER_GRID_WIDTH = 3;   
+   public static int INNER_GRID_WIDTH = 3;
    
    /**
     * The number of rows that make up a zone within the Grid
@@ -49,7 +49,7 @@ public interface SudokuGridModel {
    
    public void step();
       
-   public void addSudokuGridListener(SudokuGridListener l);   
+   public void addSudokuGridListener(SudokuGridListener l);
    
    public void removeSudokuGridListener(SudokuGridListener l);
 }

@@ -172,7 +172,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 
         // check we rolled back the state changes from the 3rd insert
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-        ut.begin();        
+        ut.begin();
         ksession.fireAllRules();
         ut.commit();
         assertEquals( 2,
@@ -386,7 +386,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 //        Environment env = KnowledgeBaseFactory.newEnvironment();
 //        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
 //        env.set( EnvironmentName.TRANSACTION_MANAGER,
-//                 TransactionManagerServices.getTransactionManager() );        
+//                 TransactionManagerServices.getTransactionManager() );
 //        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 //
 //        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
@@ -420,7 +420,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 //        Environment env = KnowledgeBaseFactory.newEnvironment();
 //        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
 //        env.set( EnvironmentName.TRANSACTION_MANAGER,
-//                 TransactionManagerServices.getTransactionManager() );        
+//                 TransactionManagerServices.getTransactionManager() );
 //        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 //
 //        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
@@ -508,35 +508,35 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 //        ProcessEventListener listener = new ProcessEventListener() {
 //            public void afterNodeLeft(ProcessNodeLeftEvent event) {
 //                System.out.println("After node left: " + event.getNodeInstance().getNodeName());
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
 //                System.out.println("After node triggered: " + event.getNodeInstance().getNodeName());
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void afterProcessCompleted(ProcessCompletedEvent event) {
 //                System.out.println("After process completed");
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void afterProcessStarted(ProcessStartedEvent event) {
 //                System.out.println("After process started");
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
 //                System.out.println("Before node left: " + event.getNodeInstance().getNodeName());
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
 //                System.out.println("Before node triggered: " + event.getNodeInstance().getNodeName());
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void beforeProcessCompleted(ProcessCompletedEvent event) {
 //                System.out.println("Before process completed");
-//                events.add(event);              
+//                events.add(event);
 //            }
 //            public void beforeProcessStarted(ProcessStartedEvent event) {
 //                System.out.println("Before process started");
-//                events.add(event);              
+//                events.add(event);
 //            }
 //        };
 //        ksession.addEventListener(listener);

@@ -151,7 +151,7 @@ public abstract class WorkingMemoryLogger
     		InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
     		eventManager.addEventListener( (RuleBaseEventListener) this );
     		if (processRuntime != null) {
-    			processRuntime.addEventListener( (ProcessEventListener) this );	
+    			processRuntime.addEventListener( (ProcessEventListener) this );
     		}
     	} else {
     		throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());

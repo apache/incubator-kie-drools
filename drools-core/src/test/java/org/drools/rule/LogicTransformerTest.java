@@ -353,7 +353,7 @@ public class LogicTransformerTest extends DroolsTestCase {
         and.addChild( b );
 
         GroupElement[] transformed = LogicTransformer.getInstance().transform( not );
-        GroupElement wrapper = transformed[0]; 
+        GroupElement wrapper = transformed[0];
         GroupElement notR = (GroupElement) wrapper.getChildren().get( 0 );
 
         assertTrue( notR.isNot() );

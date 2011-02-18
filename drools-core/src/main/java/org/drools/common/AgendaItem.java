@@ -339,14 +339,14 @@ public class AgendaItem
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = this.getRule().getDeclaration( variableName ); 
+        Declaration decl = this.getRule().getDeclaration( variableName );
         InternalFactHandle handle = this.tuple.get( decl );
         // need to double check, but the working memory reference is only used for resolving globals, right?
         return decl.getValue( null, handle.getObject() );
     }
 
     public List<String> getDeclarationIDs() {        
-        Declaration[] declArray = ((org.drools.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations(); 
+        Declaration[] declArray = ((org.drools.reteoo.RuleTerminalNode)this.tuple.getLeftTupleSink()).getDeclarations();
         List<String> declarations = new ArrayList<String>();
         for( Declaration decl : declArray ) {
             declarations.add( decl.getIdentifier() );

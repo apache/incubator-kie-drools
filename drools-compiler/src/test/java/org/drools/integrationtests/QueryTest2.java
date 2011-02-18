@@ -52,7 +52,7 @@ public class QueryTest2 {
         final OrderItem item11 = new OrderItem( order1,
                                                 1 );
         final OrderItem item12 = new OrderItem( order1,
-                                                2 );        
+                                                2 );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

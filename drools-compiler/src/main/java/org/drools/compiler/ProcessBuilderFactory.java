@@ -23,8 +23,8 @@ public class ProcessBuilderFactory {
 	}
 
 	private static void loadProvider() {	    	    	    
-        ServiceRegistryImpl.getInstance().addDefault( ProcessBuilderFactoryService.class, "org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl" );            
-        setProcessBuilderFactoryService(ServiceRegistryImpl.getInstance().get( ProcessBuilderFactoryService.class ) );	    
+        ServiceRegistryImpl.getInstance().addDefault( ProcessBuilderFactoryService.class, "org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl" );
+        setProcessBuilderFactoryService(ServiceRegistryImpl.getInstance().get( ProcessBuilderFactoryService.class ) );
 	}
 	
 }

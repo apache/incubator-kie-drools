@@ -37,7 +37,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 
 public abstract class BaseKnowledgeAgentTest {
     FileManager     fileManager;
-    Server           server;    
+    Server           server;
     ResourceChangeScannerImpl scanner;
 
     @Before
@@ -115,7 +115,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
                 latch.countDown();
             }
-        };        
+        };
         
         kagent.addEventListener( l );
         
@@ -171,7 +171,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
                 latch.countDown();
             }
-        };        
+        };
         
         kagent.addEventListener( l );
         
@@ -187,7 +187,7 @@ public abstract class BaseKnowledgeAgentTest {
             throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
         }
         
-        kagent.removeEventListener( l );        
+        kagent.removeEventListener( l );
     }
     
     void applyChangeSet(KnowledgeAgent kagent, Resource r) {
@@ -221,7 +221,7 @@ public abstract class BaseKnowledgeAgentTest {
             public void afterChangeSetApplied(AfterChangeSetAppliedEvent event) {
                 latch.countDown();
             }
-        };        
+        };
         
         kagent.addEventListener( l );
         
@@ -237,7 +237,7 @@ public abstract class BaseKnowledgeAgentTest {
             throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
         }
         
-        kagent.removeEventListener( l );        
+        kagent.removeEventListener( l );
     }   
     
 
@@ -348,7 +348,7 @@ public abstract class BaseKnowledgeAgentTest {
             rule.append( ruleName );
             rule.append( "\n" );
             if ( !StringUtils.isEmpty( attribute ) ) {
-                rule.append( attribute +"\n" );    
+                rule.append( attribute +"\n" );
             }
             rule.append( "when\n" );
             if ( !StringUtils.isEmpty( lhs ) ) {
@@ -359,7 +359,7 @@ public abstract class BaseKnowledgeAgentTest {
             rule.append( "end\n\n" );
         }
                 
-        return rule.toString();  
+        return rule.toString();
     }
     
     public String createVersionedRule(boolean header, String packageName, String[] ruleNames, String attribute, String lhs, String version) {
@@ -427,7 +427,7 @@ public abstract class BaseKnowledgeAgentTest {
             sb.append("end\n\n");
         }
 
-        return sb.toString(); 
+        return sb.toString();
     }
     
     public String createCommonDSLRRule(String ruleName) {

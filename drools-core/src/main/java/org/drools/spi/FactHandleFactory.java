@@ -53,7 +53,7 @@ public interface FactHandleFactory {
      */
     public FactHandleFactory newInstance();
     
-    public FactHandleFactory newInstance(int id, long counter);    
+    public FactHandleFactory newInstance(int id, long counter);
 
     public Class<?> getFactHandleType();
 
@@ -61,5 +61,5 @@ public interface FactHandleFactory {
 
     public long getRecency();
     
-    public void clear(int id, long counter);    
+    public void clear(int id, long counter);
 }

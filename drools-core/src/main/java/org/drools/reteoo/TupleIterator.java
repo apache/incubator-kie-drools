@@ -40,7 +40,7 @@ public class TupleIterator {
                 leftTuple = leftTuple.getLeftParentNext();
                 // attempt to traverse that peer's children
                 if ( leftTuple.firstChild != null ) {
-                    down = true;    
+                    down = true;
                 }
             } else {
                 // iterate to parent's next peer and set down to find next leaf

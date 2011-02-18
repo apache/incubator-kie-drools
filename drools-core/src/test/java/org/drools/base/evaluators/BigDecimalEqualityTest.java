@@ -96,7 +96,7 @@ public class BigDecimalEqualityTest {
         }
 
         public BigDecimal getBigDecimalValue() {
-            return val; 
+            return val;
         }
 
         public BigInteger getBigIntegerValue() {

@@ -86,7 +86,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         }
         if( inEntry ) sb.append( '\n' );
 
-        lnr.close();      
+        lnr.close();
 //        System.out.println( "====== DSL definition:" );
 //        System.out.println( sb.toString() );
 

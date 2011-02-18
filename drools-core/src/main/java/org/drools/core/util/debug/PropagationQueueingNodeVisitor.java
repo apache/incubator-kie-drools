@@ -35,7 +35,7 @@ public class PropagationQueueingNodeVisitor extends AbstractNetworkNodeVisitor {
                            StatefulKnowledgeSessionInfo info) {
         PropagationQueuingNode pqn = (PropagationQueuingNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-        PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) info.getSession().getNodeMemory( pqn ); 
+        PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) info.getSession().getNodeMemory( pqn );
         ni.setMemoryEnabled( true );
         ni.setActionQueueSize( memory.getSize() );
     }

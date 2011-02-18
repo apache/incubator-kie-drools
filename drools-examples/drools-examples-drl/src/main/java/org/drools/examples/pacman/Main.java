@@ -55,7 +55,7 @@ public class Main {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "base.drl",
                                                             getClass() ),
-                      ResourceType.DRL );        
+                      ResourceType.DRL );
         kbuilder.add( ResourceFactory.newClassPathResource( "key-handlers.drl",
                                                             getClass() ),
                       ResourceType.DRL );
@@ -64,7 +64,7 @@ public class Main {
                       ResourceType.DRL );
         kbuilder.add( ResourceFactory.newClassPathResource( "monster.drl",
                                                             getClass() ),
-                      ResourceType.DRL );        
+                      ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors() );

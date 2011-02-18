@@ -79,7 +79,7 @@ public class PackageHandler extends BaseAbstractHandler
         final Element element = parser.endElementBuilder();
 
         
-        NodeList imports = element.getElementsByTagName( "import" );     
+        NodeList imports = element.getElementsByTagName( "import" );
 
         for ( int i = 0, length = imports.getLength(); i < length; i++ ) {
             final String importEntry = ((Element)imports.item(i)).getAttribute( "name" );

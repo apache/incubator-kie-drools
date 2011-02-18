@@ -87,7 +87,7 @@ public class WorkImpl implements Work, Serializable {
     }
 
     public Set<ParameterDefinition> getParameterDefinitions() {
-        return new HashSet<ParameterDefinition>(parameterDefinitions.values());        
+        return new HashSet<ParameterDefinition>(parameterDefinitions.values());
     }
 
     public String[] getParameterNames() {

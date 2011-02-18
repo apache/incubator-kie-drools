@@ -56,7 +56,7 @@ public class WorkItemExample {
     }
 
     private static KnowledgeBase readRule() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "workitems.rf", WorkItemExample.class ),
                               ResourceType.DRF );
 

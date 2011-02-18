@@ -54,7 +54,7 @@ public class ReaderResource  extends BaseResource implements InternalResource {
 
     public InputStream getInputStream() throws IOException {
         if ( this.encoding != null ) {
-            return new ReaderInputStream( this.reader, this.encoding);         
+            return new ReaderInputStream( this.reader, this.encoding);
         } else {
             return new ReaderInputStream( this.reader);
         }

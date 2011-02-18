@@ -135,7 +135,7 @@ public class ActionType {
     public static void addNewActionType(final Map<Integer, ActionType> actionTypeMap,
                                         final String value,
                                         final int column, final int row) {
-        final String ucValue = value.toUpperCase();  
+        final String ucValue = value.toUpperCase();
 
         Code code = tag2code.get( ucValue );
         if( code == null ) code = tag2code.get( ucValue.substring( 0, 1 ) );

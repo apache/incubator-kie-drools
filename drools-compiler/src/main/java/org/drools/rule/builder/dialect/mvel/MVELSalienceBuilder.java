@@ -46,7 +46,7 @@ public class MVELSalienceBuilder
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData(dialect.getId() );
             data.addCompileable( context.getRule(),
-                                 expr );          
+                                 expr );
             
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {

@@ -180,7 +180,7 @@ implements RuleSheetListener {
 			List<String> values = getProperties().getProperty( code.getColHeader() );
 			if( values != null ){
 				if( values.size() > 1 ){
-					List<String> cells = getProperties().getPropertyCells( code.getColHeader() );					
+					List<String> cells = getProperties().getPropertyCells( code.getColHeader() );
 					throw new DecisionTableParseException( "Multiple values for " + code.getColHeader() +
 							" in cells " + cells.toString() );
 				}
@@ -560,7 +560,7 @@ implements RuleSheetListener {
 		case ACTION:
 		case METADATA:
 			actionType.addCellValue( row, column, value );
-			break;        
+			break;
 		case SALIENCE:
 			// Only if rule set is not sequential!
 			if( ! this._currentSequentialFlag ){

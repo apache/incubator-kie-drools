@@ -43,7 +43,7 @@ public class RuleBaseConfigurationTest {
         assertEquals( AssertBehaviour.EQUALITY,
                       cfg.getAssertBehaviour() );
         
-        System.getProperties().remove( "drools.assertBehaviour" );        
+        System.getProperties().remove( "drools.assertBehaviour" );
     }
 
     @Test
@@ -60,7 +60,7 @@ public class RuleBaseConfigurationTest {
         assertEquals( false,
                       cfg.isIndexLeftBetaMemory() );
         
-        System.getProperties().remove( "drools.indexLeftBetaMemory" );        
+        System.getProperties().remove( "drools.indexLeftBetaMemory" );
     }
     
     @Test
@@ -75,7 +75,7 @@ public class RuleBaseConfigurationTest {
         properties.setProperty( "drools.assertBehaviour", "equality" );
         cfg = new RuleBaseConfiguration(properties);
         
-        assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );        
+        assertEquals( AssertBehaviour.EQUALITY, cfg.getAssertBehaviour() );
     }
     
     @Test
@@ -90,7 +90,7 @@ public class RuleBaseConfigurationTest {
         properties.setProperty( "drools.logicalOverride", "discard" );
         cfg = new RuleBaseConfiguration(properties);
         
-        assertEquals( LogicalOverride.DISCARD, cfg.getLogicalOverride() );        
+        assertEquals( LogicalOverride.DISCARD, cfg.getLogicalOverride() );
     }    
     
     @Test

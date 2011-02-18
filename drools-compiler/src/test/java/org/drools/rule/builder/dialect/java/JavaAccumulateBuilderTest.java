@@ -45,7 +45,7 @@ public class JavaAccumulateBuilderTest {
         accumDescr.setActionCode( "x += $price;" );
         accumDescr.setResultCode( "new Integer( x )" );
         
-        //org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );        
+        //org.drools.rule.Package pkg = new org.drools.rule.Package( "org.drools" );
         final PackageBuilder pkgBuilder = new PackageBuilder();
         pkgBuilder.addPackage( new PackageDescr( "org.drools" ) );
         final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();

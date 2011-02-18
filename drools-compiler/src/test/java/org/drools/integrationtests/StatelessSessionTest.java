@@ -127,7 +127,7 @@ public class StatelessSessionTest {
         ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );
         assertEquals( 30,
-                      stilton.getPrice() );       
+                      stilton.getPrice() );
     }
     
     @Test
@@ -169,7 +169,7 @@ public class StatelessSessionTest {
         ExecutionResults result = ( ExecutionResults ) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
         assertEquals( 30,
-                      stilton.getPrice() ); 
+                      stilton.getPrice() );
         
         assertNull( result.getValue( "list1" ) );
         
@@ -181,7 +181,7 @@ public class StatelessSessionTest {
         
         list3 = ( List ) result.getValue( "outList3" );
         assertEquals( 1, list3.size() );
-        assertSame( stilton, list3.get( 0 ) );        
+        assertSame( stilton, list3.get( 0 ) );
     }    
     
     @Test
@@ -212,7 +212,7 @@ public class StatelessSessionTest {
         Cheese stilton2 = new Cheese( "stilton", 2);
         Cheese cheddar2 = new Cheese( "cheddar", 2);
         Cheese stilton3 = new Cheese( "stilton", 3);
-        Cheese cheddar3 = new Cheese( "cheddar", 3);  
+        Cheese cheddar3 = new Cheese( "cheddar", 3);
         
         Set set = new HashSet();
         List list = new ArrayList();
@@ -230,7 +230,7 @@ public class StatelessSessionTest {
         list.add(cheddar3);
         set.add( list );
         
-        List<Command> cmds = new ArrayList<Command>();        
+        List<Command> cmds = new ArrayList<Command>();
         cmds.add( CommandFactory.newInsert( stilton1 ) );
         cmds.add( CommandFactory.newInsert( stilton2 ) );
         cmds.add( CommandFactory.newInsert( stilton3 ) );
@@ -243,7 +243,7 @@ public class StatelessSessionTest {
         ExecutionResults batchResult = (ExecutionResults) ksession.execute( CommandFactory.newBatchExecution( cmds ) );
         
         org.drools.runtime.rule.QueryResults results = ( org.drools.runtime.rule.QueryResults) batchResult.getValue( "cheeses" );
-        assertEquals( 3, results.size() );        
+        assertEquals( 3, results.size() );
         assertEquals( 2, results.getIdentifiers().length );
         Set newSet = new HashSet();
         for ( org.drools.runtime.rule.QueryResultsRow result : results ) {
@@ -252,7 +252,7 @@ public class StatelessSessionTest {
             list.add( result.get( "cheddar" ));
             newSet.add( list );
         }
-        assertEquals( set, newSet );      
+        assertEquals( set, newSet );
     }    
     
     // @TODO need to figure out if we need to support "out" params 
@@ -264,22 +264,22 @@ public class StatelessSessionTest {
 //                                           5 );
 //        
 //        final Cheese cheddar = new Cheese( "cheddar",
-//                                           25 );   
+//                                           25 );
 //        
 //        // notice I don't export Cheessery
 //        Parameters parameters = session.newParameters();
 //        Map<String, Object> globalsIn = new HashMap<String, Object>();
 //        globalsIn.put( "inString", "string" );
-//        parameters.getGlobalParams().setIn( globalsIn );        
-//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
+//        parameters.getGlobalParams().setIn( globalsIn );
+//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) );
 //        
 //        Map<String, Object> factIn = new HashMap<String, Object>();
 //        factIn.put( "inCheese", cheddar );
 //        parameters.getFactParams().setIn( factIn );
-//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
+//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );
 // 
 //        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
-//                                                                                        parameters );        
+//                                                                                        parameters );
 //
 //        assertEquals( 2, results.getIdentifiers().size() );
 //        assertTrue( results.getIdentifiers().contains( "list" ));
@@ -291,16 +291,16 @@ public class StatelessSessionTest {
 //                      ((List) results.getValue( "list" )).get( 0 ) );
 //        
 //        assertEquals( "rule2 stilton",
-//                      ((List) results.getValue( "list" )).get( 1 ) );      
+//                      ((List) results.getValue( "list" )).get( 1 ) );
 //        
 //        assertEquals( "rule3 brie",
-//                      ((List) results.getValue( "list" )).get( 2 ) );         
+//                      ((List) results.getValue( "list" )).get( 2 ) );
 //        
 //        assertEquals( "rule4 string",
-//                      ((List) results.getValue( "list" )).get( 3 ) );          
+//                      ((List) results.getValue( "list" )).get( 3 ) );
 //
 //        // cheesery should be null
-//        assertNull( results.getValue( "cheesery" ) );        
+//        assertNull( results.getValue( "cheesery" ) );
 //        
 //    }
 //    
@@ -312,22 +312,22 @@ public class StatelessSessionTest {
 //                                           5 );
 //        
 //        final Cheese cheddar = new Cheese( "cheddar",
-//                                           25 );   
+//                                           25 );
 //        
 //        // notice I don't export Cheessery
 //        Parameters parameters = session.newParameters();
 //        Map<String, Object> globalsInOut = new HashMap<String, Object>();
 //        globalsInOut.put( "inString", "string" );
-//        parameters.getGlobalParams().setInOut( globalsInOut );        
-//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) ); 
+//        parameters.getGlobalParams().setInOut( globalsInOut );
+//        parameters.getGlobalParams().setOut( Arrays.asList(  new String[]{"list"} ) );
 //        
 //        Map<String, Object> factInOut = new HashMap<String, Object>();
 //        factInOut.put( "inCheese", cheddar );
 //        parameters.getFactParams().setInOut( factInOut );
-//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );         
+//        parameters.getFactParams().setOut( Arrays.asList(  new String[]{ "outCheese"} ) );
 // 
 //        StatelessKnowledgeSessionResults results = session.executeObjectWithParameters( stilton,
-//                                                                                        parameters );        
+//                                                                                        parameters );
 //
 //        assertEquals( 4, results.getIdentifiers().size() );
 //        assertTrue( results.getIdentifiers().contains( "list" ));
@@ -341,16 +341,16 @@ public class StatelessSessionTest {
 //                      ((List) results.getValue( "list" )).get( 0 ) );
 //        
 //        assertEquals( "rule2 stilton",
-//                      ((List) results.getValue( "list" )).get( 1 ) );      
+//                      ((List) results.getValue( "list" )).get( 1 ) );
 //        
 //        assertEquals( "rule3 brie",
-//                      ((List) results.getValue( "list" )).get( 2 ) );         
+//                      ((List) results.getValue( "list" )).get( 2 ) );
 //        
 //        assertEquals( "rule4 string",
-//                      ((List) results.getValue( "list" )).get( 3 ) );          
+//                      ((List) results.getValue( "list" )).get( 3 ) );
 //
 //        // cheesery should be null
-//        assertNull( results.getValue( "cheesery" ) );        
+//        assertNull( results.getValue( "cheesery" ) );
 //        
 //    }    
     
@@ -403,7 +403,7 @@ public class StatelessSessionTest {
     
     @Test
     public void testCopyIdentifierGlobalExporterOneValue() throws Exception {
-        StatelessSession session = getSession();       
+        StatelessSession session = getSession();
 
         // notice I don't export Cheessery
         session.setGlobalExporter( new CopyIdentifiersGlobalExporter( new String[]{"list"} ) );
@@ -434,7 +434,7 @@ public class StatelessSessionTest {
         assertSame( this.cheesery,
                     result.getGlobal( "cheesery" ) );
         
-        assertNotSame( this.globalResolver, result.getGlobalResolver() );        
+        assertNotSame( this.globalResolver, result.getGlobalResolver() );
     }    
     
     @Test
@@ -453,7 +453,7 @@ public class StatelessSessionTest {
         assertSame( this.cheesery,
                     result.getGlobal( "cheesery" ) );
         
-        assertNotSame( this.globalResolver, result.getGlobalResolver() );        
+        assertNotSame( this.globalResolver, result.getGlobalResolver() );
     }     
     
     @Test
@@ -472,7 +472,7 @@ public class StatelessSessionTest {
         assertSame( this.cheesery,
                     result.getGlobal( "cheesery" ) );
         
-        assertSame( this.globalResolver, result.getGlobalResolver() );        
+        assertSame( this.globalResolver, result.getGlobalResolver() );
     }        
 
     private StatelessSession getSession() throws Exception {

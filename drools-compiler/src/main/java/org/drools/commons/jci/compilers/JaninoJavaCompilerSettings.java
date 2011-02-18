@@ -25,7 +25,7 @@ public final class JaninoJavaCompilerSettings extends JavaCompilerSettings {
 	}
 
 	public JaninoJavaCompilerSettings( final JaninoJavaCompilerSettings pSettings ) {
-		super(pSettings);		
+		super(pSettings);
 	}
 
 }

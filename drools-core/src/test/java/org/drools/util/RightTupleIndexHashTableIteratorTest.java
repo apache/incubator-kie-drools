@@ -121,7 +121,7 @@ public class RightTupleIndexHashTableIteratorTest {
         // can't create a 0 hashCode, so forcing 
         RightTupleList rightTupleList = new RightTupleList();
         rightTupleList.add( new RightTuple( fh10, null) );
-        hashTable.getTable()[0] = rightTupleList;        
+        hashTable.getTable()[0] = rightTupleList;
         rightTupleList = new RightTupleList();
         rightTupleList.add( new RightTuple( fh11, null ) );
         rightTupleList.add( new RightTuple( fh12, null ) );
@@ -161,7 +161,7 @@ public class RightTupleIndexHashTableIteratorTest {
         assertEquals( 2, entries.length );
         
         entries = (Object[]) list.get( 4 );
-        assertEquals( 118, entries[0]);  
+        assertEquals( 118, entries[0]);
         assertEquals( 3, entries.length );
         
         

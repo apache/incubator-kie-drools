@@ -143,10 +143,10 @@ public class ReteooRuleBase extends AbstractRuleBase {
                           final FactHandleFactory factHandleFactory) {
         super( id,
                config,
-               factHandleFactory ); 
+               factHandleFactory );
         setupRete();
         if( config != null && config.isMBeansEnabled() ) {
-            DroolsManagementAgent.getInstance().registerKnowledgeBase( this ); 
+            DroolsManagementAgent.getInstance().registerKnowledgeBase( this );
         }
     }
 
@@ -170,7 +170,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
      */
     public void writeExternal(final ObjectOutput stream) throws IOException {
         DroolsObjectOutputStream droolsStream = null;
-        boolean isDrools = stream instanceof DroolsObjectOutputStream; 
+        boolean isDrools = stream instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes = null;
         
         stream.writeBoolean( isDrools );

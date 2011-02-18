@@ -118,7 +118,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         try {
             fileWriter = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true );
             final XStream xstream = new XStream();
-            List<LogEvent> eventsToWrite = null; 
+            List<LogEvent> eventsToWrite = null;
             synchronized (this.events) {
             	eventsToWrite = new ArrayList<LogEvent>(this.events);
                 clear();

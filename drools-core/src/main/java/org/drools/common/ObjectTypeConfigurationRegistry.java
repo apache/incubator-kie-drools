@@ -56,14 +56,14 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         // first see if it's a ClassObjectTypeConf        
         ObjectTypeConf objectTypeConf = null;
         Object key = ( object instanceof Fact ) ? ((Fact) object).getFactTemplate().getName() : object.getClass();
-        objectTypeConf = this.typeConfMap.get( key );            
+        objectTypeConf = this.typeConfMap.get( key );
         
         // it doesn't exist, so create it.
         if ( objectTypeConf == null ) {
             if ( object instanceof Fact ) {;
                 objectTypeConf = new FactTemplateTypeConf( entrypoint,
                                                            ((Fact) object).getFactTemplate(),
-                                                           this.ruleBase );           
+                                                           this.ruleBase );
             } else {
                 objectTypeConf = new ClassObjectTypeConf( entrypoint,
                                                           (Class<?>) key,

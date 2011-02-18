@@ -55,11 +55,11 @@ public class FunctionHandlers {
             String functionName =  ( (LispAtom) form.getSExpressions()[0]).getValue();
             Function function = FunctionHandlers.getInstance().getFunction( functionName );
             if ( function != null ) {
-                function.dump(form, appendable );                
+                function.dump(form, appendable );
             } else if ( form.getSExpressions()[0] instanceof VariableLispAtom ){
                 // try and execute this as a java call
                 function = FunctionHandlers.getInstance().getFunction( "call" );
-                function.dump(form, appendable );                
+                function.dump(form, appendable );
             } else {
                 // execute as user function
                 appendable.append( functionName + "(" );
@@ -69,7 +69,7 @@ public class FunctionHandlers {
                         appendable.append( ", " );
                     }
                 }
-                appendable.append( ")" );                
+                appendable.append( ")" );
             }
         }    
         if ( root ) {

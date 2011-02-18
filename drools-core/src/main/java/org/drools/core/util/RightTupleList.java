@@ -221,7 +221,7 @@ public class RightTupleList
             RightTuple rightTuple = ( RightTuple ) this.first.getNext();
             if ( rightTuple != null ) {
                 return this.index.equal( rightTuple.getFactHandle().getObject(),
-                                         tuple );                  
+                                         tuple );
             }
         }
         

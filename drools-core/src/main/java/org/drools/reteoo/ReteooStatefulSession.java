@@ -117,7 +117,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         
         byte[] bytes = stream.toByteArray();
         out.writeInt( bytes.length );
-        out.write( bytes );  
+        out.write( bytes );
     }
 
     public void readExternal(ObjectInput in) throws IOException,

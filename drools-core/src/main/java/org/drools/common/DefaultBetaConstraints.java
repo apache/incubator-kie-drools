@@ -84,7 +84,7 @@ public class DefaultBetaConstraints
 	    			if ( firstUnification != -1 ) {
 		    			// We have a unification constraint before a normal constraint, so swap
 		    			swap(constraints, i, firstUnification);
-		    			break; 				
+		    			break;
 	    			} else {
 	    				// The first constraint is not a unification, do nothing
 	    				break;

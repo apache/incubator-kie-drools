@@ -233,7 +233,7 @@ public class PackageBuilder {
         }
 
         // FIXME, we need to get drools to support "default" namespace.
-        //this.defaultNamespace = pkg.getName();        
+        //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new HashMap<String, PackageRegistry>();

@@ -27,7 +27,7 @@ public class JaxbCollectionAdapter extends XmlAdapter<JaxbListWrapper, Collectio
     @Override
     public JaxbListWrapper marshal(Collection v) throws Exception {
         if ( v == null ) {
-            return new JaxbListWrapper( new Object[0] ); 
+            return new JaxbListWrapper( new Object[0] );
         }
         return new JaxbListWrapper( v.toArray( new Object[v.size()]) );
     }

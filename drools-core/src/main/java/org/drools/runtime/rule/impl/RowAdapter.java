@@ -36,7 +36,7 @@ public class RowAdapter implements Row {
 	}
 	
     private InternalFactHandle getFactHandle(Declaration declr) {
-        return this.factHandles[  declr.getPattern().getOffset() ]; 
+        return this.factHandles[  declr.getPattern().getOffset() ];
     }  	
 
 	public Object get(String identifier) {
@@ -59,7 +59,7 @@ public class RowAdapter implements Row {
         if ( declr == null ) {
             throw new RuntimeException("The identifier '" + identifier + "' does not exist as a bound varirable for this query" );
         }
-        InternalFactHandle factHandle = getFactHandle( declr );		
+        InternalFactHandle factHandle = getFactHandle( declr );
 		return factHandle;
 	}
 

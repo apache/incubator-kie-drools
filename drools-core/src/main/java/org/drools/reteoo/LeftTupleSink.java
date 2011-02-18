@@ -63,7 +63,7 @@ public interface LeftTupleSink
     public void modifyLeftTuple(InternalFactHandle factHandle,
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
-                                InternalWorkingMemory workingMemory);    
+                                InternalWorkingMemory workingMemory);
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,

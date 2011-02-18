@@ -61,7 +61,7 @@ public class ReteooRuleBuilder {
         this.utils.addBuilder( EvalCondition.class,
                                new EvalBuilder() );
         this.utils.addBuilder( QueryElement.class,
-                               new QueryElementBuilder() );        
+                               new QueryElementBuilder() );
         this.utils.addBuilder( From.class,
                                new FromBuilder() );
         this.utils.addBuilder( Collect.class,
@@ -121,7 +121,7 @@ public class ReteooRuleBuilder {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );
                 context.setTerminalNodeMemoryEnabled( true );
-                context.setAlphaNodeMemoryAllowed( true );                
+                context.setAlphaNodeMemoryAllowed( true );
             }
             
             // adds subrule

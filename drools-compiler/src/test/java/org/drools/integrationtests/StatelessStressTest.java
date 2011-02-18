@@ -65,14 +65,14 @@ public class StatelessStressTest {
                                 throw new RuntimeException(ex);
                             }
                             Person p = new Person();
-                            p.setName( "Michael" ); 
+                            p.setName( "Michael" );
                             Address add1 = new Address();
                             add1.setStreet( "High" );
                             Address add2 = new Address();
                             add2.setStreet( "Low" );
                             List l = new ArrayList();
                             l.add( add1 ); l.add( add2 );
-                            p.setAddresses( l );        
+                            p.setAddresses( l );
                             sess.execute( p );
                             
                             long current = System.currentTimeMillis() - start;

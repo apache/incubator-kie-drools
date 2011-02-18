@@ -37,7 +37,7 @@ public class RulesheetUtil {
      */
     public static RuleSheetListener getRuleSheetListener(final InputStream stream) throws IOException {
         final Map<String, List<DataListener>> sheetListeners = new HashMap<String, List<DataListener>>();
-        final List<DataListener> listeners = new ArrayList<DataListener>(); 
+        final List<DataListener> listeners = new ArrayList<DataListener>();
         final RuleSheetListener listener = new DefaultRuleSheetListener();
         listeners.add(listener);
         sheetListeners.put( ExcelParser.DEFAULT_RULESHEET_NAME,

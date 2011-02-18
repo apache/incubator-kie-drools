@@ -100,7 +100,7 @@ import org.mvel2.MVEL;
  * drools.maxThreads = &lt;-1|1..n&gt;
  * drools.multithreadEvaluation = &lt;true|false&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
- * drools.classLoaderCacheEnabled = &lt;true|false&gt; 
+ * drools.classLoaderCacheEnabled = &lt;true|false&gt;
  * </pre>
  */
 public class RuleBaseConfiguration

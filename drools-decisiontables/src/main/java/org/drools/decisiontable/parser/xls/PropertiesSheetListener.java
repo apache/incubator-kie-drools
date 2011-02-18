@@ -131,10 +131,10 @@ public class PropertiesSheetListener implements DataListener {
 		}
 
 		public void addProperty( String key, String[] value ){
-			key = key.toLowerCase(); 
+			key = key.toLowerCase();
 			List<String[]> r  = getPropertyCell( key );
 			if( r == null ){
-				r = new ArrayList<String[]>();    			
+				r = new ArrayList<String[]>();
 			}
 			r.add( value );
 			super.put( key, r );
@@ -161,7 +161,7 @@ public class PropertiesSheetListener implements DataListener {
 		private String getSingle( String key, int index ){
 			List<String[]> r  = getPropertyCell( key );
 			if( r == null || r.size() == 0 ) return null;
-			return r.get( 0 )[index];			
+			return r.get( 0 )[index];
 		}
 
 		public String getSingleProperty( String key ){

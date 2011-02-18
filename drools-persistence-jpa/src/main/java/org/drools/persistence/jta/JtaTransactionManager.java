@@ -53,7 +53,7 @@ public class JtaTransactionManager
         if ( ut instanceof UserTransaction ) {
             this.ut = ( UserTransaction ) ut;
         } else {
-            this.ut = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );    
+            this.ut = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );
         }
         
         if ( tm instanceof javax.transaction.TransactionManager ) {
@@ -171,7 +171,7 @@ public class JtaTransactionManager
                                             e );
             }
         } else {
-            localTransaction = false;   
+            localTransaction = false;
         }
     }
     

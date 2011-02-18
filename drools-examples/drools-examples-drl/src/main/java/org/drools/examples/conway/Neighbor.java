@@ -34,7 +34,7 @@ public class Neighbor {
     }       
     
     public String toString() {
-        return "cell '"+ this.cell + "' neighbour '" + this.neighbor + "'"; 
+        return "cell '"+ this.cell + "' neighbour '" + this.neighbor + "'";
     }
     
 }

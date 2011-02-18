@@ -79,7 +79,7 @@ public class LeftTuple
         this.handle = factHandle;
 
         if ( leftTupleMemoryEnabled ) {
-            LeftTuple first = handle.getLastLeftTuple();                     
+            LeftTuple first = handle.getLastLeftTuple();
             if ( first == null ) {
                 // node other LeftTuples, just add.
                 handle.setFirstLeftTuple( this );
@@ -147,7 +147,7 @@ public class LeftTuple
                 } else {
                     leftTuple.firstChild = this;
                 }
-                leftTuple.lastChild = this;         
+                leftTuple.lastChild = this;
             } else {
                 // insert before current child
                 this.leftParentNext = currentLeftChild;
@@ -168,7 +168,7 @@ public class LeftTuple
                 } else {
                     rightTuple.firstChild = this;
                 }
-                rightTuple.lastChild = this;             
+                rightTuple.lastChild = this;
             } else {
                 // insert before current child
                 this.rightParentNext = currentRightChild;
@@ -186,7 +186,7 @@ public class LeftTuple
     }
     
     public void reAdd() {
-        LeftTuple first = handle.getLastLeftTuple();                     
+        LeftTuple first = handle.getLastLeftTuple();
         if ( first == null ) {
             // node other LeftTuples, just add.
             handle.setFirstLeftTuple( this );
@@ -217,7 +217,7 @@ public class LeftTuple
             // re-add to end
             this.leftParentPrevious = this.leftParent.lastChild;
             this.leftParentPrevious.leftParentNext = this;
-            this.leftParent.lastChild = this;            
+            this.leftParent.lastChild = this;
             this.leftParentNext = null;
         }
     }
@@ -239,7 +239,7 @@ public class LeftTuple
             // re-add to end            
             this.rightParentPrevious = this.rightParent.lastChild;
             this.rightParentPrevious.rightParentNext = this;
-            this.rightParent.lastChild = this;    
+            this.rightParent.lastChild = this;
             this.rightParentNext = null;
         }
     }
@@ -269,7 +269,7 @@ public class LeftTuple
                 // relevant to the root node, as here the parent is the FactHandle, only happens at rule removal time
                 this.handle.setLastLeftTuple( previousParent );
             }
-            previousParent.leftParentNext = null;                
+            previousParent.leftParentNext = null;
         } else {
             // single remaining item, no previous or next
             if( leftParent != null ) {
@@ -569,7 +569,7 @@ public class LeftTuple
      * the begining of the tuple
      * 
      * @return a ReteTuple containing the "elements" first elements
-     * of this tuple or null if "elements" is greater than size; 
+     * of this tuple or null if "elements" is greater than size;
      */
     public LeftTuple getSubTuple(final int elements) {
         LeftTuple entry = this;

@@ -74,7 +74,7 @@ public class ConstraintConnectiveDescr extends BaseDescr {
 
     public void addOrMerge(final BaseDescr baseDescr) {
         if ( baseDescr instanceof ConstraintConnectiveDescr ) {
-            ConstraintConnectiveDescr con = (ConstraintConnectiveDescr)baseDescr; 
+            ConstraintConnectiveDescr con = (ConstraintConnectiveDescr)baseDescr;
             if( con.getConnective().equals( this.connective ) ) {
                 for( BaseDescr descr : con.getDescrs() ) {
                     addDescr( descr );

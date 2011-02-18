@@ -138,7 +138,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         boolean useLeftMemory = true;
         if ( !this.leftTupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();                
+            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
             if ( object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
                 useLeftMemory = false;
             } 

@@ -51,17 +51,17 @@ public class InstancesHashcodedTest {
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
         byte[] d = builder.buildClass( classDef);
-        JavaDialectRuntimeData data = new JavaDialectRuntimeData();  
+        JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
                        d );
         ClassLoader classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
-        store.setEagerWire( true );            
+        store.setEagerWire( true );
         
         Class clazz = classLoader.loadClass( classDef.getClassName() );
-        classDef.setDefinedClass( clazz );    
+        classDef.setDefinedClass( clazz );
         
         return clazz;
         

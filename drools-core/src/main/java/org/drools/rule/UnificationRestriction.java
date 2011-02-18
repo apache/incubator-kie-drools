@@ -160,7 +160,7 @@ public class UnificationRestriction
             Object object = this.declaration.getValue( workingMemory, tuple.get( 0 ).getObject() );
             if ( !(object instanceof Variable) ) {
                 this.variable = null;
-                this.contextEntry.updateFromTuple( workingMemory, tuple );    
+                this.contextEntry.updateFromTuple( workingMemory, tuple );
             } else {                
                 this.variable = (Variable) object;
             }

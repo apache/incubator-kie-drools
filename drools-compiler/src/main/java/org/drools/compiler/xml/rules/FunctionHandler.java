@@ -83,10 +83,10 @@ public class FunctionHandler extends BaseAbstractHandler
         final NodeList parameters = element.getElementsByTagName( "parameter" );
 
         for ( int i = 0, length = parameters.getLength(); i < length; i++ ) {
-            final String identifier = ((Element)parameters.item( i )).getAttribute( "identifier" );      
+            final String identifier = ((Element)parameters.item( i )).getAttribute( "identifier" );
             final String type = ((Element)parameters.item( i )).getAttribute( "type" );
             
-            emptyAttributeCheck("parameter", "identifier", identifier, parser);                  
+            emptyAttributeCheck("parameter", "identifier", identifier, parser);
             emptyAttributeCheck("parameter", "type", type, parser);
             
             functionDescr.addParameter( type,

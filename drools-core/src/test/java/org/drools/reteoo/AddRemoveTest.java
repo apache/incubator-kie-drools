@@ -34,7 +34,7 @@ public class AddRemoveTest extends DroolsTestCase {
          * create a RuleBase with a single ObjectTypeNode we attach a
          * MockObjectSink so we can detect assertions and retractions
          */
-        final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();        
+        final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
         
         final EntryPointNode entryPoint = new EntryPointNode( -1,

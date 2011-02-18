@@ -27,7 +27,7 @@ public class RhsBuilderTest {
         builder.addTemplate( 10, 1, "p.setSomething($param);" );
         builder.addTemplate( 10, 2, "drools.clearAgenda();" );
                 
-        builder.addCellValue( 12, 1, "42" );       
+        builder.addCellValue( 12, 1, "42" );
         
         assertEquals("p.setSomething(42);", builder.getResult());
                 
@@ -40,7 +40,7 @@ public class RhsBuilderTest {
         RhsBuilder builder = new RhsBuilder( ActionType.Code.METADATA, 9, 1, "");
         builder.addTemplate( 10, 1, "Author($param)" );
                 
-        builder.addCellValue( 12, 1, "A. U. Thor" );       
+        builder.addCellValue( 12, 1, "A. U. Thor" );
         assertEquals("Author(A. U. Thor)", builder.getResult());
         builder.clearValues();
         
@@ -51,7 +51,7 @@ public class RhsBuilderTest {
     @Test
     public void testEmptyCellData() {
         RhsBuilder builder = new RhsBuilder( ActionType.Code.ACTION, 9, 1, "Foo");
-        builder.addTemplate( 10, 1, "p.setSomething($param);" );        
+        builder.addTemplate( 10, 1, "p.setSomething($param);" );
         assertFalse(builder.hasValues());
     }
     

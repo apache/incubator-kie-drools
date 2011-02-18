@@ -203,7 +203,7 @@ public class DRLLexer extends Lexer {
             } while (true);
 
             if ( state.backtracking==0 ) {
-               _channel=HIDDEN; 
+               _channel=HIDDEN;
             }
 
             }
@@ -3137,7 +3137,7 @@ public class DRLLexer extends Lexer {
             }
 
             if ( state.backtracking==0 ) {
-               _channel=HIDDEN; 
+               _channel=HIDDEN;
             }
 
             }
@@ -3200,7 +3200,7 @@ public class DRLLexer extends Lexer {
             match("*/"); if (state.failed) return ;
 
             if ( state.backtracking==0 ) {
-               _channel=HIDDEN; 
+               _channel=HIDDEN;
             }
 
             }
@@ -3300,7 +3300,7 @@ public class DRLLexer extends Lexer {
 
                     match('`'); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	state.text = getText().substring(1, getText().length() - 1);	
+                      	state.text = getText().substring(1, getText().length() - 1);
                     }
 
                     }

@@ -117,6 +117,6 @@ public class QueryResult {
      * @return
      */
     private Object getObject(FactHandle factHandle) {
-        return (( InternalFactHandle ) factHandle).getObject(); 
+        return (( InternalFactHandle ) factHandle).getObject();
     }
 }
