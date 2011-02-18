@@ -5,9 +5,8 @@ import br.com.auster.drools.sample.SampleObject;
 expander latin.dsl;  // so I had to change the filename to this
 
 rule "Latin Sample"
-	when
-		Objeto éé igual a 1
-	then
-		Mostre Objeto
+    when
+        Objeto ï¿½ï¿½ igual a 1
+    then
+        Mostre Objeto
 end
-  

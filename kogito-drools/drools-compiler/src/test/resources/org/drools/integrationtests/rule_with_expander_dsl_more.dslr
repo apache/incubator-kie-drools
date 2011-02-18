@@ -13,11 +13,11 @@ global java.util.List messages;
 
 
 rule "my rule"
-	when
-		#both of these should stop it from firing
-		person with eval		
-		>cheese : Cheese() eval(cheese.getType().equals( "brie" ) )
-	then
-		>messages.add("fired");
+    when
+        #both of these should stop it from firing
+        person with eval
+        >cheese : Cheese() eval(cheese.getType().equals( "brie" ) )
+    then
+        >messages.add("fired");
 end
 

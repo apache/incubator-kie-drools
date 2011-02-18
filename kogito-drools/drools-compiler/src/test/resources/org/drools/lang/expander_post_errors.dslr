@@ -3,10 +3,10 @@ expander foo.dsl
 
 rule simple_rule 
   when
-	Foo().
-	Bar()
-	bax() from wee()
-	k x
+    Foo().
+    Bar()
+    bax() from wee()
+    k x
   then
-  	baz
+      baz
 end

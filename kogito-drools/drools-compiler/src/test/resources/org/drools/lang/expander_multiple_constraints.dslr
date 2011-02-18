@@ -6,13 +6,13 @@ expander multiple_constraints.dsl
 
 
 rule "Your First Rule"
-	
-	when
-		There is a Person with 
-			-   age less than 42
-			-location is 'atlanta'
-		Bar bar black sheep
-	then 
-		Log "hola bob"		
-		
+
+    when
+        There is a Person with
+            -   age less than 42
+            -location is 'atlanta'
+        Bar bar black sheep
+    then
+        Log "hola bob"
+
 end
