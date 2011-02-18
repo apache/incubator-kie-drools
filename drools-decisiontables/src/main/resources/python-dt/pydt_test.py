@@ -19,26 +19,26 @@ test_table = {
 pydt.process_dt(test_fact, test_table)
 print "RESULT: " + str(test_fact)
 if not test_fact.has_key("Premium") :
-	print("ERROR: no premium was calculated")
+    print("ERROR: no premium was calculated")
 if  test_fact["Premium"] == '245' :
-	print("PASSED STEP 1")
+    print("PASSED STEP 1")
 else :
-	print("FAILED STEP 1: Premium was " + test_fact["Premium"])
+    print("FAILED STEP 1: Premium was " + test_fact["Premium"])
 
 #some simple test
 tbl = pydt.load_xls("Example.xls")
 if tbl['condition_headers'][0][1] == "Age" :
-	print "PASSED STEP 2"
+    print "PASSED STEP 2"
 else:
-	print "FAILED STEP 2"
+    print "FAILED STEP 2"
 
 #now test it all, end to end
 test_fact = { "Age" : 42, "Risk" : "'HIGH'", "PolicyType" : "'COMPREHENSIVE'" }
 pydt.process_dt(test_fact, tbl)
 if not test_fact.has_key("Premium") :
-	print("ERROR: no premium was calculated")
+    print("ERROR: no premium was calculated")
 premium = test_fact["Premium"]
 if premium == 245 :
-	print("PASSED STEP 3")
+    print("PASSED STEP 3")
 else :
-	print("FAILED STEP 3: Premium was " + test_fact["Premium"])
+    print("FAILED STEP 3: Premium was " + test_fact["Premium"])
