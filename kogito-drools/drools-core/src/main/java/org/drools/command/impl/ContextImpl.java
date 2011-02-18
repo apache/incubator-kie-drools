@@ -60,7 +60,7 @@ public class ContextImpl
 
     public String getName() {
         return this.name;
-    }    
+    }
 
     public Object get(String identifier) {
         Object object = context.get( identifier );

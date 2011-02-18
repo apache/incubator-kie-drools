@@ -21,7 +21,7 @@ public class ProcessMarshallerFactory {
 		return service;
 	}
 
-	private static void loadProvider() {	    	    	    
+	private static void loadProvider() {
         ServiceRegistryImpl.getInstance().addDefault( ProcessMarshallerFactoryService.class, "org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl" );
         setProcessMarshallerFactoryService(ServiceRegistryImpl.getInstance().get( ProcessMarshallerFactoryService.class ) );
 	}

@@ -84,7 +84,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }      
+    }
     
     @Test
     public void testNotContainsBooleanArray() throws Exception {
@@ -150,7 +150,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }          
+    }
     
     @Test
     public void testContainsByteArray() throws Exception {
@@ -215,7 +215,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }       
+    }
     
     @Test
     public void testNotContainsByteArray() throws Exception {
@@ -280,7 +280,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }           
+    }
     
     @Test
     public void testContainsShortArray() throws Exception {
@@ -345,7 +345,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }       
+    }
     
     @Test
     public void testNotContainsShortArray() throws Exception {
@@ -410,7 +410,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }           
+    }
     
     @Test
     public void testContainsCharArray() throws Exception {
@@ -475,7 +475,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }     
+    }
     
     @Test
     public void testNotContainsCharArray() throws Exception {
@@ -540,7 +540,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }         
+    }
     
     @Test
     public void testContainsIntArray() throws Exception {
@@ -606,7 +606,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    } 
+    }
     
     @Test
     public void testNotContainsIntArray() throws Exception {
@@ -672,7 +672,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }     
+    }
     
     @Test
     public void testContainsLongArray() throws Exception {
@@ -738,7 +738,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }     
+    }
     
     @Test
     public void testNotContainsLongArray() throws Exception {
@@ -804,7 +804,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }         
+    }
     
     @Test
     public void testContainsFloatArray() throws Exception {
@@ -870,7 +870,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }     
+    }
     
     @Test
     public void testNotContainsFloatArray() throws Exception {
@@ -936,7 +936,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }         
+    }
        
     
     @Test
@@ -1004,7 +1004,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }    
+    }
     
     @Test
     public void testNotContainsDoubleArray() throws Exception {
@@ -1071,7 +1071,7 @@ public class ArrayContainsTest {
 
         assertEquals( 2,
                       list.size() );
-    }       
+    }
     
     
          

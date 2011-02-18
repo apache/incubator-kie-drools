@@ -121,7 +121,7 @@ public class QueryElement extends ConditionalElement
        out.writeObject( this.requiredDeclarations );
        out.writeObject( this.declIndexes );
        out.writeObject( this.variables );
-    }    
+    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

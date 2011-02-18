@@ -79,7 +79,7 @@ public class InsertObjectCommand
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
         FactHandle factHandle;
-        if ( StringUtils.isEmpty( this.entryPoint ) ) { 
+        if ( StringUtils.isEmpty( this.entryPoint ) ) {
             factHandle = ksession.insert( object );
         } else {
             factHandle = ksession.getWorkingMemoryEntryPoint( this.entryPoint ).insert( object );

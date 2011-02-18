@@ -75,7 +75,7 @@ public class LiteralRestriction
 
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
-    }    
+    }
     
     public Evaluator getEvaluator() {
         return this.evaluator;

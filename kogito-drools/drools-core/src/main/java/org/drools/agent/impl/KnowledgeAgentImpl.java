@@ -1337,7 +1337,7 @@ public class KnowledgeAgentImpl
     
     public void removeEventListener(KnowledgeAgentEventListener listener) {
         this.eventSupport.removeEventListener( listener );
-    }    
+    }
 
     public void dispose() {
         synchronized ( this.registeredResources ) {

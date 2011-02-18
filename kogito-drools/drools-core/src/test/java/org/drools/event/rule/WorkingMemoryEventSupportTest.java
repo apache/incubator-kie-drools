@@ -131,5 +131,5 @@ public class WorkingMemoryEventSupportTest {
 
         ksession.insert( cheddar );
         assertTrue( wmList.isEmpty() );
-    }    
+    }
 }

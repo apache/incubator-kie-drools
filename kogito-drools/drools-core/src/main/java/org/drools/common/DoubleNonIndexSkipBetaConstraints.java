@@ -49,7 +49,7 @@ public class DoubleNonIndexSkipBetaConstraints
     
     public DoubleNonIndexSkipBetaConstraints() {
 
-    }    
+    }
     
     
     public DoubleNonIndexSkipBetaConstraints(DoubleBetaConstraints constraints) {

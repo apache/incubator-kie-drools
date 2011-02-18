@@ -38,7 +38,7 @@ public class CreateListFunction implements Function {
             
             FunctionHandlers.dump( sExpressions[i], appendable );
             
-            if ( i != length -1 ) { 
+            if ( i != length -1 ) {
                 appendable.append( "," );
             }
         }

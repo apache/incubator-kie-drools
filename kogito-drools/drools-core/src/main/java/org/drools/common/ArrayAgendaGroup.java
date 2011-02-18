@@ -202,7 +202,7 @@ public class ArrayAgendaGroup
 
     public String toString() {
         return "AgendaGroup '" + this.name + "'";
-    }   
+    }
 
     public boolean equal(final Object object) {
         if ( (object == null) || !(object instanceof ArrayAgendaGroup) ) {
@@ -226,5 +226,5 @@ public class ArrayAgendaGroup
     
     public void remove(AgendaItem agendaItem) {
         throw new UnsupportedOperationException();
-    }    
+    }
 }

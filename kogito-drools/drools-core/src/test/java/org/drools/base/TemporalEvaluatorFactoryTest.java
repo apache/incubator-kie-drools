@@ -717,7 +717,7 @@ public class TemporalEvaluatorFactoryTest {
              {foo,   "not meets[1]", bar, Boolean.FALSE}, 
              {foo,   "not meets[1]", drool, Boolean.TRUE}, 
              {foo,   "not meets[1]", mole, Boolean.FALSE}, 
-             {foo,   "not meets[2]", drool, Boolean.FALSE} 
+             {foo,   "not meets[2]", drool, Boolean.FALSE}
             };
 
         runEvaluatorTest( data,
@@ -770,7 +770,7 @@ public class TemporalEvaluatorFactoryTest {
              {foo,   "not metby[1]", bar, Boolean.FALSE}, 
              {foo,   "not metby[1]", drool, Boolean.TRUE}, 
              {foo,   "not metby[1]", mole, Boolean.FALSE}, 
-             {foo,   "not metby[2]", drool, Boolean.FALSE} 
+             {foo,   "not metby[2]", drool, Boolean.FALSE}
             };
 
         runEvaluatorTest( data,
@@ -837,7 +837,7 @@ public class TemporalEvaluatorFactoryTest {
              {foo,   "not overlaps[1,3]", drool, Boolean.TRUE}, 
              {foo,   "not overlaps[1,3]", mole, Boolean.TRUE}, 
              {foo,   "not overlaps[4,6]", bar, Boolean.TRUE}, 
-             {foo,   "not overlaps[1,8]", mole, Boolean.TRUE} 
+             {foo,   "not overlaps[1,8]", mole, Boolean.TRUE}
             };
 
         runEvaluatorTest( data,
@@ -904,7 +904,7 @@ public class TemporalEvaluatorFactoryTest {
              {foo,   "not overlappedby[1,3]", drool, Boolean.TRUE}, 
              {foo,   "not overlappedby[1,3]", mole, Boolean.TRUE}, 
              {foo,   "not overlappedby[4,6]", bar, Boolean.TRUE}, 
-             {foo,   "not overlappedby[1,8]", mole, Boolean.TRUE} 
+             {foo,   "not overlappedby[1,8]", mole, Boolean.TRUE}
             };
 
         runEvaluatorTest( data,

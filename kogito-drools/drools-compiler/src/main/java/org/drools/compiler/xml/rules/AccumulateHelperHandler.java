@@ -60,7 +60,7 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
                                                   attrs );
 
         return new BaseDescr();
-    }    
+    }
     
     public Object end(final String uri,
                       final String localName,
@@ -79,10 +79,10 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
         if ( localName.equals( "init" ) ) {
             emptyContentCheck( localName, expression, parser );
             accumulate.setInitCode( expression.trim() );
-        } else if ( localName.equals( "action" ) ) {  
+        } else if ( localName.equals( "action" ) ) {
             emptyContentCheck( localName, expression, parser );
             accumulate.setActionCode( expression.trim() );
-        } else if ( localName.equals( "result" ) ) { 
+        } else if ( localName.equals( "result" ) ) {
             emptyContentCheck( localName, expression, parser );
             accumulate.setResultCode( expression.trim() );
         } else if ( localName.equals( "reverse" ) ) {
@@ -97,6 +97,6 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
 
     public Class generateNodeFor() {
         return BaseDescr.class;
-    }    
+    }
 
 }

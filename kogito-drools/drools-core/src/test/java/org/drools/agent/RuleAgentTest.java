@@ -459,7 +459,7 @@ public class RuleAgentTest {
     //        assertEquals( 2,
     //                      kbase.getKnowledgePackages().size() );
     //
-    //    }    
+    //    }
 
     @Test
     public void testPollingFilesRuleBaseRemoveNewInstanceFalse() throws Exception {

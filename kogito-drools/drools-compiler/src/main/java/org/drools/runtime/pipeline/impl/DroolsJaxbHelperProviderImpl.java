@@ -201,7 +201,7 @@ public class DroolsJaxbHelperProviderImpl
 			return JAXBContext.newInstance(classes, properties);
 		} catch (ClassNotFoundException e) {
 			throw new JAXBException("Unable to resolve class '" + classNames[i] + "'", e);
-		}        
+		}
     }
 
     private static String convertToResource(String string) {

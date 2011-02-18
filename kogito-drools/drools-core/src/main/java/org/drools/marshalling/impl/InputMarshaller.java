@@ -239,7 +239,7 @@ public class InputMarshaller {
         }
 
         return session;
-    }    
+    }
 
     public static void readAgenda(MarshallerReaderContext context,
                                   DefaultAgenda agenda) throws IOException {
@@ -393,8 +393,8 @@ public class InputMarshaller {
             String entryPointId = context.readUTF();
             if(entryPointId != null && !entryPointId.equals("")){
                 entryPoint = context.wm.getEntryPoints().get(entryPointId);
-            } 
-        }        
+            }
+        }
 
         InternalFactHandle handle = new DefaultFactHandle( id,
                                                            object,

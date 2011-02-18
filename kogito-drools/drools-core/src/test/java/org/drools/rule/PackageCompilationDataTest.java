@@ -83,7 +83,7 @@ public class PackageCompilationDataTest {
             pcData.write(className.replace('.', '/') + ".class", read(is));
         } finally {
             is.close();
-        }                
+        }
         
         pcData.onAdd( pkg.getDialectRuntimeRegistry(), rb.getRootClassLoader() );
         pcData.onBeforeExecute();

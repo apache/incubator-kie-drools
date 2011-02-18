@@ -67,7 +67,7 @@ public class ReturnValueConstraint extends MutableTypeConstraint
     
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
-    }    
+    }
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();

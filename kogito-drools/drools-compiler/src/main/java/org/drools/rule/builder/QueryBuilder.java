@@ -65,7 +65,7 @@ public class QueryBuilder implements EngineElementBuilder {
                 declr.setReadAccessor( reader );
                 
                 declarations[i] = declr;
-             }            
+             }
             
             ((Query)context.getRule()).setParameters( declarations );
             

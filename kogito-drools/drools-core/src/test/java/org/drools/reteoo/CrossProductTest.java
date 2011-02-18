@@ -90,7 +90,7 @@ public class CrossProductTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         } );
 
         this.pkg = new Package( "org.drools" );

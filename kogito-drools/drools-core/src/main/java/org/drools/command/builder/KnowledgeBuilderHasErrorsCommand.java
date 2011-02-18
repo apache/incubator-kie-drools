@@ -37,7 +37,7 @@ public class KnowledgeBuilderHasErrorsCommand
     
     public KnowledgeBuilderHasErrorsCommand(String outIdentifier) {
         this.outIdentifier = outIdentifier;
-    }    
+    }
 
     public Boolean execute(Context context) {
         KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();

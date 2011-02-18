@@ -75,7 +75,7 @@ public class ForallHandler extends BaseAbstractHandler
         final ForallDescr forallDescr = new ForallDescr();
 
         return forallDescr;
-    }    
+    }
 
     /* (non-Javadoc)
      * @see org.drools.xml.Handler#end(java.lang.String, java.lang.String)

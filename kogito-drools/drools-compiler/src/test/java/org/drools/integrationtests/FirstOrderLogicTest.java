@@ -62,41 +62,41 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
  
-public class FirstOrderLogicTest { 
-    protected RuleBase getRuleBase() throws Exception { 
+public class FirstOrderLogicTest {
+    protected RuleBase getRuleBase() throws Exception {
  
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, 
                                             null );
-    } 
+    }
  
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception { 
+    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
  
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO, 
                                             config );
-    } 
+    }
  
-    private KnowledgeBase loadKnowledgeBase(String fileName) { 
+    private KnowledgeBase loadKnowledgeBase(String fileName) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName, 
                                                             getClass() ), 
                       ResourceType.DRL );
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors.size() > 0 ) { 
-            for ( KnowledgeBuilderError error : errors ) { 
+        if ( errors.size() > 0 ) {
+            for ( KnowledgeBuilderError error : errors ) {
                 System.err.println( error );
-            } 
+            }
             throw new IllegalArgumentException( "Could not parse knowledge." );
-        } 
+        }
         assertFalse( kbuilder.hasErrors() );
  
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         kbase.addKnowledgePackages( knowledgePackages );
         return kbase;
-    } 
+    }
  
     @Test 
-    public void testCollect() throws Exception { 
+    public void testCollect() throws Exception {
  
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
@@ -141,10 +141,10 @@ public class FirstOrderLogicTest {
                              ((Collection) results.get( 0 )).size() );
         assertEquals( ArrayList.class.getName(), 
                              results.get( 0 ).getClass().getName() );
-    } 
+    }
  
     @Test 
-    public void testCollectNodeSharing() throws Exception { 
+    public void testCollectNodeSharing() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_collectNodeSharing.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -179,10 +179,10 @@ public class FirstOrderLogicTest {
  
         assertEquals( 2, 
                       ((List) results.get( 0 )).size() );
-    } 
+    }
  
     @Test 
-    public void testCollectModify() throws Exception { 
+    public void testCollectModify() throws Exception {
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Collect.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
@@ -204,9 +204,9 @@ public class FirstOrderLogicTest {
                                        "stilton" );
  
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
-        for ( int i = 0; i < cheese.length; i++ ) { 
+        for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
-        } 
+        }
         final FactHandle bobHandle = wm.insert( bob );
  
         // ---------------- 1st scenario 
@@ -250,10 +250,10 @@ public class FirstOrderLogicTest {
         // should not have fired as per constraint 
         assertEquals( fireCount, 
                              results.size() );
-    } 
+    }
  
     @Test 
-    public void testCollectResultConstraints() throws Exception { 
+    public void testCollectResultConstraints() throws Exception {
  
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectResultConstraints.drl" ) );
@@ -292,10 +292,10 @@ public class FirstOrderLogicTest {
                              ((Collection) results.get( 0 )).size() );
         assertEquals( ArrayList.class.getName(), 
                              results.get( 0 ).getClass().getName() );
-    } 
+    }
  
     @Test 
-    public void testExistsWithBinding() throws Exception { 
+    public void testExistsWithBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ExistsWithBindings.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -320,10 +320,10 @@ public class FirstOrderLogicTest {
         assertTrue( list.contains( c.getType() ) );
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testNot() throws Exception { 
+    public void testNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -357,10 +357,10 @@ public class FirstOrderLogicTest {
         assertTrue( list.contains( new Integer( 6 ) ) );
         assertTrue( list.contains( new Integer( 7 ) ) );
         assertTrue( list.contains( new Integer( 8 ) ) );
-    } 
+    }
  
     @Test 
-    public void testNotWithBindings() throws Exception { 
+    public void testNotWithBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_with_bindings_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -400,10 +400,10 @@ public class FirstOrderLogicTest {
  
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testExists() throws Exception { 
+    public void testExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "exists_rule_test.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -440,10 +440,10 @@ public class FirstOrderLogicTest {
  
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testExists2() throws Exception { 
+    public void testExists2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_exists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -485,10 +485,10 @@ public class FirstOrderLogicTest {
         workingMemory.fireAllRules();
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testExists3() throws Exception { 
+    public void testExists3() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_Exists_JBRULES_2810.drl", 
                                                             FirstOrderLogicTest.class ), 
@@ -503,10 +503,10 @@ public class FirstOrderLogicTest {
         WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( ksession );
         ksession.fireAllRules();
         ksession.dispose();
-    } 
+    }
  
     @Test 
-    public void testForall() throws Exception { 
+    public void testForall() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Forall.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -539,10 +539,10 @@ public class FirstOrderLogicTest {
  
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testForall2() throws Exception { 
+    public void testForall2() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_Forall2.drl" ) ), 
                       ResourceType.DRL );
@@ -580,10 +580,10 @@ public class FirstOrderLogicTest {
  
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     @Test 
-    public void testRemoveIdentitiesSubNetwork() throws Exception { 
+    public void testRemoveIdentitiesSubNetwork() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_removeIdentitiesSubNetwork.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -633,10 +633,10 @@ public class FirstOrderLogicTest {
                       list.size() );
         assertEquals( bob, 
                       list.get( 1 ) );
-    } 
+    }
  
     @Test 
-    public void testCollectWithNestedFromWithParams() throws Exception { 
+    public void testCollectWithNestedFromWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectWithNestedFrom.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -680,10 +680,10 @@ public class FirstOrderLogicTest {
         assertEquals( bob.getLikes(), 
                       ((Cheese) cheeses.get( 1 )).getType() );
  
-    } 
+    }
  
     @Test 
-    public void testCollectModifyAlphaRestriction() throws Exception { 
+    public void testCollectModifyAlphaRestriction() throws Exception {
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectAlphaRestriction.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
@@ -703,9 +703,9 @@ public class FirstOrderLogicTest {
                                                                                                                                                  8 )};
  
         final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
-        for ( int i = 0; i < cheese.length; i++ ) { 
+        for ( int i = 0; i < cheese.length; i++ ) {
             cheeseHandles[i] = wm.insert( cheese[i] );
-        } 
+        }
  
         // ---------------- 1st scenario 
         int fireCount = 0;
@@ -742,17 +742,17 @@ public class FirstOrderLogicTest {
         assertEquals( ArrayList.class.getName(), 
                              results.get( fireCount - 1 ).getClass().getName() );
  
-    } 
+    }
  
     private RuleBase loadRuleBase(final Reader reader) throws IOException, 
                                                       DroolsParserException, 
-                                                      Exception { 
+                                                      Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) { 
+        if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );
             fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
-        } 
+        }
         // pre build the package 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
@@ -764,10 +764,10 @@ public class FirstOrderLogicTest {
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         // load up the rulebase 
         return ruleBase;
-    } 
+    }
  
     @Test 
-    public void testForallSinglePattern() throws Exception { 
+    public void testForallSinglePattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePattern.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -826,10 +826,10 @@ public class FirstOrderLogicTest {
         assertEquals( ++fired,   // we need to fix forall to not fire in this situation 
                       list.size() );
  
-    } 
+    }
  
     @Test 
-    public void testForallSinglePattern2() throws Exception { 
+    public void testForallSinglePattern2() throws Exception {
         final KnowledgeBase kbase = loadKnowledgeBase( "test_ForallSinglePattern2.drl" );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
          
@@ -842,10 +842,10 @@ public class FirstOrderLogicTest {
                       fired );
          
         ksession.dispose();
-    } 
+    }
  
     @Test 
-    public void testMVELCollect() throws Exception { 
+    public void testMVELCollect() throws Exception {
  
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_MVELCollect.drl" ) );
@@ -880,10 +880,10 @@ public class FirstOrderLogicTest {
                              results.size() );
         assertEquals( 6, 
                              ((List) results.get( 0 )).size() );
-    } 
+    }
  
     @Test 
-    public void testNestedCorelatedRulesWithForall() throws Exception { 
+    public void testNestedCorelatedRulesWithForall() throws Exception {
  
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( FirstOrderLogicTest.class.getResourceAsStream( "test_NestedCorrelatedRulesWithForall.drl" ) ) );
@@ -946,10 +946,10 @@ public class FirstOrderLogicTest {
         // check fourth list is populated correctly         
         assertEquals( 0, 
                       list4.size() );
-    } 
+    }
  
     @Test 
-    public void testFromInsideNotAndExists() throws Exception { 
+    public void testFromInsideNotAndExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FromInsideNotAndExists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -986,10 +986,10 @@ public class FirstOrderLogicTest {
         assertEquals( 2, 
                       list.size() );
  
-    } 
+    }
  
     @Test 
-    public void testOr() throws Exception { 
+    public void testOr() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OrNesting.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1020,11 +1020,11 @@ public class FirstOrderLogicTest {
         workingMemory.fireAllRules();
         assertEquals( 1, 
                       list.size() );
-    } 
+    }
  
     // JBRULES-2482 
     @Test 
-    public void testOrWithVariableResolution() throws Exception { 
+    public void testOrWithVariableResolution() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval.drl", 
                                                             FirstOrderLogicTest.class ), 
@@ -1048,11 +1048,11 @@ public class FirstOrderLogicTest {
         ksession.fireAllRules();
         verify( al, 
                 times( 6 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
-    } 
+    }
  
     // JBRULES-2526 
     @Test 
-    public void testOrWithVariableResolution2() throws Exception { 
+    public void testOrWithVariableResolution2() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_OrCEFollowedByMultipleEval2.drl", 
                                                             FirstOrderLogicTest.class ), 
@@ -1076,10 +1076,10 @@ public class FirstOrderLogicTest {
         ksession.fireAllRules();
         verify( al, 
                 times( 8 ) ).afterActivationFired( any( AfterActivationFiredEvent.class ) );
-    } 
+    }
  
     @Test 
-    public void testCollectWithMemberOfOperators() throws Exception { 
+    public void testCollectWithMemberOfOperators() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectMemberOfOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1135,10 +1135,10 @@ public class FirstOrderLogicTest {
         assertSame( item21, 
                     list.get( index++ ) );
  
-    } 
+    }
  
     @Test 
-    public void testCollectWithContainsOperators() throws Exception { 
+    public void testCollectWithContainsOperators() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_CollectContainsOperator.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1194,10 +1194,10 @@ public class FirstOrderLogicTest {
         assertSame( item21, 
                     list.get( index++ ) );
  
-    } 
+    }
  
     @Test 
-    public void testForallSinglePatternWithExists() throws Exception { 
+    public void testForallSinglePatternWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ForallSinglePatternWithExists.drl" ) ) );
         final Package pkg = builder.getPackage();
@@ -1229,10 +1229,10 @@ public class FirstOrderLogicTest {
  
         //assertEquals( 1, list.size() );
  
-    } 
+    }
  
     @Test 
-    public void testCollectResultBetaConstraint() throws Exception { 
+    public void testCollectResultBetaConstraint() throws Exception {
  
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectResultsBetaConstraint.drl" ) );
@@ -1267,17 +1267,17 @@ public class FirstOrderLogicTest {
                              results.get( 0 ) );
         assertEquals( "accumulate", 
                              results.get( 1 ) );
-    } 
+    }
  
     @Test 
-    public void testFromWithOr() throws Exception { 
+    public void testFromWithOr() throws Exception {
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_FromWithOr.drl" ) ), 
                      ResourceType.DRL );
  
-        if ( builder.hasErrors() ) { 
+        if ( builder.hasErrors() ) {
             System.out.println( builder.getErrors() );
-        } 
+        }
         assertFalse( builder.hasErrors() );
  
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -1309,10 +1309,10 @@ public class FirstOrderLogicTest {
         assertTrue( results.contains( a1 ) );
         assertTrue( results.contains( a2 ) );
  
-    } 
+    }
  
     @Test 
-    public void testForallWithSlidingWindow() throws Exception { 
+    public void testForallWithSlidingWindow() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ForallSlidingWindow.drl" ) ), 
                       ResourceType.DRL );
@@ -1410,10 +1410,10 @@ public class FirstOrderLogicTest {
         assertEquals( 4,     // we need to fix forall to not fire in this situation 
                       results.size() );
  
-    } 
+    }
  
     @Test 
-    public void testCollectFromMVELAfterOr() throws Exception { 
+    public void testCollectFromMVELAfterOr() throws Exception {
  
         // read in the source 
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CollectFromMVELAfterOr.drl" ) );
@@ -1446,6 +1446,6 @@ public class FirstOrderLogicTest {
                              results.size() );
         assertEquals( 3, 
                              ((Collection) results.get( 0 )).size() );
-    } 
+    }
  
-} 
+}

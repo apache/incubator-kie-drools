@@ -34,7 +34,7 @@ public class ArrayElements {
         } else {
             this.elements = EMPTY_ELEMENTS;
         }
-    }    
+    }
     
     public Object[] getElements() {
         return this.elements;

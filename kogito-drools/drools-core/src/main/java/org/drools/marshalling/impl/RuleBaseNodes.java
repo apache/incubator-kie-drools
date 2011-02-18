@@ -29,7 +29,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RuleTerminalNode;
 
 public class RuleBaseNodes {
-    public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {        
+    public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {
         Map<Integer, BaseNode> nodes = new HashMap<Integer, BaseNode>();
         buildNodeMap( ruleBase, nodes );
         return nodes;
@@ -73,12 +73,12 @@ public class RuleBaseNodes {
         if ( sink instanceof LeftTupleSource ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
-            for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {                
+            for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {
                 addLeftTupleSink( ruleBase,
                                   leftTupleSink,
                                   nodes );
             }
-        } else if ( sink instanceof ObjectSource ) { 
+        } else if ( sink instanceof ObjectSource ) {
             // it may be a RIAN
             nodes.put( sink.getId(), 
                        (ObjectSource) sink );

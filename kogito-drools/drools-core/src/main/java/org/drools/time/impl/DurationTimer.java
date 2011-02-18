@@ -36,7 +36,7 @@ public class DurationTimer
     
     public DurationTimer(long duration) {
         this.duration = duration;
-    }    
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeLong( duration );

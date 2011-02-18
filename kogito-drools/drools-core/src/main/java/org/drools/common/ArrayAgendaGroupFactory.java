@@ -22,7 +22,7 @@ public class ArrayAgendaGroupFactory implements AgendaGroupFactory {
     
     public static AgendaGroupFactory getInstance() {
         return INSTANCE;
-    }    
+    }
     
     public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
         return new ArrayAgendaGroup( name,

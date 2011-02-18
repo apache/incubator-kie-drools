@@ -26,13 +26,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 	
 	public void add(Resource resource, ResourceType type) {
         pkgBuilder.addKnowledgeResource( resource, type, null )  ;
-	}	
+	}
 
     public void add(Resource resource,
                             ResourceType type,
                             ResourceConfiguration configuration) {
         pkgBuilder.addKnowledgeResource( resource, type, configuration );
-    }	
+    }
 	
 	public Collection<KnowledgePackage> getKnowledgePackages() {
 	    if ( pkgBuilder.hasErrors() ) {

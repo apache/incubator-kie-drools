@@ -71,7 +71,7 @@ public class HttpClientImpl
 						.getBytes());
 				httpCon.setRequestProperty("Authorization", "Basic "
 						+ new String(authEncBytes));
-			} 
+			}
 
             
             Object o = DroolsStreamUtils.streamIn( httpCon.getInputStream() );

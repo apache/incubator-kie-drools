@@ -46,11 +46,11 @@ public class IfFunction implements Function {
                 break;
             }
             FunctionHandlers.dump( sExpressions[i], appendable, true );
-        }  
+        }
         appendable.append( "}" );
         
         
-        while ( i < sExpressions.length ) {        
+        while ( i < sExpressions.length ) {
             appendable.append( " else {" );
             for ( int length = sExpressions.length; i < length; i++ ) {
                 SExpression sExpr = ( SExpression ) sExpressions[i];
@@ -59,8 +59,8 @@ public class IfFunction implements Function {
                     break;
                 }
                 FunctionHandlers.dump( sExpressions[i], appendable, true );
-            }        
+            }
             appendable.append( "}" );
-        }             
+        }
     }
 }

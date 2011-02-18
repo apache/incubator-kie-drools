@@ -201,7 +201,7 @@ public class LhsBuilder implements SourceBuilder {
        for ( String op : operators ) {
             if (content.endsWith( op )) {
                 return FieldType.OPERATOR_FIELD;
-            }            
+            }
         }
         return FieldType.SINGLE_FIELD;
     }

@@ -331,7 +331,7 @@ public class JavaParser extends Parser {
                                                                fpe.predicateText+"}?");
     		}
                    	return message.toString();
-            }   
+            }
 
 
 
@@ -9955,7 +9955,7 @@ public class JavaParser extends Parser {
     // $ANTLR end "arguments"
 
     // $ANTLR start synpred1_Java
-    public final void synpred1_Java_fragment() throws RecognitionException {   
+    public final void synpred1_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:207:4: ( annotations )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:207:4: annotations
         {
@@ -9970,7 +9970,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred1_Java
 
     // $ANTLR start synpred38_Java
-    public final void synpred38_Java_fragment() throws RecognitionException {   
+    public final void synpred38_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:303:4: ( methodDeclaration )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:303:4: methodDeclaration
         {
@@ -9985,7 +9985,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred38_Java
 
     // $ANTLR start synpred39_Java
-    public final void synpred39_Java_fragment() throws RecognitionException {   
+    public final void synpred39_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:304:4: ( fieldDeclaration )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:304:4: fieldDeclaration
         {
@@ -10000,7 +10000,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred39_Java
 
     // $ANTLR start synpred85_Java
-    public final void synpred85_Java_fragment() throws RecognitionException {   
+    public final void synpred85_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:459:16: ( '.' Identifier )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:459:16: '.' Identifier
         {
@@ -10012,7 +10012,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred85_Java
 
     // $ANTLR start synpred120_Java
-    public final void synpred120_Java_fragment() throws RecognitionException {   
+    public final void synpred120_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:549:4: ( annotation )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:549:4: annotation
         {
@@ -10027,7 +10027,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred120_Java
 
     // $ANTLR start synpred135_Java
-    public final void synpred135_Java_fragment() throws RecognitionException {   
+    public final void synpred135_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:596:6: ( classDeclaration ( ';' )? )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:596:6: classDeclaration ( ';' )?
         {
@@ -10060,7 +10060,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred135_Java
 
     // $ANTLR start synpred137_Java
-    public final void synpred137_Java_fragment() throws RecognitionException {   
+    public final void synpred137_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:597:6: ( interfaceDeclaration ( ';' )? )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:597:6: interfaceDeclaration ( ';' )?
         {
@@ -10093,7 +10093,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred137_Java
 
     // $ANTLR start synpred139_Java
-    public final void synpred139_Java_fragment() throws RecognitionException {   
+    public final void synpred139_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:598:6: ( enumDeclaration ( ';' )? )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:598:6: enumDeclaration ( ';' )?
         {
@@ -10126,7 +10126,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred139_Java
 
     // $ANTLR start synpred144_Java
-    public final void synpred144_Java_fragment() throws RecognitionException {   
+    public final void synpred144_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:632:4: ( localVariableDeclaration )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:632:4: localVariableDeclaration
         {
@@ -10141,7 +10141,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred144_Java
 
     // $ANTLR start synpred145_Java
-    public final void synpred145_Java_fragment() throws RecognitionException {   
+    public final void synpred145_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:633:4: ( classOrInterfaceDeclaration )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:633:4: classOrInterfaceDeclaration
         {
@@ -10156,7 +10156,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred145_Java
 
     // $ANTLR start synpred150_Java
-    public final void synpred150_Java_fragment() throws RecognitionException {   
+    public final void synpred150_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:666:52: ( 'else' statement )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:666:52: 'else' statement
         {
@@ -10172,7 +10172,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred150_Java
 
     // $ANTLR start synpred155_Java
-    public final void synpred155_Java_fragment() throws RecognitionException {   
+    public final void synpred155_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:671:9: ( catches 'finally' block )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:671:9: catches 'finally' block
         {
@@ -10193,7 +10193,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred155_Java
 
     // $ANTLR start synpred156_Java
-    public final void synpred156_Java_fragment() throws RecognitionException {   
+    public final void synpred156_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:672:9: ( catches )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:672:9: catches
         {
@@ -10208,7 +10208,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred156_Java
 
     // $ANTLR start synpred178_Java
-    public final void synpred178_Java_fragment() throws RecognitionException {   
+    public final void synpred178_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:761:4: ( 'case' constantExpression ':' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:761:4: 'case' constantExpression ':'
         {
@@ -10225,7 +10225,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred178_Java
 
     // $ANTLR start synpred179_Java
-    public final void synpred179_Java_fragment() throws RecognitionException {   
+    public final void synpred179_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:762:6: ( 'case' enumConstantName ':' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:762:6: 'case' enumConstantName ':'
         {
@@ -10242,7 +10242,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred179_Java
 
     // $ANTLR start synpred181_Java
-    public final void synpred181_Java_fragment() throws RecognitionException {   
+    public final void synpred181_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:772:4: ( forVarControl )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:772:4: forVarControl
         {
@@ -10257,7 +10257,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred181_Java
 
     // $ANTLR start synpred186_Java
-    public final void synpred186_Java_fragment() throws RecognitionException {   
+    public final void synpred186_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:783:4: ( ( variableModifier )* type variableDeclarators )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:783:4: ( variableModifier )* type variableDeclarators
         {
@@ -10306,7 +10306,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred186_Java
 
     // $ANTLR start synpred189_Java
-    public final void synpred189_Java_fragment() throws RecognitionException {   
+    public final void synpred189_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:814:27: ( assignmentOperator expression )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:814:27: assignmentOperator expression
         {
@@ -10326,7 +10326,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred189_Java
 
     // $ANTLR start synpred200_Java
-    public final void synpred200_Java_fragment() throws RecognitionException {   
+    public final void synpred200_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:828:9: ( '>' '>' '=' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:828:9: '>' '>' '='
         {
@@ -10339,7 +10339,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred200_Java
 
     // $ANTLR start synpred210_Java
-    public final void synpred210_Java_fragment() throws RecognitionException {   
+    public final void synpred210_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:865:27: ( relationalOp shiftExpression )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:865:27: relationalOp shiftExpression
         {
@@ -10359,7 +10359,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred210_Java
 
     // $ANTLR start synpred214_Java
-    public final void synpred214_Java_fragment() throws RecognitionException {   
+    public final void synpred214_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:873:30: ( shiftOp additiveExpression )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:873:30: shiftOp additiveExpression
         {
@@ -10379,7 +10379,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred214_Java
 
     // $ANTLR start synpred216_Java
-    public final void synpred216_Java_fragment() throws RecognitionException {   
+    public final void synpred216_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:878:15: ( '>' '>' '>' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:878:15: '>' '>' '>'
         {
@@ -10392,7 +10392,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred216_Java
 
     // $ANTLR start synpred228_Java
-    public final void synpred228_Java_fragment() throws RecognitionException {   
+    public final void synpred228_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:901:9: ( castExpression )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:901:9: castExpression
         {
@@ -10407,7 +10407,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred228_Java
 
     // $ANTLR start synpred232_Java
-    public final void synpred232_Java_fragment() throws RecognitionException {   
+    public final void synpred232_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:906:8: ( '(' primitiveType ')' unaryExpression )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:906:8: '(' primitiveType ')' unaryExpression
         {
@@ -10429,7 +10429,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred232_Java
 
     // $ANTLR start synpred233_Java
-    public final void synpred233_Java_fragment() throws RecognitionException {   
+    public final void synpred233_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:907:13: ( type )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:907:13: type
         {
@@ -10444,7 +10444,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred233_Java
 
     // $ANTLR start synpred237_Java
-    public final void synpred237_Java_fragment() throws RecognitionException {   
+    public final void synpred237_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:914:17: ( '.' Identifier )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:914:17: '.' Identifier
         {
@@ -10456,7 +10456,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred237_Java
 
     // $ANTLR start synpred238_Java
-    public final void synpred238_Java_fragment() throws RecognitionException {   
+    public final void synpred238_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:914:35: ( identifierSuffix )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:914:35: identifierSuffix
         {
@@ -10471,7 +10471,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred238_Java
 
     // $ANTLR start synpred241_Java
-    public final void synpred241_Java_fragment() throws RecognitionException {   
+    public final void synpred241_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:916:22: ( '.' Identifier )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:916:22: '.' Identifier
         {
@@ -10483,7 +10483,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred241_Java
 
     // $ANTLR start synpred242_Java
-    public final void synpred242_Java_fragment() throws RecognitionException {   
+    public final void synpred242_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:916:40: ( identifierSuffix )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:916:40: identifierSuffix
         {
@@ -10498,7 +10498,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred242_Java
 
     // $ANTLR start synpred246_Java
-    public final void synpred246_Java_fragment() throws RecognitionException {   
+    public final void synpred246_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:919:127: ( '.' Identifier )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:919:127: '.' Identifier
         {
@@ -10510,7 +10510,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred246_Java
 
     // $ANTLR start synpred247_Java
-    public final void synpred247_Java_fragment() throws RecognitionException {   
+    public final void synpred247_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:919:145: ( identifierSuffix )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:919:145: identifierSuffix
         {
@@ -10525,7 +10525,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred247_Java
 
     // $ANTLR start synpred253_Java
-    public final void synpred253_Java_fragment() throws RecognitionException {   
+    public final void synpred253_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:926:5: ( '[' expression ']' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:926:5: '[' expression ']'
         {
@@ -10542,7 +10542,7 @@ public class JavaParser extends Parser {
     // $ANTLR end synpred253_Java
 
     // $ANTLR start synpred269_Java
-    public final void synpred269_Java_fragment() throws RecognitionException {   
+    public final void synpred269_Java_fragment() throws RecognitionException {
         // src/main/resources/org/drools/semantics/java/parser/Java.g:953:29: ( '[' expression ']' )
         // src/main/resources/org/drools/semantics/java/parser/Java.g:953:29: '[' expression ']'
         {

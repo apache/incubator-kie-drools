@@ -28,7 +28,7 @@ public class DisconnectedFactHandle
                                   Object object) {
         this( id, identityHashCode, objectHashCode, recency );
         this.object = object;
-    }    
+    }
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,

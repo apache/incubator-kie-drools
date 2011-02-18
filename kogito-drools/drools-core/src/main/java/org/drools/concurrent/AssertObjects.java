@@ -72,7 +72,7 @@ public class AssertObjects
             }
         } catch ( Exception e ) {
             this.e = e;
-        }        
+        }
     }
 
     public Object getObject() {
@@ -89,5 +89,5 @@ public class AssertObjects
     
     public Exception getException() {
         return this.e;
-    }    
+    }
 }

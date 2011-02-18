@@ -445,7 +445,7 @@ abstract public class AbstractRuleBase
             this.additionsSinceLock = 0;
             this.removalsSinceLock = 0;
             this.eventSupport.fireAfterRuleBaseLocked();
-        }        
+        }
     }
 
     public void unlock() {
@@ -847,7 +847,7 @@ abstract public class AbstractRuleBase
      * Handle rule removal.
      *
      * This method is intended for sub-classes, and called after the 
-     * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.event.BeforeRuleRemovedEvent) before-rule-removed} 
+     * {@link RuleBaseEventListener#beforeRuleRemoved(org.drools.event.BeforeRuleRemovedEvent) before-rule-removed}
      * event is fired, and before the rule is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
@@ -882,7 +882,7 @@ abstract public class AbstractRuleBase
      * Handle function removal.
      *
      * This method is intended for sub-classes, and called after the 
-     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.event.BeforeFunctionRemovedEvent) before-function-removed} 
+     * {@link RuleBaseEventListener#beforeFunctionRemoved(org.drools.event.BeforeFunctionRemovedEvent) before-function-removed}
      * event is fired, and before the function is physically removed from the package.
      *
      * This method is called with the rulebase lock held.

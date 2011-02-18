@@ -268,7 +268,7 @@ public class JavaConsequenceBuilderTest {
         assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof Consequence );
         
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
-    }    
+    }
     
     @Test
     public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
@@ -295,7 +295,7 @@ public class JavaConsequenceBuilderTest {
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
         assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
-    }    
+    }
 
     private void assertEqualsIgnoreSpaces(String expected,
                                           String fixed) {

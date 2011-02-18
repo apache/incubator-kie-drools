@@ -44,7 +44,7 @@ public class Junction {
 		this.type = type;
 		this.name = name;
 		this.visited = visited;
-	}	
+	}
 	public Junction(int p1, int p2, int p3, int basePoint, String type, String name, String visited) {
 		super();
 		this.p1 = p1;

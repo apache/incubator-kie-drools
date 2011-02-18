@@ -23,7 +23,7 @@ public class DialectCompiletimeRegistry {
     public DialectCompiletimeRegistry(Package pkg) {
         this.pkg = pkg;
         this.map = new HashMap<String, Dialect>();
-    }    
+    }
     
     /**
      * Add a DialectConfiguration to the registry

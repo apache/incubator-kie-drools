@@ -43,7 +43,7 @@ public class ArrayCell implements Cell {
 	public void addValue(Map<String, Object> vars) {
 		for (int i = 0; i < values.length; i++) {
 			vars.put(column.getName() + i, values[i]);
-		}		
+		}
 	}
 
 	public Column getColumn() {
@@ -65,7 +65,7 @@ public class ArrayCell implements Cell {
 			cell.setValue(values[i]);
 			cell.setIndex(i);
 			cell.insert(session);
-		}				
+		}
 	}
 
 	public void setIndex(int i) {

@@ -110,7 +110,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule1.setConsequence( consequence );
@@ -235,7 +235,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
         rule1.setConsequence( consequence );
 
@@ -342,7 +342,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
         rule1.setConsequence( consequence );
 
@@ -507,7 +507,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
         rule1.setConsequence( consequence );
 
@@ -612,7 +612,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         // create the first activation which will justify the fact "logical"
@@ -734,7 +734,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         // Create first justifier
@@ -890,7 +890,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
         rule1.setConsequence( consequence );
 
@@ -1008,7 +1008,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
         rule1.setConsequence( consequence );
 

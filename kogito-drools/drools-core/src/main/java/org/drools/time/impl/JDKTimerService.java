@@ -153,7 +153,7 @@ public class JDKTimerService
                                                          this,
                                                          this.scheduler );
                 this.handle.setFuture( future );
-            } 
+            }
 
             return null;
         }

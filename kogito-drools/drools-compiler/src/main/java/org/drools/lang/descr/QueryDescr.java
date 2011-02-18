@@ -34,7 +34,7 @@ public class QueryDescr extends RuleDescr {
     public QueryDescr(final String name) {
         this( name,
               "" );
-    }      
+    }
 
     public QueryDescr(final String ruleName,
                       final String documentation) {
@@ -57,5 +57,5 @@ public class QueryDescr extends RuleDescr {
     
     public String[] getParameterTypes() {
         return this.parameterTypes.toArray( new String[this.parameterTypes.size()] );
-    }    
+    }
 }

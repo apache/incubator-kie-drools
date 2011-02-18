@@ -47,7 +47,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
 		        obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
 		    } else if (obj instanceof FactHandle ) {
 		        obj = ((InternalFactHandle)obj).toExternalForm();
-	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
+	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
 	            obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
 	        }
 			ret.add(new JaxbStringObjectPair(entry.getKey(), obj));

@@ -39,13 +39,13 @@ public class NewFunction implements Function {
         appendable.append( name );
         appendable.append( "(" );
         
-        for ( int i = 2, length = sExpressions.length; i < length; i++) {            
+        for ( int i = 2, length = sExpressions.length; i < length; i++) {
             FunctionHandlers.dump( sExpressions[i], appendable );
             
-            if ( i != length -1 ) { 
+            if ( i != length -1 ) {
                 appendable.append( ", " );
             }
-        }        
+        }
         appendable.append( ")" );
     }
 }

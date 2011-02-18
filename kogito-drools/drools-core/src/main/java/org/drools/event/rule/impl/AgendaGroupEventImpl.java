@@ -44,7 +44,7 @@ public class AgendaGroupEventImpl implements AgendaGroupEvent, Externalizable {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         new SerializableAgendaGroup( this.agendaGroup ).writeExternal( out );
-    } 
+    }
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {

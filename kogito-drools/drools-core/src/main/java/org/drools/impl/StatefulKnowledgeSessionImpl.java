@@ -119,15 +119,15 @@ public class StatefulKnowledgeSessionImpl
     
     public void reset() {
         throw new UnsupportedOperationException("This should not be called");
-    }    
+    }
     
     public ObjectStore getObjectStore() {
         return this.session.getObjectStore();
-    }        
+    }
 
     public EntryPointNode getEntryPointNode() {
         return this.session.getEntryPointNode();
-    }    
+    }
 
     public int getId() {
         return this.session.getId();

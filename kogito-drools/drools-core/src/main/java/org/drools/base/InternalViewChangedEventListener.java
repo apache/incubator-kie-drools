@@ -23,7 +23,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
-public interface InternalViewChangedEventListener { 
+public interface InternalViewChangedEventListener {
     public void rowAdded(Rule rule, 
                          LeftTuple tuple,
                          PropagationContext context,

@@ -73,7 +73,7 @@ public class VariableConstraint extends MutableTypeConstraint
     
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.fieldExtractor = readAccessor;
-    }     
+    }
 
     public Declaration[] getRequiredDeclarations() {
         return this.restriction.getRequiredDeclarations();
@@ -136,7 +136,7 @@ public class VariableConstraint extends MutableTypeConstraint
 
     public String toString() {
         return this.fieldExtractor + " " + this.restriction;
-    } 
+    }
 
     public ContextEntry createContextEntry() {
         return this.restriction.createContextEntry();

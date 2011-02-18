@@ -39,7 +39,7 @@ public class IdentityPlaceholderResolverStrategy
         this.acceptor = acceptor;
         this.ids = new HashMap<Integer, Object>();
         this.objects = new IdentityHashMap<Object, Integer>();
-    }  
+    }
 
     public Object read(ObjectInputStream os) throws IOException,
                                                        ClassNotFoundException {

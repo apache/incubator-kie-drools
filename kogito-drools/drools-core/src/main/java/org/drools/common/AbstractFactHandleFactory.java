@@ -48,7 +48,7 @@ public abstract class AbstractFactHandleFactory
     public AbstractFactHandleFactory(int id, long counter) {
         this.id = new AtomicInteger( id );
         this.counter = new AtomicLong( counter );
-    }    
+    }
 
     /* (non-Javadoc)
     * @see org.drools.reteoo.FactHandleFactory#newFactHandle()
@@ -122,7 +122,7 @@ public abstract class AbstractFactHandleFactory
 
     public long getRecency() {
         return this.counter.get();
-    }    
+    }
     
     public void clear(int id, long counter) {
         this.id = new AtomicInteger( id );

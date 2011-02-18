@@ -43,13 +43,13 @@ public class SignalEventCommand implements GenericCommand<Object> {
 	private Object event;
 	
     public SignalEventCommand() {
-    }   	
+    }
 	
 	public SignalEventCommand(String eventType,
                               Object event) {
         this.eventType = eventType;
         this.event = event;
-    }	
+    }
 	
     public SignalEventCommand(long processInstanceId,
                               String eventType,

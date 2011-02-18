@@ -68,7 +68,7 @@ public class NodeTestDSLLexer extends Lexer {
     // delegates
     // delegators
 
-    public NodeTestDSLLexer() {;} 
+    public NodeTestDSLLexer() {;}
     public NodeTestDSLLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
@@ -1730,7 +1730,7 @@ public class NodeTestDSLLexer extends Lexer {
     }
 
     // $ANTLR start synpred1_NodeTestDSL
-    public final void synpred1_NodeTestDSL_fragment() throws RecognitionException {   
+    public final void synpred1_NodeTestDSL_fragment() throws RecognitionException {
         // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:243:14: ( '\\r\\n' )
         // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:243:16: '\\r\\n'
         {

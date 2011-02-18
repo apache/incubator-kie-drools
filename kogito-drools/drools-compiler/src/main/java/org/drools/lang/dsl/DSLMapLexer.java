@@ -63,7 +63,7 @@ public class DSLMapLexer extends Lexer {
     // delegates
     // delegators
 
-    public DSLMapLexer() {;} 
+    public DSLMapLexer() {;}
     public DSLMapLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }
@@ -607,7 +607,7 @@ public class DSLMapLexer extends Lexer {
     }
 
     // $ANTLR start synpred1_DSLMap
-    public final void synpred1_DSLMap_fragment() throws RecognitionException {   
+    public final void synpred1_DSLMap_fragment() throws RecognitionException {
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:276:14: ( '\\r\\n' )
         // src/main/resources/org/drools/lang/dsl/DSLMap.g:276:16: '\\r\\n'
         {

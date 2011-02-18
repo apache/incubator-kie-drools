@@ -16,7 +16,7 @@ public class FactA implements Serializable {
     
     public FactA( final Integer f2 ) {
         this.field2 = f2;
-    }    
+    }
 
     public FactA(final String f1,
                  final Integer f2,

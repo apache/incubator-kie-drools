@@ -32,6 +32,6 @@ public class ClipsDialectConfiguration
     
     public Dialect newDialect(PackageBuilder packageBuilder, PackageRegistry pkgRegistry, Package pkg) {
         return new ClipsDialect(packageBuilder, pkgRegistry, pkg);
-    }    
+    }
 
 }

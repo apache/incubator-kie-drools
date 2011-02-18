@@ -64,7 +64,7 @@ public class PatternExtractor
     
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
-    }    
+    }
 
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {

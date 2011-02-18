@@ -58,7 +58,7 @@ public class MapGlobalResolver
     
     public void setDelegate(Globals delegate) {
         this.delegate = delegate;
-    }    
+    }
     
     public Object get(String identifier) {
         return resolveGlobal( identifier );

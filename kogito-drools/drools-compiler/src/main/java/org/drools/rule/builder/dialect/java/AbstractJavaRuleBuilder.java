@@ -120,7 +120,7 @@ public class AbstractJavaRuleBuilder {
             globalStr[i] = entry.getKey();
             globalTypes[i] = entry.getValue().getName().replace('$','.');
             i++;
-        }       
+        }
 
         map.put("globals",
                 globalStr );
@@ -138,7 +138,7 @@ public class AbstractJavaRuleBuilder {
                                         final Map vars,
                                         final Object invokerLookup,
                                         final BaseDescr descrLookup) {
-        synchronized ( MVELDialect.COMPILER_LOCK ) {     
+        synchronized ( MVELDialect.COMPILER_LOCK ) {
             AbstractParser.setLanguageLevel( 5 );
             TemplateRegistry registry = getRuleTemplateRegistry();
 

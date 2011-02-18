@@ -61,7 +61,7 @@ public class EncodedResource  extends BaseResource implements InternalResource {
 
     public boolean hasURL() {
         return this.resource.hasURL();
-    }    
+    }
     
     /**
      * Return the Resource held.
@@ -90,7 +90,7 @@ public class EncodedResource  extends BaseResource implements InternalResource {
         else {
             return new InputStreamReader(this.resource.getInputStream());
         }
-    }    
+    }
     
     public InputStream getInputStream() throws IOException {
         return this.resource.getInputStream();
@@ -98,11 +98,11 @@ public class EncodedResource  extends BaseResource implements InternalResource {
     
     public long getLastModified() {
         return this.resource.getLastModified();
-    }    
+    }
     
     public long getLastRead() {
         return this.resource.getLastRead();
-    }      
+    }
     
     public boolean isDirectory() {
         return this.resource.isDirectory();
@@ -110,10 +110,10 @@ public class EncodedResource  extends BaseResource implements InternalResource {
 
     public Collection<Resource> listResources() {
         return this.resource.listResources();
-    }         
+    }
     
     public String toString() {
         return "[EncodedResource resource=" + this.resource + " encoding='" + this.encoding + "']";
-    }  
+    }
 
 }

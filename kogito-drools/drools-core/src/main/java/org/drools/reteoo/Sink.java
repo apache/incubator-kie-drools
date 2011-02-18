@@ -23,5 +23,5 @@ import org.drools.common.NetworkNode;
  * 
  * @author etirelli
  */
-public interface Sink extends NetworkNode {   
+public interface Sink extends NetworkNode {
 }

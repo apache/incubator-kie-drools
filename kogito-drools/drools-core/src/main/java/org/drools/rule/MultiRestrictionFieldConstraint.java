@@ -63,7 +63,7 @@ public class MultiRestrictionFieldConstraint extends MutableTypeConstraint
     
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.readAccessor = readAccessor;
-    }        
+    }
 
     public ReadAccessor getFieldExtractor() {
         return this.readAccessor;

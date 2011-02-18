@@ -38,6 +38,6 @@ public class ActivationCancelledEventImpl extends ActivationEventImpl implements
 	public String toString() {
 		return "==>[ActivationCancelledEventImpl: getCause()=" + getCause() + ", getActivation()=" + getActivation()
 				+ ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
-	}        
+	}
 
 }

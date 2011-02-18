@@ -50,7 +50,7 @@ public class TripleNonIndexSkipBetaConstraints
     
     public TripleNonIndexSkipBetaConstraints() {
 
-    }    
+    }
     
     public TripleNonIndexSkipBetaConstraints(TripleBetaConstraints constraints) {
         this.constraints = constraints;

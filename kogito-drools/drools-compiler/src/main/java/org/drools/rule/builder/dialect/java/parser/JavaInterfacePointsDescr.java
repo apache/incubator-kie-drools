@@ -61,7 +61,7 @@ public class JavaInterfacePointsDescr implements JavaBlockDescr {
     
     public void setTargetExpression(String targetExpression) {
         this.targetExpression = targetExpression;
-    }    
+    }
 
     public void setType(BlockType type) {
         this.type = type;

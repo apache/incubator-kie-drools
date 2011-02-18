@@ -34,7 +34,7 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1 };
         checkBetaConstraints( constraints, DoubleBetaConstraints.class );
-    }   
+    }
     
     @Test
     public void testOneIndxed() {
@@ -47,7 +47,7 @@ public class DoubleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint1 = ( VariableConstraint ) getConstraint( "cheeseType1", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1 };
         checkBetaConstraints( constraints, DoubleBetaConstraints.class );
-    }      
+    }
     
     @Test
     public void testTwoIndxed() {

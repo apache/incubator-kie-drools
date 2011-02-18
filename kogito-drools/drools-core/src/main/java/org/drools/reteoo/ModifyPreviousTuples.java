@@ -80,7 +80,7 @@ public class ModifyPreviousTuples {
     public RightTuple removeRightTuple(RightTupleSink sink) {
         if ( this.rightTuple == null && this.rightTuples == null ) {
             return null;
-        }        
+        }
         if ( this.rightTuples == null ) {
             if ( this.rightTuple.getRightTupleSink() == sink ) {
                 RightTuple current = this.rightTuple;
@@ -111,14 +111,14 @@ public class ModifyPreviousTuples {
                 current.getLeftTupleSink().retractLeftTuple( current,
                                                              context,
                                                              workingMemory );
-            }            
+            }
         } else {
             for ( Entry<LeftTupleSink, LeftTuple> entry : this.leftTuples.entrySet() ) {
                 entry.getKey().retractLeftTuple( entry.getValue(),
                                                  context,
                                                  workingMemory );
             }
-        }        
+        }
         
         // retract any remaining RightTuples
         if (this.rightTuples == null ) {
@@ -126,14 +126,14 @@ public class ModifyPreviousTuples {
                 current.getRightTupleSink().retractRightTuple( current,
                                                                context,
                                                                workingMemory );
-            }              
+            }
         } else {
             for ( Entry<RightTupleSink, RightTuple> entry : this.rightTuples.entrySet() ) {
                 entry.getKey().retractRightTuple( entry.getValue(),
                                                   context,
                                                   workingMemory );
             }
-        }  
+        }
     }
 
 }

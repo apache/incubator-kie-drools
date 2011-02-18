@@ -93,7 +93,7 @@ public class SchedulerTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         } );
 
         rule.setTimer( new DurationTimer(100) );
@@ -173,7 +173,7 @@ public class SchedulerTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         } );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -258,7 +258,7 @@ public class SchedulerTest extends DroolsTestCase {
             
             public String getName() {
                 return "default";
-            }            
+            }
         } );
 
         final PropagationContext context1 = new PropagationContextImpl( 0,

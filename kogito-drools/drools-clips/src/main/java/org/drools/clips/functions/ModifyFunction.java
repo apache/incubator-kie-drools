@@ -43,7 +43,7 @@ public class ModifyFunction implements Function {
             
             FunctionHandlers.dump( setter.getSExpressions()[1], appendable);
             
-            if ( i != length -1 ) { 
+            if ( i != length -1 ) {
                 appendable.append( "," );
             }
         }

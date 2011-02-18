@@ -134,7 +134,7 @@ public class JavaLexer extends Lexer {
     // delegates
     // delegators
 
-    public JavaLexer() {;} 
+    public JavaLexer() {;}
     public JavaLexer(CharStream input) {
         this(input, new RecognizerSharedState());
     }

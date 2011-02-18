@@ -51,13 +51,13 @@ public class MVELPredicateBuilder
                       final AnalysisResult analysis) {
         MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
-        try {            
+        try {
             Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
             
             Pattern p = ( Pattern ) context.getBuildStack().peek();
             if (p.getObjectType() instanceof ClassObjectType ) {
                 declIds.put( "this", ((ClassObjectType)p.getObjectType()).getClassType() );
-            }    
+            }
             
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
 

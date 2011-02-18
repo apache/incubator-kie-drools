@@ -197,7 +197,7 @@ public class QueryElementNode extends LeftTupleSource
 
             for ( int i = 0, length = this.variables.length; i < length; i++ ) {
                 objects[i] = ((Variable) args[ this.variables[i]] ).getValue();
-            }        
+            }
 
             QueryElementFactHandle handle = new QueryElementFactHandle(objects );
             RightTuple rightTuple = new RightTuple( handle );
@@ -219,7 +219,7 @@ public class QueryElementNode extends LeftTupleSource
                 final PropagationContext context,
                 final InternalWorkingMemory workingMemory) {
             //TODO        	
-        }        
+        }
 
         public List< ? extends Object> getResults() {
             throw new UnsupportedOperationException(getClass().getCanonicalName()+" does not support the getResults() method.");

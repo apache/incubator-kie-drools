@@ -150,7 +150,7 @@ public class ReteooWorkingMemoryTest {
             if ( i++ > 5 ) {
                 fail( "should not iterate for than 3 times" );
             }
-        }               
+        }
     }
     
     @Test

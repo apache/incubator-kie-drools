@@ -51,13 +51,13 @@ public class CallFunction
         appendable.append( field );
         
         appendable.append( "(" );
-        for ( int i = offset+3, length = sExpressions.length; i < length; i++) {            
+        for ( int i = offset+3, length = sExpressions.length; i < length; i++) {
             FunctionHandlers.dump( sExpressions[i], appendable );
             
-            if ( i != length -1 ) { 
+            if ( i != length -1 ) {
                 appendable.append( ", " );
             }
-        }        
+        }
         appendable.append( ")" );
     }
 }

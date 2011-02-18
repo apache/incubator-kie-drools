@@ -89,7 +89,7 @@ public class MVELCompilationUnit
                                              new MVELDateCoercion() );
         DataConversion.addConversionHandler( Calendar.class,
                                              new MVELCalendarCoercion() );
-    }    
+    }
 
     private static final Map<String, Class> primitivesMap = new HashMap<String, Class>();
     static {
@@ -148,7 +148,7 @@ public class MVELCompilationUnit
 
         this.languageLevel = languageLevel;
         this.strictMode = strictMode;
-    }       
+    }
 
     public String getExpression() {
         return expression;
@@ -316,9 +316,9 @@ public class MVELCompilationUnit
         vals[i++] = rule;
         
         if ( globalIdentifiers != null ) {
-            for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {          
+            for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {
               vals[i++] = workingMemory.getGlobal( this.globalIdentifiers[j] );
-            }                
+            }
         }
              
         InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
@@ -338,7 +338,7 @@ public class MVELCompilationUnit
                     identityMap.put( decl.getIdentifier(), handle );
                 }
                 vals[i++] = o;
-            }                
+            }
         }
         
         if ( this.localDeclarations != null ) {
@@ -346,8 +346,8 @@ public class MVELCompilationUnit
                 Declaration decl = this.localDeclarations[j];
                 Object o = decl.getValue( (InternalWorkingMemory) workingMemory, thisObject);
                 vals[i++] = o;
-            }                
-        }               
+            }
+        }
         
         for ( Object o : otherVars ) {
             vals[i++] = o;
@@ -379,7 +379,7 @@ public class MVELCompilationUnit
             super( varNames,
                    values,
                    factory );
-        }        
+        }
 
         public KnowledgeHelper getKnowledgeHelper() {
             return knowledgeHelper;

@@ -51,7 +51,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
                     handles++;
                     child = child.getLeftParentNext();
                 }
-            }                
+            }
             ni.setCreatedFactHandles( handles );
         } else {
             info.warn( "The left memory for this node is disabled, making it impossible to calculate the number of created handles" );

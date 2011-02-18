@@ -30,7 +30,7 @@ public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError>
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {       
+                                            ClassNotFoundException {
         SerializableDroolsError[] temp = (SerializableDroolsError[]) in.readObject();
         this.errors = temp;
         for ( DroolsError error : temp ) {

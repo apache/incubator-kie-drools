@@ -115,8 +115,8 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return bucket.getFirst( ( RightTuple ) null );
         } else {
             return null;
-        }        
-    }      
+        }
+    }
 
     public RightTuple getLast(LeftTuple leftTuple) {
         RightTupleList bucket = get( leftTuple );
@@ -154,11 +154,11 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     
 	public FastIterator fastIterator() {
 		return LinkedList.fastIterator;
-	}  
+	}
 	
 	public FastIterator fullFastIterator() {
 		return new FullFastIterator( this.table );
-	}  	
+	}
 	
 	public static class FullFastIterator implements FastIterator {
         private Entry[]           table;
@@ -182,7 +182,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 			
 			int length = table.length;
 			
-            while ( this.row < length ) {                
+            while ( this.row < length ) {
                 // check if there is a current bucket
                 while ( list == null ) {
                     // iterate while there is no current bucket, trying each array position
@@ -238,7 +238,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
          * @see org.drools.util.Iterator#next()
          */
         public Object next() {
-            while ( this.row < this.length ) {                
+            while ( this.row < this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
                     // iterate while there is no current bucket, trying each array position

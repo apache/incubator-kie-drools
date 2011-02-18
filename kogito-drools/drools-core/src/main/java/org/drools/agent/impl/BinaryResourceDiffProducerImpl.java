@@ -280,7 +280,7 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
 
         public String getName() {
             return "default";
-        }        
+        }
     }
 
 }

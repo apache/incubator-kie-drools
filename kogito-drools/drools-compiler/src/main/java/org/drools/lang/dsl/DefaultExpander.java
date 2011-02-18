@@ -338,7 +338,7 @@ Expander {
                     }
                 } catch( NumberFormatException nfe ){
                     // silently ignore - keep the value as it is
-                }                               
+                }
             } else {
                 StringTokenizer strTok = new StringTokenizer( theFunc, "?/", true );
                 boolean compare = true;
@@ -602,7 +602,7 @@ Expander {
                     lastExpanded--;
                 } else {
                     lastPattern = lastExpanded;
-                }                
+                }
             }
         }
         

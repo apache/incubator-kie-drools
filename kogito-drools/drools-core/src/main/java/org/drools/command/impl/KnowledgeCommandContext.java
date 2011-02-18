@@ -62,7 +62,7 @@ public class KnowledgeCommandContext
 
     public KnowledgeBase getKnowledgeBase() {
         return this.kbase;
-    }       
+    }
 
     public StatefulKnowledgeSession getStatefulKnowledgesession() {
         return statefulKsession;

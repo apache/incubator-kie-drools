@@ -45,7 +45,7 @@ public class ObjectRetractedEventImpl  extends WorkingMemoryEventImpl implements
         super.readExternal( in );
         this.factHandle = ( FactHandle ) in.readObject();
         this.oldbOject = in.readObject();
-    }    
+    }
     
     public FactHandle getFactHandle() {
         return this.factHandle;

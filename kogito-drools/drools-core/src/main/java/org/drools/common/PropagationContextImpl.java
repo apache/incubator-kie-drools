@@ -139,7 +139,7 @@ public class PropagationContextImpl
     
     public FactHandle getFactHandle() {
         return this.factHandle;
-    }    
+    }
 
     /*
      * (non-Javadoc)

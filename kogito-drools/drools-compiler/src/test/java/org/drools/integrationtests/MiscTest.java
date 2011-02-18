@@ -4856,7 +4856,7 @@ public class MiscTest {
         ksession.fireAllRules();
         
         assertEquals( 0, list.size() );
-    }    
+    }
 
     @Test
     public void testMergingDifferentPackages() throws Exception {
@@ -6494,8 +6494,8 @@ public class MiscTest {
             }
         } catch ( Exception e ) {
                 fail( "Exception should not be thrown ");
-        }      
-    }    
+        }
+    }
 
     @Test
     public void testDeepNestedConstraints() throws Exception {

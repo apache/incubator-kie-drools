@@ -279,7 +279,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -575,7 +575,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -732,7 +732,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -837,7 +837,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -942,7 +942,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -1019,7 +1019,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );
@@ -1085,7 +1085,7 @@ public abstract class BaseMannersTest {
             
             public String getName() {
                 return "default";
-            }            
+            }
         };
 
         rule.setConsequence( consequence );

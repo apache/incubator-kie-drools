@@ -112,7 +112,7 @@ public class ClipsParser extends Parser {
     	
     	public void setParserDebug(boolean parserDebug) {
     		this.parserDebug = parserDebug;
-    	}		
+    	}
     	
     	public void debug(String message) {
     		if ( parserDebug ) 
@@ -237,7 +237,7 @@ public class ClipsParser extends Parser {
     			message.append(" " + e.getMessage());
     		}
                    	return message.toString();
-            }   
+            }
             
             void checkTrailingSemicolon(String text, int line) {
             	if (text.trim().endsWith( ";" ) ) {
@@ -271,7 +271,7 @@ public class ClipsParser extends Parser {
         	        SymbolLispAtom type = (SymbolLispAtom) typeForm.getSExpressions()[0];
         	        if ( !"type".equals( type.getValue().trim() )) {
         	            throw new RuntimeException("should specify a type");
-        	        }                
+        	        }
         	        
         	        if ( !(typeForm.getSExpressions()[1] instanceof SymbolLispAtom) ) {
         	            throw new RuntimeException("should specify a slot name");
@@ -2205,12 +2205,12 @@ public class ClipsParser extends Parser {
               	        if ( templateStr.indexOf("::") >= 0 ) {
                               mod = templateStr.substring(0, templateStr.indexOf("::"));
               	            templateStr = templateStr.substring(templateStr.indexOf("::")+2);
-              			}		    
+              			}
               		    
               		    typeDescr = new TypeDeclarationDescr( templateStr );
               		    if( mod != null ) {
               		        typeDescr.setNamespace( mod );
-              		    }		    
+              		    }
               		        
               			typeDescr.setLocation( offset(loc.getLine()), loc.getCharPositionInLine() );
               			typeDescr.setStartCharacter( ((CommonToken)loc).getStartIndex() );

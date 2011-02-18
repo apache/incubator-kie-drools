@@ -199,7 +199,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                    modifyPreviousTuples,
                                    context,
                                    workingMemory );
-    }    
+    }
 
     /**
      * This is a hook method that may be overriden by subclasses. Please keep it

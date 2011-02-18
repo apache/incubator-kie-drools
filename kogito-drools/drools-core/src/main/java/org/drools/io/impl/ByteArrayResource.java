@@ -54,7 +54,7 @@ public class ByteArrayResource extends BaseResource
     
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
-    }    
+    }
     
     public boolean hasURL() {
         return false;
@@ -66,11 +66,11 @@ public class ByteArrayResource extends BaseResource
     
     public long getLastModified() {
         throw new IllegalStateException( "reader does have a modified date" );
-    }    
+    }
     
     public long getLastRead() {
         throw new IllegalStateException( "reader does have a modified date" );
-    }      
+    }
     
     public boolean isDirectory() {
         return false;
@@ -78,7 +78,7 @@ public class ByteArrayResource extends BaseResource
 
     public Collection<Resource> listResources() {
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
-    }      
+    }
 
     public boolean equals(Object object) {
         return (object == this || (object instanceof ByteArrayResource

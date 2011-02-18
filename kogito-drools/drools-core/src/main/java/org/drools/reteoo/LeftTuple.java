@@ -136,7 +136,7 @@ public class LeftTuple
         this.index = leftTuple.index + 1;
         this.parent = leftTuple;
 
-        if ( leftTupleMemoryEnabled ) {                        
+        if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
             this.rightParent = rightTuple;
             if( currentLeftChild == null ) {
@@ -196,13 +196,13 @@ public class LeftTuple
             handle.getLastLeftTuple().leftParentNext = this;
             this.leftParentPrevious = handle.getLastLeftTuple();
             handle.setLastLeftTuple( this );
-        }        
+        }
     }
     
     public void reAddLeft() {
         // The parent can never be the FactHandle (root LeftTuple) as that is handled by reAdd()
         // make sure we aren't already at the end
-        if ( this.leftParentNext != null ) {            
+        if ( this.leftParentNext != null ) {
             if ( this.leftParentPrevious != null ) {
                 // remove the current LeftTuple from the middle of the chain
                 this.leftParentPrevious.leftParentNext = this.leftParentNext;
@@ -254,7 +254,7 @@ public class LeftTuple
             this.leftParentNext.leftParentPrevious = previousParent;
         } else if ( nextParent != null ) {
             //remove from first
-            if ( this.leftParent != null ) { 
+            if ( this.leftParent != null ) {
                 this.leftParent.firstChild = nextParent;
             } else {
                 // This is relevant to the root node and only happens at rule removal time
@@ -263,7 +263,7 @@ public class LeftTuple
             nextParent.leftParentPrevious = null;
         } else if ( previousParent != null ) {
             //remove from end
-            if ( this.leftParent != null ) { 
+            if ( this.leftParent != null ) {
                 this.leftParent.lastChild = previousParent;
             } else {
                 // relevant to the root node, as here the parent is the FactHandle, only happens at rule removal time
@@ -302,7 +302,7 @@ public class LeftTuple
             // remove from middle
             this.rightParentPrevious.rightParentNext = this.rightParentNext;
             this.rightParentNext.rightParentPrevious = this.rightParentPrevious;
-        } else if ( nextParent != null ) { 
+        } else if ( nextParent != null ) {
             // remove from the start
             this.rightParent.firstChild = nextParent;
             nextParent.rightParentPrevious = null;
@@ -314,7 +314,7 @@ public class LeftTuple
             // single remaining item, no previous or next
             this.rightParent.firstChild = null;
             this.rightParent.lastChild = null;
-        }        
+        }
 
         this.blocker = null;
 
@@ -456,7 +456,7 @@ public class LeftTuple
             entry = entry.parent;
         }
         return handles;
-    }    
+    }
 
     public void setBlocker(RightTuple blocker) {
         this.blocker = blocker;
@@ -490,7 +490,7 @@ public class LeftTuple
         this.object = object;
     }
 
-//    public int hashCode() {        
+//    public int hashCode() {
 //        return this.hashCode;
 //    }
 

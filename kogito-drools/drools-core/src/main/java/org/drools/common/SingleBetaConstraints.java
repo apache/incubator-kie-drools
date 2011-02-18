@@ -234,6 +234,6 @@ public class SingleBetaConstraints
     
     public BetaConstraints getOriginalConstraint() {
         throw new UnsupportedOperationException();
-    }    
+    }
 
 }

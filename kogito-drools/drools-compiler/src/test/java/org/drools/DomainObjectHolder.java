@@ -26,4 +26,4 @@ public class DomainObjectHolder {
 	return objects;
 	}
 
-	} 
+	}

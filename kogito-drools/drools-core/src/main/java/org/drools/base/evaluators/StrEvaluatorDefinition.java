@@ -172,7 +172,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 					return this.getOperator().isNegated() ^ (((String)value1).length() == ((Long) value2).longValue() );
 				default:
 					throw new IllegalAccessError("Illegal str comparison parameter");
-				}				
+				}
 			
 		}
 

@@ -82,7 +82,7 @@ public class QuadroupleBetaConstraints
             	// UnificationRestrictions cannot be allowed in composite indexes
             	// We also ensure that if there is a mixture that standard restriction is first
             	depth = 1;
-            }            
+            }
 
             // Determine  if this constraints are indexable
             final boolean i0 = isIndexable( constraints[0] );
@@ -408,6 +408,6 @@ public class QuadroupleBetaConstraints
 
     public BetaConstraints getOriginalConstraint() {
         throw new UnsupportedOperationException();
-    }    
+    }
     
 }

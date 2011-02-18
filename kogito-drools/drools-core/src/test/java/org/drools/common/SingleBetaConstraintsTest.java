@@ -40,6 +40,6 @@ public class SingleBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint0 = ( VariableConstraint ) getConstraint( "cheeseType0", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0 };
         checkBetaConstraints( constraints, SingleBetaConstraints.class );
-    }    
+    }
             
 }

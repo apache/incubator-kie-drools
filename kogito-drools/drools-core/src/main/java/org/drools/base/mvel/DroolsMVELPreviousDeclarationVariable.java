@@ -82,7 +82,7 @@ public class DroolsMVELPreviousDeclarationVariable
         
         return decl.getValue( (InternalWorkingMemory) this.factory.getWorkingMemory(), this.factory.getValue( decl ) );
 
-    }    
+    }
 
     public void setValue(final Object value) {
         throw new UnsupportedOperationException( "External Variable identifer='" + getName() + "' type='" + getKnownType() + "' is final, it cannot be set" );

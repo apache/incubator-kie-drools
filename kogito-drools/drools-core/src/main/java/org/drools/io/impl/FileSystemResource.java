@@ -102,11 +102,11 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
-    }    
+    }
     
     public File getFile() {
         return this.file;
-    }       
+    }
     
     public boolean isDirectory() {
         return this.file.isDirectory();
@@ -133,12 +133,12 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     
     public boolean hasURL() {
         return true;
-    }   
+    }
     
     public long getLastModified() {
         long date = this.file.lastModified();
         return date;
-    }     
+    }
     
     public long getLastRead() {
         return this.lastRead;

@@ -457,7 +457,7 @@ public class RuleTerminalNode extends BaseNode
         public int compare(Declaration d1,
                            Declaration d2) {
             return ( d1.getIdentifier().compareTo( d2.getIdentifier() ) );
-        }        
+        }
     }
 
     /**

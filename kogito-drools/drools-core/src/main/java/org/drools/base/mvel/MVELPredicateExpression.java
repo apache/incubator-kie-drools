@@ -63,7 +63,7 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
     
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-    }      
+    }
 
     public Object createContext() {
         return null;

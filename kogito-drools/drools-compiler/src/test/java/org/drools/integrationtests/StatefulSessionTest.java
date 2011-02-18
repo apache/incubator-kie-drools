@@ -62,7 +62,7 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }        
+        }
                
         assertTrue( futureAssert.getObject() instanceof FactHandle );
         assertEquals( "stilton",
@@ -104,7 +104,7 @@ public class StatefulSessionTest {
         
         Object o = ksession.getObject( (FactHandle) result.getFactHandle( "outStilton" ) );
         assertSame( o, stilton );
-    }    
+    }
     
     @Test
     public void testArrayObjectAssert() throws Exception {
@@ -122,7 +122,7 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }        
+        }
                
         
         assertTrue( futureAssert.getObject() instanceof List );
@@ -130,7 +130,7 @@ public class StatefulSessionTest {
 
         assertEquals( "stilton",
                       list.get( 0 ) );
-    } 
+    }
     
     @Test
     public void testCollectionObjectAssert() throws Exception {
@@ -150,14 +150,14 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }        
+        }
                
         assertTrue( futureAssert.getObject() instanceof List );
         assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
         
         assertEquals( "stilton",
                       list.get( 0 ) );
-    }   
+    }
     
     @Test
     public void testHasExceptionSingleAssert()throws Exception {
@@ -176,7 +176,7 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }   
+        }
         
 
         assertTrue( futureAssert.getObject() instanceof FactHandle );
@@ -201,12 +201,12 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }        
+        }
                        
         assertTrue( futureAssert.getObject() instanceof List );
         assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
         assertTrue( futureFireAllRules.getException() instanceof Exception );
-    }   
+    }
     
     @Test
     public void testHasExceptionCollectionAssert()throws Exception {
@@ -227,12 +227,12 @@ public class StatefulSessionTest {
             if (i++ > 5) {
                 fail( "Future should have finished by now" );
             }
-        }        
+        }
                        
         assertTrue( futureAssert.getObject() instanceof List );
         assertTrue( ((List)futureAssert.getObject()).get( 0 ) instanceof FactHandle );
         assertTrue( futureFireAllRules.getException() instanceof Exception );
-    }    
+    }
     
     @Test
     public void testSequentialException() {

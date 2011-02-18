@@ -42,7 +42,7 @@ public class DrlParserTest {
             resolver.addExpander("*", expander);
         } else {
             throw new RuntimeDroolsException( "Error parsing and loading DSL file." + file.getErrors() );
-        }        
+        }
 
         DrlParser parser = new DrlParser();
         String result = parser.getExpandedDRL( drl, resolver);
@@ -58,5 +58,5 @@ public class DrlParserTest {
 
         assertEquals( cleanExpected,
                       cleanActual );
-    }    
+    }
 }

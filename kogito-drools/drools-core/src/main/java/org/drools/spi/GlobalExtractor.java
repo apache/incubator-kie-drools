@@ -52,7 +52,7 @@ public class GlobalExtractor
                            final ObjectType objectType) {
         this.identifier = identifier;
         this.objectType = objectType;
-    }    
+    }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         return workingMemory.getGlobal( identifier );
@@ -88,7 +88,7 @@ public class GlobalExtractor
             return ((ClassObjectType)objectType).getClassName();
         } else {
             return objectType.getValueType().getClassType().getName();
-        }                
+        }
     }
 
     public ValueType getValueType() {

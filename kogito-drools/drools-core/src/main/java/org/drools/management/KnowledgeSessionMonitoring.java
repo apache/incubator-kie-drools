@@ -203,7 +203,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             return this.ruleStats;
         }
         
-        public AgendaStatsData getRuleStats( String ruleName ) { 
+        public AgendaStatsData getRuleStats( String ruleName ) {
             return this.ruleStats.get( ruleName );
         }
         
@@ -263,7 +263,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
 		public void beforeRuleFlowGroupDeactivated(
 				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
             // no stats gathered for now
-		}    
+		}
 
 		public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
@@ -373,7 +373,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             return this.processStats;
         }
         
-        public ProcessStatsData getProcessStats(String processId) { 
+        public ProcessStatsData getProcessStats(String processId) {
             return this.processStats.get(processId);
         }
         
@@ -381,7 +381,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             return this.processInstanceStats;
         }
         
-        public ProcessInstanceStatsData getProcessInstanceStats(Long processInstanceId) { 
+        public ProcessInstanceStatsData getProcessInstanceStats(Long processInstanceId) {
             return this.processInstanceStats.get(processInstanceId);
         }
         

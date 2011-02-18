@@ -36,7 +36,7 @@ public class TripleBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.NOT_EQUAL, "type", Cheese.class );
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
-    }   
+    }
     
     @Test
     public void testOneIndxed() {
@@ -57,7 +57,7 @@ public class TripleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
-    }   
+    }
 
     @Test
     public void testTwoIndxed() {
@@ -78,7 +78,7 @@ public class TripleBetaConstraintsTest extends BaseBetaConstraintsTest {
         constraint3 = ( VariableConstraint ) getConstraint( "cheeseType2", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint3 };
         checkBetaConstraints( constraints, TripleBetaConstraints.class );
-    }    
+    }
     
     @Test
     public void testThreeIndxed() {

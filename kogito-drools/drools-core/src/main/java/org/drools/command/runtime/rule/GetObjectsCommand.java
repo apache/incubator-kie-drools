@@ -90,7 +90,7 @@ public class GetObjectsCommand
         return new ObjectStoreWrapper( session.getObjectStore(),
                                        filter,
                                        ObjectStoreWrapper.OBJECT );
-    }    
+    }
 
     public String toString() {
         if ( filter != null ) {

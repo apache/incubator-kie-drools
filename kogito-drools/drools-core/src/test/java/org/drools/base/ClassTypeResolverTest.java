@@ -246,7 +246,7 @@ public class ClassTypeResolverTest {
         } catch ( ClassNotFoundException e) {
             // swallow as this should be thrown
         }
-    }    
+    }
     
     @Test
     public void testNestedClassResolving() throws Exception {

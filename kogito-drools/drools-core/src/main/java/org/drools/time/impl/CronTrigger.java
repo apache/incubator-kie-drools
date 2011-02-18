@@ -255,7 +255,7 @@ public class CronTrigger
             this.nextFireTime = null;
         } else if (  repeatLimit != -1 && repeatCount >= repeatLimit ) {
             this.nextFireTime = null;
-        }        
+        }
         return date;
     }
 

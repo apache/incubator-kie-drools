@@ -61,11 +61,11 @@ public class LeftTupleList
     
     public LeftTuple getFirst(LeftTuple leftTuple) {
         return this.first;
-    }     
+    }
     
     public LeftTuple getLast(RightTuple lastTuple) {
         return this.first;
-    }    
+    }
 
     public void add(final LeftTuple leftTuple) {
         if ( this.last != null ) {
@@ -145,7 +145,7 @@ public class LeftTupleList
     
     public FastIterator fastIterator() {
     	return LinkedList.fastIterator; // contains no state, so ok to be static   
-    }    
+    }
 
     public Iterator iterator() {
         if ( this.iterator == null ) {

@@ -51,10 +51,10 @@ public class ActivationGroupImpl implements ActivationGroup, Externalizable {
     
     public String getName() {
         return this.name;
-    }  
+    }
     
     public void clear() {
         this.agenda.clearAndCancelActivationGroup( this.name );
-    }    
+    }
 
 }

@@ -616,5 +616,5 @@ public abstract class WorkingMemoryLogger
     public void beforeRuleBaseUnlocked(BeforeRuleBaseUnlockedEvent event) {
         // TODO Auto-generated method stub
         
-    }        
+    }
 }

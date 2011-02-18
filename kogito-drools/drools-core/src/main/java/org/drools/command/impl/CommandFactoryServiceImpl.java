@@ -66,7 +66,7 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
         cmd.setOutIdentifier( outIdentifier );
         cmd.setReturnObject( returnObject );
         return cmd;
-    }	
+    }
 
 	public Command newInsert(Object object) {
 		return new InsertObjectCommand(object);
@@ -87,16 +87,16 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     public Setter newSetter(String accessor,
                              String value) {
         return new SetterImpl(accessor, value);
-    }    
+    }
     
     public Command newModify(FactHandle factHandle,
                              List<Setter> setters) {
         return new ModifyCommand(factHandle, setters);
-    }    
+    }
 	
     public Command newGetObject(FactHandle factHandle) {
         return new GetObjectCommand(factHandle);
-    }	
+    }
 
 	public Command newGetObjects() {
 		return newGetObjects(null);
@@ -158,16 +158,16 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
                                String type,
                                Object event) {
         return new SignalEventCommand( processInstanceId, type, event );
-    }    
+    }
     
     public Command newCompleteWorkItem(long workItemId,
                                        Map<String, Object> results) {
         return new CompleteWorkItemCommand(workItemId, results);
-    }    
+    }
     
     public Command newAbortWorkItem(long workItemId) {
         return new AbortWorkItemCommand( workItemId);
-    }    
+    }
 	
 	public Command newQuery(String identifier, String name) {
 		return new QueryCommand(identifier, name, null);

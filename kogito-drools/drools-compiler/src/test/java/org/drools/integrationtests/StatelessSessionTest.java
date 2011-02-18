@@ -182,7 +182,7 @@ public class StatelessSessionTest {
         list3 = ( List ) result.getValue( "outList3" );
         assertEquals( 1, list3.size() );
         assertSame( stilton, list3.get( 0 ) );
-    }    
+    }
     
     @Test
     public void testQuery() throws Exception {
@@ -253,7 +253,7 @@ public class StatelessSessionTest {
             newSet.add( list );
         }
         assertEquals( set, newSet );
-    }    
+    }
     
     // @TODO need to figure out if we need to support "out" params 
 //    public void testInAndOutParams() throws Exception {
@@ -352,7 +352,7 @@ public class StatelessSessionTest {
 //        // cheesery should be null
 //        assertNull( results.getValue( "cheesery" ) );
 //        
-//    }    
+//    }
     
     @Test
     public void testAsynSingleOjbectcAssert() throws Exception {
@@ -435,7 +435,7 @@ public class StatelessSessionTest {
                     result.getGlobal( "cheesery" ) );
         
         assertNotSame( this.globalResolver, result.getGlobalResolver() );
-    }    
+    }
     
     @Test
     public void testCopyIdentifierGlobalExporterAllValues() throws Exception {
@@ -454,7 +454,7 @@ public class StatelessSessionTest {
                     result.getGlobal( "cheesery" ) );
         
         assertNotSame( this.globalResolver, result.getGlobalResolver() );
-    }     
+    }
     
     @Test
     public void testReferenceOriginalGlobalExporter() throws Exception {
@@ -473,7 +473,7 @@ public class StatelessSessionTest {
                     result.getGlobal( "cheesery" ) );
         
         assertSame( this.globalResolver, result.getGlobalResolver() );
-    }        
+    }
 
     private StatelessSession getSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -522,5 +522,5 @@ public class StatelessSessionTest {
         session.setGlobal( "cheesery",
                            this.cheesery );
         return session;
-    }    
+    }
 }

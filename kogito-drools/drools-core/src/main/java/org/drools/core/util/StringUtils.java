@@ -1103,7 +1103,7 @@ public class StringUtils {
         return new URI( StringUtils.replace( location,
                                              " ",
                                              "%20" ) );
-    }    
+    }
     
     /**
      * Take a String which is a delimited list and convert it to a String array.
@@ -1179,7 +1179,7 @@ public class StringUtils {
             return null;
         }
         return (String[]) collection.toArray(new String[collection.size()]);
-    }    
+    }
     
     /**
      * Delete any character in a given String.
@@ -1202,19 +1202,19 @@ public class StringUtils {
             }
         }
         return out.toString();
-    } 
+    }
     
     public static String toString(Reader reader) throws IOException {
         if ( reader instanceof BufferedReader ) {
             return toString( (BufferedReader) reader );
         } else {
             return toString( new BufferedReader( reader ) );
-        }    
+        }
     }
     
     public static String toString(InputStream is) throws IOException {
         return toString( new BufferedReader(new InputStreamReader(is, "UTF-8") ) );
-    }    
+    }
     
     public static String toString(BufferedReader reader) throws IOException {
         StringBuilder sb = new StringBuilder();
@@ -1232,5 +1232,5 @@ public class StringUtils {
             reader.close();
         }
         return sb.toString();
-    }     
+    }
 }

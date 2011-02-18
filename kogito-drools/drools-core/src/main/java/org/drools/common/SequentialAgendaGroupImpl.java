@@ -174,5 +174,5 @@ public class SequentialAgendaGroupImpl
     
     public void setFocus() {
         throw new UnsupportedOperationException();
-    }    
+    }
 }

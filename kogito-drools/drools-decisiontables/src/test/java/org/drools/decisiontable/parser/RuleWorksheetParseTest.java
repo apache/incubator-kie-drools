@@ -140,7 +140,7 @@ public class RuleWorksheetParseTest {
 	private void makeRuleTable(){
 		listener.newRow( 10, 1 );
 		listener.newCell(10, 1, "RuleTable myRuleTable",  DataListener.NON_MERGED );
-	}	
+	}
 
 	private void makeRow( int row, String... values ) throws DecisionTableParseException {
 		listener.newRow( row, values.length );

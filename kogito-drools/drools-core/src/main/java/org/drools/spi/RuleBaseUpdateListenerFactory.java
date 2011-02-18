@@ -25,7 +25,7 @@ import org.drools.core.util.ClassUtils;
  */
 public class RuleBaseUpdateListenerFactory {
     
-    public static RuleBaseUpdateListener createListener(String className, StatefulSession session) {        
+    public static RuleBaseUpdateListener createListener(String className, StatefulSession session) {
         try {
             RuleBaseUpdateListener listener = ( RuleBaseUpdateListener ) ClassUtils.instantiateObject( className );
             listener.setSession( session );
@@ -33,7 +33,7 @@ public class RuleBaseUpdateListenerFactory {
             return listener;
         } catch ( Throwable e ) {
             throw new RuntimeException("Unable to instantiate RuleBaseUpdateListener '" + className + "'", e );
-        }        
+        }
     }
 
 }

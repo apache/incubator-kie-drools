@@ -220,7 +220,7 @@ public class XStreamJSon {
     //            throw new UnsupportedOperationException();
     //        }
     //
-    //    }    
+    //    }
 
     public static class JSonBatchExecutionCommandConverter extends AbstractCollectionConverter
         implements
@@ -603,7 +603,7 @@ public class XStreamJSon {
                 writer.startNode( "entry-point" );
                 writer.setValue(  cmd.getEntryPoint() );
                 writer.endNode();
-            }            
+            }
 
             for ( Object element : cmd.getObjects() ) {
                 writeItem( new ObjectsObjectContainer( element ),

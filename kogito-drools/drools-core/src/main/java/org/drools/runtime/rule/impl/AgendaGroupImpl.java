@@ -50,11 +50,11 @@ public class AgendaGroupImpl implements AgendaGroup, Externalizable {
     
     public String getName() {
         return this.name;
-    }    
+    }
     
     public void clear() {
         this.agenda.clearAndCancelAgendaGroup( this.name );
-    }    
+    }
     
     public void setFocus() {
         this.agenda.setFocus( this.name );

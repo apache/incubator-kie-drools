@@ -35,7 +35,7 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
         
     public KnowledgeBaseConfiguration newKnowledgeBaseConfiguration(Properties properties, ClassLoader... classLoaders) {
         return new RuleBaseConfiguration(properties, classLoaders);
-    }        
+    }
     
     public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration() {
         return new SessionConfiguration();
@@ -43,15 +43,15 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
         
     public KnowledgeSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
         return new SessionConfiguration(properties);
-    }        
+    }
     
-    public KnowledgeBase newKnowledgeBase() {       
+    public KnowledgeBase newKnowledgeBase() {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase() );
-    }   
+    }
     
-    public KnowledgeBase newKnowledgeBase( String kbaseId ) {       
+    public KnowledgeBase newKnowledgeBase( String kbaseId ) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );
-    }   
+    }
     
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
         return new KnowledgeBaseImpl( RuleBaseFactory.newRuleBase( ( RuleBaseConfiguration ) conf ) );

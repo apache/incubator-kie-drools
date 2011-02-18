@@ -48,7 +48,7 @@ public class SingleNonIndexSkipBetaConstraints
     
     public SingleNonIndexSkipBetaConstraints() {
 
-    }    
+    }
     
     public SingleNonIndexSkipBetaConstraints(SingleBetaConstraints constraints) {
         this.constraints = constraints;

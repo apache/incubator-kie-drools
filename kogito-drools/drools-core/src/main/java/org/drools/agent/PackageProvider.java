@@ -61,7 +61,7 @@ public abstract class PackageProvider {
                 return;
             }
         }
-    }    
+    }
 
     static void removePackages(	Collection<String> removedPackages,
     							RuleBase rb, 
@@ -71,7 +71,7 @@ public abstract class PackageProvider {
 	        listener.info( "Removing package called " + name );
 	    	removePackage(name, rb);
 		}
-    }    
+    }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
     		AgentEventListener listener) {

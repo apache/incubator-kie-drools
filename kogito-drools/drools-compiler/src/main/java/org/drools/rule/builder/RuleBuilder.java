@@ -286,7 +286,7 @@ public class RuleBuilder {
         if ( repeatPos != -1 ) {
             if ( optionsPos > repeatPos ) {
                 optionsPos = repeatPos;
-            }            
+            }
             int p = ( startPos != -1 && startPos < endPos ) ? startPos : endPos;
             
             if ( p == -1 ) {
@@ -295,7 +295,7 @@ public class RuleBuilder {
             
             int equalsPos = timerString.indexOf( '=', repeatPos );
             repeatLimit = Integer.parseInt( timerString.substring( equalsPos + 1, p ).trim() );
-        }                                
+        }
                      
         String body = timerString.substring( colonPos + 1, optionsPos ).trim();
         
@@ -306,7 +306,7 @@ public class RuleBuilder {
             } catch ( ParseException e ) {
                 context.getErrors().add( "Unable to build set timer '" + timerString + "'");
                 return;
-            }            
+            }
         } else if ( "int".equals( protocol ) ) {
             String[] times = body.trim().split( "\\s" );
             long delay = 0;

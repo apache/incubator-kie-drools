@@ -44,7 +44,7 @@ public class PersisterHelper {
             case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
                 return new WorkingMemoryReteExpireAction(context);
             }
-        }    
+        }
         return null;
     }
     

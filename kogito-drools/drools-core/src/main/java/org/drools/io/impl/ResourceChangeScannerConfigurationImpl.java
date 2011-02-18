@@ -40,22 +40,22 @@ public class ResourceChangeScannerConfigurationImpl implements ResourceChangeSca
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return;
-        } 
+        }
         
         if ( name.equals(   "drools.resource.scanner.interval" ) ) {
             setInterval( StringUtils.isEmpty( value ) ? 60 : Integer.parseInt( value ) );
-        } 
+        }
     }
 
     public String getProperty(String name) {
         name = name.trim();
         if ( StringUtils.isEmpty( name ) ) {
             return null;
-        } 
+        }
         
         if ( name.equals(   "drools.resource.scanner.interval" ) ) {
             return Integer.toString( this.interval );
-        } 
+        }
         
         return null;
     }

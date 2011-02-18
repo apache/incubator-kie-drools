@@ -105,7 +105,7 @@ public class PackageHandler extends BaseAbstractHandler
             funcdescr.setTarget( importfunctionEntry );
             
             packageDescr.addFunctionImport(funcdescr);
-        }        
+        }
         
         NodeList globals = element.getElementsByTagName( "global" );
 

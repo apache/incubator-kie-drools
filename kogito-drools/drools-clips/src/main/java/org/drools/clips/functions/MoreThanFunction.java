@@ -26,5 +26,5 @@ public class MoreThanFunction  extends BaseInfixFunction  {
     
     public String getMappedSymbol() {
         return mappedSymbol;
-    }    
+    }
 }

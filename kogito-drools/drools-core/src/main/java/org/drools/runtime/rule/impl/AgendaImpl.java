@@ -51,7 +51,7 @@ public class AgendaImpl
         } else {
             return null;
         }
-    }    
+    }
     
     public RuleFlowGroup getRuleFlowGroup(String name) {
         org.drools.spi.RuleFlowGroup ruleFlowGroup = this.agenda.getRuleFlowGroup( name );

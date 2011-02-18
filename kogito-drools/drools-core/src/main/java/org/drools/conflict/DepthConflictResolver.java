@@ -50,7 +50,7 @@ public class DepthConflictResolver
                              final Object adding) {
         return compare( (Activation) existing,
                         (Activation) adding );
-    }    
+    }
 
     public final int compare(final Activation existing,
                              final Activation adding) {

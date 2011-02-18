@@ -102,11 +102,11 @@ public class NamedEntryPoint
 
     public void reset() {
         this.objectStore.clear();
-    }         
+    }
     
     public ObjectStore getObjectStore() {
         return this.objectStore;
-    }    
+    }
     
     public EntryPointNode getEntryPointNode() {
         return this.entryPointNode;
@@ -362,7 +362,7 @@ public class NamedEntryPoint
                 object,
                 rule,
                 activation );
-    }    
+    }
 
     public void update(org.drools.FactHandle factHandle,
                        final Object object,
@@ -693,14 +693,14 @@ public class NamedEntryPoint
         this.objectStore.addHandle( handle,
                                     object );
         return handle;
-    }  
+    }
     
     /** Side-effects, will add the created key to the handle. */
     private EqualityKey createEqualityKey(InternalFactHandle handle) {
       EqualityKey key = new EqualityKey( handle );
       handle.setEqualityKey( key );
       return key;
-    }    
+    }
     
     /**
      * TMS will be automatically enabled when the first logical insert happens. 
@@ -755,7 +755,7 @@ public class NamedEntryPoint
         } catch ( final FactException e ) {
             throw new RuntimeDroolsException( e.getMessage() );
         }
-    }    
+    }
 
 
 }

@@ -1757,7 +1757,7 @@ public class TestDRL {
 	}
 
 	// Modify the return value if the expected token type is OK or FAIL
-	public Object examineParserExecResult(int tokenType, Object retVal) {	
+	public Object examineParserExecResult(int tokenType, Object retVal) {
 		if ( tokenType==27 ) {	// expected Token: OK
 			if ( this.stderr==null ) {
 				return "OK";
@@ -1776,7 +1776,7 @@ public class TestDRL {
 		}
 		else {	// return the same object for the other token types
 			return retVal;
-		}		
+		}
 	}
 
 }

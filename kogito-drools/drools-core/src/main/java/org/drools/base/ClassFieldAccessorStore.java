@@ -114,7 +114,7 @@ public class ClassFieldAccessorStore
 
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
-        }        
+        }
         
 
         if ( target != null ) {
@@ -158,7 +158,7 @@ public class ClassFieldAccessorStore
             // we delay the key writing as we only want to do it if the wiring was successful
             this.lookup.put( key,
                              entry );
-        }        
+        }
         
         return entry.getClassFieldWriter();
     }
@@ -309,7 +309,7 @@ public class ClassFieldAccessorStore
                         }
                         if (lookupEntry.getClassFieldWriter() != null) {
                             wire(((FieldLookupEntry)entry.getValue()).getClassFieldWriter());
-                        }                        
+                        }
                     }
                     break;
                 }
@@ -323,7 +323,7 @@ public class ClassFieldAccessorStore
                         this.lookup.put( entry.getKey(),
                                          lookupEntry );
                                                
-                    } 
+                    }
                     
                     for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
                         ((AcceptsClassObjectType) target).setClassObjectType( lookupEntry.getClassObjectType() );
@@ -357,8 +357,8 @@ public class ClassFieldAccessorStore
                     //                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
                     //                            ((Declaration)target).setReadAccessor( lookupEntry.getGlobalExtractor() );
                     //                            lookupEntry.addAccessorTarget( target );
-                    //                        }                        
-                    //                    }                    
+                    //                        }
+                    //                    }
                     //                    break;
                     //                }
             }
@@ -420,7 +420,7 @@ public class ClassFieldAccessorStore
     //                throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + cot.getClassName() + "'" );
     //            }
     //        }
-    //    }    
+    //    }
 
     public void wire(ClassObjectType objectType) {
         try {
@@ -506,7 +506,7 @@ public class ClassFieldAccessorStore
 
         public ClassObjectType getClassObjectType() {
             return classObjectType;
-        }        
+        }
         
         public void setClassObjectType(ClassObjectType classObjectType) {
             this.classObjectType = classObjectType;

@@ -76,7 +76,7 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                       PropagationContext context,
                                       InternalWorkingMemory workingMemory) {
 
-    }    
+    }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         return null;

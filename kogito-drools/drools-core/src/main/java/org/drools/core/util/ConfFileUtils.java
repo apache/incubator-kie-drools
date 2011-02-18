@@ -76,7 +76,7 @@ public class ConfFileUtils {
             if ( confClassLoader != null && confClassLoader != classLoader ) {
                 url = confClassLoader.getResource( "META-INF/" + confName );
             }
-        }        
+        }
 
         if ( url == null ) {
             ClassLoader confClassLoader = Thread.currentThread().getContextClassLoader();
@@ -112,10 +112,10 @@ public class ConfFileUtils {
                 } catch ( MalformedURLException e ) {
                     throw new IllegalArgumentException( "file.toURL() failed for '" + file + "'" );
                 }
-            } 
+            }
         }
         return url;
-    }     
+    }
     
     public static String URLContentsToString(URL url) {
         StringBuilder builder = new StringBuilder();
@@ -135,7 +135,7 @@ public class ConfFileUtils {
             reader.close();
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to read " + url.toExternalForm() );
-        }        
+        }
         return builder.toString();
     }
     
@@ -157,7 +157,7 @@ public class ConfFileUtils {
         } catch ( IOException e ) {
             //swallow, as we'll return null
             return null;
-        }       
+        }
         
         return properties;
     }

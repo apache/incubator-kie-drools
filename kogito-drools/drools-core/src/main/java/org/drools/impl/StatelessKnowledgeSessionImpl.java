@@ -230,7 +230,7 @@ public class StatelessKnowledgeSessionImpl
 
     public Globals getGlobals() {
         return this.sessionGlobals;
-    }    
+    }
 
     public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();

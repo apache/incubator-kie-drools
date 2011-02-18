@@ -34,7 +34,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
         factHandle = event.getFactHandle();
         object = event.getObject();
         oldObject = event.getOldObject();
-    }    
+    }
     
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
@@ -49,7 +49,7 @@ public class ObjectUpdatedEventImpl  extends WorkingMemoryEventImpl implements O
         this.factHandle = ( FactHandle ) in.readObject();
         this.object = in.readObject();
         this.oldObject = in.readObject();
-    }      
+    }
     
     public FactHandle getFactHandle() {
         return this.factHandle;

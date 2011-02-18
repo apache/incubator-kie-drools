@@ -38,7 +38,7 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
         //return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
         return object;
-    }   
+    }
     
     public boolean isNullValue(InternalWorkingMemory workingMemory, final Object object) {
         return getValue( workingMemory, object ) == null;

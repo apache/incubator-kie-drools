@@ -51,7 +51,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                     obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
                 } else if (obj instanceof FactHandle ) {
                     obj = ((InternalFactHandle)obj).toExternalForm();
-                } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {    
+                } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
                     obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
                 }
                 ret.add(new JaxbObjectObjectPair((String)entry.getKey(), obj));
@@ -79,7 +79,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                 }
             }
             return r;
-        } else {       
+        } else {
             return o;
         }
     }

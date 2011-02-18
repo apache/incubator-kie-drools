@@ -50,7 +50,7 @@ public class CalendarsImpl
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( map );
-    }     
+    }
     
     public Calendar get(String identifier) {
         return this.map.get( identifier );

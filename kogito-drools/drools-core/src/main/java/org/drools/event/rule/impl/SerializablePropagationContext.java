@@ -44,7 +44,7 @@ public class SerializablePropagationContext
         this.propgationNumber = propagationContext.getPropagationNumber();
         this.rule = propagationContext.getRule();
         this.type = propagationContext.getType();
-    }    
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.factHandle );

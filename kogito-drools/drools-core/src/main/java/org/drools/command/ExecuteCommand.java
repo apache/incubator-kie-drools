@@ -42,7 +42,7 @@ public class ExecuteCommand
     public ExecuteCommand(String identifier, Command  command) {
         this.command = command;
         this.outIdentifier = identifier;
-    }    
+    }
 
     public ExecutionResults execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
@@ -50,7 +50,7 @@ public class ExecuteCommand
         ExecutionResults kresults = ksession.execute( this.command );
         if ( this.outIdentifier != null ) {
             ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
-        }        
+        }
         
         return kresults;
     }

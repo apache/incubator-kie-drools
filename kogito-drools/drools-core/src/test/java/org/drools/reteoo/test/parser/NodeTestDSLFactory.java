@@ -30,7 +30,7 @@ import org.drools.reteoo.test.dsl.NodeTestCase;
  */
 public class NodeTestDSLFactory {
     
-    public static enum Context { 
+    public static enum Context {
         SETUP, TEARDOWN, TEST;
     }
 
@@ -69,7 +69,7 @@ public class NodeTestDSLFactory {
             }
             step.addCommand( cmds );
         }
-        switch( current ) { 
+        switch( current ) {
             case SETUP : 
                 testCase.addSetupStep( step );
                 break;

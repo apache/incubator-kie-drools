@@ -79,7 +79,7 @@ public class WorkImpl implements Work, Serializable {
         this.parameterDefinitions.clear();
         for (ParameterDefinition parameterDefinition: parameterDefinitions) {
             addParameterDefinition(parameterDefinition);
-        }        
+        }
     }
 
     public void addParameterDefinition(ParameterDefinition parameterDefinition) {

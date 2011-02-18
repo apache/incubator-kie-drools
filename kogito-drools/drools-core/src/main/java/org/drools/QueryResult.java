@@ -85,11 +85,11 @@ public class QueryResult {
     public FactHandle getFactHandle(Declaration declr) {
         return this.factHandles[  declr.getPattern().getOffset() ]; // -1 because we shifted the array left
                                                                        // when removing the query object
-    }     
+    }
     
     public FactHandle getFactHandle(int i) {
         return this.factHandles[ i + 1 ];
-    }    
+    }
 
     /**
      * Return the FactHandles for the Tuple.

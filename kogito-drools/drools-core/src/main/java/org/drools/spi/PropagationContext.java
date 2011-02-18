@@ -26,7 +26,7 @@ import org.drools.FactHandle;
 public interface PropagationContext
     extends
     Externalizable,
-    org.drools.runtime.rule.PropagationContext {    
+    org.drools.runtime.rule.PropagationContext {
 
     public Rule getRuleOrigin();
     

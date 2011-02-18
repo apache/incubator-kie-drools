@@ -75,6 +75,6 @@ public class Alarm {
     
     public void incrementNumber() {
         this.number++;;
-    }     
+    }
 
 }

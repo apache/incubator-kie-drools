@@ -91,7 +91,7 @@ public class RuleBaseConfigurationTest {
         cfg = new RuleBaseConfiguration(properties);
         
         assertEquals( LogicalOverride.DISCARD, cfg.getLogicalOverride() );
-    }    
+    }
     
     @Test
     public void testSequential() {

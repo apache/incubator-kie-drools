@@ -25,7 +25,7 @@ public class FactC implements Serializable {
     
     public FactC( final Integer b ) {
         this.f2 = b;
-    }    
+    }
 
     public String getF1() {
         return this.f1;

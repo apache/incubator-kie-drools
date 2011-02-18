@@ -70,7 +70,7 @@ public abstract class DroolsTestCase {
         } catch(Throwable t) {
             // do nothing as this is assertion is ok
         }
-    }    
+    }
     
     public void assertContains(final Object obj,
                                final Collection collection) {

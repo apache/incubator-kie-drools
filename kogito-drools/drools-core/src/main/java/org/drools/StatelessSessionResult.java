@@ -28,7 +28,7 @@ import org.drools.spi.GlobalResolver;
  * @author mproctor
  *
  */
-public interface StatelessSessionResult {        
+public interface StatelessSessionResult {
     
     /**
      * Iterator all Objects inserted into the StatelessSession.

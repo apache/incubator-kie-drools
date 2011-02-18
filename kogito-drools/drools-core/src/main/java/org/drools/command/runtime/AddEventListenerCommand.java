@@ -45,7 +45,7 @@ public class AddEventListenerCommand
     
     public AddEventListenerCommand(ProcessEventListener listener) {
         this.processEventListener = listener;
-    }    
+    }
 
 
     public Void execute(Context context) {
@@ -68,7 +68,7 @@ public class AddEventListenerCommand
             return "session.addEventListener( " + agendaEventlistener + " );";
         }  else  if ( processEventListener != null ) {
             return "session.addEventListener( " + processEventListener + " );";
-        } 
+        }
         
         return "AddEventListenerCommand";
     }

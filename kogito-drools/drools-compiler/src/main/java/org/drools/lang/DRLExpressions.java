@@ -4876,7 +4876,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end "neg_operator_key"
 
     // $ANTLR start synpred1_DRLExpressions
-    public final void synpred1_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred1_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:68:5: ( primitiveType )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:68:6: primitiveType
         {
@@ -4891,7 +4891,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred1_DRLExpressions
 
     // $ANTLR start synpred2_DRLExpressions
-    public final void synpred2_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred2_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:68:41: ( LEFT_SQUARE RIGHT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:68:42: LEFT_SQUARE RIGHT_SQUARE
         {
@@ -4903,7 +4903,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred2_DRLExpressions
 
     // $ANTLR start synpred3_DRLExpressions
-    public final void synpred3_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred3_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:10: ( typeArguments )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:11: typeArguments
         {
@@ -4918,7 +4918,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred3_DRLExpressions
 
     // $ANTLR start synpred4_DRLExpressions
-    public final void synpred4_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred4_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:52: ( typeArguments )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:53: typeArguments
         {
@@ -4933,7 +4933,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred4_DRLExpressions
 
     // $ANTLR start synpred5_DRLExpressions
-    public final void synpred5_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred5_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:89: ( LEFT_SQUARE RIGHT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:69:90: LEFT_SQUARE RIGHT_SQUARE
         {
@@ -4945,7 +4945,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred5_DRLExpressions
 
     // $ANTLR start synpred6_DRLExpressions
-    public final void synpred6_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred6_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:92:27: ( assignmentOperator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:92:28: assignmentOperator
         {
@@ -4960,7 +4960,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred6_DRLExpressions
 
     // $ANTLR start synpred7_DRLExpressions
-    public final void synpred7_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred7_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:101:8: ( operator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:101:9: operator
         {
@@ -4975,7 +4975,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred7_DRLExpressions
 
     // $ANTLR start synpred8_DRLExpressions
-    public final void synpred8_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred8_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:107:7: ( operator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:107:8: operator
         {
@@ -4990,7 +4990,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred8_DRLExpressions
 
     // $ANTLR start synpred9_DRLExpressions
-    public final void synpred9_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred9_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:113:7: ( operator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:113:8: operator
         {
@@ -5005,7 +5005,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred9_DRLExpressions
 
     // $ANTLR start synpred10_DRLExpressions
-    public final void synpred10_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred10_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:119:7: ( operator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:119:8: operator
         {
@@ -5020,7 +5020,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred10_DRLExpressions
 
     // $ANTLR start synpred11_DRLExpressions
-    public final void synpred11_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred11_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:125:7: ( operator )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:125:8: operator
         {
@@ -5035,7 +5035,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred11_DRLExpressions
 
     // $ANTLR start synpred12_DRLExpressions
-    public final void synpred12_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred12_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:142:23: ( relationalOp )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:142:24: relationalOp
         {
@@ -5050,7 +5050,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred12_DRLExpressions
 
     // $ANTLR start synpred13_DRLExpressions
-    public final void synpred13_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred13_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:163:26: ( shiftOp )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:163:27: shiftOp
         {
@@ -5065,7 +5065,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred13_DRLExpressions
 
     // $ANTLR start synpred14_DRLExpressions
-    public final void synpred14_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred14_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:171:34: ( PLUS | MINUS )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:
         {
@@ -5085,7 +5085,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred14_DRLExpressions
 
     // $ANTLR start synpred15_DRLExpressions
-    public final void synpred15_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred15_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:189:9: ( castExpression )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:189:10: castExpression
         {
@@ -5100,7 +5100,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred15_DRLExpressions
 
     // $ANTLR start synpred16_DRLExpressions
-    public final void synpred16_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred16_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:190:18: ( selector )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:190:19: selector
         {
@@ -5115,7 +5115,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred16_DRLExpressions
 
     // $ANTLR start synpred17_DRLExpressions
-    public final void synpred17_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred17_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:190:42: ( INCR | DECR )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:
         {
@@ -5135,7 +5135,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred17_DRLExpressions
 
     // $ANTLR start synpred18_DRLExpressions
-    public final void synpred18_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred18_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:194:8: ( LEFT_PAREN primitiveType )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:194:9: LEFT_PAREN primitiveType
         {
@@ -5151,7 +5151,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred18_DRLExpressions
 
     // $ANTLR start synpred19_DRLExpressions
-    public final void synpred19_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred19_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:195:8: ( LEFT_PAREN type )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:195:9: LEFT_PAREN type
         {
@@ -5167,7 +5167,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred19_DRLExpressions
 
     // $ANTLR start synpred20_DRLExpressions
-    public final void synpred20_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred20_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:210:7: ( parExpression )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:210:8: parExpression
         {
@@ -5182,7 +5182,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred20_DRLExpressions
 
     // $ANTLR start synpred21_DRLExpressions
-    public final void synpred21_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred21_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:211:9: ( nonWildcardTypeArguments )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:211:10: nonWildcardTypeArguments
         {
@@ -5197,7 +5197,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred21_DRLExpressions
 
     // $ANTLR start synpred22_DRLExpressions
-    public final void synpred22_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred22_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:212:9: ( literal )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:212:10: literal
         {
@@ -5212,7 +5212,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred22_DRLExpressions
 
     // $ANTLR start synpred23_DRLExpressions
-    public final void synpred23_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred23_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:214:9: ( super_key )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:214:10: super_key
         {
@@ -5227,7 +5227,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred23_DRLExpressions
 
     // $ANTLR start synpred24_DRLExpressions
-    public final void synpred24_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred24_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:215:9: ( new_key )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:215:10: new_key
         {
@@ -5242,7 +5242,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred24_DRLExpressions
 
     // $ANTLR start synpred25_DRLExpressions
-    public final void synpred25_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred25_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:216:9: ( primitiveType )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:216:10: primitiveType
         {
@@ -5257,7 +5257,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred25_DRLExpressions
 
     // $ANTLR start synpred26_DRLExpressions
-    public final void synpred26_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred26_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:218:9: ( inlineMapExpression )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:218:10: inlineMapExpression
         {
@@ -5272,7 +5272,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred26_DRLExpressions
 
     // $ANTLR start synpred27_DRLExpressions
-    public final void synpred27_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred27_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:219:9: ( inlineListExpression )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:219:10: inlineListExpression
         {
@@ -5287,7 +5287,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred27_DRLExpressions
 
     // $ANTLR start synpred28_DRLExpressions
-    public final void synpred28_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred28_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:9: ( ID )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:10: ID
         {
@@ -5298,7 +5298,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred28_DRLExpressions
 
     // $ANTLR start synpred29_DRLExpressions
-    public final void synpred29_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred29_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:19: ( DOT ID )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:20: DOT ID
         {
@@ -5310,7 +5310,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred29_DRLExpressions
 
     // $ANTLR start synpred30_DRLExpressions
-    public final void synpred30_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred30_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:39: ( identifierSuffix )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:220:40: identifierSuffix
         {
@@ -5325,7 +5325,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred30_DRLExpressions
 
     // $ANTLR start synpred31_DRLExpressions
-    public final void synpred31_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred31_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:244:7: ( LEFT_SQUARE RIGHT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:244:8: LEFT_SQUARE RIGHT_SQUARE
         {
@@ -5337,7 +5337,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred31_DRLExpressions
 
     // $ANTLR start synpred32_DRLExpressions
-    public final void synpred32_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred32_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:245:8: ( LEFT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:245:9: LEFT_SQUARE
         {
@@ -5348,7 +5348,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred32_DRLExpressions
 
     // $ANTLR start synpred33_DRLExpressions
-    public final void synpred33_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred33_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:272:107: ( LEFT_SQUARE RIGHT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:272:108: LEFT_SQUARE RIGHT_SQUARE
         {
@@ -5360,7 +5360,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred33_DRLExpressions
 
     // $ANTLR start synpred34_DRLExpressions
-    public final void synpred34_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred34_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:303:6: ( DOT super_key )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:303:7: DOT super_key
         {
@@ -5376,7 +5376,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred34_DRLExpressions
 
     // $ANTLR start synpred35_DRLExpressions
-    public final void synpred35_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred35_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:304:6: ( DOT new_key )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:304:7: DOT new_key
         {
@@ -5392,7 +5392,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred35_DRLExpressions
 
     // $ANTLR start synpred36_DRLExpressions
-    public final void synpred36_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred36_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:305:6: ( DOT ID )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:305:7: DOT ID
         {
@@ -5404,7 +5404,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred36_DRLExpressions
 
     // $ANTLR start synpred37_DRLExpressions
-    public final void synpred37_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred37_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:305:24: ( LEFT_PAREN )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:305:25: LEFT_PAREN
         {
@@ -5415,7 +5415,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred37_DRLExpressions
 
     // $ANTLR start synpred38_DRLExpressions
-    public final void synpred38_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred38_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:307:6: ( LEFT_SQUARE )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:307:7: LEFT_SQUARE
         {
@@ -5426,7 +5426,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred38_DRLExpressions
 
     // $ANTLR start synpred39_DRLExpressions
-    public final void synpred39_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred39_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:312:15: ( LEFT_PAREN )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:312:16: LEFT_PAREN
         {
@@ -5437,7 +5437,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred39_DRLExpressions
 
     // $ANTLR start synpred40_DRLExpressions
-    public final void synpred40_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred40_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:334:7: ( GREATER GREATER GREATER )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:334:8: GREATER GREATER GREATER
         {
@@ -5450,7 +5450,7 @@ public class DRLExpressions extends Parser {
     // $ANTLR end synpred40_DRLExpressions
 
     // $ANTLR start synpred41_DRLExpressions
-    public final void synpred41_DRLExpressions_fragment() throws RecognitionException {   
+    public final void synpred41_DRLExpressions_fragment() throws RecognitionException {
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:335:7: ( GREATER GREATER )
         // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:335:8: GREATER GREATER
         {

@@ -97,7 +97,7 @@ public class MVELAccumulator
                 
         if ( reverseUnit != null ) {
             reverse = reverseUnit.getCompiledExpression( classLoader );
-        }        
+        }
     }
 
     /* (non-Javadoc)
@@ -165,7 +165,7 @@ public class MVELAccumulator
         
         for ( int i = 0, length = vars.length; i < length; i++ ) {
             shad[i] = vars[i];
-        }        
+        }
         context.getShadow().put( handle.getId(), shad );
     }
 

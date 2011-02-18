@@ -94,7 +94,7 @@ public class ClassObjectType
             } catch ( ClassNotFoundException e ) {
                 throw new RuntimeDroolsException( "Unable to resolve class '" + clsName + "'" );
             }
-        }        
+        }
 //        this.valueType = (ValueType) in.readObject();
         this.isEvent = in.readBoolean();
     }

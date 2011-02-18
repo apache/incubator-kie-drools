@@ -76,7 +76,7 @@ public class DialectRuntimeRegistry
             DialectRuntimeData data = (DialectRuntimeData) it.next();
             data.onRemove( );
         }
-    }    
+    }
 
     public void setDialectData(String name,
                                DialectRuntimeData data) {

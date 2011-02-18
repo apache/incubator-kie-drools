@@ -110,7 +110,7 @@ public class ResourceChangeScannerImpl
                 // exist
             }
         }
-    }       
+    }
 
     public Map<Resource, Set<ResourceChangeNotifier>> getResources() {
         return resources;

@@ -185,7 +185,7 @@ public class ExecutionFlowControlTest {
                              list.size() );
         assertEquals( 50, brie.getPrice() );
 
-    }    
+    }
 
     @Test
     public void testLockOnActive() throws Exception {
@@ -311,7 +311,7 @@ public class ExecutionFlowControlTest {
         
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
-    }    
+    }
 
     @Test
     public void testLockOnActiveWithModify() throws Exception {

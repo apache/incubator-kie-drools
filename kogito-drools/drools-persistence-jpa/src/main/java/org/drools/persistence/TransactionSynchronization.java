@@ -1,6 +1,6 @@
 package org.drools.persistence;
 
-public interface TransactionSynchronization {    
+public interface TransactionSynchronization {
     
     void beforeCompletion();
     

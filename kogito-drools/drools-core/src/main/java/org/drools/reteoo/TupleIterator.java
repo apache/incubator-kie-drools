@@ -53,6 +53,6 @@ public class TupleIterator {
                 
                 down = true;
             }
-        }        
+        }
     }
 }

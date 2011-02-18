@@ -31,7 +31,7 @@ public class DecisionTableConfigurationImpl implements DecisionTableConfiguratio
     
     public void setInputType(DecisionTableInputType inputType) {
         this.inputType = inputType;
-    }    
+    }
     
     public DecisionTableInputType getInputType() {
         return this.inputType;

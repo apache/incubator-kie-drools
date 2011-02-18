@@ -43,7 +43,7 @@ public class InputStreamResource  extends BaseResource implements InternalResour
     
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
-    }    
+    }
 
     public URL getURL() throws IOException {
         throw new FileNotFoundException( "InputStream cannot be resolved to URL" );
@@ -51,15 +51,15 @@ public class InputStreamResource  extends BaseResource implements InternalResour
     
     public boolean hasURL() {
         return false;
-    }    
+    }
     
     public long getLastModified() {
         throw new IllegalStateException( "InputStream does have a modified date" );
-    }    
+    }
     
     public long getLastRead() {
         throw new IllegalStateException( "InputStream does have a modified date" );
-    }      
+    }
     
     public boolean isDirectory() {
         return false;
@@ -67,6 +67,6 @@ public class InputStreamResource  extends BaseResource implements InternalResour
 
     public Collection<Resource> listResources() {
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
-    }  
+    }
 
 }

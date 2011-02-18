@@ -45,7 +45,7 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  */
 public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
     implements
-    StatelessRuleSession {    
+    StatelessRuleSession {
     /**
      * Gets the <code>RuleExecutionSet</code> for this URI and associates it
      * with a RuleBase.
@@ -89,7 +89,7 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
      * Initialize this <code>RuleSession</code>
      * with a new <code>WorkingMemory</code>.
      */
-    protected StatelessSession newStatelessSession() {        
+    protected StatelessSession newStatelessSession() {
         final StatelessSession session = this.getRuleExecutionSet().newStatelessSession();
 
         final Map props = this.getProperties();
@@ -101,7 +101,7 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
             }
         }
         return session;
-    }    
+    }
 
     /**
      * Executes the rules in the bound rule execution set using the supplied
@@ -177,5 +177,5 @@ public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
         if ( getRuleExecutionSet() == null ) {
             throw new InvalidRuleSessionException( "invalid rule session" );
         }
-    }     
+    }
 }

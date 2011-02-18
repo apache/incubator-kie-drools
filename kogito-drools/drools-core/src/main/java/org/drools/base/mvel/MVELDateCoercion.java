@@ -26,7 +26,7 @@ import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
 import org.mvel2.ConversionHandler;
 
-public class MVELDateCoercion implements ConversionHandler {    
+public class MVELDateCoercion implements ConversionHandler {
 
     public boolean canConvertFrom(Class cls) {
         if (cls == String.class || cls.isAssignableFrom( Date.class )) {

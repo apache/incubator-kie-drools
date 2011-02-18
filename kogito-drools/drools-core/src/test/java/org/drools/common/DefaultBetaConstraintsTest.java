@@ -57,7 +57,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint6 = ( VariableConstraint ) getConstraint( "cheeseType6", Operator.NOT_EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }    
+    }
     
     @Test
     public void testIndexedConstraint() {
@@ -88,7 +88,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint constraint6 = ( VariableConstraint ) getConstraint( "cheeseType6", Operator.EQUAL, "type", Cheese.class );
         constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4, constraint5, constraint6 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }        
+    }
     
     
     @Test
@@ -101,7 +101,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }   
+    }
     
     @Test
     public void testSingleIndexNotFirst() {
@@ -114,7 +114,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }    
+    }
     
     @Test
     public void testDoubleIndex() {
@@ -127,7 +127,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }   
+    }
     
     @Test
     public void testDoubleIndexNotFirst() {
@@ -140,7 +140,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }       
+    }
     
     
     @Test
@@ -154,7 +154,7 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }      
+    }
     
     @Test
     public void testTripleIndexNotFirst() {
@@ -167,6 +167,6 @@ public class DefaultBetaConstraintsTest extends BaseBetaConstraintsTest {
         VariableConstraint[] constraints = new VariableConstraint[] { constraint0, constraint1, constraint2, constraint3, constraint4 };
         
         checkBetaConstraints( constraints, DefaultBetaConstraints.class );
-    }     
+    }
 
 }
