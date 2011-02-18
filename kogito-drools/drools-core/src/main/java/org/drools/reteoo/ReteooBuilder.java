@@ -49,8 +49,6 @@ import org.drools.spi.Salience;
  * Builds the Rete-OO network for a <code>Package</code>.
  *
  * @see org.drools.rule.Package
- *
- *
  */
 public class ReteooBuilder
     implements

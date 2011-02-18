@@ -33,7 +33,6 @@ import org.drools.definition.type.FactType;
 
 /**
  * Declares a class to be dynamically created
- *
  */
 public class ClassDefinition
     implements

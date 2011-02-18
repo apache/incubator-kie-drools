@@ -37,8 +37,6 @@ import org.drools.spi.PropagationContext;
  * The <code>BetaNode</code> provides the BetaMemory to store asserted ReteTuples and
  * <code>FactHandleImpl<code>s. Each fact handle is stored in the right
  * memory.
- *
- *
  */
 public class ExistsNode extends BetaNode {
 
@@ -504,7 +502,6 @@ public class ExistsNode extends BetaNode {
 
     /**
      * Updates the given sink propagating all previously propagated tuples to it
-     *
      */
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,

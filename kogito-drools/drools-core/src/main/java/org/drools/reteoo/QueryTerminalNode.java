@@ -36,7 +36,6 @@ import org.drools.spi.PropagationContext;
  * matched <code>Rule</code>.
  *
  * @see org.drools.rule.Rule
- *
  */
 public final class QueryTerminalNode extends BaseNode
     implements

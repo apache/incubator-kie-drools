@@ -27,8 +27,6 @@ import org.drools.definition.type.FactType;
 
 /**
  * DO NOT USE THIS YET. Use FactType instead.
- *
- *
  */
 public class DynamicFact implements Map<String, Object> {
 

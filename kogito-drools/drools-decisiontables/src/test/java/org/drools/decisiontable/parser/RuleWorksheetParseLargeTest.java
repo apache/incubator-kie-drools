@@ -26,7 +26,6 @@ import static org.junit.Assert.*;
 /**
  *
  * A special test for parsing a large workbook, to see how it scales.
- * 
  */
 public class RuleWorksheetParseLargeTest {
 

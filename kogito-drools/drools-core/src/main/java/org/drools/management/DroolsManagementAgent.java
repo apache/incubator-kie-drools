@@ -33,8 +33,6 @@ import org.drools.reteoo.ReteooRuleBase;
  * The main management agent for Drools. The purpose of this 
  * agent is to serve as a singleton for knowledge base and session
  * monitoring mbeans registration and management.
- *  
- *
  */
 public class DroolsManagementAgent
     implements

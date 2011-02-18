@@ -92,7 +92,6 @@ public class PrimitiveLongMapTest {
     /**
      * this tests maxKey for gets and removes if ( key > this.maxKey || key < 0 ) {
      * return null; }
-     * 
      */
     @Test
     public void testMaxKey() {

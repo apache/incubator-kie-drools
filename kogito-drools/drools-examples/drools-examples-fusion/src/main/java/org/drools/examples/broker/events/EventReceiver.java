@@ -18,8 +18,6 @@ package org.drools.examples.broker.events;
 
 /**
  * A sink for events
- * 
- *
  */
 public interface EventReceiver {
     

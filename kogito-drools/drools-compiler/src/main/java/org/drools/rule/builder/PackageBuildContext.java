@@ -32,7 +32,6 @@ import org.drools.rule.Package;
 
 /**
  * A context for the current build
- * 
  */
 public class PackageBuildContext {
 

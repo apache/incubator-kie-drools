@@ -30,8 +30,6 @@ import org.drools.spi.RuleComponent;
 
 /**
  * The base class for all Rete nodes.
- *
- *
  */
 public abstract class BaseNode
     implements
@@ -116,7 +114,6 @@ public abstract class BaseNode
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      * @param builder 
-     *
      */
     protected abstract void doRemove(RuleRemovalContext context,
                                      ReteooBuilder builder,

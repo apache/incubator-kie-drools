@@ -188,8 +188,6 @@ import java.util.TreeSet;
  * "0 0 14-6 ? * FRI-MON". </li>
  * </ul>
  * </p>
- * 
- * 
  */
 public class CronExpression implements Serializable, Cloneable {
 

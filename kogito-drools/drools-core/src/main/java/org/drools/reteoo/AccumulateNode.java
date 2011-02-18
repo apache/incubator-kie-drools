@@ -118,7 +118,6 @@ public class AccumulateNode extends BetaNode {
      *  bellow:
      *
      *   Object result = this.accumulator.accumulate( ... );
-     *
      */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
@@ -194,7 +193,6 @@ public class AccumulateNode extends BetaNode {
      *
      * As the accumulate node will always generate a resulting tuple,
      * we must always destroy it
-     *
      */
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
@@ -226,7 +224,6 @@ public class AccumulateNode extends BetaNode {
      *
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
-     *
      */
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,

@@ -28,7 +28,6 @@ import org.drools.rule.ContextEntry;
  * <li>Non-hashed {@link AlphaNode}s</li>
  * <li>{@link LeftInputAdapterNode}s</li>
  * <li>{@link BetaNode}s</li>
- *
  */
 class SetNodeReferenceHandler extends AbstractCompilerHandler {
 

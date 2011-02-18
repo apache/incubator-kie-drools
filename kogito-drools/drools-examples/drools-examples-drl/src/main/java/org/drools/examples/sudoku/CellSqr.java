@@ -17,7 +17,6 @@ package org.drools.examples.sudoku;
 
 /**
  * Represents a 3x3 area of Sudoku grid cells.
- *
  */
 public class CellSqr extends CellGroup {
     

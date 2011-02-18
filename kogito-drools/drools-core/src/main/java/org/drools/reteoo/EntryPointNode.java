@@ -49,7 +49,6 @@ import org.drools.spi.PropagationContext;
  * It replaces the function of the Rete Node class in previous designs.
  *
  * @see ObjectTypeNode
- *
  */
 public class EntryPointNode extends ObjectSource
     implements

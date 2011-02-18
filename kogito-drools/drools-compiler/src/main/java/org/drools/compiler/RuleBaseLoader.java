@@ -12,7 +12,6 @@ import org.drools.rule.Package;
  * A high level helper class for creating rulebases from source.
  * For additional control, refer to the DrlParser and PackageBuilder classes.
  * You can have much more detailed control with the lower level classes.
- * 
  */
 public class RuleBaseLoader {
 

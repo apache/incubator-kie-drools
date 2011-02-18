@@ -23,7 +23,6 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
 
 /** 
- * 
  */
 public abstract class VerifierComponent
     implements

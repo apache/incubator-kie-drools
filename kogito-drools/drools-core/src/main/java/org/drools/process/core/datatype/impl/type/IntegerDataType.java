@@ -24,7 +24,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of an integer datatype.
- * 
  */
 public class IntegerDataType
     implements

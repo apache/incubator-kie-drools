@@ -26,7 +26,6 @@ import org.drools.reteoo.RightTuple;
 
 /**
  * A class to encapsulate behavior management for a given beta node
- * 
  */
 public class BehaviorManager
     implements

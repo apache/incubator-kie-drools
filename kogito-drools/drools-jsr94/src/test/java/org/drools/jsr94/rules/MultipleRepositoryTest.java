@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
 
 /**
  * A test for independent repository instances for different runtimes.
- *
  */
 public class MultipleRepositoryTest {
 

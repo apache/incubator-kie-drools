@@ -42,7 +42,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryLoader;
  * @see RuleAdministratorImpl
  * @see RuleServiceProvider
  * @see javax.rules.RuleServiceProviderManager#getRuleServiceProvider(String)
- * 
  */
 public class RuleServiceProviderImpl extends RuleServiceProvider implements java.io.Serializable {
     public static final String         RULE_SERVICE_PROVIDER = "http://drools.org/";

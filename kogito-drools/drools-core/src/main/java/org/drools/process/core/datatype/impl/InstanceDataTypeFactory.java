@@ -21,7 +21,6 @@ import org.drools.process.core.datatype.DataTypeFactory;
 
 /**
  * A data type factory that always returns the same instance of a given class.
- * 
  */
 public class InstanceDataTypeFactory implements DataTypeFactory {
 

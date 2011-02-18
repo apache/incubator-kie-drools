@@ -23,7 +23,6 @@ import org.drools.rule.Rule;
  * Indicates an error during a <code>Consequence</code> invocation.
  * 
  * @see Consequence
- * 
  */
 public class ConsequenceException extends RuntimeDroolsException {
     private static final long serialVersionUID = 510l;
@@ -65,8 +64,6 @@ public class ConsequenceException extends RuntimeDroolsException {
      * 
      * @param rootCause
      *            The root cause of this exception.
-     * 
-     * 
      */
     public ConsequenceException(final String message,
                                 final Rule rule) {
@@ -80,8 +77,6 @@ public class ConsequenceException extends RuntimeDroolsException {
      * 
      * @param rootCause
      *            The root cause of this exception.
-     * 
-     * 
      */
     public ConsequenceException(final Throwable rootCause,
                                 final Rule rule) {

@@ -67,7 +67,6 @@ import org.drools.time.Interval;
  * 
  * <p><b>NOTE:</b> it makes no sense to use a negative interval value for the parameter and the 
  * engine will raise an exception if that happens.</p>
- * 
  */
 public class MeetsEvaluatorDefinition
     implements

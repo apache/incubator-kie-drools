@@ -30,8 +30,6 @@ import org.drools.RuntimeDroolsException;
  * drools.serialization.private.keyPwd = <password>
  * drools.serialization.public.keyStoreURL = <URL>
  * drools.serialization.public.keyStorePwd = <password>
- * 
- *
  */
 public class KeyStoreHelper {
 

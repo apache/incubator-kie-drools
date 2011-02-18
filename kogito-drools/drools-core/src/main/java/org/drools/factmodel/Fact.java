@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * A temporary AST.
- *
  */
 public class Fact {
 

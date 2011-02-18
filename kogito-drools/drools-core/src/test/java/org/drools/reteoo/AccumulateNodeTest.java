@@ -42,7 +42,6 @@ import static org.junit.Assert.*;
 
 /**
  * A test case for AccumulateNode
- * 
  */
 public class AccumulateNodeTest extends DroolsTestCase {
 

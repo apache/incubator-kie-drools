@@ -20,7 +20,6 @@ import org.drools.reteoo.ObjectTypeNode;
 
 /**
  * The monitor MBean for ObjectTypeNodes
- * 
  */
 public class ObjectTypeNodeMonitor implements ObjectTypeNodeMonitorMBean  {
     

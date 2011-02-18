@@ -24,7 +24,6 @@ import java.io.ObjectOutput;
  * A ruleflow-group event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the working memory.
  * It contains the ruleflow group name and its size.
- * 
  */
 public class RuleFlowGroupLogEvent extends LogEvent {
 

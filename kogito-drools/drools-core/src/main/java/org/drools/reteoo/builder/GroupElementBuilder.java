@@ -107,7 +107,6 @@ public class GroupElementBuilder
          * 
          * And group elements just iterate over their children
          * selecting and calling the build procedure for each one
-         * 
          */
         public void build(final BuildContext context,
                           final BuildUtils utils,

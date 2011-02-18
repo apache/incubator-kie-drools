@@ -21,7 +21,6 @@ import org.drools.core.util.ClassUtils;
 
 /** 
  * Factory class that will return a ExecutorService based on the provided string className
- *
  */
 public class ExecutorServiceFactory {
     

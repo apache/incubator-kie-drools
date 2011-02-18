@@ -41,7 +41,6 @@ import org.drools.template.DataProviderCompiler;
  * Some things to note:
  *   - at the moment the templates require all parameters to come in a Strings
  *   - any row that references a parameter that is empty will not be generated.
- *
  */
 public class DataDrivenTemplateExample {
 

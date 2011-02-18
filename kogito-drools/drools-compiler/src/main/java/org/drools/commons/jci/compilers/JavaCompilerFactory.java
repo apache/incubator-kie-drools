@@ -27,7 +27,6 @@ import org.drools.core.util.ClassUtils;
  * Creates JavaCompilers
  * 
  * TODO use META-INF discovery mechanism
- * 
  */
 public final class JavaCompilerFactory {
 

@@ -24,7 +24,6 @@ package org.drools.time;
  * If the interval is open, i.e., from -infinitum to +infinitum,
  * the representation is created by using lowerBound = Long.MIN_VALUE
  * and upperBound = Long.MAX_VALUE.
- *  
  */
 public class Interval implements Cloneable {
     public static final long MIN = Long.MIN_VALUE;

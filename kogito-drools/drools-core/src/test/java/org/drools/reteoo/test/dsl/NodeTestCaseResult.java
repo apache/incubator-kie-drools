@@ -22,7 +22,6 @@ import java.util.Map;
 
 /**
  * A class to store the results of the execution of a NodeTestCase
- * 
  */
 public class NodeTestCaseResult {
     

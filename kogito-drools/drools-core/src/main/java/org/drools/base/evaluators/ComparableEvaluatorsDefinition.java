@@ -41,7 +41,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * This class defines all the comparable built in
  * evaluators like >, >=, etc.
- *
  */
 public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
 

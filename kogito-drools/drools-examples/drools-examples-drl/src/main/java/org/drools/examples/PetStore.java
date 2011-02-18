@@ -221,7 +221,6 @@ public class PetStore {
 
         /**
          * Create and show the GUI
-         *  
          */
         public void createAndShowGUI() {
             //Create and set up the window.
@@ -259,7 +258,6 @@ public class PetStore {
 
         /**
          * Calls the referenced callback, passing a the jrame and selected items.
-         *  
          */
         private class CheckoutButtonHandler extends MouseAdapter {
             public void mouseReleased(MouseEvent e) {
@@ -271,7 +269,6 @@ public class PetStore {
 
         /**
          * Resets the shopping cart, allowing the user to begin again.
-         *  
          */
         private class ResetButtonHandler extends MouseAdapter {
             public void mouseReleased(MouseEvent e) {
@@ -388,7 +385,6 @@ public class PetStore {
      * 
      * A reference to the JFrame is also passed so the rules can launch dialog boxes
      * for user interaction. It uses the ApplicationData feature for this.
-     *  
      */
     public static class CheckoutCallback {
         KnowledgeBase kbase;

@@ -12,7 +12,6 @@ import org.drools.rule.Package;
  * A Registry of DialectConfigurations. It is also responsible for issueing actions to all registered
  * dialects.
  * This Class api is subject to change.
- *
  */
 public class DialectCompiletimeRegistry {
     private Package              pkg;
@@ -47,7 +46,6 @@ public class DialectCompiletimeRegistry {
 
     /**
      * Instruct all registered dialects to compile what ever they have attempted to build.
-     *
      */
     public void compileAll() {
         for ( Iterator it = this.map.values().iterator(); it.hasNext(); ) {

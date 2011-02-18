@@ -17,7 +17,6 @@ package org.drools.examples.sudoku;
 
 /**
  * Represents a row of Sudoku grid cells.
- *
  */
 public class CellRow extends CellFile {
     

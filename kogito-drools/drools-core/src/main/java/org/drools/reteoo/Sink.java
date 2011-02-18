@@ -20,7 +20,6 @@ import org.drools.common.NetworkNode;
 
 /**
  * A simple markup interfaces for Sink types
- * 
  */
 public interface Sink extends NetworkNode {
 }

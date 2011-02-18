@@ -18,7 +18,6 @@
 
 /**
  * An interface to represent pattern destinations
- * 
  */
 public interface MultiPatternDestinationDescr {
 

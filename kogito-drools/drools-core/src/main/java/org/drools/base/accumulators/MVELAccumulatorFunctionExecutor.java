@@ -39,7 +39,6 @@ import org.mvel2.integration.VariableResolverFactory;
 
 /**
  * An MVEL accumulator function executor implementation
- *
  */
 public class MVELAccumulatorFunctionExecutor
     implements

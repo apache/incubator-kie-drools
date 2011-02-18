@@ -46,7 +46,6 @@ import org.drools.spi.RuleComponent;
  * @see EvalConditionNode
  * @see Eval
  * @see LeftTuple
- *
  */
 public class EvalConditionNode extends LeftTupleSource
     implements

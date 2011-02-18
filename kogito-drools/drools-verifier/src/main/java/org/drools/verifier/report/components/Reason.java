@@ -21,8 +21,6 @@ import java.util.Collection;
 /**
  * 
  * Reason why something is wrong.
- * 
- *
  */
 public interface Reason {
 

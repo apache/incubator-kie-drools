@@ -19,7 +19,6 @@ package org.drools.template.model;
 /**
  * This represents a RHS fragement. A rule may have many of these, or just one.
  * They are all mushed together.
- * 
  */
 public class Consequence extends DRLElement
     implements

@@ -22,8 +22,6 @@ import org.drools.spi.RuleComponent;
 
 /**
  * An interface for all behavior implementations
- * 
- *
  */
 public interface Behavior extends RuleComponent, Cloneable {
     

@@ -24,7 +24,6 @@ import org.drools.rule.Package;
  * 
  * @see RuleBase#addRule
  * @see RuleBase#addPackage
- * 
  */
 public class PackageIntegrationException extends IntegrationException {
     private static final long serialVersionUID = 510l;

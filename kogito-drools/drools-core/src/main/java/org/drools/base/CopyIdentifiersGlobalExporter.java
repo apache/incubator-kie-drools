@@ -31,14 +31,12 @@ import org.drools.spi.GlobalResolver;
  * Creates a new GlobalResolver consisting of just the identifiers specified in the String[].
  * If the String[] is null, or the default constructor is used, then all globals defined in the RuleBase
  * will be copied.
- *
  */
 public class CopyIdentifiersGlobalExporter implements GlobalExporter {
     private String[] identifiers;
 
     /**
      * All identifiers will be copied
-     *
      */
     public CopyIdentifiersGlobalExporter() {
         this.identifiers = null;

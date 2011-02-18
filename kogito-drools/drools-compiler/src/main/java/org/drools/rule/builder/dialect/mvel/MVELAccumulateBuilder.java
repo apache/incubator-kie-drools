@@ -43,7 +43,6 @@ import org.drools.spi.Accumulator;
 
 /**
  * A builder for the java dialect accumulate version
- * 
  */
 public class MVELAccumulateBuilder
     implements

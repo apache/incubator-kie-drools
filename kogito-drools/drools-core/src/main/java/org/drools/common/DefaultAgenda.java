@@ -65,7 +65,6 @@ import org.drools.spi.Tuple;
  * other scheduled actions, which must then be removed from the agenda.
  * Non-invalidated actions are left on the agenda, and are executed in turn.
  * </p>
- * 
  */
 public class DefaultAgenda
     implements

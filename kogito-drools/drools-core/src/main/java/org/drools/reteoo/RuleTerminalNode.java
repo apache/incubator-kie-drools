@@ -51,7 +51,6 @@ import org.drools.time.impl.Timer;
  * matched <code>Rule</code>.
  *
  * @see org.drools.rule.Rule
- *
  */
 public class RuleTerminalNode extends BaseNode
     implements

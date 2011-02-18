@@ -26,8 +26,6 @@ import org.drools.verifier.doc.DroolsDocsBuilder;
 
 /**
  * Stand alone to test writing to a file.
- * 
- *
  */
 public class StandaloneDocBuilder {
 

@@ -70,7 +70,6 @@ import org.drools.time.Interval;
  * 
  * <p><b>NOTE:</b> it makes no sense to use negative interval values for the parameters and the 
  * engine will raise an error if that happens.</p>
- * 
  */
 public class CoincidesEvaluatorDefinition
     implements

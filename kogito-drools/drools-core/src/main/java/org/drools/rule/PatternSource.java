@@ -18,7 +18,6 @@ package org.drools.rule;
 
 /**
  * A markup interface for pattern source elements
- * 
  */
 public interface PatternSource extends RuleConditionElement {
 

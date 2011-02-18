@@ -26,7 +26,6 @@ import org.drools.core.util.StringUtils;
  * drools.agent.scanDirectories = <true|false>
  * drools.agent.newInstance = <true|false>
  * drools.agent.monitorChangeSetEvents = <true|false>
- *
  */
 public class KnowledgeAgentConfigurationImpl
     implements

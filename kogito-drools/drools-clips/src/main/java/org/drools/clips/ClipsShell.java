@@ -88,7 +88,6 @@ import org.mvel2.compiler.ExpressionCompiler;
 /**
  * An interactive Clips session shell.
  * You can launch this as a Main class, no parameters are required.
- *
  */
 public class ClipsShell
     implements

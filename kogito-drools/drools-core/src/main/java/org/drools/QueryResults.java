@@ -29,7 +29,6 @@ import org.drools.rule.Query;
 /**
  * Returned QueryResults instance for a requested named query. from here you can iterate the returned data, or
  * get a specific row. All the available Declarations used in the query can also be accessed.
- *
  */
 public class QueryResults
     implements

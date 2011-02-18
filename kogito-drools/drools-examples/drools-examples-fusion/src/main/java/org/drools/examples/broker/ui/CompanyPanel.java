@@ -31,7 +31,6 @@ import com.jgoodies.forms.layout.FormLayout;
 
 /**
  * A class that manages a company UI panel
- * 
  */
 public class CompanyPanel {
 

@@ -19,7 +19,6 @@ package org.drools.rule;
 /**
  * Validity exception indicating that a <code>Rule</code> does not contain a
  * <code>Consequence</code>s.
- * 
  */
 public class NoConsequenceException extends InvalidRuleException {
     // ------------------------------------------------------------

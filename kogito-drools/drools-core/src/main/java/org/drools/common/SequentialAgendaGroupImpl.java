@@ -34,8 +34,6 @@ import org.drools.spi.ConflictResolver;
  *
  * @see PriorityQueue
  * @see ActivationQueue
- *
- *
  */
 public class SequentialAgendaGroupImpl
     implements

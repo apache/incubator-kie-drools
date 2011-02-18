@@ -18,7 +18,6 @@ package org.drools;
 
 /**
  * Base RuntimeException<code>drools Logic Engine</code> exception.
- * 
  */
 public class CheckedDroolsException extends Exception {
     private static final long serialVersionUID = 510l;

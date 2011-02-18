@@ -40,7 +40,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * underlying rules engine.
  * 
  * @see StatelessRuleSession
- * 
  */
 public class StatelessRuleSessionImpl extends AbstractRuleSessionImpl
     implements

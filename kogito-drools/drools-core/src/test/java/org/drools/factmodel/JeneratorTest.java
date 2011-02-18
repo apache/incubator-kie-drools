@@ -29,7 +29,6 @@ import static org.junit.Assert.*;
 /**
  * This mostly shows how to go to a jar and back, if needed.
  * Probably can be partly ignored eventually.
- *
  */
 public class JeneratorTest {
 

@@ -26,7 +26,6 @@ import org.drools.spi.ConflictResolver;
  * 
  * @see #getInstance
  * @see org.drools.spi.Tuple#getMostRecentFactTimeStamp
- * 
  */
 public class RecencyConflictResolver extends AbstractConflictResolver {
     // ----------------------------------------------------------------------

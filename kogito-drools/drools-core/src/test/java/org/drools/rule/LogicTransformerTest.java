@@ -264,8 +264,6 @@ public class LogicTransformerTest extends DroolsTestCase {
      *            |   |
      *            a   b
      * </pre>
-     *
-     *
      */
     @Test
     public void testNotOrTransformation() throws InvalidPatternException {
@@ -331,8 +329,6 @@ public class LogicTransformerTest extends DroolsTestCase {
      *             / \
      *            a   b   
      * </pre>
-     *
-     *
      */
     @Test
     public void testNotExistsTransformation() throws InvalidPatternException {
@@ -527,9 +523,6 @@ public class LogicTransformerTest extends DroolsTestCase {
      *
      * @throws IOException
      * @throws ClassNotFoundException
-     *
-     *
-     *
      */
     @Test
     public void testProcessTree() throws IOException,
@@ -716,7 +709,6 @@ public class LogicTransformerTest extends DroolsTestCase {
      *
      * @throws IOException
      * @throws ClassNotFoundException
-     *
      */
     @Test
     public void testTransform() throws IOException,

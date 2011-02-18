@@ -137,7 +137,6 @@ public class Package
      * @param stream
      *            out the stream to write the object to; should be an instance
      *            of DroolsObjectOutputStream or OutputStream
-     * 
      */
     public void writeExternal(ObjectOutput stream) throws IOException {
         boolean isDroolsStream = stream instanceof DroolsObjectOutputStream;
@@ -182,7 +181,6 @@ public class Package
      *            the stream to read data from in order to restore the object;
      *            should be an instance of DroolsObjectInputStream or
      *            InputStream
-     * 
      */
     public void readExternal(ObjectInput stream) throws IOException,
                                                 ClassNotFoundException {

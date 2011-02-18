@@ -33,7 +33,6 @@ import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 
 /**
  * This is the main class for the broker example.
- * 
  */
 public class Main {
 

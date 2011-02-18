@@ -45,7 +45,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * <code>RuleExecutionSet</code> through the RuleRuntime.
  * 
  * @see RuleAdministrator
- * 
  */
 public class RuleAdministratorImpl
     implements

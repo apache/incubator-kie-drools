@@ -23,7 +23,6 @@ import java.util.Set;
  * Instance of this class represents a possible combination of Constraints under
  * one Pattern. Each possibility returns true if all the Constraints in the
  * combination are true.
- *
  */
 public class SubPattern extends PatternComponent
     implements

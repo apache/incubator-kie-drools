@@ -40,7 +40,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * This class defines the default built in equality
  * evaluators == and !=
- *
  */
 public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 

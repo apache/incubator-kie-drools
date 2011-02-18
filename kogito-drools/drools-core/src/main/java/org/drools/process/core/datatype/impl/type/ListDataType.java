@@ -27,7 +27,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * Representation of a list datatype.
  * All elements in the list must have the same datatype.
- * 
  */
 public class ListDataType extends ObjectDataType implements TypeObject {
 

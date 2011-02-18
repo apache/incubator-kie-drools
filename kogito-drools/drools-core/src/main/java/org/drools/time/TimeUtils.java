@@ -24,7 +24,6 @@ import org.drools.RuntimeDroolsException;
 /**
  * A helper class with utility methods for
  * time related operations.
- * 
  */
 public class TimeUtils {
 

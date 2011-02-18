@@ -30,7 +30,6 @@ import org.drools.lang.descr.PatternDescr;
  *    .end()
  *  .rhs( "System.out.println();" )
  *  .end()
- *     
  */
 public interface PatternDescrBuilder<P extends DescrBuilder<?>>
     extends

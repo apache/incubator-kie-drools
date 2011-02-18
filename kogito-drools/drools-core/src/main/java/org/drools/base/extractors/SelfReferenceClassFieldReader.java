@@ -21,7 +21,6 @@ import org.drools.common.InternalWorkingMemory;
 
 /**
  * A special field extractor for the self reference "this".
- *  
  */
 public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
 

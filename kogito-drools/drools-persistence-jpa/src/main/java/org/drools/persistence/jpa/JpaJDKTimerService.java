@@ -31,7 +31,6 @@ import org.drools.time.impl.JDKTimerService;
  * A default Scheduler implementation that uses the
  * JDK built-in ScheduledThreadPoolExecutor as the
  * scheduler and the system clock as the clock.
- * 
  */
 public class JpaJDKTimerService extends JDKTimerService {
     

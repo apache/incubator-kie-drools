@@ -37,7 +37,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This shows off a very simple rule template where the data provider is a spreadsheet.
- *
  */
 public class SimpleRuleTemplateExample {
     public static void main(String[] args) throws Exception {

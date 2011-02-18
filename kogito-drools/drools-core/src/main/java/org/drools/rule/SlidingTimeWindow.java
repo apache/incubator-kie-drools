@@ -212,7 +212,6 @@ public class SlidingTimeWindow
 
     /**
      * A Comparator<RightTuple> implementation for the fact queue
-     * 
      */
     private static class SlidingTimeWindowComparator
         implements

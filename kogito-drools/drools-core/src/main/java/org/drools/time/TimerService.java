@@ -18,7 +18,6 @@ package org.drools.time;
 
 /**
  * An interface for all timer service implementations used in a drools session.
- * 
  */
 public interface TimerService extends SchedulerService {
     
@@ -26,7 +25,6 @@ public interface TimerService extends SchedulerService {
      * Returns the current time from the scheduler clock
      * 
      * @return the current timestamp
-     * 
      */
     public long getCurrentTime();
     

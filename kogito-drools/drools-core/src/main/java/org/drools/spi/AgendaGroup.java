@@ -27,8 +27,6 @@ import org.drools.runtime.rule.Activation;
  *  these <code>AgendaGroup</code>s. Only rules in the focus group can fire.
  *
  * @see DefaultAgenda
- *
- *
  */
 public interface AgendaGroup
     extends

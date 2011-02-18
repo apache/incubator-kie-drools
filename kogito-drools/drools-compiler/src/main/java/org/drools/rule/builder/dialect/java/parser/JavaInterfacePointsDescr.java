@@ -4,7 +4,6 @@ package org.drools.rule.builder.dialect.java.parser;
 /**
  * A helper class used during java code parsing to identify
  * and handle exitPoints calls
- * 
  */
 public class JavaInterfacePointsDescr implements JavaBlockDescr {
     

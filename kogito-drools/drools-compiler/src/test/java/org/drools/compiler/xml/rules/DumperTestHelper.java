@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 
 /**
  * Helper Class for both xml and drl Dump Tests
- * 
  */
 public class DumperTestHelper {
     

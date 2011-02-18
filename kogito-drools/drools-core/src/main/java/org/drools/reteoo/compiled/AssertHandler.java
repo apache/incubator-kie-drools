@@ -27,7 +27,6 @@ import org.drools.spi.PropagationContext;
 
 /**
  * todo: document
- *
  */
 class AssertHandler extends AbstractCompilerHandler {
     private static final String LOCAL_FACT_VAR_NAME = "fact";

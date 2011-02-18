@@ -24,8 +24,6 @@ import java.io.Serializable;
 
 /**
  * An implementation of an accumulator capable of counting occurences
- *
- *
  */
 public class CountAccumulateFunction implements AccumulateFunction {
 

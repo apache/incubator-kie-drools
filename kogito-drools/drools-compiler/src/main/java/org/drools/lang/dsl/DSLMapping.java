@@ -23,7 +23,6 @@ import org.drools.lang.dsl.DSLMappingEntry.Section;
 
 /**
  * An interface that represents a DSL Mapping 
- * 
  */
 public interface DSLMapping {
 

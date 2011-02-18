@@ -43,7 +43,6 @@ import org.drools.rule.Package;
  * resources.
  *
  * @see LocalRuleExecutionSetProvider
- *
  */
 public class LocalRuleExecutionSetProviderImpl
     implements

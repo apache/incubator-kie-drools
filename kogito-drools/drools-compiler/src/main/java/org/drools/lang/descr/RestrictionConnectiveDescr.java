@@ -25,7 +25,6 @@ import java.util.List;
  * This is used to connect restrictions together for a single field
  * eg:
  * age < 40 & > 30
- *
  */
 public class RestrictionConnectiveDescr extends RestrictionDescr {
 
@@ -84,7 +83,6 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
 
     /**
      * The connective types that can be used for a restriction
-     * 
      */
     public static enum RestrictionConnectiveType {
         AND {

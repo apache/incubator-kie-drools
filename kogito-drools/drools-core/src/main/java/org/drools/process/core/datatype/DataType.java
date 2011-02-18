@@ -20,7 +20,6 @@ import java.io.Externalizable;
 
 /**
  * Abstract representation of a datatype.
- * 
  */
 public interface DataType extends Externalizable {
 

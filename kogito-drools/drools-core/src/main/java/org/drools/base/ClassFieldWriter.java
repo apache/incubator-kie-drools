@@ -29,7 +29,6 @@ import org.drools.spi.WriteAccessor;
  * This class implements the WriteAccessor interface
  * allowing the application to write values into a field
  * from a class
- *
  */
 public class ClassFieldWriter
     implements

@@ -21,7 +21,6 @@ import org.drools.verifier.components.VerifierRule;
 
 /**
  * Takes a list of Constraints and makes possibilities from them.
- * 
  */
 public class RuleSolver extends Solver {
 

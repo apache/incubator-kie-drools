@@ -124,7 +124,6 @@ public class RuleRenderTest {
      * This checks that if the rule has "nil" salience, then
      * no salience value should be put in the rule definition.
      * This allows default salience to work as advertised.
-     *
      */
     @Test
     public void testNilSalience() {

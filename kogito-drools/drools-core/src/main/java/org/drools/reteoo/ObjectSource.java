@@ -37,7 +37,6 @@ import org.drools.spi.PropagationContext;
  *
  * @see ObjectSource
  * @see DefaultFactHandle
- *
  */
 public abstract class ObjectSource extends BaseNode
     implements

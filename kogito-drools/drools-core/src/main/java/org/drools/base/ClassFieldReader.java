@@ -34,7 +34,6 @@ import org.drools.spi.InternalReadAccessor;
  * BaseClassFieldExtractor,
  *  which allows serialization by regenerating the accessor classes
  * when needed.
- *
  */
 public class ClassFieldReader
     implements

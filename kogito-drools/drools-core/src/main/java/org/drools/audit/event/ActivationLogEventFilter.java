@@ -21,7 +21,6 @@ package org.drools.audit.event;
  * By default, all events are allowed.  You can filter out any of the
  * four types of assertion events by setting the allow boolean
  * for that type to false.
- * 
  */
 public class ActivationLogEventFilter
     implements

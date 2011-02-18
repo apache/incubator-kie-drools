@@ -22,7 +22,6 @@ import org.drools.spi.WriteAccessor;
 
 /**
  * An interface for Accessor classes that joins both reader and writer accessor methods 
- *
  */
 public interface FieldAccessor extends ReadAccessor, WriteAccessor {
     

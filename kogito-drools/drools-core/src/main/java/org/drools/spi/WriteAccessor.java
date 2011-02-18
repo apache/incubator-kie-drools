@@ -26,7 +26,6 @@ import org.drools.base.ValueType;
 /**
  * An interface for a class that is able to write values into a class
  * field
- * 
  */
 public interface WriteAccessor
     extends

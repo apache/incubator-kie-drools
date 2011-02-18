@@ -45,7 +45,6 @@ public class DecisionTableProviderImpl
     /**
      * Adapts a <code>Reader</code> as an <code>InputStream</code>.
      * Adapted from <CODE>StringInputStream</CODE>.
-     *
      */
     public static class ReaderInputStream extends InputStream {
 

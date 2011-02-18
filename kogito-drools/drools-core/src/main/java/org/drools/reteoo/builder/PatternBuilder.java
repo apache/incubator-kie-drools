@@ -52,7 +52,6 @@ import org.drools.time.impl.Timer;
 
 /**
  * A builder for patterns
- * 
  */
 public class PatternBuilder
     implements

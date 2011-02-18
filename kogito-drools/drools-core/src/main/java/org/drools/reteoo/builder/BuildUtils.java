@@ -54,7 +54,6 @@ import org.drools.time.TimeUtils;
 
 /**
  * Utility functions for reteoo build
- *
  */
 public class BuildUtils {
 
@@ -262,7 +261,6 @@ public class BuildUtils {
      * subrule.
      * 
      * @param groupElement the root element of a subrule being added to the rulebase
-     * 
      */
     public TemporalDependencyMatrix calculateTemporalDistance(GroupElement groupElement) {
         // find the events

@@ -22,7 +22,6 @@ import java.io.Externalizable;
  * Items placed in a <code>LinkedList<code> must implement this interface .
  *
  * @see LinkedList
- *
  */
 public interface LinkedListNode
     extends

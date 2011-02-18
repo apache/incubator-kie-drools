@@ -20,7 +20,6 @@ import java.util.UUID;
 
 /**
  * This is a utility to create rule bases based on the type of engine you wish to use.
- * 
  */
 public class RuleBaseFactory {
 

@@ -36,7 +36,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * This class defines all the set built in evaluators like contains, memberOf,
  * etc.
- * 
  */
 public class SetEvaluatorsDefinition
     implements

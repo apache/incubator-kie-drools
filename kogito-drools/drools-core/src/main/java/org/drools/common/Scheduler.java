@@ -26,7 +26,6 @@ import org.drools.time.impl.PointInTimeTrigger;
 
 /**
  * Scheduler for rules requiring truth duration.
- * 
  */
 final class Scheduler {
     // ------------------------------------------------------------

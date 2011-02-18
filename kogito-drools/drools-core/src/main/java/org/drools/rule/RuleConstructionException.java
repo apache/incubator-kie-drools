@@ -20,7 +20,6 @@ import org.drools.RuntimeDroolsException;
 
 /**
  * Base exception for errors during <code>Rule</code> construction.
- * 
  */
 public class RuleConstructionException extends RuntimeDroolsException {
     private static final long serialVersionUID = 510l;

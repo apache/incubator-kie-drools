@@ -54,7 +54,6 @@ import org.drools.template.model.Rule;
  *   then
  *     generator.generate( "template1", r);
  *   end
- * 
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
     private RuleBase ruleBase;

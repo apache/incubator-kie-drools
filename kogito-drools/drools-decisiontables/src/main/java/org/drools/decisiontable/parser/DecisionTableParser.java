@@ -20,8 +20,6 @@ import java.io.InputStream;
 
 /**
  * Generic interface for all input parsers.
- * 
- *
  */
 public interface DecisionTableParser {
     /**

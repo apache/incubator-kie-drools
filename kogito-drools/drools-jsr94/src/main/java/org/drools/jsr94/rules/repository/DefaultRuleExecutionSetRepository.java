@@ -27,7 +27,6 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
 
 /**
  * Stores the registered <code>RuleExecutionSet</code> objects.
- * 
  */
 public class DefaultRuleExecutionSetRepository
     implements

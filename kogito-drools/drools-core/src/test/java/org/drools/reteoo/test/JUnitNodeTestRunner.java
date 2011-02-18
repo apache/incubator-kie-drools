@@ -28,7 +28,6 @@ import org.junit.runner.notification.RunNotifier;
 
 /**
  * A class that runs node tests as JUnit tests
- * 
  */
 public class JUnitNodeTestRunner extends Runner {
 

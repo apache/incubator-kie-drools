@@ -31,7 +31,6 @@ import org.drools.verifier.data.VerifierComponent;
  * Example "if x is more than 1 both restrictions are satisfied":
  * A: x > 10 
  * B: x > 1 
- * 
  */
 public class Subsumption
     implements

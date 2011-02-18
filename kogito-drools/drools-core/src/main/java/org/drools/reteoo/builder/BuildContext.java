@@ -38,7 +38,6 @@ import org.drools.time.TemporalDependencyMatrix;
 
 /**
  * A build context for Reteoo Builder
- * 
  */
 public class BuildContext {
 

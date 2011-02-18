@@ -54,7 +54,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * to be added to the session state and identified, even after serialization.
  * 
  * @see StatefulRuleSession
- * 
  */
 public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     implements

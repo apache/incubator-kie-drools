@@ -34,8 +34,6 @@ import org.drools.lang.dsl.DefaultExpander;
 /**
  * Wraps the PackageBuilder for Verifier.
  * Used to build PackageDescrs.
- * 
- *
  */
 class VerifierPackageBuilder {
 

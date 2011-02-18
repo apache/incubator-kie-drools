@@ -34,8 +34,6 @@ import org.drools.spi.PropagationContext;
  * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a
  * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side
  * of a <code>BetaNode</code>.
- *
- *
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
@@ -242,7 +240,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
-     *
      */
     private static class RightTupleSinkAdapter
         implements

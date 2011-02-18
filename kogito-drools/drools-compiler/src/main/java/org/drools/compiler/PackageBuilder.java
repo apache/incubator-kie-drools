@@ -1080,7 +1080,6 @@ public class PackageBuilder {
     /**
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
-     * 
      */
     private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
                                        TypeDeclaration type,

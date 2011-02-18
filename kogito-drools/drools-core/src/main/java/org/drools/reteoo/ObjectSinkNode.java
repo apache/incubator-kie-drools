@@ -20,7 +20,6 @@ package org.drools.reteoo;
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
  * @see LeftTupleSinkNodeList
- * 
  */
 public interface ObjectSinkNode
     extends

@@ -23,7 +23,6 @@ import java.io.ObjectOutput;
 /**
  * A rulebase event logged by the WorkingMemoryLogger.
  * It is a snapshot of the event as it was thrown by the rulebase.
- * 
  */
 public class RuleBaseLogEvent extends LogEvent {
 

@@ -24,7 +24,6 @@ import java.io.ObjectOutput;
  * Provides a abstract base implementation that an object can extend so that it can be used in a LinkedList.
  *
  * @see LinkedList
- *
  */
 public class AbstractBaseLinkedListNode
     implements

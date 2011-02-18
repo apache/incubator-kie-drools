@@ -23,8 +23,6 @@ import org.drools.spi.Activation;
 /**
  * LogicalDependency is a special node for LinkedLists that maintains
  * references for the Activation justifier and the justified FactHandle.
- *   
- *
  */
 public class LogicalDependency extends AbstractBaseLinkedListNode {
     private Activation justifier;

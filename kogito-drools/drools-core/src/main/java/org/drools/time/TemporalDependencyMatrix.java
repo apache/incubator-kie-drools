@@ -23,7 +23,6 @@ import org.drools.rule.Pattern;
 /**
  * A class to abstract the management of temporal
  * dependency management information
- * 
  */
 public class TemporalDependencyMatrix {
     

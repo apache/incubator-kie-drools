@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 /**
  * A single entry in a DSL mapping file
- * 
  */
 public interface DSLMappingEntry {
 
@@ -132,8 +131,6 @@ public interface DSLMappingEntry {
      * An inner interface to represent any metadata
      * associated with this entry. It is obviously
      * implementation dependent.
-     * 
-     *
      */
     public static interface MetaData
         extends

@@ -35,7 +35,6 @@ public class SimpleEventGenerator {
     /**
      * @param wm
      * @param generationDuration
-     *
      */
     public SimpleEventGenerator(WorkingMemory wm, AbstractEventListener l, long generationDuration) {
         this.wm = wm;

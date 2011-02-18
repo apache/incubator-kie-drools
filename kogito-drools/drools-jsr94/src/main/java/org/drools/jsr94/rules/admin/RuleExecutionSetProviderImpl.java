@@ -48,7 +48,6 @@ import org.w3c.dom.Element;
  * resources.
  *
  * @see RuleExecutionSetProvider
- *
  */
 public class RuleExecutionSetProviderImpl
     implements

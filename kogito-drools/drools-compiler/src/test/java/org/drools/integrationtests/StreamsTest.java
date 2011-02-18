@@ -63,7 +63,6 @@ import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * Tests related to the stream support features
- * 
  */
 public class StreamsTest {
 

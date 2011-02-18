@@ -22,7 +22,6 @@ import java.util.Map;
 
 /**
  * A memory based reader to compile from memory
- * 
  */
 public class MemoryResourceReader implements ResourceReader {
     

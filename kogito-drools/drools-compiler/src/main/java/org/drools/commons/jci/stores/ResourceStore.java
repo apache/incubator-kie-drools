@@ -18,7 +18,6 @@ package org.drools.commons.jci.stores;
 
 /**
  * A Store is where the compilers are storing the results
- * 
  */
 public interface ResourceStore {
 

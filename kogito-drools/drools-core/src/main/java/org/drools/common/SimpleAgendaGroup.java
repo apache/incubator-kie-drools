@@ -37,8 +37,6 @@ import org.drools.spi.Activation;
  * 
  * @see PriorityQueue
  * @see ActivationQueue
- * 
- *
  */
 public class SimpleAgendaGroup
     implements

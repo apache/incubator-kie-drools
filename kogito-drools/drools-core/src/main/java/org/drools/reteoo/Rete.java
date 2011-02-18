@@ -52,7 +52,6 @@ import org.drools.spi.PropagationContext;
  * they are no applicable
  *
  * @see ObjectTypeNode
- *
  */
 public class Rete extends ObjectSource
     implements

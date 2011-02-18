@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.compiler.IProblem;
 
 /**
  * Wrapping an Eclipse compiler problem
- * 
  */
 public final class EclipseCompilationProblem implements CompilationProblem {
 

@@ -32,7 +32,6 @@ import org.drools.spi.Constraint;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"
- *
  */
 public abstract class AbstractCompositeConstraint extends MutableTypeConstraint {
 
@@ -227,7 +226,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
     /**
      * A context entry for composite restrictions
-     *
      */
     protected static class MultiFieldConstraintContextEntry
         implements

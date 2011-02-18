@@ -22,7 +22,6 @@ import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * This enum represents all engine supported clocks
- * 
  */
 public enum ClockType {
 

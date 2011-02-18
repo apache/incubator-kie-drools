@@ -22,7 +22,6 @@ import org.drools.lang.descr.PatternDescr;
 
 /**
  * A descr builder implementation for Patterns
- *
  */
 public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDescrBuilderImpl<PatternDescr>
     implements

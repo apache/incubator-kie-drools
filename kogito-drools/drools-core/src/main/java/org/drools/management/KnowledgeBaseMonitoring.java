@@ -55,7 +55,6 @@ import org.drools.rule.Package;
 
 /**
  * An implementation for the KnowledgeBaseMBean
- * 
  */
 public class KnowledgeBaseMonitoring
     implements

@@ -29,7 +29,6 @@ import org.drools.lang.ExpanderResolver;
  * The default expander resolver will provide instances of the DefaultExpander.
  * The DefaultExpander uses templates to provide DSL and pseudo
  * natural language support.
- * 
  */
 public class DefaultExpanderResolver
     implements

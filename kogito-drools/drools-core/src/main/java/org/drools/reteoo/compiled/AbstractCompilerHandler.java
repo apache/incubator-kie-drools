@@ -25,7 +25,6 @@ import org.drools.rule.ContextEntry;
  * This handler is used as a base class for all {@link org.drools.reteoo.compiled.NetworkHandler}s used for
  * generating a compiled network. It provides methods to return the variable type and names used for storing
  * refernces to different {@link org.drools.common.NetworkNode}s and variable names for {@link ClassFieldReader}s.
- *
  */
 abstract class AbstractCompilerHandler extends NetworkHandlerAdaptor {
     protected static final String NEWLINE = "\n";

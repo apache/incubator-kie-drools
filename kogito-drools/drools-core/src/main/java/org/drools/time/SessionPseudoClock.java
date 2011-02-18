@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
  *  
  * Pseudo clocks are particularly useful for simulations, 
  * "what if" scenario runs, and for tests.
- *  
  */
 public interface SessionPseudoClock extends SessionClock {
 

@@ -56,7 +56,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * Note you can override the default entity resolver by setting the System property of:
  *  <code>org.drools.io.EntityResolve</code> to your own custom entity resolver.
  *  This can be done using -Dorg.drools.io.EntityResolver=YourClassHere on the command line, for instance.
- *
  */
 public class ExtensibleXmlParser extends DefaultHandler {
     // ----------------------------------------------------------------------

@@ -20,7 +20,6 @@ import org.drools.Service;
 
 /**
  * ProcessRuntimeFactoryService is used by the AbstractWorkingMemory to "provide" it's concrete implementation.
- * 
  */
 public interface ProcessMarshallerFactoryService extends Service {
 

@@ -4,7 +4,6 @@ import java.util.Set;
 
 /**
  * An interface with the results from the expression/block analysis
- * 
  */
 public interface AnalysisResult {
 

@@ -23,7 +23,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
 
 /**
  * Janino version of a CompilationProblem
- * 
  */
 public final class JaninoCompilationProblem implements CompilationProblem {
 

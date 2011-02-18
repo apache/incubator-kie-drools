@@ -19,7 +19,6 @@ package org.drools.commons.jci.problems;
 
 /**
  * An abstract definition of a compilation problem
- * 
  */
 public interface CompilationProblem {
 

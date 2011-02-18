@@ -27,7 +27,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
  * It includes errors (which failed the compilation) or warnings
  * (that can be ignored and do not affect the creation of the
  * class files)
- * 
  */
 public final class CompilationResult {
     

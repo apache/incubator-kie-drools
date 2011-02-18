@@ -29,7 +29,6 @@ package org.drools.commons.jci.problems;
  * 
  * NOTE:
  * has to be supported by the compiler implementation!!
- * 
  */
 public interface CompilationProblemHandler {
 

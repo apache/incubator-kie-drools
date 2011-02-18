@@ -25,8 +25,6 @@ import org.mvel2.debug.Frame;
  *
  * Takes care of registering breakpoints and calling required methods
  * to trigger eclipse debugger to keep breakpoints in sync etc.
- *
- *
  */
 public final class MVELDebugHandler {
 
@@ -45,7 +43,6 @@ public final class MVELDebugHandler {
     /**
      * Notify remote debugger that runtime is ready to get latest breakpoint
      * information
-     *
      */
     public static void receiveBreakpoints() {
     }

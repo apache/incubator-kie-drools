@@ -23,7 +23,6 @@ import org.drools.lang.descr.PatternDescr;
 
 /**
  * A descr builder implementation for pattern sources
- *
  */
 public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends BaseDescrBuilderImpl<PatternDescr>
     implements

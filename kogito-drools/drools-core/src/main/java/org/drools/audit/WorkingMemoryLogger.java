@@ -98,7 +98,6 @@ import org.drools.spi.Tuple;
  * Subclasses of this class should implement the logEventCreated(LogEvent)
  * method and store this information, like for example log to file
  * or database.
- * 
  */
 public abstract class WorkingMemoryLogger
     implements

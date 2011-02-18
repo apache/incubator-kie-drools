@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * A helper class used during java code parsing to identify
  * and handle modify(){} blocks
- * 
  */
 public class JavaModifyBlockDescr implements JavaBlockDescr {
     private int start;

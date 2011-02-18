@@ -24,7 +24,6 @@ import org.drools.process.core.datatype.DataType;
 
 /**
  * Representation of a string datatype.
- * 
  */
 public class StringDataType implements DataType {
 

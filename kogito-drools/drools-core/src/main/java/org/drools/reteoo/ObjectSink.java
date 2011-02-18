@@ -25,8 +25,6 @@ import org.drools.spi.PropagationContext;
  * <code>ObjectSource</code>.
  * 
  * @see ObectSource
- * 
- *
  */
 public interface ObjectSink
     extends

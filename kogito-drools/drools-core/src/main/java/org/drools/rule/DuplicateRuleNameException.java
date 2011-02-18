@@ -22,7 +22,6 @@ package org.drools.rule;
  * 
  * @see Rule
  * @see Package
- * 
  */
 public class DuplicateRuleNameException extends RuleConstructionException {
     private static final long serialVersionUID = 510l;

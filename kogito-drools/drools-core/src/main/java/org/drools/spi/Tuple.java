@@ -27,8 +27,6 @@ import org.drools.rule.Declaration;
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  * 
  * @see FactHandle;
- * 
- *
  */
 public interface Tuple
     extends

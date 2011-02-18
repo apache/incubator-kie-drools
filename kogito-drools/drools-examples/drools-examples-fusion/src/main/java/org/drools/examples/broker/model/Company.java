@@ -18,7 +18,6 @@ package org.drools.examples.broker.model;
 
 /**
  * A POJO for a company
- * 
  */
 public class Company {
 

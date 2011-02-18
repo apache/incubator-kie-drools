@@ -35,7 +35,6 @@ import org.drools.spi.PropagationContext;
  *
  * @see LeftTupleSource
  * @see LeftTuple
- *
  */
 public abstract class LeftTupleSource extends BaseNode
     implements

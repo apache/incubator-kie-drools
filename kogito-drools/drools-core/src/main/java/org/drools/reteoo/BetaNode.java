@@ -60,7 +60,6 @@ import org.drools.spi.PropagationContext;
  * @see org.drools.reteoo.LeftTupleSource
  * @see org.drools.reteoo.LeftTupleSink
  * @see org.drools.reteoo.BetaMemory
- *
  */
 public abstract class BetaNode extends LeftTupleSource
     implements

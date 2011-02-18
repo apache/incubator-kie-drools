@@ -40,7 +40,6 @@ import org.drools.spi.PropagationContext;
  * A node that will add the propagation to the working memory actions queue,
  * in order to allow multiple threads to concurrently assert objects to multiple
  * entry points.
- *
  */
 public class PropagationQueuingNode extends ObjectSource
     implements
@@ -248,7 +247,6 @@ public class PropagationQueuingNode extends ObjectSource
 
     /**
      * Memory implementation for the node
-     *
      */
     public static class PropagationQueueingNodeMemory
         implements
@@ -402,7 +400,6 @@ public class PropagationQueuingNode extends ObjectSource
     /**
      * This is the action that is added to the working memory actions queue, so that
      * this node propagation can be triggered at a safe point
-     *
      */
     public static class PropagateAction
         implements

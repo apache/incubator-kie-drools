@@ -26,8 +26,6 @@ import org.drools.rule.Package;
  * A nicely mockable Http client interface.
  * 
  * IM IN YR HTTP MOCKIN UR CLEINT
- * 
- *
  */
 public interface IHttpClient {
 
@@ -40,7 +38,6 @@ public interface IHttpClient {
 
 /**
  * This is returned when pinging for changes.
- * 
  */
 class LastUpdatedPing {
     public long   lastUpdated = -1;

@@ -26,7 +26,6 @@ import com.thoughtworks.xstream.XStream;
 
 /**
  * Representation of an object datatype.
- * 
  */
 public class ObjectDataType implements DataType {
 

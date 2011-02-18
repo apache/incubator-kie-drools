@@ -32,8 +32,6 @@ import org.drools.spi.Activation;
  *
  * @see PriorityQueue
  * @see ActivationQueue
- *
- *
  */
 public class BinaryHeapQueueAgendaGroup
     implements

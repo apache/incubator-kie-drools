@@ -29,7 +29,6 @@ import org.drools.WorkingMemory;
  * The CommandExecutor is a Producer/Consumer style classes that provides a queue of Commands
  * in a LinkedBlockingQueue. This the run() method loops for continously until shutdown() is 
  * called.
- *
  */
 public class CommandExecutor implements Runnable, Externalizable {
 
@@ -63,7 +62,6 @@ public class CommandExecutor implements Runnable, Externalizable {
 
     /**
      * Allows the looping run() method to execute. 
-     *
      */
     public void shutdown() {
         this.run = false;

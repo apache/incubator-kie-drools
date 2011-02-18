@@ -21,7 +21,6 @@ import org.drools.SystemEventListener;
 /**
  * This interface is used to provide callback style logging for the agents
  * async events.
- * 
  */
 public interface AgentEventListener extends SystemEventListener {
 

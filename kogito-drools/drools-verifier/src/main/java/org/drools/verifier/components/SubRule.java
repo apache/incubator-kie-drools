@@ -27,7 +27,6 @@ import org.drools.verifier.components.Consequence.ConsequenceType;
  * Instance of this class represents a possible combination of
  * PatternPosibilities under one Rule. Each possibility returns true if all the
  * PatternPosibilities in the combination are true.
- *
  */
 public class SubRule extends RuleComponent
     implements

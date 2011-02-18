@@ -30,7 +30,6 @@ import org.drools.rule.Package;
  * just Janino sa the compiler you must either overload the compiler property before 
  * instantiating this class or the PackageBuilder, or make sure Eclipse is in the 
  * classpath, as Eclipse is the default.
- *
  */
 public class JavaDialectConfiguration
     implements

@@ -23,7 +23,6 @@ import java.io.Serializable;
  * 
  * @see org.drools.rule.Rule#setDuration
  * @see org.drools.rule.Rule#getDuration
- * 
  */
 public interface Duration
     extends

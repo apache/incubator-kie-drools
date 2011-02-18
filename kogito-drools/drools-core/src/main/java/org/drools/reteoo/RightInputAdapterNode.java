@@ -36,8 +36,6 @@ import org.drools.spi.PropagationContext;
  * When joining a subnetwork into the main network again, RightInputAdapterNode adapts the
  * subnetwork's tuple into a fact in order right join it with the tuple being propagated in
  * the main network.
- *
- *
  */
 public class RightInputAdapterNode extends ObjectSource
     implements

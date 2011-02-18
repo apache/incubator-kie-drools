@@ -25,7 +25,6 @@ import org.drools.base.ValueType;
 /**
  * A Base class for primitive boolean class field
  * write accessors. This class centralizes type conversions.
- *  
  */
 public abstract class BaseBooleanClassFieldWriter extends BaseClassFieldWriter {
 

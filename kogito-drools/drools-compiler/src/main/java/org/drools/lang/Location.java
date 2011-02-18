@@ -22,7 +22,6 @@ import java.util.Map;
 
 /**
  * A class to hold contextual information during DRL parsing
- * 
  */
 public class Location {
     
