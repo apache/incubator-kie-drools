@@ -24,7 +24,6 @@ import org.drools.common.RuleBasePartitionId;
 
 /**
  * An abstract super class for the LeftTupleSinkAdapters
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public abstract class AbstractLeftTupleSinkAdapter 
     implements

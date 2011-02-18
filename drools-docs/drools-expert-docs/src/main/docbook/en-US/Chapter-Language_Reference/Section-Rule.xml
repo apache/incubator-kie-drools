@@ -2238,9 +2238,6 @@ package org.drools.base.accumulators;
 
 /**
  * An implementation of an accumulator capable of calculating average values
- * 
- * @author etirelli
- *
  */
 public class AverageAccumulateFunction implements AccumulateFunction {
 

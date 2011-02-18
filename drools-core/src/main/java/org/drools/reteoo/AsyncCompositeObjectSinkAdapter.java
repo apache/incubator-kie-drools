@@ -25,8 +25,6 @@ import org.drools.spi.PropagationContext;
  * This is an asynchronous implementation of the CompositeObjectSinkAdapter that
  * is used to propagate facts both between nodes in the same or in different
  * partitions when partitions are enabled in the rulebase
- *
- * @author: <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class AsyncCompositeObjectSinkAdapter extends CompositeObjectSinkAdapter {
 
