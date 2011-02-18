@@ -5,15 +5,15 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <!-- Trouble Ticket example -->
-	<section xml:base="../">
-			<title>Executing the Example</title>
+  <section xml:base="../">
+      <title>Executing the Example</title>
 
-			<para>The example creates 4 customers, with their name and subscription class, it then creates 4 tickets for each of the customers, note that the ticket takes the customer in the constructor (that sets up the object relationship. The tickets and the customers are then inserted. Notice that we keep a fact handle - which we will use to notify the engine that that specific ticket changed later on. The last line has the all important fireAllRules(), which tells the engine to take action on the data it has.</para>
+      <para>The example creates 4 customers, with their name and subscription class, it then creates 4 tickets for each of the customers, note that the ticket takes the customer in the constructor (that sets up the object relationship. The tickets and the customers are then inserted. Notice that we keep a fact handle - which we will use to notify the engine that that specific ticket changed later on. The last line has the all important fireAllRules(), which tells the engine to take action on the data it has.</para>
 
-			<example>
-				<title>Trouble Ticket Example : Creating and Inserting Facts</title>
+      <example>
+        <title>Trouble Ticket Example : Creating and Inserting Facts</title>
 
-				<programlisting language="java">Customer a = new Customer( "A",
+        <programlisting language="java">Customer a = new Customer( "A",
                            "Gold" );
 Customer b = new Customer( "B",
                            "Platinum" );
@@ -38,11 +38,11 @@ FactHandle ft3 = session.insert( t3 );
 session.insert( t4 );
 
 session.fireAllRules();</programlisting>
-			</example>
+      </example>
 
-			<para>We have the "New Ticket" rule which has the highest priority (salience of 10 - the default is zero), The purpose of this is simply to log the fact that a new ticket has arrived in the system:</para>
+      <para>We have the "New Ticket" rule which has the highest priority (salience of 10 - the default is zero), The purpose of this is simply to log the fact that a new ticket has arrived in the system:</para>
 
-			<programlisting>rule "New Ticket"
+      <programlisting>rule "New Ticket"
  salience 10
  when
   customer : Customer( )
@@ -51,46 +51,46 @@ session.fireAllRules();</programlisting>
  System.out.println( "New : " + ticket );
 end    </programlisting>
 
-			<para>Note that we are "joining" the ticket fact with the customer fact. It's not really needed in this case, as we don't do anything (yet) with the customer fact. If you look in the TroubleTicketExample.java, you will also see that the facts are being inserted into the engine - note that we assert BOTH Customer and Ticket object (even though the ticket belongs to a customer - this allows the engine to join the objects together how it wants - this is what is meant by "relational" programming - we let the rule engine define what the relationships are. For instance, although the code is structured so that a ticket belongs to a customer, we may be interested in looking at tickets from different customers of the same type in the future).</para>
+      <para>Note that we are "joining" the ticket fact with the customer fact. It's not really needed in this case, as we don't do anything (yet) with the customer fact. If you look in the TroubleTicketExample.java, you will also see that the facts are being inserted into the engine - note that we assert BOTH Customer and Ticket object (even though the ticket belongs to a customer - this allows the engine to join the objects together how it wants - this is what is meant by "relational" programming - we let the rule engine define what the relationships are. For instance, although the code is structured so that a ticket belongs to a customer, we may be interested in looking at tickets from different customers of the same type in the future).</para>
 
-			<para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
+      <para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
 
-			<figure>
-				<title>Audit view</title>
+      <figure>
+        <title>Audit view</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
+      <para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
 
-			<para>Also, don't forget to use "fireAllRules()" - a common mistake ! (In this case we are using a statefull session, so this is necessary).</para>
+      <para>Also, don't forget to use "fireAllRules()" - a common mistake ! (In this case we are using a statefull session, so this is necessary).</para>
 
-			<para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
+      <para>If we run the rules, we should expect that the "New Ticket" rule will be activated for all tickets, so looking at the audit log view (by opening the file which was saved automatically when the rules were run):</para>
 
-			<figure>
-				<title>Audit view</title>
+      <figure>
+        <title>Audit view</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
-			
-		</section>
-		
-		<section>
-			<title>Platinum gets the best service</title>
+      <para>Referring to the above audit log, we can see each customer asserted, but nothing happens. As soon as the first ticket gets asserted, it joins it with the customer, and creates some activations: one is the "new ticket" rule, the other is for the appropriate priority (which we will show below). Note that items in the above view do not mean the rule fired at that point.</para>
 
-			<para>All the wonderful platinum customers have to get great service, so first thing to note is that as soon as a ticket arrives, we escalate if it is for a platinum customer:</para>
+    </section>
 
-			<programlisting>rule "Platinum Priority"
+    <section>
+      <title>Platinum gets the best service</title>
+
+      <para>All the wonderful platinum customers have to get great service, so first thing to note is that as soon as a ticket arrives, we escalate if it is for a platinum customer:</para>
+
+      <programlisting>rule "Platinum Priority"
  when
   customer : Customer( subscription == "Platinum" )
   ticket : Ticket( customer == customer, status == "New" )
@@ -99,16 +99,16 @@ end    </programlisting>
   update( ticket );
 end      </programlisting>
 
-			<para>Here we are joining Ticket to customer again (customer == customer), but we are also checking that the customer is "Platinum". When this is the case, we set the ticket status to "Escalate" and call update (which tells the engine that the ticket has changed).</para>
-			
-		</section>
-		
-		<section>
-			<title>Silver and Gold</title>
+      <para>Here we are joining Ticket to customer again (customer == customer), but we are also checking that the customer is "Platinum". When this is the case, we set the ticket status to "Escalate" and call update (which tells the engine that the ticket has changed).</para>
 
-			<para>For silver and gold class, its a similar story to platinum:</para>
+    </section>
 
-			<programlisting>rule "Silver Priority"
+    <section>
+      <title>Silver and Gold</title>
+
+      <para>For silver and gold class, its a similar story to platinum:</para>
+
+      <programlisting>rule "Silver Priority"
  duration 3000
  when
   customer : Customer( subscription == "Silver" )
@@ -128,16 +128,16 @@ rule "Gold Priority"
   update( ticket );
 end   </programlisting>
 
-			<para>In this case, note the use of "duration XXX" - XXX is the number of milliseconds to wait to check that this rule holds true. Should it do so, after XXX milliseconds, then the action takes effect. So in the above case, after 3 seconds the "Silver" priority kicks in, but after 1 second "Gold" does. In both cases the tickets are escalated (just like with platinum. This is what we mean by temporal rules (rules that take effect over time).</para>
+      <para>In this case, note the use of "duration XXX" - XXX is the number of milliseconds to wait to check that this rule holds true. Should it do so, after XXX milliseconds, then the action takes effect. So in the above case, after 3 seconds the "Silver" priority kicks in, but after 1 second "Gold" does. In both cases the tickets are escalated (just like with platinum. This is what we mean by temporal rules (rules that take effect over time).</para>
 
-		</section>
-		
-		<section>
-			<title>Escalating</title>
+    </section>
 
-			<para>The actual escalation of a ticket happens in a rule:</para>
+    <section>
+      <title>Escalating</title>
 
-			<programlisting>rule "Escalate"
+      <para>The actual escalation of a ticket happens in a rule:</para>
+
+      <programlisting>rule "Escalate"
  when
   customer : Customer( )
   ticket : Ticket( customer == customer, status == "Escalate" )
@@ -145,18 +145,18 @@ end   </programlisting>
   sendEscalationEmail( customer, ticket );
 end     </programlisting>
 
-			<para>In this case, the action is to call a function which sends an email (the function is defined down the bottom of the drl file). This rule reacts to the rules which update the ticket and set its status to escalate.</para>
+      <para>In this case, the action is to call a function which sends an email (the function is defined down the bottom of the drl file). This rule reacts to the rules which update the ticket and set its status to escalate.</para>
 
-			<para>In the code that launches the example, we have a "sleep" to make sure all this happens (and print out the results). Note also that after the rules are fired, we modify the status of the Customer "C" to "Done" - and then tell the engine. This causes it to evaluate and fire the rule that looks for "tickets" that are "Done" (in which is just logs a message).</para>
-	
-		</section>
-		
-		<section>
-			<title>Running it</title>
+      <para>In the code that launches the example, we have a "sleep" to make sure all this happens (and print out the results). Note also that after the rules are fired, we modify the status of the Customer "C" to "Done" - and then tell the engine. This causes it to evaluate and fire the rule that looks for "tickets" that are "Done" (in which is just logs a message).</para>
 
-			<para>Running the example (by launching the TroubleTicket.java class as an application) should yield the output:</para>
+    </section>
 
-			<programlisting>New : [Ticket [Customer D : Silver] : New]
+    <section>
+      <title>Running it</title>
+
+      <para>Running the example (by launching the TroubleTicket.java class as an application) should yield the output:</para>
+
+      <programlisting>New : [Ticket [Customer D : Silver] : New]
 New : [Ticket [Customer C : Silver] : New]
 New : [Ticket [Customer B : Platinum] : New]
 New : [Ticket [Customer A : Gold] : New]
@@ -167,29 +167,29 @@ Done : [Ticket [Customer C : Silver] : Done]
 Email : [Ticket [Customer D : Silver] : Escalate]
 [[ awake ]]    </programlisting>
 
-			<figure>
-				<title>Audit log</title>
+      <figure>
+        <title>Audit log</title>
 
-				<mediaobject>
-					<imageobject>
-						<imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_firing.png" />
-					</imageobject>
-				</mediaobject>
-			</figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_firing.png" />
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-			<para>Referring to the above audit log, we can see the events as they happen. Once the rules start firing, the first items are the "Activation Executed" for the new tickets, as expected (they do nothing, just log the fact). Note the "Activation executed" item for the platinum ticket - that is the next one to go (remember it has the default salience, so it happens after the "New ticket" rule, but otherwise it is immediate - there is no "duration" delay for it). The platinum activation results in a Object modification (which is the escalation) - this in turn creates an activation record for the "escalate ticket" rule - which is what we wanted. Straight after that it executes the action to escalate the ticket.</para>
+      <para>Referring to the above audit log, we can see the events as they happen. Once the rules start firing, the first items are the "Activation Executed" for the new tickets, as expected (they do nothing, just log the fact). Note the "Activation executed" item for the platinum ticket - that is the next one to go (remember it has the default salience, so it happens after the "New ticket" rule, but otherwise it is immediate - there is no "duration" delay for it). The platinum activation results in a Object modification (which is the escalation) - this in turn creates an activation record for the "escalate ticket" rule - which is what we wanted. Straight after that it executes the action to escalate the ticket.</para>
 
-			<para>The next event to occur is due to the:</para>
-			<programlisting language="java">t3.setStatus( "Done" );
+      <para>The next event to occur is due to the:</para>
+      <programlisting language="java">t3.setStatus( "Done" );
 
 session.update( ft3,
                 t3 );
 </programlisting> 
-			<para>in the code (outside of rules) - this simulates a customer service officer maarking a ticket as done (and of course, uses the fact handle we kept from before). This results in a cancelled activation (as we no longer have a New Silvert customer ticket - it is done) and a new activation to log the fact it was done.</para>
+      <para>in the code (outside of rules) - this simulates a customer service officer maarking a ticket as done (and of course, uses the fact handle we kept from before). This results in a cancelled activation (as we no longer have a New Silvert customer ticket - it is done) and a new activation to log the fact it was done.</para>
 
-			<para>In all the excitement, in parallel the engine has been watching the time pass, and it happens that the Gold tickets start to escalate, and then silver (as expected).</para>
-			
-		</section>
+      <para>In all the excitement, in parallel the engine has been watching the time pass, and it happens that the Gold tickets start to escalate, and then silver (as expected).</para>
 
-	</section>  
+    </section>
+
+  </section>
   

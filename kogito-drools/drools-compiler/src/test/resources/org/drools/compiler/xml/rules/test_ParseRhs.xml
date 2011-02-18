@@ -4,27 +4,27 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
          
-	<import name="java.util.HashMap" />
-	<import name="org.drools.*" />	
-	
-	<global identifier="x" type="com.sample.X" />		
-	<global identifier="yada" type="com.sample.Yada" />
-	
-	<function return-type="void" name="myFunc">
-	    <parameter identifier="foo" type="Bar" />
-	    <parameter identifier="bada" type="Bing" />
-	    	    
-	    <body>
-	    	System.out.println("hello world");
-		</body>		
-	</function>
-	
-	<rule name="my rule">
-		<lhs>							
-		</lhs>
-		
-	    <rhs>
-	    	System.out.println( "hello" );	    
-		</rhs>
-	</rule>
+  <import name="java.util.HashMap" />
+  <import name="org.drools.*" />
+
+  <global identifier="x" type="com.sample.X" />    
+  <global identifier="yada" type="com.sample.Yada" />
+
+  <function return-type="void" name="myFunc">
+      <parameter identifier="foo" type="Bar" />
+      <parameter identifier="bada" type="Bing" />
+
+      <body>
+        System.out.println("hello world");
+    </body>
+  </function>
+
+  <rule name="my rule">
+    <lhs>
+    </lhs>
+
+      <rhs>
+        System.out.println( "hello" );
+    </rhs>
+  </rule>
 </package>

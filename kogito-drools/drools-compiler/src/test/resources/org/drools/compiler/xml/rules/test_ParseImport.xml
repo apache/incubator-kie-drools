@@ -4,8 +4,8 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
          
-	<import name="java.util.HashMap" />
-	<import name="org.drools.*" />
+  <import name="java.util.HashMap" />
+  <import name="org.drools.*" />
     <importfunction name="org.drools.function" />
     
 </package>

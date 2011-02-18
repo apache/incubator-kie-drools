@@ -260,7 +260,7 @@
 
       <para>This error is associated with the <literal>eval</literal> clause, where its
       expression may not be terminated with a semicolon. Check this
-	example:</para>
+  example:</para>
 
       <example>
         <programlisting>1: rule simple_rule

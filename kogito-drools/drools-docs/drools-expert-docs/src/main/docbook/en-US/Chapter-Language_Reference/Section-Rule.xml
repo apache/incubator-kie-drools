@@ -167,15 +167,15 @@ end</programlisting>
           an expression involving bound variables.</para>
           
           <example>
-    		<title>Dynamic Salience</title>
-    		<programlisting>rule "Fire in rank order 1,2,.."
-  				salience( -$rank )
-  				when
-        			Element( $rank : rank,... ) 
-    			then
-        			...
-				end</programlisting>
-		  </example>  
+        <title>Dynamic Salience</title>
+        <programlisting>rule "Fire in rank order 1,2,.."
+          salience( -$rank )
+          when
+              Element( $rank : rank,... )
+          then
+              ...
+        end</programlisting>
+      </example>
         </listitem>
       </varlistentry>
 
@@ -916,8 +916,8 @@ Cheese( name soundslike 'foobar' )</programlisting>
                 <title>Test with str</title>
 
                 <programlisting>$m : Message( routingValue str[startsWith] "R1" )
-                				$m : Message( routingValue str[endsWith] "R2" )
-                				$m : Message( routingValue str[length] 17 )
+                        $m : Message( routingValue str[endsWith] "R2" )
+                        $m : Message( routingValue str[length] 17 )
                 </programlisting>
               </example>
               </para>

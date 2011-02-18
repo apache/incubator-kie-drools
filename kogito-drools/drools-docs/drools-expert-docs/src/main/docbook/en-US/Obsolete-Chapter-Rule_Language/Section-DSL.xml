@@ -197,7 +197,7 @@ builder.addPackageFromDrl( source, dsl );
     can do things like:</para>
 
     <example>
-	    <title>Chaining DSL Expressions</title>
+      <title>Chaining DSL Expressions</title>
       <programlisting>There is a person called Bob who is happy
   Or
 There is a person called Mike who is sad

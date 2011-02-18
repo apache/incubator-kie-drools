@@ -11,7 +11,7 @@
 
     <mediaobject>
      <imageobject>
-	     <imagedata align="center" fileref="images/Chapter-Rule_Language/rule.png" format="PNG" role="" />
+       <imagedata align="center" fileref="images/Chapter-Rule_Language/rule.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -82,169 +82,169 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-	  <imagedata align="center" fileref="images/Chapter-Rule_Language/rule_attributes.png" format="PNG" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Language/rule_attributes.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
 
     <variablelist>
       <varlistentry>
-	<term>no-loop</term>
-	
-	<listitem>
-	  <para>default value: false</para>
-	
-	  <para>type: Boolean</para>
-	
-	  <para>When the Rule's consequence modifies a fact it may cause
-	    the Rule to activate again, causing recursion. Setting no-loop
-	    to true means the attempt to create the Activation for the
-	    current set of data will be ignored.</para>
-	</listitem>
-				
+  <term>no-loop</term>
+
+  <listitem>
+    <para>default value: false</para>
+
+    <para>type: Boolean</para>
+
+    <para>When the Rule's consequence modifies a fact it may cause
+      the Rule to activate again, causing recursion. Setting no-loop
+      to true means the attempt to create the Activation for the
+      current set of data will be ignored.</para>
+  </listitem>
+
       </varlistentry>
-	
+
       <varlistentry>
-	<term>lock-on-active</term>
-	
-	<listitem>
-	  <para>default value: false</para>
-	  
-	  <para>type: Boolean</para>
-	  <para>Whenever a ruleflow-group becomes active or an
-	    agenda-group receives the focus, any rule within that
-	    group that has lock-on-active set to true will not be
-	    activated any more; irrespective of the origin of the
-	    update, the activation of a matching rule is discarded.
-	    This is a stronger version of no-loop, because the change
-	    could now be caused not only by the rule itself. It's
-	    ideal for calculation rules where you have a number of
-	    rules that modify a fact and you don't want any rule
-	    re-matching and firing again. Only when the ruleflow-group
-	    is no longer active or the agenda-group loses the focus
-	    those rules with lock-on-active set to true become
-	    eligible again for their activations to be placed onto
-	    the agenda.</para>
-	</listitem>
+  <term>lock-on-active</term>
+
+  <listitem>
+    <para>default value: false</para>
+
+    <para>type: Boolean</para>
+    <para>Whenever a ruleflow-group becomes active or an
+      agenda-group receives the focus, any rule within that
+      group that has lock-on-active set to true will not be
+      activated any more; irrespective of the origin of the
+      update, the activation of a matching rule is discarded.
+      This is a stronger version of no-loop, because the change
+      could now be caused not only by the rule itself. It's
+      ideal for calculation rules where you have a number of
+      rules that modify a fact and you don't want any rule
+      re-matching and firing again. Only when the ruleflow-group
+      is no longer active or the agenda-group loses the focus
+      those rules with lock-on-active set to true become
+      eligible again for their activations to be placed onto
+      the agenda.</para>
+  </listitem>
       </varlistentry>
-	
+
       <varlistentry>
-	<term>salience</term>
-	
-	<listitem>
-	  <para>default value : 0</para>
-	
-	  <para>type : integer</para>
-	
-	  <para>Each rule has a salience attribute that can be assigned
-	    an Integer number, defaults to zero, the Integer and can be
-	    negative or positive. Salience is a form of priority where
-	    rules with higher salience values are given higher priority
-	    when ordered in the Activation queue.</para>
-	    <para>Drools also supports dynamic salience where you can use andexpression involving bound variables.</para>
+  <term>salience</term>
+
+  <listitem>
+    <para>default value : 0</para>
+
+    <para>type : integer</para>
+
+    <para>Each rule has a salience attribute that can be assigned
+      an Integer number, defaults to zero, the Integer and can be
+      negative or positive. Salience is a form of priority where
+      rules with higher salience values are given higher priority
+      when ordered in the Activation queue.</para>
+      <para>Drools also supports dynamic salience where you can use andexpression involving bound variables.</para>
           
           <example>
-    		<title>Dynamic Salience</title>
-    		<programlisting>rule "Fire in rank order 1,2,.."
-  				salience( -$rank )
-  				when
-        			Element( $rank : rank,... ) 
-    			then
-        			...
-				end</programlisting>
-		  </example> 
-	</listitem>
+        <title>Dynamic Salience</title>
+        <programlisting>rule "Fire in rank order 1,2,.."
+          salience( -$rank )
+          when
+              Element( $rank : rank,... )
+          then
+              ...
+        end</programlisting>
+      </example>
+  </listitem>
       </varlistentry>
-	
-	
+
+
       <varlistentry>
-	<term>agenda-group</term>
-	
-	<listitem>
-	  <para>default value: MAIN</para>
-	  
-	  <para>type: String</para>
-		
-	  <para>Agenda group's allow the user to partition the Agenda providing more execution control. Only rules in the focus group are allowed to fire.</para>
-	</listitem>
+  <term>agenda-group</term>
+
+  <listitem>
+    <para>default value: MAIN</para>
+
+    <para>type: String</para>
+
+    <para>Agenda group's allow the user to partition the Agenda providing more execution control. Only rules in the focus group are allowed to fire.</para>
+  </listitem>
       </varlistentry>
-	
+
       <varlistentry>
-	<term>auto-focus</term>
-	
-	<listitem>
-	  <para>default value: false</para>
-	  
-	  <para>type: Boolean</para>
-				
-	  <para>When a rule is activated if the <literal>auto-focus value is true and the Rule's </literal> <literal>agenda-group</literal> does not have focus then it is given focus, allowing the rule to potentially fire.</para>
-	</listitem>
+  <term>auto-focus</term>
+
+  <listitem>
+    <para>default value: false</para>
+
+    <para>type: Boolean</para>
+
+    <para>When a rule is activated if the <literal>auto-focus value is true and the Rule's </literal> <literal>agenda-group</literal> does not have focus then it is given focus, allowing the rule to potentially fire.</para>
+  </listitem>
       </varlistentry>
-	
+
       <varlistentry>
-	<term>activation-group</term>
-	
-	<listitem>
-	  <para>default value: N/A</para>
-				
-	  <para>type: String</para>
-				
-	  <para>Rules that belong to the same named activation-group will only fire exclusively. In other words, the first rule in an activation-group to fire will cancel the other rules activations (stop them from firing). The Activation group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
-				
-	  <para>NOTE: this used to be called Xor group, but technically its not quite an Xor, but you may hear people mention Xor group, just swap that term in your mind with activation-group.</para>
-	</listitem>
+  <term>activation-group</term>
+
+  <listitem>
+    <para>default value: N/A</para>
+
+    <para>type: String</para>
+
+    <para>Rules that belong to the same named activation-group will only fire exclusively. In other words, the first rule in an activation-group to fire will cancel the other rules activations (stop them from firing). The Activation group attribute is any string, as long as the string is identical for all the rules you need to be in the one group.</para>
+
+    <para>NOTE: this used to be called Xor group, but technically its not quite an Xor, but you may hear people mention Xor group, just swap that term in your mind with activation-group.</para>
+  </listitem>
       </varlistentry>
-	
+
       <varlistentry>
-	<term>dialect</term>
-	
-	<listitem>
-	  <para>default value : as specified by the package</para>
-				
-	  <para>type : String</para>
-				
-	  <para>possible values: "java" or "mvel"</para>
-				
-	  <para>The dialect species the language to be used for any code
-	    expressions in the LHS or the RHS code block. Currently two dialects are available, Java and MVEL. While the dialect can be specified at the package level, this attribute allows the package definition to be overridden.</para>
-	</listitem>
+  <term>dialect</term>
+
+  <listitem>
+    <para>default value : as specified by the package</para>
+
+    <para>type : String</para>
+
+    <para>possible values: "java" or "mvel"</para>
+
+    <para>The dialect species the language to be used for any code
+      expressions in the LHS or the RHS code block. Currently two dialects are available, Java and MVEL. While the dialect can be specified at the package level, this attribute allows the package definition to be overridden.</para>
+  </listitem>
       </varlistentry>
-	
-	
+
+
       <varlistentry>
-	<term>date-effective</term>
-	
-	<listitem>
-	  <para>default value: N/A</para>	
-				
-	  <para>type: String, which contains a date and time definition</para>
-				
-	  <para>A rule can only activate if the current date and time is after date-effective attribute.</para>
-	</listitem>
+  <term>date-effective</term>
+
+  <listitem>
+    <para>default value: N/A</para>
+
+    <para>type: String, which contains a date and time definition</para>
+
+    <para>A rule can only activate if the current date and time is after date-effective attribute.</para>
+  </listitem>
       </varlistentry>
-	
-      <varlistentry>	
-	<term>date-expires</term>
-	
-	<listitem>
-	  <para>default value: N/A</para>
-				
-	  <para>type: String, which contains a date and time definition</para>
-				
-	  <para>A rule cannot activate if the current date and time is after date-expires attribute.</para>
-	</listitem>
-      </varlistentry>
-	
+
       <varlistentry>
-	<term>duration</term>
-	
-	<listitem>
-	  <para>default value: no default value</para>
-	
-	  <para>type: long</para>
-	
-	  <para>The duration dictates that the rule will fire after a specified duration, if it is still true.</para>
-	</listitem>
+  <term>date-expires</term>
+
+  <listitem>
+    <para>default value: N/A</para>
+
+    <para>type: String, which contains a date and time definition</para>
+
+    <para>A rule cannot activate if the current date and time is after date-expires attribute.</para>
+  </listitem>
+      </varlistentry>
+
+      <varlistentry>
+  <term>duration</term>
+
+  <listitem>
+    <para>default value: no default value</para>
+
+    <para>type: long</para>
+
+    <para>The duration dictates that the rule will fire after a specified duration, if it is still true.</para>
+  </listitem>
       </varlistentry>
     </variablelist>
 
@@ -351,7 +351,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-		<imagedata align="center" fileref="images/Chapter-Rule_Language/lhs.png" format="PNG" role="" />
+    <imagedata align="center" fileref="images/Chapter-Rule_Language/lhs.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -397,7 +397,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/patternER.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/patternER.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -412,7 +412,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/pattern.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/pattern.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -449,7 +449,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/constraints.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/constraints.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -460,7 +460,7 @@ end</programlisting>
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/constraint.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/constraint.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -472,7 +472,7 @@ end</programlisting>
         <mediaobject>
 
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/constraintGroup.png"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/constraintGroup.png"
                        format="PNG" role="" />
           </imageobject>
         </mediaobject>
@@ -567,7 +567,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <mediaobject>
 
             <imageobject>
-		    <imagedata align="center" fileref="images/Chapter-Rule_Language/fieldConstraint.png"
+        <imagedata align="center" fileref="images/Chapter-Rule_Language/fieldConstraint.png"
                          format="PNG" role="" />
             </imageobject>
           </mediaobject>
@@ -582,7 +582,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           <mediaobject>
 
             <imageobject>
-		    <imagedata align="center" fileref="images/Chapter-Rule_Language/restriction.png" format="PNG"
+        <imagedata align="center" fileref="images/Chapter-Rule_Language/restriction.png" format="PNG"
                          role="" />
             </imageobject>
           </mediaobject>
@@ -624,7 +624,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/literal.png" format="PNG" />
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/literal.png" format="PNG" />
               </imageobject>
             </mediaobject>
           </figure>
@@ -634,7 +634,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/qualifiedIdentifier.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/qualifiedIdentifier.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -646,7 +646,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
             <mediaobject>
 
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/identifier.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/identifier.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -657,7 +657,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/returnValue.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/returnValue.png"
                            format="PNG" />
               </imageobject>
             </mediaobject>
@@ -671,7 +671,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
           of different types; exceptions will be thrown if bad coercions are
           attempted. For instance, if "ten" is provided as a string in a number
           evaluator an exception is thrown, whereas "10" would coerce to a
-	  numeric 10. Coercion is
+    numeric 10. Coercion is
           always in favor of the field type and not the value type.</para>
         </section>
 
@@ -683,7 +683,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/singleValueRestriction.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/singleValueRestriction.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -697,7 +697,7 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature") // va
 
               <mediaobject>
                 <imageobject>
-			<imagedata align="center" fileref="images/Chapter-Rule_Language/operator.png"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/operator.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -849,7 +849,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
 
               <mediaobject>
                 <imageobject>
-			<imagedata align="center" fileref="images/Chapter-Rule_Language/literalRestriction.png"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/literalRestriction.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -904,7 +904,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
 
               <para>Only true or false can be used; 0 and 1 are not
               recognized. A Boolean field alone (as in
-		<code>Cheese( smelly )</code> is not permitted.</para>
+    <code>Cheese( smelly )</code> is not permitted.</para>
 
               <example>
                 <title>Boolean Literal Restriction</title>
@@ -937,7 +937,7 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
               <mediaobject>
 
                 <imageobject>
-			<imagedata align="center" fileref="images/Chapter-Rule_Language/variableRestriction.png"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/variableRestriction.png"
                              format="PNG" />
                 </imageobject>
               </mediaobject>
@@ -963,7 +963,7 @@ Cheese( type == likes )</programlisting>
               the favouriteCheese field for any matching Person instance and
               is used to constrain the type of Cheese in the following
               pattern. Any valid Java variable name can be used, and it may
-		be prefixed with a '$', which you will often see used to help differentiate
+    be prefixed with a '$', which you will often see used to help differentiate
               declarations from fields. The example below shows a declaration
               bound to the pattern's Object Type instance itself and used with
               a 'contains' operator. Note the optional use of '$'.</para>
@@ -986,7 +986,7 @@ Cheesery( cheeses contains $stilton )</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-			     fileref="images/Chapter-Rule_Language/returnValueRestriction.png" format="PNG" />
+           fileref="images/Chapter-Rule_Language/returnValueRestriction.png" format="PNG" />
                 </imageobject>
               </mediaobject>
             </figure>
@@ -1026,7 +1026,7 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
             <mediaobject>
               <imageobject>
                 <imagedata align="center"
-			   fileref="images/Chapter-Rule_Language/compoundValueRestriction.png" format="PNG"
+         fileref="images/Chapter-Rule_Language/compoundValueRestriction.png" format="PNG"
                            role="" />
               </imageobject>
             </mediaobject>
@@ -1056,7 +1056,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese )
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/multiRestriction.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/multiRestriction.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -1067,7 +1067,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese )
 
             <mediaobject>
               <imageobject>
-		      <imagedata align="center" fileref="images/Chapter-Rule_Language/restrictionGroup.png"
+          <imagedata align="center" fileref="images/Chapter-Rule_Language/restrictionGroup.png"
                            format="PNG" role="" />
               </imageobject>
             </mediaobject>
@@ -1093,7 +1093,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti 
 
           <mediaobject>
             <imageobject>
-		    <imagedata align="center" fileref="images/Chapter-Rule_Language/inlineEvalConstraint.png"
+        <imagedata align="center" fileref="images/Chapter-Rule_Language/inlineEvalConstraint.png"
                          format="PNG" />
             </imageobject>
           </mediaobject>
@@ -1109,12 +1109,12 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" ) // mixing muti 
         auto-create field binding variables. When an identifier is found that
         is not a current variable the builder looks to see if the identifier
         is a field on the current object type, if it is, the field binding
-	is auto-created as a variable of the same name. This is called
-	autovivification of field variables inside of inline evals.</para>
+  is auto-created as a variable of the same name. This is called
+  autovivification of field variables inside of inline evals.</para>
 
         <para>This example will find all male-female pairs where the
         male is 2 years older than the female; the boyAge variable is
-	auto-created by the autovivification process.</para>
+  auto-created by the autovivification process.</para>
 
         <example>
           <title>Return Value operator</title>
@@ -1174,7 +1174,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixAnd.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixAnd.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1208,7 +1208,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/infixAnd.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/infixAnd.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1243,7 +1243,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixOr.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixOr.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1267,7 +1267,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/infixOr.png" format="PNG"
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/infixOr.png" format="PNG"
                        role="" />
           </imageobject>
         </mediaobject>
@@ -1313,7 +1313,7 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) // Find a pet who is old
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/eval.png" format="PNG" role="" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/eval.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1354,7 +1354,7 @@ eval( isValid(p1, p2) ) //this is how you call a function in the LHS - a functio
         <mediaobject>
 
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/not.png" format="PNG" role="" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/not.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1392,7 +1392,7 @@ not ( Bus(color == "red") and Bus(color == "blue")) // not with nested 'and' inf
         <mediaobject>
 
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/exists.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/exists.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1435,7 +1435,7 @@ exists ( Bus(color == "red") and Bus(color == "blue")) // exists with nested 'an
         <mediaobject>
 
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/forall.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/forall.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1513,7 +1513,7 @@ end
         </example>
 
       <para>As a side note, <code>forall( p1 p2 p3...)</code> is
-	equivalent to writing:</para>
+  equivalent to writing:</para>
 
       <programlisting>not(p1 and not(and p2 p3...))</programlisting>
 
@@ -1531,7 +1531,7 @@ end
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/from.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/from.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1595,7 +1595,7 @@ end
       <para>The above example will cause the rule to fire once for each item
       whose value is greater than 100 for each given order.</para>
 
-	  <para>You must take caution, however, when using <emphasis
+    <para>You must take caution, however, when using <emphasis
       role="bold">from</emphasis>, especially in conjunction with the
       <emphasis role="bold">lock-on-active</emphasis> rule attribute 
       as it may produce unexpected results. Consider the example provided earlier, but
@@ -1622,30 +1622,30 @@ then
 end
 </programlisting>
 
-	  <para>
-	  In the above example, persons in Raleigh, NC should be assigned to sales region 1 and 
-	  receive a discount; i.e., you would expect both rules to activate and fire. Instead you
-	  will find that only the second rule fires.</para>
-	  
-	  <para>If you were to turn on the audit log, you would also see that when the second rule fires,
-	  it deactivates the first rule. Since the rule attribute <emphasis role="bold">lock-on-active</emphasis>
-	  prevents a rule from creating new activations when a set of facts change, the first rule fails to
-	  reactivate. Though the set of facts have not changed, the use of
-	  <emphasis role="bold">from</emphasis> returns a new fact for all intents and purposes each time
-	  it is evaluated. 
-	  </para>
-	  
-	  <para>First, it's important to review why you would use the above pattern. You may have
-	  many rules across different rule-flow groups. When rules modify working memory and other rules
-	  downstream of your RuleFlow (in different rule-flow groups) need to be reevaluated, the use of <emphasis role="bold">modify</emphasis>
-	  is critical. You don't, however, want other rules in the same rule-flow group to place
-	  activations on one another recursively. In this case, the <emphasis role="bold">no-loop</emphasis>
-	  attribute is ineffective, as it would only prevent a rule from activating itself recursively. Hence,
-	  you resort to <emphasis role="bold">lock-on-active</emphasis>.
-	  </para>
-	  
-	  <para>
-	  There are several ways to address this issue:</para>
+    <para>
+    In the above example, persons in Raleigh, NC should be assigned to sales region 1 and
+    receive a discount; i.e., you would expect both rules to activate and fire. Instead you
+    will find that only the second rule fires.</para>
+
+    <para>If you were to turn on the audit log, you would also see that when the second rule fires,
+    it deactivates the first rule. Since the rule attribute <emphasis role="bold">lock-on-active</emphasis>
+    prevents a rule from creating new activations when a set of facts change, the first rule fails to
+    reactivate. Though the set of facts have not changed, the use of
+    <emphasis role="bold">from</emphasis> returns a new fact for all intents and purposes each time
+    it is evaluated.
+    </para>
+
+    <para>First, it's important to review why you would use the above pattern. You may have
+    many rules across different rule-flow groups. When rules modify working memory and other rules
+    downstream of your RuleFlow (in different rule-flow groups) need to be reevaluated, the use of <emphasis role="bold">modify</emphasis>
+    is critical. You don't, however, want other rules in the same rule-flow group to place
+    activations on one another recursively. In this case, the <emphasis role="bold">no-loop</emphasis>
+    attribute is ineffective, as it would only prevent a rule from activating itself recursively. Hence,
+    you resort to <emphasis role="bold">lock-on-active</emphasis>.
+    </para>
+
+    <para>
+    There are several ways to address this issue:</para>
 
       <itemizedlist>
         <listitem>
@@ -1662,11 +1662,11 @@ end
         </listitem>
       </itemizedlist>
 
-		<para>The preferred solution is to minimize use of <emphasis role="bold">from</emphasis>
-		when you can assert all your facts into working memory directly. In the example above,
-		both the Person and Address instance can be asserted into working memory. In this case, because
-		the graph is fairly simple, an even easier solution is to modify your rules as follows:
-		</para>
+    <para>The preferred solution is to minimize use of <emphasis role="bold">from</emphasis>
+    when you can assert all your facts into working memory directly. In the example above,
+    both the Person and Address instance can be asserted into working memory. In this case, because
+    the graph is fairly simple, an even easier solution is to modify your rules as follows:
+    </para>
 
       <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
@@ -1687,21 +1687,21 @@ then
 end
 </programlisting>
 
-	  <para>Now, you will find that both rules fire as expected. However, it is not 
-	  always possible to access nested facts as above. Consider an example where a Person
-	  holds one or more Addresses and you wish to use an existential quantifier to
-	  match people with at least one address that meets certain conditions. 
-	  In this case, you would have to resort to 
-	  the use of  <emphasis role="bold">from</emphasis> to reason over the collection.</para>
-	  
-	  <para>
-	  There are several ways to use <emphasis role="bold">from</emphasis>
-	  to achieve this and not all of them exhibit an issue
-	  with the use of  <emphasis role="bold">lock-on-active</emphasis>. For example,
-	  the following use of <emphasis role="bold">from</emphasis> causes both rules to fire as expected:	  
-	  </para>
-	  
-	  <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+    <para>Now, you will find that both rules fire as expected. However, it is not
+    always possible to access nested facts as above. Consider an example where a Person
+    holds one or more Addresses and you wish to use an existential quantifier to
+    match people with at least one address that meets certain conditions.
+    In this case, you would have to resort to
+    the use of  <emphasis role="bold">from</emphasis> to reason over the collection.</para>
+
+    <para>
+    There are several ways to use <emphasis role="bold">from</emphasis>
+    to achieve this and not all of them exhibit an issue
+    with the use of  <emphasis role="bold">lock-on-active</emphasis>. For example,
+    the following use of <emphasis role="bold">from</emphasis> causes both rules to fire as expected:
+    </para>
+
+    <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1721,10 +1721,10 @@ then
     modify ($p) {} #Apply discount to person in a modify block
 end
 </programlisting>
-	
-	  <para>However, the following slightly different approach does exhibit the problem:</para>
-	  
-	  <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+
+    <para>However, the following slightly different approach does exhibit the problem:</para>
+
+    <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1747,38 +1747,38 @@ when
 then
     modify ($assessment) {} #Modify assessment in a modify block
 end</programlisting>
-	  
-	  <para>In the above example, the $addresses variable is returned from the
-	  use of <emphasis role="bold">from</emphasis>. The example also introduces
-	  a new object, assessment, to highlight one possible solution in this case.
-	  If the $assessment variable assigned in the condition (LHS) is moved to the last condition
-	  in each rule, both rules fire as expected.
-	  </para>
-	  
-	  <para>
-	  Though the above examples demonstrate how to combine the use of <emphasis role="bold">from</emphasis>
-	  with <emphasis role="bold">lock-on-active</emphasis> where no loss of rule activations occurs,
-	  they carry the drawback of placing a dependency on the order of conditions on the LHS. In addition,
-	  the solutions present greater complexity for the rule author in terms of keeping track of
-	  which conditions may create issues.
-	  </para>
-	  
-	  <para>A better alternative is to 
-	  assert more facts into working memory. In this case, a person's addresses
-	  may be asserted into working memory and the use of <emphasis role="bold">from</emphasis> 
-	  would not be necessary.</para>
-	  
-	  <para>There are cases, however, where asserting all data into working memory is not
-	  practical and we need to find other solutions. Another option is to reevaluate the
-	  need for <emphasis role="bold">lock-on-active</emphasis>. 
-	  An alternative to <emphasis role="bold">lock-on-active</emphasis> is to 
-	  directly manage how rules within the same rule-flow group activate one another
-	  by including conditions in each rule that prevent rules from activating each other recursively
-	  when working memory is modified. For example, in the case above where a
-	  discount is applied to citizens of Raleigh, a condition may be added to the rule
-	  that checks whether the discount has already been applied. If so, the rule does not
-	  activate.</para>
-	  	    
+
+    <para>In the above example, the $addresses variable is returned from the
+    use of <emphasis role="bold">from</emphasis>. The example also introduces
+    a new object, assessment, to highlight one possible solution in this case.
+    If the $assessment variable assigned in the condition (LHS) is moved to the last condition
+    in each rule, both rules fire as expected.
+    </para>
+
+    <para>
+    Though the above examples demonstrate how to combine the use of <emphasis role="bold">from</emphasis>
+    with <emphasis role="bold">lock-on-active</emphasis> where no loss of rule activations occurs,
+    they carry the drawback of placing a dependency on the order of conditions on the LHS. In addition,
+    the solutions present greater complexity for the rule author in terms of keeping track of
+    which conditions may create issues.
+    </para>
+
+    <para>A better alternative is to
+    assert more facts into working memory. In this case, a person's addresses
+    may be asserted into working memory and the use of <emphasis role="bold">from</emphasis>
+    would not be necessary.</para>
+
+    <para>There are cases, however, where asserting all data into working memory is not
+    practical and we need to find other solutions. Another option is to reevaluate the
+    need for <emphasis role="bold">lock-on-active</emphasis>.
+    An alternative to <emphasis role="bold">lock-on-active</emphasis> is to
+    directly manage how rules within the same rule-flow group activate one another
+    by including conditions in each rule that prevent rules from activating each other recursively
+    when working memory is modified. For example, in the case above where a
+    discount is applied to citizens of Raleigh, a condition may be added to the rule
+    that checks whether the discount has already been applied. If so, the rule does not
+    activate.</para>
+
     </section>
 
     <section>
@@ -1790,7 +1790,7 @@ end</programlisting>
         <mediaobject>
 
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/collect.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/collect.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -1863,7 +1863,7 @@ end
 
         <mediaobject>
           <imageobject>
-		  <imagedata align="center" fileref="images/Chapter-Rule_Language/accumulate.png" format="PNG" />
+      <imagedata align="center" fileref="images/Chapter-Rule_Language/accumulate.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>

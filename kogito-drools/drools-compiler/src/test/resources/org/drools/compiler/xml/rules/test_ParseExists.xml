@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="com.sample" xmlns="http://drools.org/drools-5.0"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-	xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
-	
-	<rule name="simple_rule">
-		<lhs>
-			<exists>
-				<pattern object-type="Person">
-					<field-constraint field-name="likes">
-						<variable-restriction evaluator="==" identifier="type"/>
-					</field-constraint>
-				</pattern>
-			</exists>
+  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+
+  <rule name="simple_rule">
+    <lhs>
+      <exists>
+        <pattern object-type="Person">
+          <field-constraint field-name="likes">
+            <variable-restriction evaluator="==" identifier="type"/>
+          </field-constraint>
+        </pattern>
+      </exists>
 
             <not>
                 <exists>
@@ -22,8 +22,8 @@
                     </pattern>
                 </exists>
             </not>
-		</lhs>
-		<rhs> list.add( $cheese ); </rhs>
-	</rule>
-	
+    </lhs>
+    <rhs> list.add( $cheese ); </rhs>
+  </rule>
+
 </package>

@@ -4,13 +4,13 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
-	<import name="import java.util.List"/>
+  <import name="import java.util.List"/>
     <import name="org.drools.Person" />
     <import name="org.drools.Cheese" />
-	<import name="org.drools.Cheesery" />
+  <import name="org.drools.Cheesery" />
 
-	<global identifier="cheesery" type="Cheesery" />
-	<global identifier="list1" type="List" />
+  <global identifier="cheesery" type="Cheesery" />
+  <global identifier="list1" type="List" />
 
     <rule name="simple_rule">
         <rule-attribute name="salience" value="10" />
@@ -35,7 +35,7 @@
                     </accumulate>
                 </from>
             </pattern>
-			
+
             <pattern identifier="max" object-type="Number">
                 <from>
                     <accumulate>

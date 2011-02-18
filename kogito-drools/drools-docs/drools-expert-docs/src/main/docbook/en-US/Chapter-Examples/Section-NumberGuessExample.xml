@@ -235,8 +235,8 @@ end</programlisting>
             used up.</para>
           </listitem>
         </orderedlist>
-	
-	<para>One point of integration between the standard Rules and
+
+  <para>One point of integration between the standard Rules and
       the RuleFlow is via the <literal>ruleflow-group</literal> attribute on the
       rules, as dicussed above. A
       <emphasis>second point of integration between the rules (.drl) file

@@ -27,8 +27,8 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
     <dependency>
-    	<groupId>org.jbpm</groupId>
-    	<artifactId>jbpm-flow-builder</artifactId>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
 
     <!-- External dependencies -->

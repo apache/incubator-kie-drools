@@ -347,7 +347,7 @@ where exists (
     <programlisting language="java">
     rule "Failed_Students"
     when
-    	$s : Student()
+      $s : Student()
         exists Module( student == $s, score &lt; 40 )
     then
         # record $student as flunked

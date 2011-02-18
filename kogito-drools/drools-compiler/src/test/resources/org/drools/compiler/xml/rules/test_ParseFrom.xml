@@ -4,20 +4,20 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
-	<import name="import java.util.List"/>
-	<import name="org.drools.Cheese" />
-	<import name="org.drools.Cheesery" />
+  <import name="import java.util.List"/>
+  <import name="org.drools.Cheese" />
+  <import name="org.drools.Cheesery" />
 
-	<global identifier="cheesery" type="Cheesery" />		
-	<global identifier="list1" type="List" />
+  <global identifier="cheesery" type="Cheesery" />
+  <global identifier="list1" type="List" />
 
 <rule name="simple_rule">
-	<rule-attribute name="salience" value="10" />
-	<rule-attribute name="no-loop" value="true" />
-	<rule-attribute name="agenda-group" value="agenda-group" />
-	<rule-attribute name="activation-group" value="activation-group" />
+  <rule-attribute name="salience" value="10" />
+  <rule-attribute name="no-loop" value="true" />
+  <rule-attribute name="agenda-group" value="agenda-group" />
+  <rule-attribute name="activation-group" value="activation-group" />
 
-	<lhs>
+  <lhs>
         <pattern identifier="cheese" object-type="Cheese" >
             <from>
                 <expression>
@@ -26,9 +26,9 @@
             </from>
         </pattern>
     </lhs>
-	<rhs>
-		list1.add( $cheese );
-	</rhs>
+  <rhs>
+    list1.add( $cheese );
+  </rhs>
 </rule>
 
 </package>

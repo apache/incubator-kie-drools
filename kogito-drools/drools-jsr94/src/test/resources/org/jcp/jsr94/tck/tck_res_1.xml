@@ -5,10 +5,10 @@ import org.jcp.jsr94.tck.model.Invoice;
 
 rule "credit limit greater than invoice"
     when
-    	$invoice1 : Invoice ( $amount1 : amount )
-    	$customer1 : Customer ( creditLimit > $amount1 )
+      $invoice1 : Invoice ( $amount1 : amount )
+      $customer1 : Customer ( creditLimit > $amount1 )
     then
-    	$customer1.setCreditLimit($customer1.getCreditLimit() - $invoice1.getAmount());
+      $customer1.setCreditLimit($customer1.getCreditLimit() - $invoice1.getAmount());
         $invoice1.setStatus("paid");
         System.out.println("The credit limit of the customer is " + $customer1.getCreditLimit());
         System.out.println("The status of the invoice is " + $invoice1.getStatus());

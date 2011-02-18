@@ -5,32 +5,32 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 
-	<import name="java.util.HashMap" />
-	<import name="org.drools.*" />
+  <import name="java.util.HashMap" />
+  <import name="org.drools.*" />
 
-	<global identifier="x" type="com.sample.X" />
-	<global identifier="yada" type="com.sample.Yada" />
+  <global identifier="x" type="com.sample.X" />
+  <global identifier="yada" type="com.sample.Yada" />
 
-	<function return-type="void" name="myFunc">
-	    <parameter identifier="foo" type="Bar" />
-	    <parameter identifier="bada" type="Bing" />
+  <function return-type="void" name="myFunc">
+      <parameter identifier="foo" type="Bar" />
+      <parameter identifier="bada" type="Bing" />
 
-	    <body>
-	    	System.out.println("hello world");
-		</body>
-	</function>
+      <body>
+        System.out.println("hello world");
+    </body>
+  </function>
 
 <rule name="simple_rule">
-	<rule-attribute name="salience" value="10" />
-	<rule-attribute name="no-loop" value="true" />
-	<rule-attribute name="agenda-group" value="agenda-group" />
-	<rule-attribute name="activation-group" value="activation-group" />
+  <rule-attribute name="salience" value="10" />
+  <rule-attribute name="no-loop" value="true" />
+  <rule-attribute name="agenda-group" value="agenda-group" />
+  <rule-attribute name="activation-group" value="activation-group" />
 
-	<lhs>
-		<pattern identifier="foo2" object-type="Bar" >
+  <lhs>
+    <pattern identifier="foo2" object-type="Bar" >
             <or-constraint-connective>
                 <and-constraint-connective>
-					<field-constraint field-name="a">
+          <field-constraint field-name="a">
                         <or-restriction-connective>
                             <and-restriction-connective>
                                 <literal-restriction evaluator="&gt;" value="60" />
@@ -41,9 +41,9 @@
                                 <literal-restriction evaluator="&gt;" value="55" />
                             </and-restriction-connective>
                         </or-restriction-connective>
-					</field-constraint>
+          </field-constraint>
 
-					<field-constraint field-name="a3">
+          <field-constraint field-name="a3">
                         <literal-restriction evaluator="==" value="black" />
                     </field-constraint>
                 </and-constraint-connective>
@@ -127,26 +127,26 @@
         </pattern>
 
         <pattern identifier="foo6" object-type="Bar" >
-			<field-binding field-name="a" identifier="a4" />
-			<field-constraint field-name="b">
-				<literal-restriction evaluator="==" value="6" />
-			</field-constraint>
-		</pattern>
+      <field-binding field-name="a" identifier="a4" />
+      <field-constraint field-name="b">
+        <literal-restriction evaluator="==" value="6" />
+      </field-constraint>
+    </pattern>
 
-		<pattern identifier="foo7" object-type="Bar" >
-			<field-binding field-name="a" identifier="a4" />
-			<field-binding field-name="b" identifier="b4" />
-		</pattern>
-		<pattern object-type="Baz" > </pattern>
-	</lhs>
-	<rhs>
-		  if ( a == b ) {
-		    assert( foo3 );
-		  } else {
-		    retract( foo4 );
-		  }
-		  System.out.println( a4 );
-	</rhs>
+    <pattern identifier="foo7" object-type="Bar" >
+      <field-binding field-name="a" identifier="a4" />
+      <field-binding field-name="b" identifier="b4" />
+    </pattern>
+    <pattern object-type="Baz" > </pattern>
+  </lhs>
+  <rhs>
+      if ( a == b ) {
+        assert( foo3 );
+      } else {
+        retract( foo4 );
+      }
+      System.out.println( a4 );
+  </rhs>
 </rule>
 
 <rule name="Check_NotNullof_rfqId">

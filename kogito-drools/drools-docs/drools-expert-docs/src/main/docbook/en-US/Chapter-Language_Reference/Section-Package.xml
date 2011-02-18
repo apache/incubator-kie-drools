@@ -35,7 +35,7 @@
     <mediaobject>
 
       <imageobject>
-	      <imagedata align="center" fileref="images/Chapter-Rule_Language/package.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Rule_Language/package.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -54,7 +54,7 @@
       <mediaobject>
 
         <imageobject>
-		<imagedata fileref="images/Chapter-Rule_Language/import.png" format="PNG" />
+    <imagedata fileref="images/Chapter-Rule_Language/import.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>
@@ -75,7 +75,7 @@
       <mediaobject>
 
         <imageobject>
-		<imagedata fileref="images/Chapter-Rule_Language/global.png" format="PNG" />
+    <imagedata fileref="images/Chapter-Rule_Language/global.png" format="PNG" />
         </imageobject>
       </mediaobject>
     </figure>

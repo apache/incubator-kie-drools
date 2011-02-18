@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <package name="foo"  
-	xmlns="http://drools.org/drools-5.0" 
-	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
-	xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd"> 
+  xmlns="http://drools.org/drools-5.0"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+  xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
 <import name="java.util.HashMap" /> 
 <import name="java.util.HashSet" /> 
 <import name="java.utilArrayList" /> 

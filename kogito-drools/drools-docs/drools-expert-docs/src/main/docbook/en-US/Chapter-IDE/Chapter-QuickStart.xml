@@ -55,15 +55,15 @@
             <para>An editor that is aware of DRL syntax, and provides content
             assistance (including an outline view)</para>
           </listitem>
-	  <listitem>
-	    <para>An editor that is aware of DSL (domain specific langauge) extensions, and provides content assistance.</para>
-	  </listitem>
+    <listitem>
+      <para>An editor that is aware of DSL (domain specific langauge) extensions, and provides content assistance.</para>
+    </listitem>
         </orderedlist>
       </listitem>
 
       <listitem>
-	<para>RuleFlow graphical editor</para>
-	<para>You can edit visual graphs which represent a process (a rule flow). The RuleFlow can then be applied to your rule package to have imperative control.</para>
+  <para>RuleFlow graphical editor</para>
+  <para>You can edit visual graphs which represent a process (a rule flow). The RuleFlow can then be applied to your rule package to have imperative control.</para>
       </listitem>
 
       <listitem>
@@ -82,12 +82,12 @@
             <para>a Domain Specific language</para>
           </listitem>
 
-	  <listitem>
-	    <para>a decision table</para>
-	  </listitem>
-	  <listitem>
-	    <para>a ruleflow</para>
-	  </listitem>
+    <listitem>
+      <para>a decision table</para>
+    </listitem>
+    <listitem>
+      <para>a ruleflow</para>
+    </listitem>
 
 
         </orderedlist>
@@ -193,7 +193,7 @@
           <imagedata align="center" fileref="images/Chapter-IDE/wizards.jpg" format="JPG" />
         </imageobject>
       </mediaobject>
-	    </figure>
+      </figure>
 
     <para>The wizard will ask for some basic options for generating a rule
     resource. These are just hints - you can change your mind later. For
