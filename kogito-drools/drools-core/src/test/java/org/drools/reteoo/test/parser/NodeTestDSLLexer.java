@@ -16,7 +16,7 @@
 
 // $ANTLR 3.1.1 src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g 2010-01-26 19:56:37
 
-	package org.drools.reteoo.test.parser;
+    package org.drools.reteoo.test.parser;
 
 
 import org.antlr.runtime.*;
@@ -117,38 +117,38 @@ public class NodeTestDSLLexer extends Lexer {
                 }
 
                 switch (alt1) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:233:19: ' '
-            	    {
-            	    match(' '); if (state.failed) return ;
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:233:19: ' '
+                    {
+                    match(' '); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:234:19: '\\t'
-            	    {
-            	    match('\t'); if (state.failed) return ;
+                    }
+                    break;
+                case 2 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:234:19: '\\t'
+                    {
+                    match('\t'); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 3 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:235:19: '\\f'
-            	    {
-            	    match('\f'); if (state.failed) return ;
+                    }
+                    break;
+                case 3 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:235:19: '\\f'
+                    {
+                    match('\f'); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 4 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:236:19: EOL
-            	    {
-            	    mEOL(); if (state.failed) return ;
+                    }
+                    break;
+                case 4 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:236:19: EOL
+                    {
+                    mEOL(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt1 >= 1 ) break loop1;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(1, input);
                         throw eee;
@@ -273,17 +273,17 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt4) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:250:11: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:250:11: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt4 >= 1 ) break loop4;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt4 >= 1 ) break loop4;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(4, input);
                         throw eee;
@@ -305,17 +305,17 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt5) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:250:27: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:250:27: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt5 >= 1 ) break loop5;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt5 >= 1 ) break loop5;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(5, input);
                         throw eee;
@@ -373,17 +373,17 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt7) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:254:11: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:254:11: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt7 >= 1 ) break loop7;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt7 >= 1 ) break loop7;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(7, input);
                         throw eee;
@@ -447,32 +447,32 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                         switch (alt8) {
-                    	case 1 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:258:15: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:258:15: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:258:32: ~ ( '\\\\' | '\"' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:258:32: ~ ( '\\\\' | '\"' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop8;
+                        default :
+                            break loop8;
                         }
                     } while (true);
 
@@ -505,32 +505,32 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                         switch (alt9) {
-                    	case 1 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:259:16: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:259:16: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:259:33: ~ ( '\\\\' | '\\'' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:259:33: ~ ( '\\\\' | '\\'' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop9;
+                        default :
+                            break loop9;
                         }
                     } while (true);
 
@@ -867,25 +867,25 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt13) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:288:9: ~ ( '\\r' | '\\n' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
-            	    state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:288:9: ~ ( '\\r' | '\\n' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
+                    state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop13;
+                default :
+                    break loop13;
                 }
             } while (true);
 
@@ -943,25 +943,25 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt15) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:293:10: ~ ( '\\r' | '\\n' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
-            	    state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:293:10: ~ ( '\\r' | '\\n' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
+                    state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop15;
+                default :
+                    break loop15;
                 }
             } while (true);
 
@@ -1031,16 +1031,16 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                 switch (alt17) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:298:35: .
-            	    {
-            	    matchAny(); if (state.failed) return ;
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:298:35: .
+                    {
+                    matchAny(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop17;
+                default :
+                    break loop17;
                 }
             } while (true);
 
@@ -1099,16 +1099,16 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                         switch (alt18) {
-                    	case 1 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:303:20: IdentifierPart
-                    	    {
-                    	    mIdentifierPart(); if (state.failed) return ;
+                        case 1 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:303:20: IdentifierPart
+                            {
+                            mIdentifierPart(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop18;
+                        default :
+                            break loop18;
                         }
                     } while (true);
 
@@ -1132,22 +1132,22 @@ public class NodeTestDSLLexer extends Lexer {
 
 
                         switch (alt19) {
-                    	case 1 :
-                    	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:304:24: IdentifierPart
-                    	    {
-                    	    mIdentifierPart(); if (state.failed) return ;
+                        case 1 :
+                            // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g:304:24: IdentifierPart
+                            {
+                            mIdentifierPart(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop19;
+                        default :
+                            break loop19;
                         }
                     } while (true);
 
                     match('`'); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	state.text = getText().substring(1, getText().length() - 1);
+                          state.text = getText().substring(1, getText().length() - 1);
                     }
 
                     }
@@ -1986,7 +1986,7 @@ public class NodeTestDSLLexer extends Lexer {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA22_5 = input.LA(1);

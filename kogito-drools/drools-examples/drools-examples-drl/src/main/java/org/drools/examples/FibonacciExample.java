@@ -46,7 +46,7 @@ public class FibonacciExample {
 
         ksession.fireAllRules();
 
-		logger.close();
+        logger.close();
 
         ksession.dispose(); // Stateful rule session must always be disposed when finished
 

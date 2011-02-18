@@ -56,7 +56,7 @@ public class SingleSessionCommandService
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
              env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null  ) {
             throw new IllegalArgumentException( "Environment must have an EntityManagerFactory " +
-            		                            "or a PersistenceContextManager instance" );
+                	                            "or a PersistenceContextManager instance" );
         }
 
         // @TODO log a warning that all transactions will be locally scoped using the EntityTransaction

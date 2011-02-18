@@ -46,20 +46,20 @@ import org.drools.runtime.rule.FactHandle;
 
 public class CommandFactoryServiceImpl implements CommandFactoryService {
 
-	public Command newGetGlobal(String identifier) {
-		return new GetGlobalCommand(identifier);
-	}
+    public Command newGetGlobal(String identifier) {
+        return new GetGlobalCommand(identifier);
+    }
 
-	public Command newGetGlobal(String identifier, String outIdentifier) {
-		GetGlobalCommand cmd = new GetGlobalCommand(identifier);
-		cmd.setOutIdentifier(outIdentifier);
-		return cmd;
-	}
+    public Command newGetGlobal(String identifier, String outIdentifier) {
+        GetGlobalCommand cmd = new GetGlobalCommand(identifier);
+        cmd.setOutIdentifier(outIdentifier);
+        return cmd;
+    }
 
-	public Command newInsertElements(Collection objects) {
-	    return new InsertElementsCommand(objects);
-	}
-	
+    public Command newInsertElements(Collection objects) {
+        return new InsertElementsCommand(objects);
+    }
+
     public Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
         InsertElementsCommand cmd = new InsertElementsCommand(objects);
         cmd.setEntryPoint( entryPoint );
@@ -68,18 +68,18 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
         return cmd;
     }
 
-	public Command newInsert(Object object) {
-		return new InsertObjectCommand(object);
-	}
+    public Command newInsert(Object object) {
+        return new InsertObjectCommand(object);
+    }
 
-	public Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint) {
-		InsertObjectCommand cmd = new InsertObjectCommand(object);
-		cmd.setOutIdentifier(outIdentifier);
-		cmd.setEntryPoint( entryPoint );
-		cmd.setReturnObject( returnObject );
-		return cmd;
-	}
-	
+    public Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint) {
+        InsertObjectCommand cmd = new InsertObjectCommand(object);
+        cmd.setOutIdentifier(outIdentifier);
+        cmd.setEntryPoint( entryPoint );
+        cmd.setReturnObject( returnObject );
+        return cmd;
+    }
+
     public Command newRetract(FactHandle factHandle) {
         return new RetractCommand( factHandle );
     }
@@ -93,61 +93,61 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
                              List<Setter> setters) {
         return new ModifyCommand(factHandle, setters);
     }
-	
+
     public Command newGetObject(FactHandle factHandle) {
         return new GetObjectCommand(factHandle);
     }
 
-	public Command newGetObjects() {
-		return newGetObjects(null);
-	}
+    public Command newGetObjects() {
+        return newGetObjects(null);
+    }
 
-	public Command newGetObjects(ObjectFilter filter) {
-		return new GetObjectsCommand(filter);
-	}
+    public Command newGetObjects(ObjectFilter filter) {
+        return new GetObjectsCommand(filter);
+    }
 
-	public Command newSetGlobal(String identifier, Object object) {
-		return new SetGlobalCommand(identifier, object);
-	}
+    public Command newSetGlobal(String identifier, Object object) {
+        return new SetGlobalCommand(identifier, object);
+    }
 
-	public Command newSetGlobal(String identifier, Object object, boolean out) {
-		SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
-		cmd.setOut(out);
-		return cmd;
-	}
+    public Command newSetGlobal(String identifier, Object object, boolean out) {
+        SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
+        cmd.setOut(out);
+        return cmd;
+    }
 
-	public Command newSetGlobal(String identifier, Object object,
-			String outIdentifier) {
-		SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
-		cmd.setOutIdentifier(outIdentifier);
-		return cmd;
-	}
-	
-	public Command newFireAllRules() {
-	    return new FireAllRulesCommand();
-	}
-	
-	public Command newFireAllRules(int max) {
-	    return new FireAllRulesCommand(max);
-	}
+    public Command newSetGlobal(String identifier, Object object,
+        	String outIdentifier) {
+        SetGlobalCommand cmd = new SetGlobalCommand(identifier, object);
+        cmd.setOutIdentifier(outIdentifier);
+        return cmd;
+    }
+
+    public Command newFireAllRules() {
+        return new FireAllRulesCommand();
+    }
+
+    public Command newFireAllRules(int max) {
+        return new FireAllRulesCommand(max);
+    }
 
         public Command newFireAllRules(String outidentifier) {
-	    return new FireAllRulesCommand(outidentifier);
-	}
+        return new FireAllRulesCommand(outidentifier);
+    }
 
-	public Command newStartProcess(String processId) {
-		StartProcessCommand startProcess = new StartProcessCommand();
-		startProcess.setProcessId(processId);
-		return startProcess;
-	}
+    public Command newStartProcess(String processId) {
+        StartProcessCommand startProcess = new StartProcessCommand();
+        startProcess.setProcessId(processId);
+        return startProcess;
+    }
 
-	public Command newStartProcess(String processId,
-			Map<String, Object> parameters) {
-		StartProcessCommand startProcess = new StartProcessCommand();
-		startProcess.setProcessId(processId);
-		startProcess.setParameters((HashMap<String, Object>) parameters);
-		return startProcess;
-	}
+    public Command newStartProcess(String processId,
+        	Map<String, Object> parameters) {
+        StartProcessCommand startProcess = new StartProcessCommand();
+        startProcess.setProcessId(processId);
+        startProcess.setParameters((HashMap<String, Object>) parameters);
+        return startProcess;
+    }
 
     public Command newSignalEvent(String type,
                                Object event) {
@@ -168,16 +168,16 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     public Command newAbortWorkItem(long workItemId) {
         return new AbortWorkItemCommand( workItemId);
     }
-	
-	public Command newQuery(String identifier, String name) {
-		return new QueryCommand(identifier, name, null);
-	}
 
-	public Command newQuery(String identifier, String name, Object[] arguments) {
-		return new QueryCommand(identifier, name, arguments);
-	}
+    public Command newQuery(String identifier, String name) {
+        return new QueryCommand(identifier, name, null);
+    }
 
-	public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
-		return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
-	}
+    public Command newQuery(String identifier, String name, Object[] arguments) {
+        return new QueryCommand(identifier, name, arguments);
+    }
+
+    public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
+        return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
+    }
 }

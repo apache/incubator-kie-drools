@@ -33,144 +33,144 @@ import java.util.Map;
  * 
  */
 public class DefaultTemplateContainer implements TemplateContainer {
-	private String header;
+    private String header;
 
-	private Map<String, Column> columnMap = new HashMap<String, Column>();
+    private Map<String, Column> columnMap = new HashMap<String, Column>();
 
-	private List<Column> columns = new ArrayList<Column>();
+    private List<Column> columns = new ArrayList<Column>();
 
-	private Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
+    private Map<String, RuleTemplate> templates = new HashMap<String, RuleTemplate>();
 
-	public DefaultTemplateContainer(final String template) {
-		this(DefaultTemplateContainer.class.getResourceAsStream(template));
-	}
+    public DefaultTemplateContainer(final String template) {
+        this(DefaultTemplateContainer.class.getResourceAsStream(template));
+    }
 
-	public DefaultTemplateContainer(final InputStream templateStream) {
-		parseTemplate(templateStream);
-		validateTemplate();
-	}
+    public DefaultTemplateContainer(final InputStream templateStream) {
+        parseTemplate(templateStream);
+        validateTemplate();
+    }
 
-	private void validateTemplate() {
-		if (columns.size() == 0) {
-			throw new DecisionTableParseException("Missing header columns");
-		}
-		if (templates.size() == 0) {
-			throw new DecisionTableParseException("Missing templates");
-		}
+    private void validateTemplate() {
+        if (columns.size() == 0) {
+        	throw new DecisionTableParseException("Missing header columns");
+        }
+        if (templates.size() == 0) {
+        	throw new DecisionTableParseException("Missing templates");
+        }
 
-	}
+    }
 
-	private void parseTemplate(final InputStream templateStream) {
-		try {
-			final ColumnFactory cf = new ColumnFactory();
-			final BufferedReader templateReader = new BufferedReader(
-					new InputStreamReader(templateStream));
-			String line = null;
-			StringBuffer header = new StringBuffer();
-			boolean inTemplate = false;
-			boolean inHeader = false;
-			boolean inContents = false;
-			RuleTemplate template = null;
-			StringBuffer contents = new StringBuffer();
-			while ((line = templateReader.readLine()) != null) {
-				if (line.trim().length() > 0) {
-					if (line.startsWith("template header")) {
-						inHeader = true;
-					} else if (line.startsWith("template")) {
-						inTemplate = true;
-						String quotedName = line.substring(8).trim();
-						quotedName = quotedName.substring(1, quotedName
-								.length() - 1);
-						template = new RuleTemplate(quotedName, this);
-						addTemplate(template);
+    private void parseTemplate(final InputStream templateStream) {
+        try {
+        	final ColumnFactory cf = new ColumnFactory();
+        	final BufferedReader templateReader = new BufferedReader(
+        			new InputStreamReader(templateStream));
+        	String line = null;
+        	StringBuffer header = new StringBuffer();
+        	boolean inTemplate = false;
+        	boolean inHeader = false;
+        	boolean inContents = false;
+        	RuleTemplate template = null;
+        	StringBuffer contents = new StringBuffer();
+        	while ((line = templateReader.readLine()) != null) {
+        		if (line.trim().length() > 0) {
+        			if (line.startsWith("template header")) {
+        				inHeader = true;
+        			} else if (line.startsWith("template")) {
+        				inTemplate = true;
+        				String quotedName = line.substring(8).trim();
+        				quotedName = quotedName.substring(1, quotedName
+        						.length() - 1);
+        				template = new RuleTemplate(quotedName, this);
+        				addTemplate(template);
 
-					} else if (line.startsWith("package")) {
-						if (inHeader == false) {
-							throw new DecisionTableParseException(
-									"Missing header");
-						}
-						inHeader = false;
-						header.append(line).append("\n");
-					} else if (inHeader) {
-						addColumn(cf.getColumn(line.trim()));
-					} else if (!inTemplate && !inHeader) {
-						header.append(line).append("\n");
-					} else if (!inContents && line.startsWith("rule")) {
-						inContents = true;
-						contents.append(line).append("\n");
-					} else if (line.equals("end template")) {
-						template.setContents(contents.toString());
-						contents.setLength(0);
-						inTemplate = false;
-						inContents = false;
-					} else if (inContents) {
-						contents.append(line).append("\n");
-					} else if (inTemplate) {
-						template.addColumn(line.trim());
-					}
-				}
+        			} else if (line.startsWith("package")) {
+        				if (inHeader == false) {
+        					throw new DecisionTableParseException(
+        							"Missing header");
+        				}
+        				inHeader = false;
+        				header.append(line).append("\n");
+        			} else if (inHeader) {
+        				addColumn(cf.getColumn(line.trim()));
+        			} else if (!inTemplate && !inHeader) {
+        				header.append(line).append("\n");
+        			} else if (!inContents && line.startsWith("rule")) {
+        				inContents = true;
+        				contents.append(line).append("\n");
+        			} else if (line.equals("end template")) {
+        				template.setContents(contents.toString());
+        				contents.setLength(0);
+        				inTemplate = false;
+        				inContents = false;
+        			} else if (inContents) {
+        				contents.append(line).append("\n");
+        			} else if (inTemplate) {
+        				template.addColumn(line.trim());
+        			}
+        		}
 
-			}
-			if (inTemplate) {
-				throw new DecisionTableParseException("Missing end template");
-			}
-			this.header = header.toString();
+        	}
+        	if (inTemplate) {
+        		throw new DecisionTableParseException("Missing end template");
+        	}
+        	this.header = header.toString();
 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			if (templateStream != null)
-				closeStream(templateStream);
-		}
-	}
+        } catch (IOException e) {
+        	throw new RuntimeException(e);
+        } finally {
+        	if (templateStream != null)
+        		closeStream(templateStream);
+        }
+    }
 
-	private void addTemplate(RuleTemplate template) {
-		templates.put(template.getName(), template);
-	}
+    private void addTemplate(RuleTemplate template) {
+        templates.put(template.getName(), template);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.drools.decisiontable.parser.TemplateContainer#getTemplates()
-	 */
-	public Map<String, RuleTemplate> getTemplates() {
-		return templates;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.drools.decisiontable.parser.TemplateContainer#getTemplates()
+     */
+    public Map<String, RuleTemplate> getTemplates() {
+        return templates;
+    }
 
-	private void addColumn(Column c) {
-		columns.add(c);
-		columnMap.put(c.getName(), c);
-	}
+    private void addColumn(Column c) {
+        columns.add(c);
+        columnMap.put(c.getName(), c);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.drools.decisiontable.parser.TemplateContainer#getColumns()
-	 */
-	public Column[] getColumns() {
-		return (Column[]) columns.toArray(new Column[columns.size()]);
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.drools.decisiontable.parser.TemplateContainer#getColumns()
+     */
+    public Column[] getColumns() {
+        return (Column[]) columns.toArray(new Column[columns.size()]);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.drools.decisiontable.parser.TemplateContainer#getHeader()
-	 */
-	public String getHeader() {
-		return header;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.drools.decisiontable.parser.TemplateContainer#getHeader()
+     */
+    public String getHeader() {
+        return header;
+    }
 
-	private void closeStream(final InputStream stream) {
-		try {
-			stream.close();
-		} catch (final Exception e) {
-			System.err.print("WARNING: Wasn't able to "
-					+ "correctly close stream for decision table. "
-					+ e.getMessage());
-		}
-	}
+    private void closeStream(final InputStream stream) {
+        try {
+        	stream.close();
+        } catch (final Exception e) {
+        	System.err.print("WARNING: Wasn't able to "
+        			+ "correctly close stream for decision table. "
+        			+ e.getMessage());
+        }
+    }
 
-	public Column getColumn(final String name) {
-		return (Column) columnMap.get(name);
-	}
+    public Column getColumn(final String name) {
+        return (Column) columnMap.get(name);
+    }
 }

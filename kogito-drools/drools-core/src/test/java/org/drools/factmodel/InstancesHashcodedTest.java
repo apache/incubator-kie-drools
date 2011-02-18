@@ -36,17 +36,17 @@ import static org.junit.Assert.*;
  *
  */
 public class InstancesHashcodedTest {
-	
-	
+
+
 /*
-		<dimension name="bck_cycle_dm"  item-expression="cycleDimension" 
-			       mode="ignore" cache="10" export-to="cycle_id"> 
-			<id    name="objid"            type="long"             generator-sql="select bck_dimensions_uid.nextval from dual"/> 
-			<field name="cut_date"         type="java.util.Date"   value="cutDate"     key="true"/> 
-			<field name="due_date"         type="java.util.Date"   value="dueDate"     key="true"/> 
-			<field name="cycle_code"       type="java.lang.String" value="cycleCode"/> 
-			<field name="issue_date"       type="java.util.Date"   value="issueDate"/> 
-		</dimension> 
+        <dimension name="bck_cycle_dm"  item-expression="cycleDimension"
+        	       mode="ignore" cache="10" export-to="cycle_id">
+        	<id    name="objid"            type="long"             generator-sql="select bck_dimensions_uid.nextval from dual"/>
+        	<field name="cut_date"         type="java.util.Date"   value="cutDate"     key="true"/>
+        	<field name="due_date"         type="java.util.Date"   value="dueDate"     key="true"/>
+        	<field name="cycle_code"       type="java.lang.String" value="cycleCode"/>
+        	<field name="issue_date"       type="java.util.Date"   value="issueDate"/>
+        </dimension>
  */	
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
@@ -66,50 +66,50 @@ public class InstancesHashcodedTest {
         return clazz;
         
     }
-	
+
     @Test
     public void testInstanceHashcodes() {
-		
-		ClassDefinition cd = new ClassDefinition( "br.com.auster.TestClass2", null, new String[]{} );
-		cd.addField(new FieldDefinition("cutDate", "java.util.Date", true));
-		cd.addField(new FieldDefinition("dueDate", "java.util.Date", true));
-		cd.addField(new FieldDefinition("issueDate", "java.util.Date", false));
-		cd.addField(new FieldDefinition("cycleCode", "java.lang.String", false));
-		
-		ClassBuilder cb = new ClassBuilder();
-		
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, 2006);
-		cal.set(Calendar.MONTH, Calendar.JUNE);
-		cal.set(Calendar.DAY_OF_MONTH, 01);
-		Date cut = cal.getTime();
-		
-		cal.set(Calendar.MONTH, Calendar.JULY);
-		cal.set(Calendar.DAY_OF_MONTH, 13);
-		Date d1 = cal.getTime();
-		
-		cal.set(Calendar.DAY_OF_MONTH, 15);
-		Date d2 = cal.getTime();
-			
-		try {
-			Class klass = build(cb, cd);
-			Object o1 = klass.newInstance();
-			cd.getField("cutDate").getFieldAccessor().setValue(o1, cut);
-			cd.getField("dueDate").getFieldAccessor().setValue(o1, d1);
-			
-			Object o2 = klass.newInstance();
-			cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
-			cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
-			
+
+        ClassDefinition cd = new ClassDefinition( "br.com.auster.TestClass2", null, new String[]{} );
+        cd.addField(new FieldDefinition("cutDate", "java.util.Date", true));
+        cd.addField(new FieldDefinition("dueDate", "java.util.Date", true));
+        cd.addField(new FieldDefinition("issueDate", "java.util.Date", false));
+        cd.addField(new FieldDefinition("cycleCode", "java.lang.String", false));
+
+        ClassBuilder cb = new ClassBuilder();
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2006);
+        cal.set(Calendar.MONTH, Calendar.JUNE);
+        cal.set(Calendar.DAY_OF_MONTH, 01);
+        Date cut = cal.getTime();
+
+        cal.set(Calendar.MONTH, Calendar.JULY);
+        cal.set(Calendar.DAY_OF_MONTH, 13);
+        Date d1 = cal.getTime();
+
+        cal.set(Calendar.DAY_OF_MONTH, 15);
+        Date d2 = cal.getTime();
+
+        try {
+        	Class klass = build(cb, cd);
+        	Object o1 = klass.newInstance();
+        	cd.getField("cutDate").getFieldAccessor().setValue(o1, cut);
+        	cd.getField("dueDate").getFieldAccessor().setValue(o1, d1);
+
+        	Object o2 = klass.newInstance();
+        	cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
+        	cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
+
 //			System.out.println(o1);
 //			System.out.println(o1.hashCode());
 //			System.out.println(o2);
 //			System.out.println(o2.hashCode());
 //			
 //			System.out.println(o1.equals(o2));
-			
-		} catch (Exception e) {
+
+        } catch (Exception e) {
 //			e.printStackTrace();
-		}
-	}
+        }
+    }
 }

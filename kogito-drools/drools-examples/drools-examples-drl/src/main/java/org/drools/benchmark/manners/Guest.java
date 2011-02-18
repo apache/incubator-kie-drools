@@ -21,38 +21,38 @@ import java.io.Serializable;
 
 public class Guest implements Serializable {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	private String name;
+    private String name;
 
-	private Sex sex;
+    private Sex sex;
 
-	private Hobby hobby;
-	
-	public Guest() {
-		
-	}
+    private Hobby hobby;
 
-	public Guest(String name, Sex sex, Hobby hobby) {
-		this.name = name;
-		this.sex = sex;
-		this.hobby = hobby;
-	}
+    public Guest() {
 
-	public String getName() {
-		return this.name;
-	}
+    }
 
-	public Hobby getHobby() {
-		return this.hobby;
-	}
+    public Guest(String name, Sex sex, Hobby hobby) {
+        this.name = name;
+        this.sex = sex;
+        this.hobby = hobby;
+    }
 
-	public Sex getSex() {
-		return this.sex;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public String toString() {
-		return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies="
-				+ this.hobby + "]";
-	}
+    public Hobby getHobby() {
+        return this.hobby;
+    }
+
+    public Sex getSex() {
+        return this.sex;
+    }
+
+    public String toString() {
+        return "[Guest name=" + this.name + ", sex=" + this.sex + ", hobbies="
+        		+ this.hobby + "]";
+    }
 }

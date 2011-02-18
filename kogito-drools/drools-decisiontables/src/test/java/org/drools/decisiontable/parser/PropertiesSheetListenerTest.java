@@ -61,20 +61,20 @@ public class PropertiesSheetListenerTest {
 
     @Test
     public void testCaseInsensitive() {
-    	CaseInsensitiveMap map = new PropertiesSheetListener.CaseInsensitiveMap();
-    	map.addProperty("x3", new String[]{ "hey", "B2" } );
-    	map.addProperty("x4", new String[]{ "wHee", "C3" } );
-    	map.addProperty("XXx", new String[]{ "hey2", "D4" } );
+        CaseInsensitiveMap map = new PropertiesSheetListener.CaseInsensitiveMap();
+        map.addProperty("x3", new String[]{ "hey", "B2" } );
+        map.addProperty("x4", new String[]{ "wHee", "C3" } );
+        map.addProperty("XXx", new String[]{ "hey2", "D4" } );
 
-    	assertNull( map.getProperty("x") );
-    	assertEquals("hey", map.getSingleProperty("x3"));
-    	assertEquals("hey", map.getSingleProperty("X3"));
-    	assertEquals("wHee", map.getSingleProperty("x4"));
-    	assertEquals("hey2", map.getSingleProperty("xxx"));
-    	assertEquals("hey2", map.getSingleProperty("XXX"));
-    	assertEquals("hey2", map.getSingleProperty("XXx"));
+        assertNull( map.getProperty("x") );
+        assertEquals("hey", map.getSingleProperty("x3"));
+        assertEquals("hey", map.getSingleProperty("X3"));
+        assertEquals("wHee", map.getSingleProperty("x4"));
+        assertEquals("hey2", map.getSingleProperty("xxx"));
+        assertEquals("hey2", map.getSingleProperty("XXX"));
+        assertEquals("hey2", map.getSingleProperty("XXx"));
 
-    	assertEquals("Whee2", map.getSingleProperty("x", "Whee2"));
+        assertEquals("Whee2", map.getSingleProperty("x", "Whee2"));
 
     }
 

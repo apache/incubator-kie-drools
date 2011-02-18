@@ -29,9 +29,9 @@ public class Security
     implements
     Serializable {
 
-	private static final long serialVersionUID = 510l;
-	
-	protected String    countryCode = null;
+    private static final long serialVersionUID = 510l;
+
+    protected String    countryCode = null;
     protected double    currentPrice;
     protected int       cusip;
     protected String    exchange    = null;

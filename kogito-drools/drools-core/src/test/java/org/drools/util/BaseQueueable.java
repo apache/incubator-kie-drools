@@ -39,7 +39,7 @@ public class BaseQueueable
     private int   index;
     
     public BaseQueueable(Queue queue) {
-    	this.queue = queue;
+        this.queue = queue;
     }
 
     public void enqueued(final int index) {

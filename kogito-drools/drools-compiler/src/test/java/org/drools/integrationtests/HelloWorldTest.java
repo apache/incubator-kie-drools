@@ -33,73 +33,73 @@ public class HelloWorldTest {
 
     @Test
     public void testHelloWorld() throws Exception {
-		// load up the knowledge base
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        // load up the knowledge base
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
                  "target/test-tmp/testHelloWorld" );
-		// go !
-		Message message = new Message();
-		message.setMessage("Hello World");
-		message.setStatus(Message.HELLO);
-		ksession.insert(message);
-		ksession.fireAllRules();
-		logger.close();
-	}
+        // go !
+        Message message = new Message();
+        message.setMessage("Hello World");
+        message.setStatus(Message.HELLO);
+        ksession.insert(message);
+        ksession.fireAllRules();
+        logger.close();
+    }
 
     @Test
     public void testHelloWorldDebug() throws Exception {
-		final List<String> knownVariables = new ArrayList<String>();
-		MVELRuntime.resetDebugger();
-		MVELDebugHandler.setDebugMode(true);
-		MVELRuntime.setThreadDebugger(new Debugger() {
+        final List<String> knownVariables = new ArrayList<String>();
+        MVELRuntime.resetDebugger();
+        MVELDebugHandler.setDebugMode(true);
+        MVELRuntime.setThreadDebugger(new Debugger() {
             public int onBreak(Frame frame) {
                 System.out.println("onBreak");
                 for (String var: frame.getFactory().getKnownVariables()) {
-                	System.out.println("  " + var);
+                    System.out.println("  " + var);
                     knownVariables.add(var);
                 }
                 return 0;
             }
         });
         String source = "org.drools.integrationtests.Rule_Hello_World_0";
-		MVELRuntime.registerBreakpoint(source, 1);
-		// load up the knowledge base
-		KnowledgeBase kbase = readKnowledgeBase();
-		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        MVELRuntime.registerBreakpoint(source, 1);
+        // load up the knowledge base
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         File testTmpDir = new File("target/test-tmp/");
         testTmpDir.mkdirs();
         KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession,
                  "target/test-tmp/testHelloWorldDebug" );
-		// go !
-		Message message = new Message();
-		message.setMessage("Hello World");
-		message.setStatus(Message.HELLO);
-		ksession.insert(message);
-		ksession.fireAllRules();
-		logger.close();
-		assertEquals( 2, knownVariables.size() );
-		assertTrue(knownVariables.contains("m"));
-		assertTrue(knownVariables.contains("myMessage"));
-	}
+        // go !
+        Message message = new Message();
+        message.setMessage("Hello World");
+        message.setStatus(Message.HELLO);
+        ksession.insert(message);
+        ksession.fireAllRules();
+        logger.close();
+        assertEquals( 2, knownVariables.size() );
+        assertTrue(knownVariables.contains("m"));
+        assertTrue(knownVariables.contains("myMessage"));
+    }
 
-	private KnowledgeBase readKnowledgeBase() throws Exception {
-		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(
-			ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
-			ResourceType.DRL);
-		KnowledgeBuilderErrors errors = kbuilder.getErrors();
-		if (errors.size() > 0) {
-			for (KnowledgeBuilderError error: errors) {
-				System.err.println(error);
-			}
-			throw new IllegalArgumentException("Could not parse knowledge.");
-		}
-		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-		return kbase;
-	}
+    private KnowledgeBase readKnowledgeBase() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(
+        	ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
+        	ResourceType.DRL);
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if (errors.size() > 0) {
+        	for (KnowledgeBuilderError error: errors) {
+        		System.err.println(error);
+        	}
+        	throw new IllegalArgumentException("Could not parse knowledge.");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
 
 }

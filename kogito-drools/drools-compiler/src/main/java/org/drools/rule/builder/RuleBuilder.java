@@ -319,9 +319,9 @@ public class RuleBuilder {
                 delay = TimeUtils.parseTimeString( times[0] );
                 period = TimeUtils.parseTimeString( times[1] );
             } else {
-            	DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
-            			"Incorrect number of arguments for interval timer '" + timerString + "'" );
-            	context.getErrors().add( err );
+                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                		"Incorrect number of arguments for interval timer '" + timerString + "'" );
+                context.getErrors().add( err );
                 return;
             }
             timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);

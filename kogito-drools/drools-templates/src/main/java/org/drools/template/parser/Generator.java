@@ -21,8 +21,8 @@ package org.drools.template.parser;
  */
 public interface Generator {
 
-	void generate(String templateName, Row row);
+    void generate(String templateName, Row row);
 
-	String getDrl();
+    String getDrl();
 
 }

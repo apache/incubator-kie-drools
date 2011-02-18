@@ -30,9 +30,9 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
         return new DecisionTableConfigurationImpl();
     }
     
-	public KnowledgeBuilder newKnowledgeBuilder() {
-		return new KnowledgeBuilderImpl( new PackageBuilder() );
-	}
+    public KnowledgeBuilder newKnowledgeBuilder() {
+        return new KnowledgeBuilderImpl( new PackageBuilder() );
+    }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBuilderConfiguration conf) {
         return new KnowledgeBuilderImpl( new PackageBuilder( (PackageBuilderConfiguration) conf ) );

@@ -39,33 +39,33 @@ public final class MVELDebugHandler {
 
     public static final boolean verbose = false;
 
-	static {
-		MVELRuntime.setThreadDebugger(new MVELDebugger());
-	}
+    static {
+        MVELRuntime.setThreadDebugger(new MVELDebugger());
+    }
 
-	/**
-	 * Notify remote debugger that runtime is ready to get latest breakpoint
-	 * information
-	 *
-	 */
-	public static void receiveBreakpoints() {
-	}
+    /**
+     * Notify remote debugger that runtime is ready to get latest breakpoint
+     * information
+     *
+     */
+    public static void receiveBreakpoints() {
+    }
 
-	/**
-	 * This is catched by the remote debugger
-	 *
-	 * @param frame
-	 */
-	private final static int onBreak(Frame frame) {
+    /**
+     * This is catched by the remote debugger
+     *
+     * @param frame
+     */
+    private final static int onBreak(Frame frame) {
         // We always fall back to Debugger.CONTINUE after each onBreak to avoid eternal step-over flag
         //int oldReturn = onBreakReturn;
         //onBreakReturn = Debugger.CONTINUE;
         //return oldReturn;
-		if (verbose) {
+        if (verbose) {
             System.out.println("Continuing with "+(onBreakReturn==Debugger.CONTINUE?"continue":"step-over"));
         }
         return onBreakReturn;
-	}
+    }
 
     protected final static void registerBreakpoint(String sourceName, int lineNumber) {
         if (verbose) {
@@ -88,20 +88,20 @@ public final class MVELDebugHandler {
         MVELRuntime.removeBreakpoint( sourceName, lineNumber );
     }
 
-	private static class MVELDebugger implements Debugger {
+    private static class MVELDebugger implements Debugger {
 
         public MVELDebugger() {
         }
 
-		public int onBreak(Frame frame) {
-			if (verbose) {
-			    System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
+        public int onBreak(Frame frame) {
+        	if (verbose) {
+        	    System.out.println("onBreak call for "+frame.getSourceName()+":"+frame.getLineNumber());
             }
-			return MVELDebugHandler.onBreak(frame);
-			// This call is supposed to be catched by the remote debugger
-		}
+        	return MVELDebugHandler.onBreak(frame);
+        	// This call is supposed to be catched by the remote debugger
+        }
 
-	}
+    }
 
     protected final static void setOnBreakReturn(int value) {
         onBreakReturn = value;

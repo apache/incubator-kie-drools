@@ -204,21 +204,21 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
                            final Object object,
                            final KnowledgeRuntime kruntime,
                            final Map<String, Object> variables ) {
-		if (tuple != null) {
-			this.tupleObjects = ((LeftTuple) tuple).toFactHandles();
-		}
-		this.object = object;
-		this.kruntime = kruntime;
-		if (variables == null) {
-			if (this.localVariables == null) {
-				this.localVariables = new HashMap();
-			} else {
-				this.localVariables.clear();
-			}
-		} else {
-			this.localVariables = variables;
-		}
-	}
+        if (tuple != null) {
+        	this.tupleObjects = ((LeftTuple) tuple).toFactHandles();
+        }
+        this.object = object;
+        this.kruntime = kruntime;
+        if (variables == null) {
+        	if (this.localVariables == null) {
+        		this.localVariables = new HashMap();
+        	} else {
+        		this.localVariables.clear();
+        	}
+        } else {
+        	this.localVariables = variables;
+        }
+    }
 
     private Object getTupleObjectFor(Declaration declaration) {
         int i = declaration.getPattern().getOffset();
@@ -242,13 +242,13 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     }
  
     public Object getValue(final String identifier) {
-    	if (this.workingMemory != null) {
-    		return this.workingMemory.getGlobal(identifier);
-    	}
-    	if (this.kruntime != null) {
-    		return this.kruntime.getGlobal(identifier);
-    	}
-    	return null;
+        if (this.workingMemory != null) {
+        	return this.workingMemory.getGlobal(identifier);
+        }
+        if (this.kruntime != null) {
+        	return this.kruntime.getGlobal(identifier);
+        }
+        return null;
     }
  
     public Object getLocalValue(final String identifier) {

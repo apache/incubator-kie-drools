@@ -31,10 +31,10 @@ public interface TimerService extends SchedulerService {
     public long getCurrentTime();
     
    
-	
-	/**
-	 * Shuts the service down
-	 */
+
+    /**
+     * Shuts the service down
+     */
     public void shutdown();
     
     /**
@@ -45,5 +45,5 @@ public interface TimerService extends SchedulerService {
      *         there is no job scheduled
      */
     public long getTimeToNextJob();
-	
+
 }

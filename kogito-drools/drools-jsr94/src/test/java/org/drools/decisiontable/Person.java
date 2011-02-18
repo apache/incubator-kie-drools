@@ -28,7 +28,7 @@ public class Person {
     private String       status;
 
     public Person() {
-    	
+
     }
     public Person(final String name) {
         this( name,

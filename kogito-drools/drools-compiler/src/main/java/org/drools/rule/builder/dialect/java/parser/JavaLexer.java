@@ -1,6 +1,6 @@
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/semantics/java/parser/Java.g 2011-01-18 19:45:22
 
-	package org.drools.rule.builder.dialect.java.parser;
+    package org.drools.rule.builder.dialect.java.parser;
 
 
 import org.antlr.runtime.*;
@@ -125,8 +125,8 @@ public class JavaLexer extends Lexer {
     public static final int COMMENT=22;
     public static final int LINE_COMMENT=23;
 
-    	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
-    	protected boolean enumIsKeyword = true;
+        public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+        protected boolean enumIsKeyword = true;
 
 
     // delegates
@@ -2122,16 +2122,16 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt1) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:993:28: HexDigit
-            	    {
-            	    mHexDigit();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:993:28: HexDigit
+                    {
+                    mHexDigit();
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt1 >= 1 ) break loop1;
+                default :
+                    if ( cnt1 >= 1 ) break loop1;
                         EarlyExitException eee =
                             new EarlyExitException(1, input);
                         throw eee;
@@ -2216,16 +2216,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt3) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:995:34: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:995:34: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop3;
+                        default :
+                            break loop3;
                         }
                     } while (true);
 
@@ -2286,16 +2286,16 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt6) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:997:21: '0' .. '7'
-            	    {
-            	    matchRange('0','7');
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:997:21: '0' .. '7'
+                    {
+                    matchRange('0','7');
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt6 >= 1 ) break loop6;
+                default :
+                    if ( cnt6 >= 1 ) break loop6;
                         EarlyExitException eee =
                             new EarlyExitException(6, input);
                         throw eee;
@@ -2405,16 +2405,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt8) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1006:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1006:10: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt8 >= 1 ) break loop8;
+                        default :
+                            if ( cnt8 >= 1 ) break loop8;
                                 EarlyExitException eee =
                                     new EarlyExitException(8, input);
                                 throw eee;
@@ -2435,16 +2435,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt9) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1006:26: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1006:26: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop9;
+                        default :
+                            break loop9;
                         }
                     } while (true);
 
@@ -2504,16 +2504,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt12) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1007:14: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1007:14: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt12 >= 1 ) break loop12;
+                        default :
+                            if ( cnt12 >= 1 ) break loop12;
                                 EarlyExitException eee =
                                     new EarlyExitException(12, input);
                                 throw eee;
@@ -2576,16 +2576,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt15) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1008:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1008:10: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt15 >= 1 ) break loop15;
+                        default :
+                            if ( cnt15 >= 1 ) break loop15;
                                 EarlyExitException eee =
                                     new EarlyExitException(15, input);
                                 throw eee;
@@ -2631,16 +2631,16 @@ public class JavaLexer extends Lexer {
 
 
                         switch (alt17) {
-                    	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1009:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9');
+                        case 1 :
+                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1009:10: '0' .. '9'
+                            {
+                            matchRange('0','9');
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt17 >= 1 ) break loop17;
+                        default :
+                            if ( cnt17 >= 1 ) break loop17;
                                 EarlyExitException eee =
                                     new EarlyExitException(17, input);
                                 throw eee;
@@ -2734,16 +2734,16 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt21) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1013:34: '0' .. '9'
-            	    {
-            	    matchRange('0','9');
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1013:34: '0' .. '9'
+                    {
+                    matchRange('0','9');
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt21 >= 1 ) break loop21;
+                default :
+                    if ( cnt21 >= 1 ) break loop21;
                         EarlyExitException eee =
                             new EarlyExitException(21, input);
                         throw eee;
@@ -2871,31 +2871,31 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt23) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:14: EscapeSequence
-            	    {
-            	    mEscapeSequence();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:14: EscapeSequence
+                    {
+                    mEscapeSequence();
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:31: ~ ( '\\\\' | '\"' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
+                    }
+                    break;
+                case 2 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:31: ~ ( '\\\\' | '\"' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
 
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                    }
+                    else {
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop23;
+                default :
+                    break loop23;
                 }
             } while (true);
 
@@ -3185,24 +3185,24 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt26) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:
-            	    {
-            	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
-            	        input.consume();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:
+                    {
+                    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
+                        input.consume();
 
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                    }
+                    else {
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop26;
+                default :
+                    break loop26;
                 }
             } while (true);
 
@@ -3328,16 +3328,16 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt27) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1096:42: .
-            	    {
-            	    matchAny();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1096:42: .
+                    {
+                    matchAny();
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop27;
+                default :
+                    break loop27;
                 }
             } while (true);
 
@@ -3377,24 +3377,24 @@ public class JavaLexer extends Lexer {
 
 
                 switch (alt28) {
-            	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1100:12: ~ ( '\\n' | '\\r' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
+                case 1 :
+                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1100:12: ~ ( '\\n' | '\\r' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
 
-            	    }
-            	    else {
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                    }
+                    else {
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop28;
+                default :
+                    break loop28;
                 }
             } while (true);
 

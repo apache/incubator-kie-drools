@@ -17,25 +17,25 @@ import org.drools.rule.Package;
  */
 public class SourcePackageProvider implements FileLoader {
 
-	public Package loadPackage(File drl) throws IOException {
-		FileInputStream fin = new FileInputStream(drl);
+    public Package loadPackage(File drl) throws IOException {
+        FileInputStream fin = new FileInputStream(drl);
 
-		PackageBuilder b = new PackageBuilder();
-		try {
-			b.addPackageFromDrl(new InputStreamReader(fin));
+        PackageBuilder b = new PackageBuilder();
+        try {
+        	b.addPackageFromDrl(new InputStreamReader(fin));
 
-			fin.close();
+        	fin.close();
 
-			if (b.hasErrors()) {
-				throw new RuntimeDroolsException(
-						"Error building rules from source: " + b.getErrors());
-			} else {
-				return b.getPackage();
-			}
-		} catch (DroolsParserException e) {
-			throw new RuntimeException(e);
-		}
+        	if (b.hasErrors()) {
+        		throw new RuntimeDroolsException(
+        				"Error building rules from source: " + b.getErrors());
+        	} else {
+        		return b.getPackage();
+        	}
+        } catch (DroolsParserException e) {
+        	throw new RuntimeException(e);
+        }
 
-	}
+    }
 
 }

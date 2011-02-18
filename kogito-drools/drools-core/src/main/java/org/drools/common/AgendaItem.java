@@ -274,14 +274,14 @@ public class AgendaItem
 
     public void dequeue() {
         if ( this.agendaGroup != null ) {
-        	this.agendaGroup.remove( this );
+            this.agendaGroup.remove( this );
         }
         this.activated = false;
         this.index = -1;
     }
     
     public int getIndex() {
-    	return this.index;
+        return this.index;
     }
 
     public void remove() {

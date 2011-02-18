@@ -31,26 +31,26 @@ import org.drools.xml.jaxb.util.JaxbUnknownAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class SignalEventCommand implements GenericCommand<Object> {
-	
-	@XmlAttribute(name="process-instance-id")
-	private long processInstanceId = -1;
-	
-	@XmlAttribute(name="event-type", required=true)
-	private String eventType;
-	
-	@XmlElement(name="event")
-	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
-	private Object event;
-	
+
+    @XmlAttribute(name="process-instance-id")
+    private long processInstanceId = -1;
+
+    @XmlAttribute(name="event-type", required=true)
+    private String eventType;
+
+    @XmlElement(name="event")
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+    private Object event;
+
     public SignalEventCommand() {
     }
-	
-	public SignalEventCommand(String eventType,
+
+    public SignalEventCommand(String eventType,
                               Object event) {
         this.eventType = eventType;
         this.event = event;
     }
-	
+
     public SignalEventCommand(long processInstanceId,
                               String eventType,
                               Object event) {
@@ -87,23 +87,23 @@ public class SignalEventCommand implements GenericCommand<Object> {
     public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
-		if (processInstanceId == -1) {
-		    ksession.signalEvent(eventType, event);
-		} else {
-			ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
-			if (processInstance != null) {
-				processInstance.signalEvent(eventType, event);
-			}
-		}
-		return null;
-	}
+        if (processInstanceId == -1) {
+            ksession.signalEvent(eventType, event);
+        } else {
+        	ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+        	if (processInstance != null) {
+        		processInstance.signalEvent(eventType, event);
+        	}
+        }
+        return null;
+    }
 
-	public String toString() {
-		if (processInstanceId == -1) {
-			return "ksession.signalEvent(" + eventType + ", " + event + ");";
-		} else {
-			return "ksession.signalEvent(" + processInstanceId + ", " + eventType + ", " + event + ");";
-		}
-	}
+    public String toString() {
+        if (processInstanceId == -1) {
+        	return "ksession.signalEvent(" + eventType + ", " + event + ");";
+        } else {
+        	return "ksession.signalEvent(" + processInstanceId + ", " + eventType + ", " + event + ");";
+        }
+    }
 
 }

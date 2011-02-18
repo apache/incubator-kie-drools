@@ -30,8 +30,8 @@ public class QueryElementFactHandle
     InternalFactHandle {
     private Object object;
 
-	protected QueryElementFactHandle() {}
-	
+    protected QueryElementFactHandle() {}
+
     public QueryElementFactHandle(Object object) {
         this.object = object;
     }
@@ -121,7 +121,7 @@ public class QueryElementFactHandle
     
     @XmlAttribute(name="external-form")
     public String getExternalForm() {
-    	return toExternalForm();
+        return toExternalForm();
     }
 
     

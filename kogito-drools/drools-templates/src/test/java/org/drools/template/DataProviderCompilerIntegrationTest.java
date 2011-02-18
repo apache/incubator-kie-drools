@@ -66,7 +66,7 @@ public class DataProviderCompilerIntegrationTest {
     
     @Before
     public void setUp(){
-    	 rows.add( new String[]{ "1",
+         rows.add( new String[]{ "1",
                  "STANDARD",
                  "FLAT",
                  null,
@@ -128,7 +128,7 @@ public class DataProviderCompilerIntegrationTest {
 
     @Test
     public void testCompilerMaps() throws Exception {
-    	Collection<Map<String,Object>> maps = new ArrayList<Map<String,Object>>();
+        Collection<Map<String,Object>> maps = new ArrayList<Map<String,Object>>();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
         InputStream templateStream =
             this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
@@ -136,14 +136,14 @@ public class DataProviderCompilerIntegrationTest {
         Column[] columns = tc.getColumns();
         
         for( String[] row: rows ){
-        	Map<String,Object> map = new HashMap<String,Object>();
-        	for( int icol = 0; icol < columns.length; icol++ ){
-        		Object value = row[icol];
-        		if( value != null ){
-        			map.put( columns[icol].getName(), value );
-        		}
-        	}
-        	maps.add( map );
+            Map<String,Object> map = new HashMap<String,Object>();
+            for( int icol = 0; icol < columns.length; icol++ ){
+            	Object value = row[icol];
+            	if( value != null ){
+            		map.put( columns[icol].getName(), value );
+            	}
+            }
+            maps.add( map );
         }
         templateStream =
             this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
@@ -153,60 +153,60 @@ public class DataProviderCompilerIntegrationTest {
     }
 
     public static class OBJ {
-    	private final String FEE_SCHEDULE_ID;
-    	private final String FEE_SCHEDULE_TYPE;
-    	private final String FEE_MODE_TYPE;
-    	private final String ENTITY_BRANCH;
-    	private final String PRODUCT_TYPE;
-    	private final String ACTIVITY_TYPE;
-    	public final String FEE_TYPE;
-    	public final String OWNING_PARTY;
-    	public final String CCY;
-    	public final String LC_AMOUNT;
-    	public final String AMOUNT;
-    	OBJ( String[] vals ){
-    		FEE_SCHEDULE_ID   = vals[0];
-    		FEE_SCHEDULE_TYPE = vals[1];
-    		FEE_MODE_TYPE     = vals[2];
-    		ENTITY_BRANCH     = vals[3];
-    		PRODUCT_TYPE      = vals[4];
-    		ACTIVITY_TYPE     = vals[5];
-    		FEE_TYPE          = vals[6];
-    		OWNING_PARTY      = vals[7];
-    		CCY               = vals[8];
-    		LC_AMOUNT         = vals[9];
-    		AMOUNT            = vals[10];
-    	}
-    	public String getFEE_SCHEDULE_ID() {
-    		return FEE_SCHEDULE_ID;
-    	}
-    	public String getFEE_SCHEDULE_TYPE() {
-    		return FEE_SCHEDULE_TYPE;
-    	}
-    	public String getFEE_MODE_TYPE() {
-    		return FEE_MODE_TYPE;
-    	}
-    	public String ENTITY_BRANCH() {
-    		return ENTITY_BRANCH;
-    	}
-    	public String PRODUCT_TYPE() {
-    		return PRODUCT_TYPE;
-    	}
-    	public String ACTIVITY_TYPE() {
-    		return ACTIVITY_TYPE;
-    	}
+        private final String FEE_SCHEDULE_ID;
+        private final String FEE_SCHEDULE_TYPE;
+        private final String FEE_MODE_TYPE;
+        private final String ENTITY_BRANCH;
+        private final String PRODUCT_TYPE;
+        private final String ACTIVITY_TYPE;
+        public final String FEE_TYPE;
+        public final String OWNING_PARTY;
+        public final String CCY;
+        public final String LC_AMOUNT;
+        public final String AMOUNT;
+        OBJ( String[] vals ){
+        	FEE_SCHEDULE_ID   = vals[0];
+        	FEE_SCHEDULE_TYPE = vals[1];
+        	FEE_MODE_TYPE     = vals[2];
+        	ENTITY_BRANCH     = vals[3];
+        	PRODUCT_TYPE      = vals[4];
+        	ACTIVITY_TYPE     = vals[5];
+        	FEE_TYPE          = vals[6];
+        	OWNING_PARTY      = vals[7];
+        	CCY               = vals[8];
+        	LC_AMOUNT         = vals[9];
+        	AMOUNT            = vals[10];
+        }
+        public String getFEE_SCHEDULE_ID() {
+        	return FEE_SCHEDULE_ID;
+        }
+        public String getFEE_SCHEDULE_TYPE() {
+        	return FEE_SCHEDULE_TYPE;
+        }
+        public String getFEE_MODE_TYPE() {
+        	return FEE_MODE_TYPE;
+        }
+        public String ENTITY_BRANCH() {
+        	return ENTITY_BRANCH;
+        }
+        public String PRODUCT_TYPE() {
+        	return PRODUCT_TYPE;
+        }
+        public String ACTIVITY_TYPE() {
+        	return ACTIVITY_TYPE;
+        }
     }
 
     @Test
     public void testCompilerObjs() throws Exception {
-    	Collection<Object> objs = new ArrayList<Object>();
+        Collection<Object> objs = new ArrayList<Object>();
         final ObjectDataCompiler converter = new ObjectDataCompiler();
         final InputStream templateStream =
             this.getClass().getResourceAsStream( "/templates/rule_template_1.drl" );
         
         for( String[] row: rows ){
-        	OBJ obj = new OBJ( row );
-        	objs.add( obj );
+            OBJ obj = new OBJ( row );
+            objs.add( obj );
         }
         final String drl = converter.compile( objs, templateStream );
         System.out.println( drl );

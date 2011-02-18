@@ -14,13 +14,13 @@ public class DisconnectedFactHandle
     InternalFactHandle {
 
     private int  id;
-	private int  identityHashCode;
+    private int  identityHashCode;
     private int  objectHashCode;
     private long recency;
     private Object object;
 
-	protected DisconnectedFactHandle() {}
-	
+    protected DisconnectedFactHandle() {}
+
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
@@ -137,7 +137,7 @@ public class DisconnectedFactHandle
     
     @XmlAttribute(name="external-form")
     public String getExternalForm() {
-    	return toExternalForm();
+        return toExternalForm();
     }
 
     

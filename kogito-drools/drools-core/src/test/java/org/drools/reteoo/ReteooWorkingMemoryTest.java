@@ -184,7 +184,7 @@ public class ReteooWorkingMemoryTest {
             assertEquals( 0, counter.get() );
         }
         public void execute(InternalKnowledgeRuntime kruntime) {
-        	execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
         }
     }
     

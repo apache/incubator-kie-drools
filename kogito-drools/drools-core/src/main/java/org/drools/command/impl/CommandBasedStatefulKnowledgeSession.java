@@ -160,31 +160,31 @@ public class CommandBasedStatefulKnowledgeSession
                     commandService.execute( command );
                 }
 
-				public WorkItem getWorkItem(long id) {
-					GetWorkItemCommand command = new GetWorkItemCommand();
-					command.setWorkItemId( id );
+        		public WorkItem getWorkItem(long id) {
+        			GetWorkItemCommand command = new GetWorkItemCommand();
+        			command.setWorkItemId( id );
                     return commandService.execute( command );
-				}
+        		}
 
-				public void clear() {
-					throw new UnsupportedOperationException();
-				}
+        		public void clear() {
+        			throw new UnsupportedOperationException();
+        		}
 
-				public Set<WorkItem> getWorkItems() {
-					throw new UnsupportedOperationException();
-				}
+        		public Set<WorkItem> getWorkItems() {
+        			throw new UnsupportedOperationException();
+        		}
 
-				public void internalAbortWorkItem(long id) {
-					throw new UnsupportedOperationException();
-				}
+        		public void internalAbortWorkItem(long id) {
+        			throw new UnsupportedOperationException();
+        		}
 
-				public void internalAddWorkItem(WorkItem workItem) {
-					throw new UnsupportedOperationException();
-				}
+        		public void internalAddWorkItem(WorkItem workItem) {
+        			throw new UnsupportedOperationException();
+        		}
 
-				public void internalExecuteWorkItem(WorkItem workItem) {
-					throw new UnsupportedOperationException();
-				}
+        		public void internalExecuteWorkItem(WorkItem workItem) {
+        			throw new UnsupportedOperationException();
+        		}
             };
         }
         return workItemManager;
@@ -485,7 +485,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
     
     public KnowledgeSessionConfiguration getSessionConfiguration() {
-    	return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
+        return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
     }
 
 }

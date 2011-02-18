@@ -20,18 +20,18 @@ public class SourcePackageProviderTest {
 
     @Test
     public void testSourceProvider() throws Exception {
-		new SourcePackageProvider();
+        new SourcePackageProvider();
 
-	    File dir = getTempDirectory();
+        File dir = getTempDirectory();
 
-	    InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("/org/drools/integrationtests/HelloWorld.drl"));
-	    assertNotNull(reader);
-
-
-	    File target = new File(dir, "Something.drl");
+        InputStreamReader reader = new InputStreamReader(this.getClass().getResourceAsStream("/org/drools/integrationtests/HelloWorld.drl"));
+        assertNotNull(reader);
 
 
-	    OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(target));
+        File target = new File(dir, "Something.drl");
+
+
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(target));
 
         BufferedReader in = new BufferedReader(reader);
         BufferedWriter out = new BufferedWriter(writer);
@@ -51,10 +51,10 @@ public class SourcePackageProviderTest {
 
 
 
-		RuleAgent ag = RuleAgent.newRuleAgent(config);
-		RuleBase rb = ag.getRuleBase();
-		assertNotNull(rb);
-	}
+        RuleAgent ag = RuleAgent.newRuleAgent(config);
+        RuleBase rb = ag.getRuleBase();
+        assertNotNull(rb);
+    }
 
     public static File getTempDirectory() {
         File f = tempDir();

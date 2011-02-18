@@ -63,7 +63,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     }
     
     public void setParameters(Map<String, Object> parameters) {
-    	this.parameters = parameters;
+        this.parameters = parameters;
     }
     
     public void setParameter(String name, Object value) {
@@ -105,25 +105,25 @@ public class WorkItemImpl implements WorkItem, Serializable {
     }
     
     public String toString() {
-    	StringBuilder b = new StringBuilder("WorkItem ");
-    	b.append(id);
-    	b.append(" [name=");
-    	b.append(name);
-    	b.append(", state=");
-    	b.append(state);
-    	b.append(", processInstanceId=");
-    	b.append(processInstanceId);
+        StringBuilder b = new StringBuilder("WorkItem ");
+        b.append(id);
+        b.append(" [name=");
+        b.append(name);
+        b.append(", state=");
+        b.append(state);
+        b.append(", processInstanceId=");
+        b.append(processInstanceId);
         b.append(", parameters{");
-    	for (Iterator<Map.Entry<String, Object>> iterator = parameters.entrySet().iterator(); iterator.hasNext(); ) {
-    	    Map.Entry<String, Object> entry = iterator.next();
-    	    b.append(entry.getKey());
-    	    b.append("=");
-    	    b.append(entry.getValue());
-    	    if (iterator.hasNext()) {
-    	        b.append(", ");
-    	    }
-    	}
+        for (Iterator<Map.Entry<String, Object>> iterator = parameters.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<String, Object> entry = iterator.next();
+            b.append(entry.getKey());
+            b.append("=");
+            b.append(entry.getValue());
+            if (iterator.hasNext()) {
+                b.append(", ");
+            }
+        }
         b.append("}]");
-    	return b.toString();
+        return b.toString();
     }
 }

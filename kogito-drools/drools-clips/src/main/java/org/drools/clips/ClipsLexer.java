@@ -16,7 +16,7 @@
 
 // $ANTLR 3.1.1 /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g 2008-11-24 17:53:59
 
-	package org.drools.clips;
+    package org.drools.clips;
 
 
 import org.antlr.runtime.*;
@@ -546,17 +546,17 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt4) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:838:11: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:838:11: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt4 >= 1 ) break loop4;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt4 >= 1 ) break loop4;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(4, input);
                         throw eee;
@@ -614,17 +614,17 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt6) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:842:11: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:842:11: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt6 >= 1 ) break loop6;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt6 >= 1 ) break loop6;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(6, input);
                         throw eee;
@@ -646,17 +646,17 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt7) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:842:27: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:842:27: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt7 >= 1 ) break loop7;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt7 >= 1 ) break loop7;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(7, input);
                         throw eee;
@@ -720,32 +720,32 @@ public class ClipsLexer extends Lexer {
 
 
                         switch (alt8) {
-                    	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:846:15: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:846:15: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:846:32: ~ ( '\\\\' | '\"' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:846:32: ~ ( '\\\\' | '\"' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop8;
+                        default :
+                            break loop8;
                         }
                     } while (true);
 
@@ -778,32 +778,32 @@ public class ClipsLexer extends Lexer {
 
 
                         switch (alt9) {
-                    	case 1 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:847:16: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:847:16: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:847:33: ~ ( '\\\\' | '\\'' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:847:33: ~ ( '\\\\' | '\\'' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop9;
+                        default :
+                            break loop9;
                         }
                     } while (true);
 
@@ -1163,17 +1163,17 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt14) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:876:12: SYMBOL_CHAR
-            	    {
-            	    mSYMBOL_CHAR(); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:876:12: SYMBOL_CHAR
+                    {
+                    mSYMBOL_CHAR(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt14 >= 1 ) break loop14;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt14 >= 1 ) break loop14;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(14, input);
                         throw eee;
@@ -1219,16 +1219,16 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt15) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:880:35: .
-            	    {
-            	    matchAny(); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:880:35: .
+                    {
+                    matchAny(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop15;
+                default :
+                    break loop15;
                 }
             } while (true);
 
@@ -1275,16 +1275,16 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt16) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:886:36: .
-            	    {
-            	    matchAny(); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:886:36: .
+                    {
+                    matchAny(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop16;
+                default :
+                    break loop16;
                 }
             } while (true);
 
@@ -1578,16 +1578,16 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt17) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:935:35: .
-            	    {
-            	    matchAny(); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:935:35: .
+                    {
+                    matchAny(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop17;
+                default :
+                    break loop17;
                 }
             } while (true);
 
@@ -1646,16 +1646,16 @@ public class ClipsLexer extends Lexer {
 
 
                 switch (alt18) {
-            	case 1 :
-            	    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:942:28: SYMBOL_CHAR
-            	    {
-            	    mSYMBOL_CHAR(); if (state.failed) return ;
+                case 1 :
+                    // /Users/porcelli/Documents/dev/drools-trunk/drools-clips/src/main/resources/org/drools/clips/Clips.g:942:28: SYMBOL_CHAR
+                    {
+                    mSYMBOL_CHAR(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop18;
+                default :
+                    break loop18;
                 }
             } while (true);
 
@@ -2253,7 +2253,7 @@ public class ClipsLexer extends Lexer {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA19_47 = input.LA(1);

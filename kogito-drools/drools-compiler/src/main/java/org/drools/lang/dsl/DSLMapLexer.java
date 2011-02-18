@@ -1,8 +1,8 @@
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-01-18 19:45:17
 
-	package org.drools.lang.dsl;
-	import java.util.List;
-	import java.util.ArrayList;
+    package org.drools.lang.dsl;
+    import java.util.List;
+    import java.util.ArrayList;
     import org.drools.compiler.ParserError;
 
 
@@ -45,19 +45,19 @@ public class DSLMapLexer extends Lexer {
     public static final int IdentifierPart=32;
     public static final int MISC=33;
 
-    	private List<ParserError> errors = new ArrayList<ParserError>();
+        private List<ParserError> errors = new ArrayList<ParserError>();
 
-    	public void reportError(RecognitionException ex) {
-    		errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
-    	}
+        public void reportError(RecognitionException ex) {
+        	errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
+        }
 
-    	public List<ParserError> getErrors() {
-    		return errors;
-    	}
+        public List<ParserError> getErrors() {
+        	return errors;
+        }
 
-    	/** Override this method to not output mesages */
-    	public void emitErrorMessage(String msg) {
-    	}
+        /** Override this method to not output mesages */
+        public void emitErrorMessage(String msg) {
+        }
 
 
     // delegates
@@ -94,26 +94,26 @@ public class DSLMapLexer extends Lexer {
 
 
                 switch (alt1) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:
-            	    {
-            	    if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
-            	        input.consume();
-            	    state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:
+                    {
+                    if ( input.LA(1)=='\t'||input.LA(1)=='\f'||input.LA(1)==' ' ) {
+                        input.consume();
+                    state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt1 >= 1 ) break loop1;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(1, input);
                         throw eee;
@@ -419,38 +419,38 @@ public class DSLMapLexer extends Lexer {
 
 
                 switch (alt3) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:5: IdentifierPart
-            	    {
-            	    mIdentifierPart(); if (state.failed) return ;
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:5: IdentifierPart
+                    {
+                    mIdentifierPart(); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:20: MISC
-            	    {
-            	    mMISC(); if (state.failed) return ;
+                    }
+                    break;
+                case 2 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:20: MISC
+                    {
+                    mMISC(); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 3 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:25: EscapeSequence
-            	    {
-            	    mEscapeSequence(); if (state.failed) return ;
+                    }
+                    break;
+                case 3 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:25: EscapeSequence
+                    {
+                    mEscapeSequence(); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 4 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:40: DOT
-            	    {
-            	    mDOT(); if (state.failed) return ;
+                    }
+                    break;
+                case 4 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:319:40: DOT
+                    {
+                    mDOT(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt3 >= 1 ) break loop3;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt3 >= 1 ) break loop3;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(3, input);
                         throw eee;

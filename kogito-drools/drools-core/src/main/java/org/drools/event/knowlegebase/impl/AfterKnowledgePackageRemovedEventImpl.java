@@ -32,10 +32,10 @@ public class AfterKnowledgePackageRemovedEventImpl extends KnowledgeBaseEventImp
         return this.knowledgePackage;
     }
 
-	@Override
-	public String toString() {
-		return "==>[AfterKnowledgePackageRemovedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
-				+ ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[AfterKnowledgePackageRemovedEventImpl: getKnowledgePackage()=" + getKnowledgePackage()
+        		+ ", getKnowledgeBase()=" + getKnowledgeBase() + "]";
+    }
     
 }

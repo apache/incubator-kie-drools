@@ -16,9 +16,9 @@
 
 // $ANTLR 3.1.1 src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g 2010-01-26 19:56:37
 
-	package org.drools.reteoo.test.parser;
-	
-	import org.drools.reteoo.test.dsl.*;
+    package org.drools.reteoo.test.parser;
+
+    import org.drools.reteoo.test.dsl.*;
 
 
 
@@ -94,12 +94,12 @@ public class NodeTestDSLTree extends TreeParser {
     public String getGrammarFileName() { return "src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"; }
 
 
-    	NodeTestDSLFactory factory = new NodeTestDSLFactory();
-    	NodeTestCase testCase = null;
-    	
-    	public NodeTestCase getTestCase() {
-    		return testCase;
-    	}
+        NodeTestDSLFactory factory = new NodeTestDSLFactory();
+        NodeTestCase testCase = null;
+
+        public NodeTestCase getTestCase() {
+        	return testCase;
+        }
 
 
     public static class compilation_unit_return extends TreeRuleReturnScope {
@@ -170,22 +170,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                 switch (alt1) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:26:40: import_statement
-            	    {
-            	    _last = (CommonTree)input.LT(1);
-            	    pushFollow(FOLLOW_import_statement_in_compilation_unit54);
-            	    import_statement3=import_statement();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:26:40: import_statement
+                    {
+                    _last = (CommonTree)input.LT(1);
+                    pushFollow(FOLLOW_import_statement_in_compilation_unit54);
+                    import_statement3=import_statement();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_1, import_statement3.getTree());
+                    adaptor.addChild(root_1, import_statement3.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop1;
+                default :
+                    break loop1;
                 }
             } while (true);
 
@@ -249,22 +249,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                 switch (alt4) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:26:75: test
-            	    {
-            	    _last = (CommonTree)input.LT(1);
-            	    pushFollow(FOLLOW_test_in_compilation_unit63);
-            	    test6=test();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:26:75: test
+                    {
+                    _last = (CommonTree)input.LT(1);
+                    pushFollow(FOLLOW_test_in_compilation_unit63);
+                    test6=test();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_1, test6.getTree());
+                    adaptor.addChild(root_1, test6.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop4;
+                default :
+                    break loop4;
                 }
             } while (true);
 
@@ -479,22 +479,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                     switch (alt5) {
-                	case 1 :
-                	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:40:42: step
-                	    {
-                	    _last = (CommonTree)input.LT(1);
-                	    pushFollow(FOLLOW_step_in_setup136);
-                	    step10=step();
+                    case 1 :
+                        // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:40:42: step
+                        {
+                        _last = (CommonTree)input.LT(1);
+                        pushFollow(FOLLOW_step_in_setup136);
+                        step10=step();
 
-                	    state._fsp--;
+                        state._fsp--;
 
-                	    adaptor.addChild(root_1, step10.getTree());
+                        adaptor.addChild(root_1, step10.getTree());
 
-                	    }
-                	    break;
+                        }
+                        break;
 
-                	default :
-                	    break loop5;
+                    default :
+                        break loop5;
                     }
                 } while (true);
 
@@ -574,22 +574,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                     switch (alt6) {
-                	case 1 :
-                	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:44:48: step
-                	    {
-                	    _last = (CommonTree)input.LT(1);
-                	    pushFollow(FOLLOW_step_in_teardown155);
-                	    step12=step();
+                    case 1 :
+                        // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:44:48: step
+                        {
+                        _last = (CommonTree)input.LT(1);
+                        pushFollow(FOLLOW_step_in_teardown155);
+                        step12=step();
 
-                	    state._fsp--;
+                        state._fsp--;
 
-                	    adaptor.addChild(root_1, step12.getTree());
+                        adaptor.addChild(root_1, step12.getTree());
 
-                	    }
-                	    break;
+                        }
+                        break;
 
-                	default :
-                	    break loop6;
+                    default :
+                        break loop6;
                     }
                 } while (true);
 
@@ -676,22 +676,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                 switch (alt7) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:48:69: step
-            	    {
-            	    _last = (CommonTree)input.LT(1);
-            	    pushFollow(FOLLOW_step_in_test179);
-            	    step14=step();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:48:69: step
+                    {
+                    _last = (CommonTree)input.LT(1);
+                    pushFollow(FOLLOW_step_in_test179);
+                    step14=step();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_1, step14.getTree());
+                    adaptor.addChild(root_1, step14.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop7;
+                default :
+                    break loop7;
                 }
             } while (true);
 
@@ -768,25 +768,25 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                 switch (alt8) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:52:10: p+= params
-            	    {
-            	    _last = (CommonTree)input.LT(1);
-            	    pushFollow(FOLLOW_params_in_step199);
-            	    p=params();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:52:10: p+= params
+                    {
+                    _last = (CommonTree)input.LT(1);
+                    pushFollow(FOLLOW_params_in_step199);
+                    p=params();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_1, p.getTree());
-            	    if (list_p==null) list_p=new ArrayList();
-            	    list_p.add(p.getTree());
+                    adaptor.addChild(root_1, p.getTree());
+                    if (list_p==null) list_p=new ArrayList();
+                    list_p.add(p.getTree());
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt8 >= 1 ) break loop8;
+                default :
+                    if ( cnt8 >= 1 ) break loop8;
                         EarlyExitException eee =
                             new EarlyExitException(8, input);
                         throw eee;
@@ -869,22 +869,22 @@ public class NodeTestDSLTree extends TreeParser {
 
 
                 switch (alt9) {
-            	case 1 :
-            	    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:56:16: param_chunk
-            	    {
-            	    _last = (CommonTree)input.LT(1);
-            	    pushFollow(FOLLOW_param_chunk_in_params217);
-            	    param_chunk17=param_chunk();
+                case 1 :
+                    // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:56:16: param_chunk
+                    {
+                    _last = (CommonTree)input.LT(1);
+                    pushFollow(FOLLOW_param_chunk_in_params217);
+                    param_chunk17=param_chunk();
 
-            	    state._fsp--;
+                    state._fsp--;
 
-            	    adaptor.addChild(root_1, param_chunk17.getTree());
+                    adaptor.addChild(root_1, param_chunk17.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt9 >= 1 ) break loop9;
+                default :
+                    if ( cnt9 >= 1 ) break loop9;
                         EarlyExitException eee =
                             new EarlyExitException(9, input);
                         throw eee;

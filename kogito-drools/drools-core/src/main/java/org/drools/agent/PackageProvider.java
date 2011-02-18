@@ -64,46 +64,46 @@ public abstract class PackageProvider {
     }
 
     static void removePackages(	Collection<String> removedPackages,
-    							RuleBase rb, 
-    							AgentEventListener listener ) {
-    	
-    	for (String name : removedPackages) {
-	        listener.info( "Removing package called " + name );
-	    	removePackage(name, rb);
-		}
+        						RuleBase rb,
+        						AgentEventListener listener ) {
+
+        for (String name : removedPackages) {
+            listener.info( "Removing package called " + name );
+            removePackage(name, rb);
+        }
     }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
-    		AgentEventListener listener) {
-    	applyChanges(rb, removeExistingPackages, changes, null, listener);
+        	AgentEventListener listener) {
+        applyChanges(rb, removeExistingPackages, changes, null, listener);
     }
     
     static void applyChanges(RuleBase rb, boolean removeExistingPackages, Collection changes, 
-    							Collection<String> removed, AgentEventListener listener) {
-    	if ( changes == null && removed == null ) return;
-    	
-    	rb.lock();
+        						Collection<String> removed, AgentEventListener listener) {
+        if ( changes == null && removed == null ) return;
+
+        rb.lock();
         
-    	if(removed != null ) {
-    		removePackages(removed, rb, listener);
-    	}
-    	
-    	if( changes != null ) {
-	        for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
-	            Package p = (Package) iter.next();
-	            
-	            if ( removeExistingPackages ) {
-	                removePackage( p.getName(),
-	                               rb );
-	            }
-	            try {
-	                listener.info( "Adding package called " + p.getName() );
-	                rb.addPackage( p );
-	            } catch ( Exception e ) {
-	                throw new RuntimeDroolsException( e );
-	            }
-	        }
-    	}
+        if(removed != null ) {
+        	removePackages(removed, rb, listener);
+        }
+
+        if( changes != null ) {
+            for ( Iterator iter = changes.iterator(); iter.hasNext(); ) {
+                Package p = (Package) iter.next();
+
+                if ( removeExistingPackages ) {
+                    removePackage( p.getName(),
+                                   rb );
+                }
+                try {
+                    listener.info( "Adding package called " + p.getName() );
+                    rb.addPackage( p );
+                } catch ( Exception e ) {
+                    throw new RuntimeDroolsException( e );
+                }
+            }
+        }
         
         rb.unlock();
     }

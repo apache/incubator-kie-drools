@@ -1,8 +1,8 @@
 // $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-01-20 15:49:08
 
-	package org.drools.lang;
+    package org.drools.lang;
 
-	import org.drools.compiler.DroolsParserException;
+    import org.drools.compiler.DroolsParserException;
 
 
 import org.antlr.runtime.*;
@@ -79,36 +79,36 @@ public class DRLLexer extends Lexer {
     public static final int DIV=67;
     public static final int MISC=68;
 
-    	private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
-    	private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
+        private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
+        private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
 
-    	/** The standard method called to automatically emit a token at the
-    	 *  outermost lexical rule.  The token object should point into the
-    	 *  char buffer start..stop.  If there is a text override in 'text',
-    	 *  use that to set the token's text.  Override this method to emit
-    	 *  custom Token objects.
-    	 */
-    	public Token emit() {
-    		Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
-    		t.setLine(state.tokenStartLine);
-    		t.setText(state.text);
-    		t.setCharPositionInLine(state.tokenStartCharPositionInLine);
-    		emit(t);
-    		return t;
-    	}
+        /** The standard method called to automatically emit a token at the
+         *  outermost lexical rule.  The token object should point into the
+         *  char buffer start..stop.  If there is a text override in 'text',
+         *  use that to set the token's text.  Override this method to emit
+         *  custom Token objects.
+         */
+        public Token emit() {
+        	Token t = new DroolsToken(input, state.type, state.channel, state.tokenStartCharIndex, getCharIndex()-1);
+        	t.setLine(state.tokenStartLine);
+        	t.setText(state.text);
+        	t.setCharPositionInLine(state.tokenStartCharPositionInLine);
+        	emit(t);
+        	return t;
+        }
 
-    	public void reportError(RecognitionException ex) {
-    		errors.add(errorMessageFactory.createDroolsException(ex));
-    	}
+        public void reportError(RecognitionException ex) {
+        	errors.add(errorMessageFactory.createDroolsException(ex));
+        }
 
-    	/** return the raw DroolsParserException errors */
-    	public List<DroolsParserException> getErrors() {
-    		return errors;
-    	}
+        /** return the raw DroolsParserException errors */
+        public List<DroolsParserException> getErrors() {
+        	return errors;
+        }
 
-    	/** Overrided this method to not output mesages */
-    	public void emitErrorMessage(String msg) {
-    	}
+        /** Overrided this method to not output mesages */
+        public void emitErrorMessage(String msg) {
+        }
 
 
     // delegates
@@ -163,38 +163,38 @@ public class DRLLexer extends Lexer {
                 }
 
                 switch (alt1) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:46:19: ' '
-            	    {
-            	    match(' '); if (state.failed) return ;
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:46:19: ' '
+                    {
+                    match(' '); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:47:19: '\\t'
-            	    {
-            	    match('\t'); if (state.failed) return ;
+                    }
+                    break;
+                case 2 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:47:19: '\\t'
+                    {
+                    match('\t'); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 3 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:48:19: '\\f'
-            	    {
-            	    match('\f'); if (state.failed) return ;
+                    }
+                    break;
+                case 3 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:48:19: '\\f'
+                    {
+                    match('\f'); if (state.failed) return ;
 
-            	    }
-            	    break;
-            	case 4 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:49:19: EOL
-            	    {
-            	    mEOL(); if (state.failed) return ;
+                    }
+                    break;
+                case 4 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:49:19: EOL
+                    {
+                    mEOL(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt1 >= 1 ) break loop1;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt1 >= 1 ) break loop1;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(1, input);
                         throw eee;
@@ -305,17 +305,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt3) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:63:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:63:10: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt3 >= 1 ) break loop3;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt3 >= 1 ) break loop3;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(3, input);
                                 throw eee;
@@ -336,16 +336,16 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt4) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:63:26: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:63:26: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop4;
+                        default :
+                            break loop4;
                         }
                     } while (true);
 
@@ -405,17 +405,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt7) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:64:14: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:64:14: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt7 >= 1 ) break loop7;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt7 >= 1 ) break loop7;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(7, input);
                                 throw eee;
@@ -478,17 +478,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt10) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:65:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:65:10: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt10 >= 1 ) break loop10;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt10 >= 1 ) break loop10;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(10, input);
                                 throw eee;
@@ -534,17 +534,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt12) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:66:10: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:66:10: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt12 >= 1 ) break loop12;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt12 >= 1 ) break loop12;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(12, input);
                                 throw eee;
@@ -622,17 +622,17 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt15) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:70:34: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:70:34: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt15 >= 1 ) break loop15;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt15 >= 1 ) break loop15;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(15, input);
                         throw eee;
@@ -706,17 +706,17 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt16) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:75:22: HexDigit
-            	    {
-            	    mHexDigit(); if (state.failed) return ;
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:75:22: HexDigit
+                    {
+                    mHexDigit(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt16 >= 1 ) break loop16;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt16 >= 1 ) break loop16;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(16, input);
                         throw eee;
@@ -774,17 +774,17 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt18) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:77:12: '0' .. '9'
-            	    {
-            	    matchRange('0','9'); if (state.failed) return ;
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:77:12: '0' .. '9'
+                    {
+                    matchRange('0','9'); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt18 >= 1 ) break loop18;
-            	    if (state.backtracking>0) {state.failed=true; return ;}
+                default :
+                    if ( cnt18 >= 1 ) break loop18;
+                    if (state.backtracking>0) {state.failed=true; return ;}
                         EarlyExitException eee =
                             new EarlyExitException(18, input);
                         throw eee;
@@ -891,32 +891,32 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt20) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:83:15: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:83:15: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:83:32: ~ ( '\\\\' | '\"' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:83:32: ~ ( '\\\\' | '\"' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop20;
+                        default :
+                            break loop20;
                         }
                     } while (true);
 
@@ -949,32 +949,32 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt21) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:84:16: EscapeSequence
-                    	    {
-                    	    mEscapeSequence(); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:84:16: EscapeSequence
+                            {
+                            mEscapeSequence(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
-                    	case 2 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:84:33: ~ ( '\\\\' | '\\'' )
-                    	    {
-                    	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
-                    	        input.consume();
-                    	    state.failed=false;
-                    	    }
-                    	    else {
-                    	        if (state.backtracking>0) {state.failed=true; return ;}
-                    	        MismatchedSetException mse = new MismatchedSetException(null,input);
-                    	        recover(mse);
-                    	        throw mse;}
+                            }
+                            break;
+                        case 2 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:84:33: ~ ( '\\\\' | '\\'' )
+                            {
+                            if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
+                                input.consume();
+                            state.failed=false;
+                            }
+                            else {
+                                if (state.backtracking>0) {state.failed=true; return ;}
+                                MismatchedSetException mse = new MismatchedSetException(null,input);
+                                recover(mse);
+                                throw mse;}
 
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop21;
+                        default :
+                            break loop21;
                         }
                     } while (true);
 
@@ -1023,17 +1023,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt23) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:6: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:6: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt23 >= 1 ) break loop23;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt23 >= 1 ) break loop23;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(23, input);
                                 throw eee;
@@ -1065,17 +1065,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt24) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:24: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:24: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt24 >= 1 ) break loop24;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt24 >= 1 ) break loop24;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(24, input);
                                         throw eee;
@@ -1110,17 +1110,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt26) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:42: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:42: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt26 >= 1 ) break loop26;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt26 >= 1 ) break loop26;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(26, input);
                                         throw eee;
@@ -1155,17 +1155,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt28) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:60: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:60: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt28 >= 1 ) break loop28;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt28 >= 1 ) break loop28;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(28, input);
                                         throw eee;
@@ -1204,17 +1204,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt30) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:78: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:89:78: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt30 >= 1 ) break loop30;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt30 >= 1 ) break loop30;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(30, input);
                                         throw eee;
@@ -1269,17 +1269,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt33) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:6: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:6: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt33 >= 1 ) break loop33;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt33 >= 1 ) break loop33;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(33, input);
                                 throw eee;
@@ -1311,17 +1311,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt34) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:24: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:24: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt34 >= 1 ) break loop34;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt34 >= 1 ) break loop34;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(34, input);
                                         throw eee;
@@ -1356,17 +1356,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt36) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:42: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:42: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt36 >= 1 ) break loop36;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt36 >= 1 ) break loop36;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(36, input);
                                         throw eee;
@@ -1405,17 +1405,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt38) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:60: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:90:60: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt38 >= 1 ) break loop38;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt38 >= 1 ) break loop38;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(38, input);
                                         throw eee;
@@ -1470,17 +1470,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt41) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:6: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:6: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt41 >= 1 ) break loop41;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt41 >= 1 ) break loop41;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(41, input);
                                 throw eee;
@@ -1512,17 +1512,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt42) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:24: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:24: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt42 >= 1 ) break loop42;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt42 >= 1 ) break loop42;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(42, input);
                                         throw eee;
@@ -1561,17 +1561,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt44) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:42: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:91:42: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt44 >= 1 ) break loop44;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt44 >= 1 ) break loop44;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(44, input);
                                         throw eee;
@@ -1626,17 +1626,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt47) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:92:6: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:92:6: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt47 >= 1 ) break loop47;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt47 >= 1 ) break loop47;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(47, input);
                                 throw eee;
@@ -1672,17 +1672,17 @@ public class DRLLexer extends Lexer {
 
 
                                 switch (alt48) {
-                            	case 1 :
-                            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:92:24: '0' .. '9'
-                            	    {
-                            	    matchRange('0','9'); if (state.failed) return ;
+                                case 1 :
+                                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:92:24: '0' .. '9'
+                                    {
+                                    matchRange('0','9'); if (state.failed) return ;
 
-                            	    }
-                            	    break;
+                                    }
+                                    break;
 
-                            	default :
-                            	    if ( cnt48 >= 1 ) break loop48;
-                            	    if (state.backtracking>0) {state.failed=true; return ;}
+                                default :
+                                    if ( cnt48 >= 1 ) break loop48;
+                                    if (state.backtracking>0) {state.failed=true; return ;}
                                         EarlyExitException eee =
                                             new EarlyExitException(48, input);
                                         throw eee;
@@ -1737,17 +1737,17 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt51) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:93:6: '0' .. '9'
-                    	    {
-                    	    matchRange('0','9'); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:93:6: '0' .. '9'
+                            {
+                            matchRange('0','9'); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    if ( cnt51 >= 1 ) break loop51;
-                    	    if (state.backtracking>0) {state.failed=true; return ;}
+                        default :
+                            if ( cnt51 >= 1 ) break loop51;
+                            if (state.backtracking>0) {state.failed=true; return ;}
                                 EarlyExitException eee =
                                     new EarlyExitException(51, input);
                                 throw eee;
@@ -3020,25 +3020,25 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt57) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:287:9: ~ ( '\\r' | '\\n' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
-            	    state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:287:9: ~ ( '\\r' | '\\n' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
+                    state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop57;
+                default :
+                    break loop57;
                 }
             } while (true);
 
@@ -3096,25 +3096,25 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt59) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:293:10: ~ ( '\\r' | '\\n' )
-            	    {
-            	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
-            	        input.consume();
-            	    state.failed=false;
-            	    }
-            	    else {
-            	        if (state.backtracking>0) {state.failed=true; return ;}
-            	        MismatchedSetException mse = new MismatchedSetException(null,input);
-            	        recover(mse);
-            	        throw mse;}
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:293:10: ~ ( '\\r' | '\\n' )
+                    {
+                    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
+                        input.consume();
+                    state.failed=false;
+                    }
+                    else {
+                        if (state.backtracking>0) {state.failed=true; return ;}
+                        MismatchedSetException mse = new MismatchedSetException(null,input);
+                        recover(mse);
+                        throw mse;}
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop59;
+                default :
+                    break loop59;
                 }
             } while (true);
 
@@ -3184,16 +3184,16 @@ public class DRLLexer extends Lexer {
 
 
                 switch (alt61) {
-            	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:298:35: .
-            	    {
-            	    matchAny(); if (state.failed) return ;
+                case 1 :
+                    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:298:35: .
+                    {
+                    matchAny(); if (state.failed) return ;
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop61;
+                default :
+                    break loop61;
                 }
             } while (true);
 
@@ -3252,16 +3252,16 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt62) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:303:20: IdentifierPart
-                    	    {
-                    	    mIdentifierPart(); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:303:20: IdentifierPart
+                            {
+                            mIdentifierPart(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop62;
+                        default :
+                            break loop62;
                         }
                     } while (true);
 
@@ -3285,22 +3285,22 @@ public class DRLLexer extends Lexer {
 
 
                         switch (alt63) {
-                    	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:304:24: IdentifierPart
-                    	    {
-                    	    mIdentifierPart(); if (state.failed) return ;
+                        case 1 :
+                            // /home/etirelli/workspace/jboss/drools/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:304:24: IdentifierPart
+                            {
+                            mIdentifierPart(); if (state.failed) return ;
 
-                    	    }
-                    	    break;
+                            }
+                            break;
 
-                    	default :
-                    	    break loop63;
+                        default :
+                            break loop63;
                         }
                     } while (true);
 
                     match('`'); if (state.failed) return ;
                     if ( state.backtracking==0 ) {
-                      	state.text = getText().substring(1, getText().length() - 1);
+                          state.text = getText().substring(1, getText().length() - 1);
                     }
 
                     }
@@ -4753,7 +4753,7 @@ public class DRLLexer extends Lexer {
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             IntStream input = _input;
-        	int _s = s;
+            int _s = s;
             switch ( s ) {
                     case 0 : 
                         int LA65_6 = input.LA(1);

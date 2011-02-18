@@ -48,134 +48,134 @@ import java.util.Properties;
  */
 public abstract class RuleExecutionSetRepositoryLoader
 {
-	/**
-	 * Loads the <code>RuleExecutionSetRepository</code> using the
-	 * algorithm described above.
-	 * 
-	 * @param defaultFactoryName the className of the default
-	 * 	<code>RuleExecutionSetRepository</code> implementation
-	 * @return
-	 */
-	public static RuleExecutionSetRepository loadRuleExecutionSetRepository(
-			String defaultFactoryName) {
+    /**
+     * Loads the <code>RuleExecutionSetRepository</code> using the
+     * algorithm described above.
+     *
+     * @param defaultFactoryName the className of the default
+     * 	<code>RuleExecutionSetRepository</code> implementation
+     * @return
+     */
+    public static RuleExecutionSetRepository loadRuleExecutionSetRepository(
+        	String defaultFactoryName) {
 
-		Object factory = null;
-		String factoryName = null;
-		ClassLoader cL = Thread.currentThread().getContextClassLoader();
+        Object factory = null;
+        String factoryName = null;
+        ClassLoader cL = Thread.currentThread().getContextClassLoader();
 
-		// Use the Services API (as detailed in the JAR specification), if available, to determine the classname.
-		String propertyName = "org.drools.jsr94.rules.repository.RuleExecutionSetRepository";
-		String fileName = "META-INF/services/" + propertyName;
-		InputStream in = cL.getResourceAsStream(fileName);
+        // Use the Services API (as detailed in the JAR specification), if available, to determine the classname.
+        String propertyName = "org.drools.jsr94.rules.repository.RuleExecutionSetRepository";
+        String fileName = "META-INF/services/" + propertyName;
+        InputStream in = cL.getResourceAsStream(fileName);
 
-		if (in != null) {
-			BufferedReader reader = null;
-			
-			try {
-				reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-				factoryName = reader.readLine();
-				
-				if (factoryName != null) {
-					factory = createFactory(cL, factoryName);
-				}
-				
-			} catch (UnsupportedEncodingException e) {
-				throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
-			} catch (IOException e) {
-				throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
-			} finally {
-				close(reader);
-			}
-		}
+        if (in != null) {
+        	BufferedReader reader = null;
 
-		// Use the properties file "drools.properties"
-		if (factory == null) {
-			// TODO
-		}
+        	try {
+        		reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        		factoryName = reader.readLine();
 
-		// Use system property
-		if (factory == null) {
-			PrivilegedAction action = new PropertyAccessAction(propertyName);
-			factoryName = (String)AccessController.doPrivileged(action);
-			
-			if (factoryName != null) {
-				factory = createFactory(cL, factoryName);
-			}
-		}
+        		if (factoryName != null) {
+        			factory = createFactory(cL, factoryName);
+        		}
 
-		// Use the default factory implementation class.
-		if (factory == null && defaultFactoryName != null) {
-			factory = createFactory(cL, defaultFactoryName);
-		}
-		
-		return (RuleExecutionSetRepository)factory;
-	}
+        	} catch (UnsupportedEncodingException e) {
+        		throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
+        	} catch (IOException e) {
+        		throw new IllegalStateException("Failed to load " + propertyName + ": " + factoryName, e);
+        	} finally {
+        		close(reader);
+        	}
+        }
 
-	/**
-	 * TODO
-	 * 
-	 * @param closeable
-	 */
-	private static void close(Closeable closeable) {
-		if (closeable != null) {
-			try {
-				closeable.close();
-			} catch (IOException e) {
-				// ignored
-			}
-		}
-	}
-	
-	/**
-	 * TODO
-	 * 
-	 * @param cL
-	 * @param factoryName
-	 * @return
-	 */
-	private static Object createFactory(ClassLoader cL, String factoryName) {
-		try {
-			Class factoryClass = cL.loadClass(factoryName);
-			return factoryClass.newInstance();
-		} catch (Throwable t) {
-			throw new IllegalStateException("Failed to load: " + factoryName, t);
-		}
-	}
+        // Use the properties file "drools.properties"
+        if (factory == null) {
+        	// TODO
+        }
 
-	private static class PropertyAccessAction implements PrivilegedAction
-	{
-		private String name;
+        // Use system property
+        if (factory == null) {
+        	PrivilegedAction action = new PropertyAccessAction(propertyName);
+        	factoryName = (String)AccessController.doPrivileged(action);
 
-		PropertyAccessAction(String name) {
-			this.name = name;
-		}
+        	if (factoryName != null) {
+        		factory = createFactory(cL, factoryName);
+        	}
+        }
 
-		public Object run() {
-			return System.getProperty(name);
-		}
-	}
+        // Use the default factory implementation class.
+        if (factory == null && defaultFactoryName != null) {
+        	factory = createFactory(cL, defaultFactoryName);
+        }
 
-	private static class PropertyFileAccessAction implements PrivilegedAction
-	{
-		private String fileName;
+        return (RuleExecutionSetRepository)factory;
+    }
 
-		PropertyFileAccessAction(String fileName) {
-			this.fileName = fileName;
-		}
+    /**
+     * TODO
+     *
+     * @param closeable
+     */
+    private static void close(Closeable closeable) {
+        if (closeable != null) {
+        	try {
+        		closeable.close();
+        	} catch (IOException e) {
+        		// ignored
+        	}
+        }
+    }
 
-		public Object run() {
-			InputStream in = null;
-			
-			try {
-				in = new FileInputStream(fileName);
-				Properties props = new Properties();
-				props.load(in);
-				return props;
-			} catch (IOException e) {
-				throw new SecurityException("Cannot load properties: " + fileName, e);
-			} finally {
-				close(in);
-			}
-		}
-	}
+    /**
+     * TODO
+     *
+     * @param cL
+     * @param factoryName
+     * @return
+     */
+    private static Object createFactory(ClassLoader cL, String factoryName) {
+        try {
+        	Class factoryClass = cL.loadClass(factoryName);
+        	return factoryClass.newInstance();
+        } catch (Throwable t) {
+        	throw new IllegalStateException("Failed to load: " + factoryName, t);
+        }
+    }
+
+    private static class PropertyAccessAction implements PrivilegedAction
+    {
+        private String name;
+
+        PropertyAccessAction(String name) {
+        	this.name = name;
+        }
+
+        public Object run() {
+        	return System.getProperty(name);
+        }
+    }
+
+    private static class PropertyFileAccessAction implements PrivilegedAction
+    {
+        private String fileName;
+
+        PropertyFileAccessAction(String fileName) {
+        	this.fileName = fileName;
+        }
+
+        public Object run() {
+        	InputStream in = null;
+
+        	try {
+        		in = new FileInputStream(fileName);
+        		Properties props = new Properties();
+        		props.load(in);
+        		return props;
+        	} catch (IOException e) {
+        		throw new SecurityException("Cannot load properties: " + fileName, e);
+        	} finally {
+        		close(in);
+        	}
+        }
+    }
 }

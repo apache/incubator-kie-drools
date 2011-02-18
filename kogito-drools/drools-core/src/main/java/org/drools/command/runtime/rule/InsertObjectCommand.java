@@ -39,23 +39,23 @@ public class InsertObjectCommand
     implements
     GenericCommand<FactHandle> {
 
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	@XmlElement
-	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
-	private Object  object;
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+    private Object  object;
 
-	@XmlAttribute(name="out-identifier")
+    @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
 
-	@XmlAttribute(name="return-object")
+    @XmlAttribute(name="return-object")
     private boolean returnObject = true;
-	
-	@XmlAttribute(name="entry-point")
+
+    @XmlAttribute(name="entry-point")
     private String entryPoint;
-      	@XmlAttribute(name="disconnected")
+          @XmlAttribute(name="disconnected")
     private boolean disconnected = false;
-	
+
     public InsertObjectCommand() {
         
     }
@@ -70,12 +70,12 @@ public class InsertObjectCommand
     }
 
     public InsertObjectCommand(Object object, String outIdentifier) {
-		super();
-		this.object = object;
-		this.outIdentifier = outIdentifier;
-	}
+        super();
+        this.object = object;
+        this.outIdentifier = outIdentifier;
+    }
 
-	public FactHandle execute(Context context) {
+    public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
         FactHandle factHandle;

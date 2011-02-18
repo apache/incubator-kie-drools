@@ -91,67 +91,67 @@ public class MVELDumperTest {
         assertEquals( expected, result );
     }
 
-	private Object parse(String parserRuleName, String treeRuleName,
-			final String text) throws Exception {
-		return newParser(parserRuleName, treeRuleName, newCharStream(text));
-	}
+    private Object parse(String parserRuleName, String treeRuleName,
+        	final String text) throws Exception {
+        return newParser(parserRuleName, treeRuleName, newCharStream(text));
+    }
 
-	private CharStream newCharStream(final String text) {
-		return new ANTLRStringStream(text);
-	}
+    private CharStream newCharStream(final String text) {
+        return new ANTLRStringStream(text);
+    }
 
-	private Object newParser(String parserRuleName, String treeRuleName,
-			final CharStream charStream) {
-		return execTreeParser(parserRuleName, treeRuleName, charStream);
-	}
+    private Object newParser(String parserRuleName, String treeRuleName,
+        	final CharStream charStream) {
+        return execTreeParser(parserRuleName, treeRuleName, charStream);
+    }
 
-	public Object execTreeParser(String testRuleName, String testTreeRuleName,
-			CharStream charStream) {
-		Object treeRuleReturn = null;
-		try {
-			DRLLexer lexer = new DRLLexer(charStream);
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-			DRLParser parser = new DRLParser(tokens);
-			/** Use Reflection to get rule method from parser */
-			Method ruleName = Class.forName("org.drools.lang.DRLParser")
-					.getMethod(testRuleName);
+    public Object execTreeParser(String testRuleName, String testTreeRuleName,
+        	CharStream charStream) {
+        Object treeRuleReturn = null;
+        try {
+        	DRLLexer lexer = new DRLLexer(charStream);
+        	CommonTokenStream tokens = new CommonTokenStream(lexer);
+        	DRLParser parser = new DRLParser(tokens);
+        	/** Use Reflection to get rule method from parser */
+        	Method ruleName = Class.forName("org.drools.lang.DRLParser")
+        			.getMethod(testRuleName);
 
-			/** Invoke grammar rule, and get the return value */
-			Object ruleReturn = ruleName.invoke(parser);
-			
-			if (treeRuleReturn != null) {
-				/** If return object is instanceof AST, get the toStringTree */
-				if (treeRuleReturn.toString().indexOf(
-						testTreeRuleName + "_return") > 0) {
-					try { // NullPointerException may happen here...
-						Class _treeReturn = Class
-								.forName("org.drools.lang.DescrBuilderTree"
-										+ "$" + testTreeRuleName + "_return");
-						Field[] fields = _treeReturn.getDeclaredFields();
-						for (Field field : fields) {
-							if (field.getType().getName().contains(
-									"org.drools.lang.descr.")) {
-								return field.get(treeRuleReturn);
-							}
-						}
-					} catch (Exception e) {
-						System.err.println(e);
-					}
-				}
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return treeRuleReturn;
-	}
+        	/** Invoke grammar rule, and get the return value */
+        	Object ruleReturn = ruleName.invoke(parser);
+
+        	if (treeRuleReturn != null) {
+        		/** If return object is instanceof AST, get the toStringTree */
+        		if (treeRuleReturn.toString().indexOf(
+        				testTreeRuleName + "_return") > 0) {
+        			try { // NullPointerException may happen here...
+        				Class _treeReturn = Class
+        						.forName("org.drools.lang.DescrBuilderTree"
+        								+ "$" + testTreeRuleName + "_return");
+        				Field[] fields = _treeReturn.getDeclaredFields();
+        				for (Field field : fields) {
+        					if (field.getType().getName().contains(
+        							"org.drools.lang.descr.")) {
+        						return field.get(treeRuleReturn);
+        					}
+        				}
+        			} catch (Exception e) {
+        				System.err.println(e);
+        			}
+        		}
+        	}
+        } catch (ClassNotFoundException e) {
+        	e.printStackTrace();
+        } catch (SecurityException e) {
+        	e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+        	e.printStackTrace();
+        } catch (IllegalAccessException e) {
+        	e.printStackTrace();
+        } catch (InvocationTargetException e) {
+        	e.printStackTrace();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        }
+        return treeRuleReturn;
+    }
 }

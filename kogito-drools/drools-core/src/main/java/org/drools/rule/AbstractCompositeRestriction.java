@@ -58,9 +58,9 @@ public abstract class AbstractCompositeRestriction
         for ( int i = 0, ilength = this.restrictions.length; i < ilength; i++ ) {
             final Declaration[] declarations = this.restrictions[i].getRequiredDeclarations();
             for ( int j = 0, jlength = declarations.length; j < jlength; j++ ) {
-            	if( declarations[j].getExtractor() != null ){
+                if( declarations[j].getExtractor() != null ){
                     set.add( declarations[j] );
-            	}
+                }
             }
         }
 

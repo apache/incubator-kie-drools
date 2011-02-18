@@ -37,7 +37,7 @@ import org.drools.spi.AcceptsWriteAccessor;
 public class ClassFieldAccessorStore
     implements
     Externalizable {
-	
+
     private static final long serialVersionUID = 510l;
     
     private Map<AccessorKey, BaseLookupEntry> lookup;

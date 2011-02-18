@@ -24,7 +24,7 @@ public class TimerServiceFactory {
     public static TimerService getTimerService( SessionConfiguration config ) {
         switch( config.getClockType() ) {
             case REALTIME_CLOCK:
-            	return config.newTimerService();
+                return config.newTimerService();
             case PSEUDO_CLOCK:
                 return new PseudoClockScheduler();
         }

@@ -401,11 +401,11 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-		public void postCompileAddFunction(FunctionDescr functionDescr,
-				TypeResolver typeResolver) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void postCompileAddFunction(FunctionDescr functionDescr,
+        		TypeResolver typeResolver) {
+        	// TODO Auto-generated method stub
+
+        }
 
         public void preCompileAddFunction(FunctionDescr functionDescr,
                                           TypeResolver typeResolver) {

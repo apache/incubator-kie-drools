@@ -272,10 +272,10 @@ public class MVELCompilationUnit
         if ( interceptors != null ) {
             parserContext.setInterceptors( interceptors );
         }
-		
+
         
         parserContext.addIndexedVariables( inputIdentifiers );
-		String identifier = null;
+        String identifier = null;
         String type = null;
         try {
             for ( int i = 0, length = inputIdentifiers.length; i < length; i++ ) {
@@ -449,8 +449,8 @@ public class MVELCompilationUnit
                                        final ClassLoader classLoader,
                                        final ParserContext parserContext,
                                        final int languageLevel) {
-    	MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-    	
+        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
         }

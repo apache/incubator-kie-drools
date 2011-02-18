@@ -72,26 +72,26 @@ public class Location {
     public static final String LOCATION_RHS_CONTENT = "RHSContent";
     public static final String LOCATION_HEADER_CONTENT = "HeaderContent";
     
-	private int type;
-	private Map properties = new HashMap();
-	
-	public Location(int type) {
-		this.type = type;
-	}
-	
-	public int getType() {
-		return type;
-	}
-	
-	public void setProperty(String name, Object value) {
-		properties.put(name, value);
-	}
-	
-	public Object getProperty(String name) {
-		return properties.get(name);
-	}
-	
-	public void setType(int type) {
-		this.type = type;
-	}
+    private int type;
+    private Map properties = new HashMap();
+
+    public Location(int type) {
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setProperty(String name, Object value) {
+        properties.put(name, value);
+    }
+
+    public Object getProperty(String name) {
+        return properties.get(name);
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 }

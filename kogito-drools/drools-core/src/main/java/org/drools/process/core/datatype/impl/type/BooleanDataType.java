@@ -46,15 +46,15 @@ public final class BooleanDataType
         return false;
     }
 
-	public Object readValue(String value) {
-		return new Boolean(value);
-	}
+    public Object readValue(String value) {
+        return new Boolean(value);
+    }
 
-	public String writeValue(Object value) {
-		return (Boolean) value ? "true" : "false";
-	}
+    public String writeValue(Object value) {
+        return (Boolean) value ? "true" : "false";
+    }
 
-	public String getStringType() {
-		return "Boolean";
-	}
+    public String getStringType() {
+        return "Boolean";
+    }
 }

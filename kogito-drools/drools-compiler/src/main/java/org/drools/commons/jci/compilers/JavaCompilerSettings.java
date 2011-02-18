@@ -44,12 +44,12 @@ public class JavaCompilerSettings {
     }
     
     public JavaCompilerSettings( final JavaCompilerSettings pSettings ) {
-    	targetVersion = pSettings.targetVersion;
-    	sourceVersion = pSettings.sourceVersion;
-    	sourceEncoding = pSettings.sourceEncoding;
-    	warnings = pSettings.warnings;
-    	deprecations = pSettings.deprecations;
-    	debug = pSettings.debug;
+        targetVersion = pSettings.targetVersion;
+        sourceVersion = pSettings.sourceVersion;
+        sourceEncoding = pSettings.sourceEncoding;
+        warnings = pSettings.warnings;
+        deprecations = pSettings.deprecations;
+        debug = pSettings.debug;
     }
     
     public void setTargetVersion( final String pTargetVersion ) {

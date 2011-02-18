@@ -58,8 +58,8 @@ public class PetStore {
 
     public static void main(String[] args) {
         try {
-        	KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        	conf.setOption( DumpDirOption.get(new File("/home/kverlaen/NotBackedUp/development/drools/drools-examples/drools-examples-drl/dump")) );
+            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+            conf.setOption( DumpDirOption.get(new File("/home/kverlaen/NotBackedUp/development/drools/drools-examples/drools-examples-drl/dump")) );
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
             kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
@@ -95,9 +95,9 @@ public class PetStore {
      */
     public static class PetStoreUI extends JPanel {
 
-		private static final long serialVersionUID = 510l;
+        private static final long serialVersionUID = 510l;
 
-		private JTextArea        output;
+        private JTextArea        output;
 
         private TableModel       tableModel;
 
@@ -286,9 +286,9 @@ public class PetStore {
          */
         private class NameRenderer extends DefaultTableCellRenderer {
 
-			private static final long serialVersionUID = 510l;
+        	private static final long serialVersionUID = 510l;
 
-			public NameRenderer() {
+        	public NameRenderer() {
                 super();
             }
 
@@ -303,9 +303,9 @@ public class PetStore {
          */
         private class PriceRenderer extends DefaultTableCellRenderer {
 
-			private static final long serialVersionUID = 510l;
+        	private static final long serialVersionUID = 510l;
 
-			public PriceRenderer() {
+        	public PriceRenderer() {
                 super();
             }
 
@@ -324,9 +324,9 @@ public class PetStore {
      */
     private static class TableModel extends AbstractTableModel {
 
-    	private static final long serialVersionUID = 510l;
+        private static final long serialVersionUID = 510l;
 
-		private String[]  columnNames = {"Name", "Price"};
+        private String[]  columnNames = {"Name", "Price"};
 
         private ArrayList<Product> items;
 

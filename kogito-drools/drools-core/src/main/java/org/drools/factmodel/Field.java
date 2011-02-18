@@ -24,7 +24,7 @@ package org.drools.factmodel;
  */
 public class Field {
 
-	public String name;
-	public String type;
+    public String name;
+    public String type;
 
 }

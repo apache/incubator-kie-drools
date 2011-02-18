@@ -30,48 +30,48 @@ import org.drools.rule.Package;
  */
 class PackageChangeInfo {
 
-	private Collection<Package> changedPackages;
-	private Collection<String> removedPackages;
+    private Collection<Package> changedPackages;
+    private Collection<String> removedPackages;
 
-	void addPackage(Package p) {
+    void addPackage(Package p) {
 
-		if (changedPackages == null) {
-			changedPackages = new ArrayList<Package>();
-		}
+        if (changedPackages == null) {
+        	changedPackages = new ArrayList<Package>();
+        }
 
-		changedPackages.add(p);
-	}
+        changedPackages.add(p);
+    }
 
-	void addRemovedPackages(Collection<String> removedPackages) {
+    void addRemovedPackages(Collection<String> removedPackages) {
 
-		for (String name : removedPackages) {
-			addRemovedPackage(name);
-		}
+        for (String name : removedPackages) {
+        	addRemovedPackage(name);
+        }
 
-	}
+    }
 
-	Collection<Package> getChangedPackages() {
-		if (changedPackages != null) {
-			return changedPackages;
-		} else {
-			return Collections.emptyList();
-		}
-	}
+    Collection<Package> getChangedPackages() {
+        if (changedPackages != null) {
+        	return changedPackages;
+        } else {
+        	return Collections.emptyList();
+        }
+    }
 
-	Collection<String> getRemovedPackages() {
-		if (removedPackages != null) {
-			return removedPackages;
-		} else {
-			return Collections.emptyList();
-		}
-	}
+    Collection<String> getRemovedPackages() {
+        if (removedPackages != null) {
+        	return removedPackages;
+        } else {
+        	return Collections.emptyList();
+        }
+    }
 
-	void addRemovedPackage(String name) {
+    void addRemovedPackage(String name) {
 
-		if (removedPackages == null) {
-			removedPackages = new ArrayList<String>();
-		}
+        if (removedPackages == null) {
+        	removedPackages = new ArrayList<String>();
+        }
 
-		removedPackages.add(name);
-	}
+        removedPackages.add(name);
+    }
 }

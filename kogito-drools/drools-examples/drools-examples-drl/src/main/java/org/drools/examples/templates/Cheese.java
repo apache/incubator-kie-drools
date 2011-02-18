@@ -21,7 +21,7 @@ public class Cheese {
     private int    price;
 
     public Cheese() {
-    	
+
     }
     public Cheese(final String type,
                   final int price) {

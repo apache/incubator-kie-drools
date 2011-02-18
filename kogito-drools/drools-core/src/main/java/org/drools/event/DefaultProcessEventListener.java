@@ -25,34 +25,34 @@ import org.drools.event.process.ProcessVariableChangedEvent;
 
 public class DefaultProcessEventListener implements ProcessEventListener {
 
-	public void afterNodeLeft(ProcessNodeLeftEvent event) {
-	}
-	
-	public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-	}
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
+    }
 
-	public void afterProcessCompleted(ProcessCompletedEvent event) {
-	}
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+    }
 
-	public void afterProcessStarted(ProcessStartedEvent event) {
-	}
-	
-	public void afterVariableChanged(ProcessVariableChangedEvent event) {
-	}
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+    }
 
-	public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-	}
+    public void afterProcessStarted(ProcessStartedEvent event) {
+    }
 
-	public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-	}
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+    }
 
-	public void beforeProcessCompleted(ProcessCompletedEvent event) {
-	}
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+    }
 
-	public void beforeProcessStarted(ProcessStartedEvent event) {
-	}
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+    }
 
-	public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-	}
+    public void beforeProcessCompleted(ProcessCompletedEvent event) {
+    }
+
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+    }
+
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+    }
 
 }

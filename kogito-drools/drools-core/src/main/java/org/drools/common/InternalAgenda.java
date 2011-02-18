@@ -88,16 +88,16 @@ public interface InternalAgenda
      * 
      * @return 
      */
-	public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
-		                                       String ruleName,
-		                                       long processInstanceId);
+    public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName,
+                                               String ruleName,
+                                               long processInstanceId);
 
-	/**
-	 * Adds a RuleFlowGroupListerner to the named RuleFlowGroup
-	 * 
-	 * @param ruleFlowGroup
-	 * @param listener
-	 */
+    /**
+     * Adds a RuleFlowGroupListerner to the named RuleFlowGroup
+     *
+     * @param ruleFlowGroup
+     * @param listener
+     */
     public void addRuleFlowGroupListener(String ruleFlowGroup,
                                          RuleFlowGroupListener listener);
 

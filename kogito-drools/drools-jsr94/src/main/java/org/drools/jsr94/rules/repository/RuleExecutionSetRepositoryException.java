@@ -26,29 +26,29 @@ import javax.rules.RuleExecutionException;
  */
 public class RuleExecutionSetRepositoryException extends RuleExecutionException
 {
-	/**
-	 * Default serial version UID. 
-	 */
-	private static final long serialVersionUID = 510l;
+    /**
+     * Default serial version UID.
+     */
+    private static final long serialVersionUID = 510l;
 
-	/**
-	 * TODO
-	 * 
-	 * @param message
-	 */
-	public RuleExecutionSetRepositoryException(String message) {
-		super(message);
-	}
+    /**
+     * TODO
+     *
+     * @param message
+     */
+    public RuleExecutionSetRepositoryException(String message) {
+        super(message);
+    }
 
-	/**
-	 * TODO
-	 * 
-	 * @param message
-	 * @param exception
-	 */
-	public RuleExecutionSetRepositoryException(
-			String message,
-			Exception exception) {
-		super(message, exception);
-	}
+    /**
+     * TODO
+     *
+     * @param message
+     * @param exception
+     */
+    public RuleExecutionSetRepositoryException(
+        	String message,
+        	Exception exception) {
+        super(message, exception);
+    }
 }

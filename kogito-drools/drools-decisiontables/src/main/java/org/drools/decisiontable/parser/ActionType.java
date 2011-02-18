@@ -66,7 +66,7 @@ public class ActionType {
         
         
         Code( String colHeader, String colShort ){
-        	this( colHeader, colShort, Integer.MAX_VALUE );
+            this( colHeader, colShort, Integer.MAX_VALUE );
         }
         
         public String getColHeader(){
@@ -75,9 +75,9 @@ public class ActionType {
         public String getColShort(){
             return colShort;
         }
-		public int getMaxCount() {
-			return maxCount;
-		}
+        public int getMaxCount() {
+        	return maxCount;
+        }
     }
 
     public static final EnumSet<Code> ATTRIBUTE_CODE_SET = EnumSet.range( Code.SALIENCE, Code.RULEFLOWGROUP );
@@ -85,8 +85,8 @@ public class ActionType {
     private static final Map<String,Code> tag2code = new HashMap<String,Code>();
     static {
         for( Code code: EnumSet.allOf( Code.class ) ){
-        	tag2code.put( code.colHeader, code );
-        	tag2code.put( code.colShort, code );
+            tag2code.put( code.colHeader, code );
+            tag2code.put( code.colShort, code );
         }
     }
 
@@ -102,19 +102,19 @@ public class ActionType {
     }
 
     public static EnumSet<Code> getAttributeCodeSet() {
-		return ATTRIBUTE_CODE_SET;
-	}
+        return ATTRIBUTE_CODE_SET;
+    }
 
-	public static Map<String, Code> getTag2code() {
-		return tag2code;
-	}
+    public static Map<String, Code> getTag2code() {
+        return tag2code;
+    }
 
-	/**
+    /**
      * Retrieves the code.
      * @return an enum Code value
      */
     public Code getCode(){
-    	return this.code;
+        return this.code;
     }
 
     /**
@@ -140,16 +140,16 @@ public class ActionType {
         Code code = tag2code.get( ucValue );
         if( code == null ) code = tag2code.get( ucValue.substring( 0, 1 ) );
         if( code != null ){
-        	
-        	int count = 0;
-        	for( ActionType at: actionTypeMap.values() ){
-        		if( at.getCode() == code ) count++;
-        	}
-        	if( count >= code.getMaxCount() ){
-        		throw new DecisionTableParseException( "Maximum number of " +
-        				code.getColHeader() + "/" + code.getColShort() + " columns is " +
-        				code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name(row, column) );
-        	}
+
+            int count = 0;
+            for( ActionType at: actionTypeMap.values() ){
+            	if( at.getCode() == code ) count++;
+            }
+            if( count >= code.getMaxCount() ){
+            	throw new DecisionTableParseException( "Maximum number of " +
+            			code.getColHeader() + "/" + code.getColShort() + " columns is " +
+            			code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name(row, column) );
+            }
             actionTypeMap.put( new Integer( column ), new ActionType( code ) );
         } else {
             throw new DecisionTableParseException(
@@ -162,11 +162,11 @@ public class ActionType {
      * This is where a code snippet template is added.
      */
     public void addTemplate(int row, int column, String content) {
-    	if( this.sourceBuilder == null ){
-    		throw new DecisionTableParseException(
+        if( this.sourceBuilder == null ){
+        	throw new DecisionTableParseException(
                     "Unexpected content \"" + content + "\" in cell " +
                     RuleSheetParserUtil.rc2name(row, column) + ", leave this cell blank" );
-    	}
+        }
         this.sourceBuilder.addTemplate( row, column, content );
     }
 

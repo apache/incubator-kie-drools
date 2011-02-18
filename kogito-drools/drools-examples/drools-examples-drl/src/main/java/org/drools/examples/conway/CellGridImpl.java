@@ -77,8 +77,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#getCellAt(int, int)
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#getCellAt(int, int)
-	 */
+     * @see org.drools.examples.conway.CellGrid#getCellAt(int, int)
+     */
     public Cell getCellAt(final int row,
                           final int column) {
         return this.cells[row][column];
@@ -88,8 +88,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#getNumberOfRows()
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#getNumberOfRows()
-	 */
+     * @see org.drools.examples.conway.CellGrid#getNumberOfRows()
+     */
     public int getNumberOfRows() {
         return this.cells.length;
     }
@@ -98,8 +98,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#getNumberOfColumns()
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#getNumberOfColumns()
-	 */
+     * @see org.drools.examples.conway.CellGrid#getNumberOfColumns()
+     */
     public int getNumberOfColumns() {
         return this.cells[0].length;
     }
@@ -108,8 +108,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#nextGeneration()
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#nextGeneration()
-	 */
+     * @see org.drools.examples.conway.CellGrid#nextGeneration()
+     */
     public boolean nextGeneration() {
         return delegate.nextGeneration();
     }
@@ -118,8 +118,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#killAll()
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#killAll()
-	 */
+     * @see org.drools.examples.conway.CellGrid#killAll()
+     */
     public void killAll() {
         this.delegate.killAll();
     }
@@ -128,8 +128,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#setPattern(org.drools.examples.conway.patterns.ConwayPattern)
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#setPattern(org.drools.examples.conway.patterns.ConwayPattern)
-	 */
+     * @see org.drools.examples.conway.CellGrid#setPattern(org.drools.examples.conway.patterns.ConwayPattern)
+     */
     public void setPattern(final ConwayPattern pattern) {
         final boolean[][] gridData = pattern.getPattern();
         int gridWidth = gridData[0].length;
@@ -175,8 +175,8 @@ public class CellGridImpl implements CellGrid {
      * @see org.drools.examples.conway.CellGrid#dispose()
      */
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#dispose()
-	 */
+     * @see org.drools.examples.conway.CellGrid#dispose()
+     */
     public void dispose() {
         if ( this.session != null ) {
             this.session.dispose();
@@ -184,8 +184,8 @@ public class CellGridImpl implements CellGrid {
     }
 
     /* (non-Javadoc)
-	 * @see org.drools.examples.conway.CellGrid#toString()
-	 */
+     * @see org.drools.examples.conway.CellGrid#toString()
+     */
     public String toString() {
         StringBuffer buf = new StringBuffer();
 

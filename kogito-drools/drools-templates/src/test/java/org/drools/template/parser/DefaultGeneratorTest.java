@@ -9,29 +9,29 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DefaultGeneratorTest {
-	private DefaultGenerator g;
+    private DefaultGenerator g;
 
     @Before
     public void setUp() throws Exception {
         Map<String, RuleTemplate> t = new HashMap<String, RuleTemplate>();
         TemplateContainer tc = new TemplateContainer() {
 
-			public Column getColumn(String name) {
-				return null;
-			}
+        	public Column getColumn(String name) {
+        		return null;
+        	}
 
-			public Column[] getColumns() {
-				return null;
-			}
+        	public Column[] getColumns() {
+        		return null;
+        	}
 
-			public String getHeader() {
-				return null;
-			}
+        	public String getHeader() {
+        		return null;
+        	}
 
-			public Map<String, RuleTemplate> getTemplates() {
-				return null;
-			}
-        	
+        	public Map<String, RuleTemplate> getTemplates() {
+        		return null;
+        	}
+
         };
         RuleTemplate rt1 = new RuleTemplate("rt1", tc);
         rt1.setContents("Test template 1");
@@ -49,31 +49,31 @@ public class DefaultGeneratorTest {
     
     @Test
     public void testSelectTemplate() {
-		g.generate("rt2", new Row());
-		String drl = g.getDrl();
-		assertEquals("Test template 2\n\n", drl);
-	}
-	
+        g.generate("rt2", new Row());
+        String drl = g.getDrl();
+        assertEquals("Test template 2\n\n", drl);
+    }
+
     @Test
     public void testGenerate() {
-		g.generate("rt2", new Row());
-		g.generate("rt1", new Row());
-		String drl = g.getDrl();
-		assertEquals("Test template 2\n\nTest template 1\n\n", drl);
-	}
-	
+        g.generate("rt2", new Row());
+        g.generate("rt1", new Row());
+        String drl = g.getDrl();
+        assertEquals("Test template 2\n\nTest template 1\n\n", drl);
+    }
+
     @Test
     public void testAddColumns() {
-		Column[] columns = {new StringColumn("col1"), new StringColumn("col2")};
-		Row r = new Row(1, columns);
-		r.getCell(0).setValue("value1");
-		r.getCell(1).setValue("value2");
+        Column[] columns = {new StringColumn("col1"), new StringColumn("col2")};
+        Row r = new Row(1, columns);
+        r.getCell(0).setValue("value1");
+        r.getCell(1).setValue("value2");
 //		Row r = new Row(1);
 //		r.addCell(new StringCell(r, new StringColumn("col1"), "value1"));
 //		r.addCell(new StringCell(r, new StringColumn("col2"), "value2"));
-		g.generate("rt3", r);
-		String drl = g.getDrl();
-		assertEquals("1 value1 value2\n\n", drl);
-	}
+        g.generate("rt3", r);
+        String drl = g.getDrl();
+        assertEquals("1 value1 value2\n\n", drl);
+    }
 
 }

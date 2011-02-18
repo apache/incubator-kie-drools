@@ -26,24 +26,24 @@ import org.drools.runtime.rule.impl.AgendaImpl;
 
 public class AgendaGroupSetFocusCommand implements GenericCommand<Object> {
 
-	private String name;
-	
-	public String getName() {
-		return name;
-	}
+    private String name;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Void execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         ksession.getAgenda().getAgendaGroup( this.name ).setFocus();
-		return null;
-	}
+        return null;
+    }
 
-	public String toString() {
-		return "session.getAgenda().getAgendaGroup(" + name + ").setFocus();";
-	}
-	
+    public String toString() {
+        return "session.getAgenda().getAgendaGroup(" + name + ").setFocus();";
+    }
+
 }

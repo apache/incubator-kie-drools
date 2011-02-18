@@ -30,59 +30,59 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
  * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
 public class TestRuleExecutionSetRepository
-	implements RuleExecutionSetRepository
+    implements RuleExecutionSetRepository
 {
-	/**
-	 * Default serial version UID.
-	 */
-	private static final long serialVersionUID = 510l;
+    /**
+     * Default serial version UID.
+     */
+    private static final long serialVersionUID = 510l;
 
-	/**
-	 * Required default ctor. 
-	 */
-	public TestRuleExecutionSetRepository() {
-	}
+    /**
+     * Required default ctor.
+     */
+    public TestRuleExecutionSetRepository() {
+    }
 
-	/* (non-Javadoc)
-	 * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRegistrations()
-	 */
-	public List getRegistrations()
-	throws RuleExecutionSetRepositoryException {
-		String s = "Implementation outstanding";
-		throw new UnsupportedOperationException(s);
-	}
+    /* (non-Javadoc)
+     * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRegistrations()
+     */
+    public List getRegistrations()
+    throws RuleExecutionSetRepositoryException {
+        String s = "Implementation outstanding";
+        throw new UnsupportedOperationException(s);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
-	 */
-	public RuleExecutionSet getRuleExecutionSet(
-			String bindUri,
-			Map properties)
-	throws RuleExecutionSetRepositoryException {
-		String s = "Implementation outstanding";
-		throw new UnsupportedOperationException(s);
-	}
+    /* (non-Javadoc)
+     * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#getRuleExecutionSet(java.lang.String, java.util.Map)
+     */
+    public RuleExecutionSet getRuleExecutionSet(
+        	String bindUri,
+        	Map properties)
+    throws RuleExecutionSetRepositoryException {
+        String s = "Implementation outstanding";
+        throw new UnsupportedOperationException(s);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
-	 */
-	public void registerRuleExecutionSet(
-			String bindUri,
-			RuleExecutionSet ruleSet,
-			Map properties)
-	throws RuleExecutionSetRegisterException {
-		String s = "Implementation outstanding";
-		throw new UnsupportedOperationException(s);
-	}
+    /* (non-Javadoc)
+     * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#registerRuleExecutionSet(java.lang.String, javax.rules.admin.RuleExecutionSet, java.util.Map)
+     */
+    public void registerRuleExecutionSet(
+        	String bindUri,
+        	RuleExecutionSet ruleSet,
+        	Map properties)
+    throws RuleExecutionSetRegisterException {
+        String s = "Implementation outstanding";
+        throw new UnsupportedOperationException(s);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
-	 */
-	public void unregisterRuleExecutionSet(
-			String bindUri,
-			Map properties)
-	throws RuleExecutionSetDeregistrationException {
-		String s = "Implementation outstanding";
-		throw new UnsupportedOperationException(s);
-	}
+    /* (non-Javadoc)
+     * @see org.drools.jsr94.rules.repository.RuleExecutionSetRepository#unregisterRuleExecutionSet(java.lang.String, java.util.Map)
+     */
+    public void unregisterRuleExecutionSet(
+        	String bindUri,
+        	Map properties)
+    throws RuleExecutionSetDeregistrationException {
+        String s = "Implementation outstanding";
+        throw new UnsupportedOperationException(s);
+    }
 }

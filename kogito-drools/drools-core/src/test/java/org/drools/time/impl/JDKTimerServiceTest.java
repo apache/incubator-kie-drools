@@ -42,8 +42,8 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testSingleExecutionJob() throws Exception {
-    	SessionConfiguration config = new SessionConfiguration();
-    	config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger( 100 );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
@@ -55,8 +55,8 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJob() throws Exception {
-    	SessionConfiguration config = new SessionConfiguration();
-    	config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
@@ -69,19 +69,19 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJobWithRemove() throws Exception {
-    	SessionConfiguration config = new SessionConfiguration();
-    	config.setClockType(ClockType.REALTIME_CLOCK);
+        SessionConfiguration config = new SessionConfiguration();
+        config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
-		Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
-		HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
-		ctx.setLimit( 3 );
-		timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
-		Thread.sleep( 1000 );
+        Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
+        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
+        ctx.setLimit( 3 );
+        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
+        Thread.sleep( 1000 );
         timeService.shutdown();
-		assertEquals( 4, ctx.getList().size() );
-	}
-	
-	public static class HelloWorldJob implements Job {
+        assertEquals( 4, ctx.getList().size() );
+    }
+
+    public static class HelloWorldJob implements Job {
         public void execute(JobContext c) {
             HelloWorldJobContext ctx = (HelloWorldJobContext) c;
             int counter = ctx.increaseCounter();
@@ -90,31 +90,31 @@ public class JDKTimerServiceTest {
             }
             ctx.getList().add( ((HelloWorldJobContext)ctx).getMessage() + " : " + counter);
         }
-	}
-	
-	public static class HelloWorldJobContext implements JobContext {
-	    private String message;
-	    private  TimerService timeService;
-	    private JobHandle jobHandle;
-	    
-	    private List list;
-	    
-	    private int counter;
-	    private int limit;
-	    
-	    public HelloWorldJobContext(String message, TimerService timeService) {
-	        this.message = message;
-	        this.timeService = timeService;
-	        this.list = new ArrayList();
-	    }
-	    
-	    public String getMessage() {
-	        return this.message;
-	    }
-	    
-	    public int increaseCounter() {
-	        return this.counter++;
-	    }
+    }
+
+    public static class HelloWorldJobContext implements JobContext {
+        private String message;
+        private  TimerService timeService;
+        private JobHandle jobHandle;
+
+        private List list;
+
+        private int counter;
+        private int limit;
+
+        public HelloWorldJobContext(String message, TimerService timeService) {
+            this.message = message;
+            this.timeService = timeService;
+            this.list = new ArrayList();
+        }
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public int increaseCounter() {
+            return this.counter++;
+        }
 
         public JobHandle getJobHandle() {
             return this.jobHandle;
@@ -135,17 +135,17 @@ public class JDKTimerServiceTest {
         public List getList() {
             return list;
         }
-	    
-	    
-	}
-	
-	public static class DelayedTrigger implements Trigger {
-	    private Stack<Date> stack;
-	    
-	    public DelayedTrigger(long delay) {
-	        this( new long[] { delay } );
-	    }
-	    
+
+
+    }
+
+    public static class DelayedTrigger implements Trigger {
+        private Stack<Date> stack;
+
+        public DelayedTrigger(long delay) {
+            this( new long[] { delay } );
+        }
+
         public DelayedTrigger(long[] delay) {
             this.stack = new Stack<Date>();
             for( int i = delay.length-1; i >= 0; i-- ) {
@@ -172,6 +172,6 @@ public class JDKTimerServiceTest {
             // FIXME : not safe, since timestamps will be wrong
             out.writeObject( stack );
         }
-	    
-	}
+
+    }
 }

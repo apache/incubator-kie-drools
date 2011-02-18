@@ -19,12 +19,12 @@ import java.util.Map;
 
 public interface TemplateContainer {
 
-	Map<String, RuleTemplate> getTemplates();
+    Map<String, RuleTemplate> getTemplates();
 
-	Column[] getColumns();
-	
-	Column getColumn(String name);
+    Column[] getColumns();
 
-	String getHeader();
+    Column getColumn(String name);
+
+    String getHeader();
 
 }

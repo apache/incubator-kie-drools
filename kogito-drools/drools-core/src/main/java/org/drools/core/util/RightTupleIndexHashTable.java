@@ -152,36 +152,36 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         return this.tupleValueFullIterator;
     }
     
-	public FastIterator fastIterator() {
-		return LinkedList.fastIterator;
-	}
-	
-	public FastIterator fullFastIterator() {
-		return new FullFastIterator( this.table );
-	}
-	
-	public static class FullFastIterator implements FastIterator {
+    public FastIterator fastIterator() {
+        return LinkedList.fastIterator;
+    }
+
+    public FastIterator fullFastIterator() {
+        return new FullFastIterator( this.table );
+    }
+
+    public static class FullFastIterator implements FastIterator {
         private Entry[]           table;
         private int               row;
         
         
         
-		public FullFastIterator(Entry[] table) {
-			this.table = table;
-			this.row = 0;
-		}
+        public FullFastIterator(Entry[] table) {
+        	this.table = table;
+        	this.row = 0;
+        }
 
 
 
-		public Entry next(Entry object) {
-			RightTuple rightTuple = ( RightTuple ) object;
-			RightTupleList list = null;
-			if ( rightTuple != null ) {
-			    list = rightTuple.getMemory(); // assumes you do not pass in a null RightTuple
-			}
-			
-			int length = table.length;
-			
+        public Entry next(Entry object) {
+        	RightTuple rightTuple = ( RightTuple ) object;
+        	RightTupleList list = null;
+        	if ( rightTuple != null ) {
+        	    list = rightTuple.getMemory(); // assumes you do not pass in a null RightTuple
+        	}
+
+        	int length = table.length;
+
             while ( this.row < length ) {
                 // check if there is a current bucket
                 while ( list == null ) {
@@ -215,9 +215,9 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                 }
             }
             return null;
-		}
-		
-	}
+        }
+
+    }
 
     public static class FieldIndexHashTableFullIterator
         implements

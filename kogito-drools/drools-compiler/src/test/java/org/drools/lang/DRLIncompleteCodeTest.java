@@ -25,211 +25,211 @@ public class DRLIncompleteCodeTest {
     
     @Test
     public void testIncompleteCode1() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.* query MyQuery rule MyRule when Class ( property memberOf collexction ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
-		System.out.println(parser.getErrors());
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.* query MyQuery rule MyRule when Class ( property memberOf collexction ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
+        System.out.println(parser.getErrors());
 
-		assertNotNull(descr);
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
+        assertNotNull(descr);
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
 
-		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-				getLastIntegerValue(parser.getEditorSentences().get(2)
-						.getContent()));
-	}
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
+        		getLastIntegerValue(parser.getEditorSentences().get(2)
+        				.getContent()));
+    }
 
     @Test
     public void testIncompleteCode2() throws DroolsParserException,
-			RecognitionException {
-		String input = "rule MyRule when Class ( property memberOf collection ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "rule MyRule when Class ( property memberOf collection ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertNotNull(descr);
-		assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
-				getLastIntegerValue(parser.getEditorSentences().get(0)
-						.getContent()));
-	}
+        assertNotNull(descr);
+        assertEquals(Location.LOCATION_LHS_INSIDE_CONDITION_END,
+        		getLastIntegerValue(parser.getEditorSentences().get(0)
+        				.getContent()));
+    }
 
     @Test
     public void testIncompleteCode3() throws DroolsParserException,
-			RecognitionException {
-		String input = "rule MyRule when Class ( property > somevalue ) then end query MyQuery Class ( property == collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "rule MyRule when Class ( property > somevalue ) then end query MyQuery Class ( property == collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertNotNull(descr);
-		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
+        assertNotNull(descr);
+        assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
 
-		assertNotNull(descr);
-		assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(1)).getName());
+        assertNotNull(descr);
+        assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(1)).getName());
 
-		assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
-				.getEditorSentences().get(0).getContent()));
-	}
+        assertEquals(Location.LOCATION_RHS, getLastIntegerValue(parser
+        		.getEditorSentences().get(0).getContent()));
+    }
 
     @Test
     public void testIncompleteCode4() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.*"
-				+ " rule MyRule when Class ( property == collection ) then end "
-				+ " query MyQuery Class ( property == collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.*"
+        		+ " rule MyRule when Class ( property == collection ) then end "
+        		+ " query MyQuery Class ( property == collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
 
-		assertNotNull(descr);
-		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
+        assertNotNull(descr);
+        assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
 
-		assertNotNull(descr);
-		assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(1)).getName());
-	}
+        assertNotNull(descr);
+        assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(1)).getName());
+    }
 
     @Test
     public void testIncompleteCode5() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.*"
-				+ " rule MyRule when Class ( property memberOf collection ) then end "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.*"
+        		+ " rule MyRule when Class ( property memberOf collection ) then end "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertNotNull(descr);
-	}
+        assertNotNull(descr);
+    }
 
     @Test
     public void testIncompleteCode6() throws DroolsParserException,
-			RecognitionException {
-		String input = "packe 1111.111 import a.b.c.*"
-				+ " rule MyRule when Class ( property memberOf collection ) then end "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "packe 1111.111 import a.b.c.*"
+        		+ " rule MyRule when Class ( property memberOf collection ) then end "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		// here is null, 'cos parser emits an error on predict dfa on "packe
-		// 1111.111" and stops the parsing
-		assertNull(descr);
-	}
+        // here is null, 'cos parser emits an error on predict dfa on "packe
+        // 1111.111" and stops the parsing
+        assertNull(descr);
+    }
 
     @Test
     public void testIncompleteCode7() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c imrt a.b.c.*"
-				+ " rule MyRule when Class ( property memberOf collection ) then end "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "package a.b.c imrt a.b.c.*"
+        		+ " rule MyRule when Class ( property memberOf collection ) then end "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertNotNull(descr);
-	}
+        assertNotNull(descr);
+    }
 
     @Test
     public void testIncompleteCode8() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.1111.c.*"
-				+ " rule MyRule when Class ( property memberOf collection ) then end "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+        	RecognitionException {
+        String input = "package a.b.c import a.1111.c.*"
+        		+ " rule MyRule when Class ( property memberOf collection ) then end "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
         System.out.println(parser.getErrors());
 
-		assertEquals("a.b.c", descr.getNamespace());
-		// FIXME: assertEquals(2, descr.getRules().size());
-		assertEquals(true, parser.hasErrors());
-	}
+        assertEquals("a.b.c", descr.getNamespace());
+        // FIXME: assertEquals(2, descr.getRules().size());
+        assertEquals(true, parser.hasErrors());
+    }
 
     @Test @Ignore
-	public void testIncompleteCode9() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.*"
-				+ " rule MyRule xxxxx Class ( property memberOf collection ) then end "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+    public void testIncompleteCode9() throws DroolsParserException,
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.*"
+        		+ " rule MyRule xxxxx Class ( property memberOf collection ) then end "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
 
-		assertEquals(1, descr.getRules().size());
-		assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(0)).getName());
-	}
-
-    @Test @Ignore
-	public void testIncompleteCode10() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.*"
-				+ " rule MyRule xxxxx Class ( property memberOf "
-				+ " query MyQuery Class ( property memberOf collection ) end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
-
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
-
-		assertEquals(0, descr.getRules().size());
-	}
+        assertEquals(1, descr.getRules().size());
+        assertEquals("MyQuery", ((RuleDescr) descr.getRules().get(0)).getName());
+    }
 
     @Test @Ignore
-	public void testIncompleteCode11() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c import a.b.c.*"
-				+ " rule MyRule when Class ( property memberOf collection ) then end "
-				+ " qzzzzuery MyQuery Class ( property ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
+    public void testIncompleteCode10() throws DroolsParserException,
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.*"
+        		+ " rule MyRule xxxxx Class ( property memberOf "
+        		+ " query MyQuery Class ( property memberOf collection ) end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
 
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
 
-		assertNotNull(descr);
-		assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
-	}
+        assertEquals(0, descr.getRules().size());
+    }
+
+    @Test @Ignore
+    public void testIncompleteCode11() throws DroolsParserException,
+        	RecognitionException {
+        String input = "package a.b.c import a.b.c.*"
+        		+ " rule MyRule when Class ( property memberOf collection ) then end "
+        		+ " qzzzzuery MyQuery Class ( property ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
+
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
+
+        assertNotNull(descr);
+        assertEquals("MyRule", ((RuleDescr) descr.getRules().get(0)).getName());
+    }
 
     @Test
     public void testIncompleteCode12() throws DroolsParserException,
-			RecognitionException {
-		String input = "package a.b.c " + "import a.b.c.* " + "rule MyRule"
-				+ "  when " + "    m: Message(  ) " + "    " + "  then"
-				+ "end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
-		assertNotNull(descr);
+        	RecognitionException {
+        String input = "package a.b.c " + "import a.b.c.* " + "rule MyRule"
+        		+ "  when " + "    m: Message(  ) " + "    " + "  then"
+        		+ "end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
+        assertNotNull(descr);
 
-		assertEquals("a.b.c", descr.getNamespace());
-		assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
-				.getTarget());
-	}
+        assertEquals("a.b.c", descr.getNamespace());
+        assertEquals("a.b.c.*", ((ImportDescr) descr.getImports().get(0))
+        		.getTarget());
+    }
 
     @Test
     public void testIncompleteCode13() throws DroolsParserException,
-			RecognitionException {
-		String input = "package com.sample "
-				+ "import com.sample.DroolsTest.Message; "
-				+ "rule \"Hello World\"" + "  when " + "  then" + "     \\\" "
-				+ "end ";
-		DrlParser parser = new DrlParser();
-		PackageDescr descr = parser.parse(true, input);
-		assertNotNull(descr);
-	}
+        	RecognitionException {
+        String input = "package com.sample "
+        		+ "import com.sample.DroolsTest.Message; "
+        		+ "rule \"Hello World\"" + "  when " + "  then" + "     \\\" "
+        		+ "end ";
+        DrlParser parser = new DrlParser();
+        PackageDescr descr = parser.parse(true, input);
+        assertNotNull(descr);
+    }
 
-	@SuppressWarnings("unchecked")
-	private int getLastIntegerValue(LinkedList list) {
-		// System.out.println(list.toString());
-		int lastIntergerValue = -1;
-		for (Object object : list) {
-			if (object instanceof Integer) {
-				lastIntergerValue = (Integer) object;
-			}
-		}
-		return lastIntergerValue;
-	}
+    @SuppressWarnings("unchecked")
+    private int getLastIntegerValue(LinkedList list) {
+        // System.out.println(list.toString());
+        int lastIntergerValue = -1;
+        for (Object object : list) {
+        	if (object instanceof Integer) {
+        		lastIntergerValue = (Integer) object;
+        	}
+        }
+        return lastIntergerValue;
+    }
 }

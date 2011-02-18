@@ -34,7 +34,7 @@ public class FireAllRulesCommand
     implements
     GenericCommand<Integer> {
 
-	@XmlAttribute
+    @XmlAttribute
     private int          max          = -1;
     private AgendaFilter agendaFilter = null;
     

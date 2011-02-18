@@ -61,71 +61,71 @@ public class ExcelParserTest {
      */
     @Test
     public void testCellMerge() throws Exception {
-    	ExcelParser parser = new ExcelParser((Map<String, List<DataListener>>) null);
-    	
-    	Range[] ranges = new Range[1];
-    	
-    	MockRange r1 = new MockRange();
-    	ranges[0] = r1;
-    	r1.topLeft = new MockCell();
-    	r1.topLeft.row = 2;
-    	r1.topLeft.column = 2;
-    	r1.topLeft.contents = "first";
-    	
+        ExcelParser parser = new ExcelParser((Map<String, List<DataListener>>) null);
 
-    	
-    	r1.bottomRight = new MockCell();
-    	r1.bottomRight.column = 5;
-    	r1.bottomRight.row = 7;
-    	r1.bottomRight.contents = "last";
-    	
-    	
-    	MockCell cell = new MockCell();
-    	cell.contents = "test";
-    	cell.row = 1;
-    	cell.column = 1;
-    	
-    	assertNull(parser.getRangeIfMerged( cell, ranges));
-    	
-    	cell = new MockCell();
-    	cell.contents = "wrong";
-    	cell.row = 2;
-    	cell.column = 5;
-    	
-    	assertEquals("first", parser.getRangeIfMerged( cell, ranges).getTopLeft().getContents());
-    	
+        Range[] ranges = new Range[1];
+
+        MockRange r1 = new MockRange();
+        ranges[0] = r1;
+        r1.topLeft = new MockCell();
+        r1.topLeft.row = 2;
+        r1.topLeft.column = 2;
+        r1.topLeft.contents = "first";
+
+
+
+        r1.bottomRight = new MockCell();
+        r1.bottomRight.column = 5;
+        r1.bottomRight.row = 7;
+        r1.bottomRight.contents = "last";
+
+
+        MockCell cell = new MockCell();
+        cell.contents = "test";
+        cell.row = 1;
+        cell.column = 1;
+
+        assertNull(parser.getRangeIfMerged( cell, ranges));
+
+        cell = new MockCell();
+        cell.contents = "wrong";
+        cell.row = 2;
+        cell.column = 5;
+
+        assertEquals("first", parser.getRangeIfMerged( cell, ranges).getTopLeft().getContents());
+
     }
     
     static class MockCell<CellFeatures> implements Cell {
 
-    	int column;
-    	int row;
-    	String contents;
-    	
+        int column;
+        int row;
+        String contents;
 
-		public CellFormat getCellFormat() {
-			return null;
-		}
 
-		public int getColumn() {
-			return column;
-		}
+        public CellFormat getCellFormat() {
+        	return null;
+        }
 
-		public String getContents() {
-			return contents;
-		}
+        public int getColumn() {
+        	return column;
+        }
 
-		public int getRow() {
-			return row;
-		}
+        public String getContents() {
+        	return contents;
+        }
 
-		public CellType getType() {
-			return null;
-		}
+        public int getRow() {
+        	return row;
+        }
 
-		public boolean isHidden() {
-			return false;
-		}
+        public CellType getType() {
+        	return null;
+        }
+
+        public boolean isHidden() {
+        	return false;
+        }
 
         public jxl.CellFeatures getCellFeatures() {
             // TODO Auto-generated method stub
@@ -136,25 +136,25 @@ public class ExcelParserTest {
     
     static class MockRange implements Range {
 
-    	MockCell bottomRight;
-		MockCell topLeft;
-    	
-		public Cell getBottomRight() {
-			return bottomRight;
-		}
+        MockCell bottomRight;
+        MockCell topLeft;
 
-		public int getFirstSheetIndex() {
-			return 0;
-		}
+        public Cell getBottomRight() {
+        	return bottomRight;
+        }
 
-		public int getLastSheetIndex() {
-			return 0;
-		}
+        public int getFirstSheetIndex() {
+        	return 0;
+        }
 
-		public Cell getTopLeft() {
-			return topLeft;
-		}
-    	
+        public int getLastSheetIndex() {
+        	return 0;
+        }
+
+        public Cell getTopLeft() {
+        	return topLeft;
+        }
+
     }
 
 }

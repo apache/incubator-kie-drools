@@ -69,7 +69,7 @@ public class KnowledgeCommandContext
     }
     
     public WorkItemManager getWorkItemManager() {
-    	return statefulKsession.getWorkItemManager();
+        return statefulKsession.getWorkItemManager();
     }
     
     public ExecutionResults getExecutionResults() {

@@ -34,64 +34,64 @@ import org.mvel2.templates.TemplateRuntime;
  */
 class VerifierMessagesVisitor extends ReportVisitor {
 
-	private static final String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";
-	private static final String VERIFIER_MESSAGE_TEMPLATE = "verifierMessage.htm";
+    private static final String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";
+    private static final String VERIFIER_MESSAGE_TEMPLATE = "verifierMessage.htm";
 
-	public static final String NOTES = "Notes";
-	public static final String WARNINGS = "Warnings";
-	public static final String ERRORS = "Errors";
+    public static final String NOTES = "Notes";
+    public static final String WARNINGS = "Warnings";
+    public static final String ERRORS = "Errors";
 
-	public static String visitVerifierMessagesCollection(String title,
-			Collection<VerifierMessageBase> messages, VerifierData data) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Collection<String> messageTemplates = new ArrayList<String>();
-		String myTemplate = readFile(VERIFIER_MESSAGES_TEMPLATE);
+    public static String visitVerifierMessagesCollection(String title,
+        	Collection<VerifierMessageBase> messages, VerifierData data) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Collection<String> messageTemplates = new ArrayList<String>();
+        String myTemplate = readFile(VERIFIER_MESSAGES_TEMPLATE);
 
-		for (VerifierMessageBase message : messages) {
-			messageTemplates.add(visitVerifierMessage(message, data));
-		}
+        for (VerifierMessageBase message : messages) {
+        	messageTemplates.add(visitVerifierMessage(message, data));
+        }
 
-		map.put("title", title);
-		map.put("messages", messageTemplates);
+        map.put("title", title);
+        map.put("messages", messageTemplates);
 
-		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
-	}
+        return String.valueOf(TemplateRuntime.eval(myTemplate, map));
+    }
 
-	public static String visitVerifierMessage(VerifierMessageBase message,
-			VerifierData data) {
-		if (message instanceof VerifierRangeCheckMessage) {
-			return visitVerifierMessage((VerifierRangeCheckMessage) message,
-					data);
-		} else if (message instanceof VerifierMessage) {
-			return visitVerifierMessage((VerifierMessage) message);
-		}
+    public static String visitVerifierMessage(VerifierMessageBase message,
+        	VerifierData data) {
+        if (message instanceof VerifierRangeCheckMessage) {
+        	return visitVerifierMessage((VerifierRangeCheckMessage) message,
+        			data);
+        } else if (message instanceof VerifierMessage) {
+        	return visitVerifierMessage((VerifierMessage) message);
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public static String visitVerifierMessage(
-			VerifierRangeCheckMessage message, VerifierData data) {
+    public static String visitVerifierMessage(
+        	VerifierRangeCheckMessage message, VerifierData data) {
 
-		return MissingRangesReportVisitor.visitRangeCheckMessage(
-				UrlFactory.THIS_FOLDER, message, data);
-	}
+        return MissingRangesReportVisitor.visitRangeCheckMessage(
+        		UrlFactory.THIS_FOLDER, message, data);
+    }
 
-	public static String visitVerifierMessage(VerifierMessage message) {
+    public static String visitVerifierMessage(VerifierMessage message) {
 
-		Map<String, Object> map = new HashMap<String, Object>();
-		Collection<String> causeUrls = new ArrayList<String>();
-		String myTemplate = readFile(VERIFIER_MESSAGE_TEMPLATE);
+        Map<String, Object> map = new HashMap<String, Object>();
+        Collection<String> causeUrls = new ArrayList<String>();
+        String myTemplate = readFile(VERIFIER_MESSAGE_TEMPLATE);
 
-		// Solve the url's to causes if there is any.
-		for (Cause cause : message.getCauses()) {
-			causeUrls.add(UrlFactory.getUrl(cause));
-		}
-		
-		map.put("title", message.getSeverity());
-		map.put("reason", message.getFaulty());
-		map.put("message", message.getMessage());
-		map.put("causes", causeUrls);
+        // Solve the url's to causes if there is any.
+        for (Cause cause : message.getCauses()) {
+        	causeUrls.add(UrlFactory.getUrl(cause));
+        }
 
-		return String.valueOf(TemplateRuntime.eval(myTemplate, map));
-	}
+        map.put("title", message.getSeverity());
+        map.put("reason", message.getFaulty());
+        map.put("message", message.getMessage());
+        map.put("causes", causeUrls);
+
+        return String.valueOf(TemplateRuntime.eval(myTemplate, map));
+    }
 }

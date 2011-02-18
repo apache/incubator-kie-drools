@@ -21,38 +21,38 @@ import java.io.Serializable;
 
 public class Chosen implements Serializable {
 
-	private static final long serialVersionUID = 510l;
-	
-	private int id;
+    private static final long serialVersionUID = 510l;
 
-	private String guestName;
+    private int id;
 
-	private Hobby hobby;
-	
-	public Chosen() {
-		
-	}
+    private String guestName;
 
-	public Chosen(int id, String guestName, Hobby hobby) {
-		this.id = id;
-		this.guestName = guestName;
-		this.hobby = hobby;
-	}
+    private Hobby hobby;
 
-	public int getId() {
-		return this.id;
-	}
+    public Chosen() {
 
-	public String getGuestName() {
-		return this.guestName;
-	}
+    }
 
-	public Hobby getHobby() {
-		return this.hobby;
-	}
+    public Chosen(int id, String guestName, Hobby hobby) {
+        this.id = id;
+        this.guestName = guestName;
+        this.hobby = hobby;
+    }
 
-	public String toString() {
-		return "{Chosen id=" + this.id + ", name=" + this.guestName
-				+ ", hobbies=" + this.hobby + "}";
-	}
+    public int getId() {
+        return this.id;
+    }
+
+    public String getGuestName() {
+        return this.guestName;
+    }
+
+    public Hobby getHobby() {
+        return this.hobby;
+    }
+
+    public String toString() {
+        return "{Chosen id=" + this.id + ", name=" + this.guestName
+        		+ ", hobbies=" + this.hobby + "}";
+    }
 }

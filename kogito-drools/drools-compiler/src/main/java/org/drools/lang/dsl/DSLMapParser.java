@@ -1,8 +1,8 @@
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-01-18 19:45:17
 
-	package org.drools.lang.dsl;
-	import java.util.List;
-	import java.util.ArrayList;
+    package org.drools.lang.dsl;
+    import java.util.List;
+    import java.util.ArrayList;
     import java.util.regex.Pattern;
     import org.drools.compiler.ParserError;
 
@@ -77,19 +77,19 @@ public class DSLMapParser extends Parser {
     public String getGrammarFileName() { return "src/main/resources/org/drools/lang/dsl/DSLMap.g"; }
 
 
-    	private List<ParserError> errors = new ArrayList<ParserError>();
+        private List<ParserError> errors = new ArrayList<ParserError>();
 
-    	public void reportError(RecognitionException ex) {
-    		errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
-    	}
+        public void reportError(RecognitionException ex) {
+        	errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
+        }
 
-    	public List<ParserError> getErrors() {
-    		return errors;
-    	}
+        public List<ParserError> getErrors() {
+        	return errors;
+        }
 
-    	/** Override this method to not output mesages */
-    	public void emitErrorMessage(String msg) {
-    	}
+        /** Override this method to not output mesages */
+        public void emitErrorMessage(String msg) {
+        }
 
         private static final Pattern namePat = Pattern.compile( "[\\p{L}_$][\\p{L}_$\\d]*" );
 
@@ -101,24 +101,24 @@ public class DSLMapParser extends Parser {
             }
         }
 
-    	private boolean validateLT(int LTNumber, String text){
-    		if (null == input) return false;
-    		if (null == input.LT(LTNumber)) return false;
-    		if (null == input.LT(LTNumber).getText()) return false;
-    		
-    		String text2Validate = input.LT(LTNumber).getText();
-    		if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
-    			text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
-    		}
+        private boolean validateLT(int LTNumber, String text){
+        	if (null == input) return false;
+        	if (null == input.LT(LTNumber)) return false;
+        	if (null == input.LT(LTNumber).getText()) return false;
 
-    		return text2Validate.equalsIgnoreCase(text);
-    	}
+        	String text2Validate = input.LT(LTNumber).getText();
+        	if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
+        		text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
+        	}
 
-    	private boolean validateIdentifierKey(String text){
-    		return validateLT(1, text);
-    	}
+        	return text2Validate.equalsIgnoreCase(text);
+        }
 
-    	
+        private boolean validateIdentifierKey(String text){
+        	return validateLT(1, text);
+        }
+
+
 
 
     public static class mapping_file_return extends ParserRuleReturnScope {
@@ -154,21 +154,21 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt1) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: statement
-            	    {
-            	    pushFollow(FOLLOW_statement_in_mapping_file272);
-            	    statement1=statement();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: statement
+                    {
+                    pushFollow(FOLLOW_statement_in_mapping_file272);
+                    statement1=statement();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_statement.add(statement1.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_statement.add(statement1.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    break loop1;
+                default :
+                    break loop1;
                 }
             } while (true);
 
@@ -219,7 +219,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -302,7 +302,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -523,12 +523,12 @@ public class DSLMapParser extends Parser {
         }
         catch ( RecognitionException e ) {
 
-            		reportError( e );
-            	
+                	reportError( e );
+
         }
         catch ( RewriteEmptyStreamException e ) {
 
-            	
+
         }
         finally {
         }
@@ -733,7 +733,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -843,7 +843,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -886,22 +886,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt8) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: ks= key_sentence
-            	    {
-            	    pushFollow(FOLLOW_key_sentence_in_key_section492);
-            	    ks=key_sentence();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: ks= key_sentence
+                    {
+                    pushFollow(FOLLOW_key_sentence_in_key_section492);
+                    ks=key_sentence();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_key_sentence.add(ks.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_key_sentence.add(ks.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt8 >= 1 ) break loop8;
-            	    if (state.backtracking>0) {state.failed=true; return retval;}
+                default :
+                    if ( cnt8 >= 1 ) break loop8;
+                    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(8, input);
                         throw eee;
@@ -958,7 +958,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1070,7 +1070,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1121,22 +1121,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt10) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: literal
-            	    {
-            	    pushFollow(FOLLOW_literal_in_key_chunk551);
-            	    literal17=literal();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: literal
+                    {
+                    pushFollow(FOLLOW_literal_in_key_chunk551);
+                    literal17=literal();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal17.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal17.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt10 >= 1 ) break loop10;
-            	    if (state.backtracking>0) {state.failed=true; return retval;}
+                default :
+                    if ( cnt10 >= 1 ) break loop10;
+                    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(10, input);
                         throw eee;
@@ -1158,7 +1158,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1201,22 +1201,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt11) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_sentence
-            	    {
-            	    pushFollow(FOLLOW_value_sentence_in_value_section566);
-            	    value_sentence18=value_sentence();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_sentence
+                    {
+                    pushFollow(FOLLOW_value_sentence_in_value_section566);
+                    value_sentence18=value_sentence();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) stream_value_sentence.add(value_sentence18.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) stream_value_sentence.add(value_sentence18.getTree());
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt11 >= 1 ) break loop11;
-            	    if (state.backtracking>0) {state.failed=true; return retval;}
+                default :
+                    if ( cnt11 >= 1 ) break loop11;
+                    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(11, input);
                         throw eee;
@@ -1273,7 +1273,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1385,7 +1385,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1467,44 +1467,44 @@ public class DSLMapParser extends Parser {
                 }
 
                 switch (alt13) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: literal
-            	    {
-            	    pushFollow(FOLLOW_literal_in_value_chunk626);
-            	    literal20=literal();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: literal
+                    {
+                    pushFollow(FOLLOW_literal_in_value_chunk626);
+                    literal20=literal();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal20.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal20.getTree());
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: EQUALS
-            	    {
-            	    EQUALS21=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_value_chunk628); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    EQUALS21_tree = (Object)adaptor.create(EQUALS21);
-            	    adaptor.addChild(root_0, EQUALS21_tree);
-            	    }
+                    }
+                    break;
+                case 2 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: EQUALS
+                    {
+                    EQUALS21=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_value_chunk628); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    EQUALS21_tree = (Object)adaptor.create(EQUALS21);
+                    adaptor.addChild(root_0, EQUALS21_tree);
+                    }
 
-            	    }
-            	    break;
-            	case 3 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: COMMA
-            	    {
-            	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_value_chunk630); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    COMMA22_tree = (Object)adaptor.create(COMMA22);
-            	    adaptor.addChild(root_0, COMMA22_tree);
-            	    }
+                    }
+                    break;
+                case 3 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: COMMA
+                    {
+                    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_value_chunk630); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    COMMA22_tree = (Object)adaptor.create(COMMA22);
+                    adaptor.addChild(root_0, COMMA22_tree);
+                    }
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt13 >= 1 ) break loop13;
-            	    if (state.backtracking>0) {state.failed=true; return retval;}
+                default :
+                    if ( cnt13 >= 1 ) break loop13;
+                    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(13, input);
                         throw eee;
@@ -1526,7 +1526,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1584,7 +1584,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1640,9 +1640,9 @@ public class DSLMapParser extends Parser {
 
             if ( state.backtracking==0 ) {
                
-              		CommonToken back2 =  (CommonToken)input.LT(-2);
-              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
-              		
+                  	CommonToken back2 =  (CommonToken)input.LT(-2);
+                  	if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+
             }
             name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition693); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
@@ -1719,7 +1719,7 @@ public class DSLMapParser extends Parser {
                     CommonToken rc1 = (CommonToken)input.LT(1);
                     if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
                     isIdentifier( name );
-              	
+
             }
 
 
@@ -2007,7 +2007,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2097,66 +2097,66 @@ public class DSLMapParser extends Parser {
                 }
 
                 switch (alt16) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
-            	    {
-            	    pushFollow(FOLLOW_literal_in_pattern1126);
-            	    literal26=literal();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
+                    {
+                    pushFollow(FOLLOW_literal_in_pattern1126);
+                    literal26=literal();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal26.getTree());
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal26.getTree());
 
-            	    }
-            	    break;
-            	case 2 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:221:13: LEFT_CURLY literal RIGHT_CURLY
-            	    {
-            	    LEFT_CURLY27=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1140); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    LEFT_CURLY27_tree = (Object)adaptor.create(LEFT_CURLY27);
-            	    adaptor.addChild(root_0, LEFT_CURLY27_tree);
-            	    }
-            	    pushFollow(FOLLOW_literal_in_pattern1142);
-            	    literal28=literal();
+                    }
+                    break;
+                case 2 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:221:13: LEFT_CURLY literal RIGHT_CURLY
+                    {
+                    LEFT_CURLY27=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1140); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    LEFT_CURLY27_tree = (Object)adaptor.create(LEFT_CURLY27);
+                    adaptor.addChild(root_0, LEFT_CURLY27_tree);
+                    }
+                    pushFollow(FOLLOW_literal_in_pattern1142);
+                    literal28=literal();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal28.getTree());
-            	    RIGHT_CURLY29=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1144); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    RIGHT_CURLY29_tree = (Object)adaptor.create(RIGHT_CURLY29);
-            	    adaptor.addChild(root_0, RIGHT_CURLY29_tree);
-            	    }
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal28.getTree());
+                    RIGHT_CURLY29=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1144); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    RIGHT_CURLY29_tree = (Object)adaptor.create(RIGHT_CURLY29);
+                    adaptor.addChild(root_0, RIGHT_CURLY29_tree);
+                    }
 
-            	    }
-            	    break;
-            	case 3 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
-            	    {
-            	    LEFT_SQUARE30=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1158); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    LEFT_SQUARE30_tree = (Object)adaptor.create(LEFT_SQUARE30);
-            	    adaptor.addChild(root_0, LEFT_SQUARE30_tree);
-            	    }
-            	    pushFollow(FOLLOW_pattern_in_pattern1160);
-            	    pattern31=pattern();
+                    }
+                    break;
+                case 3 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
+                    {
+                    LEFT_SQUARE30=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1158); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    LEFT_SQUARE30_tree = (Object)adaptor.create(LEFT_SQUARE30);
+                    adaptor.addChild(root_0, LEFT_SQUARE30_tree);
+                    }
+                    pushFollow(FOLLOW_pattern_in_pattern1160);
+                    pattern31=pattern();
 
-            	    state._fsp--;
-            	    if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern31.getTree());
-            	    RIGHT_SQUARE32=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1162); if (state.failed) return retval;
-            	    if ( state.backtracking==0 ) {
-            	    RIGHT_SQUARE32_tree = (Object)adaptor.create(RIGHT_SQUARE32);
-            	    adaptor.addChild(root_0, RIGHT_SQUARE32_tree);
-            	    }
+                    state._fsp--;
+                    if (state.failed) return retval;
+                    if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern31.getTree());
+                    RIGHT_SQUARE32=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1162); if (state.failed) return retval;
+                    if ( state.backtracking==0 ) {
+                    RIGHT_SQUARE32_tree = (Object)adaptor.create(RIGHT_SQUARE32);
+                    adaptor.addChild(root_0, RIGHT_SQUARE32_tree);
+                    }
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt16 >= 1 ) break loop16;
-            	    if (state.backtracking>0) {state.failed=true; return retval;}
+                default :
+                    if ( cnt16 >= 1 ) break loop16;
+                    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(16, input);
                         throw eee;
@@ -2178,7 +2178,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2225,9 +2225,9 @@ public class DSLMapParser extends Parser {
 
             if ( state.backtracking==0 ) {
 
-              		CommonToken back2 =  (CommonToken)input.LT(-2);
-              		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
-              		
+                  	CommonToken back2 =  (CommonToken)input.LT(-2);
+                  	if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+
             }
             name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1205); if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
@@ -2324,7 +2324,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2396,7 +2396,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2468,7 +2468,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2540,7 +2540,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2612,7 +2612,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {

@@ -27,54 +27,54 @@ import org.drools.core.util.StringUtils;
  * A cell in a decision table containing a String value
  */
 public class StringCell implements Cell {
-	Row row;
+    Row row;
 
-	String value;
+    String value;
 
-	Column column;
+    Column column;
 
-	private int index;
+    private int index;
 
-	public StringCell() {
-		
-	}
-	StringCell(Row r, Column c) {
-		row = r;
-		column = c;
-	}
+    public StringCell() {
 
-	public String toString() {
-		return "Cell[" + column + ": " + value + "]";
-	}
+    }
+    StringCell(Row r, Column c) {
+        row = r;
+        column = c;
+    }
 
-	public Row getRow() {
-		return row;
-	}
+    public String toString() {
+        return "Cell[" + column + ": " + value + "]";
+    }
 
-	public Column getColumn() {
-		return column;
-	}
+    public Row getRow() {
+        return row;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Column getColumn() {
+        return column;
+    }
 
-	public void addValue(Map<String, Object> vars) {
-		vars.put(column.getName(), value);
-	}
-	public int getIndex() {
-		return index;
-	}
-	public void insert(StatefulSession session) {
-		session.insert(this);
-	}
-	public void setIndex(int i) {
-		index = i;
-	}
-	public void setValue(String v) {
-		value = v;
-	}
-	public boolean isEmpty() {
-		return StringUtils.isEmpty(value);
-	}
+    public Object getValue() {
+        return value;
+    }
+
+    public void addValue(Map<String, Object> vars) {
+        vars.put(column.getName(), value);
+    }
+    public int getIndex() {
+        return index;
+    }
+    public void insert(StatefulSession session) {
+        session.insert(this);
+    }
+    public void setIndex(int i) {
+        index = i;
+    }
+    public void setValue(String v) {
+        value = v;
+    }
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(value);
+    }
 }

@@ -22,7 +22,7 @@ public class Activator
     private ServiceRegistration kdtableReg;
 
     public void start(BundleContext bc) throws Exception {
-    	System.out.println( "registering decision tables drools services" );
+        System.out.println( "registering decision tables drools services" );
         this.kdtableReg = bc.registerService(  new String[]{ DecisionTableProvider.class.getName(), Service.class.getName()},
                                                new DecisionTableProviderImpl(),
                                                new Hashtable() );

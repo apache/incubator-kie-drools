@@ -22,7 +22,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
 
 public interface EventSupport {
-	
+
     List getAgendaEventListeners();
 
     List getWorkingMemoryEventListeners();

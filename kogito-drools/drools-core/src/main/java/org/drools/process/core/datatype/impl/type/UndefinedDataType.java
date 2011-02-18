@@ -52,15 +52,15 @@ public final class UndefinedDataType implements DataType {
         return false;
     }
 
-	public Object readValue(String value) {
-		throw new IllegalArgumentException("Undefined datatype");
-	}
+    public Object readValue(String value) {
+        throw new IllegalArgumentException("Undefined datatype");
+    }
 
-	public String writeValue(Object value) {
-		throw new IllegalArgumentException("Undefined datatype");
-	}
+    public String writeValue(Object value) {
+        throw new IllegalArgumentException("Undefined datatype");
+    }
 
-	public String getStringType() {
-		return "Object";
-	}
+    public String getStringType() {
+        return "Object";
+    }
 }

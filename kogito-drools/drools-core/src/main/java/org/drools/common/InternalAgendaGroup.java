@@ -30,5 +30,5 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public void clear();
 
-	public void remove(AgendaItem agendaItem);
+    public void remove(AgendaItem agendaItem);
 }

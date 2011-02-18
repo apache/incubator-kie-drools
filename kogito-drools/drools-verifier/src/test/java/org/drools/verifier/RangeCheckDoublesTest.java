@@ -43,163 +43,163 @@ public class RangeCheckDoublesTest extends TestBase {
 
     @Test
     public void testSmallerOrEqual() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/Doubles.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("rangeChecks/Doubles.drl"));
 
-		session
-				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-						"Range check for doubles, if smaller than or equal is missing"));
+        session
+        		.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        				"Range check for doubles, if smaller than or equal is missing"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingRangesForDoubles.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		StatelessSessionResult sessionResult = session
-				.executeWithResults(testData);
+        StatelessSessionResult sessionResult = session
+        		.executeWithResults(testData);
 
-		Iterator<Object> iter = sessionResult.iterateObjects();
+        Iterator<Object> iter = sessionResult.iterateObjects();
 
-		Set<String> rulesThatHadErrors = new HashSet<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof Gap) {
-				rulesThatHadErrors.add(((Gap) o).getRuleName());
-			}
-			// System.out.println(o);
-		}
+        Set<String> rulesThatHadErrors = new HashSet<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof Gap) {
+        		rulesThatHadErrors.add(((Gap) o).getRuleName());
+        	}
+        	// System.out.println(o);
+        }
 
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 4a"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 5a"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 4a"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 5a"));
 
-		if (!rulesThatHadErrors.isEmpty()) {
-			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!rulesThatHadErrors.isEmpty()) {
+        	for (String string : rulesThatHadErrors) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 
     @Test
     public void testGreaterOrEqual() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/Doubles.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("rangeChecks/Doubles.drl"));
 
-		session
-				.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-						"Range check for doubles, if greater than or equal is missing"));
+        session
+        		.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        				"Range check for doubles, if greater than or equal is missing"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingRangesForDoubles.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		StatelessSessionResult sessionResult = session
-				.executeWithResults(testData);
+        StatelessSessionResult sessionResult = session
+        		.executeWithResults(testData);
 
-		Iterator<Object> iter = sessionResult.iterateObjects();
+        Iterator<Object> iter = sessionResult.iterateObjects();
 
-		Set<String> rulesThatHadErrors = new HashSet<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof Gap) {
-				rulesThatHadErrors.add(((Gap) o).getRuleName());
-			}
-			// System.out.println(o);
-		}
+        Set<String> rulesThatHadErrors = new HashSet<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof Gap) {
+        		rulesThatHadErrors.add(((Gap) o).getRuleName());
+        	}
+        	// System.out.println(o);
+        }
 
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 4b"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 5b"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 4b"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 5b"));
 
-		if (!rulesThatHadErrors.isEmpty()) {
-			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!rulesThatHadErrors.isEmpty()) {
+        	for (String string : rulesThatHadErrors) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 
     @Test
     public void testEqualAndGreaterThan() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/Doubles.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("rangeChecks/Doubles.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Range check for doubles, equal and greater than"));
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        		"Range check for doubles, equal and greater than"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingRangesForDoubles.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		StatelessSessionResult sessionResult = session
-				.executeWithResults(testData);
+        StatelessSessionResult sessionResult = session
+        		.executeWithResults(testData);
 
-		Iterator<Object> iter = sessionResult.iterateObjects();
+        Iterator<Object> iter = sessionResult.iterateObjects();
 
-		Set<String> rulesThatHadErrors = new HashSet<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof Gap) {
-				rulesThatHadErrors.add(((Gap) o).getRuleName());
-			}
-			// System.out.println(o);
-		}
+        Set<String> rulesThatHadErrors = new HashSet<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof Gap) {
+        		rulesThatHadErrors.add(((Gap) o).getRuleName());
+        	}
+        	// System.out.println(o);
+        }
 
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 1"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 7b"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 3"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 9b"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 1"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 7b"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 3"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 9b"));
 
-		if (!rulesThatHadErrors.isEmpty()) {
-			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!rulesThatHadErrors.isEmpty()) {
+        	for (String string : rulesThatHadErrors) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 
     @Test
     public void testEqualAndSmallerThan() throws Exception {
-		StatelessSession session = getStatelessSession(this.getClass()
-				.getResourceAsStream("rangeChecks/Doubles.drl"));
+        StatelessSession session = getStatelessSession(this.getClass()
+        		.getResourceAsStream("rangeChecks/Doubles.drl"));
 
-		session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-				"Range check for doubles, equal and smaller than"));
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+        		"Range check for doubles, equal and smaller than"));
 
-		VerifierReport result = VerifierReportFactory.newVerifierReport();
-		Collection<? extends Object> testData = getTestData(this.getClass()
-				.getResourceAsStream("MissingRangesForDoubles.drl"), result
-				.getVerifierData());
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+        		.getResourceAsStream("MissingRangesForDoubles.drl"), result
+        		.getVerifierData());
 
-		session.setGlobal("result", result);
+        session.setGlobal("result", result);
 
-		StatelessSessionResult sessionResult = session
-				.executeWithResults(testData);
+        StatelessSessionResult sessionResult = session
+        		.executeWithResults(testData);
 
-		Iterator<Object> iter = sessionResult.iterateObjects();
+        Iterator<Object> iter = sessionResult.iterateObjects();
 
-		Set<String> rulesThatHadErrors = new HashSet<String>();
-		while (iter.hasNext()) {
-			Object o = (Object) iter.next();
-			if (o instanceof Gap) {
-				rulesThatHadErrors.add(((Gap) o).getRuleName());
-			}
-			// System.out.println(o);
-		}
+        Set<String> rulesThatHadErrors = new HashSet<String>();
+        while (iter.hasNext()) {
+        	Object o = (Object) iter.next();
+        	if (o instanceof Gap) {
+        		rulesThatHadErrors.add(((Gap) o).getRuleName());
+        	}
+        	// System.out.println(o);
+        }
 
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 1"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 6b"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 2"));
-		assertTrue(rulesThatHadErrors.remove("Double gap rule 9a"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 1"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 6b"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 2"));
+        assertTrue(rulesThatHadErrors.remove("Double gap rule 9a"));
 
-		if (!rulesThatHadErrors.isEmpty()) {
-			for (String string : rulesThatHadErrors) {
-				fail("Rule " + string + " caused an error.");
-			}
-		}
-	}
+        if (!rulesThatHadErrors.isEmpty()) {
+        	for (String string : rulesThatHadErrors) {
+        		fail("Rule " + string + " caused an error.");
+        	}
+        }
+    }
 }

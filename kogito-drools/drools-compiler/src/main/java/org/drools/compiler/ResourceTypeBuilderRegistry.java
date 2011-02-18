@@ -6,14 +6,14 @@ import java.util.Map;
 import org.drools.builder.ResourceType;
 
 public class ResourceTypeBuilderRegistry {
-	
+
     private static final ResourceTypeBuilderRegistry INSTANCE =
         new ResourceTypeBuilderRegistry();
 
     private Map<ResourceType, ResourceTypeBuilder> registry;
     
     public static ResourceTypeBuilderRegistry getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     private ResourceTypeBuilderRegistry() {

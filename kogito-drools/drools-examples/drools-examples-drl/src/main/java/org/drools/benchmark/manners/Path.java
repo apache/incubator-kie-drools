@@ -17,37 +17,37 @@
 package org.drools.benchmark.manners;
 
 public class Path {
-	private int id;
+    private int id;
 
-	private String guestName;
+    private String guestName;
 
-	private int seat;
+    private int seat;
 
-	public Path() {
-		
-	}
-	
-	public Path(int id, int seat, String guestName) {
-		this.id = id;
-		this.seat = seat;
-		this.guestName = guestName;
-	}
+    public Path() {
 
-	public int getSeat() {
-		return this.seat;
-	}
+    }
 
-	public String getGuestName() {
-		return this.guestName;
-	}
+    public Path(int id, int seat, String guestName) {
+        this.id = id;
+        this.seat = seat;
+        this.guestName = guestName;
+    }
 
-	public int getId() {
-		return this.id;
-	}
+    public int getSeat() {
+        return this.seat;
+    }
 
-	public String toString() {
-		return "[Path id=" + this.id + ", seat=" + this.seat + ", guest="
-				+ this.guestName + "]";
-	}
+    public String getGuestName() {
+        return this.guestName;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public String toString() {
+        return "[Path id=" + this.id + ", seat=" + this.seat + ", guest="
+        		+ this.guestName + "]";
+    }
 
 }

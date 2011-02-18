@@ -4,32 +4,32 @@ import java.util.Set;
 
 public class ObjectWithSet
 {
-	private Set set;
+    private Set set;
 
-	private String message;
-	
-	public String getMessage()
-	{
-		return message;
-	}
-	
-	public void setMessage(String message)
-	{
-		this.message = message;
-	}
-	
-	public ObjectWithSet()
-	{
-	}
+    private String message;
 
-	public Set getSet()
-	{
-		return set;
-	}
+    public String getMessage()
+    {
+        return message;
+    }
 
-	public void setSet(Set set)
-	{
-		this.set = set;
-	}
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+
+    public ObjectWithSet()
+    {
+    }
+
+    public Set getSet()
+    {
+        return set;
+    }
+
+    public void setSet(Set set)
+    {
+        this.set = set;
+    }
 
 }

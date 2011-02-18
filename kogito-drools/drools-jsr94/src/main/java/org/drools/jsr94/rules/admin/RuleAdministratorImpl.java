@@ -111,7 +111,7 @@ public class RuleAdministratorImpl
                                          final RuleExecutionSet set,
                                          final Map properties)
     throws RuleExecutionSetRegisterException {
-    	
+
         // Note: an existing RuleExecutionSet is simply replaced
         repository.registerRuleExecutionSet(bindUri, set, properties);
     }
@@ -131,15 +131,15 @@ public class RuleAdministratorImpl
     public void deregisterRuleExecutionSet(final String bindUri,
                                            final Map properties)
     throws RuleExecutionSetDeregistrationException {
-    	
+
         try {
-			if ( this.repository.getRuleExecutionSet(bindUri, properties) == null ) {
-			    throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
-			}
-		} catch (RuleExecutionSetRepositoryException e) {
-			String s = "Error while retrieving rule execution set bound to: " + bindUri;
-			throw new RuleExecutionSetDeregistrationException(s, e);
-		}
+        	if ( this.repository.getRuleExecutionSet(bindUri, properties) == null ) {
+        	    throw new RuleExecutionSetDeregistrationException( "no execution set bound to: " + bindUri );
+        	}
+        } catch (RuleExecutionSetRepositoryException e) {
+        	String s = "Error while retrieving rule execution set bound to: " + bindUri;
+        	throw new RuleExecutionSetDeregistrationException(s, e);
+        }
 
         repository.unregisterRuleExecutionSet(bindUri, properties);
     }

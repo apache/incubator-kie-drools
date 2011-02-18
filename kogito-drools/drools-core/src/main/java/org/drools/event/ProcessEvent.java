@@ -41,7 +41,7 @@ public class ProcessEvent extends EventObject {
     }
     
     public KnowledgeRuntime getKnowledgeRuntime() {
-    	return kruntime;
+        return kruntime;
     }
 
 }

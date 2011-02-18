@@ -17,42 +17,42 @@
 package org.drools.examples.process.order;
 
 public class Item {
-	
-	private String itemId;
-	private String name;
-	private String description;
-	private int minimalAge;
-	
-	public Item(String itemId) {
-		this.itemId = itemId;
-	}
 
-	public String getName() {
-		return name;
-	}
+    private String itemId;
+    private String name;
+    private String description;
+    private int minimalAge;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Item(String itemId) {
+        this.itemId = itemId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getMinimalAge() {
-		return minimalAge;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setMinimalAge(int minimalAge) {
-		this.minimalAge = minimalAge;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getItemId() {
-		return itemId;
-	}
-	
+    public int getMinimalAge() {
+        return minimalAge;
+    }
+
+    public void setMinimalAge(int minimalAge) {
+        this.minimalAge = minimalAge;
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
 }

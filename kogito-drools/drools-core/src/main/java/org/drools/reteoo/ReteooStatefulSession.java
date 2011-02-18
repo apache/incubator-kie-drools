@@ -174,13 +174,13 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
 
     public void dispose() {
         this.ruleBase.disposeStatefulSession( this );
-    	super.dispose();
+        super.dispose();
         this.executor.shutDown();
     }
 
     @Override
     protected void finalize() throws Throwable {
-    	dispose();
+        dispose();
     }
 
     public List getRuleBaseUpdateListeners() {

@@ -42,16 +42,16 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     private static final long serialVersionUID = 510l;
 
     private long workItemCounter;
-	private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
-	private InternalKnowledgeRuntime kruntime;
-	private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
+    private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
+    private InternalKnowledgeRuntime kruntime;
+    private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
     public DefaultWorkItemManager(InternalKnowledgeRuntime kruntime) {
-	    this.kruntime = kruntime;
-	}
+        this.kruntime = kruntime;
+    }
 
     @SuppressWarnings("unchecked")
-	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workItemCounter = in.readLong();
         workItems = (Map<Long, WorkItem>) in.readObject();
         kruntime = (InternalKnowledgeRuntime) in.readObject();
@@ -65,23 +65,23 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         out.writeObject(workItemHandlers);
     }
 
-	public void internalExecuteWorkItem(WorkItem workItem) {
-	    ((WorkItemImpl) workItem).setId(++workItemCounter);
-	    internalAddWorkItem(workItem);
-	    WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
-	    if (handler != null) {
-	        handler.executeWorkItem(workItem, this);
-	    } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
+    public void internalExecuteWorkItem(WorkItem workItem) {
+        ((WorkItemImpl) workItem).setId(++workItemCounter);
+        internalAddWorkItem(workItem);
+        WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
+        if (handler != null) {
+            handler.executeWorkItem(workItem, this);
+        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
                                                     workItem.getName() );
-	}
+    }
 
-	public void internalAddWorkItem(WorkItem workItem) {
-	    workItems.put(new Long(workItem.getId()), workItem);
-	    // fix to reset workItemCounter after deserialization
-	    if (workItem.getId() > workItemCounter) {
-	    	workItemCounter = workItem.getId();
-	    }
-	}
+    public void internalAddWorkItem(WorkItem workItem) {
+        workItems.put(new Long(workItem.getId()), workItem);
+        // fix to reset workItemCounter after deserialization
+        if (workItem.getId() > workItemCounter) {
+            workItemCounter = workItem.getId();
+        }
+    }
 
     public void internalAbortWorkItem(long id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
@@ -99,13 +99,13 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
 
-	public Set<WorkItem> getWorkItems() {
-	    return new HashSet<WorkItem>(workItems.values());
-	}
+    public Set<WorkItem> getWorkItems() {
+        return new HashSet<WorkItem>(workItems.values());
+    }
 
-	public WorkItem getWorkItem(long id) {
-		return workItems.get(id);
-	}
+    public WorkItem getWorkItem(long id) {
+        return workItems.get(id);
+    }
 
     public void completeWorkItem(long id, Map<String, Object> results) {
         WorkItem workItem = workItems.get(new Long(id));
@@ -140,8 +140,8 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         this.workItemHandlers.put(workItemName, handler);
     }
 
-	public void clear() {
-		this.workItems.clear();
-	}
+    public void clear() {
+        this.workItems.clear();
+    }
 
 }

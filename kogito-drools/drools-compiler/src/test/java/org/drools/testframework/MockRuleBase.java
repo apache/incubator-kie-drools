@@ -19,96 +19,96 @@ import org.drools.runtime.Environment;
 
 public class MockRuleBase implements RuleBase {
 
-	public int getAdditionsSinceLock() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public int getAdditionsSinceLock() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	public Package getPackage(String name) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Package getPackage(String name) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public Package[] getPackages() {
+    public Package[] getPackages() {
 
-		return new Package[0];
-	}
+        return new Package[0];
+    }
 
-	public int getRemovalsSinceLock() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public int getRemovalsSinceLock() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	public StatefulSession[] getStatefulSessions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public StatefulSession[] getStatefulSessions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void lock() {
-		// TODO Auto-generated method stub
+    public void lock() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public StatefulSession newStatefulSession() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public StatefulSession newStatefulSession() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public StatefulSession newStatefulSession(SessionConfiguration config, Environment environment ) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public StatefulSession newStatefulSession(SessionConfiguration config, Environment environment ) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public StatefulSession readStatefulSession(InputStream stream,
-			boolean keepReference) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public StatefulSession readStatefulSession(InputStream stream,
+        	boolean keepReference) throws IOException, ClassNotFoundException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public StatelessSession newStatelessSession() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public StatelessSession newStatelessSession() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void removeFunction(String packageName, String functionName) {
-		// TODO Auto-generated method stub
+    public void removeFunction(String packageName, String functionName) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void removePackage(String packageName) {
-		// TODO Auto-generated method stub
+    public void removePackage(String packageName) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void removeProcess(String id) {
-		// TODO Auto-generated method stub
+    public void removeProcess(String id) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void removeRule(String packageName, String ruleName) {
-		// TODO Auto-generated method stub
+    public void removeRule(String packageName, String ruleName) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void unlock() {
-		// TODO Auto-generated method stub
+    public void unlock() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public void addEventListener(RuleBaseEventListener listener) {
-		// TODO Auto-generated method stub
+    public void addEventListener(RuleBaseEventListener listener) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	public List getRuleBaseEventListeners() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public List getRuleBaseEventListeners() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public void removeEventListener(RuleBaseEventListener listener) {
-		// TODO Auto-generated method stub
+    public void removeEventListener(RuleBaseEventListener listener) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
     public void addPackage(Package pkg) {
         // TODO Auto-generated method stub

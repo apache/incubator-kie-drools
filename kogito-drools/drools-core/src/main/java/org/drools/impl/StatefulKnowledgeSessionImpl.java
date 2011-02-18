@@ -101,7 +101,7 @@ public class StatefulKnowledgeSessionImpl
     StatefulKnowledgeSession,
     InternalWorkingMemoryEntryPoint,
     InternalKnowledgeRuntime {
-	
+
     public ReteooWorkingMemory session;
     public KnowledgeBase   kbase;
 
@@ -200,7 +200,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-    	return ((InternalProcessRuntime) this.session.getProcessRuntime()).getProcessEventListeners();
+        return ((InternalProcessRuntime) this.session.getProcessRuntime()).getProcessEventListeners();
     }
 
     public void removeEventListener(ProcessEventListener listener) {
@@ -280,7 +280,7 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void abortProcessInstance(long id) {
-    	this.session.getProcessRuntime().abortProcessInstance(id);
+        this.session.getProcessRuntime().abortProcessInstance(id);
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
@@ -667,21 +667,21 @@ public class StatefulKnowledgeSessionImpl
             return this.listener.equals( obj );
         }
 
-		public void afterRuleFlowGroupActivated(
-				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-		}
+        public void afterRuleFlowGroupActivated(
+        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+        }
 
-		public void afterRuleFlowGroupDeactivated(
-				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-		}
+        public void afterRuleFlowGroupDeactivated(
+        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        }
 
-		public void beforeRuleFlowGroupActivated(
-				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
-		}
+        public void beforeRuleFlowGroupActivated(
+        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+        }
 
-		public void beforeRuleFlowGroupDeactivated(
-				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
-		}
+        public void beforeRuleFlowGroupDeactivated(
+        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        }
     }
 
     public static class AgendaFilterWrapper
@@ -813,48 +813,48 @@ public class StatefulKnowledgeSessionImpl
     }
     
     public KnowledgeSessionConfiguration getSessionConfiguration() {
-    	return this.session.getSessionConfiguration();
+        return this.session.getSessionConfiguration();
     }
 
-	public TimerService getTimerService() {
-		return this.session.getTimerService();
-	}
+    public TimerService getTimerService() {
+        return this.session.getTimerService();
+    }
 
-	public void startOperation() {
-		this.session.startOperation();
-	}
+    public void startOperation() {
+        this.session.startOperation();
+    }
 
-	public void endOperation() {
-		this.session.endOperation();
-	}
+    public void endOperation() {
+        this.session.endOperation();
+    }
 
-	public void executeQueuedActions() {
-		this.session.executeQueuedActions();
-	}
+    public void executeQueuedActions() {
+        this.session.executeQueuedActions();
+    }
 
-	public Queue<WorkingMemoryAction> getActionQueue() {
-		return this.session.getActionQueue();
-	}
+    public Queue<WorkingMemoryAction> getActionQueue() {
+        return this.session.getActionQueue();
+    }
 
-	public InternalProcessRuntime getProcessRuntime() {
-		return this.session.getProcessRuntime();
-	}
+    public InternalProcessRuntime getProcessRuntime() {
+        return this.session.getProcessRuntime();
+    }
 
-	public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-		this.session.queueWorkingMemoryAction(action);
-	}
+    public void queueWorkingMemoryAction(WorkingMemoryAction action) {
+        this.session.queueWorkingMemoryAction(action);
+    }
 
-	public void setId(int id) {
-		this.session.setId(id);
-	}
+    public void setId(int id) {
+        this.session.setId(id);
+    }
 
-	public void setEndOperationListener(EndOperationListener listener) {
-		this.session.setEndOperationListener(listener);
-	}
+    public void setEndOperationListener(EndOperationListener listener) {
+        this.session.setEndOperationListener(listener);
+    }
 
-	public long getLastIdleTimestamp() {
-		return this.session.getLastIdleTimestamp();
-	}
+    public long getLastIdleTimestamp() {
+        return this.session.getLastIdleTimestamp();
+    }
 
 
 }

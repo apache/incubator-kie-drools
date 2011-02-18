@@ -23,19 +23,19 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 
 public class EnvironmentFactory {
-	
-	private static ThreadLocal<Environment> environment = new ThreadLocal<Environment>();
-	
-	public static Environment newEnvironment() {
+
+    private static ThreadLocal<Environment> environment = new ThreadLocal<Environment>();
+
+    public static Environment newEnvironment() {
             Environment env = new EnvironmentImpl();
             env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
-	    return env;
+        return env;
 //		Environment environment = EnvironmentFactory.environment.get();
 //		if (environment == null) {
 //			environment = new EnvironmentImpl();
 //			EnvironmentFactory.environment.set(environment);
 //		}
 //		return environment;
-	}
+    }
 
 }

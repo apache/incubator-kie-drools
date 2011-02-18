@@ -1,9 +1,9 @@
 // $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMapWalker.g 2011-01-18 19:45:18
 
-	package org.drools.lang.dsl;
-	
-	import java.util.Map;
-	import java.util.HashMap;
+    package org.drools.lang.dsl;
+
+    import java.util.Map;
+    import java.util.HashMap;
 
 
 import org.antlr.runtime.*;
@@ -77,7 +77,7 @@ public class DSLMapWalker extends TreeParser {
         DSLMapping mapping = null;
 
 
-        	((mapping_file_scope)mapping_file_stack.peek()).retval = new DefaultDSLMapping() ;
+            ((mapping_file_scope)mapping_file_stack.peek()).retval = new DefaultDSLMapping() ;
 
         try {
             // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:2: ( ^( VT_DSL_GRAMMAR ( valid_entry )* ) )
@@ -99,20 +99,20 @@ public class DSLMapWalker extends TreeParser {
 
 
                     switch (alt1) {
-                	case 1 :
-                	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: valid_entry
-                	    {
-                	    pushFollow(FOLLOW_valid_entry_in_mapping_file56);
-                	    valid_entry();
+                    case 1 :
+                        // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:23:21: valid_entry
+                        {
+                        pushFollow(FOLLOW_valid_entry_in_mapping_file56);
+                        valid_entry();
 
-                	    state._fsp--;
+                        state._fsp--;
 
 
-                	    }
-                	    break;
+                        }
+                        break;
 
-                	default :
-                	    break loop1;
+                    default :
+                        break loop1;
                     }
                 } while (true);
 
@@ -120,8 +120,8 @@ public class DSLMapWalker extends TreeParser {
                 match(input, Token.UP, null);
             }
 
-            		mapping = ((mapping_file_scope)mapping_file_stack.peek()).retval;
-            	
+                	mapping = ((mapping_file_scope)mapping_file_stack.peek()).retval;
+
 
             }
 
@@ -188,12 +188,12 @@ public class DSLMapWalker extends TreeParser {
         DSLMappingEntry mappingEntry = null;
 
 
-        	((entry_scope)entry_stack.peek()).retval = new AntlrDSLMappingEntry() ;
-        	((entry_scope)entry_stack.peek()).variables = new HashMap<String,Integer>();
-        	((entry_scope)entry_stack.peek()).keybuffer = new StringBuilder();
-        	((entry_scope)entry_stack.peek()).valuebuffer = new StringBuilder();
-        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer = new StringBuilder();
-        	((entry_scope)entry_stack.peek()).sentenceValueBuffer = new StringBuilder();
+            ((entry_scope)entry_stack.peek()).retval = new AntlrDSLMappingEntry() ;
+            ((entry_scope)entry_stack.peek()).variables = new HashMap<String,Integer>();
+            ((entry_scope)entry_stack.peek()).keybuffer = new StringBuilder();
+            ((entry_scope)entry_stack.peek()).valuebuffer = new StringBuilder();
+            ((entry_scope)entry_stack.peek()).sentenceKeyBuffer = new StringBuilder();
+            ((entry_scope)entry_stack.peek()).sentenceValueBuffer = new StringBuilder();
 
         try {
             // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:51:2: ( ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
@@ -235,9 +235,9 @@ public class DSLMapWalker extends TreeParser {
             state._fsp--;
 
                 ((entry_scope)entry_stack.peek()).retval.setVariables( ((entry_scope)entry_stack.peek()).variables );
-            	             ((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).sentenceKeyBuffer.toString());
-            	             ((entry_scope)entry_stack.peek()).retval.setKeyPattern(((entry_scope)entry_stack.peek()).keybuffer.toString());
-            	        
+                             ((entry_scope)entry_stack.peek()).retval.setMappingKey(((entry_scope)entry_stack.peek()).sentenceKeyBuffer.toString());
+                             ((entry_scope)entry_stack.peek()).retval.setKeyPattern(((entry_scope)entry_stack.peek()).keybuffer.toString());
+
             // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:56:3: ( value_section )?
             int alt3=2;
             int LA3_0 = input.LA(1);
@@ -263,11 +263,11 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-            		((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).sentenceValueBuffer.toString());
-            		((entry_scope)entry_stack.peek()).retval.setValuePattern(((entry_scope)entry_stack.peek()).valuebuffer.toString());
-            		mappingEntry = ((entry_scope)entry_stack.peek()).retval;
-            		((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(mappingEntry);
-            	
+                	((entry_scope)entry_stack.peek()).retval.setMappingValue(((entry_scope)entry_stack.peek()).sentenceValueBuffer.toString());
+                	((entry_scope)entry_stack.peek()).retval.setValuePattern(((entry_scope)entry_stack.peek()).valuebuffer.toString());
+                	mappingEntry = ((entry_scope)entry_stack.peek()).retval;
+                	((mapping_file_scope)mapping_file_stack.peek()).retval.addEntry(mappingEntry);
+
 
             }
 
@@ -438,12 +438,12 @@ public class DSLMapWalker extends TreeParser {
                 match(input, Token.UP, null);
             }
 
-            		if ( metalit == null || (metalit!=null?metalit.getText():null) == null || (metalit!=null?metalit.getText():null).length() == 0 ) {
-            			((entry_scope)entry_stack.peek()).retval.setMetaData(DSLMappingEntry.EMPTY_METADATA);
-            		} else {
-                    		((entry_scope)entry_stack.peek()).retval.setMetaData(new DSLMappingEntry.DefaultDSLEntryMetaData( (metalit!=null?metalit.getText():null) ));
-            	        }
-            	
+                	if ( metalit == null || (metalit!=null?metalit.getText():null) == null || (metalit!=null?metalit.getText():null).length() == 0 ) {
+                		((entry_scope)entry_stack.peek()).retval.setMetaData(DSLMappingEntry.EMPTY_METADATA);
+                	} else {
+                        	((entry_scope)entry_stack.peek()).retval.setMetaData(new DSLMappingEntry.DefaultDSLEntryMetaData( (metalit!=null?metalit.getText():null) ));
+                        }
+
 
             }
 
@@ -482,20 +482,20 @@ public class DSLMapWalker extends TreeParser {
 
 
                 switch (alt9) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: key_sentence
-            	    {
-            	    pushFollow(FOLLOW_key_sentence_in_key_section201);
-            	    key_sentence();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:84:19: key_sentence
+                    {
+                    pushFollow(FOLLOW_key_sentence_in_key_section201);
+                    key_sentence();
 
-            	    state._fsp--;
+                    state._fsp--;
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt9 >= 1 ) break loop9;
+                default :
+                    if ( cnt9 >= 1 ) break loop9;
                         EarlyExitException eee =
                             new EarlyExitException(9, input);
                         throw eee;
@@ -568,9 +568,9 @@ public class DSLMapWalker extends TreeParser {
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_key_sentence223);
 
-                    		((entry_scope)entry_stack.peek()).keybuffer.append((vtl!=null?vtl.getText():null));
-                    		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append((vtl!=null?vtl.getText():null));
-                    	
+                        	((entry_scope)entry_stack.peek()).keybuffer.append((vtl!=null?vtl.getText():null));
+                        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append((vtl!=null?vtl.getText():null));
+
 
                     }
                     break;
@@ -579,9 +579,9 @@ public class DSLMapWalker extends TreeParser {
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_key_sentence232);
 
-                    		((entry_scope)entry_stack.peek()).keybuffer.append("\\s+");
-                    		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append(" ");
-                    	
+                        	((entry_scope)entry_stack.peek()).keybuffer.append("\\s+");
+                        	((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append(" ");
+
 
                     }
                     break;
@@ -622,20 +622,20 @@ public class DSLMapWalker extends TreeParser {
 
 
                 switch (alt11) {
-            	case 1 :
-            	    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: value_sentence
-            	    {
-            	    pushFollow(FOLLOW_value_sentence_in_value_section255);
-            	    value_sentence();
+                case 1 :
+                    // src/main/resources/org/drools/lang/dsl/DSLMapWalker.g:105:19: value_sentence
+                    {
+                    pushFollow(FOLLOW_value_sentence_in_value_section255);
+                    value_sentence();
 
-            	    state._fsp--;
+                    state._fsp--;
 
 
-            	    }
-            	    break;
+                    }
+                    break;
 
-            	default :
-            	    if ( cnt11 >= 1 ) break loop11;
+                default :
+                    if ( cnt11 >= 1 ) break loop11;
                         EarlyExitException eee =
                             new EarlyExitException(11, input);
                         throw eee;
@@ -649,7 +649,7 @@ public class DSLMapWalker extends TreeParser {
             }
 
 
-            	((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
+                ((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
 
         }
         catch (RecognitionException re) {
@@ -711,9 +711,9 @@ public class DSLMapWalker extends TreeParser {
                     {
                     vtl=(CommonTree)match(input,VT_LITERAL,FOLLOW_VT_LITERAL_in_value_sentence279);
 
-                    		((entry_scope)entry_stack.peek()).valuebuffer.append((vtl!=null?vtl.getText():null));
-                    		((entry_scope)entry_stack.peek()).sentenceValueBuffer.append((vtl!=null?vtl.getText():null));
-                    	
+                        	((entry_scope)entry_stack.peek()).valuebuffer.append((vtl!=null?vtl.getText():null));
+                        	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append((vtl!=null?vtl.getText():null));
+
 
                     }
                     break;
@@ -722,9 +722,9 @@ public class DSLMapWalker extends TreeParser {
                     {
                     match(input,VT_SPACE,FOLLOW_VT_SPACE_in_value_sentence287);
 
-                    		((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
-                    		((entry_scope)entry_stack.peek()).sentenceValueBuffer.append(" ");
-                    	
+                        	((entry_scope)entry_stack.peek()).valuebuffer.append(" ");
+                        	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append(" ");
+
 
                     }
                     break;
@@ -828,22 +828,22 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-            		((entry_scope)entry_stack.peek()).variables.put((varname!=null?varname.getText():null), Integer.valueOf(0));
-            		
-            		if(q!=null && pattern!=null){
-            			((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(q!=null?q.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
-            		}else if(q==null && pattern!=null){
-            			((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
-            		}else{
-            			((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+"}");
-            		}
-            		
-            		if(q == null || (!q.getText().equals("ENUM") && !q.getText().equals("DATE") && !q.getText().equals("BOOLEAN"))){
-            			((entry_scope)entry_stack.peek()).keybuffer.append(pattern != null? "(" + (pattern!=null?pattern.getText():null) + ")" : "(.*?)");
-            		}else{
-            			((entry_scope)entry_stack.peek()).keybuffer.append("(.*?)");
-            		}
-            	
+                	((entry_scope)entry_stack.peek()).variables.put((varname!=null?varname.getText():null), Integer.valueOf(0));
+
+                	if(q!=null && pattern!=null){
+                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(q!=null?q.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
+                	}else if(q==null && pattern!=null){
+                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+":"+(pattern!=null?pattern.getText():null)+"}");
+                	}else{
+                		((entry_scope)entry_stack.peek()).sentenceKeyBuffer.append("{"+(varname!=null?varname.getText():null)+"}");
+                	}
+
+                	if(q == null || (!q.getText().equals("ENUM") && !q.getText().equals("DATE") && !q.getText().equals("BOOLEAN"))){
+                		((entry_scope)entry_stack.peek()).keybuffer.append(pattern != null? "(" + (pattern!=null?pattern.getText():null) + ")" : "(.*?)");
+                	}else{
+                		((entry_scope)entry_stack.peek()).keybuffer.append("(.*?)");
+                	}
+
 
             }
 
@@ -876,9 +876,9 @@ public class DSLMapWalker extends TreeParser {
 
             match(input, Token.UP, null);
 
-            		((entry_scope)entry_stack.peek()).valuebuffer.append("{" + (lit!=null?lit.getText():null) + "}" );
-             		((entry_scope)entry_stack.peek()).sentenceValueBuffer.append("{"+(lit!=null?lit.getText():null)+"}");
-            	
+                	((entry_scope)entry_stack.peek()).valuebuffer.append("{" + (lit!=null?lit.getText():null) + "}" );
+                 	((entry_scope)entry_stack.peek()).sentenceValueBuffer.append("{"+(lit!=null?lit.getText():null)+"}");
+
 
             }
 

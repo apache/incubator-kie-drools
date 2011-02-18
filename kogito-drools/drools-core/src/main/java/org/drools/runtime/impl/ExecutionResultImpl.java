@@ -33,16 +33,16 @@ import org.drools.xml.jaxb.util.JaxbMapAdapter;
 @XmlRootElement(name="execution-results")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ExecutionResultImpl implements ExecutionResults, Serializable {
-	
-	private static final long serialVersionUID = 510l;
-	
-	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
-	@XmlElement(name="results")
+
+    private static final long serialVersionUID = 510l;
+
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement(name="results")
     HashMap<String, Object> results = new HashMap<String, Object>();
 
-	@XmlJavaTypeAdapter(JaxbMapAdapter.class)
-	@XmlElement(name="facts")
-	HashMap<String, Object> facts = new HashMap<String, Object>();
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement(name="facts")
+    HashMap<String, Object> facts = new HashMap<String, Object>();
     
     /* (non-Javadoc)
      * @see org.drools.batchexecution.BatchExecutionResult#getIdentifiers()

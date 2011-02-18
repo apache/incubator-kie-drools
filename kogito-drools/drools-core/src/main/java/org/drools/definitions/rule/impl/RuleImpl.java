@@ -23,26 +23,26 @@ import org.drools.definition.rule.Query;
 import org.drools.rule.Rule;
 
 public class RuleImpl implements org.drools.definition.rule.Rule, Query {
-	private Rule rule;
-	
-	public RuleImpl(Rule rule) {
-		this.rule = rule;
-	}
+    private Rule rule;
 
-	public String getName() {
-		return this.rule.getName();
-	}
-	
-	public String getPackageName() {
-		return this.rule.getPackage();
-	}
-	
-	@Deprecated
-	public String getMetaAttribute(String identifier) {
-	    return this.rule.getMetaAttribute( identifier );
-	}
+    public RuleImpl(Rule rule) {
+        this.rule = rule;
+    }
 
-	@Deprecated
+    public String getName() {
+        return this.rule.getName();
+    }
+
+    public String getPackageName() {
+        return this.rule.getPackage();
+    }
+
+    @Deprecated
+    public String getMetaAttribute(String identifier) {
+        return this.rule.getMetaAttribute( identifier );
+    }
+
+    @Deprecated
     public Collection<String> listMetaAttributes() {
         return this.rule.getMetaAttributes().keySet();
     }
@@ -57,7 +57,7 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
     }
     
     public Rule getRule() {
-    	return rule;
+        return rule;
     }
 
     public int hashCode() {
@@ -75,5 +75,5 @@ public class RuleImpl implements org.drools.definition.rule.Rule, Query {
         return true;
     }
     
-	
+
 }

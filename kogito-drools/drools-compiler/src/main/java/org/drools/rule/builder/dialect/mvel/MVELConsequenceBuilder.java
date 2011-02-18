@@ -79,7 +79,7 @@ public class MVELConsequenceBuilder
     }
 
     public void build(final RuleBuildContext context, String consequenceName) {
-    	 
+
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
@@ -131,9 +131,9 @@ public class MVELConsequenceBuilder
                                                         dialect.getId() );
             
             if ( "default".equals( consequenceName ) ) {
-            	context.getRule().setConsequence( expr );
+                context.getRule().setConsequence( expr );
             } else {
-            	context.getRule().getNamedConsequences().put(consequenceName, expr);
+                context.getRule().getNamedConsequences().put(consequenceName, expr);
             }
             
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );

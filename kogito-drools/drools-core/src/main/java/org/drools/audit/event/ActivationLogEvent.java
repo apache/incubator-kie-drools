@@ -115,7 +115,7 @@ public class ActivationLogEvent extends LogEvent {
     }
     
     public String getRuleFlowGroup() {
-    	return ruleFlowGroup;
+        return ruleFlowGroup;
     }
 
     public String toString() {

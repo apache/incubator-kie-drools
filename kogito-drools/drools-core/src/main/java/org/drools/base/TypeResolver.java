@@ -30,6 +30,6 @@ public interface TypeResolver {
      * Eg, if it was a pojo org.drools.Cheese, then if you passed in "Cheese" you should get back
      * "org.drools.Cheese"
      */
-	public String getFullTypeName(String shortName) throws ClassNotFoundException;
+    public String getFullTypeName(String shortName) throws ClassNotFoundException;
 
 }

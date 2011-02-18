@@ -49,16 +49,16 @@ public final class FloatDataType
         }
     }
 
-	public Object readValue(String value) {
-		return new Float(value);
-	}
+    public Object readValue(String value) {
+        return new Float(value);
+    }
 
-	public String writeValue(Object value) {
-		Float f = (Float) value;
-		return f == null ? "" : f.toString();
-	}
+    public String writeValue(Object value) {
+        Float f = (Float) value;
+        return f == null ? "" : f.toString();
+    }
 
-	public String getStringType() {
-		return "Float";
-	}
+    public String getStringType() {
+        return "Float";
+    }
 }

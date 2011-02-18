@@ -44,7 +44,7 @@ public class GetObjectCommand
     
     public GetObjectCommand(FactHandle factHandle, String outIdentifier) {
         this.factHandle = factHandle;
-		this.outIdentifier = outIdentifier;
+        this.outIdentifier = outIdentifier;
     }
 
     @XmlAttribute(name="out-identifier", required=true)
@@ -58,21 +58,21 @@ public class GetObjectCommand
 
     @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-    	factHandle = new DefaultFactHandle(factHandleId);
-	}
+        factHandle = new DefaultFactHandle(factHandleId);
+    }
     
     public String getFactHandleFromString() {
-    	return factHandle.toExternalForm();
-	}
+        return factHandle.toExternalForm();
+    }
 
-	public Object execute(Context context) {
+    public Object execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         
         Object object = ksession.getObject( factHandle );
         
         if (this.outIdentifier != null) {
-        	((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult()
-        		.getResults().put( this.outIdentifier, object );
+            ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult()
+            	.getResults().put( this.outIdentifier, object );
         }
         
         return object;

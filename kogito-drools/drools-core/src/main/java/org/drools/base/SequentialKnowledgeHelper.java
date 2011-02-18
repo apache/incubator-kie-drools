@@ -176,9 +176,9 @@ public class SequentialKnowledgeHelper
         this.identityMap = identityMap;
     }
 
-	public <T> T getContext(Class<T> contextClass) {
-		return null;
-	}
+    public <T> T getContext(Class<T> contextClass) {
+        return null;
+    }
 
     public void cancelRemainingPreviousLogicalDependencies() {
     }

@@ -23,20 +23,20 @@ package org.drools.template.parser;
  */
 public class BooleanColumn extends AbstractColumn {
 
-	public BooleanColumn(String n) {
-		super(n);
-	}
+    public BooleanColumn(String n) {
+        super(n);
+    }
 //
 //	public void addValue(Map vars, Object value) {
 //		vars.put(getName(), value);
 //	}
 
-	public Cell createCell(Row row) {
-		return new BooleanCell(row, this);
-	}
+    public Cell createCell(Row row) {
+        return new BooleanCell(row, this);
+    }
 
-	public String getCellType() {
-		return "BooleanCell";
-	}
+    public String getCellType() {
+        return "BooleanCell";
+    }
 
 }

@@ -25,39 +25,39 @@ import org.drools.core.util.StringUtils;
  */
 public class ArrayColumn extends AbstractColumn {
 
-	private Column type;
+    private Column type;
 
-	public ArrayColumn(String n, Column typeColumn) {
-		super(n);
-		this.type = typeColumn;
-	}
+    public ArrayColumn(String n, Column typeColumn) {
+        super(n);
+        this.type = typeColumn;
+    }
 
-	public Cell createCell(Row row) {
-		return new ArrayCell(row, this);
-	}
+    public Cell createCell(Row row) {
+        return new ArrayCell(row, this);
+    }
 
-	public String getCellType() {
-		return type.getCellType();
-	}
-	
-	public Column getType() {
-		return type;
-	}
+    public String getCellType() {
+        return type.getCellType();
+    }
 
-	public String getCondition(String condition, int index) {
-		if (index == -1) {
-			StringBuffer conditionString = new StringBuffer("ArrayCell(row == r, column == $param");
-			if (!StringUtils.isEmpty(condition)) {
-				conditionString.append(", value ").append(condition);
-			}
-			conditionString.append(")");
-			return conditionString.toString();
-		}
-		else
-		{
-			return type.getCondition(condition, index);
-		}
-		
-	}
+    public Column getType() {
+        return type;
+    }
+
+    public String getCondition(String condition, int index) {
+        if (index == -1) {
+        	StringBuffer conditionString = new StringBuffer("ArrayCell(row == r, column == $param");
+        	if (!StringUtils.isEmpty(condition)) {
+        		conditionString.append(", value ").append(condition);
+        	}
+        	conditionString.append(")");
+        	return conditionString.toString();
+        }
+        else
+        {
+        	return type.getCondition(condition, index);
+        }
+
+    }
 
 }

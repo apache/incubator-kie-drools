@@ -114,12 +114,12 @@ public class URLScanner extends PackageProvider {
 
 
     PackageChangeInfo loadPackageChanges() { //void updateRuleBase(RuleBase rb, boolean removeExistingPackages) {
-    	PackageChangeInfo changes = null;
+        PackageChangeInfo changes = null;
         try {
             changes = getChangeSet();
             return changes;
         } catch ( IOException e ) {
-        	listener.exception( e );
+            listener.exception( e );
             if (this.localCacheFileScanner != null) {
                 listener.warning( "Falling back to local cache." );
                 return localCacheFileScanner.loadPackageChanges();
@@ -132,8 +132,8 @@ public class URLScanner extends PackageProvider {
     }
 
     private PackageChangeInfo getChangeSet() throws IOException, ClassNotFoundException {
-    	
-    	PackageChangeInfo info = new PackageChangeInfo();
+
+        PackageChangeInfo info = new PackageChangeInfo();
 
         if ( this.urls == null ) return info;
         

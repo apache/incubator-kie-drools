@@ -27,62 +27,62 @@ import org.drools.StatefulSession;
 import org.drools.core.util.StringUtils;
 
 public class ArrayCell implements Cell {
-	Row row;
+    Row row;
 
-	String value;
+    String value;
 
-	ArrayColumn column;
+    ArrayColumn column;
 
-	private String[] values;
-	
-	public ArrayCell(final Row r, final ArrayColumn c) {
-		row = r;
-		column = c;
-	}
+    private String[] values;
 
-	public void addValue(Map<String, Object> vars) {
-		for (int i = 0; i < values.length; i++) {
-			vars.put(column.getName() + i, values[i]);
-		}
-	}
+    public ArrayCell(final Row r, final ArrayColumn c) {
+        row = r;
+        column = c;
+    }
 
-	public Column getColumn() {
-		return column;
-	}
+    public void addValue(Map<String, Object> vars) {
+        for (int i = 0; i < values.length; i++) {
+        	vars.put(column.getName() + i, values[i]);
+        }
+    }
 
-	public Row getRow() {
-		return row;
-	}
-	
-	public String getValue() {
-		return value;
-	}
+    public Column getColumn() {
+        return column;
+    }
 
-	public void insert(StatefulSession session) {
-		session.insert(this);
-		for (int i = 0; i < values.length; i++) {
-			Cell cell = column.getType().createCell(row);
-			cell.setValue(values[i]);
-			cell.setIndex(i);
-			cell.insert(session);
-		}
-	}
+    public Row getRow() {
+        return row;
+    }
 
-	public void setIndex(int i) {
-		throw new RuntimeException("You cannot call setIndex on an ArrayCell");
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public int getIndex() {
-		return -1;
-	}
+    public void insert(StatefulSession session) {
+        session.insert(this);
+        for (int i = 0; i < values.length; i++) {
+        	Cell cell = column.getType().createCell(row);
+        	cell.setValue(values[i]);
+        	cell.setIndex(i);
+        	cell.insert(session);
+        }
+    }
 
-	public void setValue(String v) {
-		value = v;
-		values = StringUtils.splitPreserveAllTokens(value, ",");
-	}
+    public void setIndex(int i) {
+        throw new RuntimeException("You cannot call setIndex on an ArrayCell");
+    }
 
-	public boolean isEmpty() {
-		return StringUtils.isEmpty(value);
-	}
+    public int getIndex() {
+        return -1;
+    }
+
+    public void setValue(String v) {
+        value = v;
+        values = StringUtils.splitPreserveAllTokens(value, ",");
+    }
+
+    public boolean isEmpty() {
+        return StringUtils.isEmpty(value);
+    }
 
 }

@@ -31,7 +31,7 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
     private boolean           negated;
     private String            parameterText;
 
-	/**
+    /**
      * Creates a new EvaluatorBasedRestriction
      */
     public EvaluatorBasedRestrictionDescr(){
@@ -86,17 +86,17 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
      * Sets the evaluator ID for this restriction
      */
     public void setEvaluator(String evaluator) {
-		this.evaluator = evaluator;
-	}
+        this.evaluator = evaluator;
+    }
     /**
      * Sets if this evaluator is negated.
      * Example: "contains" is boolean negated if you want to check the elements that are not contained ("not contains")
      * 
      * @param negated the negated
      */
-	public void setNegated(boolean negated) {
-		this.negated = negated;
-	}
+    public void setNegated(boolean negated) {
+        this.negated = negated;
+    }
 
     /**
      * Set any parameter text.
@@ -105,9 +105,9 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
      * 
      * @return parameterText the parameterText
      */
-	public void setParameterText(String parameterText) {
-		this.parameterText = parameterText;
-	}
+    public void setParameterText(String parameterText) {
+        this.parameterText = parameterText;
+    }
 
     public String toString() {
         return ( this.isNegated() ? "not " : "" ) + this.getEvaluator() + ( this.getParameterText() != null ? "["+this.getParameterText()+"]" : "");

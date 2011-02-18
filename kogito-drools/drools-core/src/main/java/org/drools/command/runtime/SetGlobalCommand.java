@@ -36,11 +36,11 @@ public class SetGlobalCommand
     implements
     GenericCommand<Void> {
 
-	@XmlAttribute(required=true)
+    @XmlAttribute(required=true)
     private String  identifier;
-	
-	@XmlElement
-	@XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private Object  object;
 
     @XmlAttribute(name="out-identifier")
@@ -50,7 +50,7 @@ public class SetGlobalCommand
     private boolean out;
     
     public SetGlobalCommand() {
-	}
+    }
 
     public SetGlobalCommand(String identifier,
                             Object object) {
@@ -84,7 +84,7 @@ public class SetGlobalCommand
     }
     
     public void setObject( Object object ) {
-    	this.object = object;
+        this.object = object;
     }
 
     public String getOutIdentifier() {

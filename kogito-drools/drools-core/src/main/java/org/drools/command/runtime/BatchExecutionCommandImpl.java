@@ -79,30 +79,30 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
 public class BatchExecutionCommandImpl implements BatchExecutionCommand, GenericCommand<ExecutionResults> {
-	
-	private static final long serialVersionUID = 510l;
-	
-	@XmlAttribute
-	@XStreamAsAttribute
-	private String lookup;
 
-	public BatchExecutionCommandImpl(){
-	}
-	
-	public BatchExecutionCommandImpl( List<GenericCommand<?>> commands ) {
-		this.commands = commands;
-	}
-	
-	public BatchExecutionCommandImpl( List<GenericCommand<?>> commands, String lookup ) {
-		this.commands = commands;
-		this.lookup = lookup;
-	}
-	
+    private static final long serialVersionUID = 510l;
+
+    @XmlAttribute
+    @XStreamAsAttribute
+    private String lookup;
+
+    public BatchExecutionCommandImpl(){
+    }
+
+    public BatchExecutionCommandImpl( List<GenericCommand<?>> commands ) {
+        this.commands = commands;
+    }
+
+    public BatchExecutionCommandImpl( List<GenericCommand<?>> commands, String lookup ) {
+        this.commands = commands;
+        this.lookup = lookup;
+    }
+
     @XmlElements({
         @XmlElement(name = "abort-work-item", type = AbortWorkItemCommand.class),
         @XmlElement(name = "signal-event", type = SignalEventCommand.class),
         @XmlElement(name = "start-process", type = StartProcessCommand.class),
-    	@XmlElement(name = "retract", type = RetractCommand.class),
+        @XmlElement(name = "retract", type = RetractCommand.class),
         @XmlElement(name = "get-global", type = GetGlobalCommand.class),
         @XmlElement(name = "set-global", type = SetGlobalCommand.class),
         @XmlElement(name = "insert-elements", type = InsertElementsCommand.class),
@@ -161,11 +161,11 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
         return null;
     }
 
-	public void setLookup(String lookup) {
-		this.lookup = lookup;
-	}
+    public void setLookup(String lookup) {
+        this.lookup = lookup;
+    }
 
-	public String getLookup() {
-		return lookup;
-	}
+    public String getLookup() {
+        return lookup;
+    }
 }

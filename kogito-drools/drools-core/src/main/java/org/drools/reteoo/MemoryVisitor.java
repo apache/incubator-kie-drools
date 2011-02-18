@@ -205,7 +205,7 @@ public class MemoryVisitor extends ReflectiveVisitor
     //    }
 
     private void checkObjectHashSet(ObjectHashSet memory) {
-    	FastIterator it = LinkedList.fastIterator;
+        FastIterator it = LinkedList.fastIterator;
         final Entry[] entries = memory.getTable();
         int factCount = 0;
         int bucketCount = 0;

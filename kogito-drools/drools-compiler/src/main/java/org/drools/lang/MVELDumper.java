@@ -45,11 +45,11 @@ public class MVELDumper extends ReflectiveVisitor {
     private RuleBuildContext context;
     
     public MVELDumper(RuleBuildContext context) {
-    	this.context = context;
+        this.context = context;
     }
     
     public MVELDumper() {
-    	
+
     }
 
     public String dump(FieldConstraintDescr fieldConstr) {
@@ -156,28 +156,28 @@ public class MVELDumper extends ReflectiveVisitor {
                    evaluator( evaluator ) + " " + 
                    value + evaluatorSufix( evaluator );
         } else if(op == Operator.determineOperator( "matches", false )) {
-        	evaluator = "~=";
-        	if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-        		return evaluatorPrefix( evaluator ) + 
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-        	} else {
-        		return evaluatorPrefix( evaluator ) + 
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value +
-                evaluatorSufix( evaluator );
-        	}
-        } else if(op == Operator.determineOperator( "matches", true )) {
-            evaluator = "not ~=";
+            evaluator = "~=";
             if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-            	return evaluatorPrefix( evaluator ) + 
+            	return evaluatorPrefix( evaluator ) +
                 this.fieldName + " " + 
                 evaluator( evaluator ) + " " + 
                 value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
             } else {
-            	return evaluatorPrefix( evaluator ) + 
+            	return evaluatorPrefix( evaluator ) +
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value +
+                evaluatorSufix( evaluator );
+            }
+        } else if(op == Operator.determineOperator( "matches", true )) {
+            evaluator = "not ~=";
+            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
+                return evaluatorPrefix( evaluator ) +
+                this.fieldName + " " + 
+                evaluator( evaluator ) + " " + 
+                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
+            } else {
+                return evaluatorPrefix( evaluator ) +
                 this.fieldName + " " + 
                 evaluator( evaluator ) + " " + 
                 value + 

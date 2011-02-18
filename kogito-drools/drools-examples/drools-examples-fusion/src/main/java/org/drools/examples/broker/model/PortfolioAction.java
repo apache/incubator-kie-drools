@@ -58,7 +58,7 @@ public class PortfolioAction {
 
     @Override
     public String toString() {
-    	return "PortfolioAction( "+action+" "+symbol+" "+quant+ " )";
+        return "PortfolioAction( "+action+" "+symbol+" "+quant+ " )";
     }
     
 

@@ -49,7 +49,7 @@ public class Rule extends AttributedDRLElement
     public Rule(final String name,
                 final Integer salience,
                 final int spreadsheetRow) {
-    	super( salience );
+        super( salience );
         this._name = asStringLiteral( name );
         this._description = null;
         this._metadata = new LinkedList<String>();
@@ -81,7 +81,7 @@ public class Rule extends AttributedDRLElement
         
         // metadata
         for(String ms: this._metadata ){
-        	out.writeLine( "\t@" + ms );
+            out.writeLine( "\t@" + ms );
         }
         
         // attributes

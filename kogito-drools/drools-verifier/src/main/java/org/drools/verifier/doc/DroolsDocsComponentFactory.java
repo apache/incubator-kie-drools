@@ -245,23 +245,23 @@ public class DroolsDocsComponentFactory {
 
         // if the data came from guvnor, this will be empty
         if(drlData.getDescription() != null && drlData.getDescription().trim().equals("")) {
-        	Iterator<String> iter = drlData.getMetadata().iterator();
-        	while(iter.hasNext()) {
-        		String nextDesc = iter.next();
-        		if(nextDesc.startsWith("Description")) {
-        			String[] parts = splitFirst(nextDesc, ":");
-        			// no description
-        			if(parts.length == 1) {
-        				// guvnor did not have it
-        				document.add( newDescription( drlData.getDescription() ) );
-        			} else {
-        				document.add(newDescription(parts[1]));
-        			}
-        		}
-        	}
-        	
+            Iterator<String> iter = drlData.getMetadata().iterator();
+            while(iter.hasNext()) {
+            	String nextDesc = iter.next();
+            	if(nextDesc.startsWith("Description")) {
+            		String[] parts = splitFirst(nextDesc, ":");
+            		// no description
+            		if(parts.length == 1) {
+            			// guvnor did not have it
+            			document.add( newDescription( drlData.getDescription() ) );
+            		} else {
+            			document.add(newDescription(parts[1]));
+            		}
+            	}
+            }
+
         } else {
-        	document.add( newDescription( drlData.getDescription() ) );
+            document.add( newDescription( drlData.getDescription() ) );
         }
         
         // DRL

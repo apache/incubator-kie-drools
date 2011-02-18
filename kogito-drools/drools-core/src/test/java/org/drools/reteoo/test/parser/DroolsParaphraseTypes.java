@@ -23,5 +23,5 @@ package org.drools.reteoo.test.parser;
  * @author porcelli
  */
 public enum DroolsParaphraseTypes {
-	TESTCASE, SETUP, TEARDOWN, TEST, STEP, COMMAND;
+    TESTCASE, SETUP, TEARDOWN, TEST, STEP, COMMAND;
 }

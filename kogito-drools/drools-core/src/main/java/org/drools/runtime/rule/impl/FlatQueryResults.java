@@ -47,18 +47,18 @@ public class FlatQueryResults
     @XmlElement(name="identifiers")    
     private Map<String, Integer> identifiers;
     
-	@XmlElement(name="results")
+    @XmlElement(name="results")
     @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)	
     private ArrayList<ArrayList<Object>>           results;
     
     
     @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
-	@XmlElement(name="fact-handles")
+    @XmlElement(name="fact-handles")
     private ArrayList<ArrayList<FactHandle>> factHandles;
     
     public FlatQueryResults() {
-    	
-	}
+
+    }
 
     public FlatQueryResults(Map<String, Integer> identifiers,
                             ArrayList<ArrayList<Object>> results,
@@ -84,8 +84,8 @@ public class FlatQueryResults
         
 
         for ( org.drools.QueryResult result : results ) {
-        	ArrayList<Object> row = new ArrayList<Object>();
-        	ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
+            ArrayList<Object> row = new ArrayList<Object>();
+            ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
 
             for ( int i = 0; i < length; i++ ) {
                 Declaration declr = declrs[i];
@@ -101,7 +101,7 @@ public class FlatQueryResults
 
     }
 
-	public String[] getIdentifiers() {
+    public String[] getIdentifiers() {
         return identifiers.keySet().toArray( new String[identifiers.size()] );
     }
 

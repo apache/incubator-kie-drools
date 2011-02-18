@@ -72,14 +72,14 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
         if (ksession.getProcessRuntime() != null) {
-        	this.ksession.getProcessRuntime().addEventListener( processStats );
+            this.ksession.getProcessRuntime().addEventListener( processStats );
         }
     }
     
     public void dispose() {
         this.ksession.removeEventListener( agendaStats );
         if (ksession.getProcessRuntime() != null) {
-        	this.ksession.getProcessRuntime().removeEventListener( processStats );
+            this.ksession.getProcessRuntime().removeEventListener( processStats );
         }
     }
     
@@ -245,27 +245,27 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             // no stats gathered for now
         }
 
-		public void afterRuleFlowGroupActivated(
-				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+        public void afterRuleFlowGroupActivated(
+        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
             // no stats gathered for now
-		}
+        }
 
-		public void afterRuleFlowGroupDeactivated(
-				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        public void afterRuleFlowGroupDeactivated(
+        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
             // no stats gathered for now
-		}
+        }
 
-		public void beforeRuleFlowGroupActivated(
-				RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
+        public void beforeRuleFlowGroupActivated(
+        		RuleFlowGroupActivatedEvent event, WorkingMemory workingMemory) {
             // no stats gathered for now
-		}
+        }
 
-		public void beforeRuleFlowGroupDeactivated(
-				RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
+        public void beforeRuleFlowGroupDeactivated(
+        		RuleFlowGroupDeactivatedEvent event, WorkingMemory workingMemory) {
             // no stats gathered for now
-		}
+        }
 
-		public void beforeActivationFired(BeforeActivationFiredEvent event,
+        public void beforeActivationFired(BeforeActivationFiredEvent event,
                                           WorkingMemory workingMemory) {
             AgendaStatsData data = getRuleStatsInstance( event.getActivation().getRule().getName() );
             this.consolidated.startFireClock();
@@ -392,7 +392,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         }
         
         private ProcessStatsData getProcessStatsInstance(String processId) {
-        	ProcessStatsData data = this.processStats.get(processId);
+            ProcessStatsData data = this.processStats.get(processId);
             if (data == null) {
                 data = new ProcessStatsData();
                 this.processStats.put(processId, data);
@@ -401,7 +401,7 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
         }
 
         private ProcessInstanceStatsData getProcessInstanceStatsInstance(Long processInstanceId) {
-        	ProcessInstanceStatsData data = this.processInstanceStats.get(processInstanceId);
+            ProcessInstanceStatsData data = this.processInstanceStats.get(processInstanceId);
             if (data == null) {
                 data = new ProcessInstanceStatsData();
                 this.processInstanceStats.put(processInstanceId, data);
@@ -415,60 +415,60 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             data.processInstancesStarted.incrementAndGet();
             ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
             dataI.processStarted = new Date();
-		}
+        }
 
-		public void afterProcessCompleted(ProcessCompletedEvent event) {
+        public void afterProcessCompleted(ProcessCompletedEvent event) {
             this.consolidated.processInstancesCompleted.incrementAndGet();
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processInstancesCompleted.incrementAndGet();
             ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
             dataI.processCompleted = new Date();
-		}
+        }
 
-		public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processNodesTriggered.incrementAndGet();
             ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
             dataI.processNodesTriggered++;
-		}
+        }
 
-		public void afterNodeLeft(ProcessNodeLeftEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        	// TODO Auto-generated method stub
 
-		public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        }
 
-		public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+        	// TODO Auto-generated method stub
 
-		public void beforeProcessCompleted(ProcessCompletedEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        }
 
-		public void beforeProcessStarted(ProcessStartedEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        	// TODO Auto-generated method stub
+
+        }
+
+        public void beforeProcessCompleted(ProcessCompletedEvent event) {
+        	// TODO Auto-generated method stub
+
+        }
+
+        public void beforeProcessStarted(ProcessStartedEvent event) {
+        	// TODO Auto-generated method stub
+
+        }
         
-		public void afterVariableChanged(ProcessVariableChangedEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        	// TODO Auto-generated method stub
 
-		public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+        }
+
+        public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        	// TODO Auto-generated method stub
+
+        }
 
         public static class GlobalProcessStatsData {
-        	
+
             public AtomicLong processInstancesStarted;
             public AtomicLong processInstancesCompleted;
             public AtomicReference<Date> lastReset;
@@ -486,13 +486,13 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             }
             
             public String toString() {
-				return "processInstancesStarted=" + processInstancesStarted.get()
-					+ " processInstancesCompleted=" + processInstancesCompleted.get();
+        		return "processInstancesStarted=" + processInstancesStarted.get()
+        			+ " processInstancesCompleted=" + processInstancesCompleted.get();
             }
         }
 
         public static class ProcessStatsData extends GlobalProcessStatsData {
-        	
+
             public AtomicLong processNodesTriggered;
             
             public ProcessStatsData() {
@@ -500,18 +500,18 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             }
             
             public void reset() {
-            	super.reset();
+                super.reset();
                 this.processNodesTriggered.set( 0 );
             }
             
             public String toString() {
-				return super.toString() + " processNodesTriggered=" + processNodesTriggered.get();
+        		return super.toString() + " processNodesTriggered=" + processNodesTriggered.get();
             }
         }
 
         public static class ProcessInstanceStatsData {
-        	
-        	// no need for synch, because one process instance cannot be executed concurrently 
+
+            // no need for synch, because one process instance cannot be executed concurrently
             public Date processStarted;
             public Date processCompleted;
             public long processNodesTriggered;
@@ -521,14 +521,14 @@ public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBe
             }
             
             public void reset() {
-            	 this.processNodesTriggered = 0;
+                 this.processNodesTriggered = 0;
             }
             
             public String toString() {
-				return
-					(processStarted != null ? "processStarted=" + processStarted + " ": "") +
-					(processCompleted != null ? "processCompleted=" + processCompleted + " ": "") +
-					"processNodesTriggered=" + processNodesTriggered;
+        		return
+        			(processStarted != null ? "processStarted=" + processStarted + " ": "") +
+        			(processCompleted != null ? "processCompleted=" + processCompleted + " ": "") +
+        			"processNodesTriggered=" + processNodesTriggered;
             }
         }
 

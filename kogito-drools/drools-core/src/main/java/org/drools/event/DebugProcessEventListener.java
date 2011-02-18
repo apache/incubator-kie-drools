@@ -25,44 +25,44 @@ import org.drools.event.process.ProcessVariableChangedEvent;
 
 public class DebugProcessEventListener implements ProcessEventListener {
 
-	public void afterNodeLeft(ProcessNodeLeftEvent event) {
-		System.err.println(event);
-	}
+    public void afterNodeLeft(ProcessNodeLeftEvent event) {
+        System.err.println(event);
+    }
 
-	public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-		System.err.println(event);
-	}
+    public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+        System.err.println(event);
+    }
 
-	public void afterProcessCompleted(ProcessCompletedEvent event) {
-		System.err.println(event);
-	}
+    public void afterProcessCompleted(ProcessCompletedEvent event) {
+        System.err.println(event);
+    }
 
-	public void afterProcessStarted(ProcessStartedEvent event) {
-		System.err.println(event);
-	}
-	
-	public void afterVariableChanged(ProcessVariableChangedEvent event) {
-		System.err.println(event);
-	}
+    public void afterProcessStarted(ProcessStartedEvent event) {
+        System.err.println(event);
+    }
 
-	public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-		System.err.println(event);
-	}
+    public void afterVariableChanged(ProcessVariableChangedEvent event) {
+        System.err.println(event);
+    }
 
-	public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-		System.err.println(event);
-	}
+    public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+        System.err.println(event);
+    }
 
-	public void beforeProcessCompleted(ProcessCompletedEvent event) {
-		System.err.println(event);
-	}
+    public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+        System.err.println(event);
+    }
 
-	public void beforeProcessStarted(ProcessStartedEvent event) {
-		System.err.println(event);
-	}
+    public void beforeProcessCompleted(ProcessCompletedEvent event) {
+        System.err.println(event);
+    }
 
-	public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-		System.err.println(event);
-	}
+    public void beforeProcessStarted(ProcessStartedEvent event) {
+        System.err.println(event);
+    }
+
+    public void beforeVariableChanged(ProcessVariableChangedEvent event) {
+        System.err.println(event);
+    }
 
 }

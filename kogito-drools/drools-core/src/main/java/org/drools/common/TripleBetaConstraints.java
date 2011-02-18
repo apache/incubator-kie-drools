@@ -76,9 +76,9 @@ public class TripleBetaConstraints
         } else {
             int depth = conf.getCompositeKeyDepth();
             if ( !DefaultBetaConstraints.compositeAllowed(constraints) ) {
-            	// UnificationRestrictions cannot be allowed in composite indexes
-            	// We also ensure that if there is a mixture that standard restriction is first
-            	depth = 1;
+                // UnificationRestrictions cannot be allowed in composite indexes
+                // We also ensure that if there is a mixture that standard restriction is first
+                depth = 1;
             }
 
             // Determine  if this constraints are indexable

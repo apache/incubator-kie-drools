@@ -47,7 +47,7 @@ public class Query extends Rule {
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
-    	super.writeExternal( out );
+        super.writeExternal( out );
         out.writeObject( parameters );
     }
     
@@ -64,12 +64,12 @@ public class Query extends Rule {
         return super.isSemanticallyValid();
     }
 
-	public void setParameters(Declaration[] parameters) {
-		this.parameters = parameters;
-	}
-	
-	public Declaration[] getParameters() {
-		return this.parameters;
-	}
+    public void setParameters(Declaration[] parameters) {
+        this.parameters = parameters;
+    }
+
+    public Declaration[] getParameters() {
+        return this.parameters;
+    }
 
 }

@@ -86,10 +86,10 @@ public class ExternalSpreadsheetCompilerIntegrationTest {
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
         final List<DataListener> listeners = new ArrayList<DataListener>();
         TemplateDataListener l1 = new TemplateDataListener(10, 3, "/templates/test_pricing1.drl");
-		listeners.add(l1);
+        listeners.add(l1);
         TemplateDataListener l2 = new TemplateDataListener(30, 3, "/templates/test_pricing2.drl");
-		listeners.add(l2);
-		converter.compile("/data/ExamplePolicyPricing.xls", InputType.XLS, listeners);
+        listeners.add(l2);
+        converter.compile("/data/ExamplePolicyPricing.xls", InputType.XLS, listeners);
         //COMPILE
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( l1.renderDRL() ) );

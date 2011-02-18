@@ -57,18 +57,18 @@ public class RuleFlowVariableLogEvent extends RuleFlowLogEvent {
     }
 
     public String getVariableId() {
-		return variableId;
-	}
+        return variableId;
+    }
 
-	public String getVariableInstanceId() {
-		return variableInstanceId;
-	}
+    public String getVariableInstanceId() {
+        return variableInstanceId;
+    }
 
-	public String getObjectToString() {
-		return objectToString;
-	}
+    public String getObjectToString() {
+        return objectToString;
+    }
 
-	public String toString() {
+    public String toString() {
         String msg = null;
         switch ( this.getType() ) {
             case BEFORE_VARIABLE_INSTANCE_CHANGED :

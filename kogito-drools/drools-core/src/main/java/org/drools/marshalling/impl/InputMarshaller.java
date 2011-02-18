@@ -83,17 +83,17 @@ import org.drools.spi.RuleFlowGroup;
 
 public class InputMarshaller {
 
-	private static ProcessMarshaller processMarshaller = createProcessMarshaller();
-	
+    private static ProcessMarshaller processMarshaller = createProcessMarshaller();
+
     private static ProcessMarshaller createProcessMarshaller() {
-		try {
-			return ProcessMarshallerFactory.newProcessMarshaller();
-		} catch (IllegalArgumentException e) {
-			return null;
-		}
+        try {
+        	return ProcessMarshallerFactory.newProcessMarshaller();
+        } catch (IllegalArgumentException e) {
+        	return null;
+        }
     }
-	
-	/**
+
+    /**
      * Stream the data into an existing session
      * 
      * @param session
@@ -141,11 +141,11 @@ public class InputMarshaller {
         }
 
         if ( context.marshalWorkItems  && processMarshaller != null) {
-        	processMarshaller.readWorkItems( context );
+            processMarshaller.readWorkItems( context );
         }
 
         if (processMarshaller != null) {
-        	processMarshaller.readProcessTimers( context );
+            processMarshaller.readProcessTimers( context );
         }
         
         if( multithread ) {
@@ -227,11 +227,11 @@ public class InputMarshaller {
         }
 
         if ( context.marshalWorkItems  && processMarshaller != null ) {
-        	processMarshaller.readWorkItems( context );
+            processMarshaller.readWorkItems( context );
         }
 
         if (  processMarshaller != null ) {
-        	processMarshaller.readProcessTimers( context );
+            processMarshaller.readProcessTimers( context );
         }
 
         if( multithread ) {
@@ -268,9 +268,9 @@ public class InputMarshaller {
                                                rfg );
             int nbNodeInstances = stream.readInt();
             for (int i = 0; i < nbNodeInstances; i++) {
-            	Long processInstanceId = stream.readLong();
-            	String nodeInstanceId = stream.readUTF();
-            	rfg.addNodeInstance(processInstanceId, nodeInstanceId);
+                Long processInstanceId = stream.readLong();
+                String nodeInstanceId = stream.readUTF();
+                rfg.addNodeInstance(processInstanceId, nodeInstanceId);
             }
         }
 
@@ -356,9 +356,9 @@ public class InputMarshaller {
             ClassObjectType objectType = new ClassObjectType( object.getClass() );
             ObjectTypeNode objectTypeNode = objectTypeNodes.get( objectType );
             if (objectTypeNode != null) {
-	            ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
-	            set.add( handle,
-	                     false );
+                ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
+                set.add( handle,
+                         false );
             }
         }
 

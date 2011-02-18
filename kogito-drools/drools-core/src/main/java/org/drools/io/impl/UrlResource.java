@@ -98,30 +98,30 @@ public class UrlResource extends BaseResource
     }
 
     public String getBasicAuthentication() {
-		return basicAuthentication;
-	}
+        return basicAuthentication;
+    }
 
-	public void setBasicAuthentication(String basicAuthentication) {
-		this.basicAuthentication = basicAuthentication;
-	}
+    public void setBasicAuthentication(String basicAuthentication) {
+        this.basicAuthentication = basicAuthentication;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	/**
+    /**
      * This implementation opens an InputStream for the given URL.
      * It sets the "UseCaches" flag to <code>false</code>,
      * mainly to avoid jar file locking on Windows.
@@ -198,12 +198,12 @@ public class UrlResource extends BaseResource
 
         if ( con instanceof HttpURLConnection) {
             if ("enabled".equalsIgnoreCase(basicAuthentication)) {
-				String userpassword = username + ":" + password;
-				byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        		String userpassword = username + ":" + password;
+        		byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
 
-				((HttpURLConnection) con).setRequestProperty("Authorization",
-						"Basic " +  new String(authEncBytes));
-			}
+        		((HttpURLConnection) con).setRequestProperty("Authorization",
+        				"Basic " +  new String(authEncBytes));
+        	}
 
         }
 

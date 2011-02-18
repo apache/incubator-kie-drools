@@ -58,9 +58,9 @@ public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizabl
         ((SerializablePropagationContext)this.propagationContext).readExternal( in );
     }
 
-	@Override
-	public String toString() {
-		return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKnowledgeRuntime()
-				+ ", getPropagationContext()=" + getPropagationContext() + "]";
-	}
+    @Override
+    public String toString() {
+        return "==>[WorkingMemoryEventImpl: getKnowledgeRuntime()=" + getKnowledgeRuntime()
+        		+ ", getPropagationContext()=" + getPropagationContext() + "]";
+    }
 }

@@ -35,37 +35,37 @@ import org.drools.verifier.report.components.Overlap;
 
 public class OverlappingRestrictionsTest extends TestBase {
 
-	// TODO: Add this feature
+    // TODO: Add this feature
     @Test @Ignore
-	public void testOverlap() {
-		VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
+    public void testOverlap() {
+        VerifierBuilder vBuilder = VerifierBuilderFactory.newVerifierBuilder();
 
-		Verifier verifier = vBuilder.newVerifier();
+        Verifier verifier = vBuilder.newVerifier();
 
-		verifier.addResourcesToVerify(ResourceFactory.newClassPathResource(
-				"RestrictionsTest.drl", getClass()), ResourceType.DRL);
+        verifier.addResourcesToVerify(ResourceFactory.newClassPathResource(
+        		"RestrictionsTest.drl", getClass()), ResourceType.DRL);
 
-		assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
-		boolean noProblems = verifier.fireAnalysis();
-		assertTrue(noProblems);
+        boolean noProblems = verifier.fireAnalysis();
+        assertTrue(noProblems);
 
-		Collection<Object> overlaps = ((VerifierImpl) verifier)
-				.getKnowledgeSession().getObjects(
-						new ClassObjectFilter(Overlap.class));
+        Collection<Object> overlaps = ((VerifierImpl) verifier)
+        		.getKnowledgeSession().getObjects(
+        				new ClassObjectFilter(Overlap.class));
 
-		for (Object object : overlaps) {
-			System.out.println(object);
-		}
+        for (Object object : overlaps) {
+        	System.out.println(object);
+        }
 
-		assertEquals(3, overlaps.size());
+        assertEquals(3, overlaps.size());
 
-		verifier.dispose();
+        verifier.dispose();
 
-	}
+    }
 
     @Test
     public void testDUMMY() throws Exception {
-		assertTrue(true);
-	}
+        assertTrue(true);
+    }
 }

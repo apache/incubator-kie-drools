@@ -17,10 +17,10 @@
 package org.drools.examples.pacman;
 
 public class Location {
-	private Character character;
-	private int row;
-	private int col;
-	
+    private Character character;
+    private int row;
+    private int col;
+
     public Location(Character character,
                     int row,
                     int col) {
@@ -51,6 +51,6 @@ public class Location {
 
     @Override
     public String toString() {
-	    return "Location " + character + " " + row + ":" + col;
-	}
+        return "Location " + character + " " + row + ":" + col;
+    }
 }

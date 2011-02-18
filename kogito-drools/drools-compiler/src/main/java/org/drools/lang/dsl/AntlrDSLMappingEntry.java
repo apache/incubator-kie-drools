@@ -71,11 +71,11 @@ public class AntlrDSLMappingEntry extends AbstractDSLMappingEntry {
 
             if ( !keyPattern.startsWith( "^" ) ) {
                 // making it start after a non word char or at line start
-            	// JDK 5 (java version 1.5.0_22) is buggy: doesn't handle alternatives within
-            	// zero-width lookbehind assertions. As a workaround, we use an alternative of
-            	// zero-width lookbehind assertions, slightly longer, but simpler than anything else.
+                // JDK 5 (java version 1.5.0_22) is buggy: doesn't handle alternatives within
+                // zero-width lookbehind assertions. As a workaround, we use an alternative of
+                // zero-width lookbehind assertions, slightly longer, but simpler than anything else.
                 // keyPattern = "(?<=\\W|^)" + keyPattern; // works in JDK >=6
-            	keyPattern = "(?:(?<=^)|(?<=\\W))" + keyPattern;
+                keyPattern = "(?:(?<=^)|(?<=\\W))" + keyPattern;
             }
 
             // If the pattern ends with a pure variable whose pattern could create

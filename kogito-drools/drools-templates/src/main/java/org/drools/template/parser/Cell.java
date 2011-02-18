@@ -26,19 +26,19 @@ import org.drools.StatefulSession;
  * A cell in a decision table
  */
 public interface Cell {
-	public Row getRow();
+    public Row getRow();
 
-	public Column getColumn();
-	
-	public void setValue(String value);
+    public Column getColumn();
 
-	public void addValue(Map<String, Object> vars);
-	
-	public void insert(StatefulSession session);
+    public void setValue(String value);
 
-	public void setIndex(int i);
-	
-	public int getIndex();
+    public void addValue(Map<String, Object> vars);
 
-	public boolean isEmpty();
+    public void insert(StatefulSession session);
+
+    public void setIndex(int i);
+
+    public int getIndex();
+
+    public boolean isEmpty();
 }

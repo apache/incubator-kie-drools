@@ -35,10 +35,10 @@ import org.drools.time.impl.JDKTimerService;
  */
 public class JpaJDKTimerService extends JDKTimerService {
     
-	private CommandService commandService;
+    private CommandService commandService;
 
     public void setCommandService(CommandService commandService) {
-    	this.commandService = commandService;
+        this.commandService = commandService;
     }
     
     public JpaJDKTimerService() {
@@ -50,57 +50,57 @@ public class JpaJDKTimerService extends JDKTimerService {
     }
 
     protected Callable<Void> createCallableJob(Job job,
-									           JobContext ctx,
-									           Trigger trigger,
-									           JDKJobHandle handle,
-									           ScheduledThreadPoolExecutor scheduler) {
-    	return new JpaJDKCallableJob( job,
+        							           JobContext ctx,
+        							           Trigger trigger,
+        							           JDKJobHandle handle,
+        							           ScheduledThreadPoolExecutor scheduler) {
+        return new JpaJDKCallableJob( job,
                 ctx,
                 trigger,
                 handle,
                 this.scheduler );
     }
 
-	public class JpaJDKCallableJob extends JDKCallableJob {
+    public class JpaJDKCallableJob extends JDKCallableJob {
 
-		public JpaJDKCallableJob(Job job,
-					             JobContext ctx,
-					             Trigger trigger,
-					             JDKJobHandle handle,
-					             ScheduledThreadPoolExecutor scheduler) {
-			super(job, ctx, trigger, handle, scheduler);
-		}
+        public JpaJDKCallableJob(Job job,
+        			             JobContext ctx,
+        			             Trigger trigger,
+        			             JDKJobHandle handle,
+        			             ScheduledThreadPoolExecutor scheduler) {
+        	super(job, ctx, trigger, handle, scheduler);
+        }
 
         public Void call() throws Exception {
-        	JDKCallableJobCommand command = new JDKCallableJobCommand(this);
-        	commandService.execute(command);
-        	return null;
+            JDKCallableJobCommand command = new JDKCallableJobCommand(this);
+            commandService.execute(command);
+            return null;
         }
         
         private Void internalCall() throws Exception {
-        	return super.call();
+            return super.call();
         }
     }
     
     public static class JDKCallableJobCommand implements GenericCommand<Void> {
 
-		private static final long serialVersionUID = 4L;
-		
-		private JpaJDKCallableJob job;
-    	
-    	public JDKCallableJobCommand(JpaJDKCallableJob job) {
-    		this.job = job;
-    	}
-    	
-    	public Void execute(Context context) {
-    		try {
-    			return job.internalCall();
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    		return null;
-    	}
-    	
+        private static final long serialVersionUID = 4L;
+
+        private JpaJDKCallableJob job;
+
+        public JDKCallableJobCommand(JpaJDKCallableJob job) {
+        	this.job = job;
+        }
+
+        public Void execute(Context context) {
+        	try {
+        		return job.internalCall();
+        	} catch (Exception e) {
+        		e.printStackTrace();
+        	}
+        	return null;
+        }
+
     }
 
 }

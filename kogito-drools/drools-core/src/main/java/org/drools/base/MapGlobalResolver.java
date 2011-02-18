@@ -82,7 +82,7 @@ public class MapGlobalResolver
     }
 
     public Entry[] getGlobals() {
-    	return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
+        return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
     }
     
     public GlobalResolver clone() {

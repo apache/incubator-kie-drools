@@ -66,12 +66,12 @@ public class HttpClientImpl
             httpCon.setRequestMethod( "GET" );
 
             if (enableBasicAuthentication) {
-				String userpassword = username + ":" + password;
-				byte[] authEncBytes = Base64.encodeBase64(userpassword
-						.getBytes());
-				httpCon.setRequestProperty("Authorization", "Basic "
-						+ new String(authEncBytes));
-			}
+        		String userpassword = username + ":" + password;
+        		byte[] authEncBytes = Base64.encodeBase64(userpassword
+        				.getBytes());
+        		httpCon.setRequestProperty("Authorization", "Basic "
+        				+ new String(authEncBytes));
+        	}
 
             
             Object o = DroolsStreamUtils.streamIn( httpCon.getInputStream() );

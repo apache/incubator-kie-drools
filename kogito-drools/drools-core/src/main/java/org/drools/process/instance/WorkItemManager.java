@@ -24,16 +24,16 @@ import java.util.Set;
  */
 public interface WorkItemManager extends org.drools.runtime.process.WorkItemManager {
 
-	void internalExecuteWorkItem(WorkItem workItem);
-	
-	void internalAddWorkItem(WorkItem workItem);
-	
+    void internalExecuteWorkItem(WorkItem workItem);
+
+    void internalAddWorkItem(WorkItem workItem);
+
     void internalAbortWorkItem(long id);
     
-	Set<WorkItem> getWorkItems();
-	
-	WorkItem getWorkItem(long id);
-	
-	void clear();
+    Set<WorkItem> getWorkItems();
+
+    WorkItem getWorkItem(long id);
+
+    void clear();
 
 }

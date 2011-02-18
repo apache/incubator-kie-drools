@@ -27,8 +27,8 @@ public class SimpleGlider
     implements
     ConwayPattern {
 
-	private static final long serialVersionUID = 510l;
-	
+    private static final long serialVersionUID = 510l;
+
     private final boolean[][] grid = {{false, true, false}, {true, false, false}, {true, true, true}};
     //private final boolean[][] grid = {{false, false, false}, {true, true, false}, {false, false, false}};
 

@@ -369,10 +369,10 @@ public class BuildContext {
     
 
     public boolean isQuery() {
-		return query;
-	}
+        return query;
+    }
 
-	/**
+    /**
      * @return the currentEntryPoint
      */
     public EntryPoint getCurrentEntryPoint() {
@@ -447,7 +447,7 @@ public class BuildContext {
     public void setRule(Rule rule) {
         this.rule = rule;
         if ( rule instanceof Query) {
-        	this.query = true;
+            this.query = true;
         }
     }
 

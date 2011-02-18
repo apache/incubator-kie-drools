@@ -32,41 +32,41 @@ import org.drools.runtime.rule.impl.NativeQueryResults;
 
 public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {
 
-	@Override
-	public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
-		if (value == null || value.isEmpty()) {
-			return new JaxbStringObjectPair[0];
-		}
-		
-		List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(value.size());
-		for (Map.Entry<String, Object> entry : value.entrySet()) {
-		    Object obj = entry.getValue();
-		    Class<? extends Object> vClass = obj.getClass();
-		    
-		    if ( obj instanceof NativeQueryResults ) {
-		        obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
-		    } else if (obj instanceof FactHandle ) {
-		        obj = ((InternalFactHandle)obj).toExternalForm();
-	        } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
-	            obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
-	        }
-			ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
-		}
-		
-		return ret.toArray(new JaxbStringObjectPair[value.size()]);
-	}
+    @Override
+    public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
+        if (value == null || value.isEmpty()) {
+        	return new JaxbStringObjectPair[0];
+        }
 
-	@Override
-	public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
-		Map<String, Object> r = new HashMap<String, Object>();
-		for( JaxbStringObjectPair p : value ) {
-		    if ( p.getValue() instanceof JaxbListWrapper) {
-		        r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
-		    } else {
-		        r.put(p.getKey(), p.getValue());
-		    }
-		}
-		return r;
-	}
+        List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(value.size());
+        for (Map.Entry<String, Object> entry : value.entrySet()) {
+            Object obj = entry.getValue();
+            Class<? extends Object> vClass = obj.getClass();
+
+            if ( obj instanceof NativeQueryResults ) {
+                obj = new FlatQueryResults( ((NativeQueryResults )obj).getResults() );
+            } else if (obj instanceof FactHandle ) {
+                obj = ((InternalFactHandle)obj).toExternalForm();
+            } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
+                obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
+            }
+        	ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
+        }
+
+        return ret.toArray(new JaxbStringObjectPair[value.size()]);
+    }
+
+    @Override
+    public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
+        Map<String, Object> r = new HashMap<String, Object>();
+        for( JaxbStringObjectPair p : value ) {
+            if ( p.getValue() instanceof JaxbListWrapper) {
+                r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
+            } else {
+                r.put(p.getKey(), p.getValue());
+            }
+        }
+        return r;
+    }
 
 }
