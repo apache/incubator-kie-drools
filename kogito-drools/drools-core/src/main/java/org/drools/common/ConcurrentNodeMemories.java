@@ -113,7 +113,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
             this.lock.lock();
             if( node.getId() >= this.memories.length() ) {
                 // adding some buffer for new nodes, so that we reduce array copies
-                int size = Math.max( this.rulebase.getNodeCount(), node.getId() + 32 ); 
+                int size = Math.max( this.rulebase.getNodeCount(), node.getId() + 32 );
                 AtomicReferenceArray<Object> newMem = new AtomicReferenceArray<Object>( size );
                 for ( int i = 0; i < this.memories.length(); i++ ) {
                     newMem.set( i,

@@ -34,7 +34,7 @@ public class SingleSessionCommandService
     implements
     org.drools.command.SingleSessionCommandService {
     
-    Logger                               logger                                            = LoggerFactory.getLogger( getClass() );    
+    Logger                               logger                                            = LoggerFactory.getLogger( getClass() );
 
     private SessionInfo                 sessionInfo;
     private SessionMarshallingHelper marshallingHelper;
@@ -89,9 +89,9 @@ public class SingleSessionCommandService
         if ( conf == null ) {
             conf = new SessionConfiguration();
         }
-        this.env = env;        
+        this.env = env;
         
-        checkEnvironment( this.env );        
+        checkEnvironment( this.env );
         
         this.sessionInfo = new SessionInfo();
 
@@ -112,7 +112,7 @@ public class SingleSessionCommandService
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
                                                                   conf );
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );        
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
         
         // Use the App scoped EntityManager if the user has provided it, and it is open.
 
@@ -170,7 +170,7 @@ public class SingleSessionCommandService
             // nothing to initialise
         }
         
-        this.doRollback = false;       
+        this.doRollback = false;
 
         try {
             this.sessionInfo = jpm.getApplicationScopedPersistenceContext().findSessionInfo( sessionId );
@@ -245,7 +245,7 @@ public class SingleSessionCommandService
                 logger.debug( "Instantiating  JtaTransactionManager" );
                 this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                                                       env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                                                      tm ); 
+                                                      tm );
                 try {
                     Class<?> jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
                     Constructor<?> jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
@@ -352,7 +352,7 @@ public class SingleSessionCommandService
 
         public void afterCompletion(int status) {
             if ( status != TransactionManager.STATUS_COMMITTED ) {
-                this.service.rollback();                
+                this.service.rollback();
             }
 
             // always cleanup thread local whatever the result

@@ -77,7 +77,7 @@ public class NotNode extends BetaNode {
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
                                           leftTuple );
-        FastIterator it = getRightIterator( rightMemory ); 
+        FastIterator it = getRightIterator( rightMemory );
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
@@ -128,7 +128,7 @@ public class NotNode extends BetaNode {
 
         if ( memory.getLeftTupleMemory() == null || memory.getLeftTupleMemory().size() == 0  ) {
             // do nothing here, as no left memory
-            return;            
+            return;
         }
 
         this.constraints.updateFromFactHandle( memory.getContext(),
@@ -265,7 +265,7 @@ public class NotNode extends BetaNode {
 
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
-                                          leftTuple );        
+                                          leftTuple );
 
         // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
         if ( blocker == null || !this.constraints.isAllowedCachedLeft( memory.getContext(),
@@ -279,7 +279,7 @@ public class NotNode extends BetaNode {
                 leftTuple.setBlockedNext( null );
             }
 
-            FastIterator rightIt = memory.getRightTupleMemory().fastIterator();            
+            FastIterator rightIt = memory.getRightTupleMemory().fastIterator();
             
             // find first blocker, because it's a modify, we need to start from the beginning again        
             RightTuple rightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
@@ -325,13 +325,13 @@ public class NotNode extends BetaNode {
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {        
-        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );               
+        final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         if ( memory.getLeftTupleMemory() == null || ( memory.getLeftTupleMemory().size() == 0 && rightTuple.getBlocked() == null ) ) {
             // do nothing here, as we know there are no left tuples
             
             //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
             memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );               
+            memory.getRightTupleMemory().add( rightTuple );
             return;
         }
         

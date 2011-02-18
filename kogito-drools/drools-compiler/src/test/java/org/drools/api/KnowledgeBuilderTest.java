@@ -37,7 +37,7 @@ public class KnowledgeBuilderTest {
 		str += "rule rule2\n";
 		str += "when\n";
 		str += "then\n";
-		str += "end\n";				
+		str += "end\n";
 		builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 		
 		str = "package org.test2\n";
@@ -48,7 +48,7 @@ public class KnowledgeBuilderTest {
 		str += "rule rule4\n";
 		str += "when\n";
 		str += "then\n";
-		str += "end\n";			
+		str += "end\n";
 		builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 		
 		Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
@@ -56,7 +56,7 @@ public class KnowledgeBuilderTest {
 		assertEquals( 2, pkgs.size() );
 		
 		KnowledgePackage test1 = getKnowledgePackage(pkgs, "org.test1" );
-		Collection<Rule> rules = test1.getRules();		
+		Collection<Rule> rules = test1.getRules();
 		assertEquals( 2, rules.size() );
 		Rule rule = getRule( rules, "rule1" );
 		assertEquals("rule1", rule.getName() );
@@ -69,7 +69,7 @@ public class KnowledgeBuilderTest {
 		rule = getRule( rules, "rule3" );
 		assertEquals("rule3", rule.getName() );
 		rule = getRule( rules, "rule4" );
-		assertEquals( "rule4", rule.getName() );			
+		assertEquals( "rule4", rule.getName() );
 	}
 	
 	public Rule getRule(Collection<Rule> rules, String name) {
@@ -78,7 +78,7 @@ public class KnowledgeBuilderTest {
 				return rule;
 			}
 		}
-		return null;		
+		return null;
 	}
 	
 	public KnowledgePackage getKnowledgePackage(Collection<KnowledgePackage> pkgs, String name) {

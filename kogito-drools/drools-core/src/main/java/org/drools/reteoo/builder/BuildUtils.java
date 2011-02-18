@@ -242,7 +242,7 @@ public class BuildUtils {
                 }
             }
             if( ! resolved ) {
-                list.add( declarations[i].getIdentifier() );                
+                list.add( declarations[i].getIdentifier() );
             }
         }
 

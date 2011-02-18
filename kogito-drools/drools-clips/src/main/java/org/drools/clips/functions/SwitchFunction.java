@@ -44,9 +44,9 @@ public class SwitchFunction implements Function {
         
         LispForm caseForm = ( LispForm ) sExpressions[2];
         
-        appendable.append( "if ( switchvar == " );            
+        appendable.append( "if ( switchvar == " );
         
-        FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
+        FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );
         appendable.append( ") {" );
         for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
             FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
@@ -56,8 +56,8 @@ public class SwitchFunction implements Function {
         for ( int i = 3, length = sExpressions.length-1; i < length; i++ ) {
             caseForm = ( LispForm ) sExpressions[i];
             
-            appendable.append( " else if ( switchvar == " );            
-            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
+            appendable.append( " else if ( switchvar == " );
+            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );
             appendable.append( ") {" );
             
             for ( int j = 3, jlength = caseForm.getSExpressions().length; j < jlength; j++ ) {
@@ -68,19 +68,19 @@ public class SwitchFunction implements Function {
         
         caseForm = ( LispForm ) sExpressions[ sExpressions.length-1 ];
         if ( "case".equals( ((LispAtom)caseForm.getSExpressions()[0]).getValue() ) ) {
-            appendable.append( " else if ( switchvar == " );            
-            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );            
+            appendable.append( " else if ( switchvar == " );
+            FunctionHandlers.dump( caseForm.getSExpressions()[1], appendable );
             appendable.append( ") {" );
             for ( int j = 3, length = caseForm.getSExpressions().length; j < length; j++ ) {
                 FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
             }        
-            appendable.append( "}" );            
+            appendable.append( "}" );
         } else {
-            appendable.append( " else { " ); 
+            appendable.append( " else { " );
             for ( int j = 1, length = caseForm.getSExpressions().length; j < length; j++ ) {
                 FunctionHandlers.dump( caseForm.getSExpressions()[j], appendable, true );
             }        
-            appendable.append( "}" );            
+            appendable.append( "}" );
         }  
     }
     

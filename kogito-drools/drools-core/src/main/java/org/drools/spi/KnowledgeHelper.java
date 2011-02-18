@@ -48,7 +48,7 @@ public interface KnowledgeHelper
     RuleContext,
     Serializable {
     
-    public void setActivation(final Activation agendaItem); 
+    public void setActivation(final Activation agendaItem);
     
     public void reset();
     
@@ -88,7 +88,7 @@ public interface KnowledgeHelper
     
     FactHandle getFactHandle(Object object);
     
-    FactHandle getFactHandle(FactHandle handle);    
+    FactHandle getFactHandle(FactHandle handle);
     
     void update(FactHandle handle,
                       Object newObject) ;
@@ -97,7 +97,7 @@ public interface KnowledgeHelper
     
     void update( Object newObject ) ;
     
-    void modify( Object newObject ) ;   
+    void modify( Object newObject ) ;
 
     void retract(FactHandle handle) ;
     

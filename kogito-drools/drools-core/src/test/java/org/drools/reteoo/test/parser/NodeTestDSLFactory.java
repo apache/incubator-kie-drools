@@ -40,7 +40,7 @@ public class NodeTestDSLFactory {
     private Context current;
     
     public NodeTestCase createTestCase( String name ) {
-        testCase = new NodeTestCase( cleanString( name ) ); 
+        testCase = new NodeTestCase( cleanString( name ) );
         return testCase;
     }
     

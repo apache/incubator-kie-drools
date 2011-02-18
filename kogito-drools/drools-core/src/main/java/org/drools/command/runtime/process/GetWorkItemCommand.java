@@ -44,7 +44,7 @@ public class GetWorkItemCommand implements GenericCommand<WorkItem> {
 	}
 
     public WorkItem execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();        
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         return ((WorkItemManager) ksession.getWorkItemManager()).getWorkItem(workItemId);
 	}
 

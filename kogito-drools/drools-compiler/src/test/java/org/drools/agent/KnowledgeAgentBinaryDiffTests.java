@@ -252,7 +252,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     public void testDifferentLHS() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) );          
+                                     createDefaultRule( "rule1" ) );
 
 
         String xml = "";
@@ -283,7 +283,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         list.clear();
         
         File f2 = fileManager.write( "rule1.drl",
-                                     createVersionedRule( "rule1", "2" ) );     
+                                     createVersionedRule( "rule1", "2" ) );
         
         scan(kagent);
 
@@ -304,7 +304,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
     public void testDifferentConsequences() throws Exception {
 
         File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) ); 
+                                     createDefaultRule( "rule1" ) );
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
@@ -353,7 +353,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {        
         File f1 = fileManager.write( "rule1.drl",
-                                     createAttributeRule( "rule1", attribute1 ) ); 
+                                     createAttributeRule( "rule1", attribute1 ) );
 
         String xml = "";
         xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";

@@ -63,7 +63,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testAttach() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
-        final Rete source = this.ruleBase.getRete();    
+        final Rete source = this.ruleBase.getRete();
 
         final ObjectType objectType = new ClassObjectType( String.class );
 
@@ -198,7 +198,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     @Test
     public void testMemory() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();   
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         
         final ReteooWorkingMemory workingMemory = ( ReteooWorkingMemory ) ruleBase.newStatefulSession();
 
@@ -215,7 +215,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     @Test
     public void testIsAssignableFrom() {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator(); 
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         final Rete source = new Rete((InternalRuleBase) ruleBase);
 
         ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
@@ -241,7 +241,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     @Test
     public void testRetractObject() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();      
+        IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
         final PropagationContext context = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
@@ -300,7 +300,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                                                                        null,
                                                                        null,
                                                                        null );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();     
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) ruleBase );
 

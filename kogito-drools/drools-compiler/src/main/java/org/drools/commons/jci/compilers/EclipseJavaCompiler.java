@@ -336,7 +336,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     final IProblem[] iproblems = pResult.getProblems();
                     for (int i = 0; i < iproblems.length; i++) {
                         final IProblem iproblem = iproblems[i];
-                        final CompilationProblem problem = new EclipseCompilationProblem(iproblem); 
+                        final CompilationProblem problem = new EclipseCompilationProblem(iproblem);
                         if (problemHandler != null) {
                             problemHandler.handle(problem);
                         }

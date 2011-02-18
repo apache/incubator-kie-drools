@@ -100,7 +100,7 @@ public interface InternalRuleBase
                               PropagationContext context,
                               ReteooWorkingMemory workingMemory) throws FactException;
  
-    public CompositeClassLoader getRootClassLoader();   
+    public CompositeClassLoader getRootClassLoader();
     
     public Rete getRete();
     

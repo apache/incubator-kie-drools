@@ -34,7 +34,7 @@ public class PersisterEnums {
     public static final short WORKING_MEMORY_ACTION  = 10;
     
     public static final short EQUALITY_KEY           = 11;
-    public static final short LOGICAL_DEPENDENCY     = 12; 
+    public static final short LOGICAL_DEPENDENCY     = 12;
     
     public static final short AGENDA_GROUP           = 13;
     public static final short ACTIVATION_GROUP       = 14;

@@ -140,7 +140,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         this.agenda = agenda;
         this.agenda.setWorkingMemory( this );
         //        InputPersister.readFactHandles( context );
-        //        super.read( context );        
+        //        super.read( context );
     }
 
     public QueryResults getQueryResults(final String query) {

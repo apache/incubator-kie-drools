@@ -286,7 +286,7 @@ public class MVELTest {
           throw new RuntimeException(kbuilder.getErrors().toString());
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 

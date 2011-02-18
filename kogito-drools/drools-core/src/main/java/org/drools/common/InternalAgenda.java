@@ -52,7 +52,7 @@ public interface InternalAgenda
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
                                                          final Rule rule,
-                                                         final GroupElement subrule);   
+                                                         final GroupElement subrule);
     
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,

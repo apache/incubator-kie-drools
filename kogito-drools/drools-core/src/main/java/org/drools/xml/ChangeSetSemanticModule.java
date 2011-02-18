@@ -36,22 +36,22 @@ public class ChangeSetSemanticModule  extends DefaultSemanticModule implements S
                     new ChangeSetHandler() );
         
         addHandler( "add",
-                    new AddHandler() ); 
+                    new AddHandler() );
         
         addHandler( "remove",
                     new RemoveHandler() );
         
         addHandler( "modify",
-                    new ModifyHandler() );        
+                    new ModifyHandler() );
         
         addHandler( "resource",
-                    new ResourceHandler() );  
+                    new ResourceHandler() );
 
         addHandler( "definition",
                     new DefinitionHandler() );
         
         addHandler( "decisiontable-conf",
-                    new DecisionTableConfigurationHandler() );             
+                    new DecisionTableConfigurationHandler() );
     }
     
 }

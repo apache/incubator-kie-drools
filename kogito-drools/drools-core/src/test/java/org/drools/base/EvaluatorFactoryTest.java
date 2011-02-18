@@ -578,7 +578,7 @@ public class EvaluatorFactoryTest {
         if ( coerced.isIntegerNumber() ) {
             final LongVariableContextEntry context = new LongVariableContextEntry( extractor,
                                                                                    declaration,
-                                                                                   evaluator );                                 
+                                                                                   evaluator );
             
             if ( row[2] == null ) {
                 context.leftNull = true;

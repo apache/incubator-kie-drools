@@ -1688,7 +1688,7 @@ public class TestDRL {
 				/** If return object is instanceof AST, get the toStringTree */
 				if ( ruleReturn.toString().indexOf(testRuleName+"_return")>0 ) {
 					try {	// NullPointerException may happen here...
-						Class _return = Class.forName("org.drools.lang.DRLParser"+"$"+testRuleName+"_return");            	
+						Class _return = Class.forName("org.drools.lang.DRLParser"+"$"+testRuleName+"_return");
 						Method[] methods = _return.getDeclaredMethods();
                 		for(Method method : methods) {
 			                if ( method.getName().equals("getTree") ) {
@@ -1713,7 +1713,7 @@ public class TestDRL {
 //			this.stdout = null;
 //			this.stderr = null;
 //			stdoutVacuum.start();
-//			stderrVacuum.start();			
+//			stderrVacuum.start();
 //			stdoutVacuum.join();
 //			stderrVacuum.join();
 //			// retVal could be actual return object from rule, stderr or stdout

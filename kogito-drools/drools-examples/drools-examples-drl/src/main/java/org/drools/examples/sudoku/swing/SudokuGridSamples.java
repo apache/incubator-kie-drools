@@ -114,7 +114,7 @@ public class SudokuGridSamples
                {null,null,null,3,null,5,null,null,null},
                {null,6,null,null,null,1,null,5,8},
                {7,3,null,9,null,null,null,null,null}}
-      );    
+      );
       
       samples.put
       (

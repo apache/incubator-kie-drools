@@ -222,7 +222,7 @@ public class PackageBuilderConfigurationTest {
                       evalDescr.getContent() );
         assertEquals( "consequence was built",
                       ruleDescr.getConsequence() );
-        assertTrue( mockDialect2.isCompileAll() );        
+        assertTrue( mockDialect2.isCompileAll() );
 
         assertNotNull( pkg.getRule( "test rule" ) );
 

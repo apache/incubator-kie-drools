@@ -81,7 +81,7 @@ public interface InternalWorkingMemory
                        final Object object,
                        final Rule rule,
                        final Activation activation,
-                       ObjectTypeConf typeConf);    
+                       ObjectTypeConf typeConf);
     
     /**
      * Looks for the fact handle associated to the given object
@@ -107,7 +107,7 @@ public interface InternalWorkingMemory
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     
-    public InternalFactHandle getInitialFactHandle();       
+    public InternalFactHandle getInitialFactHandle();
     
     public Calendars getCalendars();
     
@@ -197,7 +197,7 @@ public interface InternalWorkingMemory
      */
     public long getTimeToNextJob();
     
-    public void updateEntryPointsCache();     
+    public void updateEntryPointsCache();
     
     /**
      * This method is called by the agenda before firing a new activation

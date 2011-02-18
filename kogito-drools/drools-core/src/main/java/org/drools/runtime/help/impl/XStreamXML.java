@@ -117,7 +117,7 @@ public class XStreamXML {
                                Boolean.toString( cmd.isReturnObject() ) );
           
           writer.addAttribute( "entry-point",
-                               cmd.getEntryPoint() );          
+                               cmd.getEntryPoint() );
 
       }
       writeItem( cmd.getObject(),
@@ -286,7 +286,7 @@ public static class InsertElementsConverter extends AbstractCollectionConverter
           
           
           writer.addAttribute( "entry-point",
-                               cmd.getEntryPoint() );          
+                               cmd.getEntryPoint() );
 
       }
 

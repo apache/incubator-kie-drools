@@ -35,7 +35,7 @@ public interface StatelessSessionResult {
      * @return
      *       java.util.Iterators.
      */
-    Iterator iterateObjects();    
+    Iterator iterateObjects();
     
     /**
      * Iterate only those objects that match the provided ObjectFilter.
@@ -44,7 +44,7 @@ public interface StatelessSessionResult {
      * @return
      *             java.util.Iterators.
      */
-    Iterator iterateObjects(org.drools.runtime.ObjectFilter filter);   
+    Iterator iterateObjects(org.drools.runtime.ObjectFilter filter);
     
     /**
      * Retrieve the QueryResults of the specified query.
@@ -85,6 +85,6 @@ public interface StatelessSessionResult {
      * @return
      *        The GlobalResolver used for this StatelessSessionResult
      */
-    public GlobalResolver getGlobalResolver(); 
+    public GlobalResolver getGlobalResolver();
        
 }

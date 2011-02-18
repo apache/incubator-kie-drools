@@ -69,7 +69,7 @@ public class DefinitionHandler extends BaseAbstractHandler
                         Attributes attrs,
                         ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
-                                    attrs );      
+                                    attrs );
         
         
         String packageName = attrs.getValue( "package" );
@@ -83,7 +83,7 @@ public class DefinitionHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName,
                              "name",
                              name,
-                             parser );        
+                             parser );
         DefinitionHandler.DefinitionHandlerData data = new DefinitionHandlerData(packageName, name);
         
         return data;

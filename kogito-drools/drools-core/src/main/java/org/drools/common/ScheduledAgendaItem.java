@@ -48,7 +48,7 @@ public class ScheduledAgendaItem extends AgendaItem
 //
     private InternalAgenda     agenda;
     
-    private JobHandle jobHandle;    
+    private JobHandle jobHandle;
 
     public ScheduledAgendaItem(final long activationNumber,
                                final LeftTuple tuple,

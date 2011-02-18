@@ -29,7 +29,7 @@ public class ActivationGroupImpl implements ActivationGroup, Externalizable {
     
     private String name;
     
-    private InternalAgenda agenda;    
+    private InternalAgenda agenda;
     
     ActivationGroupImpl() {
         

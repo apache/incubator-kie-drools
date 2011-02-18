@@ -142,10 +142,10 @@ public abstract class BaseMannersTest {
         
         this.pkg.addRule( getAssignFirstSeatRule() );
         this.pkg.addRule( getFindSeating() );
-        this.pkg.addRule( getMakePath() );        
+        this.pkg.addRule( getMakePath() );
         this.pkg.addRule( getPathDone() );
-        this.pkg.addRule( getContinueProcessing() );        
-        this.pkg.addRule( getAreWeDone() );        
+        this.pkg.addRule( getContinueProcessing() );
+        this.pkg.addRule( getAreWeDone() );
         this.pkg.addRule( getAllDone() );
 
     }

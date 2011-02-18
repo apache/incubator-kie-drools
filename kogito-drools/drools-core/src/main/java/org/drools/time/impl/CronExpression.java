@@ -97,7 +97,7 @@ import java.util.TreeSet;
  * </tr>
  * </table>
  * <P>
- * The '*' character is used to specify all values. For example, &quot;*&quot; 
+ * The '*' character is used to specify all values. For example, &quot;*&quot;
  * in the minute field means &quot;every minute&quot;.
  * <P>
  * The '?' character is allowed for the day-of-month and day-of-week fields. It

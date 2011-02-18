@@ -219,7 +219,7 @@ public class StatelessKnowledgeSessionImpl
 	}
 
 	public void removeEventListener(ProcessEventListener listener) {
-		this.processEventSupport.removeEventListener(listener);		
+		this.processEventSupport.removeEventListener(listener);
 	}
 
     public void setGlobal(String identifier,
@@ -254,7 +254,7 @@ public class StatelessKnowledgeSessionImpl
                 for ( Command nestedCmd : ((BatchExecutionCommandImpl) command).getCommands() ) {
                     if ( nestedCmd instanceof FireAllRulesCommand ) {
                         autoFireAllRules = false;
-                        break; 
+                        break;
                     }
                 }
             }
@@ -263,7 +263,7 @@ public class StatelessKnowledgeSessionImpl
             }
             if ( command instanceof BatchExecutionCommandImpl) {
                 ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).session.getExecutionResult();
-                return (T) result;                
+                return (T) result;
             } else {
                 return (T) o;
             }

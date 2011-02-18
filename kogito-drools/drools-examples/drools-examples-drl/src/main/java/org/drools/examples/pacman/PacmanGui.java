@@ -153,7 +153,7 @@ public class PacmanGui extends JFrame
     public void keyReleased(KeyEvent e) {
         //        switch ( e.getKeyCode() ) {
         //            case 38 : { // UP
-        //             break;   
+        //             break;
         //            }
         //            case 40 : { // DOWN
         //                break;

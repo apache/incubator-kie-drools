@@ -31,7 +31,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testModifyFileUrl() throws Exception {
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule1" ) );        
+                           createDefaultRule( "rule1" ) );
         
         fileManager.write( "rule2.drl",
                            createDefaultRule( "rule2" ) );
@@ -98,7 +98,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testChangeSetInChangeSet() throws Exception {
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule1" ) );        
+                           createDefaultRule( "rule1" ) );
         
         fileManager.write( "rule2.drl",
                            createDefaultRule( "rule2" ) );
@@ -145,7 +145,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         list.clear();
         
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule3" ) );        
+                           createDefaultRule( "rule3" ) );
 
         scan(kagent);
 
@@ -168,7 +168,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testModifyFileUrlWithStateless() throws Exception {
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule1" ) );        
+                           createDefaultRule( "rule1" ) );
         
         fileManager.write( "rule2.drl",
                            createDefaultRule( "rule2" ) );
@@ -204,7 +204,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         list.clear();
 
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule3" ) );          
+                           createDefaultRule( "rule3" ) );
         
         scan(kagent);
 
@@ -437,7 +437,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     public void testModifyFile() throws IOException,
                                 InterruptedException {
         File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) );        
+                                     createDefaultRule( "rule1" ) );
         
         File f2 = fileManager.write( "rule2.drl",
                                      createDefaultRule( "rule2" ) );
@@ -475,7 +475,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         list.clear();
 
         fileManager.write( "rule1.drl",
-                           createDefaultRule( "rule3" ) ); 
+                           createDefaultRule( "rule3" ) );
 
         scan( kagent );
 
@@ -500,7 +500,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         // adds 2 files to a dir and executes then adds one and removes one and
         // detects changes
         File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) );        
+                                     createDefaultRule( "rule1" ) );
         
         File f2 = fileManager.write( "rule2.drl",
                                      createDefaultRule( "rule2" ) );
@@ -567,7 +567,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         File f1 = fileManager.write( "test",
                                      "rule1.drl",
-                                     createDefaultRule( "rule1" ) );        
+                                     createDefaultRule( "rule1" ) );
         
         File f2 = fileManager.write( "test",
                                      "rule2.drl",
@@ -608,7 +608,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         
         fileManager.write( "test",
                            "rule1.drl",
-                           createDefaultRule( "rule3" ) );          
+                           createDefaultRule( "rule3" ) );
 
         scan(kagent);
 
@@ -630,7 +630,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     @Test
     public void testStatelessWithCommands() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
-                                     createDefaultRule( "rule1" ) );        
+                                     createDefaultRule( "rule1" ) );
         
         File f2 = fileManager.write( "rule2.drl",
                                      createDefaultRule( "rule2" ) );

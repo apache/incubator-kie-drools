@@ -142,7 +142,7 @@ public class SimpleAgendaGroup
                     // create and add
                     SalienceGroup newGroup = new SalienceGroup( salience );
                     this.salienceGroups.insertAfter( lastGroup, newGroup );
-                    group = newGroup;                    
+                    group = newGroup;
                 }
                 //add or get to end
             }
@@ -160,7 +160,7 @@ public class SimpleAgendaGroup
                     // create and add before, as must be larger
                     SalienceGroup newGroup = new SalienceGroup( salience );
                     this.salienceGroups.insertAfter( group.getPrevious(), newGroup );
-                    group = newGroup;                    
+                    group = newGroup;
                 }                
             }
             
@@ -204,7 +204,7 @@ public class SimpleAgendaGroup
         
         while ( !this.salienceGroups.isEmpty() && ( group == null || ( group != null && group.getList().isEmpty() ) ) ) {
             this.salienceGroups.removeFirst();
-            group = (SalienceGroup) this.salienceGroups.getFirst();                       
+            group = (SalienceGroup) this.salienceGroups.getFirst();
         }
 
         if ( group != null ) {

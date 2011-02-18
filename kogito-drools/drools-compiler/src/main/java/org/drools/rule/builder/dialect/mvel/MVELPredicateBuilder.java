@@ -54,7 +54,7 @@ public class MVELPredicateBuilder
         try {            
             Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
             
-            Pattern p = ( Pattern ) context.getBuildStack().peek();            
+            Pattern p = ( Pattern ) context.getBuildStack().peek();
             if (p.getObjectType() instanceof ClassObjectType ) {
                 declIds.put( "this", ((ClassObjectType)p.getObjectType()).getClassType() );
             }    
@@ -62,12 +62,12 @@ public class MVELPredicateBuilder
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
 
             MVELPredicateExpression expr = new MVELPredicateExpression( unit,
-                                                                        context.getDialect().getId());            
+                                                                        context.getDialect().getId());
             predicate.setPredicateExpression( expr );
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
             data.addCompileable( predicate,
-                                  expr );              
+                                  expr );
 
             expr.compile( context.getPackageBuilder().getRootClassLoader() );
         } catch ( final Exception e ) {

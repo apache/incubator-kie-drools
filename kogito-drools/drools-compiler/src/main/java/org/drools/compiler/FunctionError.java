@@ -43,7 +43,7 @@ public class FunctionError extends DroolsError {
     }
     
     public int[] getErrorLines() {
-        return errorLines;        
+        return errorLines;
     }
 
     public String getMessage() {
@@ -60,7 +60,7 @@ public class FunctionError extends DroolsError {
             CompilationProblem[] cp = (CompilationProblem[]) object;
             this.errorLines = new int[cp.length];
             for( int i = 0; i < cp.length ; i ++ ) {
-               this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1; 
+               this.errorLines[i] = cp[i].getStartLine() - this.functionDescr.getOffset() + this.getFunctionDescr().getLine() - 1;
                detail.append( this.functionDescr.getName() );
                detail.append( " (line:" );
                detail.append( this.errorLines[i] );

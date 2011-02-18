@@ -26,7 +26,7 @@ public interface ObjectStore {
 
     boolean isEmpty();
     
-    void clear();    
+    void clear();
 
     Object getObjectForHandle(FactHandle handle);
     

@@ -33,28 +33,28 @@ public class KnowledgeHelperFixer {
                         public String doMacro() {
                             return "drools.insert";
                         }
-                    } ); 
+                    } );
         
         macros.put( "insertLogical",
                     new Macro() {
                         public String doMacro() {
                             return "drools.insertLogical";
                         }
-                    } );         
+                    } );
         
         macros.put( "modifyRetract",
                     new Macro() {
                         public String doMacro() {
                             return "drools.modifyRetract";
                         }
-                    } );  
+                    } );
         
         macros.put( "modifyInsert",
                     new Macro() {
                         public String doMacro() {
                             return "drools.modifyInsert";
                         }
-                    } );          
+                    } );
         
         macros.put( "update",
                     new Macro() {
@@ -68,7 +68,7 @@ public class KnowledgeHelperFixer {
                         public String doMacro() {
                             return "drools.retract";
                         }
-                    } );          
+                    } );
     }
 
     public String fix(final String raw) {

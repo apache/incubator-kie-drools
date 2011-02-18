@@ -26,6 +26,6 @@ public class ArrayAgendaGroupFactory implements AgendaGroupFactory {
     
     public InternalAgendaGroup createAgendaGroup(String name, InternalRuleBase ruleBase) {
         return new ArrayAgendaGroup( name,
-                                     ruleBase );        
+                                     ruleBase );
     }
 }

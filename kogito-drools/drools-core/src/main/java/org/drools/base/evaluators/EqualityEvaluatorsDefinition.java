@@ -1806,7 +1806,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1,
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
-            final Object value2 = extractor2.getValue( workingMemory, object2 );           
+            final Object value2 = extractor2.getValue( workingMemory, object2 );
             return !comparator.equals( value1, value2 );
         }
 

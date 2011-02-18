@@ -543,7 +543,7 @@ public class MVELDialect
                             KnowledgeHelper.class );
         ids.add(  "rule" );
         resolvedInputs.put( "rule", 
-                            Rule.class );                 
+                            Rule.class );
         
         List<String> strList = new ArrayList();
         int i = 0;
@@ -558,7 +558,7 @@ public class MVELDialect
                 if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getExtractor().getExtractToClass() );                
+                                        decl.getExtractor().getExtractToClass() );
                 }
             }
         }
@@ -568,7 +568,7 @@ public class MVELDialect
                 if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getExtractor().getExtractToClass() );                  
+                                        decl.getExtractor().getExtractToClass() );
                 }
             }        
         }             
@@ -591,7 +591,7 @@ public class MVELDialect
                                     (Class) entry.getValue() );
             }
         }
-        String[] otherIdentifiers =  strList.toArray( new String[strList.size()]);    
+        String[] otherIdentifiers =  strList.toArray( new String[strList.size()]);
         
         String[] inputIdentifiers = new String[resolvedInputs.size()];
         String[] inputTypes = new String[resolvedInputs.size()];

@@ -156,7 +156,7 @@ public class PatternBuilder
         
         // lets see if it maps to a query
         if ( objectType == null ) {
-            Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );            
+            Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
             if ( rule != null && rule instanceof Query ) {
                 // it's a query so delegate to the QueryElementBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
@@ -167,7 +167,7 @@ public class PatternBuilder
                                                               patternDescr,
                                                               null,
                                                               "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
-                return null;                
+                return null;
             }
         }
 
@@ -197,12 +197,12 @@ public class PatternBuilder
         
         if ( duplicateBindings ) {
             // rewrite existing bindings into == constraints, so it unifies
-            FieldConstraintDescr varDescr = new FieldConstraintDescr( "this" );  
-            varDescr.addRestriction( new VariableRestrictionDescr("==",  patternDescr.getIdentifier() ) );                
+            FieldConstraintDescr varDescr = new FieldConstraintDescr( "this" );
+            varDescr.addRestriction( new VariableRestrictionDescr("==",  patternDescr.getIdentifier() ) );
             build( context,
                    pattern,
                    (FieldConstraintDescr) varDescr,
-                   null );                        
+                   null );
         }          
 
         if ( objectType instanceof ClassObjectType ) {
@@ -586,12 +586,12 @@ public class PatternBuilder
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable() ) ) {
             // rewrite existing bindings into == constraints, so it unifies
-            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getExpression() );  
+            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getExpression() );
             descr.addRestriction( new VariableRestrictionDescr("==", fieldBindingDescr.getVariable() ) );
             build( context,
                    pattern,
                    (FieldConstraintDescr) descr,
-                   container );                        
+                   container );
             return;
         }
 
@@ -652,11 +652,11 @@ public class PatternBuilder
                                      factDeclarations );
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
-        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );        
+        final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
         final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[ usedIdentifiers.getGlobals().size() ] );
         
         Arrays.sort( previousDeclarations, SortDeclarations.isntance  );
-        Arrays.sort( localDeclarations, SortDeclarations.isntance  );        
+        Arrays.sort( localDeclarations, SortDeclarations.isntance  );
 
         final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
                                                                                  previousDeclarations,
@@ -693,7 +693,7 @@ public class PatternBuilder
                                                               baseDescr,
                                                               null,
                                                               "Field Reader does not exist for declaration '" + entry.getKey() + "' in'" + baseDescr + "' in the rule '" + context.getRule().getName() + "'" ) );
-                continue;           
+                continue;
             }
             declarations.put( entry.getKey(),
                               entry.getValue().getExtractor().getExtractToClass() );
@@ -900,11 +900,11 @@ public class PatternBuilder
         final String[] parts = t.split( "\\." );
         
 
-        Declaration implicit = null;                    
+        Declaration implicit = null;
         if ( "this".equals( parts[0] ) ) {
             implicit = this.createDeclarationObject( context,
                                                      parts[1],
-                                                     (Pattern) context.getBuildStack().peek() );            
+                                                     (Pattern) context.getBuildStack().peek() );
         } 
         if ( implicit == null ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
@@ -1093,11 +1093,11 @@ public class PatternBuilder
             return null;
         }
 
-        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );                          
+        final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
         
         Arrays.sort( previousDeclarations, SortDeclarations.isntance  );
-        Arrays.sort( localDeclarations, SortDeclarations.isntance  );        
+        Arrays.sort( localDeclarations, SortDeclarations.isntance  );
         
         final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[ usedIdentifiers.getGlobals().size() ] );
         final ReturnValueRestriction returnValueRestriction = new ReturnValueRestriction( extractor,

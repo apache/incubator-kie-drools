@@ -15,7 +15,7 @@ public class JavaInterfacePointsDescr implements JavaBlockDescr {
     private int start;
     private int end;
     private String id;
-    private String targetExpression;    
+    private String targetExpression;
     private BlockType type;
     
     public JavaInterfacePointsDescr( String id ) {

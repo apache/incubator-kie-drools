@@ -116,7 +116,7 @@ public class Activator
                                    Object arg1) {
             Service service = (Service) bc.getService( ref );
             ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
-            System.out.println( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );            
+            System.out.println( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
         }
     }
 

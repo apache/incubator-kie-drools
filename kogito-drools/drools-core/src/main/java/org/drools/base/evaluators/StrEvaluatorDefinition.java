@@ -77,7 +77,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 			Target rightTarget) {
 		StrEvaluator evaluator = new StrEvaluator(type, isNegated);
 		evaluator.setParameterText(parameterText);
-		return evaluator;		
+		return evaluator;
 	}
 
 	/**

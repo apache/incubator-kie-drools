@@ -127,7 +127,7 @@ public class LhsBuilder implements SourceBuilder {
         //we can wrap all values in quotes, it all works
         FieldType fieldType = calcFieldType( content );
         if (fieldType == FieldType.NORMAL_FIELD || ! isMultipleConstraints()) {
-            constraints.put( key, content );            
+            constraints.put( key, content );
         } else if (fieldType == FieldType.SINGLE_FIELD) {
             constraints.put( key, content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
         } else if (fieldType == FieldType.OPERATOR_FIELD) {

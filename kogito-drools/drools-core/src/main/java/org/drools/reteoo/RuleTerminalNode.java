@@ -117,9 +117,9 @@ public class RuleTerminalNode extends BaseNode
         this.declarations = new Declaration[ rule.getRequiredDeclarations().length ];
         int i = 0;
         for (String str : rule.getRequiredDeclarations() ) {
-            this.declarations[i++] = decls.get( str );            
+            this.declarations[i++] = decls.get( str );
         }
-        Arrays.sort( this.declarations, SortDeclarations.isntance  );        
+        Arrays.sort( this.declarations, SortDeclarations.isntance  );
     }
 
     // ------------------------------------------------------------

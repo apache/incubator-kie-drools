@@ -96,7 +96,7 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         concurrentRightTupleMemory = false;
     
     
-    private boolean indexedUnificationJoin;    
+    private boolean indexedUnificationJoin;
 
     // ------------------------------------------------------------
     // Constructors
@@ -154,7 +154,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void writeExternal(ObjectOutput out) throws IOException {
         LinkedList list = this.constraints.getConstraints();
         if ( !list.isEmpty() ) {
-            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject(); 
+            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject();
             if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
                 this.constraints = this.constraints.getOriginalConstraint();
             }
@@ -181,10 +181,10 @@ public abstract class BetaNode extends LeftTupleSource
         // This ensure we get the correct iterator
         LinkedList list = this.constraints.getConstraints();
         if ( !list.isEmpty() ) {
-            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject(); 
+            BetaNodeFieldConstraint c = ( BetaNodeFieldConstraint ) ((LinkedListEntry) list.getFirst()).getObject();
             if ( DefaultBetaConstraints.isIndexable( c ) && ((VariableConstraint) c).getRestriction() instanceof UnificationRestriction) {
                 if ( this.constraints instanceof SingleBetaConstraints ) {
-                    this.constraints = new SingleNonIndexSkipBetaConstraints( ( SingleBetaConstraints ) this.constraints );   
+                    this.constraints = new SingleNonIndexSkipBetaConstraints( ( SingleBetaConstraints ) this.constraints );
                 }else if ( this.constraints instanceof DoubleBetaConstraints ) {
                     this.constraints = new DoubleNonIndexSkipBetaConstraints( ( DoubleBetaConstraints ) this.constraints );
                 } else if ( this.constraints instanceof TripleBetaConstraints ) {

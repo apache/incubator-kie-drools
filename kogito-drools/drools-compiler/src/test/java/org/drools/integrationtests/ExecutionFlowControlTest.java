@@ -88,10 +88,10 @@ public class ExecutionFlowControlTest {
                              list.get( 0 ) );
         assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
-                             list.get( 1 ) );        
+                             list.get( 1 ) );
         assertEquals( "Rule 3 should have been fired third",
                              "Rule 3",
-                             list.get( 2 ) );        
+                             list.get( 2 ) );
     }
 
     @Test
@@ -270,7 +270,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( "hello6" );
         
         ksession.fireAllRules();
-        assertEquals( 6, list.size() );                
+        assertEquals( 6, list.size() );
     }
     
     @Test
@@ -310,7 +310,7 @@ public class ExecutionFlowControlTest {
         ksession.insert( "hello6" );
         
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );                
+        assertEquals( 3, list.size() );
     }    
 
     @Test
@@ -589,7 +589,7 @@ public class ExecutionFlowControlTest {
         
         // clear main only the auto focus related ones should fire
         list.clear();
-        session.insert( new Cheese( "cheddar" ) );        
+        session.insert( new Cheese( "cheddar" ) );
         session.getAgenda().getAgendaGroup( "MAIN" ).clear();
         session.fireAllRules();
         assertEquals( 3,
@@ -597,9 +597,9 @@ public class ExecutionFlowControlTest {
         assertEquals( "group3",
                       list.get( 0 ) );
         assertEquals( "group4",
-                      list.get( 1 ) );        
+                      list.get( 1 ) );
         assertEquals( "group3",
-                      list.get( 2 ) );        
+                      list.get( 2 ) );
 
         
     }

@@ -45,7 +45,7 @@ public class DirectoryScanner extends PackageProvider {
 		}
 		
 		scanner = new FileScanner();
-		scanner.setFiles( dir.listFiles() );		
+		scanner.setFiles( dir.listFiles() );
 		scanner.setAgentListener( this.listener );
 	}
 
@@ -76,7 +76,7 @@ public class DirectoryScanner extends PackageProvider {
 						+ dir.getPath());
 				
 //				scanner = new FileScanner();
-				scanner.setFiles( files );			
+				scanner.setFiles( files );
 			}
 		
 			scanner.pathToPackage = tempPathToPackage;

@@ -572,7 +572,7 @@ public class SetEvaluatorsDefinition
                 return getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,
-                                                                      object1 );                
+                                                                      object1 );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is member of an object of class " + object.getClass() );
             }
@@ -678,7 +678,7 @@ public class SetEvaluatorsDefinition
                 return !getArrayContains( object.getClass() ).contains( object,
                                                                       workingMemory,
                                                                       extractor1,
-                                                                      object1 );                
+                                                                      object1 );
             } else {
                 throw new ClassCastException( "Can't check if an attribute is not member of an object of class " + object.getClass() );
             }

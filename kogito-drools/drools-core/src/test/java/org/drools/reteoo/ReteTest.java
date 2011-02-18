@@ -151,7 +151,7 @@ public class ReteTest extends DroolsTestCase {
                                                        null,
                                                        null,
                                                        null ),
-                           workingMemory );               
+                           workingMemory );
         
         ClassObjectTypeConf conf = ( ClassObjectTypeConf ) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint.getEntryPoint(),  new ArrayList() );
         assertLength( 3,

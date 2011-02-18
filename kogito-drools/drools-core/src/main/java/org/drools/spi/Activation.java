@@ -55,7 +55,7 @@ public interface Activation
      * 
      * @return
      */
-    GroupElement getSubRule();    
+    GroupElement getSubRule();
     
     /**
      * Each PropgationContext is assigned an id from a counter for the WorkingMemory action it 
@@ -65,7 +65,7 @@ public interface Activation
      * @return 
      *     The activation number
      */
-    long getActivationNumber();       
+    long getActivationNumber();
 
     /**
      * Retrieve the <code>Tuple</code> that was activated.
@@ -79,7 +79,7 @@ public interface Activation
      * 
      * @return The propagation context
      */
-    PropagationContext getPropagationContext();         
+    PropagationContext getPropagationContext();
 
     /**
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 

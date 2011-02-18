@@ -56,7 +56,7 @@ public class SequentialAgendaTest {
                                                 0,
                                                 null,
                                                 rule,
-                                                null );   
+                                                null );
         return item;
     }
 }

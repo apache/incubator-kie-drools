@@ -62,7 +62,7 @@ public class DslTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              ResourceType.DSL );        
+                              ResourceType.DSL );
         kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
                               ResourceType.DSLR );
 
@@ -77,7 +77,7 @@ public class DslTest {
         
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, pkgs.size() );        
+        assertEquals( 1, pkgs.size() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
@@ -103,12 +103,12 @@ public class DslTest {
 
     @Test
     public void testWithExpanderMore() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              ResourceType.DSL );        
+                              ResourceType.DSL );
         kbuilder.add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl_more.dslr", getClass() ) ,
-                              ResourceType.DSLR );        
+                              ResourceType.DSLR );
 
         assertFalse( kbuilder.hasErrors() );
 
@@ -121,7 +121,7 @@ public class DslTest {
         
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, pkgs.size() );     
+        assertEquals( 1, pkgs.size() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
@@ -166,9 +166,9 @@ public class DslTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              ResourceType.DSL );        
+                              ResourceType.DSL );
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( DSL)  ) ,
-                              ResourceType.DSLR );  
+                              ResourceType.DSLR );
 
         assertFalse( kbuilder.hasErrors() ); // trying to expand Cheese() pattern
 
@@ -181,7 +181,7 @@ public class DslTest {
         
         // the compiled package
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 0, pkgs.size() );     
+        assertEquals( 0, pkgs.size() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
@@ -195,11 +195,11 @@ public class DslTest {
 
     @Test
     public void testDSLWithIndividualConstraintMappings() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dsl", getClass() ),
-                              ResourceType.DSL );        
+                              ResourceType.DSL );
         kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dslr", getClass() ) ,
-                              ResourceType.DSLR );         
+                              ResourceType.DSLR );
 
         assertFalse( kbuilder.hasErrors() );
 
@@ -212,7 +212,7 @@ public class DslTest {
         
         // the compiled package
         final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, pkgs.size() );     
+        assertEquals( 1, pkgs.size() );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );

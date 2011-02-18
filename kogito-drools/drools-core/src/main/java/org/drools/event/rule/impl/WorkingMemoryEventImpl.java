@@ -28,7 +28,7 @@ import org.drools.runtime.rule.PropagationContext;
 public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
     private KnowledgeRuntime kruntime;
     
-    private PropagationContext propagationContext;     
+    private PropagationContext propagationContext;
     
     public WorkingMemoryEventImpl() {
         

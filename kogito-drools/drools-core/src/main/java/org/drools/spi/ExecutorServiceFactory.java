@@ -30,7 +30,7 @@ public class ExecutorServiceFactory {
         try {
             ExecutorService service = ( ExecutorService ) ClassUtils.instantiateObject( className );
             
-            return service;            
+            return service;
         } catch ( Throwable e ) {
             throw new RuntimeException("Unable to instantiate ExecutorService '" + className + "'", e );
         }        

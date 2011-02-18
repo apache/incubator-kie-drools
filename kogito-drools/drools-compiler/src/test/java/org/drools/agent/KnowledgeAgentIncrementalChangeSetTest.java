@@ -885,7 +885,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         list.clear();
         
         ksession.retract( h1 );
-        h1 = ksession.insert( "String5" );    
+        h1 = ksession.insert( "String5" );
         ksession.fireAllRules();
         
         //rule3 doesn't reapear because it was not modified in the resource
@@ -963,7 +963,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         fileManager.write( "rule1.drl",
                            function2 +
                            createCustomRule( false, null, new String[] { "rule1" },
-                                             null, "String()\n", "function1 (list, drools.getRule().getName());\n") );        
+                                             null, "String()\n", "function1 (list, drools.getRule().getName());\n") );
         
         //we are going to modify the definition of function1()
         //we are going to modify function1 now

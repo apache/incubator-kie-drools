@@ -1223,7 +1223,7 @@ public class StringUtils {
             boolean previousLine = false;
             while ((line = reader.readLine()) != null) {
                 if ( previousLine ) {
-                    sb.append("\n");                    
+                    sb.append("\n");
                 }
                 sb.append(line);
                 previousLine = true;

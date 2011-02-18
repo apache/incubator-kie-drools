@@ -258,7 +258,7 @@ public class MVELCompilationUnit
         ParserConfiguration conf = new ParserConfiguration();
         conf.setImports( resolvedImports );
         conf.setPackageImports( new HashSet( Arrays.asList( this.pkgImports ) ) );
-        conf.setClassLoader( classLoader );        
+        conf.setClassLoader( classLoader );
         
         final ParserContext parserContext = new ParserContext( conf );
         if ( MVELDebugHandler.isDebugMode() ) {
@@ -476,14 +476,14 @@ public class MVELCompilationUnit
         if( previousDeclarations != null ) {
             for( int i = 0; i < previousDeclarations.length; i++ ) {
                 if( previousDeclarations[i].equals( declaration ) ) {
-                    previousDeclarations[i] = resolved; 
+                    previousDeclarations[i] = resolved;
                 }
             }
         }
         if( localDeclarations != null ) {
             for( int i = 0; i < localDeclarations.length; i++ ) {
                 if( localDeclarations[i].equals( declaration ) ) {
-                    localDeclarations[i] = resolved; 
+                    localDeclarations[i] = resolved;
                 }
             }
         }

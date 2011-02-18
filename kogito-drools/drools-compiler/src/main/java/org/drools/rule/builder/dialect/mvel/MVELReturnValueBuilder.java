@@ -56,7 +56,7 @@ public class MVELReturnValueBuilder
             
             Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
             
-            Pattern p = ( Pattern ) context.getBuildStack().peek();   
+            Pattern p = ( Pattern ) context.getBuildStack().peek();
             
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), 
                                                                       analysis,  

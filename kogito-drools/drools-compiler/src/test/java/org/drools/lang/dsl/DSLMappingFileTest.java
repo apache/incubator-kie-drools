@@ -101,7 +101,7 @@ public class DSLMappingFileTest {
                           entry.getMappingValue() );
             
             String input = "rule x\nwhen\nthen\nAdd surcharge 300 to Policy\nend\n";
-            String expected = "rule x\nwhen\nthen\nmodify(policy) {price = 300}\nend\n"; 
+            String expected = "rule x\nwhen\nthen\nmodify(policy) {price = 300}\nend\n";
             
             DefaultExpander de = new DefaultExpander();
             de.addDSLMapping( this.file.getMapping() );

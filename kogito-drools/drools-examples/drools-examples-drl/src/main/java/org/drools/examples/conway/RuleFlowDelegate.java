@@ -58,7 +58,7 @@ public class RuleFlowDelegate implements ConwayRuleDelegate {
     public void init() {
         this.session.startProcess( "register neighbor" );
         this.session.fireAllRules();
-        session.getAgenda().getRuleFlowGroup( "calculate" ).clear();       
+        session.getAgenda().getRuleFlowGroup( "calculate" ).clear();
     }
     
     /* (non-Javadoc)

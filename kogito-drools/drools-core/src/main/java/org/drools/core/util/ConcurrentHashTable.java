@@ -394,7 +394,7 @@ public class ConcurrentHashTable {
 
             if ( e == null ) {
                 if ( c++ > threshold ) // ensure capacity
-                    rehash();                
+                    rehash();
                 ++modCount;
                 e = new RightTupleList( this.index,
                                         hashCode,
@@ -457,7 +457,7 @@ public class ConcurrentHashTable {
                         for ( RightTupleList p = e; p != lastRun; p = (RightTupleList) p.getNext() ) {
                             int k = p.hashCode() & sizeMask;
                             RightTupleList n = newTable[k];
-                            newTable[k] = new RightTupleList( p, n );                            
+                            newTable[k] = new RightTupleList( p, n );
                         }
                     }
                 }

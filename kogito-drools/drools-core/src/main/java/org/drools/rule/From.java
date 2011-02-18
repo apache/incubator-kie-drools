@@ -35,7 +35,7 @@ public class From extends ConditionalElement
 
     private static final long serialVersionUID = 510l;
 
-    private DataProvider      dataProvider;      
+    private DataProvider      dataProvider;
 
     public From() {
     }

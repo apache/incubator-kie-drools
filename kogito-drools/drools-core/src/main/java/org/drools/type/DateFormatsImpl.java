@@ -44,7 +44,7 @@ public class DateFormatsImpl
         protected Map<String, DateFormat> initialValue() {;
             return new HashMap<String, DateFormat>();
         };
-    };    
+    };
     
     /**
      * This is here for any static classes, such as MVEL DataConverters, to access.
@@ -52,7 +52,7 @@ public class DateFormatsImpl
      */
     public static ThreadLocal<DateFormats> dateFormats = new ThreadLocal<DateFormats>() {
 
-    };      
+    };
 
     public DateFormatsImpl() {
         this.map = new ConcurrentHashMap<String, DateFormat>();

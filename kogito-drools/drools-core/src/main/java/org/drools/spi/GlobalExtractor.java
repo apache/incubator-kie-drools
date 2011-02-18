@@ -182,7 +182,7 @@ public class GlobalExtractor
         final int prime = 31;
         int result = 1;
         result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
-        result = prime * result + ((objectType == null) ? 0 : objectType.hashCode());        
+        result = prime * result + ((objectType == null) ? 0 : objectType.hashCode());
         return result;
     }
 

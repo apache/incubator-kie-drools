@@ -75,7 +75,7 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context ) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, object, (InternalWorkingMemory) workingMemory );              
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, object, (InternalWorkingMemory) workingMemory );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

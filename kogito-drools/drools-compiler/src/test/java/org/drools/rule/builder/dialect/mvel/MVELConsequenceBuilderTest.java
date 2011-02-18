@@ -340,7 +340,7 @@ public class MVELConsequenceBuilderTest {
         builder = new MVELConsequenceBuilder();
 
         Package pkg = new Package( "org.drools" );
-        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );        
+        pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         PackageBuilder pkgBuilder = new PackageBuilder( pkg,
@@ -370,39 +370,39 @@ public class MVELConsequenceBuilderTest {
         
         context.getDialect().getConsequenceBuilder().build( context, "default" );
         for ( String name : namedConsequences.keySet() ) {
-            context.getDialect().getConsequenceBuilder().build( context, name );    
+            context.getDialect().getConsequenceBuilder().build( context, name );
         }
         
         context.getDialect().addRule( context );
         pkgRegistry.getPackage().addRule( context.getRule() );
         pkgBuilder.compileAll();
-        pkgBuilder.reloadAll();         
+        pkgBuilder.reloadAll();
     }
     
 
     @Test
     public void testDefaultConsequenceCompilation() {
         String consequence = " System.out.println(\"this is a test\");\n ";
-        setupTest( consequence, new HashMap<String, Object>() );       
+        setupTest( consequence, new HashMap<String, Object>() );
         assertNotNull( context.getRule().getConsequence() );
         assertTrue( context.getRule().getNamedConsequences().isEmpty() );
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );    	
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
     }
     
     @Test
     public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         
-        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        Map<String, Object> namedConsequences = new HashMap<String, Object>();
         String name1 =  " System.out.println(\"this is a test name1\");\n ";
         namedConsequences.put( "name1", name1 );
         
-        setupTest( defaultCon, namedConsequences);       
+        setupTest( defaultCon, namedConsequences);
         assertEquals( 1, context.getRule().getNamedConsequences().size() );
         
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );        
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );   
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );
         
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
     }     
@@ -411,20 +411,20 @@ public class MVELConsequenceBuilderTest {
     public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
         String defaultCon = " System.out.println(\"this is a test\");\n ";
         
-        Map<String, Object> namedConsequences = new HashMap<String, Object>(); 
+        Map<String, Object> namedConsequences = new HashMap<String, Object>();
         String name1 =  " System.out.println(\"this is a test name1\");\n ";
         namedConsequences.put( "name1", name1 );
         String name2 =  " System.out.println(\"this is a test name2\");\n ";
-        namedConsequences.put( "name2", name2 );        
+        namedConsequences.put( "name2", name2 );
         
-        setupTest( defaultCon, namedConsequences);       
+        setupTest( defaultCon, namedConsequences);
         assertEquals( 2, context.getRule().getNamedConsequences().size() );
         
-        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );        
+        assertTrue( context.getRule().getConsequence() instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );   
+        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof MVELConsequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof MVELConsequence );     
+        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof MVELConsequence );
         
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
         assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );

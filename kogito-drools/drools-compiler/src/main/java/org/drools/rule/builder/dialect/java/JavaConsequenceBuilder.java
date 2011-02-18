@@ -99,14 +99,14 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
                 
-        final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()]; 
-        String[] declrStr = new String[declarations.length]; 
+        final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()];
+        String[] declrStr = new String[declarations.length];
         int j = 0;
         for (String str : usedIdentifiers.getDeclarations().keySet() ) {
             declrStr[j] = str;
             declarations[j++] = decls.get( str );
         }
-        Arrays.sort( declarations, SortDeclarations.isntance  );  
+        Arrays.sort( declarations, SortDeclarations.isntance  );
         context.getRule().setRequiredDeclarations( declrStr );
                 
         final Map<String, Object> map = createVariableContext( className,
@@ -146,7 +146,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                           className,
                           map,
                           context.getRule(),
-                          ruleDescr );      
+                          ruleDescr );
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
     }
@@ -181,7 +181,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                         }
                     } );
         macroProcessor.setMacros( macros );
-        expr = macroProcessor.parse( expr );        
+        expr = macroProcessor.parse( expr );
         
         Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
         
@@ -201,7 +201,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             // adding chunk
             consequence.append( originalCode.substring( lastAdded,
                                                         block.getStart() - 1 ) );
-            lastAdded = block.getEnd();           
+            lastAdded = block.getEnd();
 
             switch ( block.getType() ) {
                 case MODIFY :
@@ -320,7 +320,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                obj = "__obj__";
                consequence.append( retString );
                consequence.append( " " );
-               consequence.append( obj); 
+               consequence.append( obj);
                consequence.append( " = (" );
                consequence.append( retString );
                consequence.append( ") " );
@@ -333,7 +333,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                consequence.append( obj  );
                consequence.append( "__Handle2__ = drools.getFactHandle("  );
                consequence.append( obj  );
-               consequence.append( ");"  );               
+               consequence.append( ");"  );
            }
            
            // the following is a hack to preserve line breaks.

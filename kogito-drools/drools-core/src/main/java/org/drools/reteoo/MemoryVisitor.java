@@ -214,7 +214,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                 Entry  entry = (Entry ) entries[i];
                 while ( entry != null ) {
                   entry = it.next( entry );
-                  factCount++;                    
+                  factCount++;
                 }
             }
         }

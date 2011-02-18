@@ -54,9 +54,9 @@ public class ResourceHandler extends BaseAbstractHandler
                         Attributes attrs,
                         ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
-                                    attrs );      
+                                    attrs );
         
-        final Collection collection = (Collection) parser.getParent();   
+        final Collection collection = (Collection) parser.getParent();
         
         String src = attrs.getValue( "source" );
         String type = attrs.getValue( "type" );
@@ -73,7 +73,7 @@ public class ResourceHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName,
                              "type",
                              type,
-                             parser );        
+                             parser );
         InternalResource resource = null;
         
         if ( src.trim().startsWith( "classpath:" ) ) {
@@ -82,7 +82,7 @@ public class ResourceHandler extends BaseAbstractHandler
             resource = new UrlResource( src );
             ((UrlResource)resource).setBasicAuthentication(basicAuthentication);
             ((UrlResource)resource).setUsername(username);
-            ((UrlResource)resource).setPassword(password);           
+            ((UrlResource)resource).setPassword(password);
         }
         
         resource.setResourceType( ResourceType.getResourceType( type ) );

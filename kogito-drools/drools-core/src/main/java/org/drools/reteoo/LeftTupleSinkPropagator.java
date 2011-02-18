@@ -94,7 +94,7 @@ public interface LeftTupleSinkPropagator
     public void propagateModifyObject(InternalFactHandle factHandle,
                                       ModifyPreviousTuples modifyPreviousTuples,
                                       PropagationContext context,
-                                      InternalWorkingMemory workingMemory);    
+                                      InternalWorkingMemory workingMemory);
 
     public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
                                                    RightTuple parentRightTuple,
@@ -111,7 +111,7 @@ public interface LeftTupleSinkPropagator
     public void propagateModifyChildLeftTuple(LeftTuple leftTuple,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory,
-                                              boolean tupleMemoryEnabled);    
+                                              boolean tupleMemoryEnabled);
 
     public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
                                                     RightTuple parentRightTuple,

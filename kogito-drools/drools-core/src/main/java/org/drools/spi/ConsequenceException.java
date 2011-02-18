@@ -140,7 +140,7 @@ public class ConsequenceException extends RuntimeDroolsException {
     public String getMessage() {
         String msg;
         if( this.rule != null ) {
-            msg = "Exception executing consequence for rule '"+this.rule.getName()+"' : "+super.getMessage(); 
+            msg = "Exception executing consequence for rule '"+this.rule.getName()+"' : "+super.getMessage();
         } else {
             msg = "Exception executing consequence. Rule name unknown. Message: " + super.getMessage();
         }

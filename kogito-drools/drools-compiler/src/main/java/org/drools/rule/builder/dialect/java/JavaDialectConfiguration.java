@@ -52,7 +52,7 @@ public class JavaDialectConfiguration
     public void init(final PackageBuilderConfiguration conf) {
         this.conf = conf;
 
-        setCompiler( getDefaultCompiler() );        
+        setCompiler( getDefaultCompiler() );
         
         setJavaLanguageLevel( getDefaultLanguageLevel() );
     }

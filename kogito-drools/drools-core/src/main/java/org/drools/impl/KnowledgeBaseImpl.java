@@ -228,7 +228,7 @@ public class KnowledgeBaseImpl
         if ( pkg != null ) {
             return new KnowledgePackageImp( pkg );
         } else {
-            return null; 
+            return null;
         }
     }
 

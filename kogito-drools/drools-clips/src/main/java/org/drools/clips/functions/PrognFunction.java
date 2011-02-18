@@ -24,7 +24,7 @@ import org.drools.clips.LispForm;
 import org.drools.clips.SExpression;
 
 public class PrognFunction implements Function {
-    private static final String name = "progn";       
+    private static final String name = "progn";
 
     public String getName() {
         return name;
@@ -37,9 +37,9 @@ public class PrognFunction implements Function {
         
         LispForm listSpec = (LispForm) sExpressions[1];
         
-        String var = ( ( LispAtom ) listSpec.getSExpressions()[0] ).getValue();        
+        String var = ( ( LispAtom ) listSpec.getSExpressions()[0] ).getValue();
         
-        appendable.append( "foreach( " + var + " : " );        
+        appendable.append( "foreach( " + var + " : " );
         
         createList.dump( (LispForm) listSpec.getSExpressions()[1], appendable );
         

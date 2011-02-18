@@ -38,7 +38,7 @@ public class ArrayContainsTest {
         str += "                     booleanPrimitive memberOf $array2, booleanPrimitive memberOf $array1, booleanPrimitive memberOf bArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";        
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -55,11 +55,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "bGlobal",
                             true );
         ksession.setGlobal( "bArrayGlobal",
-                            new boolean[]{true, false} );          
+                            new boolean[]{true, false} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveBooleanArray( new boolean[]{true, false} );
@@ -69,7 +69,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveBooleanArray( new boolean[]{true, false} );
         p2.setBooleanPrimitive( true );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -83,7 +83,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }      
     
     @Test
@@ -103,7 +103,7 @@ public class ArrayContainsTest {
         str += "                     booleanPrimitive not memberOf $array2, booleanPrimitive not memberOf $array1, booleanPrimitive not memberOf bArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";        
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -120,11 +120,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "bGlobal",
                             false );
         ksession.setGlobal( "bArrayGlobal",
-                            new boolean[]{true, true} );          
+                            new boolean[]{true, true} );
         
         final Primitives p1 = new Primitives();
         p1.setIntPrimitive( 10 );
@@ -135,7 +135,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveBooleanArray( new boolean[]{true,true} );
         p2.setBooleanPrimitive( false );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -149,7 +149,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }          
     
     @Test
@@ -158,7 +158,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Byte bGlobal;\n";        
+        str += "global Byte bGlobal;\n";
         str += "global Object bArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -169,7 +169,7 @@ public class ArrayContainsTest {
         str += "                     bytePrimitive memberOf $array2, bytePrimitive memberOf $array1, bytePrimitive memberOf bArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";         
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -186,11 +186,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );        
+                            list );
         ksession.setGlobal( "bGlobal",
                             (byte) 1 );
         ksession.setGlobal( "bArrayGlobal",
-                            new byte[]{1, 2, 3} );           
+                            new byte[]{1, 2, 3} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveByteArray( new byte[]{1, 2, 3} );
@@ -200,7 +200,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveByteArray( new byte[]{1, 2, 3} );
         p2.setBytePrimitive( (byte) 1 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -214,7 +214,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }       
     
     @Test
@@ -223,7 +223,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Byte bGlobal;\n";        
+        str += "global Byte bGlobal;\n";
         str += "global Object bArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -234,7 +234,7 @@ public class ArrayContainsTest {
         str += "                     bytePrimitive not memberOf $array2, bytePrimitive not memberOf $array1, bytePrimitive not memberOf bArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";         
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -251,11 +251,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );        
+                            list );
         ksession.setGlobal( "bGlobal",
                             (byte) 1 );
         ksession.setGlobal( "bArrayGlobal",
-                            new byte[]{4, 5, 6} );           
+                            new byte[]{4, 5, 6} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveByteArray( new byte[]{4, 5, 6} );
@@ -265,7 +265,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveByteArray( new byte[]{4, 5, 6} );
         p2.setBytePrimitive( (byte) 1 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -279,7 +279,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }           
     
     @Test
@@ -288,7 +288,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Short sGlobal;\n";        
+        str += "global Short sGlobal;\n";
         str += "global Object sArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -299,7 +299,7 @@ public class ArrayContainsTest {
         str += "                     shortPrimitive memberOf $array2, shortPrimitive memberOf $array1, shortPrimitive memberOf sArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";          
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -316,11 +316,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "sGlobal",
-                            (short) 1 );        
+                            (short) 1 );
         ksession.setGlobal( "sArrayGlobal",
-                            new short[]{1, 2, 3} );         
+                            new short[]{1, 2, 3} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveShortArray( new short[]{1, 2, 3} );
@@ -330,7 +330,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveShortArray( new short[]{1, 2, 3} );
         p2.setShortPrimitive( (short) 1 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -344,7 +344,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }       
     
     @Test
@@ -353,7 +353,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Short sGlobal;\n";        
+        str += "global Short sGlobal;\n";
         str += "global Object sArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -364,7 +364,7 @@ public class ArrayContainsTest {
         str += "                     shortPrimitive not memberOf $array2, shortPrimitive not memberOf $array1, shortPrimitive not memberOf sArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";          
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -381,11 +381,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "sGlobal",
-                            (short) 1 );        
+                            (short) 1 );
         ksession.setGlobal( "sArrayGlobal",
-                            new short[]{4, 5, 6} );         
+                            new short[]{4, 5, 6} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveShortArray( new short[]{4, 5, 6} );
@@ -395,7 +395,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveShortArray( new short[]{4, 5, 6} );
         p2.setShortPrimitive( (short) 1 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -409,7 +409,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }           
     
     @Test
@@ -429,7 +429,7 @@ public class ArrayContainsTest {
         str += "                     charPrimitive memberOf $array2, charPrimitive memberOf $array1, charPrimitive memberOf cArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";            
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -446,11 +446,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "cGlobal",
-                            'c'  );  
+                            'c'  );
         ksession.setGlobal( "cArrayGlobal",
-                            new char[]{ 'a', 'b', 'c'} );        
+                            new char[]{ 'a', 'b', 'c'} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveCharArray( new char[]{ 'a', 'b', 'c'} );
@@ -460,7 +460,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveCharArray( new char[]{ 'a', 'b', 'c'} );
         p2.setCharPrimitive( 'c' );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -474,7 +474,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }     
     
     @Test
@@ -494,7 +494,7 @@ public class ArrayContainsTest {
         str += "                     charPrimitive not memberOf $array2, charPrimitive not memberOf $array1, charPrimitive not memberOf cArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";            
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -511,11 +511,11 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );          
+                            list );
         ksession.setGlobal( "cGlobal",
-                            'c'  );  
+                            'c'  );
         ksession.setGlobal( "cArrayGlobal",
-                            new char[]{ 'd', 'e', 'f'} );        
+                            new char[]{ 'd', 'e', 'f'} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveCharArray( new char[]{ 'd', 'e', 'f'} );
@@ -525,7 +525,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveCharArray( new char[]{ 'd', 'e', 'f'} );
         p2.setCharPrimitive( 'c' );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -539,7 +539,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }         
     
     @Test
@@ -548,7 +548,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Integer iGlobal;\n";        
+        str += "global Integer iGlobal;\n";
         str += "global Object iArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -559,7 +559,7 @@ public class ArrayContainsTest {
         str += "                     intPrimitive memberOf $array2, intPrimitive memberOf $array1, intPrimitive memberOf iArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";           
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -576,12 +576,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );  
+                            list );
         
         ksession.setGlobal( "iGlobal",
-                            10 );   
+                            10 );
         ksession.setGlobal( "iArrayGlobal",
-                            new int[]{ 5, 10, 20} );           
+                            new int[]{ 5, 10, 20} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveIntArray( new int[]{ 5, 10, 20} );
@@ -591,7 +591,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveIntArray( new int[]{ 5, 10, 20} );
         p2.setIntPrimitive( 10 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -605,7 +605,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     } 
     
     @Test
@@ -614,7 +614,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Integer iGlobal;\n";        
+        str += "global Integer iGlobal;\n";
         str += "global Object iArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -625,7 +625,7 @@ public class ArrayContainsTest {
         str += "                     intPrimitive not memberOf $array2, intPrimitive not memberOf $array1, intPrimitive not memberOf iArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";           
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -642,12 +642,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );  
+                            list );
         
         ksession.setGlobal( "iGlobal",
-                            10 );   
+                            10 );
         ksession.setGlobal( "iArrayGlobal",
-                            new int[]{ 40, 50, 60} );           
+                            new int[]{ 40, 50, 60} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveIntArray( new int[]{ 40, 50, 60} );
@@ -657,7 +657,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setPrimitiveIntArray( new int[]{ 40, 50, 60} );
         p2.setIntPrimitive( 10 );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -671,7 +671,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }     
     
     @Test
@@ -680,7 +680,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Long lGlobal;\n";        
+        str += "global Long lGlobal;\n";
         str += "global Object lArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -691,7 +691,7 @@ public class ArrayContainsTest {
         str += "                     longPrimitive memberOf $array2, longPrimitive memberOf $array1, longPrimitive memberOf lArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";            
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -708,12 +708,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );  
+                            list );
         
         ksession.setGlobal( "lGlobal",
-                            10l );  
+                            10l );
         ksession.setGlobal( "lArrayGlobal",
-                            new long[]{ 5, 10, 20}  );         
+                            new long[]{ 5, 10, 20}  );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveLongArray( new long[]{ 5, 10, 20} );
@@ -723,7 +723,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setLongPrimitive( 10 );
         p2.setPrimitiveLongArray( new long[]{ 5, 10, 20} );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -737,7 +737,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }     
     
     @Test
@@ -746,7 +746,7 @@ public class ArrayContainsTest {
         str += "package org.drools;\n";
 
         str += "global java.util.List list;\n";
-        str += "global Long lGlobal;\n";        
+        str += "global Long lGlobal;\n";
         str += "global Object lArrayGlobal;\n";
 
         str += "rule \"contains in array\"\n";
@@ -757,7 +757,7 @@ public class ArrayContainsTest {
         str += "                     longPrimitive not memberOf $array2, longPrimitive not memberOf $array1, longPrimitive not memberOf lArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";            
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -774,12 +774,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                            list );  
+                            list );
         
         ksession.setGlobal( "lGlobal",
-                            10l );  
+                            10l );
         ksession.setGlobal( "lArrayGlobal",
-                            new long[]{ 40, 50, 60}  );         
+                            new long[]{ 40, 50, 60}  );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveLongArray( new long[]{ 40, 50, 60} );
@@ -789,7 +789,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setLongPrimitive( 10 );
         p2.setPrimitiveLongArray( new long[]{ 40, 50, 60} );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -803,7 +803,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }         
     
     @Test
@@ -823,7 +823,7 @@ public class ArrayContainsTest {
         str += "                     floatPrimitive memberOf $array2, floatPrimitive memberOf $array1, floatPrimitive memberOf fArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";        
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -840,12 +840,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                                 list );  
+                                 list );
         
         ksession.setGlobal( "fGlobal",
-                            10.0f ); 
+                            10.0f );
         ksession.setGlobal( "fArrayGlobal",
-                            new float[]{ 5, 10, 20} );         
+                            new float[]{ 5, 10, 20} );
         
         final Primitives p1 = new Primitives();
         p1.setFloatPrimitive( 5 );
@@ -855,7 +855,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setFloatPrimitive( 10 );
         p2.setPrimitiveFloatArray( new float[]{ 5, 10, 20} );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -869,7 +869,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }     
     
     @Test
@@ -889,7 +889,7 @@ public class ArrayContainsTest {
         str += "                     floatPrimitive not memberOf $array2, floatPrimitive not memberOf $array1, floatPrimitive not memberOf fArrayGlobal )\n";
         str += "     then\n";
         str += "        list.add( \"ok1\" );\n";
-        str += "end\n";        
+        str += "end\n";
         
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -906,12 +906,12 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                                 list );  
+                                 list );
         
         ksession.setGlobal( "fGlobal",
-                            10.0f ); 
+                            10.0f );
         ksession.setGlobal( "fArrayGlobal",
-                            new float[]{ 40, 50, 60} );         
+                            new float[]{ 40, 50, 60} );
         
         final Primitives p1 = new Primitives();
         p1.setFloatPrimitive( 5 );
@@ -921,7 +921,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setFloatPrimitive( 10 );
         p2.setPrimitiveFloatArray( new float[]{ 40, 50, 60} );
-        ksession.insert( p2 );                
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -935,7 +935,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }         
        
     
@@ -973,13 +973,13 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                                 list );  
+                                 list );
         
         ksession.setGlobal( "dGlobal",
-                            10.0d ); 
+                            10.0d );
         
         ksession.setGlobal( "dArrayGlobal",
-                            new double[]{ 5, 10, 20} );       
+                            new double[]{ 5, 10, 20} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveDoubleArray( new double[]{ 5, 10, 20} );
@@ -989,7 +989,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setDoublePrimitive( 10 );
         p2.setPrimitiveDoubleArray( new double[]{ 5, 10, 20} );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -1003,7 +1003,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }    
     
     @Test
@@ -1040,13 +1040,13 @@ public class ArrayContainsTest {
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
-                                 list );  
+                                 list );
         
         ksession.setGlobal( "dGlobal",
-                            10.0d ); 
+                            10.0d );
         
         ksession.setGlobal( "dArrayGlobal",
-                            new double[]{ 40, 50, 60} );       
+                            new double[]{ 40, 50, 60} );
         
         final Primitives p1 = new Primitives();
         p1.setPrimitiveDoubleArray( new double[]{ 40, 50, 60} );
@@ -1056,7 +1056,7 @@ public class ArrayContainsTest {
         final Primitives p2 = new Primitives();
         p2.setDoublePrimitive( 10 );
         p2.setPrimitiveDoubleArray( new double[]{ 40, 50, 60} );
-        ksession.insert( p2 );                 
+        ksession.insert( p2 );
 
         ksession.fireAllRules();
 
@@ -1070,7 +1070,7 @@ public class ArrayContainsTest {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      list.size() );        
+                      list.size() );
     }       
     
     

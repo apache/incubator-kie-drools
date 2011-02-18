@@ -126,7 +126,7 @@ public class RuleExecutionSetImpl
                                                              new Jsr94FactHandleFactory() );
         } else {
             ruleBase = new org.drools.reteoo.ReteooRuleBase( null,
-                                                             new Jsr94FactHandleFactory() );            
+                                                             new Jsr94FactHandleFactory() );
         }
         ruleBase.addPackage( pkg );
 

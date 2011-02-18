@@ -35,7 +35,7 @@ public class ResourceFactoryServiceImpl
 
     private ResourceChangeNotifier notifier;
     private ResourceChangeScanner  scanner;
-    private Object                 lock     = new Object();    
+    private Object                 lock     = new Object();
 
     public ResourceChangeNotifier getResourceChangeNotifierService() {
         synchronized ( this.lock ) {

@@ -65,7 +65,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
     
     // this is a cache for previously declared objects in case they 
     // get retracted during the execution of an MVEL consequence
-    private Map<String, Object> previousDeclarationsObjectCache; 
+    private Map<String, Object> previousDeclarationsObjectCache;
  
     private Set<String> globals;
  

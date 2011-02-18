@@ -47,13 +47,13 @@ public class EqualityKeyTest {
         
         key.removeFactHandle( ch2 );
         assertNull( key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );         
+        assertNull( key.getOtherFactHandle() );
         
         key = new EqualityKey( ch2 );
         key.addFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
         assertEquals( 1, key.getOtherFactHandle().size() );
-        assertEquals( ch1, key.getOtherFactHandle().get( 0 ) );    
+        assertEquals( ch1, key.getOtherFactHandle().get( 0 ) );
         
         key.removeFactHandle( ch1 );
         assertSame( ch2, key.getFactHandle() );
@@ -61,6 +61,6 @@ public class EqualityKeyTest {
         
         key.removeFactHandle( ch2 );
         assertNull( key.getFactHandle() );
-        assertNull( key.getOtherFactHandle() );        
+        assertNull( key.getOtherFactHandle() );
     }
 }

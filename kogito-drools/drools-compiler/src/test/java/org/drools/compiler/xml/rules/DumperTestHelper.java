@@ -49,7 +49,7 @@ public class DumperTestHelper {
         parser = new DrlParser();
         String buffer = readFile( filename );
         assertEqualsIgnoreWhitespace( buffer.toString(),
-                                      result );                 
+                                      result );
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected,

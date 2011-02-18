@@ -748,7 +748,7 @@ public class QueryTest {
         str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name : name, $likes : likes, $street : address.street ) \n";
-        str += "end\n";      
+        str += "end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -793,12 +793,12 @@ public class QueryTest {
         results = ksession.getQueryResults( "peeps",
                                             new Object[]{ new Variable(), new Variable(), "s1"} );
         assertEquals( 1,
-                      results.size() );        
+                      results.size() );
         names = new ArrayList();
         for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
         }
-        assertTrue( names.contains( "darth" ) );      
+        assertTrue( names.contains( "darth" ) );
     }    
 
     @Test

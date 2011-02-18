@@ -98,7 +98,7 @@ public class ActionError extends DroolsError {
 //            CompilationProblem[] cp = (CompilationProblem[]) object;
 //            this.errorLines = new int[cp.length];
 //            for( int i = 0; i < cp.length ; i ++ ) {
-//               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1; 
+//               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1;
 //               detail.append( this.rule.getName() );
 //               detail.append( " (line:" );
 //               detail.append( this.errorLines[i] );

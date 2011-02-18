@@ -31,7 +31,7 @@ public interface InternalResource extends Resource {
     
     ResourceConfiguration getConfiguration();
 
-    void setConfiguration(ResourceConfiguration configuration); 
+    void setConfiguration(ResourceConfiguration configuration);
     
     URL getURL() throws IOException;
     
@@ -39,10 +39,10 @@ public interface InternalResource extends Resource {
     
     boolean isDirectory();
     
-    Collection<Resource> listResources();    
+    Collection<Resource> listResources();
     
     long getLastModified();
     
-    long getLastRead();    
+    long getLastRead();
 
 }

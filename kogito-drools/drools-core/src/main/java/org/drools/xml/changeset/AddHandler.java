@@ -58,9 +58,9 @@ public class AddHandler extends BaseAbstractHandler
                         Attributes attrs,
                         ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
-                                    attrs );      
+                                    attrs );
         
-        final ChangeSet changeSet = (ChangeSet) parser.getParent();          
+        final ChangeSet changeSet = (ChangeSet) parser.getParent();
         
         return new ArrayList();
     }

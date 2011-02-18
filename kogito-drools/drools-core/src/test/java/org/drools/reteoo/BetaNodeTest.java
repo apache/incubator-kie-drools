@@ -41,7 +41,7 @@ public class BetaNodeTest {
         final ObjectSource os = new MockObjectSource( 2 );
 
         ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );        
+        BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
         
         final BetaNode j1 = new JoinNode( 1,
                                           ts,

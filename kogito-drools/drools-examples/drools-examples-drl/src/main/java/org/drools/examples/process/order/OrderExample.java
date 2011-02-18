@@ -178,7 +178,7 @@ public class OrderExample extends JFrame {
 		try {
 			kbase = createKnowledgeBase();
 			ksession = kbase.newStatefulKnowledgeSession();
-			logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/order"); 
+			logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/order");
 			
 			CustomerService customerService = new DefaultCustomerService();
 			Customer c = new Customer("A-12345");

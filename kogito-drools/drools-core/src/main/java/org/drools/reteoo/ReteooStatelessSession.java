@@ -63,7 +63,7 @@ public class ReteooStatelessSession
 
     private GlobalExporter              globalExporter;
     
-    private SessionConfiguration        sessionConf; 
+    private SessionConfiguration        sessionConf;
 
     /** The eventSupport */
     protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();

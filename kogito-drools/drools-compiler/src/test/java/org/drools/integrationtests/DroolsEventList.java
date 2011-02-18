@@ -52,7 +52,7 @@ public class DroolsEventList extends AbstractEventList<Row> implements ViewChang
     }
 
     public void rowUpdated(Row row) {
-        int index = this.data.indexOf( row );    
+        int index = this.data.indexOf( row );
         // create the change event
         updates.beginEvent();
         // fire the event

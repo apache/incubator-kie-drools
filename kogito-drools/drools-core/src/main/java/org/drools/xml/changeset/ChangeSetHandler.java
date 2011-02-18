@@ -60,7 +60,7 @@ public class ChangeSetHandler extends BaseAbstractHandler
                       ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getCurrent();        
+        final ChangeSetImpl changeSet = (ChangeSetImpl) parser.getCurrent();
         return changeSet;
     }  
     

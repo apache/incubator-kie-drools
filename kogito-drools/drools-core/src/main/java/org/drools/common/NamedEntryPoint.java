@@ -54,10 +54,10 @@ public class NamedEntryPoint
     InternalWorkingMemoryEntryPoint,
     WorkingMemoryEntryPoint,
     PropertyChangeListener  {
-    protected static final Class[]                               ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};    
+    protected static final Class[]                               ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
     
     /** The arguments used when adding/removing a property change listener. */
-    protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};    
+    protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};
 
     private static final long               serialVersionUID                    = 510l;
 
@@ -726,7 +726,7 @@ public class NamedEntryPoint
 
         for ( Object obj = it.next(); obj != null; obj = it.next() ) {
           
-            org.drools.core.util.ObjectHashSet.ObjectEntry holder = (org.drools.core.util.ObjectHashSet.ObjectEntry) obj; 
+            org.drools.core.util.ObjectHashSet.ObjectEntry holder = (org.drools.core.util.ObjectHashSet.ObjectEntry) obj;
     
             InternalFactHandle handle = (InternalFactHandle) holder.getValue();
             

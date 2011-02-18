@@ -38,7 +38,7 @@ public class NewKnowledgeBuilderCommand
     public KnowledgeBuilder execute(Context context) {
         KnowledgeBuilder kbuilder = null;
         if ( this.kbuilderConf == null ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();            
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbuilderConf );
         }

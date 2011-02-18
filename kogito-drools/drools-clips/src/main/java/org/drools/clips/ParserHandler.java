@@ -31,5 +31,5 @@ public interface ParserHandler {
     
     public void ruleHandler(RuleDescr ruleDescr);
     
-    public void lispFormHandler(LispForm lispForm);  
+    public void lispFormHandler(LispForm lispForm);
 }

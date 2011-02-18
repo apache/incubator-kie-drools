@@ -47,7 +47,7 @@ public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     }
     
     public Set<ParameterDefinition> getParameters() {
-    	return new HashSet<ParameterDefinition>(parameters.values());        
+    	return new HashSet<ParameterDefinition>(parameters.values());
     }
     
     public void setParameters(Set<ParameterDefinition> parameters) {

@@ -98,7 +98,7 @@ public class RuleBuilder {
             context.getDialect().getConsequenceBuilder().build( context, "default" );
             
             for ( String name : ruleDescr.getNamedConsequences().keySet() ) {
-                context.getDialect().getConsequenceBuilder().build( context, name );    
+                context.getDialect().getConsequenceBuilder().build( context, name );
             }
         }
 
@@ -110,7 +110,7 @@ public class RuleBuilder {
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             String value = context.getRuleDescr().getAnnotation(metaAttr).getValue();
             if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
-                value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) ); 
+                value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) );
             }
             rule.addMetaAttribute( metaAttr, value );
             //rule.addMetaAttribute( meta.getKey(), value );
@@ -178,7 +178,7 @@ public class RuleBuilder {
     //            }
     //        } catch (Exception e) {
     //            // It wasn't an integer, so build as an expression
-    //            context.getDialect().getDurationBuilder().build( context );    
+    //            context.getDialect().getDurationBuilder().build( context );
     //        }
     //    }
 
@@ -251,7 +251,7 @@ public class RuleBuilder {
         
         Date startDate = null;
         Date endDate = null;
-        int repeatLimit = -1;        
+        int repeatLimit = -1;
         
         int  optionsPos = timerString.length();
         
@@ -265,7 +265,7 @@ public class RuleBuilder {
             
             int equalsPos = timerString.indexOf( '=', startPos );
             startDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
-                                             context.getPackageBuilder().getDateFormats()  );              
+                                             context.getPackageBuilder().getDateFormats()  );
         }
         
         if ( endPos != -1 ) {
@@ -280,7 +280,7 @@ public class RuleBuilder {
             
             int equalsPos = timerString.indexOf( '=', endPos );
             endDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
-                                           context.getPackageBuilder().getDateFormats()  );              
+                                           context.getPackageBuilder().getDateFormats()  );
         }
         
         if ( repeatPos != -1 ) {
@@ -294,10 +294,10 @@ public class RuleBuilder {
             }
             
             int equalsPos = timerString.indexOf( '=', repeatPos );
-            repeatLimit = Integer.parseInt( timerString.substring( equalsPos + 1, p ).trim() );             
+            repeatLimit = Integer.parseInt( timerString.substring( equalsPos + 1, p ).trim() );
         }                                
                      
-        String body = timerString.substring( colonPos + 1, optionsPos ).trim();        
+        String body = timerString.substring( colonPos + 1, optionsPos ).trim();
         
         Timer timer = null;
         if ( "cron".equals( protocol ) ) {
@@ -313,10 +313,10 @@ public class RuleBuilder {
             long period = 0;
             if ( times.length == 1 ) {
                 // only defines a delay
-                delay = TimeUtils.parseTimeString( times[0] );                
+                delay = TimeUtils.parseTimeString( times[0] );
             } else if ( times.length == 2 ) {
                 // defines a delay and a period for intervals
-                delay = TimeUtils.parseTimeString( times[0] );                
+                delay = TimeUtils.parseTimeString( times[0] );
                 period = TimeUtils.parseTimeString( times[1] );
             } else {
             	DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,

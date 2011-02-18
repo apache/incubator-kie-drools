@@ -50,7 +50,7 @@ public interface StatelessSession extends WorkingMemoryEventManager {
      * @param identifer
      * @param value
      */
-    void setGlobal(String identifer, Object value);   
+    void setGlobal(String identifer, Object value);
     
     /**
      * Used to specify a global exporting strategy
@@ -60,7 +60,7 @@ public interface StatelessSession extends WorkingMemoryEventManager {
      * @param globalExporter
      *                     The GlobalExporter instance
      */
-    public void setGlobalExporter(GlobalExporter globalExporter);    
+    public void setGlobalExporter(GlobalExporter globalExporter);
     
     
     /**
@@ -80,7 +80,7 @@ public interface StatelessSession extends WorkingMemoryEventManager {
      * This will assert the list of facts as SEPARATE facts to the engine
      * (NOT as a List).
      */        
-    void execute(Collection collection);    
+    void execute(Collection collection);
     
     /**
      * This will assert the object in the background. This is
@@ -98,7 +98,7 @@ public interface StatelessSession extends WorkingMemoryEventManager {
      * This will assert the object List (as SEPARATE facts) in the background. This is
      * "send and forget" execution.
      */    
-    void asyncExecute(Collection collection);      
+    void asyncExecute(Collection collection);
     
     
     /**

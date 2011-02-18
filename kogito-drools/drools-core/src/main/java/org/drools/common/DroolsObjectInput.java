@@ -21,11 +21,11 @@ import java.io.ObjectInput;
 import org.drools.rule.Package;
 
 public interface DroolsObjectInput extends ObjectInput {
-    ClassLoader getParentClassLoader(); 
-    ClassLoader getClassLoader(); 
+    ClassLoader getParentClassLoader();
+    ClassLoader getClassLoader();
     void setClassLoader(ClassLoader classLoader);
     
-    InternalRuleBase getRuleBase();    
+    InternalRuleBase getRuleBase();
     void setRuleBase(InternalRuleBase ruleBase);
     
     void setWorkingMemory(InternalWorkingMemory workingMemory);

@@ -143,14 +143,14 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VT_TEST_CASE1=(CommonTree)match(input,VT_TEST_CASE,FOLLOW_VT_TEST_CASE_in_compilation_unit50); 
+            VT_TEST_CASE1=(CommonTree)match(input,VT_TEST_CASE,FOLLOW_VT_TEST_CASE_in_compilation_unit50);
             VT_TEST_CASE1_tree = (CommonTree)adaptor.dupNode(VT_TEST_CASE1);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VT_TEST_CASE1_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             _last = (CommonTree)input.LT(1);
             pushFollow(FOLLOW_test_case_statement_in_compilation_unit52);
             test_case_statement2=test_case_statement();
@@ -321,16 +321,16 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VK_TEST_CASE7=(CommonTree)match(input,VK_TEST_CASE,FOLLOW_VK_TEST_CASE_in_test_case_statement79); 
+            VK_TEST_CASE7=(CommonTree)match(input,VK_TEST_CASE,FOLLOW_VK_TEST_CASE_in_test_case_statement79);
             VK_TEST_CASE7_tree = (CommonTree)adaptor.dupNode(VK_TEST_CASE7);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VK_TEST_CASE7_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             _last = (CommonTree)input.LT(1);
-            name=(CommonTree)match(input,STRING,FOLLOW_STRING_in_test_case_statement83); 
+            name=(CommonTree)match(input,STRING,FOLLOW_STRING_in_test_case_statement83);
             name_tree = (CommonTree)adaptor.dupNode(name);
 
             adaptor.addChild(root_1, name_tree);
@@ -339,7 +339,7 @@ public class NodeTestDSLTree extends TreeParser {
             match(input, Token.UP, null); adaptor.addChild(root_0, root_1);_last = _save_last_1;
             }
 
-             testCase = factory.createTestCase( (name!=null?name.getText():null) ); 
+             testCase = factory.createTestCase( (name!=null?name.getText():null) );
 
             }
 
@@ -389,16 +389,16 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VK_IMPORT8=(CommonTree)match(input,VK_IMPORT,FOLLOW_VK_IMPORT_in_import_statement102); 
+            VK_IMPORT8=(CommonTree)match(input,VK_IMPORT,FOLLOW_VK_IMPORT_in_import_statement102);
             VK_IMPORT8_tree = (CommonTree)adaptor.dupNode(VK_IMPORT8);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VK_IMPORT8_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             _last = (CommonTree)input.LT(1);
-            clazz=(CommonTree)match(input,VT_QUALIFIED_ID,FOLLOW_VT_QUALIFIED_ID_in_import_statement106); 
+            clazz=(CommonTree)match(input,VT_QUALIFIED_ID,FOLLOW_VT_QUALIFIED_ID_in_import_statement106);
             clazz_tree = (CommonTree)adaptor.dupNode(clazz);
 
             adaptor.addChild(root_1, clazz_tree);
@@ -407,7 +407,7 @@ public class NodeTestDSLTree extends TreeParser {
             match(input, Token.UP, null); adaptor.addChild(root_0, root_1);_last = _save_last_1;
             }
 
-             testCase.addImport( (clazz!=null?clazz.getText():null) ); 
+             testCase.addImport( (clazz!=null?clazz.getText():null) );
 
             }
 
@@ -457,16 +457,16 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VK_SETUP9=(CommonTree)match(input,VK_SETUP,FOLLOW_VK_SETUP_in_setup132); 
+            VK_SETUP9=(CommonTree)match(input,VK_SETUP,FOLLOW_VK_SETUP_in_setup132);
             VK_SETUP9_tree = (CommonTree)adaptor.dupNode(VK_SETUP9);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VK_SETUP9_tree, root_1);
 
 
-             factory.createSetup(); 
+             factory.createSetup();
 
             if ( input.LA(1)==Token.DOWN ) {
-                match(input, Token.DOWN, null); 
+                match(input, Token.DOWN, null);
                 // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:40:42: ( step )*
                 loop5:
                 do {
@@ -499,7 +499,7 @@ public class NodeTestDSLTree extends TreeParser {
                 } while (true);
 
 
-                match(input, Token.UP, null); 
+                match(input, Token.UP, null);
             }adaptor.addChild(root_0, root_1);_last = _save_last_1;
             }
 
@@ -552,16 +552,16 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VK_TEARDOWN11=(CommonTree)match(input,VK_TEARDOWN,FOLLOW_VK_TEARDOWN_in_teardown151); 
+            VK_TEARDOWN11=(CommonTree)match(input,VK_TEARDOWN,FOLLOW_VK_TEARDOWN_in_teardown151);
             VK_TEARDOWN11_tree = (CommonTree)adaptor.dupNode(VK_TEARDOWN11);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VK_TEARDOWN11_tree, root_1);
 
 
-             factory.createTearDown(); 
+             factory.createTearDown();
 
             if ( input.LA(1)==Token.DOWN ) {
-                match(input, Token.DOWN, null); 
+                match(input, Token.DOWN, null);
                 // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:44:48: ( step )*
                 loop6:
                 do {
@@ -594,7 +594,7 @@ public class NodeTestDSLTree extends TreeParser {
                 } while (true);
 
 
-                match(input, Token.UP, null); 
+                match(input, Token.UP, null);
             }adaptor.addChild(root_0, root_1);_last = _save_last_1;
             }
 
@@ -649,21 +649,21 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VK_TEST13=(CommonTree)match(input,VK_TEST,FOLLOW_VK_TEST_in_test171); 
+            VK_TEST13=(CommonTree)match(input,VK_TEST,FOLLOW_VK_TEST_in_test171);
             VK_TEST13_tree = (CommonTree)adaptor.dupNode(VK_TEST13);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VK_TEST13_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             _last = (CommonTree)input.LT(1);
-            name=(CommonTree)match(input,STRING,FOLLOW_STRING_in_test175); 
+            name=(CommonTree)match(input,STRING,FOLLOW_STRING_in_test175);
             name_tree = (CommonTree)adaptor.dupNode(name);
 
             adaptor.addChild(root_1, name_tree);
 
-             factory.createTest( VK_TEST13, name ); 
+             factory.createTest( VK_TEST13, name );
             // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:48:69: ( step )*
             loop7:
             do {
@@ -747,14 +747,14 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            ID15=(CommonTree)match(input,ID,FOLLOW_ID_in_step195); 
+            ID15=(CommonTree)match(input,ID,FOLLOW_ID_in_step195);
             ID15_tree = (CommonTree)adaptor.dupNode(ID15);
 
             root_1 = (CommonTree)adaptor.becomeRoot(ID15_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:52:10: (p+= params )+
             int cnt8=0;
             loop8:
@@ -794,7 +794,7 @@ public class NodeTestDSLTree extends TreeParser {
                 cnt8++;
             } while (true);
 
-             factory.createStep( ID15, list_p ); 
+             factory.createStep( ID15, list_p );
 
             match(input, Token.UP, null); adaptor.addChild(root_0, root_1);_last = _save_last_1;
             }
@@ -848,14 +848,14 @@ public class NodeTestDSLTree extends TreeParser {
             CommonTree _save_last_1 = _last;
             CommonTree _first_1 = null;
             CommonTree root_1 = (CommonTree)adaptor.nil();_last = (CommonTree)input.LT(1);
-            VT_PARAMS16=(CommonTree)match(input,VT_PARAMS,FOLLOW_VT_PARAMS_in_params215); 
+            VT_PARAMS16=(CommonTree)match(input,VT_PARAMS,FOLLOW_VT_PARAMS_in_params215);
             VT_PARAMS16_tree = (CommonTree)adaptor.dupNode(VT_PARAMS16);
 
             root_1 = (CommonTree)adaptor.becomeRoot(VT_PARAMS16_tree, root_1);
 
 
 
-            match(input, Token.DOWN, null); 
+            match(input, Token.DOWN, null);
             // src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g:56:16: ( param_chunk )+
             int cnt9=0;
             loop9:
@@ -939,7 +939,7 @@ public class NodeTestDSLTree extends TreeParser {
             root_0 = (CommonTree)adaptor.nil();
 
             _last = (CommonTree)input.LT(1);
-            VT_CHUNK18=(CommonTree)match(input,VT_CHUNK,FOLLOW_VT_CHUNK_in_param_chunk233); 
+            VT_CHUNK18=(CommonTree)match(input,VT_CHUNK,FOLLOW_VT_CHUNK_in_param_chunk233);
             VT_CHUNK18_tree = (CommonTree)adaptor.dupNode(VT_CHUNK18);
 
             adaptor.addChild(root_0, VT_CHUNK18_tree);

@@ -30,7 +30,7 @@ public class DecisionTableFactory {
     }
     
     private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( DecisionTableProvider.class,  "org.drools.decisiontable.DecisionTableProviderImpl" );            
+        ServiceRegistryImpl.getInstance().addDefault( DecisionTableProvider.class,  "org.drools.decisiontable.DecisionTableProviderImpl" );
         setDecisionTableProvider(ServiceRegistryImpl.getInstance().get( DecisionTableProvider.class ) );
     }       
 }

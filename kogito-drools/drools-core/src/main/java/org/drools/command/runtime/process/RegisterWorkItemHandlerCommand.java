@@ -53,7 +53,7 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
 	}
 
     public Object execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();        
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         ksession.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
 		return null;
 	}

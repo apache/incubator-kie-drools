@@ -127,7 +127,7 @@ public class MVELReturnValueExpression
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
         this.unit.replaceDeclaration( declaration,
-                                      resolved );        
+                                      resolved );
     }
 
     public Object createContext() {

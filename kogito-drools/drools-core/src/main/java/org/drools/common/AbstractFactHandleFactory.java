@@ -47,7 +47,7 @@ public abstract class AbstractFactHandleFactory
     
     public AbstractFactHandleFactory(int id, long counter) {
         this.id = new AtomicInteger( id );
-        this.counter = new AtomicLong( counter );        
+        this.counter = new AtomicLong( counter );
     }    
 
     /* (non-Javadoc)
@@ -126,6 +126,6 @@ public abstract class AbstractFactHandleFactory
     
     public void clear(int id, long counter) {
         this.id = new AtomicInteger( id );
-        this.counter = new AtomicLong( counter );        
+        this.counter = new AtomicLong( counter );
     }
 }

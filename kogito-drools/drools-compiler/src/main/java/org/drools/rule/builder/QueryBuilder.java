@@ -48,7 +48,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
-        int i = 0;        
+        int i = 0;
         
         Declaration[] declarations = new Declaration[ params.length ];
         

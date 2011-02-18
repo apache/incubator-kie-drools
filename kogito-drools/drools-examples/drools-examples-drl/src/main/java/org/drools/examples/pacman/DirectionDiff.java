@@ -63,7 +63,7 @@ public class DirectionDiff {
     }
 
     public String toString() {
-        return "from: " + fromChar + " to: " + toChar + " col: " + col + " row: " + row + " colDiff: " + colDiff + " rowDiff: " + rowDiff; 
+        return "from: " + fromChar + " to: " + toChar + " col: " + col + " row: " + row + " colDiff: " + colDiff + " rowDiff: " + rowDiff;
     }
     
 }

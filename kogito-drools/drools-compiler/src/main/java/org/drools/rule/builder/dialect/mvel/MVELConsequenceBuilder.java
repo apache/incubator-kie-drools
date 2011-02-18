@@ -110,15 +110,15 @@ public class MVELConsequenceBuilder
             
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             
-            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()]; 
-            String[] declrStr = new String[declarations.length]; 
+            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()];
+            String[] declrStr = new String[declarations.length];
             int j = 0;
             for (String str : usedIdentifiers.getDeclarations().keySet() ) {
                 declrStr[j] = str;
                 declarations[j++] = decls.get( str );
             }
-            Arrays.sort( declarations, SortDeclarations.isntance  );  
-            context.getRule().setRequiredDeclarations( declrStr );    
+            Arrays.sort( declarations, SortDeclarations.isntance  );
+            context.getRule().setRequiredDeclarations( declrStr );
             
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
@@ -136,7 +136,7 @@ public class MVELConsequenceBuilder
             	context.getRule().getNamedConsequences().put(consequenceName, expr);
             }
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );            
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
             data.addCompileable( context.getRule(),
                                  expr );
             

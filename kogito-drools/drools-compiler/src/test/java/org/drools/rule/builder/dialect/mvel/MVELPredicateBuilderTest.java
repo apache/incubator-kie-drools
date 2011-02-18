@@ -107,7 +107,7 @@ public class MVELPredicateBuilderTest {
         AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                           predicateDescr,
                                                                           predicateDescr.getContent(),
-                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), Cheese.class ) );        
+                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), Cheese.class ) );
 
         builder.build( context,
                        new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap() ),

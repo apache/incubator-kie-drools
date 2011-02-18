@@ -128,7 +128,7 @@ public class InputMarshaller {
         
         context.handles.put( context.wm.getInitialFactHandle().getId(),  context.wm.getInitialFactHandle() );
 
-        readFactHandles( context );       
+        readFactHandles( context );
 
         readActionQueue( context );
 
@@ -624,7 +624,7 @@ public class InputMarshaller {
                 // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
                 FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
                 
-                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );                
+                memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
                 Map<Object, RightTuple> matches =  new LinkedHashMap<Object, RightTuple>();
                 memory.betaMemory.getCreatedHandles().put( parentLeftTuple, matches );
                 

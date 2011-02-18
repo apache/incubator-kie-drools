@@ -4919,7 +4919,7 @@ public class MiscTest {
         
         Person p0 = new Person("yoda", 0);
         p0.setLikes( "cheddar" );
-        org.drools.runtime.rule.FactHandle fh0 = ksession.insert( p0 );        
+        org.drools.runtime.rule.FactHandle fh0 = ksession.insert( p0 );
         
         Person p1 = new Person("darth", 15);
         p1.setLikes( "cheddar" );
@@ -4941,10 +4941,10 @@ public class MiscTest {
         p1.setName( "yoda" );
         ksession.update( fh1, p1 );  // creates activation
               
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
         assertEquals( 4, list.size() );
         assertSame( p2, list.get( 2 ) );
-        assertSame( p3, list.get( 3 ) );        
+        assertSame( p3, list.get( 3 ) );
     }
         
     @Test

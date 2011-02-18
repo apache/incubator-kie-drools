@@ -69,7 +69,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             JaxbListWrapper v = ( JaxbListWrapper ) o;
             return Arrays.asList( v.getElements() );
         } else if (o instanceof JaxbObjectObjectPair[] ) {
-            JaxbObjectObjectPair[] value = ( JaxbObjectObjectPair[] ) o; 
+            JaxbObjectObjectPair[] value = ( JaxbObjectObjectPair[] ) o;
             Map<Object, Object> r = new HashMap<Object, Object>();
             for( JaxbObjectObjectPair p : value ) {
                 if ( p.getValue() instanceof JaxbListWrapper) {

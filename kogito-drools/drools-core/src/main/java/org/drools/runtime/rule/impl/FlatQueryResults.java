@@ -45,7 +45,7 @@ public class FlatQueryResults
     
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="identifiers")    
-    private Map<String, Integer> identifiers;    
+    private Map<String, Integer> identifiers;
     
 	@XmlElement(name="results")
     @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)	

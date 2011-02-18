@@ -88,7 +88,7 @@ public class JoinNode extends BetaNode {
                                           leftTuple );
         
                 
-        FastIterator it = getRightIterator( rightMemory); 
+        FastIterator it = getRightIterator( rightMemory);
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             final InternalFactHandle handle = rightTuple.getFactHandle();
@@ -134,7 +134,7 @@ public class JoinNode extends BetaNode {
                                                workingMemory,
                                                factHandle );
         
-        FastIterator it = memory.getLeftTupleMemory().fastIterator();                  
+        FastIterator it = memory.getLeftTupleMemory().fastIterator();
         for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
@@ -207,7 +207,7 @@ public class JoinNode extends BetaNode {
 
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
-        FastIterator it = leftMemory.fastIterator();  
+        FastIterator it = leftMemory.fastIterator();
         LeftTuple leftTuple = leftMemory.getFirst( rightTuple );
 
         this.constraints.updateFromFactHandle( memory.getContext(),

@@ -55,7 +55,7 @@ public interface CellGrid {
 	 */
 	public abstract void dispose();
     
-    public void updateCell(Cell cell, CellState state);    
+    public void updateCell(Cell cell, CellState state);
 
 	public abstract String toString();
 

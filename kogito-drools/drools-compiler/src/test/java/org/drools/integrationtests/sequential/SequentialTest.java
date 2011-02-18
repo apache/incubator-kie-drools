@@ -150,7 +150,7 @@ public class SequentialTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase    = SerializationHelper.serializeObject( kbase );
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();       
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
         
         ksession.execute( new Message( "help" ) );
     }
@@ -181,7 +181,7 @@ public class SequentialTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         kbase    = SerializationHelper.serializeObject( kbase );
-        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();     
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
         
         final List list = new ArrayList();
         
@@ -189,32 +189,32 @@ public class SequentialTest {
 
             public void activationCancelled(ActivationCancelledEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void activationCreated(ActivationCreatedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event );   
+                list.add( event );
             }
 
             public void afterActivationFired(AfterActivationFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void agendaGroupPushed(AgendaGroupPushedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void beforeActivationFired(BeforeActivationFiredEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event );  
+                list.add( event );
             }
 
         });
@@ -223,17 +223,17 @@ public class SequentialTest {
 
             public void objectInserted(ObjectInsertedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void objectRetracted(ObjectRetractedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
 
             public void objectUpdated(ObjectUpdatedEvent event) {
                 assertNotNull( event.getKnowledgeRuntime() );
-                list.add( event ); 
+                list.add( event );
             }
             
         });

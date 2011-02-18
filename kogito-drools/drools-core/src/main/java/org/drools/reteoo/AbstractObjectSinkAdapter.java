@@ -49,7 +49,7 @@ public abstract class AbstractObjectSinkAdapter implements ObjectSinkPropagator,
      * @return the ID of the partition
      */
     public RuleBasePartitionId getPartitionId() {
-        return this.partitionId;  
+        return this.partitionId;
     }
 
     /**

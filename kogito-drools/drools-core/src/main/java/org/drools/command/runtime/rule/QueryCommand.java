@@ -94,7 +94,7 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
             this.arguments = Collections.emptyList();
         }
         
-        results = ksession.getQueryResults( name, this.arguments.toArray() );        
+        results = ksession.getQueryResults( name, this.arguments.toArray() );
         
         if ( this.outIdentifier != null ) {
             ((StatefulKnowledgeSessionImpl)ksession).session.getExecutionResult().getResults().put( this.outIdentifier, results );

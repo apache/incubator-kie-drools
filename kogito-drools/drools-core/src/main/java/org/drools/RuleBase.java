@@ -66,7 +66,7 @@ public interface RuleBase
     StatefulSession newStatefulSession(java.io.InputStream stream);
 
     StatefulSession newStatefulSession(java.io.InputStream stream,
-                                                           boolean keepReference);    
+                                                           boolean keepReference);
     
     /**
      * Create a new <code>WorkingMemory</code> session for this
@@ -136,7 +136,7 @@ public interface RuleBase
      * @param ruleName
      */
     void removeQuery(String packageName,
-                     String queryName);    
+                     String queryName);
 
     /**
      * Removes a specific function in a specific package.

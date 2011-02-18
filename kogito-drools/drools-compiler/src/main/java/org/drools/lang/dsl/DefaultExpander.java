@@ -86,7 +86,7 @@ Expander {
     private List<Map<String,String>> substitutions;
 
     private List<ExpanderException>       errors        = Collections.emptyList();
-    private boolean showResult  = false; 
+    private boolean showResult  = false;
     private boolean showSteps   = false;
     private boolean showWhen    = false;
     private boolean showThen    = false;
@@ -168,7 +168,7 @@ Expander {
         if( showUsage ){
             displayUsage( "keyword", useKeyword );
             displayUsage( "when", useWhen );
-            displayUsage( "then", useThen );            
+            displayUsage( "then", useThen );
         }
         
         if( showResult ){
@@ -241,7 +241,7 @@ Expander {
 
             int newPos = m.start();
             linecount += countNewlines( drl, drlPos, newPos );
-            drlPos = newPos;            
+            drlPos = newPos;
 
             String constr = m.group().trim();
             if( constr.startsWith( "rule" ) ){
@@ -414,7 +414,7 @@ Expander {
                         sb.append( del ).append( Pattern.quote( key ) );
                         del = "|";
                     }
-                    sb.append( ")" ).append( funcPatStr ).append( "\\}" );                    
+                    sb.append( ")" ).append( funcPatStr ).append( "\\}" );
                     Pattern allkeyPat = Pattern.compile( sb.toString() );
                     vp = entry.getValuePattern();
                     Matcher allkeyMat = allkeyPat.matcher( vp );
@@ -432,12 +432,12 @@ Expander {
                 }
 
                 // Try to find any matches from previous lines.
-                Matcher varRefMat = varRefPat.matcher( vp );               
+                Matcher varRefMat = varRefPat.matcher( vp );
                 while( varRefMat.find() ){
                     String theKey = varRefMat.group( 1 );
                     String theFunc = varRefMat.group( 2 );
                     for( int ientry = substitutions.size() - 1; ientry >= 0; ientry-- ){
-                        String foundValue = substitutions.get( ientry ).get( theKey );                
+                        String foundValue = substitutions.get( ientry ).get( theKey );
                         if( foundValue != null ){
                             String theValue = applyFunc( theFunc, foundValue );
                             // replace it

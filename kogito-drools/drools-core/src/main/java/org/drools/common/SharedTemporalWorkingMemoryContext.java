@@ -24,7 +24,7 @@ public class SharedTemporalWorkingMemoryContext<T extends SessionClock>  extends
     protected T                                   sessionClock;
     
     public SharedTemporalWorkingMemoryContext(FactHandleFactory handleFactory, T sessionClock) {
-        super( handleFactory );        
+        super( handleFactory );
         this.sessionClock = sessionClock;
     }
 

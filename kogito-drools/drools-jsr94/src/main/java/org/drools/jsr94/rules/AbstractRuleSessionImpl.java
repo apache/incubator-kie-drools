@@ -111,7 +111,7 @@ abstract class AbstractRuleSessionImpl
         return this.ruleExecutionSet;
     }
     
-    protected abstract void checkRuleSessionValidity() throws InvalidRuleSessionException;    
+    protected abstract void checkRuleSessionValidity() throws InvalidRuleSessionException;
     
 
     // JSR94 interface methods start here -------------------------------------

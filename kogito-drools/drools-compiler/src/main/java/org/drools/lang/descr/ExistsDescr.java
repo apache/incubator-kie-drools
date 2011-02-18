@@ -50,9 +50,9 @@ public class ExistsDescr extends BaseDescr
 
     public void addOrMerge(BaseDescr baseDescr) {
         if( baseDescr instanceof ExistsDescr ) {
-            this.descrs.addAll( ((ExistsDescr)baseDescr).getDescrs() ); 
+            this.descrs.addAll( ((ExistsDescr)baseDescr).getDescrs() );
         } else {
-            this.descrs.add( baseDescr );        
+            this.descrs.add( baseDescr );
         }
     }
 

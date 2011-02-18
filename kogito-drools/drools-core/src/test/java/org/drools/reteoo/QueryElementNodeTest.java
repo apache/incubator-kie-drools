@@ -128,7 +128,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         Object[] variables = (Object[]) leftTuple.getLastHandle().getObject();
         assertEquals( "string_0_2", variables[0] );
         assertEquals( "string_2_2", variables[1] );
-        assertEquals( "string_5_2", variables[2] );              
+        assertEquals( "string_5_2", variables[2] );
         
         leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 1 ))[0];
         assertEquals(2, leftTuple.size());
@@ -136,7 +136,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         variables = (Object[]) leftTuple.getLastHandle().getObject();
         assertEquals( "string_0_1", variables[0] );
         assertEquals( "string_2_1", variables[1] );
-        assertEquals( "string_5_1", variables[2] );         
+        assertEquals( "string_5_1", variables[2] );
         
         leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 2 ))[0];
         assertEquals(2, leftTuple.size());
