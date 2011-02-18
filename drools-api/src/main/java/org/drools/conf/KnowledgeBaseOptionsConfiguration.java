@@ -18,7 +18,6 @@ package org.drools.conf;
 
 /**
  * A base interface for type safe configurations
- * 
  */
 public interface KnowledgeBaseOptionsConfiguration {
     

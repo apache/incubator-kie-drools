@@ -19,7 +19,6 @@ package org.drools.runtime.conf;
 
 /**
  * A class for the session clock configuration.
- * 
  */
 public class ClockTypeOption implements SingleValueKnowledgeSessionOption {
 

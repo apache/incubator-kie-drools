@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.shareAlphaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
- * 
  */
 public enum ShareAlphaNodesOption implements SingleValueKnowledgeBaseOption {
     

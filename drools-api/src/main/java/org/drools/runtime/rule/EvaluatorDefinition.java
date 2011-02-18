@@ -18,7 +18,6 @@ package org.drools.runtime.rule;
 
 /**
  * A markup interface for Evaluator definitions
- * 
  */
 public interface EvaluatorDefinition {
 

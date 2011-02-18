@@ -26,8 +26,6 @@ package org.drools.runtime.conf;
  * no concurrency exists between query execution and other working memory
  * actions, a lightweight listener implementation can be used, preventing
  * the copy and improving query performance significantly.
- *  
- * 
  */
 public enum QueryListenerOption implements SingleValueKnowledgeSessionOption {
 

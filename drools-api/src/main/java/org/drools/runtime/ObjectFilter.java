@@ -18,7 +18,6 @@ package org.drools.runtime;
 
 /**
  * ObjectFilter is used with WorkingMemories to filter out instances during Iteration
- *
  */
 public interface ObjectFilter {
 

@@ -19,7 +19,6 @@ package org.drools.builder.conf;
 
 /**
  * A class for the default package name configuration.
- * 
  */
 public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOption {
 

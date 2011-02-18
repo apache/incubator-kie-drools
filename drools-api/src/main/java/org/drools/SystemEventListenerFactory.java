@@ -23,7 +23,6 @@ import org.drools.util.ServiceRegistryImpl;
  * as the KnowledgeAgent, ResourceChangeNotifier and ResourceChangeListener.
  * 
  * The default SystemEventListener
- *
  */
 public class SystemEventListenerFactory {
     private static SystemEventListenerService service;

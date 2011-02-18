@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.sequential = &lt;true|false&gt;
  * 
  * DEFAULT = false
- * 
  */
 public enum SequentialOption implements SingleValueKnowledgeBaseOption {
     

@@ -19,7 +19,6 @@ package org.drools.builder.conf;
 
 /**
  * A markup interface for SingleValueKnowledgeBuilderConfiguration options
- * 
  */
 public interface SingleValueKnowledgeBuilderOption
     extends

@@ -32,8 +32,6 @@ package org.drools.conf;
  * to the rule in order to avoid early rule firing. </li>
  * <li> memory management techniques may be employed when an event no longer can match other events
  * due to session clock continuous increment. </li>
- * 
- *
  */
 public enum EventProcessingOption
         implements SingleValueKnowledgeBaseOption {

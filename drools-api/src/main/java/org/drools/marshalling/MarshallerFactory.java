@@ -76,7 +76,6 @@ import org.drools.util.ServiceRegistryImpl;
  * <p>
  * Note that the acceptance checking order is in the natural order of the supplied array.
  * </p>
- *
  */
 public class MarshallerFactory {
     private static volatile MarshallerProvider provider;

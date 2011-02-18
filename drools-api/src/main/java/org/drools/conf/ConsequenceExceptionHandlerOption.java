@@ -20,7 +20,6 @@ import org.drools.runtime.rule.ConsequenceExceptionHandler;
 
 /**
  * A class for the consequence exception handler configuration configuration.
- * 
  */
 public class ConsequenceExceptionHandlerOption implements SingleValueKnowledgeBaseOption {
 

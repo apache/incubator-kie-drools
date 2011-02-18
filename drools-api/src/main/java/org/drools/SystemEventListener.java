@@ -28,7 +28,6 @@ package org.drools;
  * </p>
  * 
  * Componens 
- * 
  */
 public interface SystemEventListener {
     /**

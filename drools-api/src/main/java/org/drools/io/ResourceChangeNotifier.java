@@ -36,7 +36,6 @@ import org.drools.event.io.ResourceChangeListener;
  * the KnowledgeAgent will use them, when rebuilding the KnowledgeBase.
  * </p>
  * @BETA
- * 
  */
 public interface ResourceChangeNotifier {
     void subscribeResourceChangeListener(ResourceChangeListener listener,

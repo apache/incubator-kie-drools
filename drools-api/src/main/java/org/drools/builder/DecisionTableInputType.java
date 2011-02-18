@@ -21,7 +21,6 @@ package org.drools.builder;
  * Specifies the type of decision table resource.
  * Currently either XLS or CSV.
  * </p>
- * 
  */
 public enum DecisionTableInputType {
     XLS, CSV;

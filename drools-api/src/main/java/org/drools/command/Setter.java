@@ -18,7 +18,6 @@ package org.drools.command;
 
 /**
  * @BETA
- *
  */
 public interface Setter {
     String getAccessor();

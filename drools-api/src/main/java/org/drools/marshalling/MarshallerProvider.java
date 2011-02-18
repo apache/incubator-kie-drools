@@ -22,7 +22,6 @@ import org.drools.Service;
 /**
  * 
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
- *
  */
 public interface MarshallerProvider extends Service {
     ObjectMarshallingStrategyAcceptor newClassFilterAcceptor(String[] patterns);

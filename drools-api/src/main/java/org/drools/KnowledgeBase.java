@@ -55,7 +55,6 @@ import org.drools.runtime.StatelessKnowledgeSession;
  * </pre>
  * 
  * @see org.drools.KnowledgeBaseFactory
- * 
  */
 public interface KnowledgeBase
     extends

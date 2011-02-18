@@ -19,7 +19,6 @@ package org.drools.conf;
 
 /**
  * A class for the composite key depth configuration.
- * 
  */
 public class CompositeKeyDepthOption implements SingleValueKnowledgeBaseOption {
 

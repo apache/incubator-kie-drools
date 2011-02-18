@@ -40,7 +40,6 @@ import org.drools.util.ServiceRegistryImpl;
  * kbuilder.add( ResourceFactory.newClassPathResource( "htp://www.domain.org/myrules.drl", getClass() ),
  *               ResourceType.DRL );
  * </pre
- *
  */
 public class ResourceFactory {
     private static ResourceFactoryService factoryService;

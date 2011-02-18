@@ -19,7 +19,6 @@ package org.drools.builder.conf;
 
 /**
  * A class for the default dialect configuration.
- * 
  */
 public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
 

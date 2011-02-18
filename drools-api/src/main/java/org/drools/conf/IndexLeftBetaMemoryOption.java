@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.indexLeftBetaMemory = &lt;true|false&gt;
  * 
  * DEFAULT = true
- * 
  */
 public enum IndexLeftBetaMemoryOption implements SingleValueKnowledgeBaseOption {
     

@@ -117,7 +117,6 @@ import org.drools.runtime.rule.StatelessRuleSession;
  * @see org.drools.runtime.help.BatchExecutionHelp
  * @see org.drools.runtime.pipeline.PipelineFactory
  * @see org.drools.runtime.Globals
- * 
  */
 public interface StatelessKnowledgeSession
     extends

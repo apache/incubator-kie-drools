@@ -18,7 +18,6 @@ package org.drools.management;
 
 /**
  * An interface for OTN MBean
- * 
  */
 public interface ObjectTypeNodeMonitorMBean {
 

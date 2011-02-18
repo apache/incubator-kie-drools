@@ -20,7 +20,6 @@ import java.util.Set;
 
 /**
  * A base interface for type safe configurations
- * 
  */
 public interface KnowledgeBuilderOptionsConfiguration {
     

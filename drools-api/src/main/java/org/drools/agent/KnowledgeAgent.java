@@ -29,7 +29,6 @@ import org.drools.runtime.StatelessKnowledgeSession;
  * 
  * @see org.drools.agent.KnowledgeAgentFactory
  * @see org.drools.agent.KnowledgeAgentConfiguration
- * 
  */
 public interface KnowledgeAgent {
 

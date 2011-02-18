@@ -20,7 +20,6 @@ import org.drools.conf.Option;
 
 /**
  * A markup interface for KnowledgeBaseConfiguration options
- * 
  */
 public interface KnowledgeBaseOption
     extends
