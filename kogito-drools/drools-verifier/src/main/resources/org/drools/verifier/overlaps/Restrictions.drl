@@ -63,7 +63,7 @@ rule "Find overlapping number restrictions"
         )
 
         # There is no restriction between these two restrictions.
-        not	$center :NumberRestriction(
+        not $center :NumberRestriction(
                 fieldPath == $left.fieldPath,
                 value == $left.value,
                 value > $right.value
@@ -89,7 +89,7 @@ rule "Find overlapping literal restrictions"
         )
 
         # There is no restriction between these two restrictions.
-        not	$center :LiteralRestriction(
+        not $center :LiteralRestriction(
                 fieldPath == $left.fieldPath,
                 valueAsString == $left.valueAsString,
                 valueAsString == $right.valueAsString

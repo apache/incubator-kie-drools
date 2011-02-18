@@ -135,27 +135,27 @@ rule "Optimise restrictions inside constraint"
                     parentPath == $r1.parentPath,
                     parentType == $r1.parentType,
                     orderNumber < $r1.orderNumber,
-                    ( operator 	== Operator.GREATER ||
-                                == Operator.LESS ||
-                                == Operator.GREATER_OR_EQUAL ||
-                                == Operator.LESS_OR_EQUAL ||
-                                == MatchesEvaluatorsDefinition.NOT_MATCHES ||
-                                == Operator.NOT_EQUAL )
+                    ( operator == Operator.GREATER ||
+                               == Operator.LESS ||
+                               == Operator.GREATER_OR_EQUAL ||
+                               == Operator.LESS_OR_EQUAL ||
+                               == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                               == Operator.NOT_EQUAL )
                 )
         ) or (
                 $r1 :Restriction(
-                    ( operator 	== Operator.GREATER ||
-                                == Operator.LESS )
+                    ( operator == Operator.GREATER ||
+                               == Operator.LESS )
                 )
             and
                 $r2 :Restriction(
                     parentPath == $r1.parentPath,
                     parentType == $r1.parentType,
                     orderNumber < $r1.orderNumber,
-                    ( operator 	== Operator.GREATER_OR_EQUAL ||
-                                == Operator.LESS_OR_EQUAL ||
-                                == MatchesEvaluatorsDefinition.NOT_MATCHES ||
-                                == Operator.NOT_EQUAL )
+                    ( operator == Operator.GREATER_OR_EQUAL ||
+                               == Operator.LESS_OR_EQUAL ||
+                               == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                               == Operator.NOT_EQUAL )
                 )
         )
         or (

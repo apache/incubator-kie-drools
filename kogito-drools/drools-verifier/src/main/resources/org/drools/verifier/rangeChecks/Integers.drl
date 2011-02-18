@@ -46,7 +46,7 @@ rule "Range check for integers, if smaller than or equal is missing"
         )
 
         # Check if Foo( bar == 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -78,7 +78,7 @@ rule "Range check for integers, if greater than or equal is missing"
         )
 
         # Check if Foo( bar == 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -112,7 +112,7 @@ rule "Range check for integers, equal and greater than"
         )
 
         # Check if Foo( bar > 42 || >= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -120,7 +120,7 @@ rule "Range check for integers, equal and greater than"
         )
 
         # Check if Foo( bar == 43 || >= 43 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -154,7 +154,7 @@ rule "Range check for integers, equal and smaller than"
         )
 
         # Check if Foo( bar < 42 || <= 42 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
@@ -162,7 +162,7 @@ rule "Range check for integers, equal and smaller than"
         )
 
         # Check if Foo( bar == 41 || <= 41 ) is missing.
-        not	NumberRestriction(
+        not NumberRestriction(
             fieldPath == $f.path,
             ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
             patternIsNot == $r.patternIsNot,
