@@ -37,7 +37,7 @@
   </repositories>
 
   <modules>
-    <module>drools-api</module>
+    <module>knowledge-api</module>
   </modules>
 
   <profiles>
