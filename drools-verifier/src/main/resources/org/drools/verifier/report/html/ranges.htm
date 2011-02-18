@@ -1,10 +1,10 @@
 <ul>
     @foreach{line:lines}
-		@if{line.startsWith("Missing :")}
-        	<li style="color:Red;">@{line}</li>
-		@elseif{!line.endsWith("is missing")}
-        	<li>@{line}</li>
-		@end{}
+      @if{line.startsWith("Missing :")}
+        <li style="color:Red;">@{line}</li>
+      @elseif{!line.endsWith("is missing")}
+        <li>@{line}</li>
+      @end{}
     @end{}
 </ul>
 

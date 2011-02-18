@@ -1,20 +1,20 @@
 
-	<table class="message">
-		<tr>
-			<th><h3>@{title}</h3></th>
-		</tr>
-		<tr>
-			<td>
-				@{message}<br/>
-				Reason: @{reason}<br/>
-				@if{ causes != null && causes.size() > 0 }
-					<span>Causes:</span>
-					<ul>	
-					@foreach{cause:causes}
-						<li>@{cause}</li>
-					@end{}
-					</ul>
-				@end{}
-			</td>
-		</tr>
-	</table>
+  <table class="message">
+    <tr>
+      <th><h3>@{title}</h3></th>
+    </tr>
+    <tr>
+      <td>
+        @{message}<br/>
+        Reason: @{reason}<br/>
+        @if{ causes != null && causes.size() > 0 }
+          <span>Causes:</span>
+          <ul>
+          @foreach{cause:causes}
+            <li>@{cause}</li>
+          @end{}
+          </ul>
+        @end{}
+      </td>
+    </tr>
+  </table>

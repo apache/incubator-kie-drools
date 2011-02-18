@@ -1,20 +1,20 @@
 
 <div>
-	<h1>Rules by Packages</h1>
+  <h1>Rules by Packages</h1>
     <table class="rulePackages">
-			@foreach{rulePackage:rulePackages}	
-	    	<tr>
-                <th>@{rulePackage.name}</th>
-        	</tr>
-        	<tr>
-        		<td>
-        			<ul>
-					@foreach{rule:rulePackage.rules}
-						<li class="row@{rulePackage.offset}" ><a href="@{sourceFolder}/@{ruleFolder}/@{rule.path}.htm">@{rule.name}</a></li>@end{}
-					</ul>
-				</td>
-        	</tr>
-			@end{}
+      @foreach{rulePackage:rulePackages}
+        <tr>
+           <th>@{rulePackage.name}</th>
+        </tr>
+        <tr>
+          <td>
+            <ul>
+          @foreach{rule:rulePackage.rules}
+            <li class="row@{rulePackage.offset}" ><a href="@{sourceFolder}/@{ruleFolder}/@{rule.path}.htm">@{rule.name}</a></li>@end{}
+            </ul>
+          </td>
+        </tr>
+      @end{}
     </table>
 </div>
 
