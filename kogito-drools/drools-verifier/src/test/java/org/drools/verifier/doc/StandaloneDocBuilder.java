@@ -27,8 +27,7 @@ import org.drools.verifier.doc.DroolsDocsBuilder;
 /**
  * Stand alone to test writing to a file.
  * 
- * @author Toni Rikkola
- * 
+ *
  */
 public class StandaloneDocBuilder {
 

@@ -26,9 +26,6 @@ public class Person
     implements
     Serializable,
     PersonInterface {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private String            name;
     private String            likes;

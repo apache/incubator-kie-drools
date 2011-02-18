@@ -18,8 +18,7 @@ package org.drools.template.parser;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- *  
+ *
  * Represents a row in a decision table.
  */
 public class Row {

@@ -24,9 +24,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-/**
- * @author Michael Neale
- */
 public class UrlResourceTest {
     private FileManager fileManager;
     private Server server;

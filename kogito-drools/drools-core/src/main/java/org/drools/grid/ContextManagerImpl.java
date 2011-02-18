@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.grid;
 
 import java.util.HashMap;

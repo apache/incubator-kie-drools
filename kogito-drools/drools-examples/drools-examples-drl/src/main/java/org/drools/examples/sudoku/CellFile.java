@@ -18,7 +18,6 @@ package org.drools.examples.sudoku;
 /**
  * Abstract class for numbered cell groups: rows and columns. 
  *
- * @author Wolfgang Laun
  */
 public abstract class CellFile extends CellGroup {
     

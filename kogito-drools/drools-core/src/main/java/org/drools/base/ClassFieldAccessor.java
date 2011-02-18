@@ -35,7 +35,6 @@ import org.drools.spi.WriteAccessor;
  * like the working memory, when the field extractor is used outside
  * the working memory scope.
  *
- * @author Edson Tirelli
  */
 public class ClassFieldAccessor
     implements

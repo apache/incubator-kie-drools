@@ -37,8 +37,7 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * @author Shaun Addison, Michael Neale
- * 
+ *
  * Test an excel file.
  * 
  * Assumes it has a sheet called "Decision Tables" with a rule table identified

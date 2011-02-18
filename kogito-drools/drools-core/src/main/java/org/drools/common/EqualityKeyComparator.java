@@ -25,9 +25,6 @@ import org.drools.core.util.AbstractHashTable.ObjectComparator;
 public class EqualityKeyComparator
     implements
     ObjectComparator {
-    /**
-     *
-     */
     private static final long            serialVersionUID = 510l;
 
     private static EqualityKeyComparator instance;

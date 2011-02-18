@@ -13,9 +13,6 @@ import java.util.jar.JarInputStream;
 import static org.junit.Assert.*;
 
 
-/**
- * @author Toni Rikkola trikkola@redhat.com (C) 2011 Red Hat Inc
- */
 public class PackageHeaderLoaderTest {
 
     private ArrayList<JarInputStream> jarInputStreams;

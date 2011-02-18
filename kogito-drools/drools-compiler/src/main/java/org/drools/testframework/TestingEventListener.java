@@ -32,7 +32,6 @@ import org.drools.spi.KnowledgeHelper;
  * If a rule is not allowed to fire, it will still be counted as an activation.
  * If it is allowed to fire, then it will only be counted after the activation is fired.
  *
- * @author Michael Neale
  */
 public class TestingEventListener implements AgendaEventListener {
 

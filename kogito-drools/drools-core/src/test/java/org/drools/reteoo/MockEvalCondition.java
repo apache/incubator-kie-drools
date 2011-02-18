@@ -28,17 +28,11 @@ import org.drools.spi.Tuple;
 
 public class MockEvalCondition extends EvalCondition {
 
-    /**
-     *
-     */
     private static final long    serialVersionUID = 510l;
 
     private Boolean              isAllowed;
 
     private final EvalExpression expression       = new EvalExpression() {
-                                                      /**
-                                                       *
-                                                       */
                                                       private static final long serialVersionUID = 510l;
 
                                                       public Object createContext() { return null; }

@@ -44,7 +44,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * This constraint is used when joining subnetworks back into the main
  * network.
  *
- * @author etirelli
  *
  */
 public class TupleStartEqualsConstraint

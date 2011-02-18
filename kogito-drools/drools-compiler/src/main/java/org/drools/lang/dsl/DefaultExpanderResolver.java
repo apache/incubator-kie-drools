@@ -30,7 +30,6 @@ import org.drools.lang.ExpanderResolver;
  * The DefaultExpander uses templates to provide DSL and pseudo
  * natural language support.
  * 
- * @author Michael Neale
  */
 public class DefaultExpanderResolver
     implements

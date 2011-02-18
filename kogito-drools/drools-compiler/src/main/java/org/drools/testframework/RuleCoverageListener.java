@@ -16,7 +16,6 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 
 /**
  * Measure the rule coverage.
- * @author Michael Neale
  */
 public class RuleCoverageListener implements AgendaEventListener {
 

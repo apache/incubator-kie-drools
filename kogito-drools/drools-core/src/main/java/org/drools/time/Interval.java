@@ -25,7 +25,6 @@ package org.drools.time;
  * the representation is created by using lowerBound = Long.MIN_VALUE
  * and upperBound = Long.MAX_VALUE.
  *  
- * @author etirelli
  */
 public class Interval implements Cloneable {
     public static final long MIN = Long.MIN_VALUE;

@@ -24,7 +24,6 @@ import org.drools.lang.dsl.DSLMappingEntry.Section;
 /**
  * An interface that represents a DSL Mapping 
  * 
- * @author etirelli
  */
 public interface DSLMapping {
 

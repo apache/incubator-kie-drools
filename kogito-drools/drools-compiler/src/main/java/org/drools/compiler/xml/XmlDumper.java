@@ -56,7 +56,6 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 /**
  * This utility will take a AST of a rule package, and emit XML.
  * This can be used in porting from DRL to XML.
- * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
  */
 public class XmlDumper extends ReflectiveVisitor
     implements
@@ -391,7 +390,6 @@ public class XmlDumper extends ReflectiveVisitor
      * <li> &
      * </ul>
      * </p>
-     * @author <a href="mailto:prietor@gmail.com">Author Javier Prieto</a>
      */
     public static String replaceIllegalChars(final String code) {
         final StringBuilder sb = new StringBuilder();

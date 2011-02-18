@@ -20,9 +20,6 @@ import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class ProcessCompletedEventImpl extends ProcessEvent implements ProcessCompletedEvent {
 
     private static final long serialVersionUID = 510l;

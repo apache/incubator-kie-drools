@@ -2,7 +2,6 @@ package org.acme.insurance;
 
 /**
  * This represents obviously a driver who is applying for an insurance Policy.
- * @author Michael Neale
  *
  */
 public class Driver {

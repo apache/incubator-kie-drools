@@ -34,7 +34,6 @@ import org.drools.definition.type.FactType;
 /**
  * Declares a class to be dynamically created
  *
- * @author etirelli
  */
 public class ClassDefinition
     implements

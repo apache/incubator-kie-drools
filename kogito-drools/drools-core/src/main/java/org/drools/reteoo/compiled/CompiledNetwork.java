@@ -28,7 +28,6 @@ import java.io.ObjectOutput;
  * This is the base type for all generated classes that that represent a "compiled" portion of the RETE network.
  * By compiled we mean IF statements, switch statements, etc. as opposed to nodes, propagators, etc.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public abstract class CompiledNetwork implements ObjectSink {
 

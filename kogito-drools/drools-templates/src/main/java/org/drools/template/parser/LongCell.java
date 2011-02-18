@@ -21,8 +21,7 @@ import java.util.Map;
 import org.drools.StatefulSession;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A cell in a decision table containing a long value
  */
 public class LongCell implements Cell {

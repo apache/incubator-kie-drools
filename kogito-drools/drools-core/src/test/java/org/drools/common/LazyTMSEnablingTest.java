@@ -37,7 +37,6 @@ import org.junit.Test;
  * published here.</a>
  * </p>
  * 
- * @author <a href="mailto:leonardo.f.gomes@gmail.com">Leonardo Gomes</a>
  */
 public class LazyTMSEnablingTest {
 

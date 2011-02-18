@@ -43,9 +43,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.commons.jci.stores.ResourceStore;
 
-/**
- * @author tcurdt
- */
 public final class JaninoJavaCompiler extends AbstractJavaCompiler {
 
     private final JaninoJavaCompilerSettings defaultSettings;

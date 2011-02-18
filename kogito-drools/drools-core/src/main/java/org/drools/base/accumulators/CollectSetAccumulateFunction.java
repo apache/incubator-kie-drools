@@ -45,7 +45,6 @@ import java.util.Map;
  * <p>The set obviously does not computes duplications and the order of the elements in the set is not
  * guaranteed.</p>
  *
- * @author etirelli
  *
  */
 public class CollectSetAccumulateFunction

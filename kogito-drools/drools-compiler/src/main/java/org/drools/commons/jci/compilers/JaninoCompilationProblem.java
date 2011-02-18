@@ -24,7 +24,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
 /**
  * Janino version of a CompilationProblem
  * 
- * @author tcurdt
  */
 public final class JaninoCompilationProblem implements CompilationProblem {
 

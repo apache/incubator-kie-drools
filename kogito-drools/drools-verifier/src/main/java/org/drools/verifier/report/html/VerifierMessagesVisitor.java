@@ -28,10 +28,6 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 import org.drools.verifier.report.components.VerifierRangeCheckMessage;
 import org.mvel2.templates.TemplateRuntime;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class VerifierMessagesVisitor extends ReportVisitor {
 
     private static final String VERIFIER_MESSAGES_TEMPLATE = "verifierMessages.htm";

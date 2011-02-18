@@ -34,9 +34,6 @@ public class TestWorkingMemoryEventListener
     WorkingMemoryEventListener,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     public int                asserted;
     public int                modified;

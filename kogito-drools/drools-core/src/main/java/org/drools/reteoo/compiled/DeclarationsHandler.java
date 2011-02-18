@@ -35,7 +35,6 @@ import java.util.*;
  * <li>A {@link Map} for each set of hashed {@link AlphaNode}s. The keys are the hashed values, and the values are
  * the IDs of the alphas</li>
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 class DeclarationsHandler extends AbstractCompilerHandler {
     private static final String PRIVATE_MODIFIER = "private";

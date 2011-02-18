@@ -25,10 +25,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.RuleFlowGroup;
 
-/**
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
- */
 public class AgendaEventSupport extends AbstractEventSupport<AgendaEventListener> {
 
     public AgendaEventSupport() {

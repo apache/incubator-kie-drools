@@ -40,7 +40,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * Note that even though they  use the same spreadsheet, this example is just
  * concerned with the data cells and does not use any of the Decision Table data.
  * 
- * @author Steve
  *
  */
 public class PricingRuleTemplateExample {

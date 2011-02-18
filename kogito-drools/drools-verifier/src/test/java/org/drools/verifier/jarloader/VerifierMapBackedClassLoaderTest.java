@@ -14,9 +14,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Toni Rikkola trikkola@redhat.com (C) 2011 Red Hat Inc
- */
 public class VerifierMapBackedClassLoaderTest {
 
     @Test

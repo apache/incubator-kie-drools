@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.clips;
 
 public class IntLispAtom extends LispAtom {

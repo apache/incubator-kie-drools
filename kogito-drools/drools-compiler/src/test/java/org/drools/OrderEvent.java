@@ -22,7 +22,6 @@ import java.io.Serializable;
 /**
  * A simple order event POJO
  * 
- * @author etirelli
  */
 public class OrderEvent implements Serializable {
 

@@ -24,10 +24,6 @@ import java.util.Set;
 
 import org.drools.verifier.data.VerifierComponent;
 
-/**
- * @author Toni Rikkola
- * 
- */
 public class ObjectType extends VerifierComponent
     implements
     Serializable {

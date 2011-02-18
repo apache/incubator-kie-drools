@@ -36,10 +36,6 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.VerifierRule;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class VerifierDataKnowledgeSession
     implements
     VerifierData {

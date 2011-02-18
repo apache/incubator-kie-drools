@@ -24,13 +24,8 @@ package org.drools;
  * 
  * @see RuntimeException
  * 
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class RuntimeDroolsException extends RuntimeException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

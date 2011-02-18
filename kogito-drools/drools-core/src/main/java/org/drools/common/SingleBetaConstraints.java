@@ -41,9 +41,6 @@ public class SingleBetaConstraints
     implements
     BetaConstraints {
 
-    /**
-     *
-     */
     private static final long             serialVersionUID = 510l;
 
     protected BetaNodeFieldConstraint     constraint;

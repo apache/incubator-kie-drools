@@ -22,8 +22,7 @@ import org.drools.spi.ConflictResolver;
 /**
  * Convenience base class for <code>ConflictResolver</code>s.
  * 
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
+ *
  * @version $Id: AbstractConflictResolver.java,v 1.1 2004/10/06 13:38:05
  *          mproctor Exp $
  */

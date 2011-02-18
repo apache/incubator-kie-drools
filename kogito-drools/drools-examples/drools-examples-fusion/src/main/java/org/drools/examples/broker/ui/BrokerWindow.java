@@ -36,7 +36,6 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * Main window implementation for the Broker example
  * 
- * @author etirelli
  */
 public class BrokerWindow {
 

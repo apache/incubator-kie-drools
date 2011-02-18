@@ -85,7 +85,6 @@ public class RestrictionConnectiveDescr extends RestrictionDescr {
     /**
      * The connective types that can be used for a restriction
      * 
-     * @author etirelli
      */
     public static enum RestrictionConnectiveType {
         AND {

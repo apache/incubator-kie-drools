@@ -36,10 +36,6 @@ import static org.junit.Assert.*;
 
 import static org.drools.time.Interval.*;
 
-/**
- * @author etirelli
- *
- */
 public class BuildUtilsTest {
     
     private BuildUtils utils;

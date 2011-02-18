@@ -20,16 +20,12 @@ package org.drools.rule;
  * Validity exception indicating that a <code>Rule</code> does not contain a
  * <code>Consequence</code>s.
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public class NoConsequenceException extends InvalidRuleException {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

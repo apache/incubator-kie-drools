@@ -23,9 +23,6 @@ public class ExistsDescr extends BaseDescr
     implements
     ConditionalElementDescr {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     private final List        descrs           = new ArrayList( 1 );
 

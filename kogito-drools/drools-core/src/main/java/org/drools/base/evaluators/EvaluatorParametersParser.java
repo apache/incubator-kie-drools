@@ -23,7 +23,6 @@ package org.drools.base.evaluators;
  * EvaluatorDefinition as a String that needs to eventually be parsed. This interface
  * defines the operations a parser implementation must expose. 
  * 
- * @author etirelli
  */
 public interface EvaluatorParametersParser {
     

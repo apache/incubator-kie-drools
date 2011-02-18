@@ -43,9 +43,6 @@ public class QuadroupleBetaConstraints
     implements
     BetaConstraints {
 
-    /**
-     *
-     */
     private static final long             serialVersionUID = 510l;
 
     private BetaNodeFieldConstraint constraint0;

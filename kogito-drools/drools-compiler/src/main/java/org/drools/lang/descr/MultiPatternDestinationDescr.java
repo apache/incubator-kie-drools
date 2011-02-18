@@ -19,7 +19,6 @@
 /**
  * An interface to represent pattern destinations
  * 
- * @author fernandomeyer
  */
 public interface MultiPatternDestinationDescr {
 

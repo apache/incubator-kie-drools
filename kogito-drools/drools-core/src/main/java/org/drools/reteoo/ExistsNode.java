@@ -38,7 +38,6 @@ import org.drools.spi.PropagationContext;
  * <code>FactHandleImpl<code>s. Each fact handle is stored in the right
  * memory.
  *
- * @author <a href="mailto:etirelli@redhat.com">Edson Tirelli</a>
  *
  */
 public class ExistsNode extends BetaNode {

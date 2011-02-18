@@ -26,10 +26,6 @@ import java.util.Set;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.WorkDefinition;
 
-/**
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class WorkDefinitionImpl implements WorkDefinition, Serializable {
     
     private static final long serialVersionUID = 510l;

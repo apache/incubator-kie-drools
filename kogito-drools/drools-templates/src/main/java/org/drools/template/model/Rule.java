@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  *
  * Represents a rule.
  */

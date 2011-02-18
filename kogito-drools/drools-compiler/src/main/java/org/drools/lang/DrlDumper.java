@@ -55,7 +55,6 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 /**
  * TODO: replace this class by a proper DRL dumper based on templates
  * 
- * @author <a href="mailto:jayaramcs@gmail.com">Author Jayaram C S</a>
  *
  */
 public class DrlDumper extends ReflectiveVisitor

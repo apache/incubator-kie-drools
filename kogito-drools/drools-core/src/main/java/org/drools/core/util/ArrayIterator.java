@@ -33,11 +33,6 @@ import java.util.NoSuchElementException;
  * @since Commons Collections 1.0
  * @version $Revision$ $Date$
  *
- * @author James Strachan
- * @author Mauricio S. Moura
- * @author Michael A. Smith
- * @author Neil O'Toole
- * @author Stephen Colebourne
  */
 public class ArrayIterator implements java.util.Iterator {
 

@@ -20,9 +20,6 @@ import java.util.EventObject;
 
 import org.drools.spi.RuleFlowGroup;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class RuleFlowGroupEvent extends EventObject {
 
     private static final long serialVersionUID = 510l;

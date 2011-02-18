@@ -61,8 +61,6 @@ import org.drools.spi.PropagationContext;
  * @see org.drools.reteoo.LeftTupleSink
  * @see org.drools.reteoo.BetaMemory
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public abstract class BetaNode extends LeftTupleSource
     implements

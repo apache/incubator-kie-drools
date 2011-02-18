@@ -33,10 +33,6 @@ import org.drools.rule.Rule;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements ResourceDiffProducer {
 
 

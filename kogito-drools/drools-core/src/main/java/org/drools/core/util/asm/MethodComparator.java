@@ -29,7 +29,6 @@ import org.mvel2.asm.util.TraceMethodVisitor;
 /**
  * The purpose of this utility it to check if 2 method implementations are equivalent, by comparing the bytecode.
  * This essentual for node sharing where java semantics are involved.
- * @author Michael Neale
  */
 public class MethodComparator {
 

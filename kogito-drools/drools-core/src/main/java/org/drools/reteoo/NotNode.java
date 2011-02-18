@@ -26,9 +26,6 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.spi.PropagationContext;
 
-/**
- *
- */
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
 
@@ -39,8 +36,6 @@ public class NotNode extends BetaNode {
 
     }
 
-    /**
-     */
     public NotNode(final int id,
                    final LeftTupleSource leftInput,
                    final ObjectSource rightInput,
@@ -57,8 +52,6 @@ public class NotNode extends BetaNode {
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    /**
-     */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
@@ -107,8 +100,6 @@ public class NotNode extends BetaNode {
         }
     }
 
-    /**
-     */
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -160,8 +151,6 @@ public class NotNode extends BetaNode {
         this.constraints.resetFactHandle( memory.getContext() );
     }
 
-    /**
-     */
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {
@@ -222,8 +211,6 @@ public class NotNode extends BetaNode {
         this.constraints.resetTuple( memory.getContext() );
     }
 
-    /**
-     */
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
@@ -442,8 +429,6 @@ public class NotNode extends BetaNode {
         memory.getRightTupleMemory().add( rightTuple );
     }
 
-    /**
-     */
     protected void propagateAssertLeftTuple(final PropagationContext context,
                                             final InternalWorkingMemory workingMemory,
                                             LeftTuple leftTuple) {
@@ -453,8 +438,6 @@ public class NotNode extends BetaNode {
                                             true );
     }
 
-    /**
-     */
     protected void propagateRetractLeftTuple(final PropagationContext context,
                                              final InternalWorkingMemory workingMemory,
                                              LeftTuple leftTuple) {
@@ -463,8 +446,6 @@ public class NotNode extends BetaNode {
                                              workingMemory );
     }
 
-    /**
-     */
     protected void propagateModifyChildLeftTuple(final PropagationContext context,
                                                  final InternalWorkingMemory workingMemory,
                                                  LeftTuple leftTuple) {
@@ -474,8 +455,6 @@ public class NotNode extends BetaNode {
                                                  true );
     }
 
-    /**
-     */
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {

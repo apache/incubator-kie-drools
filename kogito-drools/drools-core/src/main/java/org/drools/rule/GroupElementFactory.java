@@ -19,7 +19,6 @@ package org.drools.rule;
 /**
  * A simple factory for GroupElements
  * 
- * @author etirelli
  */
 public class GroupElementFactory {
 

@@ -49,9 +49,6 @@ import org.drools.time.impl.Timer;
  * a match for this rule. The <code>Consequence</code> gets fired when the
  * Conditions match.
  *
- * @author <a href="mailto:bob@eng.werken.com"> bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au"> Simon Harris </a>
- * @author <a href="mailto:mproctor@codehaus.org"> mark proctor </a>
  */
 public class Rule
     implements
@@ -60,9 +57,6 @@ public class Rule
     Dialectable,
     org.drools.definition.rule.Rule,
     org.drools.definition.rule.Query {
-    /**
-     *
-     */
     private static final long        serialVersionUID = 510l;
 
     /**   */

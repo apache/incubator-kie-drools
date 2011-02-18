@@ -26,7 +26,6 @@ import static org.junit.Assert.*;
  * TODO
  *
  * @version $Revision$ $Date$
- * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
 public class RuleExecutionSetRepositoryLoaderTest {
 

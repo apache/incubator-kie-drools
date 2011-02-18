@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * @author Peter Lin
  *
  * A simple test bean that represents a generic account. It could be
  * a bank account, shopping card account, or any type of membership
@@ -61,9 +60,6 @@ public class Account
 
     protected ArrayList<PropertyChangeListener> listeners   = new ArrayList<PropertyChangeListener>();
 
-    /**
-     * 
-     */
     public Account() {
         super();
     }

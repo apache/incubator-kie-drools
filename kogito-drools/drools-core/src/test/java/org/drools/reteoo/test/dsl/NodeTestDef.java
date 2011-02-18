@@ -25,7 +25,6 @@ import org.junit.runner.Description;
 /**
  * A class to describe a single Node test
  * 
- * @author etirelli
  */
 public class NodeTestDef {
     

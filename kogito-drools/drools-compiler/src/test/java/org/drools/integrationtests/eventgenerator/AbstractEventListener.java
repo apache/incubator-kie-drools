@@ -1,15 +1,8 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator;
 
 import org.drools.WorkingMemory;
 
 
-/**
- * @author Matthias Groch
- *
- */
 public abstract class AbstractEventListener {
 
     WorkingMemory wm;

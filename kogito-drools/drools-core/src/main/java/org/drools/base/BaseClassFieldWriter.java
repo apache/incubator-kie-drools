@@ -29,7 +29,6 @@ import org.drools.spi.WriteAccessor;
 /**
  * This is the supertype for the ASM generated classes for writing values into fields.
  * 
- * @author Edson Tirelli
  */
 abstract public class BaseClassFieldWriter
     implements

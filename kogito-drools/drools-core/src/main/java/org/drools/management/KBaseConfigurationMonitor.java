@@ -21,7 +21,6 @@ import org.drools.RuleBaseConfiguration;
 /**
  * An mbean monitor class for the knowledgebase configuration
  * 
- * @author etirelli
  */
 public class KBaseConfigurationMonitor implements KBaseConfigurationMonitorMBean {
     

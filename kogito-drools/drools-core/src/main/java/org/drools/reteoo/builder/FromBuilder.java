@@ -23,10 +23,6 @@ import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
-/**
- * @author etirelli
- *
- */
 public class FromBuilder
     implements
     ReteooComponentBuilder {

@@ -21,7 +21,6 @@ import java.io.InputStream;
 /**
  * Generic interface for all input parsers.
  * 
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
  *
  */
 public interface DecisionTableParser {

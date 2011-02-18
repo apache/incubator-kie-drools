@@ -42,11 +42,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author Toni Rikkola
- * 
- */
 abstract public class TestBase {
 
     @Before

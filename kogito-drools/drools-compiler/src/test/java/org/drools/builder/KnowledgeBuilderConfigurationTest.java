@@ -42,10 +42,6 @@ import org.drools.builder.conf.EvaluatorOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.runtime.rule.AccumulateFunction;
 
-/**
- * @author etirelli
- *
- */
 public class KnowledgeBuilderConfigurationTest {
 
     private KnowledgeBuilderConfiguration config;
@@ -289,7 +285,6 @@ public class KnowledgeBuilderConfigurationTest {
     
     /**
      * an accumulate function implemented as an inner class
-     * @author admin
      *
      */
     public static class InnerAccumulateFuncion implements AccumulateFunction {

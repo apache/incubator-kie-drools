@@ -24,7 +24,6 @@ import java.util.Date;
  * This is really a very simple and quick way of doing. In the future we may use
  * the field accessors framework that we use in drools to make this transparent
  * 
- * @author etirelli
  *
  */
 public interface Event<T> {

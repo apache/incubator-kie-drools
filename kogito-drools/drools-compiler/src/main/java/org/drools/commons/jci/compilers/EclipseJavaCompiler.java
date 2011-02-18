@@ -47,7 +47,6 @@ import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 /**
  * Eclipse compiler implemenation
  * 
- * @author tcurdt
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 

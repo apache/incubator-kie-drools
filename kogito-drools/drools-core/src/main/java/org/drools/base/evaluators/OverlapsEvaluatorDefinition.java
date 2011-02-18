@@ -78,8 +78,6 @@ import org.drools.time.Interval;
  * 5s <= $eventA.endTimestamp - $eventB.startTimestamp <= 10s 
  * </pre>
  * 
- * @author etirelli
- * @author mgroch
  */
 public class OverlapsEvaluatorDefinition
     implements

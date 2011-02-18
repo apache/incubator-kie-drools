@@ -30,7 +30,6 @@ import org.drools.spi.BetaNodeFieldConstraint;
  * 
  * Person( name == 'Edson' && surname == 'Tirelli' )
  * 
- * @author etirelli
  *
  */
 public class AndConstraint extends AbstractCompositeConstraint {

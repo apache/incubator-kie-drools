@@ -23,7 +23,6 @@ import java.util.List;
 /**
  * A descriptor class for a local variable declaration in a java code block
  * 
- * @author etirelli
  */
 public class JavaLocalDeclarationDescr {
     private int start;

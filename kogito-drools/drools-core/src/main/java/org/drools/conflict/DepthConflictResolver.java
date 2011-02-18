@@ -27,9 +27,6 @@ import org.drools.spi.ConflictResolver;
 public class DepthConflictResolver
     implements
     ConflictResolver, Externalizable {
-    /**
-     *
-     */
     private static final long                 serialVersionUID = 510l;
     public static final DepthConflictResolver INSTANCE         = new DepthConflictResolver();
 

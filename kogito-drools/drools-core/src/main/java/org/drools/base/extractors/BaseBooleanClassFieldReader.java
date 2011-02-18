@@ -27,7 +27,6 @@ import org.drools.common.InternalWorkingMemory;
  * A Base class for primitive boolean class field
  * extractors. This class centralizes type conversions.
  *  
- * @author etirelli
  */
 public abstract class BaseBooleanClassFieldReader extends BaseClassFieldReader {
 

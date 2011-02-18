@@ -35,17 +35,12 @@ import org.drools.spi.PropagationContext;
  * <code>TupleSource</code> which propagates a <code>ReteTuple</code> suitable fot the right <code>ReteTuple</code> side
  * of a <code>BetaNode</code>.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public class LeftInputAdapterNode extends LeftTupleSource
     implements
     ObjectSinkNode {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private ObjectSource      objectSource;
 
@@ -247,7 +242,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
-     * @author mproctor
      *
      */
     private static class RightTupleSinkAdapter

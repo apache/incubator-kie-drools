@@ -52,7 +52,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * Test coverage for the temporal evaluators.
  *
- * @author Tino Breddin
  */
 public class TemporalEvaluatorFactoryTest {
 

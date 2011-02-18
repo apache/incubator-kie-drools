@@ -31,7 +31,6 @@ import org.drools.verifier.data.VerifierComponent;
  * A: x > 10 
  * B: x < 0 
  * 
- * @author toni rikkola
  */
 public class Overlap
     implements

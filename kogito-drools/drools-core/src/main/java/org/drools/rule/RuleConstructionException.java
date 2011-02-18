@@ -21,13 +21,8 @@ import org.drools.RuntimeDroolsException;
 /**
  * Base exception for errors during <code>Rule</code> construction.
  * 
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class RuleConstructionException extends RuntimeDroolsException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

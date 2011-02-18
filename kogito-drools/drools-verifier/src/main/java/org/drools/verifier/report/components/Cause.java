@@ -22,7 +22,6 @@ import java.util.Collection;
  *
  * Cause for a Reason.
  * 
- * @author Toni Rikkola
  */
 public interface Cause {
 

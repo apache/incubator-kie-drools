@@ -25,7 +25,6 @@ import org.drools.spi.GlobalResolver;
  * WorkingMemory and RuleBase it references to execute thosa querries are lost due to being transient.
  * 
  * Globals must be explicitely imported into the StatelessSessionResult to be accessible, otherwise getGlobal and getGlobalResolver return null.
- * @author mproctor
  *
  */
 public interface StatelessSessionResult {

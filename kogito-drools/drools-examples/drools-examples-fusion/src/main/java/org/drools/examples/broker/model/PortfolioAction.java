@@ -16,10 +16,6 @@
 
 package org.drools.examples.broker.model;
 
-/**
- * @author etirelli
- *
- */
 public class PortfolioAction {
     private Action action;
     private String symbol;

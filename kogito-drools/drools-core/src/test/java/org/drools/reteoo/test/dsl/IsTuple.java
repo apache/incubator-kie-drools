@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.reteoo.test.dsl;
 
 import java.util.Arrays;

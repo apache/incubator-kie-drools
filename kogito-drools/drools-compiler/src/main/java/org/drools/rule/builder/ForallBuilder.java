@@ -25,10 +25,6 @@ import org.drools.rule.Forall;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 
-/**
- * @author etirelli
- *
- */
 public class ForallBuilder
     implements
     RuleConditionBuilder {

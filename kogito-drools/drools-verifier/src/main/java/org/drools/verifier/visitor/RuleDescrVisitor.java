@@ -41,10 +41,6 @@ import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
     private final RulePackage rulePackage;

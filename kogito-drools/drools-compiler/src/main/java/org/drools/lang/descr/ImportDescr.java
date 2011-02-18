@@ -16,10 +16,6 @@
 
 package org.drools.lang.descr;
 
-/**
- * @author etirelli
- *
- */
 public class ImportDescr extends BaseDescr {
 
     private static final long serialVersionUID = 510l;

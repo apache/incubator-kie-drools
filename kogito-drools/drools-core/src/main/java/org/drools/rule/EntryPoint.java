@@ -32,7 +32,6 @@ import java.util.Map;
  * and this allows them to safelly run in parallel
  * and concurrent modes.
  *
- * @author etirelli
  *
  */
 public class EntryPoint extends ConditionalElement

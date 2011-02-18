@@ -28,7 +28,6 @@ import org.drools.template.parser.DataListener;
  * Provides valid input types for decision tables.
  * (which also serve as parser factories).
  * 
- * @author Michael Neale
  */
 public abstract class InputType {
     public static final InputType XLS = new XlsInput();

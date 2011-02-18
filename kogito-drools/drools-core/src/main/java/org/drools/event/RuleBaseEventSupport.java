@@ -22,10 +22,6 @@ import org.drools.rule.Rule;
 
 import java.util.Iterator;
 
-/**
- * @author etirelli
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
- */
 public class RuleBaseEventSupport extends AbstractEventSupport<RuleBaseEventListener> {
     private transient RuleBase ruleBase;
 

@@ -18,9 +18,6 @@ package org.drools.event;
 
 import org.drools.spi.RuleFlowGroup;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class RuleFlowGroupDeactivatedEvent extends RuleFlowGroupEvent {
 
     private static final long serialVersionUID = 510l;

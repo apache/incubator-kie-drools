@@ -31,16 +31,10 @@ import javax.rules.admin.Rule;
  *
  * @see Rule
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
- * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public class RuleImpl
     implements
     Rule {
-    /**
-     * 
-     */
     private static final long    serialVersionUID = 510l;
 
     /** The name of this rule. */

@@ -43,7 +43,6 @@ import java.math.BigInteger;
  * </p>
  *
  * @see <a href="http://www.ietf.org/rfc/rfc2045.txt">RFC 2045</a>
- * @author Apache Software Foundation
  * @since 1.0
  * @version $Id: Base64.java 928549 2010-03-29 00:35:29Z bayard $
  */

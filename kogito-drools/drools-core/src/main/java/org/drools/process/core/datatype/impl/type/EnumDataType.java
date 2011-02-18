@@ -27,7 +27,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * Representation of an Enum datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class EnumDataType implements DataType {
 

@@ -26,10 +26,6 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 
-/**
- * @author etirelli
- *
- */
 public class KnowledgeBaseConfigurationTest {
 
     private KnowledgeBaseConfiguration config;

@@ -25,7 +25,6 @@ import org.junit.runner.Description;
 /**
  * A class to describe a test case for reteoo nodes
  * 
- * @author etirelli
  */
 public class NodeTestCase {
     

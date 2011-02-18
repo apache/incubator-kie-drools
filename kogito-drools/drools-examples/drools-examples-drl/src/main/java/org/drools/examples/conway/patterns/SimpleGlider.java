@@ -19,7 +19,6 @@ package org.drools.examples.conway.patterns;
 /**
  * Represents a simple glider
  * 
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see ConwayPattern
  * @see org.drools.examples.conway.CellGridImpl
  */

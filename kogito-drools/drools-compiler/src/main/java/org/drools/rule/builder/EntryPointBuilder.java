@@ -9,7 +9,6 @@ import org.drools.rule.RuleConditionElement;
 /**
  * A class capable of building entry point instances
  * 
- * @author etirelli
  *
  */
 public class EntryPointBuilder

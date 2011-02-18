@@ -50,8 +50,6 @@ import org.drools.spi.Salience;
  *
  * @see org.drools.rule.Package
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public class ReteooBuilder
@@ -61,9 +59,6 @@ public class ReteooBuilder
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long           serialVersionUID = 510l;
 
     /** The RuleBase */

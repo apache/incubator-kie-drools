@@ -22,9 +22,6 @@ import java.util.List;
 public class EvalDescr extends BaseDescr
     implements
     ConditionalElementDescr {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     private Object            content;

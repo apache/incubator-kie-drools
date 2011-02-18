@@ -31,9 +31,6 @@ import org.drools.base.EnabledBoolean;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.time.impl.PseudoClockScheduler;
 
-/**
- * @author Michael Neale
- */
 public class RuleTest {
 
     @Test

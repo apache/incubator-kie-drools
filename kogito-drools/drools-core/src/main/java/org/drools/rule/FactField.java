@@ -21,7 +21,6 @@ import org.drools.base.FieldAccessor;
 /**
  * An interface for Fact Fields
  * 
- * @author etirelli
  */
 public interface FactField
     extends

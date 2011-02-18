@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.core.util;
 
 import java.io.IOException;
@@ -34,7 +31,6 @@ import org.drools.RuntimeDroolsException;
  * drools.serialization.public.keyStoreURL = <URL>
  * drools.serialization.public.keyStorePwd = <password>
  * 
- * @author etirelli
  *
  */
 public class KeyStoreHelper {

@@ -25,9 +25,6 @@ import org.drools.FactHandle;
 public class MockFactHandle
     implements
     FactHandle {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private int               id;
 

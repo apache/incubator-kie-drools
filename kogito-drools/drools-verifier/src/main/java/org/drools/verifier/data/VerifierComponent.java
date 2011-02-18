@@ -24,7 +24,6 @@ import org.drools.verifier.report.components.Cause;
 
 /** 
  * 
- * @author Toni Rikkola
  */
 public abstract class VerifierComponent
     implements

@@ -28,10 +28,6 @@ import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.EntryPoint;
 import org.drools.verifier.components.VerifierRule;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public interface VerifierData {
 
     public void add(VerifierComponent object);

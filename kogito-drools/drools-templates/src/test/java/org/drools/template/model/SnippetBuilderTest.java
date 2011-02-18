@@ -21,10 +21,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a>
- * 
- */
 public class SnippetBuilderTest {
 
     @Test

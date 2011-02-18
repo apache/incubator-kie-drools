@@ -33,7 +33,6 @@ import org.drools.spi.PropagationContext;
  * It requires a thread pool that is created in the working 
  * memory and injected in here.
  *
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class PartitionTaskManager {
 
@@ -379,7 +378,6 @@ public class PartitionTaskManager {
      * A markup action used to mark spots in the queue where
      * the next action must be executed at normal priority
      * 
-     * @author etirelli
      */
     private static class YieldAction
         implements

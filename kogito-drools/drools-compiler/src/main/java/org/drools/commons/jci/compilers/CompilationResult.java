@@ -28,7 +28,6 @@ import org.drools.commons.jci.problems.CompilationProblem;
  * (that can be ignored and do not affect the creation of the
  * class files)
  * 
- * @author tcurdt
  */
 public final class CompilationResult {
     

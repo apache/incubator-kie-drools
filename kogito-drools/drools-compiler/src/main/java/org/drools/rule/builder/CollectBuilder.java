@@ -23,10 +23,6 @@ import org.drools.rule.Collect;
 import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 
-/**
- * @author etirelli
- *
- */
 public class CollectBuilder
     implements
     RuleConditionBuilder {

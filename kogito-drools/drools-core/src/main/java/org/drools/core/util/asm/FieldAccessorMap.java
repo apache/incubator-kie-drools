@@ -22,7 +22,6 @@ import java.util.Map;
  * This class holds a dynamically generated instance of a FieldAccessor, 
  * and a map of the field names to index numbers that are used to access the fields. 
  * @deprecated use ClassFiledExtractor instead.
- * @author Michael Neale
  */
 public class FieldAccessorMap {
 

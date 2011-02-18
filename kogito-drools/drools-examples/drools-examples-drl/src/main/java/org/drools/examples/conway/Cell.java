@@ -20,7 +20,6 @@ package org.drools.examples.conway;
  * A <code>Cell</code> represents a single cell within a <code>CellGrid</code>.
  * A cell may be either live or dead. <p/>
  *
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see CellState
  * @see CellGridImpl
  */

@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * The forall conditional element.
  *
- * @author etirelli
  */
 public class Forall extends ConditionalElement {
 

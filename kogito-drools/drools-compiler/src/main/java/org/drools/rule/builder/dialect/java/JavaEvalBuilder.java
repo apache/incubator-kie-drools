@@ -33,10 +33,6 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 
-/**
- * @author etirelli
- *
- */
 public class JavaEvalBuilder extends AbstractJavaRuleBuilder
     implements
     RuleConditionBuilder {

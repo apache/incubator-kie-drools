@@ -36,7 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * provides best performance. If the list is modified more often, than a simple ArrayList
  * with synchonized operations, and copying of the array for iteration is faster.
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public abstract class AbstractEventSupport<E extends EventListener> implements Externalizable {
 

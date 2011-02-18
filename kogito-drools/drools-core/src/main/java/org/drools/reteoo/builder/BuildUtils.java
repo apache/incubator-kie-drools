@@ -55,7 +55,6 @@ import org.drools.time.TimeUtils;
 /**
  * Utility functions for reteoo build
  *
- * @author etirelli
  */
 public class BuildUtils {
 

@@ -38,7 +38,6 @@ import org.drools.rule.builder.dialect.java.parser.JavaParser;
 /**
  * Expression analyzer.
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public class JavaExprAnalyzer {
     // ------------------------------------------------------------

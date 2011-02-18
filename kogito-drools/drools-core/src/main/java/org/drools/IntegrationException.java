@@ -17,9 +17,6 @@
 package org.drools;
 
 public class IntegrationException extends RuntimeDroolsException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

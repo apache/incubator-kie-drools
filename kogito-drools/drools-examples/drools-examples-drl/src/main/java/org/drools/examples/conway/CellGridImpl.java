@@ -23,7 +23,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * A <code>CellGrid</code> represents a grid of <code>Cell</code> objects.
  * <p/>
  * 
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  * @see Cell
  */
 public class CellGridImpl implements CellGrid {

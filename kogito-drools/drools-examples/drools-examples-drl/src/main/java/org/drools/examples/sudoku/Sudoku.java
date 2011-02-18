@@ -28,7 +28,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 /**
  * An object of this class solves Sudoku problems.
  *
- * @author Wolfgang Laun
  */
 public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
 

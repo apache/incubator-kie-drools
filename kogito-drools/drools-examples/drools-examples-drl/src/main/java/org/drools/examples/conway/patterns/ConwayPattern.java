@@ -23,7 +23,6 @@ import java.io.Serializable;
  * <code>ConwayPattern</code> objects are useful for persisting grid states
  * for recall later.
  * 
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public interface ConwayPattern
     extends

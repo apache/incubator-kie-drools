@@ -58,9 +58,6 @@ import org.mvel2.asm.Type;
  * This should not be used directly, but via ClassFieldExtractor (which ensures that it is 
  * all nicely serializable).
  * 
- * @author Alexander Bagerman
- * @author Michael Neale
- * @author Edson Tirelli
  */
 
 public class ClassFieldAccessorFactory {

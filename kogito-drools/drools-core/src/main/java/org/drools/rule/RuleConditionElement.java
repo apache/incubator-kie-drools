@@ -22,10 +22,6 @@ import java.util.Map;
 
 import org.drools.spi.RuleComponent;
 
-/**
- * @author etirelli
- *
- */
 public interface RuleConditionElement
     extends
     RuleComponent,

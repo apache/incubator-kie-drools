@@ -79,7 +79,6 @@ import org.drools.xml.XmlChangeSetReader;
  * incremental of the KnowledgeBase which connects to this or entirely new
  * rebuilds for new KnowledgeBases.
  *
- * @author Mark Proctor, Sam Romano
  */
 public class KnowledgeAgentImpl
     implements
@@ -447,7 +446,6 @@ public class KnowledgeAgentImpl
      * Keeps state information during the 'state' of a ChangeSet alteration so
      * past information can be kept along the way.
      *
-     * @author Mark Proctor
      */
     public static class ChangeSetState {
 
@@ -1160,7 +1158,6 @@ public class KnowledgeAgentImpl
      * A class to monitor and handle ChangeSets fired by the
      * ResourceChangeNotifier on a separate service (or process).
      *
-     * @author Mark Proctor
      */
     public static class ChangeSetNotificationDetector
         implements

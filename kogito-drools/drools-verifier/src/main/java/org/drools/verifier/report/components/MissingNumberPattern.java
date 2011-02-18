@@ -24,10 +24,6 @@ import java.util.Locale;
 import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class MissingNumberPattern extends MissingRange
     implements
     Comparable<MissingRange> {

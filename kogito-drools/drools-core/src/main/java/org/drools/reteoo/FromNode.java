@@ -45,9 +45,6 @@ public class FromNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
     NodeMemory {
-    /**
-     *
-     */
     private static final long          serialVersionUID = 510l;
 
     private DataProvider               dataProvider;

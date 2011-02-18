@@ -21,7 +21,6 @@ package org.drools.spi;
  * 
  * @see org.drools.rule.Package
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public interface Functions {
     String getText();

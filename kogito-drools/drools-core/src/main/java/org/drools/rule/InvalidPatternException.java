@@ -17,9 +17,6 @@
 package org.drools.rule;
 
 public class InvalidPatternException extends RuleConstructionException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /**

@@ -78,9 +78,6 @@ import static org.junit.Assert.*;
 /**
  * Base class for all drools JSR94 test cases.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
- * @author <a href="mailto:michael.frandsen@syngenio.de">Michael Frandsen </a>
  */
 public abstract class RuleEngineTestBase {
     protected StatefulRuleSession     statefulSession;

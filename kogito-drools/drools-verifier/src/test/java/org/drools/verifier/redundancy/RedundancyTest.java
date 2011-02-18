@@ -33,11 +33,6 @@ import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Redundancy;
 import org.drools.verifier.report.components.Subsumption;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class RedundancyTest {
 
     @Test

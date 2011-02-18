@@ -32,7 +32,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * This class defines the matches evaluator
  *
- * @author etirelli
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
@@ -126,9 +125,6 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
      *  *********************************************************
      */
     public static class StringMatchesEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
@@ -185,9 +181,6 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class StringNotMatchesEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
 

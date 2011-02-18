@@ -21,10 +21,6 @@ package org.drools.benchmark.waltz;
 
 
 
-/**
- * @author Alexander Bagerman
- * 
- */
 public class WaltzUtil {
     private static double PI = 3.1415927;
 

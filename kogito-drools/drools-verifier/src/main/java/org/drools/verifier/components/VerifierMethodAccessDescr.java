@@ -16,10 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierMethodAccessDescr extends RuleComponent {
 
     private String methodName;

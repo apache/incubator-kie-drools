@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.compiler.xml.rules;
 
 import java.io.IOException;
@@ -18,7 +15,6 @@ import static org.junit.Assert.*;
 /**
  * Helper Class for both xml and drl Dump Tests
  * 
- * @author fernandomeyer
  */
 public class DumperTestHelper {
     

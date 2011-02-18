@@ -27,7 +27,6 @@ import org.drools.spi.FactHandleFactory;
 /**
  * A factory for creating <code>Handle</code>s.
  * 
- * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 

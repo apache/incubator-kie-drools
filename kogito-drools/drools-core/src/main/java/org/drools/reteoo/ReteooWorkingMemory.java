@@ -61,15 +61,9 @@ import org.drools.spi.PropagationContext;
 /**
  * Implementation of <code>WorkingMemory</code>.
  *
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  */
 public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public ReteooWorkingMemory() {

@@ -30,9 +30,6 @@ public class SalienceInteger
     implements
     Salience, Externalizable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public static final Salience DEFAULT_SALIENCE = new SalienceInteger( 0 );

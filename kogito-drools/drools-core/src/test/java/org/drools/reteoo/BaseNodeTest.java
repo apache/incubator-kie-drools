@@ -40,9 +40,6 @@ public class BaseNodeTest {
     }
 
     class MockBaseNode extends BaseNode {
-        /**
-         *
-         */
         private static final long serialVersionUID = 510l;
 
         public MockBaseNode() {

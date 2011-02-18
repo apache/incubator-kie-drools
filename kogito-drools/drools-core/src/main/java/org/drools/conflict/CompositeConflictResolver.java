@@ -32,12 +32,8 @@ import org.drools.spi.ConflictResolver;
  * @see org.drools.spi.Tuple
  * @see org.drools.rule.Rule
  * 
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class CompositeConflictResolver extends AbstractConflictResolver {
-    /**
-     * 
-     */
     private static final long        serialVersionUID = 510l;
     private final ConflictResolver[] components;
 

@@ -22,8 +22,6 @@ import java.util.ArrayList;
  * The template used is "Cheese.drt" the same used by SimpleRuleTemplateExample.
  * Rather than use the spreadsheet ExampleCheese.xls, this example reads the data
  * from an HSQL database (which is created in this example).</p>
- * @author Michael Neale
- * @author Bill Tarr       
  */
 public class ResultSetGeneratorTest {
 

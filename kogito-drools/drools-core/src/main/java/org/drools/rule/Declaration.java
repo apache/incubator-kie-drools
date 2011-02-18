@@ -54,12 +54,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
 
-/**
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- *
- */
 public class Declaration
     implements
     Externalizable,
@@ -69,9 +63,6 @@ public class Declaration
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long    serialVersionUID = 510l;
 
     /** The identifier for the variable. */

@@ -37,7 +37,6 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.TemplateDataListener;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a> Some basic unit tests for converter utility.
  *         Note that some of this may still use the drools 2.x syntax, as it is not compiled, only tested that it
  *         generates DRL in the correct structure (not that the DRL itself is correct).
  */

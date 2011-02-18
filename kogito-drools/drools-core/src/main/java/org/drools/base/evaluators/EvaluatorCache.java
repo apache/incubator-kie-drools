@@ -30,7 +30,6 @@ import org.drools.spi.Evaluator;
  * A simple helper class to store Evaluators for a given set of
  * value types and operators
  *
- * @author etirelli
  */
 public class EvaluatorCache implements Externalizable {
 

@@ -23,7 +23,6 @@ import org.drools.WorkingMemory;
  * 
  * @see org.drools.rule.Rule
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public interface Consequence
     extends

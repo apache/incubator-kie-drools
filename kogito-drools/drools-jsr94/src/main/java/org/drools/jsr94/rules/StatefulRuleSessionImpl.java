@@ -55,8 +55,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * 
  * @see StatefulRuleSession
  * 
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     implements
@@ -65,9 +63,6 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
     // Constructors
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
     
     private StatefulSession session;

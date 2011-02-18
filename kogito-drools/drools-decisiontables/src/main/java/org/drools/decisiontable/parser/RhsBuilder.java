@@ -11,7 +11,6 @@ import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Builds up a consequence entry.
- * @author Michael Neale
  *
  */
 public class RhsBuilder implements SourceBuilder {

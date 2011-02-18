@@ -21,10 +21,6 @@ import java.util.Locale;
 
 import org.drools.verifier.report.components.Cause;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public abstract class LiteralRestriction extends Restriction
     implements
     Cause {

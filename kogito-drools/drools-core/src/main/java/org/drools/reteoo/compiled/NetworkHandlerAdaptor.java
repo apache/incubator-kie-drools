@@ -33,7 +33,6 @@ import org.drools.reteoo.ObjectTypeNode;
  * @see org.drools.reteoo.compiled.NetworkHandler
  * @see org.drools.reteoo.compiled.ObjectTypeNodeParser
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public class NetworkHandlerAdaptor implements NetworkHandler {
     public void startObjectTypeNode(ObjectTypeNode objectTypeNode) {

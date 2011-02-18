@@ -31,7 +31,6 @@ import org.drools.template.model.Package;
 import org.drools.template.parser.DataListener;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  *
  * This class handles the input XLS and CSV and extracts the rule DRL, ready for
  * pumping into drools.

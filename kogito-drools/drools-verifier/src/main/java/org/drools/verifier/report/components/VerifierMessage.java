@@ -21,10 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierMessage extends VerifierMessageBase {
     private static final long         serialVersionUID = 510l;
 

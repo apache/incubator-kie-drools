@@ -32,10 +32,6 @@ import org.drools.verifier.report.components.VerifierMessageBase;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierReportImpl
     implements
     VerifierReport {

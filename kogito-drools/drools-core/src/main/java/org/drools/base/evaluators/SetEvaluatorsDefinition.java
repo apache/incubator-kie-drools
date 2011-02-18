@@ -37,7 +37,6 @@ import org.drools.spi.InternalReadAccessor;
  * This class defines all the set built in evaluators like contains, memberOf,
  * etc.
  * 
- * @author etirelli
  */
 public class SetEvaluatorsDefinition
     implements
@@ -389,9 +388,6 @@ public class SetEvaluatorsDefinition
     }
 
     public static class ArrayExcludesEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ArrayExcludesEvaluator();
 
@@ -734,9 +730,6 @@ public class SetEvaluatorsDefinition
     }
 
     public static class BigIntegerNotMemberOfEvaluator extends BaseNotMemberOfEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new BigIntegerNotMemberOfEvaluator();
 
@@ -991,9 +984,6 @@ public class SetEvaluatorsDefinition
     }
 
     public static class ObjectContainsEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectContainsEvaluator();
 
@@ -1048,9 +1038,6 @@ public class SetEvaluatorsDefinition
     }
 
     public static class ObjectExcludesEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new ObjectExcludesEvaluator();
 

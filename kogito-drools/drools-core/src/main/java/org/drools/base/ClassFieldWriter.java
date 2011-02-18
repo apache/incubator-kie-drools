@@ -30,7 +30,6 @@ import org.drools.spi.WriteAccessor;
  * allowing the application to write values into a field
  * from a class
  *
- * @author Edson Tirelli
  */
 public class ClassFieldWriter
     implements

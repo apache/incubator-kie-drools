@@ -1,14 +1,7 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
 import java.util.Calendar;
 
-/**
- * @author Matthias Groch
- *
- */
 public class Resource {
 
     public static final String[] OPERATIONAL_STATUS_VALUES = {"RED", "YELLOW", "GREEN"};

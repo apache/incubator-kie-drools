@@ -21,10 +21,6 @@ import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.RuleConditionElement;
 
-/**
- * @author etirelli
- *
- */
 public class EvalBuilder
     implements
     ReteooComponentBuilder {

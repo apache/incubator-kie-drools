@@ -28,10 +28,6 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELEvalBuilder;
 
-/**
- * @author etirelli
- *
- */
 public class ClipsEvalBuilder extends MVELEvalBuilder
     implements
     RuleConditionBuilder {

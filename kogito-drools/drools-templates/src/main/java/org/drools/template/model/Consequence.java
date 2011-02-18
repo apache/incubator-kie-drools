@@ -20,7 +20,6 @@ package org.drools.template.model;
  * This represents a RHS fragement. A rule may have many of these, or just one.
  * They are all mushed together.
  * 
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  */
 public class Consequence extends DRLElement
     implements

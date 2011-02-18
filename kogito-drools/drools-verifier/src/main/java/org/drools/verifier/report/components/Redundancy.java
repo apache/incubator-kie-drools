@@ -32,7 +32,6 @@ import org.drools.verifier.data.VerifierComponent;
  * A: x == 10
  * B: x == 10
  * 
- * @author Toni Rikkola
  */
 public class Redundancy
     implements

@@ -7,7 +7,6 @@ import org.drools.base.evaluators.Operator;
  * Simple holder class identifying all the DRL soft keywords. This is used by
  * DRLParser.
  * 
- * @author porcelli
  */
 public class DroolsSoftKeywords {
     public static final String DATE         = "date";

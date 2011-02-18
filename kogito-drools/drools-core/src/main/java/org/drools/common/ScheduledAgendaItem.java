@@ -30,9 +30,6 @@ import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.drools.time.JobHandle;
 
-/**
- * 
- */
 public class ScheduledAgendaItem extends AgendaItem
     implements
     Activation,

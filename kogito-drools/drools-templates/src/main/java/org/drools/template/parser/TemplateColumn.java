@@ -18,8 +18,7 @@ package org.drools.template.parser;
 import org.drools.template.model.Rule;
 /**
  * 
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A column condition for a rule template to be generated.
  */
 interface TemplateColumn {

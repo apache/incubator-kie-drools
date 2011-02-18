@@ -29,7 +29,6 @@ import org.drools.template.parser.DecisionTableParseException;
  * you can expect to see in the rows directly below the column header, identified
  * by an ActionType.Code.
  * 
- * @author Michael Neale
  */
 public class ActionType {
 

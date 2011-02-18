@@ -24,9 +24,6 @@ import java.io.ObjectOutput;
 public class LastSeat
     implements
     Externalizable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     private int               seat;
 

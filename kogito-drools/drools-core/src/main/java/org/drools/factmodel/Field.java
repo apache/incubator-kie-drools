@@ -19,7 +19,6 @@ package org.drools.factmodel;
 
 /**
  * A temporary AST
- * @author michaelneale
  *
  */
 public class Field {

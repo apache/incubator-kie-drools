@@ -23,12 +23,8 @@ package org.drools.rule;
  * @see Rule
  * @see Package
  * 
- * @author <a href="mailto:bob@eng.werken.com">bob mcwhirter </a>
  */
 public class DuplicateRuleNameException extends RuleConstructionException {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     /** The rule-set. */

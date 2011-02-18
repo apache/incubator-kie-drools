@@ -17,8 +17,7 @@
 package org.drools.template.model;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * Represents an import (nominally at the rule-set level). The idea of this can
  * be extended to other ruleset level settings.
  */

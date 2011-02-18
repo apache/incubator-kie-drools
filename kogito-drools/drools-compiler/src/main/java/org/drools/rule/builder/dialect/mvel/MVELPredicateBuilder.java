@@ -34,10 +34,6 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 
-/**
- * @author etirelli
- *
- */
 public class MVELPredicateBuilder
     implements
     PredicateBuilder {

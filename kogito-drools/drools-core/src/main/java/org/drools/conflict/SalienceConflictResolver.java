@@ -26,9 +26,7 @@ import org.drools.spi.ConflictResolver;
  * @see #getInstance
  * @see org.drools.rule.Rule#getSalience
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * 
+ *
  * @version $Id: SalienceConflictResolver.java,v 1.3 2004/06/25 02:46:39
  *          mproctor Exp $
  */
@@ -37,9 +35,6 @@ public class SalienceConflictResolver extends AbstractConflictResolver {
     // Class members
     // ----------------------------------------------------------------------
 
-    /**
-     * 
-     */
     private static final long                     serialVersionUID = 510l;
     /** Singleton instance. */
     private static final SalienceConflictResolver INSTANCE         = new SalienceConflictResolver();

@@ -32,8 +32,6 @@ import org.drools.rule.Rule;
  * number is determined by the <code>WorkingMemory</code> all <code>Activations</code> created 
  * from a single insert, update, retract are assgigned the same Activation number.
  * 
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public interface Activation
     extends

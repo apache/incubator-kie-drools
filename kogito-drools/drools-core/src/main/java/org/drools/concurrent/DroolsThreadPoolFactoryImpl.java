@@ -24,7 +24,6 @@ package org.drools.concurrent;
  * when running stand-alone or use managed thread pools
  * in JEE, Spring, or other similar managed environments 
  * 
- * @author etirelli
  */
 public class DroolsThreadPoolFactoryImpl {
     

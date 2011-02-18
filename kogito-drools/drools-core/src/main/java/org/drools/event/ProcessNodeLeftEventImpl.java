@@ -20,9 +20,6 @@ import org.drools.event.process.ProcessNodeLeftEvent;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.NodeInstance;
 
-/**
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- */
 public class ProcessNodeLeftEventImpl extends ProcessEvent implements ProcessNodeLeftEvent {
 
     private static final long serialVersionUID = 510l;

@@ -19,7 +19,6 @@ package org.drools.template.model;
 /**
  * This class represents a single LHS item (which will be the same as a line in 
  * traditional DRL). 
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  */
 public class Condition extends DRLElement
     implements

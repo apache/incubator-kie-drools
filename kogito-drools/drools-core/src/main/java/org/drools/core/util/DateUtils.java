@@ -25,10 +25,6 @@ import java.util.Locale;
 
 import org.drools.type.DateFormats;
 
-/**
- * @author etirelli
- *
- */
 public class DateUtils {
 
     private static final long serialVersionUID = 510l;

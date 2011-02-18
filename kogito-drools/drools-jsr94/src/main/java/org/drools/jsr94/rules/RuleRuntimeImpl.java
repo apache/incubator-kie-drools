@@ -45,7 +45,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  * to clean up all resources used by the <code>RuleSession</code>.
  * 
  * @see RuleRuntime
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
  */
 public class RuleRuntimeImpl
     implements

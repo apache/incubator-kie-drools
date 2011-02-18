@@ -1,12 +1,5 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator;
 
-/**
- * @author Matthias Groch
- *
- */
 
 import java.util.Collections;
 import java.util.Comparator;

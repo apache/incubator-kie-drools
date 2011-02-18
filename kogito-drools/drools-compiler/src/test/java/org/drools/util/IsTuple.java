@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.util;
 
 import java.util.Arrays;

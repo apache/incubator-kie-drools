@@ -24,7 +24,6 @@ import java.io.ObjectOutput;
 /**
  * A class to represent an import declaration. 
  *
- * @author etirelli
  */
 public class ImportDeclaration implements Externalizable {
 

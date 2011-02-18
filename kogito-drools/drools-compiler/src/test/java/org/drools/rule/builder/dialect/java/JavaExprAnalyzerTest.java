@@ -30,10 +30,6 @@ import static org.junit.Assert.*;
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.BoundIdentifiers;
 
-/**
- * @author etirelli
- *
- */
 public class JavaExprAnalyzerTest {
 
     /**

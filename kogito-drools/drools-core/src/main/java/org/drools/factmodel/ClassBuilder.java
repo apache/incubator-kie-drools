@@ -29,7 +29,6 @@ import org.mvel2.asm.*;
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  * 
- * @author etirelli
  */
 public class ClassBuilder {
     private boolean     debug  = false;

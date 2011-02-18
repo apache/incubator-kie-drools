@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 /**
  * Test the dump/convert format utilities.
  * 
- * @author Michael Neale
- * @author Fernando Meyer
  */
 
 public class DumperTest {

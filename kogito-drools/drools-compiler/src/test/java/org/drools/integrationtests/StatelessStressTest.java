@@ -22,7 +22,6 @@ import org.drools.rule.Package;
 /**
  * This is for testing possible PermSpace issues (leaking) when spawning lots of sessions in concurrent threads.
  * Normally this test will be XXX'ed out, as when running it will not terminate.
- * @author Michael Neale
  */
 public class StatelessStressTest {
 

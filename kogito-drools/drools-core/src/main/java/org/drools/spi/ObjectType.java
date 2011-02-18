@@ -25,7 +25,6 @@ import org.drools.base.ValueType;
  *
  * @see org.drools.rule.Declaration
  *
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 public interface ObjectType
     extends

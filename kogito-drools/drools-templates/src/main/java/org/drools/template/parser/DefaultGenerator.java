@@ -28,8 +28,7 @@ import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Generate the rules for a decision table row from a rule template.
  */
 public class DefaultGenerator

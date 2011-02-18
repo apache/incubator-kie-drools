@@ -27,8 +27,7 @@ import java.util.regex.Pattern;
 import org.drools.core.util.StringUtils;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A rule template made up of a name, the decision table columns required, the
  * decision table columns that must be empty and the contents of the rule.
  */

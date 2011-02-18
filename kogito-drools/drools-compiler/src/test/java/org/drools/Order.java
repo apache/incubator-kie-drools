@@ -22,10 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author etirelli
- *
- */
 public class Order implements Serializable {
 
     private int number;

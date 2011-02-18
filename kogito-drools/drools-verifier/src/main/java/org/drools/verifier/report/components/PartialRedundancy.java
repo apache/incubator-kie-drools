@@ -20,7 +20,6 @@ package org.drools.verifier.report.components;
  * Partial redundancy between left and right. Redundancy stores the connection
  * between left and right.
  * 
- * @author Toni Rikkola
  */
 public class PartialRedundancy {
 

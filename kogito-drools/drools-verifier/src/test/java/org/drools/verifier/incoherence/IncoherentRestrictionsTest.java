@@ -43,11 +43,6 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-/**
- *
- * @author Toni Rikkola
- *
- */
 public class IncoherentRestrictionsTest extends TestBase {
 
     @Test

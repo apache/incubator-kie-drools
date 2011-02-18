@@ -38,8 +38,6 @@ import org.drools.spi.PropagationContext;
  * @see ObjectSource
  * @see DefaultFactHandle
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public abstract class ObjectSource extends BaseNode
     implements

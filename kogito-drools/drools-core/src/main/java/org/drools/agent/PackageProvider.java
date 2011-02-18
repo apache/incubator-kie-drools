@@ -26,7 +26,6 @@ import org.drools.rule.Package;
 
 /**
  * All sources of packages must implement this. 
- * @author Michael Neale
  *
  */
 public abstract class PackageProvider {

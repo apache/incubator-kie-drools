@@ -24,7 +24,6 @@ package org.drools.jsr94.rules;
  * This helps us enforce proper key values at compile time and eliminate the
  * risk of spelling errors.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
  */
 public final class Constants {
     /** Private constructor because all public access is static. */

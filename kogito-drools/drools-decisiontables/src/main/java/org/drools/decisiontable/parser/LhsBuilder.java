@@ -17,7 +17,6 @@ import org.drools.template.parser.DecisionTableParseException;
  * This utility will build up a list of constraints for a column.
  * For instance, the column has been spanned across multiple cells, and the cells below
  * contain the constraints.
- * @author Michael Neale
  *
  */
 public class LhsBuilder implements SourceBuilder {

@@ -38,9 +38,6 @@ import static org.junit.Assert.*;
 /**
  * Test the LocalRuleExecutionSetProvider implementation.
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
- * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public class LocalRuleExecutionSetProviderTest extends RuleEngineTestBase {
     private RuleAdministrator             ruleAdministrator;

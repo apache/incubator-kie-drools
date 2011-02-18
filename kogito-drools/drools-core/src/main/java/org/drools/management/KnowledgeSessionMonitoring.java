@@ -50,7 +50,6 @@ import org.drools.management.KnowledgeSessionMonitoring.ProcessStats.ProcessStat
 /**
  * An MBean to monitor a given knowledge session
  * 
- * @author etirelli
  */
 public class KnowledgeSessionMonitoring implements KnowledgeSessionMonitoringMBean {
 

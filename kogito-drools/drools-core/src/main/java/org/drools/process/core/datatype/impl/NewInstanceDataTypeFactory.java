@@ -22,7 +22,6 @@ import org.drools.process.core.datatype.DataTypeFactory;
 /**
  * A data type factory that always returns a new instance of a given class.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class NewInstanceDataTypeFactory implements DataTypeFactory {
 

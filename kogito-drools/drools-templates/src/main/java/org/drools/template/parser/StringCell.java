@@ -22,8 +22,7 @@ import org.drools.StatefulSession;
 import org.drools.core.util.StringUtils;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * A cell in a decision table containing a String value
  */
 public class StringCell implements Cell {

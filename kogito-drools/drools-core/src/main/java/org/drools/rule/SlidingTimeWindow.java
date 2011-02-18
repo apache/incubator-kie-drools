@@ -39,10 +39,6 @@ import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
 import org.drools.time.impl.PointInTimeTrigger;
 
-/**
- * @author etirelli
- *
- */
 public class SlidingTimeWindow
     implements
     Externalizable,
@@ -217,7 +213,6 @@ public class SlidingTimeWindow
     /**
      * A Comparator<RightTuple> implementation for the fact queue
      * 
-     * @author etirelli
      */
     private static class SlidingTimeWindowComparator
         implements

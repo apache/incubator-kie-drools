@@ -22,10 +22,6 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.LiteralRestriction;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class Gap extends MissingRange
     implements
     Comparable<MissingRange> {

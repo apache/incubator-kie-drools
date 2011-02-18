@@ -27,8 +27,6 @@ import org.drools.InitialFact;
  * We dont want users to be able to instantiate InitialFact so we expose it as
  * an interface and make the class and its constructor package protected
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  *
  */
 public final class InitialFactImpl

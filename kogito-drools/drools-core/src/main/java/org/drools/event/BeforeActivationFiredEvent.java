@@ -20,9 +20,6 @@ package org.drools.event;
 import org.drools.spi.Activation;
 
 public class BeforeActivationFiredEvent extends ActivationEvent {
-    /**
-     * 
-     */
     private static final long serialVersionUID = 510l;
 
     public BeforeActivationFiredEvent(final Activation activation) {

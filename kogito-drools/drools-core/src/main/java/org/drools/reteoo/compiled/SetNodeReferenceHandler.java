@@ -29,7 +29,6 @@ import org.drools.rule.ContextEntry;
  * <li>{@link LeftInputAdapterNode}s</li>
  * <li>{@link BetaNode}s</li>
  *
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 class SetNodeReferenceHandler extends AbstractCompilerHandler {
 

@@ -2,7 +2,6 @@ package org.drools.decisiontable.parser;
 
 /**
  * This is for building up LHS and RHS code for a rule row.
- * @author Michael Neale
  */
 public interface SourceBuilder {
     ActionType.Code getActionTypeCode();

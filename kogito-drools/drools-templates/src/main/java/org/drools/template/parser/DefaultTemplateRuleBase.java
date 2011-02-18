@@ -34,8 +34,7 @@ import org.drools.template.model.Rule;
 
 /**
  * 
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Create a rule base for the set of rule templates in the 
  * TemplateContainer. These rules are used internally by the
  * engine to generate the actual decision table rules based on

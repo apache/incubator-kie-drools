@@ -19,8 +19,7 @@ package org.drools.template.parser;
 import org.drools.core.util.StringUtils;
 
 /**
- * @author <a href="mailto:stevearoonie@gmail.com">Steven Williams</a>
- * 
+ *
  * Base column of in a decision table
  */
 public abstract class AbstractColumn implements Column {

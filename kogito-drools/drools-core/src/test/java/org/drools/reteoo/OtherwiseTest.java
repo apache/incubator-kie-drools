@@ -41,7 +41,6 @@ import org.drools.spi.KnowledgeHelper;
 
 /**
  * This tests the "otherwise" feature.
- * @author Michael Neale
  */
 public class OtherwiseTest {
     

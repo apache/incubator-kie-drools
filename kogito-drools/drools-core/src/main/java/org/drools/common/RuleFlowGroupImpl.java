@@ -41,8 +41,6 @@ import org.drools.spi.Activation;
  * By default, <code>RuleFlowGroups</code> are automatically deactivated when there are no more
  * activations in the <code>RuleFlowGroup</code>.  However, this can be configured.
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  *
  */
 public class RuleFlowGroupImpl

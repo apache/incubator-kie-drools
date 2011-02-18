@@ -213,9 +213,6 @@ public class FieldConstraintTest {
 
         final PredicateExpression evaluator = new PredicateExpression() {
 
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public boolean evaluate(Object object,
@@ -306,9 +303,6 @@ public class FieldConstraintTest {
                                                               pattern );
 
         final ReturnValueExpression isDoubleThePrice = new ReturnValueExpression() {
-            /**
-             *
-             */
             private static final long serialVersionUID = 510l;
 
             public FieldValue evaluate(Object object,

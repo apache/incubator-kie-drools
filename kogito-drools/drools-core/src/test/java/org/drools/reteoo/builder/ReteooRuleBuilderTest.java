@@ -38,10 +38,6 @@ import org.drools.WorkingMemory;
 import org.drools.spi.Consequence;
 import org.drools.spi.KnowledgeHelper;
 
-/**
- * @author etirelli
- *
- */
 public class ReteooRuleBuilderTest {
     private ReteooRuleBuilder builder;
     private ReteooRuleBase    rulebase;

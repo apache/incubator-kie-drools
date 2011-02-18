@@ -35,10 +35,6 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 
-/**
- * @author etirelli
- *
- */
 public class MVELReturnValueBuilder
     implements
     ReturnValueBuilder {

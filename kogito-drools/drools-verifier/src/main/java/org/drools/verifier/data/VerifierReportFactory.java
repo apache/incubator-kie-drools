@@ -16,10 +16,6 @@
 
 package org.drools.verifier.data;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierReportFactory {
 
     public static VerifierReport newVerifierReport() {

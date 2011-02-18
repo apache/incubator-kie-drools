@@ -25,7 +25,6 @@ import org.drools.process.core.datatype.DataType;
 /**
  * Representation of a string datatype.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class StringDataType implements DataType {
 

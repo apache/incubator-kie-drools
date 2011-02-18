@@ -21,7 +21,6 @@ import java.io.Externalizable;
 /**
  * An interface for accumulate external function implementations
  *
- * @author etirelli
  *
  */
 public interface AccumulateFunction extends Externalizable, org.drools.runtime.rule.AccumulateFunction {

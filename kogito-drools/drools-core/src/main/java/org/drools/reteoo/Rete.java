@@ -53,8 +53,6 @@ import org.drools.spi.PropagationContext;
  *
  * @see ObjectTypeNode
  *
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">Bob McWhirter</a>
  */
 public class Rete extends ObjectSource
     implements
@@ -64,9 +62,6 @@ public class Rete extends ObjectSource
     // Instance members
     // ------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long               serialVersionUID = 510l;
 
     private Map<EntryPoint, EntryPointNode> entryPoints;

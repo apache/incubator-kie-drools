@@ -1,12 +1,5 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
-/**
- * @author Matthias Groch
- *
- */
 
 import java.io.BufferedReader;
 import java.io.IOException;

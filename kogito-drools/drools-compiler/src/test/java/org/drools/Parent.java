@@ -16,10 +16,6 @@
 
 package org.drools;
 
-/**
- * @author etirelli
- *
- */
 public class Parent extends GrandParent {
     
     private GrandParent grandParent;

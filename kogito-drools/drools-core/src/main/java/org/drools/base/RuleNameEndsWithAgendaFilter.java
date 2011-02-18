@@ -22,7 +22,6 @@ import org.drools.spi.AgendaFilter;
 /**
  * Filters activations based on a specified rule name suffix.
  * 
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public class RuleNameEndsWithAgendaFilter
     implements

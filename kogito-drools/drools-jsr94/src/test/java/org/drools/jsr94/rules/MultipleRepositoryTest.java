@@ -35,8 +35,6 @@ import static org.junit.Assert.*;
 /**
  * A test for independent repository instances for different runtimes.
  *
- * @author jgilbert
- * @author <a href="mailto:michael.frandsen@syngenio.de">michael frandsen </a>
  */
 public class MultipleRepositoryTest {
 

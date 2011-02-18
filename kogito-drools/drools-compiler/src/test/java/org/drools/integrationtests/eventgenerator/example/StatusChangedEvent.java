@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.integrationtests.eventgenerator.example;
 
 import java.util.HashMap;
@@ -8,10 +5,6 @@ import java.util.Map;
 
 import org.drools.integrationtests.eventgenerator.Event;
 
-/**
- * @author Matthias Groch
- *
- */
 public class StatusChangedEvent extends Event {
 
     public static final String[] PROPERTY_FIELD_NAMES = {"OldValue", "NewValue"};

@@ -27,7 +27,6 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
  * TODO
  * 
  * @version $Revision$ $Date$
- * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
 public class TestRuleExecutionSetRepository
     implements RuleExecutionSetRepository

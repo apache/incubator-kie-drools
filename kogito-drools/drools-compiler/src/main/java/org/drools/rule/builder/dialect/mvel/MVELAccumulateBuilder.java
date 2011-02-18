@@ -44,7 +44,6 @@ import org.drools.spi.Accumulator;
 /**
  * A builder for the java dialect accumulate version
  * 
- * @author etirelli
  */
 public class MVELAccumulateBuilder
     implements

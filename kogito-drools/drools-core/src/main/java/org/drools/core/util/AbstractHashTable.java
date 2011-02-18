@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package org.drools.core.util;
 
 import java.io.Externalizable;

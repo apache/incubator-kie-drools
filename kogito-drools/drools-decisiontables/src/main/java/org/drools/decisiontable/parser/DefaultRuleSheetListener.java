@@ -61,7 +61,6 @@ import static org.drools.decisiontable.parser.ActionType.Code;
  * inserted where there are markers in the code snippets defined in the third
  * row, or for the attribute identified by the column header.
  * 
- * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a><a
  *         href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  */
 public class DefaultRuleSheetListener

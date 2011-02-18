@@ -19,8 +19,7 @@ package org.drools.decisiontable.parser.xls;
 import org.drools.template.parser.DataListener;
 
 /**
- * @author <a href="mailto:shaun.addison@gmail.com"> Shaun Addison </a>
- * 
+ *
  * Null listner.
  */
 public class NullSheetListener

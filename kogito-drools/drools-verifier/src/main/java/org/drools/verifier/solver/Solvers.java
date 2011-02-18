@@ -29,10 +29,6 @@ import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class Solvers {
 
     private RuleSolver       ruleSolver        = null;

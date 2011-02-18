@@ -24,11 +24,6 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class PlainTextReportWriter
     implements
     VerifierReportWriter {

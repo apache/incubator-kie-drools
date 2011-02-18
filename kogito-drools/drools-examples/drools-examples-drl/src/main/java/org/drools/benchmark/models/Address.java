@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * @author Peter Lin
  *
  * A simple address class that represents a house a person owns.
  */
@@ -45,9 +44,6 @@ public class Address
 
     protected ArrayList<PropertyChangeListener> listeners  = new ArrayList<PropertyChangeListener>();
 
-    /**
-     * 
-     */
     public Address() {
         super();
     }

@@ -26,7 +26,6 @@ import org.drools.base.ValueType;
  * A Base class for primitive byte class field
  * writer. This class centralizes type conversions.
  *  
- * @author etirelli
  */
 public abstract class BaseByteClassFieldWriter extends BaseClassFieldWriter {
 

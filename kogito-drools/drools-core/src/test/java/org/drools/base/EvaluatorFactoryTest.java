@@ -53,7 +53,6 @@ import org.drools.spi.InternalReadAccessor;
 /**
  * Some test coverage goodness for the evaluators.
  * Evaluator concrete instances are inside the factory at this time.
- * @author Michael Neale
  */
 public class EvaluatorFactoryTest {
 

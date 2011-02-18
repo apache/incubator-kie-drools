@@ -21,7 +21,6 @@ import java.io.StringWriter;
 /**
  * This contains the DRL output that each piece of the parser spreadsheet will contribute to
  * 
- * @author Michael Neale
  *
  */
 public class DRLOutput {

@@ -25,7 +25,6 @@ import java.io.Serializable;
 /**
  * An implementation of an accumulator capable of calculating maximum values
  *
- * @author etirelli
  *
  */
 public class MaxAccumulateFunction implements AccumulateFunction {

@@ -39,9 +39,6 @@ public class EmptyBetaConstraints
         return EmptyBetaConstraints.INSTANCE;
     }
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public EmptyBetaConstraints() {

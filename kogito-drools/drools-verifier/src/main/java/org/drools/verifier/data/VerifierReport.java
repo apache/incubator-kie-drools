@@ -24,10 +24,6 @@ import org.drools.verifier.report.components.MissingRange;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public interface VerifierReport {
 
     public void add(Gap gap);

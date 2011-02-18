@@ -38,9 +38,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 
-/**
- * @author <a href="mailto:esteban.aliverti@gmail.com">Esteban Aliverti</a>
- */
 public class KnowledgeAgentEventSupport extends AbstractEventSupport<KnowledgeAgentEventListener> {
 
     public KnowledgeAgentEventSupport() {

@@ -31,9 +31,6 @@ public class EnabledBoolean
     Enabled,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long   serialVersionUID = 510l;
 
     public static final Enabled ENABLED_TRUE  = new EnabledBoolean( true );

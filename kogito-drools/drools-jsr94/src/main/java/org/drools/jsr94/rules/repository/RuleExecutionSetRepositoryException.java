@@ -22,7 +22,6 @@ import javax.rules.RuleExecutionException;
  * TODO
  * 
  * @version $Revision$ $Date$
- * @author <a href="mailto:rlangbehn@users.sourceforge.net">Rainer Langbehn</a>
  */
 public class RuleExecutionSetRepositoryException extends RuleExecutionException
 {

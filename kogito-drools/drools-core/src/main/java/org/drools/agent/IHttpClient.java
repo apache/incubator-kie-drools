@@ -27,7 +27,6 @@ import org.drools.rule.Package;
  * 
  * IM IN YR HTTP MOCKIN UR CLEINT
  * 
- * @author Michael Neale
  *
  */
 public interface IHttpClient {
@@ -42,7 +41,6 @@ public interface IHttpClient {
 /**
  * This is returned when pinging for changes.
  * 
- * @author Michael Neale
  */
 class LastUpdatedPing {
     public long   lastUpdated = -1;

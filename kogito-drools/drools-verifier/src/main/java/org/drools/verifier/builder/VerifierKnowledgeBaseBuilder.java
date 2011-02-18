@@ -30,10 +30,6 @@ import org.drools.io.Resource;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierError;
 
-/**
- * 
- * @author rikkola
- */
 public class VerifierKnowledgeBaseBuilder {
 
     private List<VerifierError> errors = new ArrayList<VerifierError>();

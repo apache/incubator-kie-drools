@@ -33,14 +33,8 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
-/**
- *
- */
 public class JoinNode extends BetaNode {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     public JoinNode() {

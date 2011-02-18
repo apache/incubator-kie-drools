@@ -21,7 +21,6 @@ package org.drools.examples.conway.patterns;
  * 
  * @see ConwayPattern
  * @see org.drools.examples.conway.CellGridImpl
- * @author <a href="mailto:brown_j@ociweb.com">Jeff Brown</a>
  */
 public class Border
     implements

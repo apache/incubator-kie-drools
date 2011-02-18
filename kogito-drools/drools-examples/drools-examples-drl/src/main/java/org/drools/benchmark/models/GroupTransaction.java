@@ -20,10 +20,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-/**
- * @author Peter Lin
- *
- */
 public class GroupTransaction extends Security {
 
     private static final long serialVersionUID = 510l;

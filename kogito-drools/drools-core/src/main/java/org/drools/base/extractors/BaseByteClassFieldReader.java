@@ -27,7 +27,6 @@ import org.drools.common.InternalWorkingMemory;
  * A Base class for primitive byte class field
  * extractors. This class centralizes type conversions.
  *  
- * @author etirelli
  */
 public abstract class BaseByteClassFieldReader extends BaseClassFieldReader {
 

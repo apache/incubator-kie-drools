@@ -7,8 +7,7 @@ import org.antlr.runtime.tree.Tree;
 /**
  * An extension of the CommonTree class that keeps the char offset information.
  * 
- * @author porcelli
- * 
+ *
  */
 public class DroolsTree extends CommonTree {
 

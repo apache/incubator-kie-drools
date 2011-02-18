@@ -27,7 +27,6 @@ import org.drools.verifier.data.VerifierComponent;
 /**
  * Takes a list of Constraints and makes possibilities from them.
  * 
- * @author Toni Rikkola
  */
 class Solver {
 

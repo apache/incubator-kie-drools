@@ -17,8 +17,7 @@
 package org.drools.template.model;
 
 /**
- * @author <a href="mailto:ricardo.rojas@bluesoft.cl"> Ricardo Rojas </a>
- * 
+ *
  * Represents an application-data tag (nominally at the rule-set level). The idea of this can
  * be extended to other ruleset level settings.
  */

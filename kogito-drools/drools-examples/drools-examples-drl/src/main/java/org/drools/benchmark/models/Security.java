@@ -21,10 +21,6 @@ import java.beans.PropertyChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-/**
- * @author Peter Lin
- *
- */
 public class Security
     implements
     Serializable {

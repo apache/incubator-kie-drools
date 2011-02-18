@@ -30,7 +30,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * This will generate a jar from a meta model.
- * @author Michael Neale
  *
  */
 public class Jenerator {

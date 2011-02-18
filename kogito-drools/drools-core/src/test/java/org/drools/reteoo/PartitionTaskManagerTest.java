@@ -35,7 +35,6 @@ import static org.mockito.Mockito.*;
 /**
  * Test case for PartitionTaskManager
  *
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class PartitionTaskManagerTest {
     private PartitionManager manager;

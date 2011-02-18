@@ -32,10 +32,6 @@ import org.drools.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author salaboy
- */
 public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy {
     private static Logger log = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     private Environment env;

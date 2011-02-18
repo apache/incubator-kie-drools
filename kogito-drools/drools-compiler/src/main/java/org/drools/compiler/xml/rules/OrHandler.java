@@ -34,9 +34,6 @@ import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- * @author mproctor
- */
 public class OrHandler extends BaseAbstractHandler
     implements
     Handler {

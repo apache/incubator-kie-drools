@@ -32,8 +32,6 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 
 /**
  * Implementation of <code>FactHandle</code>.
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
  */
 @XmlRootElement(name="fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -44,9 +42,6 @@ public class DefaultFactHandle
     // Instance members
     // ----------------------------------------------------------------------
 
-    /**
-     *
-     */
     private static final long       serialVersionUID = 510l;
     /** Handle id. */
     private int                     id;

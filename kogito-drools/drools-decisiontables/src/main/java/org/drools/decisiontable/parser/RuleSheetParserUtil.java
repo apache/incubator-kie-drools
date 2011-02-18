@@ -25,8 +25,7 @@ import org.drools.template.model.Import;
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
- * 
+ *
  * Parking lot for utility methods that don't belong anywhere else.
  */
 public class RuleSheetParserUtil {

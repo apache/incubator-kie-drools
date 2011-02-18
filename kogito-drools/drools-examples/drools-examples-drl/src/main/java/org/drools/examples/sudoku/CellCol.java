@@ -18,7 +18,6 @@ package org.drools.examples.sudoku;
 /**
  * Represents a column of Sudoku grid cells.
  *
- * @author Wolfgang Laun
  */
 public class CellCol extends CellFile {
     

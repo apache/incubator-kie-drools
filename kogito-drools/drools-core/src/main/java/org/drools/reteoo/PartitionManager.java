@@ -35,7 +35,6 @@ import org.drools.reteoo.PartitionTaskManager.PartitionTask;
  * The purpose of this class is to keep the reference to all individual partition task managers 
  * and centralise the synchronisation mechanism between the network and the agenda.
  * 
- * @author etirelli
  *
  */
 public class PartitionManager {

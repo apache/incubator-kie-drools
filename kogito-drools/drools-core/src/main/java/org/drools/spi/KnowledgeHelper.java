@@ -40,8 +40,6 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
  * passed to the consequence at runtime. To achieve this the implementation will
  * need to lookup the fact handle of the object form the WorkingMemory.
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:mproctor@codehaus.org">mark proctor</a>
  */
 public interface KnowledgeHelper
     extends

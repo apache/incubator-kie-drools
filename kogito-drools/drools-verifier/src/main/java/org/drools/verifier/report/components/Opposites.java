@@ -27,7 +27,6 @@ package org.drools.verifier.report.components;
  * A: a == 10
  * B: a != 10
  * 
- * @author Toni Rikkola
  */
 public class Opposites extends Incompatibility
     implements

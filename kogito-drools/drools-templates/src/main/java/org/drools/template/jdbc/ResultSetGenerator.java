@@ -18,7 +18,6 @@ import java.sql.SQLException;
  *
  * To use simply you need a JDBC ResultSet - with the field names mapping to the field names used in the template !
  *
- * @author <a href="mailto:javatestcase@yahoo.com">Bill Tarr</a>
  */
 public class ResultSetGenerator {
 

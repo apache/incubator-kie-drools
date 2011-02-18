@@ -20,10 +20,6 @@ import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class VerifierComponentMockFactory {
 
     public static RulePackage createPackage1() {

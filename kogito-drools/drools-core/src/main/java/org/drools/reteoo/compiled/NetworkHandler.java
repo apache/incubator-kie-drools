@@ -25,7 +25,6 @@ import org.drools.reteoo.ObjectTypeNode;
 /**
  * Receive notification of the logical parts of the RETE-OO network.
  * todo: finish documenting 
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
  */
 public interface NetworkHandler {
 

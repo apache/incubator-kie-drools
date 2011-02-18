@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.drools.lang;
 
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -10,10 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * @author admin
- *
- */
 public class DroolsSoftKeywordsTest {
 
     /**

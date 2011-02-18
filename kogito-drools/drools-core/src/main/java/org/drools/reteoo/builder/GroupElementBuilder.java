@@ -38,10 +38,6 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.GroupElement.Type;
 
-/**
- * @author etirelli
- *
- */
 public class GroupElementBuilder
     implements
     ReteooComponentBuilder {

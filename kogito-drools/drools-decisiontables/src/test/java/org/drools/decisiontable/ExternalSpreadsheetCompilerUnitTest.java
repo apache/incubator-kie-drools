@@ -25,7 +25,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale</a> Some
  *         basic unit tests for converter utility. Note that some of this may
  *         still use the drools 2.x syntax, as it is not compiled, only tested
  *         that it generates DRL in the correct structure (not that the DRL

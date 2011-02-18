@@ -109,9 +109,6 @@ import org.drools.type.DateFormatsImpl;
 /**
  * Implementation of <code>WorkingMemory</code>.
  * 
- * @author <a href="mailto:bob@werken.com">bob mcwhirter </a>
- * @author <a href="mailto:mark.proctor@jboss.com">Mark Proctor</a>
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
  */
 public abstract class AbstractWorkingMemory
     implements

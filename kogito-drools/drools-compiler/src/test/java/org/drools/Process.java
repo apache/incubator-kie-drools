@@ -16,10 +16,6 @@
 
 package org.drools;
 
-/**
- * @author etirelli
- *
- */
 public class Process {
     private String name;
 

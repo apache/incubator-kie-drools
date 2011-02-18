@@ -16,10 +16,6 @@
 
 package org.drools.integrationtests.waltz;
 
-/**
- * @author Alexander Bagerman
- * 
- */
 
 public class Junction {
     public static String TEE   = "tee";

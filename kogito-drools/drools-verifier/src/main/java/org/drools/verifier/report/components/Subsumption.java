@@ -32,7 +32,6 @@ import org.drools.verifier.data.VerifierComponent;
  * A: x > 10 
  * B: x > 1 
  * 
- * @author Toni Rikkola
  */
 public class Subsumption
     implements

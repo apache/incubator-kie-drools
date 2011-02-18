@@ -41,7 +41,6 @@ import org.drools.spi.InternalReadAccessor;
  * This class defines the default built in equality
  * evaluators == and !=
  *
- * @author etirelli
  */
 public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
@@ -238,9 +237,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ArrayNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ArrayNotEqualEvaluator();
 
@@ -307,9 +303,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
 
 
     public static class BigDecimalEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
 
         static boolean isEqual(Object value1, Object value2) {
             if (!(value1 instanceof BigDecimal ) || !(value2 instanceof BigDecimal)) return false;
@@ -374,9 +367,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigDecimalNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigDecimalNotEqualEvaluator();
 
@@ -435,9 +425,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerEqualEvaluator();
 
@@ -493,9 +480,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BigIntegerNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BigIntegerNotEqualEvaluator();
 
@@ -614,9 +598,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class BooleanNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new BooleanNotEqualEvaluator();
 
@@ -677,9 +658,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteEqualEvaluator();
 
@@ -742,9 +720,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ByteNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ByteNotEqualEvaluator();
 
@@ -806,9 +781,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterEqualEvaluator();
 
@@ -870,9 +842,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class CharacterNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new CharacterNotEqualEvaluator();
 
@@ -934,9 +903,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateEqualEvaluator();
 
@@ -1007,9 +973,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DateNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DateNotEqualEvaluator();
 
@@ -1079,9 +1042,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleEqualEvaluator();
 
@@ -1145,9 +1105,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class DoubleNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new DoubleNotEqualEvaluator();
 
@@ -1213,9 +1170,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FactTemplateEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateEqualEvaluator();
 
@@ -1272,9 +1226,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FactTemplateNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FactTemplateNotEqualEvaluator();
 
@@ -1396,9 +1347,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class FloatNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new FloatNotEqualEvaluator();
 
@@ -1464,9 +1412,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     static public class IntegerEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerEqualEvaluator();
 
@@ -1529,9 +1474,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class IntegerNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new IntegerNotEqualEvaluator();
 
@@ -1593,9 +1535,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongEqualEvaluator();
 
@@ -1657,9 +1596,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class LongNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new LongNotEqualEvaluator();
 
@@ -1721,9 +1657,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ObjectEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectEqualEvaluator();
         private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
@@ -1769,9 +1702,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ObjectNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new ObjectNotEqualEvaluator();
         private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
@@ -1816,9 +1746,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortEqualEvaluator();
 
@@ -1880,9 +1807,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class ShortNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long      serialVersionUID = 400L;
         private static final Evaluator INSTANCE         = new ShortNotEqualEvaluator();
 
@@ -1944,9 +1868,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     static public class StringEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringEqualEvaluator();
 
@@ -2003,9 +1924,6 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class StringNotEqualEvaluator extends BaseEvaluator {
-        /**
-         *
-         */
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotEqualEvaluator();
 

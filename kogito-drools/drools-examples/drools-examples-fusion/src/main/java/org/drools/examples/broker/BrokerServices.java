@@ -19,7 +19,6 @@ package org.drools.examples.broker;
 /**
  * An interface for exposing services to the rules
  * 
- * @author etirelli
  */
 public interface BrokerServices {
     

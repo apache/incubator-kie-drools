@@ -35,15 +35,11 @@ import org.drools.spi.InternalReadAccessor;
  *  which allows serialization by regenerating the accessor classes
  * when needed.
  *
- * @author Michael Neale
  */
 public class ClassFieldReader
     implements
     Externalizable,
     InternalReadAccessor {
-    /**
-     *
-     */
     private static final long              serialVersionUID = 510l;
     private String                         className;
     private String                         fieldName;

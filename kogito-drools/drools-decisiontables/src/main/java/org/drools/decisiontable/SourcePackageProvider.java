@@ -15,7 +15,6 @@ import org.drools.rule.Package;
 /**
  * This is used by the agent when a source file is encountered.
  * 
- * @author Toni Rikkola
  *
  */
 public class SourcePackageProvider

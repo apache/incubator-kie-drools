@@ -25,10 +25,6 @@ import java.util.Map;
 import org.drools.verifier.components.Consequence.ConsequenceType;
 import org.drools.verifier.report.components.Cause;
 
-/**
- *
- * @author Toni Rikkola
- */
 public class VerifierRule extends PackageComponent
     implements
     Cause {

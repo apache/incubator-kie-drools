@@ -33,9 +33,6 @@ import java.util.Iterator;
  * @since Commons Collections 3.0
  * @version $Revision: 1.1 $ $Date: 2005/07/26 01:06:32 $
  * 
- * @author Brian McCallister
- * @author Stephen Colebourne
- * @author Phil Steitz
  */
 public class CompositeCollection
     implements

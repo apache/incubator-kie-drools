@@ -27,10 +27,6 @@ import java.math.BigInteger;
 import org.drools.RuntimeDroolsException;
 import org.drools.spi.FieldValue;
 
-/**
- * @author etirelli
- *
- */
 public class BooleanFieldImpl
     implements
     FieldValue, Externalizable {

@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 /**
  * Removes a query from kbase using kagent and incremental changeset build.
- * @author esteban.aliverti@gmail.com
  */
 public class QueryRemotionTest extends BaseKnowledgeAgentTest {
 

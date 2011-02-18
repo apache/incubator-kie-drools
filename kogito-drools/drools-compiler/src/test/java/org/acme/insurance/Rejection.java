@@ -1,9 +1,5 @@
 package org.acme.insurance;
 
-/**
- * 
- * @author Michael Neale
- */
 public class Rejection {
 
     private String reason;

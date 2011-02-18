@@ -22,9 +22,6 @@ import java.util.List;
 
 
 public class PatternDescr extends BaseDescr implements Cloneable {
-    /**
-     * 
-     */
     private static final long       serialVersionUID = 510l;
     private String                  objectType;
     private String                  identifier;

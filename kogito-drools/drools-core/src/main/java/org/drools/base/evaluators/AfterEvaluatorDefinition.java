@@ -78,8 +78,6 @@ import org.drools.time.Interval;
  * </pre>
  * 
  *
- * @author etirelli
- * @author mgroch
  */
 public class AfterEvaluatorDefinition
     implements

@@ -24,7 +24,6 @@ import java.util.Set;
  * one Pattern. Each possibility returns true if all the Constraints in the
  * combination are true.
  *
- * @author Toni Rikkola
  */
 public class SubPattern extends PatternComponent
     implements

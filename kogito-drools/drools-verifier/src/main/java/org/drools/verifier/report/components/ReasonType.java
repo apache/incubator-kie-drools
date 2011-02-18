@@ -16,11 +16,6 @@
 
 package org.drools.verifier.report.components;
 
-/**
- * 
- * @author trikkola
- *
- */
 public class ReasonType {
 
     public static final ReasonType MISSING_VALUE = new ReasonType( "MISSING_VALUE" );

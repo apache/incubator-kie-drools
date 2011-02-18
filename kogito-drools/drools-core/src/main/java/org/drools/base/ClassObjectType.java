@@ -27,7 +27,6 @@ import org.drools.spi.ObjectType;
 /**
  * Java class semantics <code>ObjectType</code>.
  *
- * @author <a href="mailto:bob@werken.com">bob@werken.com </a>
  *
  * @version $Id: ClassObjectType.java,v 1.5 2005/02/04 02:13:36 mproctor Exp $
  */
@@ -36,9 +35,6 @@ public class ClassObjectType
     ObjectType,
     Externalizable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
 
     /** Java object class. */

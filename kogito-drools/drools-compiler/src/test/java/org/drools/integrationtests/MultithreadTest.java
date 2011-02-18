@@ -66,7 +66,6 @@ import static org.mockito.Mockito.*;
 /**
  * This is a test case for multi-thred issues
  * 
- * @author etirelli
  */
 public class MultithreadTest {
 

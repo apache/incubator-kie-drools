@@ -44,8 +44,6 @@ import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
  *
  * @see RuleSession
  *
- * @author N. Alex Rupp (n_alex <at>codehaus.org)
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 abstract class AbstractRuleSessionImpl
     implements

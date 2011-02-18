@@ -28,7 +28,6 @@ import javax.rules.admin.RuleExecutionSetRegisterException;
 /**
  * Stores the registered <code>RuleExecutionSet</code> objects.
  * 
- * @author <a href="mailto:thomas.diesler@softcon-itec.de">thomas diesler </a>
  */
 public class DefaultRuleExecutionSetRepository
     implements
@@ -41,9 +40,6 @@ public class DefaultRuleExecutionSetRepository
      */
     private Map map = new HashMap();
 
-    /**
-     * 
-     */
     public DefaultRuleExecutionSetRepository() {
     }
 

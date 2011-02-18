@@ -48,10 +48,6 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-/**
- * @author etirelli
- *
- */
 public class SessionInspector {
 
     private ReteooWorkingMemory                                    session;

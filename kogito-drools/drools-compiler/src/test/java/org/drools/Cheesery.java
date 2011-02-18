@@ -29,9 +29,6 @@ import java.util.List;
 public class Cheesery
     implements
     Serializable {
-    /**
-     *
-     */
     private static final long serialVersionUID = 510l;
     public final static int   MAKING_CHEESE    = 0;
     public final static int   SELLING_CHEESE   = 1;

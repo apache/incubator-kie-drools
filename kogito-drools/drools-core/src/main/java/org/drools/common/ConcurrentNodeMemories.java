@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * A concurrent implementation for the node memories interface
  *
- * @author etirelli
  */
 public class ConcurrentNodeMemories implements NodeMemories {
 

@@ -16,21 +16,12 @@
 
 package org.drools.integrationtests.waltz;
 
-/**
- * @author Alexander Bagerman
- *
- */
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
- *
- * @author Alexander Bagerman
- *
- */
 public class Stage
     implements
     Externalizable {

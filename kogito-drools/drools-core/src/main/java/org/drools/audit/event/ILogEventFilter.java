@@ -19,7 +19,6 @@ package org.drools.audit.event;
 /**
  * An event filter that can be used to filter log events.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen </a>
  */
 public interface ILogEventFilter {
 

@@ -22,7 +22,6 @@ package org.drools.examples.decisiontable;
  * Obviously in the real world, there are actuaries to mess things up, but lets just pretend there is
  * some simple base price and discount that we can calculate with relatively simple rules !
  * 
- * @author Michael Neale
  */
 public class Policy {
 

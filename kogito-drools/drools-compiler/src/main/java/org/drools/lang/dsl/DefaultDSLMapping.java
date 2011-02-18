@@ -30,7 +30,6 @@ import org.drools.lang.dsl.DSLMappingEntry.Section;
  * This is a default implementation of the DSL Mapping interface
  * capable of storing a list of DSLMappingEntries and managing it.
  * 
- * @author etirelli
  */
 public class DefaultDSLMapping
     implements

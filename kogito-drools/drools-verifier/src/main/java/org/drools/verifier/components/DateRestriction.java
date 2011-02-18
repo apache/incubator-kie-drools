@@ -19,11 +19,6 @@ package org.drools.verifier.components;
 import java.text.DateFormat;
 import java.util.Date;
 
-/**
- * 
- * @author trikkola
- *
- */
 public class DateRestriction extends LiteralRestriction {
 
     private Date value;

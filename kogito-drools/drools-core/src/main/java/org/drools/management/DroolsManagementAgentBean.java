@@ -25,7 +25,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * Simple POJO that encapsulates DroolsManagmentAgent to make it work with Spring Framework
- * @author Lucas Amador
  *
  */
 public class DroolsManagementAgentBean {

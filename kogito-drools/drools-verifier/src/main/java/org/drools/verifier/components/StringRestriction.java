@@ -16,11 +16,6 @@
 
 package org.drools.verifier.components;
 
-/**
- * 
- * @author trikkola
- * 
- */
 public class StringRestriction extends LiteralRestriction {
 
     private String value;

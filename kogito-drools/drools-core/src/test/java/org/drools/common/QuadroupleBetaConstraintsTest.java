@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.common;
 
 import org.drools.Cheese;
@@ -29,10 +26,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * @author etirelli
- *
- */
 public class QuadroupleBetaConstraintsTest extends BaseBetaConstraintsTest {
 
     @Test

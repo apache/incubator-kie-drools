@@ -21,10 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-/**
- * @author etirelli
- *
- */
 public class OrderItem implements Externalizable {
     private static final long serialVersionUID = 510l;
 

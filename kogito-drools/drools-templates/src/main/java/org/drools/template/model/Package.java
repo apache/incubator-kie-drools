@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author <a href="mailto:michael.neale@gmail.com"> Michael Neale </a>
  *
  * This is the top of the parse tree. Represents a package of rules once it has
  * been parsed from the spreadsheet. Also is the launching point for dumping out

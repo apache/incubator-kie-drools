@@ -22,10 +22,6 @@ import org.drools.FactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.PropagationContext;
 
-/**
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris </a>
- * @author <a href="mailto:stampy88@yahoo.com">dave sinclair</a>
- */
 public class WorkingMemoryEventSupport extends AbstractEventSupport<WorkingMemoryEventListener> {
 
     public void fireObjectInserted(final PropagationContext propagationContext,

@@ -50,7 +50,6 @@ import org.drools.spi.PropagationContext;
  *
  * @see ObjectTypeNode
  *
- * @author <a href="mailto:tirelli@post.com">Edson Tirelli</a>
  */
 public class EntryPointNode extends ObjectSource
     implements

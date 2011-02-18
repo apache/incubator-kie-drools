@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * A class to hold contextual information during DRL parsing
  * 
- * @author etirelli, krisv
  */
 public class Location {
     
