@@ -21,7 +21,6 @@ import java.io.Serializable;
 /**
  * A base interface for type safe options in configuration objects
  * 
- * @author etirelli
  */
 public interface Option extends Serializable {
     

@@ -19,7 +19,6 @@ package org.drools.definition.type;
 /**
  * A field from a declared fact type
  * 
- * @author etirelli
  */
 public interface FactField
     extends

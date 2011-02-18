@@ -48,8 +48,6 @@ import java.util.concurrent.Callable;
  * <a href='http://gnodet.blogspot.com/2008/05/jee-specs-in-osgi.html'>
  * Java EE specs in OSGi</a></i>. The main changes were to add comments.
  *
- * @author Guillaume Nodet
- * @author Faron Dutton
  * @see {@linkplain http://gnodet.blogspot.com/2008/05/jee-specs-in-osgi.html}
  */
 public final class OSGiLocator {

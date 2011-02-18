@@ -35,7 +35,6 @@ package org.drools.builder.conf;
  * if for any reason, you need the Drools 4 behaviour when parsing files, just set this
  * option to NO (false).
  * 
- * @author etirelli
  */
 public enum ProcessStringEscapesOption implements SingleValueKnowledgeBuilderOption {
     

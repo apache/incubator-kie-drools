@@ -20,7 +20,6 @@ package org.drools.builder.conf;
 /**
  * A markup interface for MultiValueKnowledgeBuilderConfiguration options
  * 
- * @author etirelli
  */
 public interface MultiValueKnowledgeBuilderOption
     extends

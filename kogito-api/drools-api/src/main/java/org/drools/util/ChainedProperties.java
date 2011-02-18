@@ -34,7 +34,6 @@ import java.util.Properties;
  * 
  * System properties, home directory, working directory, META-INF/ of optionally provided classLoader
  * META-INF/ of Thread.currentThread().getContextClassLoader() and META-INF/ of  ClassLoader.getSystemClassLoader()
- * @author mproctor
  *
  */
 public class ChainedProperties

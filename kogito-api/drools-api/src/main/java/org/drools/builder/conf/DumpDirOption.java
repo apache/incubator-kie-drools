@@ -23,7 +23,6 @@ import java.io.File;
  * where Drools will dump generated code for debugging purposes. If this
  * option is not set, drools will generate and compile all code in memory.
  * 
- * @author etirelli
  */
 public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
 

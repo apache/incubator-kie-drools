@@ -21,7 +21,6 @@ import org.drools.runtime.process.WorkItemHandler;
 /**
  * WorkItemHandlers configuration option
  * 
- * @author etirelli
  */
 public class WorkItemHandlerOption implements MultiValueKnowledgeSessionOption {
 

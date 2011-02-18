@@ -21,10 +21,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 
-/**
- *
- * @author esteban
- */
 public class ResourceCompilationFailedEvent extends EventObject{
 
     private static final long serialVersionUID = 510l;

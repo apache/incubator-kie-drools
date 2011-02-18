@@ -23,10 +23,6 @@ import org.drools.ChangeSet;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.io.Resource;
 
-/**
- *
- * @author esteban
- */
 public class AfterChangeSetProcessedEvent extends ChangeSetProcessingEvent {
 
     private static final long serialVersionUID = 510l;

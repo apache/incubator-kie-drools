@@ -20,7 +20,6 @@ package org.drools.management;
  * A tree root level class for all the drools management 
  * MBeans published to an MBean agent
  *  
- * @author etirelli
  */
 public interface DroolsManagementAgentMBean {
     

@@ -24,7 +24,6 @@ package org.drools.conf;
  * 
  * DEFAULT = identity
  * 
- * @author etirelli
  */
 public enum AssertBehaviorOption implements SingleValueKnowledgeBaseOption {
     

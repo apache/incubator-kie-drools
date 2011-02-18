@@ -24,7 +24,6 @@ package org.drools.conf;
  * 
  * DEFAULT = sequential
  * 
- * @author etirelli
  */
 public enum SequentialAgendaOption implements SingleValueKnowledgeBaseOption {
     

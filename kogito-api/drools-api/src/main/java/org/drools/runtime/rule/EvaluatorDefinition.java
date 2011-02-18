@@ -19,7 +19,6 @@ package org.drools.runtime.rule;
 /**
  * A markup interface for Evaluator definitions
  * 
- * @author etirelli
  */
 public interface EvaluatorDefinition {
 

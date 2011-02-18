@@ -19,10 +19,6 @@ package org.drools.event.knowledgeagent;
 import java.util.EventObject;
 import org.drools.KnowledgeBase;
 
-/**
- *
- * @author esteban
- */
 public class KnowledgeBaseUpdatedEvent extends EventObject{
 
     private static final long serialVersionUID = 510l;

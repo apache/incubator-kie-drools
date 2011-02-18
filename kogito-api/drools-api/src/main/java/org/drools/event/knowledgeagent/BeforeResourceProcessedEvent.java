@@ -21,10 +21,6 @@ import org.drools.agent.KnowledgeAgent.ResourceStatus;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 
-/**
- *
- * @author esteban
- */
 public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
 
     private static final long serialVersionUID = 510l;

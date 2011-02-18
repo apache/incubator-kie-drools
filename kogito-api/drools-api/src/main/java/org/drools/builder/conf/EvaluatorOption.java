@@ -24,7 +24,6 @@ import org.drools.runtime.rule.EvaluatorDefinition;
  * Drools supports custom evaluators. After implementing an evaluator
  * use this option class to register it to the knowledge builder.
  * 
- * @author etirelli
  */
 public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
 

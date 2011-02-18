@@ -18,9 +18,6 @@ package org.drools.event.knowledgeagent;
 import java.util.EventListener;
 
 
-/**
- * @author <a href="mailto:esteban.aliverti@gmail.com">Esteban Aliverti</a>
- */
 public interface KnowledgeAgentEventListener
     extends
     EventListener {

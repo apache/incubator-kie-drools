@@ -21,7 +21,6 @@ import org.drools.conf.Option;
 /**
  * A markup interface for KnowledgeSessionConfiguration options
  * 
- * @author etirelli
  */
 public interface KnowledgeSessionOption
     extends

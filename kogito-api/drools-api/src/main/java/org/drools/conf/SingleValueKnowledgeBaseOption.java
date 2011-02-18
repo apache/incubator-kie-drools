@@ -20,7 +20,6 @@ package org.drools.conf;
 /**
  * A markup interface for KnowledgeBaseConfiguration options
  * 
- * @author etirelli
  */
 public interface SingleValueKnowledgeBaseOption
     extends

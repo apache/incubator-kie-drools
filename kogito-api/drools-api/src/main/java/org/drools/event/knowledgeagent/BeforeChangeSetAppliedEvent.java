@@ -18,10 +18,6 @@ package org.drools.event.knowledgeagent;
 
 import org.drools.ChangeSet;
 
-/**
- *
- * @author esteban
- */
 public class BeforeChangeSetAppliedEvent extends ChangeSetProcessingEvent{
 
     private static final long serialVersionUID = 510l;
