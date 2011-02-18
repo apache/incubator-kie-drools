@@ -8,28 +8,28 @@ expander assignment.dsl
 /********** Generic assignment rules **********/
 
 rule "Assign 'Correct Order' to any sales representative" salience 30
-	when
-		There is a human task
-		- with task name "Correct Order"
-		- without actor id
-	then 
-		Set actor id "Sales Representative"
+    when
+        There is a human task
+        - with task name "Correct Order"
+        - without actor id
+    then
+        Set actor id "Sales Representative"
 end
 
 /********** Assignment rules for the RuleSetExample process **********/
 
 rule "Assign 'Follow-up Order' to a senior sales representative" salience 40
-	when
-		Process "org.drools.examples.process.ruleset.RuleSetExample" contains a human task
-		- with task name "Follow-up Order"
-		- without actor id
-	then 
-		Set actor id "Senior Sales Representative"
+    when
+        Process "org.drools.examples.process.ruleset.RuleSetExample" contains a human task
+        - with task name "Follow-up Order"
+        - without actor id
+    then
+        Set actor id "Senior Sales Representative"
 end
 
 rule "RuleName"
-	when
-		// conditions
-	then
-		// actions
+    when
+        // conditions
+    then
+        // actions
 end

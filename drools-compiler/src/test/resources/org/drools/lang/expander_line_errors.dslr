@@ -5,11 +5,11 @@ expander foo.dsl
 
 rule nonsense 
   when
-	blah blah
-	Good()
-	wee wee
+    blah blah
+    Good()
+    wee wee
   then
-  	yabba yabba
-  	goo goo
-  	Good()
+      yabba yabba
+      goo goo
+      Good()
 end

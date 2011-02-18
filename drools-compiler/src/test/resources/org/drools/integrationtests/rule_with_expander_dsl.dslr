@@ -13,14 +13,14 @@ global java.util.List messages;
 
 
 rule "my rule"
-	when
-		#Person(name=="Bob", likes=="stilton")
-		#Cheese(type=="stilton")
-		There is a person with the name of Bob who likes "http://foo.bar"
-		There is some stilton cheese available
-		
-	then
-		Add the message "We have a winner"
-		#messages.add("We have a winner");
+    when
+        #Person(name=="Bob", likes=="stilton")
+        #Cheese(type=="stilton")
+        There is a person with the name of Bob who likes "http://foo.bar"
+        There is some stilton cheese available
+
+    then
+        Add the message "We have a winner"
+        #messages.add("We have a winner");
 end
 
