@@ -27,50 +27,50 @@ tokens {
 }
 
 @lexer::header {
-	package org.drools.lang.dsl;
-	import java.util.List;
-	import java.util.ArrayList;
+    package org.drools.lang.dsl;
+    import java.util.List;
+    import java.util.ArrayList;
     import org.drools.compiler.ParserError;
 }
 
 @parser::header {
-	package org.drools.lang.dsl;
-	import java.util.List;
-	import java.util.ArrayList;
+    package org.drools.lang.dsl;
+    import java.util.List;
+    import java.util.ArrayList;
     import java.util.regex.Pattern;
     import org.drools.compiler.ParserError;
 }
 
 @lexer::members {
-	private List<ParserError> errors = new ArrayList<ParserError>();
+    private List<ParserError> errors = new ArrayList<ParserError>();
 
-	public void reportError(RecognitionException ex) {
-		errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
-	}
+    public void reportError(RecognitionException ex) {
+        errors.add(new ParserError( "DSL lexer error", ex.line, ex.charPositionInLine ) );
+    }
 
-	public List<ParserError> getErrors() {
-		return errors;
-	}
+    public List<ParserError> getErrors() {
+        return errors;
+    }
 
-	/** Override this method to not output mesages */
-	public void emitErrorMessage(String msg) {
-	}
+    /** Override this method to not output mesages */
+    public void emitErrorMessage(String msg) {
+    }
 }
 
 @parser::members {
-	private List<ParserError> errors = new ArrayList<ParserError>();
+    private List<ParserError> errors = new ArrayList<ParserError>();
 
-	public void reportError(RecognitionException ex) {
-		errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
-	}
+    public void reportError(RecognitionException ex) {
+        errors.add(new ParserError( "DSL parser error", ex.line, ex.charPositionInLine ) );
+    }
 
-	public List<ParserError> getErrors() {
-		return errors;
-	}
+    public List<ParserError> getErrors() {
+        return errors;
+    }
 
-	/** Override this method to not output mesages */
-	public void emitErrorMessage(String msg) {
-	}
+    /** Override this method to not output mesages */
+    public void emitErrorMessage(String msg) {
+    }
 
     private static final Pattern namePat = Pattern.compile( "[\\p{L}_$][\\p{L}_$\\d]*" );
 
@@ -82,109 +82,109 @@ tokens {
         }
     }
 
-	private boolean validateLT(int LTNumber, String text){
-		if (null == input) return false;
-		if (null == input.LT(LTNumber)) return false;
-		if (null == input.LT(LTNumber).getText()) return false;
-		
-		String text2Validate = input.LT(LTNumber).getText();
-		if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
-			text2Validate = text2Validate.substring(1, text2Validate.length() - 1); 
-		}
+    private boolean validateLT(int LTNumber, String text){
+        if (null == input) return false;
+        if (null == input.LT(LTNumber)) return false;
+        if (null == input.LT(LTNumber).getText()) return false;
 
-		return text2Validate.equalsIgnoreCase(text);
-	}
+        String text2Validate = input.LT(LTNumber).getText();
+        if (text2Validate.startsWith("[") && text2Validate.endsWith("]")){
+            text2Validate = text2Validate.substring(1, text2Validate.length() - 1);
+        }
 
-	private boolean validateIdentifierKey(String text){
-		return validateLT(1, text);
-	}
+        return text2Validate.equalsIgnoreCase(text);
+    }
 
-	
+    private boolean validateIdentifierKey(String text){
+        return validateLT(1, text);
+    }
+
+
 }
 
 // PARSER RULES
 mapping_file
-	: statement* 
-	-> ^(VT_DSL_GRAMMAR statement*)
-	;
+    : statement*
+    -> ^(VT_DSL_GRAMMAR statement*)
+    ;
 
 statement
-	: entry 	
-	| EOL! 
-	;
-	//! after EOL means to not put it into the AST
-	
+    : entry
+    | EOL!
+    ;
+    //! after EOL means to not put it into the AST
+
 
 //we need to make entry so the meta section is optional
 entry 	: scope_section meta_section? key_section EQUALS value_section? (EOL|EOF)
-	-> ^(VT_ENTRY scope_section meta_section? key_section value_section?)
-	;
-	catch [ RecognitionException e ] {
-		reportError( e );
-	}
-	catch [ RewriteEmptyStreamException e ] {
-	}
+    -> ^(VT_ENTRY scope_section meta_section? key_section value_section?)
+    ;
+    catch [ RecognitionException e ] {
+        reportError( e );
+    }
+    catch [ RewriteEmptyStreamException e ] {
+    }
 
-	
+
 
 scope_section 
-	: LEFT_SQUARE 
-		(value1=condition_key 
-		| value2=consequence_key
-		| value3=keyword_key
-		| value4=any_key
-		) 
-	RIGHT_SQUARE
-	-> ^(VT_SCOPE[$LEFT_SQUARE, "SCOPE SECTION"] $value1? $value2? $value3? $value4?)
-	;
-	
+    : LEFT_SQUARE
+        (value1=condition_key
+        | value2=consequence_key
+        | value3=keyword_key
+        | value4=any_key
+        )
+    RIGHT_SQUARE
+    -> ^(VT_SCOPE[$LEFT_SQUARE, "SCOPE SECTION"] $value1? $value2? $value3? $value4?)
+    ;
 
 
-	
+
+
 meta_section
-	: LEFT_SQUARE LITERAL? RIGHT_SQUARE
-	-> ^(VT_META[$LEFT_SQUARE, "META SECTION"] LITERAL?)
-	;
+    : LEFT_SQUARE LITERAL? RIGHT_SQUARE
+    -> ^(VT_META[$LEFT_SQUARE, "META SECTION"] LITERAL?)
+    ;
 
 key_section
-	: ks=key_sentence+
-	-> ^(VT_ENTRY_KEY key_sentence+ )
-	;
+    : ks=key_sentence+
+    -> ^(VT_ENTRY_KEY key_sentence+ )
+    ;
  
 key_sentence 
 @init {
         String text = "";
 }	
-	: variable_definition
-	| cb=key_chunk { text = $cb.text; }
-	-> VT_LITERAL[$cb.start, text]
-	;		
+    : variable_definition
+    | cb=key_chunk { text = $cb.text; }
+    -> VT_LITERAL[$cb.start, text]
+    ;
 
 key_chunk
-	: literal+
-	;		
-	
+    : literal+
+    ;
+
 value_section
-	: value_sentence+
-	-> ^(VT_ENTRY_VAL value_sentence+ )
-	;
-	
+    : value_sentence+
+    -> ^(VT_ENTRY_VAL value_sentence+ )
+    ;
+
 value_sentence 
 @init {
         String text = "";
 }	
-	: variable_reference
-	| vc=value_chunk { text = $vc.text; }
-	-> VT_LITERAL[$vc.start, text]
-	;	
-	
+    : variable_reference
+    | vc=value_chunk { text = $vc.text; }
+    -> VT_LITERAL[$vc.start, text]
+    ;
+
 value_chunk
-	: (literal|EQUALS|COMMA)+
-	;	
-	
+    : (literal|EQUALS|COMMA)+
+    ;
+
 literal 
-	: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE)
-	;	
+    : ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE)
+    ;
 
 
 variable_definition
@@ -193,29 +193,29 @@ variable_definition
         boolean hasSpaceBefore = false;
         boolean hasSpaceAfter = false;
 }	
-	: lc=LEFT_CURLY 
-		{ 
-		CommonToken back2 =  (CommonToken)input.LT(-2);
-		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
-		} 
-	name=LITERAL ( (COLON q=LITERAL)? COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
-	{
+    : lc=LEFT_CURLY
+        {
+        CommonToken back2 =  (CommonToken)input.LT(-2);
+        if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+        }
+    name=LITERAL ( (COLON q=LITERAL)? COLON pat=pattern {text = $pat.text;} )? rc=RIGHT_CURLY
+    {
       CommonToken rc1 = (CommonToken)input.LT(1);
       if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
       isIdentifier( $name );
-	}
+    }
     //pat can be null if there's no pattern here
-	-> { hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
-	-> {!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
-	-> { hasSpaceBefore                     && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) ) 
-	-> {!hasSpaceBefore                     && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) )
-	-> { hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
-	-> {!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
-	-> { hasSpaceBefore &&                      hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
-	-> {!hasSpaceBefore &&                      hasSpaceAfter}?	         ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
-	->                                                                   ^(VT_VAR_DEF $name ^(VT_QUAL $q?) ) 
-	;
-	
+    -> { hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
+    -> {!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] )
+    -> { hasSpaceBefore                     && !hasSpaceAfter}?	VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) )
+    -> {!hasSpaceBefore                     && !hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) )
+    -> { hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
+    -> {!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter}?          ^(VT_VAR_DEF $name ^(VT_QUAL $q?) VT_PATTERN[$pat.start, text] ) VT_SPACE
+    -> { hasSpaceBefore &&                      hasSpaceAfter}? VT_SPACE ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
+    -> {!hasSpaceBefore &&                      hasSpaceAfter}?	         ^(VT_VAR_DEF $name ^(VT_QUAL $q?)                              ) VT_SPACE
+    ->                                                                   ^(VT_VAR_DEF $name ^(VT_QUAL $q?) )
+    ;
+
 pattern 
         : ( literal
           | LEFT_CURLY literal RIGHT_CURLY
@@ -229,42 +229,42 @@ variable_reference
         boolean hasSpaceAfter = false;
         String text = "";
 }	
-	: lc=LEFT_CURLY 
-		{
-		CommonToken back2 =  (CommonToken)input.LT(-2);
-		if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true; 
-		} 
-	name=LITERAL rc=RIGHT_CURLY
-	{if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
-	-> { hasSpaceBefore &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
-	-> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) 
-	-> {!hasSpaceBefore &&  hasSpaceAfter}?          ^(VT_VAR_REF $name ) VT_SPACE
-	->                                               ^(VT_VAR_REF $name )
-	;
+    : lc=LEFT_CURLY
+        {
+        CommonToken back2 =  (CommonToken)input.LT(-2);
+        if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
+        }
+    name=LITERAL rc=RIGHT_CURLY
+    {if(((CommonToken)rc).getStopIndex() < ((CommonToken)input.LT(1)).getStartIndex() - 1) hasSpaceAfter = true;}
+    -> { hasSpaceBefore &&  hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name ) VT_SPACE
+    -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^(VT_VAR_REF $name )
+    -> {!hasSpaceBefore &&  hasSpaceAfter}?          ^(VT_VAR_REF $name ) VT_SPACE
+    ->                                               ^(VT_VAR_REF $name )
+    ;
 
 condition_key
-	:	{validateIdentifierKey("condition")||validateIdentifierKey("when")}?  value=LITERAL
-	-> VT_CONDITION[$value]
-	;
+    :	{validateIdentifierKey("condition")||validateIdentifierKey("when")}?  value=LITERAL
+    -> VT_CONDITION[$value]
+    ;
 
 consequence_key 
-	:	{validateIdentifierKey("consequence")||validateIdentifierKey("then")}?  value=LITERAL
-	-> VT_CONSEQUENCE[$value]
-	;
+    :	{validateIdentifierKey("consequence")||validateIdentifierKey("then")}?  value=LITERAL
+    -> VT_CONSEQUENCE[$value]
+    ;
 
 keyword_key 
-	:	{validateIdentifierKey("keyword")}?  value=LITERAL
-	-> VT_KEYWORD[$value]
-	;
+    :	{validateIdentifierKey("keyword")}?  value=LITERAL
+    -> VT_KEYWORD[$value]
+    ;
 
 any_key 
-	:	{validateIdentifierKey("*")}?  value=LITERAL
-	-> VT_ANY[$value]
-	;
+    :	{validateIdentifierKey("*")}?  value=LITERAL
+    -> VT_ANY[$value]
+    ;
 
 
 // LEXER RULES
-	
+
 WS      :       (	' '
                 |	'\t'
                 |	'\f'
@@ -273,7 +273,7 @@ WS      :       (	' '
         ;
 
 EOL 	:	     
-   		(       ( '\r\n' )=> '\r\n'  // Evil DOS
+           (       ( '\r\n' )=> '\r\n'  // Evil DOS
                 |       '\r'    // Macintosh
                 |       '\n'    // Unix (the right way)
                 )
@@ -304,25 +304,25 @@ RIGHT_CURLY
         ;
         
 EQUALS	:	'='
-	;
+    ;
 
 DOT	:	'.'
-	;
-	
+    ;
+
 COLON	:	':'
-	;
-	
+    ;
+
 COMMA	:	','
-	;
+    ;
 
 LITERAL	
-	:	(IdentifierPart|MISC|EscapeSequence|DOT)+
-	;
+    :	(IdentifierPart|MISC|EscapeSequence|DOT)+
+    ;
 
 fragment		
 MISC 	:
-		'>'|'<'|'!' | '@' | '%' | '^' | '*' | '-' | '+'  | '?' | COMMA | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';' | '#'
-	;
+        '>'|'<'|'!' | '@' | '%' | '^' | '*' | '-' | '+'  | '?' | COMMA | '/' | '\'' | '"' | '|' | '&' | '(' | ')' | ';' | '#'
+    ;
 
 
 fragment 

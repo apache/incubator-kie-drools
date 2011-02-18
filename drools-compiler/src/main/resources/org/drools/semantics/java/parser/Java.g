@@ -78,33 +78,33 @@ grammar Java;
 options {k=2; backtrack=true; memoize=true;}
 
 @parser::header {
-	package org.drools.rule.builder.dialect.java.parser;
-	import java.util.Iterator;
+    package org.drools.rule.builder.dialect.java.parser;
+    import java.util.Iterator;
 }
 
 @parser::members {
-	private List identifiers = new ArrayList();
-	public List getIdentifiers() { return identifiers; }
-	private List localDeclarations = new ArrayList();
-	public List getLocalDeclarations() { return localDeclarations; }
-	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
-	private List errors = new ArrayList();
-	private int localVariableLevel = 0;
-	private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
-	public List<JavaBlockDescr> getBlockDescr() { return blocks; }
-	
-	private String source = "unknown";
-	
-	public void setSource(String source) {
-		this.source = source;
-	}
-	
-	public String getSource() {
-		return this.source;
-	}
-		
-	public void reportError(RecognitionException ex) {
-	        // if we've already reported an error and have not matched a token
+    private List identifiers = new ArrayList();
+    public List getIdentifiers() { return identifiers; }
+    private List localDeclarations = new ArrayList();
+    public List getLocalDeclarations() { return localDeclarations; }
+    public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+    private List errors = new ArrayList();
+    private int localVariableLevel = 0;
+    private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
+    public List<JavaBlockDescr> getBlockDescr() { return blocks; }
+
+    private String source = "unknown";
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return this.source;
+    }
+
+    public void reportError(RecognitionException ex) {
+            // if we've already reported an error and have not matched a token
                 // yet successfully, don't report any errors.
                 if ( state.errorRecovery ) {
                         //System.err.print("[SPURIOUS] ");
@@ -112,32 +112,32 @@ options {k=2; backtrack=true; memoize=true;}
                 }
                 state.errorRecovery = true;
 
-		errors.add( ex ); 
-	}
-     	
-     	/** return the raw RecognitionException errors */
-     	public List getErrors() {
-     		return errors;
-     	}
-     	
-     	/** Return a list of pretty strings summarising the errors */
-     	public List getErrorMessages() {
-     		List messages = new ArrayList();
- 		for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
-     	     		messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
-     	     	}
-     	     	return messages;
-     	}
-     	
-     	/** return true if any parser errors were accumulated */
-     	public boolean hasErrors() {
-  		return ! errors.isEmpty();
-     	}
-     	
-     	/** This will take a RecognitionException, and create a sensible error message out of it */
-     	public String createErrorMessage(RecognitionException e)
+        errors.add( ex );
+    }
+
+         /** return the raw RecognitionException errors */
+         public List getErrors() {
+             return errors;
+         }
+
+         /** Return a list of pretty strings summarising the errors */
+         public List getErrorMessages() {
+             List messages = new ArrayList();
+         for ( Iterator errorIter = errors.iterator() ; errorIter.hasNext() ; ) {
+                      messages.add( createErrorMessage( (RecognitionException) errorIter.next() ) );
+                  }
+                  return messages;
+         }
+
+         /** return true if any parser errors were accumulated */
+         public boolean hasErrors() {
+          return ! errors.isEmpty();
+         }
+
+         /** This will take a RecognitionException, and create a sensible error message out of it */
+         public String createErrorMessage(RecognitionException e)
         {
-		StringBuilder message = new StringBuilder();		
+        StringBuilder message = new StringBuilder();
                 message.append( source + ":"+e.line+":"+e.charPositionInLine+" ");
                 if ( e instanceof MismatchedTokenException ) {
                         MismatchedTokenException mte = (MismatchedTokenException)e;
@@ -155,7 +155,7 @@ options {k=2; backtrack=true; memoize=true;}
                 }
                 else if ( e instanceof NoViableAltException ) {
                         NoViableAltException nvae = (NoViableAltException)e;
-			message.append( "Unexpected token '" + e.token.getText() + "'" );
+            message.append( "Unexpected token '" + e.token.getText() + "'" );
                         /*
                         message.append("decision=<<"+nvae.grammarDecisionDescription+">>"+
                                                            " state "+nvae.stateNumber+
@@ -187,258 +187,258 @@ options {k=2; backtrack=true; memoize=true;}
                         FailedPredicateException fpe = (FailedPredicateException)e;
                         message.append("rule "+fpe.ruleName+" failed predicate: {"+
                                                            fpe.predicateText+"}?");
-		}
-               	return message.toString();
+        }
+                   return message.toString();
         }   
 } 
 
 @lexer::header {
-	package org.drools.rule.builder.dialect.java.parser;
+    package org.drools.rule.builder.dialect.java.parser;
 }
 
 @lexer::members {
-	public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
-	protected boolean enumIsKeyword = true;
+    public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
+    protected boolean enumIsKeyword = true;
 }
  
 
 // starting point for parsing a java file
 compilationUnit
-	:	annotations?
-		packageDeclaration?
+    :	annotations?
+        packageDeclaration?
         importDeclaration*
         typeDeclaration*
-	;
+    ;
 
 packageDeclaration
-	:	'package' qualifiedName ';'
-	;
-	
+    :	'package' qualifiedName ';'
+    ;
+
 importDeclaration
-	:	'import' 'static'? Identifier ('.' Identifier)* ('.' '*')? ';'
-	;
-	
+    :	'import' 'static'? Identifier ('.' Identifier)* ('.' '*')? ';'
+    ;
+
 typeDeclaration
-	:	classOrInterfaceDeclaration
+    :	classOrInterfaceDeclaration
     |   ';'
-	;
-	
+    ;
+
 classOrInterfaceDeclaration
-	:	modifier* (classDeclaration | interfaceDeclaration)
-	;
-	
+    :	modifier* (classDeclaration | interfaceDeclaration)
+    ;
+
 classDeclaration
-	:	normalClassDeclaration
+    :	normalClassDeclaration
     |   enumDeclaration
-	;
-	
+    ;
+
 normalClassDeclaration
-	:	'class' Identifier (typeParameters)?
+    :	'class' Identifier (typeParameters)?
         ('extends' type)?
         ('implements' typeList)?
         classBody
-	;
-	
+    ;
+
 typeParameters
-	:	'<' typeParameter (',' typeParameter)* '>'
-	;
+    :	'<' typeParameter (',' typeParameter)* '>'
+    ;
 
 typeParameter
-	:	Identifier ('extends' bound)?
-	;
-		
+    :	Identifier ('extends' bound)?
+    ;
+
 bound
-	:	type ('&' type)*
-	;
+    :	type ('&' type)*
+    ;
 
 enumDeclaration
-	:	ENUM Identifier ('implements' typeList)? enumBody
-	;
-	
+    :	ENUM Identifier ('implements' typeList)? enumBody
+    ;
+
 enumBody
-	:	'{' enumConstants? ','? enumBodyDeclarations? '}'
-	;
+    :	'{' enumConstants? ','? enumBodyDeclarations? '}'
+    ;
 
 enumConstants
-	:	enumConstant (',' enumConstant)*
-	;
-	
+    :	enumConstant (',' enumConstant)*
+    ;
+
 enumConstant
-	:	annotations? Identifier (arguments)? (classBody)?
-	;
-	
+    :	annotations? Identifier (arguments)? (classBody)?
+    ;
+
 enumBodyDeclarations
-	:	';' (classBodyDeclaration)*
-	;
-	
+    :	';' (classBodyDeclaration)*
+    ;
+
 interfaceDeclaration
-	:	normalInterfaceDeclaration
-		| annotationTypeDeclaration
-	;
-	
+    :	normalInterfaceDeclaration
+        | annotationTypeDeclaration
+    ;
+
 normalInterfaceDeclaration
-	:	'interface' Identifier typeParameters? ('extends' typeList)? interfaceBody
-	;
-	
+    :	'interface' Identifier typeParameters? ('extends' typeList)? interfaceBody
+    ;
+
 typeList
-	:	type (',' type)*
-	;
-	
+    :	type (',' type)*
+    ;
+
 classBody
-	:	'{' classBodyDeclaration* '}'
-	;
-	
+    :	'{' classBodyDeclaration* '}'
+    ;
+
 interfaceBody
-	:	'{' interfaceBodyDeclaration* '}'
-	;
+    :	'{' interfaceBodyDeclaration* '}'
+    ;
 
 classBodyDeclaration
-	:	';'
-	|	'static'? block
-	|	modifier* memberDecl
-	;
-	
+    :	';'
+    |	'static'? block
+    |	modifier* memberDecl
+    ;
+
 memberDecl
-	:	genericMethodOrConstructorDecl
-	|	methodDeclaration
-	|	fieldDeclaration
-	|	'void' Identifier voidMethodDeclaratorRest
-	|	Identifier constructorDeclaratorRest
-	|	interfaceDeclaration
-	|	classDeclaration
-	;
-	
+    :	genericMethodOrConstructorDecl
+    |	methodDeclaration
+    |	fieldDeclaration
+    |	'void' Identifier voidMethodDeclaratorRest
+    |	Identifier constructorDeclaratorRest
+    |	interfaceDeclaration
+    |	classDeclaration
+    ;
+
 genericMethodOrConstructorDecl
-	:	typeParameters genericMethodOrConstructorRest
-	;
-	
+    :	typeParameters genericMethodOrConstructorRest
+    ;
+
 genericMethodOrConstructorRest
-	:	(type | 'void') Identifier methodDeclaratorRest
-	|	Identifier constructorDeclaratorRest
-	;
+    :	(type | 'void') Identifier methodDeclaratorRest
+    |	Identifier constructorDeclaratorRest
+    ;
 
 methodDeclaration
-	:	type Identifier methodDeclaratorRest
-	;
+    :	type Identifier methodDeclaratorRest
+    ;
 
 fieldDeclaration
-	:	type variableDeclarators ';'
-	;
-		
+    :	type variableDeclarators ';'
+    ;
+
 interfaceBodyDeclaration
-	:	modifier* interfaceMemberDecl
-	|   ';'
-	;
+    :	modifier* interfaceMemberDecl
+    |   ';'
+    ;
 
 interfaceMemberDecl
-	:	interfaceMethodOrFieldDecl
-	|   interfaceGenericMethodDecl
+    :	interfaceMethodOrFieldDecl
+    |   interfaceGenericMethodDecl
     |   'void' Identifier voidInterfaceMethodDeclaratorRest
     |   interfaceDeclaration
     |   classDeclaration
-	;
-	
+    ;
+
 interfaceMethodOrFieldDecl
-	:	type Identifier interfaceMethodOrFieldRest
-	;
-	
+    :	type Identifier interfaceMethodOrFieldRest
+    ;
+
 interfaceMethodOrFieldRest
-	:	constantDeclaratorsRest ';'
-	|	interfaceMethodDeclaratorRest
-	;
-	
+    :	constantDeclaratorsRest ';'
+    |	interfaceMethodDeclaratorRest
+    ;
+
 methodDeclaratorRest
-	:	formalParameters ('[' ']')*
+    :	formalParameters ('[' ']')*
         ('throws' qualifiedNameList)?
         (   methodBody
         |   ';'
         )
-	;
-	
+    ;
+
 voidMethodDeclaratorRest
-	:	formalParameters ('throws' qualifiedNameList)?
+    :	formalParameters ('throws' qualifiedNameList)?
         (   methodBody
         |   ';'
         )
-	;
-	
+    ;
+
 interfaceMethodDeclaratorRest
-	:	formalParameters ('[' ']')* ('throws' qualifiedNameList)? ';'
-	;
-	
+    :	formalParameters ('[' ']')* ('throws' qualifiedNameList)? ';'
+    ;
+
 interfaceGenericMethodDecl
-	:	typeParameters (type | 'void') Identifier
+    :	typeParameters (type | 'void') Identifier
         interfaceMethodDeclaratorRest
-	;
-	
+    ;
+
 voidInterfaceMethodDeclaratorRest
-	:	formalParameters ('throws' qualifiedNameList)? ';'
-	;
-	
+    :	formalParameters ('throws' qualifiedNameList)? ';'
+    ;
+
 constructorDeclaratorRest
-	:	formalParameters ('throws' qualifiedNameList)? methodBody
-	;
+    :	formalParameters ('throws' qualifiedNameList)? methodBody
+    ;
 
 constantDeclarator
-	:	Identifier constantDeclaratorRest
-	;
-	
+    :	Identifier constantDeclaratorRest
+    ;
+
 variableDeclarators
-	:	variableDeclarator (',' variableDeclarator)*
-	;
+    :	variableDeclarator (',' variableDeclarator)*
+    ;
 
 variableDeclarator
-	scope {
-		JavaLocalDeclarationDescr.IdentifierDescr ident;
-	}
-	@init {
-		if( this.localVariableLevel == 1 ) { // we only want top level local vars
-			$variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
-		}
-	}
-	@after {
-	        if( this.localVariableLevel == 1 ) { // we only want top level local vars
-	        	$localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
-	        }
-	}
-	:	id=Identifier rest=variableDeclaratorRest 
-		{ 
-			if( this.localVariableLevel == 1 ) { // we only want top level local vars
-				$variableDeclarator::ident.setIdentifier( $id.text );
-				$variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
-				if( $rest.stop != null ) {
-   					$variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
-				}
-			}
-		}
-	;
-	
+    scope {
+        JavaLocalDeclarationDescr.IdentifierDescr ident;
+    }
+    @init {
+        if( this.localVariableLevel == 1 ) { // we only want top level local vars
+            $variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+        }
+    }
+    @after {
+            if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                $localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
+            }
+    }
+    :	id=Identifier rest=variableDeclaratorRest
+        {
+            if( this.localVariableLevel == 1 ) { // we only want top level local vars
+                $variableDeclarator::ident.setIdentifier( $id.text );
+                $variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
+                if( $rest.stop != null ) {
+                       $variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
+                }
+            }
+        }
+    ;
+
 variableDeclaratorRest
-	:	('[' ']')+ ('=' variableInitializer)?
-	|	'=' variableInitializer
-	|
-	;
-	
+    :	('[' ']')+ ('=' variableInitializer)?
+    |	'=' variableInitializer
+    |
+    ;
+
 constantDeclaratorsRest
     :   constantDeclaratorRest (',' constantDeclarator)*
     ;
 
 constantDeclaratorRest
-	:	('[' ']')* '=' variableInitializer
-	;
-	
+    :	('[' ']')* '=' variableInitializer
+    ;
+
 variableDeclaratorId
-	:	Identifier ('[' ']')*
-	;
+    :	Identifier ('[' ']')*
+    ;
 
 variableInitializer
-	:	arrayInitializer
+    :	arrayInitializer
     |   expression
-	;
-	
+    ;
+
 arrayInitializer
-	:	'{' (variableInitializer (',' variableInitializer)* (',')? )? '}'
-	;
+    :	'{' (variableInitializer (',' variableInitializer)* (',')? )? '}'
+    ;
 
 modifier
     :   annotation
@@ -456,22 +456,22 @@ modifier
     ;
 
 packageOrTypeName
-	:	Identifier ('.' Identifier)*
-	;
+    :	Identifier ('.' Identifier)*
+    ;
 
 enumConstantName
     :   Identifier
     ;
 
 typeName
-	:   Identifier
+    :   Identifier
     |   packageOrTypeName '.' Identifier
-	;
+    ;
 
 type
-	:	Identifier (typeArguments)? ('.' Identifier (typeArguments)? )* ('[' ']')*
-	|	primitiveType ('[' ']')*
-	;
+    :	Identifier (typeArguments)? ('.' Identifier (typeArguments)? )* ('[' ']')*
+    |	primitiveType ('[' ']')*
+    ;
 
 primitiveType
     :   'boolean'
@@ -485,52 +485,52 @@ primitiveType
     ;
 
 variableModifier
-	:	'final'
+    :	'final'
     |   annotation
-	;
+    ;
 
 typeArguments
-	:	'<' typeArgument (',' typeArgument)* '>'
-	;
-	
+    :	'<' typeArgument (',' typeArgument)* '>'
+    ;
+
 typeArgument
-	:	type
-	|	'?' (('extends' | 'super') type)?
-	;
-	
+    :	type
+    |	'?' (('extends' | 'super') type)?
+    ;
+
 qualifiedNameList
-	:	qualifiedName (',' qualifiedName)*
-	;
-	
+    :	qualifiedName (',' qualifiedName)*
+    ;
+
 formalParameters
-	:	'(' formalParameterDecls? ')'
-	;
-	
+    :	'(' formalParameterDecls? ')'
+    ;
+
 formalParameterDecls
-	:	variableModifier* type formalParameterDeclsRest?
-	;
-	
+    :	variableModifier* type formalParameterDeclsRest?
+    ;
+
 formalParameterDeclsRest
-	:	variableDeclaratorId (',' formalParameterDecls)?
-	|   '...' variableDeclaratorId
-	;
-	
+    :	variableDeclaratorId (',' formalParameterDecls)?
+    |   '...' variableDeclaratorId
+    ;
+
 methodBody
-	:	block
-	;
+    :	block
+    ;
 
 qualifiedName
-	:	Identifier ('.' Identifier)*
-	;
-	
+    :	Identifier ('.' Identifier)*
+    ;
+
 literal	
-	:   integerLiteral
+    :   integerLiteral
     |   FloatingPointLiteral
     |   CharacterLiteral
     |   StringLiteral
     |   booleanLiteral
     |   'null'
-	;
+    ;
 
 integerLiteral
     :   HexLiteral
@@ -546,75 +546,75 @@ booleanLiteral
 // ANNOTATIONS
 
 annotations
-	:	annotation+
-	;
+    :	annotation+
+    ;
 
 annotation
-	:	'@' annotationName ('(' elementValuePairs? ')')?
-	;
-	
+    :	'@' annotationName ('(' elementValuePairs? ')')?
+    ;
+
 annotationName
-	: Identifier ('.' Identifier)*
-	;
-	
+    : Identifier ('.' Identifier)*
+    ;
+
 elementValuePairs
-	: elementValuePair (',' elementValuePair)*
-	;
-	
+    : elementValuePair (',' elementValuePair)*
+    ;
+
 elementValuePair
-	: (Identifier '=')? elementValue
-	;
-	
+    : (Identifier '=')? elementValue
+    ;
+
 elementValue
-	:	conditionalExpression
-	|   annotation
-	|   elementValueArrayInitializer
-	;
-	
+    :	conditionalExpression
+    |   annotation
+    |   elementValueArrayInitializer
+    ;
+
 elementValueArrayInitializer
-	:	'{' (elementValue (',' elementValue )*)? '}'
-	;
-	
+    :	'{' (elementValue (',' elementValue )*)? '}'
+    ;
+
 annotationTypeDeclaration
-	:	'@' 'interface' Identifier annotationTypeBody
-	;
-	
+    :	'@' 'interface' Identifier annotationTypeBody
+    ;
+
 annotationTypeBody
-	:	'{' (annotationTypeElementDeclarations)? '}'
-	;
-	
+    :	'{' (annotationTypeElementDeclarations)? '}'
+    ;
+
 annotationTypeElementDeclarations
-	:	(annotationTypeElementDeclaration) (annotationTypeElementDeclaration)*
-	;
-	
+    :	(annotationTypeElementDeclaration) (annotationTypeElementDeclaration)*
+    ;
+
 annotationTypeElementDeclaration
-	:	(modifier)* annotationTypeElementRest
-	;
-	
+    :	(modifier)* annotationTypeElementRest
+    ;
+
 annotationTypeElementRest
-	:	type annotationMethodOrConstantRest ';'
-	|   classDeclaration ';'?
-	|   interfaceDeclaration ';'?
-	|   enumDeclaration ';'?
-	|   annotationTypeDeclaration ';'?
-	;
-	
+    :	type annotationMethodOrConstantRest ';'
+    |   classDeclaration ';'?
+    |   interfaceDeclaration ';'?
+    |   enumDeclaration ';'?
+    |   annotationTypeDeclaration ';'?
+    ;
+
 annotationMethodOrConstantRest
-	:	annotationMethodRest
-	|   annotationConstantRest
-	;
-	
+    :	annotationMethodRest
+    |   annotationConstantRest
+    ;
+
 annotationMethodRest
- 	:	Identifier '(' ')' (defaultValue)?
- 	;
- 	
+     :	Identifier '(' ')' (defaultValue)?
+     ;
+
 annotationConstantRest
- 	:	variableDeclarators
- 	;
- 	
+     :	variableDeclarators
+     ;
+
 defaultValue
- 	:	'default' elementValue
- 	;
+     :	'default' elementValue
+     ;
 
 // STATEMENTS / BLOCKS
 
@@ -625,15 +625,15 @@ block
         @after {
             this.localVariableLevel--;
         }
-	:	'{' blockStatement* '}'
-	;
-	
+    :	'{' blockStatement* '}'
+    ;
+
 blockStatement
-	:	localVariableDeclaration
-	|	classOrInterfaceDeclaration
-    	|	statement
-	;
-	
+    :	localVariableDeclaration
+    |	classOrInterfaceDeclaration
+        |	statement
+    ;
+
 localVariableDeclaration
 scope   {
             JavaLocalDeclarationDescr descr;
@@ -644,24 +644,24 @@ scope   {
         @after {
             localDeclarations.add( $localVariableDeclaration::descr );
         }
-	:	
-	( variableModifier 
-	    { 
-	        $localVariableDeclaration::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 ); 
-	        $localVariableDeclaration::descr.addModifier( $variableModifier.text ); 
-	    } 
-	)* 
-	type 
-	    { 
-	        $localVariableDeclaration::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 ); 
-	        $localVariableDeclaration::descr.setType( $type.text ); 
-	        $localVariableDeclaration::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() ); 
-	    }
-	variableDeclarators ';'
-	;
-	
+    :
+    ( variableModifier
+        {
+            $localVariableDeclaration::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
+            $localVariableDeclaration::descr.addModifier( $variableModifier.text );
+        }
+    )*
+    type
+        {
+            $localVariableDeclaration::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
+            $localVariableDeclaration::descr.setType( $type.text );
+            $localVariableDeclaration::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
+        }
+    variableDeclarators ';'
+    ;
+
 statement
-	: block
+    : block
     | 'assert' expression (':' expression)? ';'
     | 'if' parExpression statement (options {k=1;}:'else' statement)?
     | 'for' '(' forControl ')' statement
@@ -683,125 +683,125 @@ statement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
-	;
-	
+    ;
+
 modifyStatement
-	@init {
-	    JavaModifyBlockDescr d = null;
-	}
-	: s='modify' parExpression 
-	{
-	    d = new JavaModifyBlockDescr( $parExpression.text );
-	    d.setStart( ((CommonToken)$s).getStartIndex() );
-	    this.blocks.add( d );
-	    
-	}
-	'{' ( e = expression { d.getExpressions().add( $e.text ); }
-	       (',' e=expression { d.getExpressions().add( $e.text ); } )*
-	    )? 
-	c='}' 
+    @init {
+        JavaModifyBlockDescr d = null;
+    }
+    : s='modify' parExpression
+    {
+        d = new JavaModifyBlockDescr( $parExpression.text );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        this.blocks.add( d );
+
+    }
+    '{' ( e = expression { d.getExpressions().add( $e.text ); }
+           (',' e=expression { d.getExpressions().add( $e.text ); } )*
+        )?
+    c='}'
         {
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
         }
-	;
+    ;
 
 updateStatement
-	@init {
-	    JavaUpdateBlockDescr d = null;
-	}
-	: s='update' '('  
-	expression 
-	c = ')'	
+    @init {
+        JavaUpdateBlockDescr d = null;
+    }
+    : s='update' '('
+    expression
+    c = ')'
         {
-	    d = new JavaUpdateBlockDescr( $expression.text );
-	    d.setStart( ((CommonToken)$s).getStartIndex() );
-	    this.blocks.add( d );        
+        d = new JavaUpdateBlockDescr( $expression.text );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        this.blocks.add( d );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
         }
-	;
+    ;
 retractStatement
-	@init {
-	    JavaRetractBlockDescr d = null;
-	}
-	: s='retract' '(' 
-	expression 
-	c = ')'	
+    @init {
+        JavaRetractBlockDescr d = null;
+    }
+    : s='retract' '('
+    expression
+    c = ')'
         {	
-	    d = new JavaRetractBlockDescr( $expression.text );
-	    d.setStart( ((CommonToken)$s).getStartIndex() );
-	    this.blocks.add( d );
-	    d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-	    
-	}
-	;		
-	
+        d = new JavaRetractBlockDescr( $expression.text );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        this.blocks.add( d );
+        d.setEnd( ((CommonToken)$c).getStopIndex() );
+
+    }
+    ;
+
 epStatement
-	@init {
-	    JavaInterfacePointsDescr d = null;
-	}
+    @init {
+        JavaInterfacePointsDescr d = null;
+    }
         : 
         ( s='exitPoints' '[' id=StringLiteral c=']' 
         {
-    	    d = new JavaInterfacePointsDescr( $id.text );
-		    d.setType( JavaBlockDescr.BlockType.EXIT );
-	    	d.setStart( ((CommonToken)$s).getStartIndex() );
+            d = new JavaInterfacePointsDescr( $id.text );
+            d.setType( JavaBlockDescr.BlockType.EXIT );
+            d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-	    	this.blocks.add( d );
+            this.blocks.add( d );
         }
         |  s='entryPoints' '[' id=StringLiteral c=']' 
         {
-		    d = new JavaInterfacePointsDescr( $id.text );
-		    d.setType( JavaBlockDescr.BlockType.ENTRY );
-		    d.setStart( ((CommonToken)$s).getStartIndex() );
+            d = new JavaInterfacePointsDescr( $id.text );
+            d.setType( JavaBlockDescr.BlockType.ENTRY );
+            d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-		    this.blocks.add( d );
+            this.blocks.add( d );
         }
         |  s='channels' '[' id=StringLiteral c=']' 
         {
-		    d = new JavaInterfacePointsDescr( $id.text );
-		    d.setType( JavaBlockDescr.BlockType.CHANNEL );
-		    d.setStart( ((CommonToken)$s).getStartIndex() );
+            d = new JavaInterfacePointsDescr( $id.text );
+            d.setType( JavaBlockDescr.BlockType.CHANNEL );
+            d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-		    this.blocks.add( d );
+            this.blocks.add( d );
         }
         ) 
         ;	
-	
+
 catches
-	:	catchClause (catchClause)*
-	;
-	
+    :	catchClause (catchClause)*
+    ;
+
 catchClause
-	:	'catch' '(' formalParameter ')' block
-	;
+    :	'catch' '(' formalParameter ')' block
+    ;
 
 formalParameter
-	:	variableModifier* type variableDeclaratorId
-	;
-		
+    :	variableModifier* type variableDeclaratorId
+    ;
+
 switchBlockStatementGroups
-	:	(switchBlockStatementGroup)*
-	;
-	
+    :	(switchBlockStatementGroup)*
+    ;
+
 switchBlockStatementGroup
-	:	switchLabel blockStatement*
-	;
-	
+    :	switchLabel blockStatement*
+    ;
+
 switchLabel
-	:	'case' constantExpression ':'
-	|   'case' enumConstantName ':'
-	|   'default' ':'
-	;
-	
+    :	'case' constantExpression ':'
+    |   'case' enumConstantName ':'
+    |   'default' ':'
+    ;
+
 moreStatementExpressions
-	:	(',' statementExpression)*
-	;
+    :	(',' statementExpression)*
+    ;
 
 forControl
 options {k=3;} // be efficient for common case: for (ID ID : ID) ...
-	:	forVarControl
-	|	forInit? ';' expression? ';' forUpdate?
-	;
+    :	forVarControl
+    |	forInit? ';' expression? ';' forUpdate?
+    ;
 
 forInit
         @init {
@@ -810,42 +810,42 @@ forInit
         @after {
             this.localVariableLevel--;
         }
-	:	variableModifier* type variableDeclarators
-	|	expressionList
-	;
-	
+    :	variableModifier* type variableDeclarators
+    |	expressionList
+    ;
+
 forVarControl
-	:	variableModifier* type Identifier ':' expression
-	;
+    :	variableModifier* type Identifier ':' expression
+    ;
 
 forUpdate
-	:	expressionList
-	;
+    :	expressionList
+    ;
 
 // EXPRESSIONS
 
 parExpression
-	:	'(' expression ')'
-	;
-	
+    :	'(' expression ')'
+    ;
+
 expressionList
     :   expression (',' expression)*
     ;
 
 statementExpression
-	:	expression
-	;
-	
+    :	expression
+    ;
+
 constantExpression
-	:	expression
-	;
-	
+    :	expression
+    ;
+
 expression
-	:	conditionalExpression (assignmentOperator expression)?
-	;
-	
+    :	conditionalExpression (assignmentOperator expression)?
+    ;
+
 assignmentOperator
-	:	'='
+    :	'='
     |   '+='
     |   '-='
     |   '*='
@@ -857,66 +857,66 @@ assignmentOperator
     |   '<' '<' '='
     |   '>' '>' '='
     |   '>' '>' '>' '='
-	;
+    ;
 
 conditionalExpression
     :   conditionalOrExpression ( '?' expression ':' expression )?
-	;
+    ;
 
 conditionalOrExpression
     :   conditionalAndExpression ( '||' conditionalAndExpression )*
-	;
+    ;
 
 conditionalAndExpression
     :   inclusiveOrExpression ( '&&' inclusiveOrExpression )*
-	;
+    ;
 
 inclusiveOrExpression
     :   exclusiveOrExpression ( '|' exclusiveOrExpression )*
-	;
+    ;
 
 exclusiveOrExpression
     :   andExpression ( '^' andExpression )*
-	;
+    ;
 
 andExpression
     :   equalityExpression ( '&' equalityExpression )*
-	;
+    ;
 
 equalityExpression
     :   instanceOfExpression ( ('==' | '!=') instanceOfExpression )*
-	;
+    ;
 
 instanceOfExpression
     :   relationalExpression ('instanceof' type)?
-	;
+    ;
 
 relationalExpression
     :   shiftExpression ( relationalOp shiftExpression )*
-	;
-	
+    ;
+
 relationalOp
-	:	('<' '=' | '>' '=' | '<' | '>')
-	;
+    :	('<' '=' | '>' '=' | '<' | '>')
+    ;
 
 shiftExpression
     :   additiveExpression ( shiftOp additiveExpression )*
-	;
+    ;
 
         // TODO: need a sem pred to check column on these >>>
 shiftOp
-	:	('<' '<' | '>' '>' '>' | '>' '>')
-	;
+    :	('<' '<' | '>' '>' '>' | '>' '>')
+    ;
 
 
 additiveExpression
     :   multiplicativeExpression ( ('+' | '-') multiplicativeExpression )*
-	;
+    ;
 
 multiplicativeExpression
     :   unaryExpression ( ( '*' | '/' | '%' ) unaryExpression )*
-	;
-	
+    ;
+
 unaryExpression
     :   '+' unaryExpression
     |	'-' unaryExpression
@@ -949,74 +949,74 @@ primary
     |   i=Identifier { if( ! "(".equals( input.LT(1) == null ? "" : input.LT(1).getText() ) ) identifiers.add( $i.text );  } ('.' Identifier)* (identifierSuffix)?
     |   primitiveType ('[' ']')* '.' 'class'
     |   'void' '.' 'class'
-	;
+    ;
 
 identifierSuffix
-	:	('[' ']')+ '.' 'class'
-	|	('[' expression ']')+ // can also be matched by selector, but do here
+    :	('[' ']')+ '.' 'class'
+    |	('[' expression ']')+ // can also be matched by selector, but do here
     |   arguments
     |   '.' 'class'
     |   '.' explicitGenericInvocation
     |   '.' 'this'
     |   '.' 'super' arguments
     |   '.' 'new' (nonWildcardTypeArguments)? innerCreator
-	;
-	
+    ;
+
 creator
-	:	nonWildcardTypeArguments? createdName
+    :	nonWildcardTypeArguments? createdName
         (arrayCreatorRest | classCreatorRest)
-	;
+    ;
 
 createdName
-	:	Identifier typeArguments?
+    :	Identifier typeArguments?
         ('.' Identifier typeArguments?)*
     |	primitiveType
-	;
-	
+    ;
+
 innerCreator
-	:	Identifier classCreatorRest
-	;
+    :	Identifier classCreatorRest
+    ;
 
 arrayCreatorRest
-	:	'['
+    :	'['
         (   ']' ('[' ']')* arrayInitializer
         |   expression ']' ('[' expression ']')* ('[' ']')*
         )
-	;
+    ;
 
 classCreatorRest
-	:	arguments classBody?
-	;
-	
+    :	arguments classBody?
+    ;
+
 explicitGenericInvocation
-	:	nonWildcardTypeArguments explicitGenericInvocationSuffix
-	;
-	
+    :	nonWildcardTypeArguments explicitGenericInvocationSuffix
+    ;
+
 nonWildcardTypeArguments
-	:	'<' typeList '>'
-	;
-	
+    :	'<' typeList '>'
+    ;
+
 explicitGenericInvocationSuffix
-	:	'super' superSuffix
-	|   Identifier arguments
-	;
-	
+    :	'super' superSuffix
+    |   Identifier arguments
+    ;
+
 selector
-	:	'.' Identifier (arguments)?
-	|   '.' 'this'
-	|   '.' 'super' superSuffix
-	|   '.' 'new' (nonWildcardTypeArguments)? innerCreator
-	|   '[' expression ']'
-	;
-	
+    :	'.' Identifier (arguments)?
+    |   '.' 'this'
+    |   '.' 'super' superSuffix
+    |   '.' 'new' (nonWildcardTypeArguments)? innerCreator
+    |   '[' expression ']'
+    ;
+
 superSuffix
-	:	arguments
-	|   '.' Identifier (arguments)?
+    :	arguments
+    |   '.' Identifier (arguments)?
     ;
 
 arguments
-	:	'(' expressionList? ')'
-	;
+    :	'(' expressionList? ')'
+    ;
 
 // LEXER
 
@@ -1037,7 +1037,7 @@ FloatingPointLiteral
     |   '.' ('0'..'9')+ Exponent? FloatTypeSuffix?
     |   ('0'..'9')+ Exponent FloatTypeSuffix?
     |   ('0'..'9')+ Exponent? FloatTypeSuffix
-	;
+    ;
 
 fragment
 Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
@@ -1073,8 +1073,8 @@ UnicodeEscape
     ;
 
 ENUM:	'enum' {if ( !enumIsKeyword ) $type=Identifier;}
-	;
-	
+    ;
+
 Identifier 
     :   Letter (Letter|JavaIDDigit)*
     ;
