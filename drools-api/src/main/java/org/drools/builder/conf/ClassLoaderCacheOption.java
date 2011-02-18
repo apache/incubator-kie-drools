@@ -22,7 +22,7 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
 /**
  * An Enum for ClassLoaderCacheOption option.
  * 
- * drools.classLoaderCacheEnabled = &lt;true|false&gt; 
+ * drools.classLoaderCacheEnabled = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 

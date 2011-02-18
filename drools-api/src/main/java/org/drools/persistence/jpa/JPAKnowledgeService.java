@@ -51,7 +51,7 @@ import org.drools.util.ServiceRegistryImpl;
  * </p>
  * 
  * <pre>
- * StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env ); 
+ * StatefulKnowledgeSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
  * </pre>
  * 
  * <p>
@@ -61,7 +61,7 @@ import org.drools.util.ServiceRegistryImpl;
  * <pre>
  * &lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
  *    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
- *    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;       
+ *    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;
  *    &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
  *    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
  *    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;

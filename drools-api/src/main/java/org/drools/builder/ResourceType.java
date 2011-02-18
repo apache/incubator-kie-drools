@@ -103,7 +103,7 @@ public class ResourceType implements Serializable {
     /** XSD */
     public static final ResourceType XSD        = addResourceTypeToRegistry( "XSD",
                                                                              "XSD",
-                                                                             "xsd" );    
+                                                                             "xsd" );
 
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get( resourceType );

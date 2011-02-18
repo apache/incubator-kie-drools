@@ -46,7 +46,7 @@ public interface Marshaller {
      * @throws ClassNotFoundException
      */
     public StatefulKnowledgeSession unmarshall(InputStream stream) throws IOException,
-                                                                      ClassNotFoundException;   
+                                                                      ClassNotFoundException;
 
     /**
      * Creates StatefulKnowledgeSession using the given KnowledgeSessionConfiguration and 

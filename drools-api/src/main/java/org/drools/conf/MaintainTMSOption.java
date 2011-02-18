@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for MaintainTMS option.
  * 
- * drools.maintainTms = &lt;true|false&gt; 
+ * drools.maintainTms = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 

@@ -20,7 +20,7 @@ package org.drools.builder.conf;
 /**
  * An Enum for ProcessStringEscapes option.
  * 
- * drools.parser.processStringEscapes = &lt;true|false&gt; 
+ * drools.parser.processStringEscapes = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 

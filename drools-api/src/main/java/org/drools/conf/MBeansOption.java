@@ -19,7 +19,7 @@ package org.drools.conf;
 /**
  * An Enum for MBeans Enabled option.
  * 
- * drools.mbeans = &lt;enabled|disabled&gt; 
+ * drools.mbeans = &lt;enabled|disabled&gt;
  * 
  * DEFAULT = false
  * 

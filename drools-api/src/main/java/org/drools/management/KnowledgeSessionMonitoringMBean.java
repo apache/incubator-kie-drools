@@ -117,7 +117,7 @@ public interface KnowledgeSessionMonitoringMBean {
      */
     public Date getLastReset();
     
-    public Map<String,String> getStatsByRule();    
+    public Map<String,String> getStatsByRule();
 
     public long getTotalProcessInstancesStarted();
     

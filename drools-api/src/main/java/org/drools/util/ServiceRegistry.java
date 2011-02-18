@@ -29,7 +29,7 @@ public interface ServiceRegistry extends Service {
     
 //    public void registerInstance(Service service);
 //
-//  public void unregisterInstance(Service service);    
+//  public void unregisterInstance(Service service);
     
     public <T> T get(Class<T> cls);
     

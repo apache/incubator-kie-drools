@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for multithread evaluation option.
  * 
- * drools.multithreadEvaluation = &lt;true|false&gt; 
+ * drools.multithreadEvaluation = &lt;true|false&gt;
  * 
  * DEFAULT = false
  * 

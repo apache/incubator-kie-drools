@@ -111,7 +111,7 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
         if ( function == null ) {
             if ( other.function != null ) return false;
         } else if ( other.function == null ) {
-            return false; 
+            return false;
         } else if ( !function.getClass().equals( other.function.getClass() ) ) {
             return false;
         }

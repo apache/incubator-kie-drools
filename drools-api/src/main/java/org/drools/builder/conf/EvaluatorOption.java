@@ -117,7 +117,7 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
                 return false;
             }
         } else if ( other.evaluator == null ) {
-            return false; 
+            return false;
         } else if ( !evaluator.getClass().equals( other.evaluator.getClass() ) ) {
             return false;
         }

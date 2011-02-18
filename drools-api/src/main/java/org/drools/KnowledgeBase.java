@@ -123,7 +123,7 @@ public interface KnowledgeBase
      * @param ruleName
      */
     void removeQuery(String packageName,
-                    String queryName);    
+                    String queryName);
     
     /**
      * Remove a function from the specified package.

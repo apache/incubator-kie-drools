@@ -20,7 +20,7 @@ package org.drools.conf;
 /**
  * An Enum for ShareAlphaNodes option.
  * 
- * drools.shareAlphaNodes = &lt;true|false&gt; 
+ * drools.shareAlphaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
  * 
