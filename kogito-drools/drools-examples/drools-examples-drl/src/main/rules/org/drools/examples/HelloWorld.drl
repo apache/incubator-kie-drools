@@ -26,7 +26,7 @@ rule "Hello World"
         m : Message( status == Message.HELLO, message : message )
     then
         System.out.println( message );
-//	      modify ( m ) { setMessage( "Goodbyte cruel world" ),
+//        modify ( m ) { setMessage( "Goodbyte cruel world" ),
 //                       setStatus( Message.GOODBYE ) };
     modify ( m ) { message = "Goodbyte cruel world",
                    status = Message.GOODBYE };
