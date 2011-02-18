@@ -13,11 +13,11 @@ policyType
 discount
 
 rule "Discounts_@{row.rowNumber}"
-	
-	when
-		Driver(age >= @{age0}, age <= @{age1}, priorClaims == "@{priorClaims}")
-		policy: Policy(type == "@{policyType}")
-	then
-		policy.applyDiscount(@{discount});
+
+    when
+        Driver(age >= @{age0}, age <= @{age1}, priorClaims == "@{priorClaims}")
+        policy: Policy(type == "@{policyType}")
+    then
+        policy.applyDiscount(@{discount});
 end
 end template

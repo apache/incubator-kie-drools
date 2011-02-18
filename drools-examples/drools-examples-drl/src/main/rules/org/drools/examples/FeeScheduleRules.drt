@@ -19,31 +19,31 @@ global Logger logger;
 
 template "Fee Schedule"
 rule "Fee Schedule_@{row.rowNumber}"
-	agenda-group "@{FEE_SCHEDULE_TYPE}"
-	
-	when
-		FeeEvent(productType.code == "@{PRODUCT_TYPE}",
-			activityType.name == "@{ACTIVITY_TYPE}",
-			feeType.code == "@{FEE_TYPE}",
-			txParty.name == "@{OWNING_PARTY}",
-			entityBranch == "@{ENTITY_BRANCH}",
-			amount.value @{COMPARATOR} @{LC_AMOUNT},
-			amount.currency == "@{CCY}"
-		)
-	then
-		result.setSchedule(new FeeSchedule("@{FEE_SCHEDULE_TYPE}", @{AMOUNT}));
+    agenda-group "@{FEE_SCHEDULE_TYPE}"
+
+    when
+        FeeEvent(productType.code == "@{PRODUCT_TYPE}",
+            activityType.name == "@{ACTIVITY_TYPE}",
+            feeType.code == "@{FEE_TYPE}",
+            txParty.name == "@{OWNING_PARTY}",
+            entityBranch == "@{ENTITY_BRANCH}",
+            amount.value @{COMPARATOR} @{LC_AMOUNT},
+            amount.currency == "@{CCY}"
+        )
+    then
+        result.setSchedule(new FeeSchedule("@{FEE_SCHEDULE_TYPE}", @{AMOUNT}));
 end
 end template
 
 template "Log use"
 LOG_EVENT == true
 rule "Log Event @{row.rowNumber}"
-	when
-		FeeEvent(
-			id == @{FEE_EVENT_ID},
-			$activity: activityType.name
-		)
-	then
-		logger.addLogging($activity);
+    when
+        FeeEvent(
+            id == @{FEE_EVENT_ID},
+            $activity: activityType.name
+        )
+    then
+        logger.addLogging($activity);
 end
 end template
