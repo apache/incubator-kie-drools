@@ -35,7 +35,6 @@ package org.drools.builder;
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
- * 
  */
 public interface DecisionTableConfiguration
     extends

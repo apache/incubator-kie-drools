@@ -44,7 +44,6 @@ import org.drools.runtime.ObjectFilter;
  * entrypoint.retract( factHandle );
  * ...
  * </pre> 
- * 
  */
 public interface WorkingMemoryEntryPoint {
 

@@ -20,7 +20,6 @@ import org.drools.runtime.rule.AccumulateFunction;
 
 /**
  * A class for the accumulate function configuration.
- * 
  */
 public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOption {
 

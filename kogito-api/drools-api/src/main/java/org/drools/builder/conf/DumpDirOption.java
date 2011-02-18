@@ -22,7 +22,6 @@ import java.io.File;
  * A class for the dump directory configuration. I.e., for the directory
  * where Drools will dump generated code for debugging purposes. If this
  * option is not set, drools will generate and compile all code in memory.
- * 
  */
 public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
 

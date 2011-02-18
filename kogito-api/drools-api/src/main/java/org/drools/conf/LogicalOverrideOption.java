@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.logicalOverride = &lt;discard|preserve&gt;
  * 
  * DEFAULT = discard
- * 
  */
 public enum LogicalOverrideOption implements SingleValueKnowledgeBaseOption {
     

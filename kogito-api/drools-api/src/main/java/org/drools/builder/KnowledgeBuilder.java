@@ -114,7 +114,6 @@ import org.drools.io.Resource;
  *                                                                  kaconf );
  * kagent.applyChangeSet( ResourceFactory.newUrlResource( url ) ); // resource to the change-set xml for the resources to add
  * </pre>
- * 
  */
 public interface KnowledgeBuilder
     extends

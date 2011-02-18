@@ -18,7 +18,6 @@ package org.drools;
 
 /**
  * Base class for other Configuration classes.
- *
  */
 public interface PropertiesConfiguration {
 

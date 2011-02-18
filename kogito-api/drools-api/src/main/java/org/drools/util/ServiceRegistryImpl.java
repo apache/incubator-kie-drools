@@ -43,7 +43,6 @@ import org.drools.marshalling.MarshallerProvider;
 
 /**
  * This is an internal class, not for public consumption.
- *
  */
 public class ServiceRegistryImpl
     implements

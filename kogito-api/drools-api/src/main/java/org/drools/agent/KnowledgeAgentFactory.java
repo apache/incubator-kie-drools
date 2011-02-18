@@ -110,7 +110,6 @@ import org.drools.io.ResourceFactory;
  * 
  * @see org.drools.agent.KnowledgeAgent
  * @see org.drools.agent.KnowledgeAgent
- * 
  */
 public class KnowledgeAgentFactory {
 

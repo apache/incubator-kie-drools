@@ -33,7 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * This is an Internal Drools Class
- *
  */
 public class CompositeClassLoader extends ClassLoader {
     /* Assumption: modifications are really rare, but iterations are frequent. */

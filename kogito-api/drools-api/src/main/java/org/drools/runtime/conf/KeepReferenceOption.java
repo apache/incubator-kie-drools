@@ -20,7 +20,6 @@ package org.drools.runtime.conf;
 /**
  * Option to configure if the knowledge base should retain a reference to the 
  * knowledge session or not. The default is YES, i.e., the reference is retained.
- * 
  */
 public enum KeepReferenceOption implements SingleValueKnowledgeSessionOption {
 

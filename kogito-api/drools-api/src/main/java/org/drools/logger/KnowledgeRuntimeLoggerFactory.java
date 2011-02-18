@@ -33,7 +33,6 @@ import org.drools.event.KnowledgeRuntimeEventManager;
  * <p>
  * Don't forget to close the logger when it is no longer needed, so resources can be released.
  * </p>
- *
  */
 public class KnowledgeRuntimeLoggerFactory {
 

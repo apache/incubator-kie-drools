@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.sequential.agenda = &lt;sequential|dynamic&gt;
  * 
  * DEFAULT = sequential
- * 
  */
 public enum SequentialAgendaOption implements SingleValueKnowledgeBaseOption {
     

@@ -18,7 +18,6 @@ package org.drools.definition.type;
 
 /**
  * A field from a declared fact type
- * 
  */
 public interface FactField
     extends
@@ -52,7 +51,6 @@ public interface FactField
      * 
      * @param bean fact on which to set the field.
      * @param value the value to set on the field.
-     * 
      */
     public void set(Object bean,
                     Object value);

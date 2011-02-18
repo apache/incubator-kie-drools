@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.removeIdentities = &lt;true|false&gt;
  * 
  * DEFAULT = false
- * 
  */
 public enum RemoveIdentitiesOption implements SingleValueKnowledgeBaseOption {
     

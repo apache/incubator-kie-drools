@@ -22,7 +22,6 @@ package org.drools.conf;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * 
  * DEFAULT = false
- * 
  */
 public enum MBeansOption implements SingleValueKnowledgeBaseOption {
     

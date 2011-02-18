@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.shareBetaNodes = &lt;true|false&gt;
  * 
  * DEFAULT = true
- * 
  */
 public enum ShareBetaNodesOption implements SingleValueKnowledgeBaseOption {
     

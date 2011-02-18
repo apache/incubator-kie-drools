@@ -24,7 +24,6 @@ import java.util.Iterator;
  * be accessed in the QueryResultsRow. This class can be marshalled using the drools-drools-pipeline module in combination with the BatchExecutionHelper.
  * See the BatchExecutionHelper for more details.
  * </p>
- * 
  */
 public interface QueryResults extends Iterable<QueryResultsRow> {
     String[] getIdentifiers();

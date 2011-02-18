@@ -24,8 +24,6 @@ import org.drools.definition.rule.Rule;
 /**
  * This provides a collection of knowledge definitions that can be given to a KnowledgeBase.
  * The name is used to provide "namespace" separation of those definitions.
- * 
- *
  */
 public interface KnowledgePackage {
     /**

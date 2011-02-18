@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.multithreadEvaluation = &lt;true|false&gt;
  * 
  * DEFAULT = false
- * 
  */
 public enum MultithreadEvaluationOption implements SingleValueKnowledgeBaseOption {
     

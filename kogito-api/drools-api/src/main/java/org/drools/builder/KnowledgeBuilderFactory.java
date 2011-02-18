@@ -33,7 +33,6 @@ import com.sun.tools.xjc.Options;
  * <pre>
  * KnowledgeBuilder kbuilder = KnowlegeBuilderFactory.newKnowledgeBuilder();
  * </pre>
- *
  */
 public class KnowledgeBuilderFactory {
     private static volatile KnowledgeBuilderFactoryService factoryService;

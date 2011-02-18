@@ -34,7 +34,6 @@ package org.drools.builder.conf;
  * String escapes, making it impossible to encode special characters into Strings. But,
  * if for any reason, you need the Drools 4 behaviour when parsing files, just set this
  * option to NO (false).
- * 
  */
 public enum ProcessStringEscapesOption implements SingleValueKnowledgeBuilderOption {
     

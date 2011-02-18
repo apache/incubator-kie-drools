@@ -18,7 +18,6 @@ package org.drools.time;
 
 /**
  * A clock interface that all engine clocks must implement
- * 
  */
 public interface SessionClock {
 
@@ -30,7 +29,6 @@ public interface SessionClock {
      * 
      * @return The current time. The unit of the time, depends on
      * the actual clock implementation.
-     * 
      */
     public long getCurrentTime();
 

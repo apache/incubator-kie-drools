@@ -18,7 +18,6 @@ package org.drools.runtime.rule;
 
 /**
  * An interface for Operator definitions.
- * 
  */
 public interface Operator {
 

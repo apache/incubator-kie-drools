@@ -23,7 +23,6 @@ package org.drools.conf;
  * drools.assertBehaviour = &lt;identity|equality&gt;
  * 
  * DEFAULT = identity
- * 
  */
 public enum AssertBehaviorOption implements SingleValueKnowledgeBaseOption {
     

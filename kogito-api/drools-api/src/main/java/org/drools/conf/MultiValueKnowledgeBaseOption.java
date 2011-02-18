@@ -19,7 +19,6 @@ package org.drools.conf;
 
 /**
  * A markup interface for MultiValueKnowledgeBaseConfiguration options
- * 
  */
 public interface MultiValueKnowledgeBaseOption
     extends

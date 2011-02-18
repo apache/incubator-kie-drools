@@ -18,7 +18,6 @@ package org.drools.runtime.conf;
 
 /**
  * A base interface for type safe configurations
- * 
  */
 public interface KnowledgeSessionOptionsConfiguration {
     
