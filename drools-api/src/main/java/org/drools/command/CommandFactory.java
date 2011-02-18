@@ -85,7 +85,7 @@ public class CommandFactory {
                                                       outIdentifier,
                                                       returnObject,
                                                       entryPoint );
-    }    
+    }
 
     /**
      * Iterate and insert each of the elements of the Collection.
@@ -114,7 +114,7 @@ public class CommandFactory {
      */
     public static Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
         return getCommandFactoryProvider().newInsertElements( objects, outIdentifier, returnObject, entryPoint );
-    }    
+    }
 
     public static Command newRetract(FactHandle factHandle) {
         return getCommandFactoryProvider().newRetract( factHandle );
@@ -278,7 +278,7 @@ public class CommandFactory {
     
     public static Command newAbortWorkItem(long workItemId) {
         return getCommandFactoryProvider().newAbortWorkItem( workItemId );
-    }    
+    }
 
     /**
      * Executes a query. The query results will be added to the ExecutionResults using the 
@@ -333,7 +333,7 @@ public class CommandFactory {
     public static BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup ) {
         return getCommandFactoryProvider().newBatchExecution( commands,
                                                               lookup);
-    }    
+    }
 
     private static synchronized void setCommandFactoryProvider(CommandFactoryService provider) {
         CommandFactory.provider = provider;

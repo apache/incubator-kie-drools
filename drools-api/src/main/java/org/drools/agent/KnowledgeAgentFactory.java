@@ -137,7 +137,7 @@ public class KnowledgeAgentFactory {
     public static KnowledgeAgent newKnowledgeAgent(String name) {
         return getKnowledgeAgentProvider().newKnowledgeAgent( name,
                                                               KnowledgeBaseFactory.newKnowledgeBase() );
-    }    
+    }
 
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase) {
@@ -150,7 +150,7 @@ public class KnowledgeAgentFactory {
         return getKnowledgeAgentProvider().newKnowledgeAgent( name,
                                                               KnowledgeBaseFactory.newKnowledgeBase(),
                                                               configuration );
-    }    
+    }
     
     public static KnowledgeAgent newKnowledgeAgent(String name,
                                                    KnowledgeBase kbase,

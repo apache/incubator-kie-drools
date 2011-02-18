@@ -114,7 +114,7 @@ public class KnowledgeBuilderFactory {
                                                          String systemId) {
         return getKnowledgeBuilderServiceFactory().newJaxbConfiguration(xjcOpts,
                                                                         systemId);
-    }    
+    }
     
     private static synchronized void setKnowledgeBuilderFactoryService(KnowledgeBuilderFactoryService serviceFactory) {
         KnowledgeBuilderFactory.factoryService = serviceFactory;
