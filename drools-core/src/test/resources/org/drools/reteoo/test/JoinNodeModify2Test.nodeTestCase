@@ -3,94 +3,93 @@ TestCase "Join Node modify 2 test case"
 import org.drools.Person;
 
 Setup
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	JoinNode:
-	    join1, mock, mock;
-	    age, !=, p1;
-	LeftTupleSink:
-	    sink, join1;
-	Facts:
-	    new Person('darth', 34), // h0
-	    new Person('bobba', 35), // h1
-	    new Person('yoda', 36),  // h2
-	    new Person('luke', 37),  // h3
-	    new Person('dave', 38),  // h4
-	    new Person('bob', 39);   // h5
+    Binding:
+         p1, 0, org.drools.Person, age;
+    JoinNode:
+        join1, mock, mock;
+        age, !=, p1;
+    LeftTupleSink:
+        sink, join1;
+    Facts:
+        new Person('darth', 34), // h0
+        new Person('bobba', 35), // h1
+        new Person('yoda', 36),  // h2
+        new Person('luke', 37),  // h3
+        new Person('dave', 38),  // h4
+        new Person('bob', 39);   // h5
 
 /**
  * insert all and the modify: h0 breaking and re-creating each join, to simulate left modifies
  */
 Test "Join node duplications check"	     
-	assert:
-	    join1, [[h0], [h1], [h2]]; // asserting tuples on the left
-	    join1, [h3, h4, h5];       // asserting facts on the right
-	sink:
-	    verify, assertLeft, count, 9; // cross product
+    assert:
+        join1, [[h0], [h1], [h2]]; // asserting tuples on the left
+        join1, [h3, h4, h5];       // asserting facts on the right
+    sink:
+        verify, assertLeft, count, 9; // cross product
 
-	With:
-	    h0, age = 37;
-	modify:
-	    join1, [[h0]]; 
-	join1:
-	    leftMemory, [[h1], [h2], [h0]]; // notice that h0 moves to the end
-	sink:    
-	    verify, assertLeft, count, 9; // no new asserts
-	    verify, modifyLeft, count, 2; // 2 tuples where modified: [h0, h4] and [h0, h5]
-	    verify, modifyLeft, tuple0, isTuple( [h0, h4] );
-	    verify, modifyLeft, tuple1, isTuple( [h0, h5] );
-	    verify, retractLeft, count, 1; // [h0, h3] was retracted
-	    verify, retractLeft, tuple0, isTuple( [h0, h3] );
-	    
-	With:
-	    h0, age = 38;
-	modify:
-	    join1, [[h0]]; 
-	join1:
-	    leftMemory, [[h1], [h2], [h0]];
-	sink:    
-	    verify, assertLeft, count, 10; // one new assert
-	    verify, assertLeft, tuple9, isTuple( [h0, h3] );
-	    verify, modifyLeft, count, 3;  
-	    verify, modifyLeft, tuple2, isTuple( [h0, h5] );
-	    verify, retractLeft, count, 2; 
-	    verify, retractLeft, tuple1, isTuple( [h0, h4] );
+    With:
+        h0, age = 37;
+    modify:
+        join1, [[h0]];
+    join1:
+        leftMemory, [[h1], [h2], [h0]]; // notice that h0 moves to the end
+    sink:
+        verify, assertLeft, count, 9; // no new asserts
+        verify, modifyLeft, count, 2; // 2 tuples where modified: [h0, h4] and [h0, h5]
+        verify, modifyLeft, tuple0, isTuple( [h0, h4] );
+        verify, modifyLeft, tuple1, isTuple( [h0, h5] );
+        verify, retractLeft, count, 1; // [h0, h3] was retracted
+        verify, retractLeft, tuple0, isTuple( [h0, h3] );
 
-	With:
-	    h0, age = 39;
-	modify:
-	    join1, [[h0]]; 
-	join1:
-	    leftMemory, [[h1], [h2], [h0]];
-	sink:    
-	    verify, assertLeft, count, 11; // one new assert
-	    verify, assertLeft, tuple10, isTuple( [h0, h4] );
-	    verify, modifyLeft, count, 4;  
-	    verify, modifyLeft, tuple3, isTuple( [h0, h3] );
-	    verify, retractLeft, count, 3; 
-	    verify, retractLeft, tuple2, isTuple( [h0, h5] );
+    With:
+        h0, age = 38;
+    modify:
+        join1, [[h0]];
+    join1:
+        leftMemory, [[h1], [h2], [h0]];
+    sink:
+        verify, assertLeft, count, 10; // one new assert
+        verify, assertLeft, tuple9, isTuple( [h0, h3] );
+        verify, modifyLeft, count, 3;
+        verify, modifyLeft, tuple2, isTuple( [h0, h5] );
+        verify, retractLeft, count, 2;
+        verify, retractLeft, tuple1, isTuple( [h0, h4] );
 
-	With:
-	    h0, age = 34;
-	modify:
-	    join1, [[h0]]; 
-	join1:
-	    leftMemory, [[h1], [h2], [h0]];
-	sink:    
-	    verify, assertLeft, count, 12; // one new assert
-	    verify, assertLeft, tuple11, isTuple( [h0, h5] );
-	    verify, modifyLeft, count, 6;  
-	    verify, modifyLeft, tuple4, isTuple( [h0, h3] );
-	    verify, modifyLeft, tuple5, isTuple( [h0, h4] );
-	    verify, retractLeft, count, 3; // no retract this time 
+    With:
+        h0, age = 39;
+    modify:
+        join1, [[h0]];
+    join1:
+        leftMemory, [[h1], [h2], [h0]];
+    sink:
+        verify, assertLeft, count, 11; // one new assert
+        verify, assertLeft, tuple10, isTuple( [h0, h4] );
+        verify, modifyLeft, count, 4;
+        verify, modifyLeft, tuple3, isTuple( [h0, h3] );
+        verify, retractLeft, count, 3;
+        verify, retractLeft, tuple2, isTuple( [h0, h5] );
 
-	retract:
-	    join1, [[h0], [h1], [h2]]; // retracting tuples on the left
-	    join1, [h3, h4, h5];       // retracting facts on the right
+    With:
+        h0, age = 34;
+    modify:
+        join1, [[h0]];
+    join1:
+        leftMemory, [[h1], [h2], [h0]];
+    sink:
+        verify, assertLeft, count, 12; // one new assert
+        verify, assertLeft, tuple11, isTuple( [h0, h5] );
+        verify, modifyLeft, count, 6;
+        verify, modifyLeft, tuple4, isTuple( [h0, h3] );
+        verify, modifyLeft, tuple5, isTuple( [h0, h4] );
+        verify, retractLeft, count, 3; // no retract this time
 
-	sink:    
-	    verify, assertLeft, count, 12;  // checking just in case
-	    verify, modifyLeft, count, 6;  
-	    verify, retractLeft, count, 12; // all tuples retracted 
-	    
-	    
+    retract:
+        join1, [[h0], [h1], [h2]]; // retracting tuples on the left
+        join1, [h3, h4, h5];       // retracting facts on the right
+
+    sink:
+        verify, assertLeft, count, 12;  // checking just in case
+        verify, modifyLeft, count, 6;
+        verify, retractLeft, count, 12; // all tuples retracted
+

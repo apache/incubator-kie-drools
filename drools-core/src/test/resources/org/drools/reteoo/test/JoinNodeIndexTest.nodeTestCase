@@ -1,89 +1,89 @@
 TestCase "Join Node modify test case"
 
 Setup
-	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
-	LeftInputAdapterNode:
-	    lian0, otnLeft1;
-	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
-	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	JoinNode:
-	    join1, lian0, otnRight1;
-	    age, ==, p1;
-	JoinNode:
-	    join2, join1, otnRight2;
-	    age, ==, p1;
-	Facts:
-	    new org.drools.Person('darth', 34), new org.drools.Person('bobba', 34),
-	    new org.drools.Person('yoda', 34), new org.drools.Person('luke', 34),
-	    new org.drools.Person('dave', 34), new org.drools.Person('bob', 34);   
-	  
+    ObjectTypeNode:
+        otnLeft1, org.drools.Person;
+    LeftInputAdapterNode:
+        lian0, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;
+    Binding:
+         p1, 0, org.drools.Person, age;
+    JoinNode:
+        join1, lian0, otnRight1;
+        age, ==, p1;
+    JoinNode:
+        join2, join1, otnRight2;
+        age, ==, p1;
+    Facts:
+        new org.drools.Person('darth', 34), new org.drools.Person('bobba', 34),
+        new org.drools.Person('yoda', 34), new org.drools.Person('luke', 34),
+        new org.drools.Person('dave', 34), new org.drools.Person('bob', 34);
+
 Test "Node Index Test"
-	/**
-	 * insert all and the modify for variation combinations, checking the index buckets are obeyed
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join1:
-	    leftMemory, [[h0], [h1], [h2]];
-	    rightMemory, [h3, h4, h5];               
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	               
-	With:
-	    h1, age = 35;
-	modify:
-	    otnLeft1, [h1]; 
-	join1:
-	    leftMemory, [[h0], [h2] ];
-	    leftMemory, [[h1]];               // h1 has now moved to it's own bucket
-	    rightMemory, [h3, h4, h5]; 
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],                
-	                [h0, h5], [h2, h5] ]; 
-	With:
-	    h5, age = 36;
-	modify:
-	    otnRight1, [h5]; 
-	join1:
-	    leftMemory, [[h0], [h2] ];
-	    leftMemory, [[h1]];               // h1 has now moved to it's own bucket
-	    rightMemory, [h3, h4];
-	    rightMemory, [h5];                // h5 also now in it's own bucket 
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4] ]; 
-	With:
-	    h5, age = 35;
-	modify:
-	    otnRight1, [h5]; 
-	join1:
-	    leftMemory, [[h0], [h2] ];
-	    leftMemory, [[h1]];               // h1 still in it's own bucket
-	    rightMemory, [h3, h4];
-	    rightMemory, [h5];                // h5 still in it's own bucket  
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4] ]; // index bucket for age == 34
-	    leftMemory, [[h1, h5] ];           // index bucket for age == 35   
-	With:
-	    h0, age = 35;
-	modify:
-	    otnLeft1, [h0];  
-	join1:
-	    leftMemory, [[h2] ];
-	    leftMemory, [[h1], [h0]];         // h0 joins h1 in the 35 index bucket
-	    rightMemory, [h3, h4];
-	    rightMemory, [h5];                // h5 still in it's own bucket  
-	join2:
-	    leftMemory, [[h2, h3],
-	                [h2, h4] ];            // index bucket for age == 34
-	    leftMemory, [[h1, h5], [h0, h5]];   // index bucket for age == 35                    
+    /**
+     * insert all and the modify for variation combinations, checking the index buckets are obeyed
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join1:
+        leftMemory, [[h0], [h1], [h2]];
+        rightMemory, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+
+    With:
+        h1, age = 35;
+    modify:
+        otnLeft1, [h1];
+    join1:
+        leftMemory, [[h0], [h2] ];
+        leftMemory, [[h1]];               // h1 has now moved to it's own bucket
+        rightMemory, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h5], [h2, h5] ];
+    With:
+        h5, age = 36;
+    modify:
+        otnRight1, [h5];
+    join1:
+        leftMemory, [[h0], [h2] ];
+        leftMemory, [[h1]];               // h1 has now moved to it's own bucket
+        rightMemory, [h3, h4];
+        rightMemory, [h5];                // h5 also now in it's own bucket
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4] ];
+    With:
+        h5, age = 35;
+    modify:
+        otnRight1, [h5];
+    join1:
+        leftMemory, [[h0], [h2] ];
+        leftMemory, [[h1]];               // h1 still in it's own bucket
+        rightMemory, [h3, h4];
+        rightMemory, [h5];                // h5 still in it's own bucket
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4] ]; // index bucket for age == 34
+        leftMemory, [[h1, h5] ];           // index bucket for age == 35
+    With:
+        h0, age = 35;
+    modify:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h2] ];
+        leftMemory, [[h1], [h0]];         // h0 joins h1 in the 35 index bucket
+        rightMemory, [h3, h4];
+        rightMemory, [h5];                // h5 still in it's own bucket
+    join2:
+        leftMemory, [[h2, h3],
+                    [h2, h4] ];            // index bucket for age == 34
+        leftMemory, [[h1, h5], [h0, h5]];   // index bucket for age == 35

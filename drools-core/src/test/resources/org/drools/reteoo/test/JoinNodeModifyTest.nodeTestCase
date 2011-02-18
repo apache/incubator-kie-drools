@@ -1,380 +1,380 @@
 TestCase "Join Node modify test case"
 
 Setup
-	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
-	LeftInputAdapterNode:
-	    lian0, otnLeft1;
-	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
-	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	JoinNode:
-	    join1, lian0, otnRight1;
-	    age, !=, p1;
-	JoinNode:
-	    join2, join1, otnRight2;
-	    age, !=, p1;
-	Facts:
-	    new org.drools.Person('darth', 34), new org.drools.Person('bobba', 35),
-	    new org.drools.Person('yoda', 36), new org.drools.Person('luke', 37),
-	    new org.drools.Person('dave', 38), new org.drools.Person('bob', 39); 
+    ObjectTypeNode:
+        otnLeft1, org.drools.Person;
+    LeftInputAdapterNode:
+        lian0, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;
+    Binding:
+         p1, 0, org.drools.Person, age;
+    JoinNode:
+        join1, lian0, otnRight1;
+        age, !=, p1;
+    JoinNode:
+        join2, join1, otnRight2;
+        age, !=, p1;
+    Facts:
+        new org.drools.Person('darth', 34), new org.drools.Person('bobba', 35),
+        new org.drools.Person('yoda', 36), new org.drools.Person('luke', 37),
+        new org.drools.Person('dave', 38), new org.drools.Person('bob', 39);
 
 Test "Join Node Modify test"	     
-	/**    
-	 * insert one left and try modify
-	 */    
-	assert:
-	    otnLeft1, [h0];          
-	modify:
-	    otnLeft1, [h0];
-	join1:
-	    leftMemory, [[h0]];    
-	retract:
-	    otnLeft1, [h0]; 
-	    
-	/**      
-	 * insert one right and try modify:
-	 */
-	assert:
-	    otnRight1, [h1];          
-	modify:
-	    otnRight1, [h1];
-	join1:
-	    rightMemory, [h1];    
-	retract:
-	    otnRight1, [h1];         
-	  
-	/**    
-	 * insert one left and right and try modify:, left and right, staying true
-	 */    
-	assert:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h1];  
-	join1:
-	    leftMemory, [[h0]];
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [[h0, h1]]; 
-	modify:                           // modify:Left, should be no change
-	    otnLeft1, [h0];              
-	join1:
-	    leftMemory, [[h0]];
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [[h0, h1]];  
-	modify:                           // modify:Right, should be no change
-	    otnRight1, [h1];     
-	join1:
-	    leftMemory, [[h0]];
-	    rightMemory, [h1];
-	join2:                         
-	    leftMemory, [[h0, h1]];     
-	modify:                           // modify:Left, should be no change
-	    otnLeft1, [h0];             
-	join1:
-	    leftMemory, [[h0]];
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [[h0, h1]];  
-	retract:
-	    otnLeft1, [h0];
-	    otnRight1, [h1];
-	join1:
-	    leftMemory, [];
-	    rightMemory, [];  
-	
+    /**
+     * insert one left and try modify
+     */
+    assert:
+        otnLeft1, [h0];
+    modify:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+    retract:
+        otnLeft1, [h0];
+
+    /**
+     * insert one right and try modify:
+     */
+    assert:
+        otnRight1, [h1];
+    modify:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1];
+    retract:
+        otnRight1, [h1];
+
+    /**
+     * insert one left and right and try modify:, left and right, staying true
+     */
+    assert:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0, h1]];
+    modify:                           // modify:Left, should be no change
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0, h1]];
+    modify:                           // modify:Right, should be no change
+        otnRight1, [h1];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0, h1]];
+    modify:                           // modify:Left, should be no change
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0, h1]];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+    join1:
+        leftMemory, [];
+        rightMemory, [];
+
 Test "Join Node Modify test 2"	     
-	/**
-	 * insert all and the modify: h0 breaking and re-creating each join, to simulate left modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h0, age = 37;
-	modify:
-	    otnLeft1, [h0]; 
-	join1:
-	    leftMemory, [[h1], [h2], [h0]]; // notice that h0 moves to the end
-	join2:    
-	    leftMemory, [[h1, h3], [h2, h3],
-	                [h1, h4], [h2, h4],
-	                [h1, h5], [h2, h5], [h0, h4], [h0, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h0, age = 38;
-	modify:
-	    otnLeft1, [h0];
-	join1:
-	    leftMemory, [[h1], [h2], [h0]];         
-	join2:    
-	    leftMemory, [[h1, h3], [h2, h3],
-	                [h1, h4], [h2, h4],
-	                [h1, h5], [h2, h5], [h0, h3], [h0, h5] ];
-	With:
-	    h0, age = 39;
-	modify:
-	    otnLeft1, [h0];   
-	join2:    
-	    leftMemory, [[h1, h3], [h2, h3],
-	                [h1, h4], [h2, h4],
-	                [h1, h5], [h2, h5], [h0, h3], [h0, h4] ];  
-	With:
-	    h0, age = 34;
-	modify:
-	    otnLeft1, [h0];   
-	join2:    
-	    leftMemory, [[h1, h3], [h2, h3],
-	                [h1, h4], [h2, h4],
-	                [h1, h5], [h2, h5], [h0, h3], [h0, h4], [h0, h5] ];                   
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	                             
-	/**                  
-	 * insert all and the modify: h1 breaking and re-creating each join, to simulate left modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h1, age = 37;
-	modify:
-	    otnLeft1, [h1]; 
-	join1:
-	    leftMemory, [[h0], [h2], [h1]];  // notice that h2 moves to the end
-	join2:    
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],
-	                [h0, h5], [h2, h5], [h1, h4], [h1, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h1, age = 38;
-	modify:
-	    otnLeft1, [h1];
-	join1:
-	    leftMemory, [[h0], [h2], [h1]];         
-	join2:    
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],
-	                [h0, h5], [h2, h5], [h1, h3], [h1, h5] ];
-	With:
-	    h1, age = 39;
-	modify:
-	    otnLeft1, [h1];   
-	join2:    
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],
-	                [h0, h5], [h2, h5], [h1, h3], [h1, h4] ] ; 
-	With:
-	    h1, age = 35;
-	modify:
-	    otnLeft1, [h1];   
-	join2:    
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],
-	                [h0, h5], [h2, h5], [h1, h3], [h1, h4], [h1, h5] ];
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];                
-	                
-	/**                
-	 * insert all and the modify: h2 breaking and re-creating each join, to simulate left modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h2, age = 37;
-	modify:
-	    otnLeft1, [h2]; 
-	join1:
-	    leftMemory, [[h0], [h1], [h2]];  // notice that h3 is still on the end
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], 
-	                [h0, h4], [h1, h4], 
-	                [h0, h5], [h1, h5], [h2, h4], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h2, age = 38;
-	modify:
-	    otnLeft1, [h2];
-	join1:
-	    leftMemory, [[h0], [h1], [h2]];         
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], 
-	                [h0, h4], [h1, h4], 
-	                [h0, h5], [h1, h5], [h2, h3], [h2, h5] ];
-	With:
-	    h2, age = 39;
-	modify:
-	    otnLeft1, [h2];   
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], 
-	                [h0, h4], [h1, h4], 
-	                [h0, h5], [h1, h5], [h2, h3], [h2, h4] ];
-	With:
-	    h2, age = 36;
-	modify:
-	    otnLeft1, [h2];   
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], 
-	                [h0, h4], [h1, h4], 
-	                [h0, h5], [h1, h5], [h2, h3], [h2, h4], [h2, h5] ];     
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];                         
-	
-	/**
-	 * insert all and the modify: h3 breaking and re-creating each join, to simulate right modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h3, age = 34;
-	modify:
-	    otnRight1, [h3]; 
-	join1:
-	    rightMemory, [h4, h5, h3]; // notice that h3 moves to the end
-	join2:
-	    leftMemory, [[h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5], [h1, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h3, age = 35;
-	modify:
-	    otnRight1, [h3];
-	join1:
-	    rightMemory, [h4, h5, h3]; // notice that h3 moves to the end     
-	join2:
-	    leftMemory, [[h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h3, age = 36;
-	modify:
-	    otnRight1, [h3];   
-	join2:
-	    leftMemory, [[h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h1, h3]]; // notice that all child tuples as a result of the modify: are moved to the end  
-	With:
-	    h3, age = 37;
-	modify:
-	    otnRight1, [h3];   
-	join2:    
-	    leftMemory, [[h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h1, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end               
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];      
-	    
-	/**
-	 * insert all and the modify: h4 breaking and re-creating each join, to simulate right modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h4, age = 34;
-	modify:
-	    otnRight1, [h4]; 
-	join1:
-	    rightMemory, [h3, h5, h4]; // notice that h4 moves to the end
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],                
-	                [h0, h5], [h1, h5], [h2, h5], [h1, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h4, age = 35;
-	modify:
-	    otnRight1, [h4];
-	join1:
-	    rightMemory, [h3, h5, h4]; // notice that h4 moves to the end   
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],                
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h4, age = 36;
-	modify:
-	    otnRight1, [h4];   
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],                
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h1, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end 
-	With:
-	    h4, age = 38;
-	modify:
-	    otnRight1, [h4];   
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],                
-	                [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h1, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end             
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];     
-	    
-	/**
-	 * insert all and the modify: h5 breaking and re-creating each join, to simulate right modifies
-	 */
-	assert:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5]];
-	With:
-	    h5, age = 34;
-	modify:
-	    otnRight1, [h5]; 
-	join1:
-	    rightMemory, [h3, h4, h5]; // notice that h4 is still on the end
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],                
-	                [h1, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h5, age = 35;
-	modify:
-	    otnRight1, [h5];
-	join1:
-	    rightMemory, [h3, h4, h5]; // notice that h4 is still on the end
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],                
-	                [h0, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
-	With:
-	    h5, age = 36;
-	modify:
-	    otnRight1, [h5];   
-	join2:
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],
-	                [h0, h4], [h1, h4], [h2, h4],                
-	                [h0, h5], [h1, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end 
-	With:
-	    h5, age = 39;
-	modify:
-	    otnRight1, [h5];   
-	join2:    
-	    leftMemory, [[h0, h3], [h1, h3], [h2, h3],                
-	                [h0, h4], [h1, h4], [h2, h4],
-	                [h0, h5], [h1, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end             
-	retract:
-	    otnLeft1, [h0, h1, h2];
-	    otnRight1, [h3, h4, h5];         
+    /**
+     * insert all and the modify: h0 breaking and re-creating each join, to simulate left modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h0, age = 37;
+    modify:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h1], [h2], [h0]]; // notice that h0 moves to the end
+    join2:
+        leftMemory, [[h1, h3], [h2, h3],
+                    [h1, h4], [h2, h4],
+                    [h1, h5], [h2, h5], [h0, h4], [h0, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h0, age = 38;
+    modify:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h1], [h2], [h0]];
+    join2:
+        leftMemory, [[h1, h3], [h2, h3],
+                    [h1, h4], [h2, h4],
+                    [h1, h5], [h2, h5], [h0, h3], [h0, h5] ];
+    With:
+        h0, age = 39;
+    modify:
+        otnLeft1, [h0];
+    join2:
+        leftMemory, [[h1, h3], [h2, h3],
+                    [h1, h4], [h2, h4],
+                    [h1, h5], [h2, h5], [h0, h3], [h0, h4] ];
+    With:
+        h0, age = 34;
+    modify:
+        otnLeft1, [h0];
+    join2:
+        leftMemory, [[h1, h3], [h2, h3],
+                    [h1, h4], [h2, h4],
+                    [h1, h5], [h2, h5], [h0, h3], [h0, h4], [h0, h5] ];
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+
+    /**
+     * insert all and the modify: h1 breaking and re-creating each join, to simulate left modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h1, age = 37;
+    modify:
+        otnLeft1, [h1];
+    join1:
+        leftMemory, [[h0], [h2], [h1]];  // notice that h2 moves to the end
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h5], [h2, h5], [h1, h4], [h1, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h1, age = 38;
+    modify:
+        otnLeft1, [h1];
+    join1:
+        leftMemory, [[h0], [h2], [h1]];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h5], [h2, h5], [h1, h3], [h1, h5] ];
+    With:
+        h1, age = 39;
+    modify:
+        otnLeft1, [h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h5], [h2, h5], [h1, h3], [h1, h4] ] ;
+    With:
+        h1, age = 35;
+    modify:
+        otnLeft1, [h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h5], [h2, h5], [h1, h3], [h1, h4], [h1, h5] ];
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+
+    /**
+     * insert all and the modify: h2 breaking and re-creating each join, to simulate left modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h2, age = 37;
+    modify:
+        otnLeft1, [h2];
+    join1:
+        leftMemory, [[h0], [h1], [h2]];  // notice that h3 is still on the end
+    join2:
+        leftMemory, [[h0, h3], [h1, h3],
+                    [h0, h4], [h1, h4],
+                    [h0, h5], [h1, h5], [h2, h4], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h2, age = 38;
+    modify:
+        otnLeft1, [h2];
+    join1:
+        leftMemory, [[h0], [h1], [h2]];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3],
+                    [h0, h4], [h1, h4],
+                    [h0, h5], [h1, h5], [h2, h3], [h2, h5] ];
+    With:
+        h2, age = 39;
+    modify:
+        otnLeft1, [h2];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3],
+                    [h0, h4], [h1, h4],
+                    [h0, h5], [h1, h5], [h2, h3], [h2, h4] ];
+    With:
+        h2, age = 36;
+    modify:
+        otnLeft1, [h2];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3],
+                    [h0, h4], [h1, h4],
+                    [h0, h5], [h1, h5], [h2, h3], [h2, h4], [h2, h5] ];
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+
+    /**
+     * insert all and the modify: h3 breaking and re-creating each join, to simulate right modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h3, age = 34;
+    modify:
+        otnRight1, [h3];
+    join1:
+        rightMemory, [h4, h5, h3]; // notice that h3 moves to the end
+    join2:
+        leftMemory, [[h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5], [h1, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h3, age = 35;
+    modify:
+        otnRight1, [h3];
+    join1:
+        rightMemory, [h4, h5, h3]; // notice that h3 moves to the end
+    join2:
+        leftMemory, [[h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h3, age = 36;
+    modify:
+        otnRight1, [h3];
+    join2:
+        leftMemory, [[h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h1, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h3, age = 37;
+    modify:
+        otnRight1, [h3];
+    join2:
+        leftMemory, [[h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h3], [h1, h3], [h2, h3]]; // notice that all child tuples as a result of the modify: are moved to the end
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+
+    /**
+     * insert all and the modify: h4 breaking and re-creating each join, to simulate right modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h4, age = 34;
+    modify:
+        otnRight1, [h4];
+    join1:
+        rightMemory, [h3, h5, h4]; // notice that h4 moves to the end
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h5], [h1, h5], [h2, h5], [h1, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h4, age = 35;
+    modify:
+        otnRight1, [h4];
+    join1:
+        rightMemory, [h3, h5, h4]; // notice that h4 moves to the end
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h4, age = 36;
+    modify:
+        otnRight1, [h4];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h1, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h4, age = 38;
+    modify:
+        otnRight1, [h4];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h5], [h1, h5], [h2, h5], [h0, h4], [h1, h4], [h2, h4] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+
+    /**
+     * insert all and the modify: h5 breaking and re-creating each join, to simulate right modifies
+     */
+    assert:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5]];
+    With:
+        h5, age = 34;
+    modify:
+        otnRight1, [h5];
+    join1:
+        rightMemory, [h3, h4, h5]; // notice that h4 is still on the end
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h1, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h5, age = 35;
+    modify:
+        otnRight1, [h5];
+    join1:
+        rightMemory, [h3, h4, h5]; // notice that h4 is still on the end
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h5, age = 36;
+    modify:
+        otnRight1, [h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    With:
+        h5, age = 39;
+    modify:
+        otnRight1, [h5];
+    join2:
+        leftMemory, [[h0, h3], [h1, h3], [h2, h3],
+                    [h0, h4], [h1, h4], [h2, h4],
+                    [h0, h5], [h1, h5], [h2, h5] ]; // notice that all child tuples as a result of the modify: are moved to the end
+    retract:
+        otnLeft1, [h0, h1, h2];
+        otnRight1, [h3, h4, h5];

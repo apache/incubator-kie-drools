@@ -4,169 +4,168 @@ import org.drools.Cheese;
 import org.drools.Person;
 
 Setup
-	Binding:
-	    $likes, 0, Person, likes;
-	    $price, 1, Cheese, price;
-	AccumulateNode:
-	    acc, mock, mock, Cheese, $price;
-	    source, type, ==, $likes;
-	    result, intValue, >, 10;
-	LeftTupleSink:
-	    sink, acc;
-	Facts:
-	    new Person('darth', 35, "brie"),     // h0     
-	    new Person('bobba', 36, 'stilton'),  // h1
-	    new Cheese('brie', 10),              // h2
-	    new Cheese('brie', 12),              // h3
-	    new Cheese('stilton', 15),           // h4
-	    new Cheese('brie', 12);              // h5
-	
+    Binding:
+        $likes, 0, Person, likes;
+        $price, 1, Cheese, price;
+    AccumulateNode:
+        acc, mock, mock, Cheese, $price;
+        source, type, ==, $likes;
+        result, intValue, >, 10;
+    LeftTupleSink:
+        sink, acc;
+    Facts:
+        new Person('darth', 35, "brie"),     // h0
+        new Person('bobba', 36, 'stilton'),  // h1
+        new Cheese('brie', 10),              // h2
+        new Cheese('brie', 12),              // h3
+        new Cheese('stilton', 15),           // h4
+        new Cheese('brie', 12);              // h5
+
 /**
  * check single left assertion and retraction
  */
 Test "Simple assertion and retraction"	
-	assert:
-	    acc, [[h0]];
-	acc:
-	    leftMemory, [[h0]];
-	sink:
-	    verify, assertLeft, count, 0;
-	retract:
-	    acc, [[h0]];   
-	acc:
-	    leftMemory, [];
-	sink:
-	    verify, retractLeft, count, 0;
-	    
+    assert:
+        acc, [[h0]];
+    acc:
+        leftMemory, [[h0]];
+    sink:
+        verify, assertLeft, count, 0;
+    retract:
+        acc, [[h0]];
+    acc:
+        leftMemory, [];
+    sink:
+        verify, retractLeft, count, 0;
+
 /**    
  * check single right assertion and retraction
  */
 Test "Single right assertion and retraction"
-	assert:
-	    acc, [h2];
-	acc:
-	    rightMemory, [h2];
-	retract:
-	    acc, [h2]; 
-	acc:
-	    rightMemory, [];
-	sink:
-	    verify, assertLeft, count, 0;
-	    verify, retractLeft, count, 0;
-	
+    assert:
+        acc, [h2];
+    acc:
+        rightMemory, [h2];
+    retract:
+        acc, [h2];
+    acc:
+        rightMemory, [];
+    sink:
+        verify, assertLeft, count, 0;
+        verify, retractLeft, count, 0;
+
 /**        
  *  check single left then right assertion
  */
  Test "accumulate node single left then right assertion" 
-	assert:
-	    acc, [[h0]];  
-	sink:
-	    verify, assertLeft, count, 0;
-	assert:
-	    acc, [h3];
-	acc:
-	    leftMemory, [[h0]];  
-	    rightMemory, [h3];  
-	sink:
-	    verify, assertLeft, count, 1;
-	    verify, assertLeft, tuple0[1].object.intValue() == 12;
-	    verify, modifyLeft, count, 0;
-	    verify, retractLeft, count, 0;
-	retract:
-	    acc, [[h0]]; 
-	    acc, [h3];
-	sink:
-	    verify, retractLeft, count, 1;
-	    verify, modifyLeft, count, 0; // still 0, so calls on modify
-	    verify, assertLeft, count, 1; // checking just in case
-	   
+    assert:
+        acc, [[h0]];
+    sink:
+        verify, assertLeft, count, 0;
+    assert:
+        acc, [h3];
+    acc:
+        leftMemory, [[h0]];
+        rightMemory, [h3];
+    sink:
+        verify, assertLeft, count, 1;
+        verify, assertLeft, tuple0[1].object.intValue() == 12;
+        verify, modifyLeft, count, 0;
+        verify, retractLeft, count, 0;
+    retract:
+        acc, [[h0]];
+        acc, [h3];
+    sink:
+        verify, retractLeft, count, 1;
+        verify, modifyLeft, count, 0; // still 0, so calls on modify
+        verify, assertLeft, count, 1; // checking just in case
+
 /**    
  *  check single right then left assertion
  */
 Test "single right then left assertion" 
-	assert:
-	    acc, [h2];
-	    acc, [[h1]];  
-	acc:
-	    leftMemory, [[h1]];  
-	    rightMemory, [h2];  
-	sink:
-	    verify, assertLeft, count, 0;
-	    verify, modifyLeft, count, 0; // checking, just in case
-	    verify, retractLeft, count, 0;
-	retract:
-	    acc, [[h1]]; 
-	    acc, [h2];    
-	acc:
-	    leftMemory, [];  
-	    rightMemory, [];  
-	sink:
-	    verify, retractLeft, count, 0;
-	    verify, modifyLeft, count, 0;
-	    verify, assertLeft, count, 0;
-	
+    assert:
+        acc, [h2];
+        acc, [[h1]];
+    acc:
+        leftMemory, [[h1]];
+        rightMemory, [h2];
+    sink:
+        verify, assertLeft, count, 0;
+        verify, modifyLeft, count, 0; // checking, just in case
+        verify, retractLeft, count, 0;
+    retract:
+        acc, [[h1]];
+        acc, [h2];
+    acc:
+        leftMemory, [];
+        rightMemory, [];
+    sink:
+        verify, retractLeft, count, 0;
+        verify, modifyLeft, count, 0;
+        verify, assertLeft, count, 0;
+
 /**    
  * assert two left and two right, with incremental first removal
  */
 Test "testing modifies" 
-	assert:
-	    acc, [[h0], [h1]];
-	    acc, [h2, h3];
-	acc:
-	    leftMemory, [[h0]];
-	    leftMemory, [[h1]];  
-	    rightMemory, [h2, h3];  
-	sink:
-	    verify, assertLeft, count, 1;                // only h0 matches and propagates
-	    verify, modifyLeft, count, 0;                // still no modifies
-	    verify, assertLeft, tuple0[0], is( h0 );
-	    verify, assertLeft, tuple0[1].object == 22;  // that is the result of the sum
-	assert:
-		acc, [h4, h5];
-	acc:
-	    leftMemory, [[h0]];
-	    leftMemory, [[h1]];  
-	    rightMemory, [h2, h3, h5];
-	    rightMemory, [h4];
-	sink:
-	    verify, assertLeft, count, 2;                // h4 also matched h1 now, so we got a new assert
-	    verify, assertLeft, tuple1[0], is( h1 );
-	    verify, assertLeft, tuple1[1].object == 15;  // that is the result of the sum of h4
-	    verify, modifyLeft, count, 1;                // h5 causes a modify call
-	    verify, modifyLeft, tuple0[0], is( h0 );
-	    verify, modifyLeft, tuple0[1].object == 34;
-	    verify, retractLeft, count, 0;               // checking just in case
-	retract:
-	    acc, [h2];
-	sink:
-	    verify, modifyLeft, count, 2;                // h5 causes a modify call
-	    verify, modifyLeft, tuple1[0], is( h0 );
-	    verify, modifyLeft, tuple1[1].object == 24;
-	acc:
-	    leftMemory, [[h0]];  
-	    leftMemory, [[h1]];  
-	    rightMemory, [h3, h5];  
-	    rightMemory, [h4];
-	retract:
-	    acc, [[h0]];
-	    acc, [[h1]];  
-	sink:
-	    verify, retractLeft, count, 2;
-	    verify, retractLeft, tuple0[0], is( h0 );
-	    verify, retractLeft, tuple1[0], is( h1 );
-	acc:
-	    leftMemory, [];  
-	    rightMemory, [h3, h5];  
-	    rightMemory, [h4];
-	retract:
-	    acc, [h3, h4, h5];	
-	acc:
-	    leftMemory, [];  
-	    rightMemory, [];  
-	sink:
-	    // checking final totals
-	    verify, assertLeft, count, 2; 
-	    verify, modifyLeft, count, 2; 
-	    verify, retractLeft, count, 2; 
+    assert:
+        acc, [[h0], [h1]];
+        acc, [h2, h3];
+    acc:
+        leftMemory, [[h0]];
+        leftMemory, [[h1]];
+        rightMemory, [h2, h3];
+    sink:
+        verify, assertLeft, count, 1;                // only h0 matches and propagates
+        verify, modifyLeft, count, 0;                // still no modifies
+        verify, assertLeft, tuple0[0], is( h0 );
+        verify, assertLeft, tuple0[1].object == 22;  // that is the result of the sum
+    assert:
+        acc, [h4, h5];
+    acc:
+        leftMemory, [[h0]];
+        leftMemory, [[h1]];
+        rightMemory, [h2, h3, h5];
+        rightMemory, [h4];
+    sink:
+        verify, assertLeft, count, 2;                // h4 also matched h1 now, so we got a new assert
+        verify, assertLeft, tuple1[0], is( h1 );
+        verify, assertLeft, tuple1[1].object == 15;  // that is the result of the sum of h4
+        verify, modifyLeft, count, 1;                // h5 causes a modify call
+        verify, modifyLeft, tuple0[0], is( h0 );
+        verify, modifyLeft, tuple0[1].object == 34;
+        verify, retractLeft, count, 0;               // checking just in case
+    retract:
+        acc, [h2];
+    sink:
+        verify, modifyLeft, count, 2;                // h5 causes a modify call
+        verify, modifyLeft, tuple1[0], is( h0 );
+        verify, modifyLeft, tuple1[1].object == 24;
+    acc:
+        leftMemory, [[h0]];
+        leftMemory, [[h1]];
+        rightMemory, [h3, h5];
+        rightMemory, [h4];
+    retract:
+        acc, [[h0]];
+        acc, [[h1]];
+    sink:
+        verify, retractLeft, count, 2;
+        verify, retractLeft, tuple0[0], is( h0 );
+        verify, retractLeft, tuple1[0], is( h1 );
+    acc:
+        leftMemory, [];
+        rightMemory, [h3, h5];
+        rightMemory, [h4];
+    retract:
+        acc, [h3, h4, h5];
+    acc:
+        leftMemory, [];
+        rightMemory, [];
+    sink:
+        // checking final totals
+        verify, assertLeft, count, 2;
+        verify, modifyLeft, count, 2;
+        verify, retractLeft, count, 2;
 
-	    
