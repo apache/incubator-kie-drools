@@ -10,7 +10,7 @@ function String someFunction() {
 }
 
 rule "mvel1"
-	dialect "mvel"
+    dialect "mvel"
     when
         $c : Cheese(type == "stilton", price == (new Integer( 5 ) + 5 ), eval(price == (new Integer( 5 ) + 5 ) ) )
         eval( $c.price == 10 && list == empty)
@@ -27,7 +27,7 @@ end
 
 
 rule "mvel2"
-	dialect "mvel"
+    dialect "mvel"
     when
         $c : Cheese(type == "stilton", price == 20 )
     then

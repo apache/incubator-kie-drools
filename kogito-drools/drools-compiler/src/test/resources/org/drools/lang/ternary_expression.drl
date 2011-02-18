@@ -2,8 +2,8 @@ package foo
 
 rule rule_one 
   when
-  	Foo()
+      Foo()
   then
-  	 if (speed > speedLimit ? true : false;)
+       if (speed > speedLimit ? true : false;)
      pullEmOver();
 end

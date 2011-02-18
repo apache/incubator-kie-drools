@@ -5,8 +5,8 @@ package foo.bar
 
 /*
 yet
-	   another
-   				style
+       another
+                   style
 */
 
 rule "test"

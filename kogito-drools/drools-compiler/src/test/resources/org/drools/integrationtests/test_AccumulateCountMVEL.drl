@@ -9,8 +9,8 @@ rule "External Function" salience 80
     dialect "mvel"
     when
         $person : Person( $likes : likes )
-    	$count  : Number( intValue >= 2 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes  ),
+        $count  : Number( intValue >= 2 )
+                               from accumulate( $cheese : Cheese( type == $likes  ),
                                                 count( $cheese ) );
     then
         results.add( $count );

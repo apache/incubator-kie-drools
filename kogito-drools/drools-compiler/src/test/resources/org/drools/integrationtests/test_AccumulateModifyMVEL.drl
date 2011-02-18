@@ -10,10 +10,10 @@ rule "Constraints everywhere" salience 80
     dialect "mvel"
     when
         $person      : Person( $likes : likes )
-    	$cheesery    : Cheesery( totalAmount > 20 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes ),
+        $cheesery    : Cheesery( totalAmount > 20 )
+                               from accumulate( $cheese : Cheese( type == $likes ),
                                                 init( cheesery = new Cheesery(); ),
-    	                                        action( cheesery.addCheese( $cheese ); ),
+                                                action( cheesery.addCheese( $cheese ); ),
                                                 result( cheesery ) );
     then
         results.add( $cheesery );

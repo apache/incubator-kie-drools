@@ -19,77 +19,77 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 rule "Redundant consiquence 1a"
-	when
-		    $f :Foo1()
-	then
-		insert( new Test( Test.TestType.TESTING, $f, $f ) );
+    when
+            $f :Foo1()
+    then
+        insert( new Test( Test.TestType.TESTING, $f, $f ) );
 end
 
 rule "Redundant consiquence 1b"
-	when
-		    $f :Foo1()
-	then
-		insert( new Test( Test.TestType.TESTING, $f, $f ) );
+    when
+            $f :Foo1()
+    then
+        insert( new Test( Test.TestType.TESTING, $f, $f ) );
 end
 
 rule "Redundant consiquence 2a"
-	when
-		    $f :Foo1()
-	then
-		Collection c = new ArrayList();
-		c.add( "a" );
-		c.add( "b" );
-		c.add( "c" );
-		c.add( "d" );
-		c.add( "e" );
-		insert( new Test( c ) );
+    when
+            $f :Foo1()
+    then
+        Collection c = new ArrayList();
+        c.add( "a" );
+        c.add( "b" );
+        c.add( "c" );
+        c.add( "d" );
+        c.add( "e" );
+        insert( new Test( c ) );
 end
 
 rule "Redundant consiquence 2b"
-	when
-		    $f :Foo1()
-	then
-		Collection c = new ArrayList();
-		c.add( "a" );
-		c.add( "b" );
-		c.add( "c" );
-		c.add( "d" );
-		c.add( "e" );
-		insert( new Test( c ) );
+    when
+            $f :Foo1()
+    then
+        Collection c = new ArrayList();
+        c.add( "a" );
+        c.add( "b" );
+        c.add( "c" );
+        c.add( "d" );
+        c.add( "e" );
+        insert( new Test( c ) );
 end
 
 rule "Redundant consiquence 3a"
-	when
-		    $f :Foo1()
-	then
-		Collection c = new ArrayList();
-		c.add( "a" );
-		c.add( "b" );
-		
-		c.add( "c" );
-		
-		# comment
-		
-		c.add( "d" );
-		c.add( "e" );
-		c.add( "f" );
-		insert( new Test( c ) );
+    when
+            $f :Foo1()
+    then
+        Collection c = new ArrayList();
+        c.add( "a" );
+        c.add( "b" );
+
+        c.add( "c" );
+
+        # comment
+
+        c.add( "d" );
+        c.add( "e" );
+        c.add( "f" );
+        insert( new Test( c ) );
 end
 
 rule "Redundant consiquence 3b"
-	when
-		    $f :Foo1()
-	then
-		Collection c = new ArrayList();
-		c.add( "a" );
-		c.add( "b" );
-		
-		# comment
-		
-		c.add( "c" );
-		
-		c.add( "d" );
-		c.add( "e" );
-		c.add( "f" );
-		insert( new Test( c ) );
+    when
+            $f :Foo1()
+    then
+        Collection c = new ArrayList();
+        c.add( "a" );
+        c.add( "b" );
+
+        # comment
+
+        c.add( "c" );
+
+        c.add( "d" );
+        c.add( "e" );
+        c.add( "f" );
+        insert( new Test( c ) );
 end

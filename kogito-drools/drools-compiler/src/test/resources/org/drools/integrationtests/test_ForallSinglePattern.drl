@@ -2,9 +2,9 @@ package org.drools;
 
 global java.util.List results;
 
-rule "test forall single pattern"	
-	when
-	    forall( Cheese( type == "stilton" ) )
-	then 
-		results.add("OK");		
+rule "test forall single pattern"
+    when
+        forall( Cheese( type == "stilton" ) )
+    then
+        results.add("OK");
 end

@@ -5,32 +5,32 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "Cheese matches stilton"
-	salience 10
+    salience 10
     when
         stilton : Cheese( type matches "[Ss]tilto[^0-9]" )
     then
-		list.add( stilton );
+        list.add( stilton );
 end   
 
 rule "Cheese not matches"
     when
         brie : Cheese( type not matches "(stil.*|mu\\w*|brie\\d|aged.*|.*prov.*)" )
     then
-		list.add( brie );
+        list.add( brie );
 end   
 
 rule "Cheese matches with space"
-	salience -10
+    salience -10
     when
         stilton : Cheese( type matches "aged stilton" )
     then
-		list.add( stilton );
+        list.add( stilton );
 end   
 
 rule "Cheese matches with ^ and escaped s"
-	salience -20
+    salience -20
     when
         prov : Cheese( type matches "^provolone\\s*" )
     then
-		list.add( prov );
+        list.add( prov );
 end   

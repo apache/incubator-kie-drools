@@ -19,22 +19,22 @@ package com.misc.someData
 import com.sample.DroolsTest.Message;
 
 rule "Wrong descr order 1"
-	when
-		Foo( bar > 1, bar == 1)
-	then
-		// Something
+    when
+        Foo( bar > 1, bar == 1)
+    then
+        // Something
 end
 
 rule "Ok descr order"
-	when
-		Foo( bar > 1 || == 1)
-	then
-		// Something
+    when
+        Foo( bar > 1 || == 1)
+    then
+        // Something
 end
 
 rule "Wrong eval order 1"
-	when
-		Foo( eval( bar == 1 ), baz == 1)
-	then
-		// Something
+    when
+        Foo( eval( bar == 1 ), baz == 1)
+    then
+        // Something
 end

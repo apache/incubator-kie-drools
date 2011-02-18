@@ -5,18 +5,18 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule "not rule test"
-	salience 10
+    salience 10
     when       
         not Cheese( price == 5 )
     then
-		list.add( new Integer( 5 ) );
+        list.add( new Integer( 5 ) );
 end    
 
 rule "not rule with bound variable"
     when
         not Cheese( $price:price -> ( $price == 5 ) )
     then
-		list.add( new Integer( 6 ) );
+        list.add( new Integer( 6 ) );
 end
 
 rule "not rule with other patterns 1"
@@ -24,7 +24,7 @@ rule "not rule with other patterns 1"
         Cheese( $type : type == "cheddar" )
         not Cheese( price == 5 )
     then
-		list.add( new Integer( 7 ) );
+        list.add( new Integer( 7 ) );
 end
 
 rule "not rule with other patterns 2"
@@ -32,5 +32,5 @@ rule "not rule with other patterns 2"
         not Cheese( price == 5 )
         Cheese( $type : type == "cheddar" )
     then
-		list.add( new Integer( 8 ) );
+        list.add( new Integer( 8 ) );
 end

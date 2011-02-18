@@ -8,7 +8,7 @@ global java.util.List results;
 rule MyRule
     dialect "java"
 when
-	$i : ArrayList() from collect(Cheese() from cheesery.getCheeses())
+    $i : ArrayList() from collect(Cheese() from cheesery.getCheeses())
     $k : ArrayList() from collect(Cheese() from cheesery.getCheeses())
 then
     results.add( $i );

@@ -48,48 +48,48 @@ global VerifierReport result;
 # Example: IncorencePattern1( a == "b", a != "b" )
 #
 rule "Incoherent LiteralRestrictions in pattern possibility"
-	when
-		$r1 :LiteralRestriction(
-			# Not >= and <=, because ( a <=, a >= ) works.
-			# And not < or > because they are handled in a separate rule.
-			( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
-		)
+    when
+        $r1 :LiteralRestriction(
+            # Not >= and <=, because ( a <=, a >= ) works.
+            # And not < or > because they are handled in a separate rule.
+            ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
+        )
 
-		$r2 :LiteralRestriction(
-			patternPath == $r1.patternPath,
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			path != $r1.path,
-			# Operator needs to be reversed to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() )),
-			valueAsString == $r1.valueAsString
-		)
+        $r2 :LiteralRestriction(
+            patternPath == $r1.patternPath,
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            path != $r1.path,
+            # Operator needs to be reversed to what the other one has.
+            eval( operator == MissingRange.getReversedOperator( $r1.getOperator() )),
+            valueAsString == $r1.valueAsString
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-	
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 #
@@ -100,45 +100,45 @@ end
 # Example: IncorencePattern( a > 10 && a < -10 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible ranges"
-	when
-		$r1 :NumberRestriction(
-			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER )
-		)
+    when
+        $r1 :NumberRestriction(
+            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER )
+        )
 
-		$r2 :NumberRestriction(
-			patternPath == $r1.patternPath,
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS),
-			path != $r1.path,
-			value < $r1.value
-		)
-		
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        $r2 :NumberRestriction(
+            patternPath == $r1.patternPath,
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS),
+            path != $r1.path,
+            value < $r1.value
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
+
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 #
@@ -149,45 +149,45 @@ end
 # Example: IncorencePattern( a < 1 && a == 10 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality less or equal"
-	when
-		$r1 :NumberRestriction(
-			operator == Operator.EQUAL
-		)
+    when
+        $r1 :NumberRestriction(
+            operator == Operator.EQUAL
+        )
 
-		$r2 :NumberRestriction(
-			patternPath == $r1.patternPath,
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
-			path != $r1.path,
-			value < $r1.value
-		)
+        $r2 :NumberRestriction(
+            patternPath == $r1.patternPath,
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS || == Operator.EQUAL ),
+            path != $r1.path,
+            value < $r1.value
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 #
@@ -198,45 +198,45 @@ end
 # Example: IncorencePattern( a > 10 && a == 1 )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible equality greater"
-	when
-		$r1 :NumberRestriction(
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
-		)
+    when
+        $r1 :NumberRestriction(
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL )
+        )
 
-		$r2 :NumberRestriction(
-			patternPath == $r1.patternPath,
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			operator == Operator.EQUAL,
-			path != $r1.path,
-			value < $r1.value
-		)
+        $r2 :NumberRestriction(
+            patternPath == $r1.patternPath,
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            operator == Operator.EQUAL,
+            path != $r1.path,
+            value < $r1.value
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 #
@@ -247,45 +247,45 @@ end
 # Example: IncorencePattern( a < "12-Dec-2007", a > "12-Dec-2007" )
 #
 rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossible range"
-	when
-		$r1 :LiteralRestriction(
-			operator == Operator.LESS
-		)
+    when
+        $r1 :LiteralRestriction(
+            operator == Operator.LESS
+        )
 
-		$r2 :LiteralRestriction(
-			patternPath == $r1.patternPath,
-			restrictionType == $r1.restrictionType,
-			fieldPath == $r1.fieldPath,
-			valueType == $r1.valueType,
-			operator == Operator.GREATER,
-			path != $r1.path,
-			valueAsString == $r1.valueAsString
-		)
+        $r2 :LiteralRestriction(
+            patternPath == $r1.patternPath,
+            restrictionType == $r1.restrictionType,
+            fieldPath == $r1.fieldPath,
+            valueType == $r1.valueType,
+            operator == Operator.GREATER,
+            path != $r1.path,
+            valueAsString == $r1.valueAsString
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 #
@@ -296,47 +296,47 @@ end
 # Example: IncorencePattern( a contains $o, a not contains $o )
 #
 rule "Incoherent VariableRestrictions in pattern possibility"
-	when
-		$r1 :VariableRestriction(
-			# Not >= and <=, because ( a <=, a >= ) works.
-			# And not < or > because they are handled in a separete rule.
-			( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
-		)
+    when
+        $r1 :VariableRestriction(
+            # Not >= and <=, because ( a <=, a >= ) works.
+            # And not < or > because they are handled in a separete rule.
+            ( operator != Operator.GREATER_OR_EQUAL || != Operator.LESS_OR_EQUAL || != Operator.LESS || != Operator.GREATER )
+        )
 
-		$r2 :VariableRestriction(
-			patternPath == $r1.patternPath,
-			fieldPath == $r1.fieldPath,
-			path != $r1.path,
-			variable.objectTypePath == $r1.variable.objectTypePath,
-			variable.objectTypeType == $r1.variable.objectTypeType,
-			# Operator needs to be reversed to what the other one has.
-			eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
-		)
+        $r2 :VariableRestriction(
+            patternPath == $r1.patternPath,
+            fieldPath == $r1.fieldPath,
+            path != $r1.path,
+            variable.objectTypePath == $r1.variable.objectTypePath,
+            variable.objectTypeType == $r1.variable.objectTypeType,
+            # Operator needs to be reversed to what the other one has.
+            eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 
 
@@ -348,43 +348,43 @@ end
 # Example: IncorencePattern( a > $var, a < $var )
 #
 rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
-	when
-		$r1 :VariableRestriction(
-			operator == Operator.LESS
-		)
+    when
+        $r1 :VariableRestriction(
+            operator == Operator.LESS
+        )
 
-		$r2 :VariableRestriction(
-			patternPath == $r1.patternPath,
-			fieldPath == $r1.fieldPath,
-			operator == Operator.GREATER,
-			variable.objectTypePath == $r1.variable.objectTypePath,
-			variable.objectTypeType == $r1.variable.objectTypeType,
-			path != $r1.path
-		)
+        $r2 :VariableRestriction(
+            patternPath == $r1.patternPath,
+            fieldPath == $r1.fieldPath,
+            operator == Operator.GREATER,
+            variable.objectTypePath == $r1.variable.objectTypePath,
+            variable.objectTypeType == $r1.variable.objectTypeType,
+            path != $r1.path
+        )
 
-		# There is a problem if both of these are in the same SubPattern.
-		$pp :SubPattern(
-			 items contains $r1,
-			 items contains $r2
-		)
+        # There is a problem if both of these are in the same SubPattern.
+        $pp :SubPattern(
+             items contains $r1,
+             items contains $r2
+        )
 
-		$p :Pattern( path == $pp.patternPath )
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $p.getRulePath(), $p.getRuleName());
-		
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
+        $p :Pattern( path == $pp.patternPath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.ERROR,
-								MessageType.INCOHERENCE,
-								$p,
-								"Restriction " + $r1 + " and " + $r2 +
-								"are in conflict. Because of this, pattern that contains them can never be satisfied.",
-								list
-								) );
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.ERROR,
+                                MessageType.INCOHERENCE,
+                                $p,
+                                "Restriction " + $r1 + " and " + $r2 +
+                                "are in conflict. Because of this, pattern that contains them can never be satisfied.",
+                                list
+                                ) );
 end
 

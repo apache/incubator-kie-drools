@@ -8,6 +8,6 @@ rule "match Person"
     when
         $person : Person()
     then
-		list.add( $person );
-        $person.setStatus("match Person ok");		
+        list.add( $person );
+        $person.setStatus("match Person ok");
 end    

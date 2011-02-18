@@ -35,41 +35,41 @@ global VerifierReport result;
 #
 #
 rule "Find subsumptant sub rules"
-	when
-	
-		$subRule1 :SubRule()
-		$subRule2 :SubRule( 
-			path != $subRule1.path,
-			attributes["ruleflow-group"] == $subRule1.attributes["ruleflow-group"],
-			attributes["agenda-group"] == $subRule1.attributes["agenda-group"],
-			attributes["xor-group"] == $subRule1.attributes["xor-group"]
-		)
-		
-		# For every restriction in $subRule1 there is a subsumption to a restriction in $subRule2.
-		forall (
-			$subPattern :SubPattern(
-			) from $subRule1.items
-			
-			Subsumption(
-				left == $subPattern,
-				right memberOf $subRule2.items
-			)
-		)
-		
-		$causes : ArrayList()
-        	from collect( 
-              	Subsumption(
-      				left memberOf $subRule1.items,  			
-          			right memberOf $subRule2.items
-              	) 
+    when
+
+        $subRule1 :SubRule()
+        $subRule2 :SubRule(
+            path != $subRule1.path,
+            attributes["ruleflow-group"] == $subRule1.attributes["ruleflow-group"],
+            attributes["agenda-group"] == $subRule1.attributes["agenda-group"],
+            attributes["xor-group"] == $subRule1.attributes["xor-group"]
+        )
+
+        # For every restriction in $subRule1 there is a subsumption to a restriction in $subRule2.
+        forall (
+            $subPattern :SubPattern(
+            ) from $subRule1.items
+
+            Subsumption(
+                left == $subPattern,
+                right memberOf $subRule2.items
             )
-	then
-		insert( 
-			new Subsumption( 
-				$subRule1, 
-				$subRule2,
-				$causes 
-			) 
-		);
+        )
+
+        $causes : ArrayList()
+            from collect(
+                  Subsumption(
+                      left memberOf $subRule1.items,
+                      right memberOf $subRule2.items
+                  )
+            )
+    then
+        insert(
+            new Subsumption(
+                $subRule1,
+                $subRule2,
+                $causes
+            )
+        );
 end
 

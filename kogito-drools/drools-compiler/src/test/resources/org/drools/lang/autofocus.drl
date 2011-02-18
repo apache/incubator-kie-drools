@@ -2,7 +2,7 @@
 rule rule1 
   auto-focus true
   when
-  	not Cheese(type == "stilton")
+      not Cheese(type == "stilton")
   then
-	funky();
+    funky();
 end

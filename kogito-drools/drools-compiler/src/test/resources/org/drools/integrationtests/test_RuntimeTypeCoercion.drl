@@ -4,9 +4,9 @@ global java.util.List results;
 
 rule "Testing coercion"
     salience 100
-	when
-		PolymorphicFact( $value : data < 15 )
-	then
-		results.add( $value );	
+    when
+        PolymorphicFact( $value : data < 15 )
+    then
+        results.add( $value );
 end
 

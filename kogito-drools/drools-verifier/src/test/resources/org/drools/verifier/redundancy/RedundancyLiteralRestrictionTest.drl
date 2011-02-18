@@ -19,85 +19,85 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 rule "Redundant 1a"
-	when
-		    Foo1( bar == "baz" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( bar == "baz" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 1b"
-	when
-		    Foo1( bar == "baz" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( bar == "baz" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 2a"
-	when
-		    Foo2( bar == 123 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo2( bar == 123 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 2b"
-	when
-		    Foo2( bar == 123 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo2( bar == 123 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 3a"
-	when
-		    Foo3( bar == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo3( bar == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 3b"
-	when
-		    Foo3( bar == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo3( bar == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 4a"
-	when
-		    Foo4( bar != "baz" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo4( bar != "baz" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 4b"
-	when
-		    Foo4( bar != "baz" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo4( bar != "baz" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 5a"
-	when
-		    Foo5( bar > 123 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( bar > 123 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 5b"
-	when
-		    Foo5( bar > 123 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( bar > 123 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 6a"
-	when
-		    Foo6( bar < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( bar < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Redundant 6b"
-	when
-		    Foo6( bar < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( bar < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end

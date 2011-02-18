@@ -1,9 +1,9 @@
 
 rule simple_rule 
-		duration ( 1h30m )
-		lock-on-active true
-	when
-		Foo()
-	then
-		bar();
+        duration ( 1h30m )
+        lock-on-active true
+    when
+        Foo()
+    then
+        bar();
 end

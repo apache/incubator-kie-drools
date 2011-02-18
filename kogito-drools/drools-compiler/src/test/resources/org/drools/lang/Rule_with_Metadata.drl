@@ -2,9 +2,9 @@
 package org.drools;
 
 rule test_rule
-	@fooMeta1(barVal1)
-	@fooMeta2(barVal2)
-	when
-	then
-	    System.out.println("Consequence");
+    @fooMeta1(barVal1)
+    @fooMeta2(barVal2)
+    when
+    then
+        System.out.println("Consequence");
 end

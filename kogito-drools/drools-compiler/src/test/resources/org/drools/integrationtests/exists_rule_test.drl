@@ -8,5 +8,5 @@ rule "42. exists rule test"
     when       
         exists Cheese( price == 5 )
     then
-		list.add( new Integer( 5 ) );
+        list.add( new Integer( 5 ) );
 end    

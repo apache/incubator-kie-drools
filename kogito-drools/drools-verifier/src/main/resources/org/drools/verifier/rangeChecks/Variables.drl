@@ -34,64 +34,64 @@ import java.util.Locale;
 # 
 # Type: Warning
 # Example: in "Rule 1" Something( $value :value ) and Foo( bar > $value ) 
-#			and in "Rule 2" Something( $value :value ) and Foo( bar < $value ) 
-# 					then Foo( bar == Something.value ) is missing.
+#            and in "Rule 2" Something( $value :value ) and Foo( bar < $value )
+#                     then Foo( bar == Something.value ) is missing.
 rule "Range check for variables when restriction is VariableRestriction"
-	when
-		# Find a field that is of type variable.
-		$f :Field( fieldType == Field.VARIABLE )
-		# Find constraint that matches this field
-		# Find variable that is on the right side of this constraint i.e. bar > $foo
-		# Find another variable that points to the same field. 
-		# Find another constraint and check if it continues to check the range for this field.
-		(
-				$r :VariableRestriction( fieldId == $f.path, evaluator == ">" )
-			and
-				$v1 :Variable( id == $r.variableId )
-			and
-				$v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
-			and
-				not VariableRestriction( fieldId == $f.path, ( evaluator == "==" || == "<=" ), 
-														variableId == $v2.path,
-														patternIsNot == $r.patternIsNot )
-		) or (
-				$r :VariableRestriction( fieldId == $f.path, evaluator == "<" )
-			and
-				$v1 :Variable( id == $r.variableId )
-			and
-				$v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
-			and
-				not VariableRestriction( fieldId == $f.path, ( evaluator == "==" || == ">=" ), 
-														variableId == $v2.path,
-														patternIsNot == $r.patternIsNot )
-		) or (
-				$r :VariableRestriction( fieldId == $f.path, evaluator == "<=" )
-			and
-				$v1 :Variable( id == $r.variableId )
-			and
-				$v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
-			and
-				not VariableRestriction( fieldId == $f.path, evaluator == ">", 
-														variableId == $v2.path,
-														patternIsNot == $r.patternIsNot )
-		) or (
-				$r :VariableRestriction( fieldId == $f.path, evaluator == ">=" )
-			and
-				$v1 :Variable( id == $r.variableId )
-			and
-				$v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
-			and
-				not VariableRestriction( fieldId == $f.path, evaluator == "<", 
-														variableId == $v2.path,
-														patternIsNot == $r.patternIsNot )
-		)
-		$rule :VerifierRule( id == $r.ruleId )
-	then
-		Gap gap = new Gap();
-		gap.setCause($f);
-		gap.setRuleName($rule.getName());
-		gap.setEvaluator($r.getEvaluator());
-		gap.setValue("variable");
-		insert( gap );
+    when
+        # Find a field that is of type variable.
+        $f :Field( fieldType == Field.VARIABLE )
+        # Find constraint that matches this field
+        # Find variable that is on the right side of this constraint i.e. bar > $foo
+        # Find another variable that points to the same field.
+        # Find another constraint and check if it continues to check the range for this field.
+        (
+                $r :VariableRestriction( fieldId == $f.path, evaluator == ">" )
+            and
+                $v1 :Variable( id == $r.variableId )
+            and
+                $v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
+            and
+                not VariableRestriction( fieldId == $f.path, ( evaluator == "==" || == "<=" ),
+                                                        variableId == $v2.path,
+                                                        patternIsNot == $r.patternIsNot )
+        ) or (
+                $r :VariableRestriction( fieldId == $f.path, evaluator == "<" )
+            and
+                $v1 :Variable( id == $r.variableId )
+            and
+                $v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
+            and
+                not VariableRestriction( fieldId == $f.path, ( evaluator == "==" || == ">=" ),
+                                                        variableId == $v2.path,
+                                                        patternIsNot == $r.patternIsNot )
+        ) or (
+                $r :VariableRestriction( fieldId == $f.path, evaluator == "<=" )
+            and
+                $v1 :Variable( id == $r.variableId )
+            and
+                $v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
+            and
+                not VariableRestriction( fieldId == $f.path, evaluator == ">",
+                                                        variableId == $v2.path,
+                                                        patternIsNot == $r.patternIsNot )
+        ) or (
+                $r :VariableRestriction( fieldId == $f.path, evaluator == ">=" )
+            and
+                $v1 :Variable( id == $r.variableId )
+            and
+                $v2 :Variable( objectId == $v1.objectId, objectType == $v1.objectType, id != $v1.path)
+            and
+                not VariableRestriction( fieldId == $f.path, evaluator == "<",
+                                                        variableId == $v2.path,
+                                                        patternIsNot == $r.patternIsNot )
+        )
+        $rule :VerifierRule( id == $r.ruleId )
+    then
+        Gap gap = new Gap();
+        gap.setCause($f);
+        gap.setRuleName($rule.getName());
+        gap.setEvaluator($r.getEvaluator());
+        gap.setValue("variable");
+        insert( gap );
 end 
 */

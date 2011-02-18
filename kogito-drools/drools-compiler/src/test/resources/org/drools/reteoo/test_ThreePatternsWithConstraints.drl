@@ -4,20 +4,20 @@ import org.drools.Cheese;
 import org.drools.Person;
 
 rule "three patterns with constraints 1"
-  when  		  	
+  when
     $cheese1 : Cheese( $type : type == "cheddar", $price1 : price )
     $cheese2 : Cheese( type == $type, $price2 : price -> ( $price1 == $price2 ) )    
    annotationson( name == $type )
   then
-	System.out.println( "done 1" );
+    System.out.println( "done 1" );
 end
 
 
 rule "three patterns with constraints 2"
-  when  		  	
+  when
     $cheese1 : Cheese( $type : type == "cheddar", $price1 : price )
     $cheese2 : Cheese( type == $type, $price2 : price -> ( $price1 == $price2 ) )   
   then
-	System.out.println( "done 2" );
+    System.out.println( "done 2" );
 
 end

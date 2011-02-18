@@ -28,5 +28,5 @@ rule assignFirstSeat
         guest : Guest()
         count : Count()
     then
-		# 
+        #
 end

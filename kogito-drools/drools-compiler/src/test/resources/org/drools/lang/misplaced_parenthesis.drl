@@ -1,9 +1,9 @@
 package org.drools;
 
 rule "test rule"
-	salience 10
-	when
-		$c: WorkerPerformanceContext(eval)$c.getBalanceMonth() != null))
-	then
-		retract($p);
+    salience 10
+    when
+        $c: WorkerPerformanceContext(eval)$c.getBalanceMonth() != null))
+    then
+        retract($p);
 end

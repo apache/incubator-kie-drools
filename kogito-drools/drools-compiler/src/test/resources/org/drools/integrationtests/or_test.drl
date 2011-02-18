@@ -8,5 +8,5 @@ rule "literal test rule"
     when
         Cheese(type == "stilton" ) or Cheese(type == "cheddar")
     then
-		list.add("got cheese");
+        list.add("got cheese");
 end   

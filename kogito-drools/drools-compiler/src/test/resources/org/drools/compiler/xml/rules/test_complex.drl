@@ -14,70 +14,70 @@ import pt.inescporto.cec.entities.BestParms;
 
 rule "ruleBestProductionOrderCreator"
 when
-		AccaoInspeccao( artigoID == 3 , $operID: operacaoID , $resourceID: recursoID, $ProdOrderID: ordemProducaoID, $IAID: accaoInspeccaoID  )
-		AccaoInspeccaoOperacao( inspectionActionID == $IAID, $tmp: inspAccaoOperacaoID  )
-		OtherInspectionMethod(inspActionOperacaoID == $tmp, $NCNumber: numeroNaoConformidades   )
-		not (MelhorEmNaoConformidades( operacaoID == $operID, recursoID == $resourceID ) ) 
-	then
-		insert(new MelhorEmNaoConformidades($ProdOrderID,$NCNumber,$operID,$resourceID));
+        AccaoInspeccao( artigoID == 3 , $operID: operacaoID , $resourceID: recursoID, $ProdOrderID: ordemProducaoID, $IAID: accaoInspeccaoID  )
+        AccaoInspeccaoOperacao( inspectionActionID == $IAID, $tmp: inspAccaoOperacaoID  )
+        OtherInspectionMethod(inspActionOperacaoID == $tmp, $NCNumber: numeroNaoConformidades   )
+        not (MelhorEmNaoConformidades( operacaoID == $operID, recursoID == $resourceID ) )
+    then
+        insert(new MelhorEmNaoConformidades($ProdOrderID,$NCNumber,$operID,$resourceID));
 end
-	
+
 rule "ruleBestProductionOrderChecker"
 when
-		AccaoInspeccao( artigoID ==3 , $operID: operacaoID, $resourceID: recursoID, $ProdOrderID: ordemProducaoID, $IAID: accaoInspeccaoID  )
-		AccaoInspeccaoOperacao( inspectionActionID == $IAID, $tmp: inspAccaoOperacaoID  )
-		OtherInspectionMethod( inspActionOperacaoID == $tmp, $NCNumber: numeroNaoConformidades   )
-		$t: MelhorEmNaoConformidades( operacaoID == $operID, recursoID == $resourceID, numeroDefeitos > $NCNumber )
-	then
-		$t.setNumeroDefeitos($NCNumber);
-		$t.setOrdemProducaoID($ProdOrderID);
-		update($t);
+        AccaoInspeccao( artigoID ==3 , $operID: operacaoID, $resourceID: recursoID, $ProdOrderID: ordemProducaoID, $IAID: accaoInspeccaoID  )
+        AccaoInspeccaoOperacao( inspectionActionID == $IAID, $tmp: inspAccaoOperacaoID  )
+        OtherInspectionMethod( inspActionOperacaoID == $tmp, $NCNumber: numeroNaoConformidades   )
+        $t: MelhorEmNaoConformidades( operacaoID == $operID, recursoID == $resourceID, numeroDefeitos > $NCNumber )
+    then
+        $t.setNumeroDefeitos($NCNumber);
+        $t.setOrdemProducaoID($ProdOrderID);
+        update($t);
 end
 
 rule "ruleBestParametersCreator"
 salience -100
 when
-	MelhorEmNaoConformidades($poID: ordemProducaoID, $nonConformities: numeroDefeitos )	
-	SetupInUse( $setup: setupUseID , productionOrderID == $poID )
-	p: Parameter( $parID: parameterID,  setupUseID == $setup )
-	not (BestParms( parameterID == $parID ))
+    MelhorEmNaoConformidades($poID: ordemProducaoID, $nonConformities: numeroDefeitos )
+    SetupInUse( $setup: setupUseID , productionOrderID == $poID )
+    p: Parameter( $parID: parameterID,  setupUseID == $setup )
+    not (BestParms( parameterID == $parID ))
 then
-	BestParms newBest=new BestParms();
-	newBest.setParameterID($parID);
-	newBest.setNominalValue(new Float(p.getNominalValue()));
-	newBest.setMaxLimit(new Float(p.getMaxLimit()));
-	newBest.setMinLimit(new Float(p.getMinLimit()));
-	newBest.setMaxLimitAlarm(new Float(p.getMaxLimitAlarm()));
-	newBest.setMinLimitAlarm(new Float(p.getMinLimitAlarm()));
-	newBest.setNonConformities($nonConformities);
-	insert(newBest);
+    BestParms newBest=new BestParms();
+    newBest.setParameterID($parID);
+    newBest.setNominalValue(new Float(p.getNominalValue()));
+    newBest.setMaxLimit(new Float(p.getMaxLimit()));
+    newBest.setMinLimit(new Float(p.getMinLimit()));
+    newBest.setMaxLimitAlarm(new Float(p.getMaxLimitAlarm()));
+    newBest.setMinLimitAlarm(new Float(p.getMinLimitAlarm()));
+    newBest.setNonConformities($nonConformities);
+    insert(newBest);
 end
 
 rule "ruleBestParametersChecker"
 salience -10
 when
-	MelhorEmNaoConformidades($poID: ordemProducaoID, $NC: numeroDefeitos )	
-	SetupInUse( $setup: setupUseID , productionOrderID == $poID )
-	p: Parameter( $parID: parameterID,  setupUseID == $setup )
-	newBest: BestParms( parameterID == $parID, nonConformities > $NC )
+    MelhorEmNaoConformidades($poID: ordemProducaoID, $NC: numeroDefeitos )
+    SetupInUse( $setup: setupUseID , productionOrderID == $poID )
+    p: Parameter( $parID: parameterID,  setupUseID == $setup )
+    newBest: BestParms( parameterID == $parID, nonConformities > $NC )
 then
-	newBest.setNominalValue(new Float(p.getNominalValue()));
-	newBest.setMaxLimit(new Float(p.getMaxLimit()));
-	newBest.setMinLimit(new Float(p.getMinLimit()));
-	newBest.setMaxLimitAlarm(new Float(p.getMaxLimitAlarm()));
-	newBest.setMinLimitAlarm(new Float(p.getMinLimitAlarm()));
-	newBest.setNonConformities($NC);
-	update(newBest);
+    newBest.setNominalValue(new Float(p.getNominalValue()));
+    newBest.setMaxLimit(new Float(p.getMaxLimit()));
+    newBest.setMinLimit(new Float(p.getMinLimit()));
+    newBest.setMaxLimitAlarm(new Float(p.getMaxLimitAlarm()));
+    newBest.setMinLimitAlarm(new Float(p.getMinLimitAlarm()));
+    newBest.setNonConformities($NC);
+    update(newBest);
 end
 
 rule "print"
 salience -20
 when 
-	bp: BestParms(  )
+    bp: BestParms(  )
 then
-	System.out.println("Parameter: "+bp.getParameterID()+" Value: "+bp.getNominalValue()+" NC: "+bp.getNonConformities());
+    System.out.println("Parameter: "+bp.getParameterID()+" Value: "+bp.getNominalValue()+" NC: "+bp.getNonConformities());
 end
 
 query "get results"
-		mnc: BestParms(  )
+        mnc: BestParms(  )
 end

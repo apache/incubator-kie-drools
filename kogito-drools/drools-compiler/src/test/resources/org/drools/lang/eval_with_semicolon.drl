@@ -2,6 +2,6 @@ rule simple_rule
   when
     eval(abc();)
   then
-	Kapow
-	Poof
+    Kapow
+    Poof
 end

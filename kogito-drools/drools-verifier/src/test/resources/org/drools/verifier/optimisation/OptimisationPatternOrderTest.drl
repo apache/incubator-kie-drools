@@ -19,17 +19,17 @@ package com.misc.someData
 import com.sample.DroolsTest.Message;
 
 rule "Correct eval order 1"
-	when
-		Foo()
-		eval( func(1, 2) )
-	then
-		// Something
+    when
+        Foo()
+        eval( func(1, 2) )
+    then
+        // Something
 end
 
 rule "Wrong eval order 1"
-	when
-		eval( func(1, 2) )
-		Foo()
-	then
-		// Something
+    when
+        eval( func(1, 2) )
+        Foo()
+    then
+        // Something
 end

@@ -5,7 +5,7 @@ global java.util.List results;
 
 rule "member of cheese types"
 when
-	Cheese( type memberOf cheeseTypes )
+    Cheese( type memberOf cheeseTypes )
 then
     results.add( "memberOf" );
 end

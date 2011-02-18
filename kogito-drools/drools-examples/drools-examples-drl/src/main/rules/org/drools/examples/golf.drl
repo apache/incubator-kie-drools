@@ -32,7 +32,7 @@ rule "find solution"
                 position != $fred.position,
                 color != $fred.color )
 
- 		// Bob is wearing plaid pants
+         // Bob is wearing plaid pants
         $bob : Golfer( name == "Bob",
                 position != $fred.position,
                 position != $joe.position,
@@ -54,13 +54,13 @@ rule "find solution"
                 color != $joe.color,
                 color != $bob.color )
 
-  		// The golfer to Fred's immediate right
-  		// is wearing blue pants
+          // The golfer to Fred's immediate right
+          // is wearing blue pants
         Golfer( position == ( $fred.position + 1 ),
                       color == "blue",
                       this in ( $joe, $bob, $tom ) )
 
-	then
+    then
         System.out.println( "Fred " + $fred.getPosition() + " " + $fred.getColor() );
         System.out.println( "Joe " + $joe.getPosition() + " " + $joe.getColor() );
         System.out.println( "Bob " + $bob.getPosition() + " " + $bob.getColor() );

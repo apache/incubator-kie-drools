@@ -7,17 +7,17 @@ import org.drools.Cheesery.Maturity
 global java.util.List list
 
 rule "status, int based enum"
-	salience 10
+    salience 10
     when
-       	p : Cheesery(status == Cheesery.SELLING_CHEESE, maturity == Maturity.OLD)
+           p : Cheesery(status == Cheesery.SELLING_CHEESE, maturity == Maturity.OLD)
     then
-    	list.add( p );
+        list.add( p );
 
 end   
 
 rule "maturity, object based enum"
     when
-       	p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)
+           p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)
     then
-    	list.add( p );
+        list.add( p );
 end  

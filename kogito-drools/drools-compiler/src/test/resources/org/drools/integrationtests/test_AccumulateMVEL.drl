@@ -7,11 +7,11 @@ import org.drools.Cheesery;
 global java.util.List results;
 
 rule "AccumulateTest" salience 100
-	dialect "mvel"
+    dialect "mvel"
     when
-    	$totalAmount : Integer() from accumulate( $cheese : Cheese( ),
+        $totalAmount : Integer() from accumulate( $cheese : Cheese( ),
                                                   init( total = 0; ),
-    	                                          action( total = total + $cheese.price ),
+                                                  action( total = total + $cheese.price ),
                                                   result( total ) )
     then
         results.add($totalAmount);
@@ -19,49 +19,49 @@ end
 
 
 rule "Accumulate with Bindings" salience 90
-	dialect "mvel"
+    dialect "mvel"
     when
         $person      : Person( name == "Bob", $likes : likes )
-    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes ),
+        $totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes ),
                                                   init( total = 0; ),
-    	                                          action( total = total +  $cheese.price ),
+                                                  action( total = total +  $cheese.price ),
                                                   result( total ) )
     then
         results.add($totalAmount);
 end
 
 rule "Constraints everywhere" salience 80
-	dialect "mvel"
+    dialect "mvel"
     when
         $person      : Person( $likes : likes )
-    	$cheesery    : Cheesery( totalAmount > 100 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes ),
+        $cheesery    : Cheesery( totalAmount > 100 )
+                               from accumulate( $cheese : Cheese( type == $likes ),
                                                 init( cheesery = new Cheesery(); ),
-    	                                        action( cheesery.addCheese( $cheese ); ),
+                                                action( cheesery.addCheese( $cheese ); ),
                                                 result( cheesery ) );
     then
         results.add($cheesery.getTotalAmount());
 end  
 
 rule "Source pattern binds" salience 70
-	dialect "mvel"
+    dialect "mvel"
     when
         $person      : Person( name == "Bob", $likes : likes )
-    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price: price ),
+        $totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price: price ),
                                                   init( total = 0; ),
-    	                                          action( total = total + $cheese.price ),
+                                                  action( total = total + $cheese.price ),
                                                   result( total ) );
     then
         results.add($totalAmount);
 end
 
 rule "Accumulate with previous Bindings" salience 60
-	dialect "mvel"
+    dialect "mvel"
     when
         $person      : Person( name == "Bob", $likes : likes, $age : age )
-    	$totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price : price ),
+        $totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price : price ),
                                                   init( total = $age * 10; ),
-   	                                              action( total = total + $price; ),
+                                                     action( total = total + $price; ),
                                                   result( total ) );
     then
         results.add($totalAmount);

@@ -3,13 +3,13 @@ package org.drools.test;
 import org.drools.Cheese;
 
 function boolean throwException(Object object) {
-	throw new Exception( "this should throw an exception" );
+    throw new Exception( "this should throw an exception" );
 }
 
 rule "Throw Eval Exception"
     when
-    	cheese : Cheese( )
- 		eval( throwException( cheese ) )
+        cheese : Cheese( )
+         eval( throwException( cheese ) )
     then
 
 end  

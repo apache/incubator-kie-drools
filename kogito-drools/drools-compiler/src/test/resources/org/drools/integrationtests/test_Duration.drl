@@ -6,9 +6,9 @@ import org.drools.Person;
 global java.util.List list;
 
 rule delayed
-	duration 100
+    duration 100
     when
         cheese : Cheese( )
     then
-		list.add( cheese );
+        list.add( cheese );
 end   

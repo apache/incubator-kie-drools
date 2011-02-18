@@ -7,41 +7,41 @@ global java.util.List list
 
 rule "first"
     when
-       	p : Person(status=="start")
+           p : Person(status=="start")
     then
-    	list.add("first");
-    	p.setStatus("next");
-	   	update(p);
+        list.add("first");
+        p.setStatus("next");
+           update(p);
 end    
 
-rule "second"	
-	when
-		p : Person(status == "next")
-	then
-		list.add("second");
-		p.setStatus("final");
-		update(p);
+rule "second"
+    when
+        p : Person(status == "next")
+    then
+        list.add("second");
+        p.setStatus("final");
+        update(p);
 end
 
 rule "third"
-	when
-		p :	Person(status == "final")
-	then
-		list.add("third");
-		retract(p);
+    when
+        p : Person(status == "final")
+    then
+        list.add("third");
+        retract(p);
 end
 
 rule "fourth"
-	when 
-		not Person()
-	then
-		list.add("fourth");
-		insert(new Cheese("stilton", 42));
+    when
+        not Person()
+    then
+        list.add("fourth");
+        insert(new Cheese("stilton", 42));
 end
 
 rule "fifth"
-	when
-		Cheese(type == "stilton")
-	then
-		list.add("fifth");			
+    when
+        Cheese(type == "stilton")
+    then
+        list.add("fifth");
 end

@@ -3,14 +3,14 @@ package org.drools;
 global java.util.List results;
 
 rule "Test Consequence"
-	@foo(bar)
-	@foo2(bar2)
-	@ruleID(1234)
-	@parentRuleID(1234)
-	@dateActive(12/1/08)
-	@price(123.00)
-	@errorMSG(Stop)
-	@userMSG("Please Stop")
+    @foo(bar)
+    @foo2(bar2)
+    @ruleID(1234)
+    @parentRuleID(1234)
+    @dateActive(12/1/08)
+    @price(123.00)
+    @errorMSG(Stop)
+    @userMSG("Please Stop")
   wheannotation   Person(name == "Michael")
   then
     results.add( drools.getRule().getMetaAttribute("foo"));

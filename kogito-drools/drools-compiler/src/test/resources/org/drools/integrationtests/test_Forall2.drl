@@ -2,11 +2,11 @@ package org.drools;
 
 global java.util.List results;
 
-rule "test nested CEs"	
-	when
-	    State( $state : state )
-	    forall( $p : Person( status == $state )
-	            Person( this == $p, alive == false ) )
-	then 
-		results.add("OK");		
+rule "test nested CEs"
+    when
+        State( $state : state )
+        forall( $p : Person( status == $state )
+                Person( this == $p, alive == false ) )
+    then
+        results.add("OK");
 end

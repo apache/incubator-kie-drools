@@ -5,9 +5,9 @@ import java.util.Map;
 global java.util.List results;
 
 rule "map access with variable"
-	when
-	    $key : String( )
-		$m : Map( this[$key] == "Edson" )
-	then
-		results.add( $m );
+    when
+        $key : String( )
+        $m : Map( this[$key] == "Edson" )
+    then
+        results.add( $m );
 end

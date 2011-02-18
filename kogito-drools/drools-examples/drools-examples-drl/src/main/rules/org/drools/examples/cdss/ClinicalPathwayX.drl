@@ -24,34 +24,34 @@ import org.drools.examples.cdss.service.RecommendationService;
 global RecommendationService recommendationService
 
 rule "Examination1"
-	ruleflow-group "Examinations"
-	when
-	then
-		recommendationService.createRecommendation(
-			new Recommendation("Examination1"));
+    ruleflow-group "Examinations"
+    when
+    then
+        recommendationService.createRecommendation(
+            new Recommendation("Examination1"));
 end
 
 rule "Examination2"
-	ruleflow-group "Examinations"
-	when
-		Patient( age > 18 )
-	then
-		recommendationService.createRecommendation(
-			new Recommendation("Examination2"));
+    ruleflow-group "Examinations"
+    when
+        Patient( age > 18 )
+    then
+        recommendationService.createRecommendation(
+            new Recommendation("Examination2"));
 end
 
 rule "Remove old diagnose"
-	ruleflow-group "AdditionalExaminations"
-	when
-		d: Diagnose( )
-	then
-		retract(d);
+    ruleflow-group "AdditionalExaminations"
+    when
+        d: Diagnose( )
+    then
+        retract(d);
 end
 
 rule "Examination3"
-	ruleflow-group "AdditionalExaminations"
-	when
-	then
-		recommendationService.createRecommendation(
-			new Recommendation("Examination3"));
+    ruleflow-group "AdditionalExaminations"
+    when
+    then
+        recommendationService.createRecommendation(
+            new Recommendation("Examination3"));
 end

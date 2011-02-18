@@ -7,49 +7,49 @@ global List list;
 
 rule teststartswith
 when
-	$m : RoutingMessage( routingValue str[startsWith] "R1" )
+    $m : RoutingMessage( routingValue str[startsWith] "R1" )
 then
-	list.add("Message starts with R1");
+    list.add("Message starts with R1");
 end
 
 rule testsendswith
 when
-	$m : RoutingMessage( routingValue str[endsWith] "R2" )
+    $m : RoutingMessage( routingValue str[endsWith] "R2" )
 then
-	list.add("Message ends with R2");
+    list.add("Message ends with R2");
 end
 
 rule testlength
 when
-	$m : RoutingMessage( routingValue str[length] 17 )
+    $m : RoutingMessage( routingValue str[length] 17 )
 then
-	list.add("Message length is 17");
+    list.add("Message length is 17");
 end
 
 rule testnotlength
 when
-	$m : RoutingMessage( routingValue not str[length] 17 )
+    $m : RoutingMessage( routingValue not str[length] 17 )
 then
-	list.add("Message length is not 17");
+    list.add("Message length is not 17");
 end
 
 rule testnotstartswith
 when
-	$m : RoutingMessage( routingValue not str[startsWith] "R2" )
+    $m : RoutingMessage( routingValue not str[startsWith] "R2" )
 then
-	list.add("Message does not start with R2");
+    list.add("Message does not start with R2");
 end
 
 rule testnotendswith
 when
-	$m : RoutingMessage( routingValue not str[endsWith] "R1" )
+    $m : RoutingMessage( routingValue not str[endsWith] "R1" )
 then
-	list.add("Message does not end with R1");
+    list.add("Message does not end with R1");
 end
 
 rule testmultiple
 when
-	$m : RoutingMessage( routingValue str[startsWith] "R1" && str[endsWith] "R2" && str[length] 17)
+    $m : RoutingMessage( routingValue str[startsWith] "R1" && str[endsWith] "R2" && str[length] 17)
 then
-	list.add("Message starts with R1, ends with R2 and it's length is 17");
+    list.add("Message starts with R1, ends with R2 and it's length is 17");
 end

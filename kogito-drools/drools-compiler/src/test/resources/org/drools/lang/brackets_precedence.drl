@@ -1,7 +1,7 @@
 
 rule simple_rule 
   when
-	 ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
+     ( (not Foo(x=="a") or Foo(x=="y") ) and ( Shoes() or Butt() ) )
   then
-	go wild
+    go wild
 end

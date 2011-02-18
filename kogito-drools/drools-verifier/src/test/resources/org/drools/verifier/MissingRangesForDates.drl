@@ -19,122 +19,122 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 rule "Date gap rule 1"
-	when
-		DatePattern1( value == "27-Oct-2007" )
-	then
-		# gap > 10 <.
+    when
+        DatePattern1( value == "27-Oct-2007" )
+    then
+        # gap > 10 <.
 end
 
 rule "Date gap rule 2"
-	when
-		DatePattern2( value >= "27-Oct-2000" )
-	then
-		# gap < 15.
+    when
+        DatePattern2( value >= "27-Oct-2000" )
+    then
+        # gap < 15.
 end
 
 rule "Date gap rule 3"
-	when
-		DatePattern3( value <= "27-Oct-2004" )
-	then
-		# gap > 15.
+    when
+        DatePattern3( value <= "27-Oct-2004" )
+    then
+        # gap > 15.
 end
 
 rule "Date gap rule 4a"
-	when
-		DatePattern4( value > "27-Oct-2001" )
-	then
-		# gap == 25.
+    when
+        DatePattern4( value > "27-Oct-2001" )
+    then
+        # gap == 25.
 end
 
 rule "Date gap rule 4b"
-	when
-		DatePattern4( value < "27-Oct-2001" )
-	then
-		# gap == 25.
+    when
+        DatePattern4( value < "27-Oct-2001" )
+    then
+        # gap == 25.
 end
 
 rule "Date gap rule 5a"
-	when
-		DatePattern5( value > "20-Oct-2007" )
-	then
-		# gap 100 > x > 50.
+    when
+        DatePattern5( value > "20-Oct-2007" )
+    then
+        # gap 100 > x > 50.
 end
 
 rule "Date gap rule 5b"
-	when
-		DatePattern5( value < "10-Oct-2007" )
-	then
-		# gap 100 > x > 50.
+    when
+        DatePattern5( value < "10-Oct-2007" )
+    then
+        # gap 100 > x > 50.
 end
 
 rule "Date gap rule 6a"
-	when
-		DatePattern6( value > "28-Oct-2007" )
-	then
-		# gap < 350.
+    when
+        DatePattern6( value > "28-Oct-2007" )
+    then
+        # gap < 350.
 end
 
 rule "Date gap rule 6b"
-	when
-		DatePattern6( value == "28-Oct-2007" )
-	then
-		# gap < 350.
+    when
+        DatePattern6( value == "28-Oct-2007" )
+    then
+        # gap < 350.
 end
 
 rule "Date gap rule 7a"
-	when
-		DatePattern7( value < "27-Jan-2007" )
-	then
-		# gap > 55.
+    when
+        DatePattern7( value < "27-Jan-2007" )
+    then
+        # gap > 55.
 end
 
 rule "Date gap rule 7b"
-	when
-		DatePattern7( value == "27-Jan-2007" )
-	then
-		# gap > 55.
+    when
+        DatePattern7( value == "27-Jan-2007" )
+    then
+        # gap > 55.
 end
 
 rule "Date gap rule 8a"
-	when
-		DatePattern8( value < "11-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern8( value < "11-Jan-2007" )
+    then
+        # No gap
 end
 
 rule "Date gap rule 8b"
-	when
-		DatePattern8( value == "11-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern8( value == "11-Jan-2007" )
+    then
+        # No gap
 end
 
 rule "Date gap rule 8c"
-	when
-		DatePattern8( value > "11-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern8( value > "11-Jan-2007" )
+    then
+        # No gap
 end
 
 rule "Date gap rule 9a"
-	when
-		DatePattern9( value <= "14-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern9( value <= "14-Jan-2007" )
+    then
+        # No gap
 end
 
 rule "Date gap rule 9b"
-	when
-		DatePattern9( value == "15-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern9( value == "15-Jan-2007" )
+    then
+        # No gap
 end
 
 rule "Date gap rule 9c"
-	when
-		DatePattern9( value >= "16-Jan-2007" )
-	then
-		# No gap
+    when
+        DatePattern9( value >= "16-Jan-2007" )
+    then
+        # No gap
 end
 
 /*
@@ -142,129 +142,129 @@ end
 # These rules have gaps
 #
 rule "Date range 1a, has gap"
-	when
-		    Foo1( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 2a, has gap"
-	when
-		    Foo2( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo2( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 3a, has gap"
-	when
-		    Foo3( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo3( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 4a, has gap"
-	when
-		    Foo4( value <= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo4( value <= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 5a, has gap"
-	when
-		    Foo5( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 5b, has gap"
-	when
-		    Foo5( value == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( value == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 6a, has gap"
-	when
-		    Foo6( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 6b, has gap"
-	when
-		    Foo6( value == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( value == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 7a, has gap"
-	when
-		    Foo7( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo7( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 7b, has gap"
-	when
-		    Foo7( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo7( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 8a, has gap"
-	when
-		    Foo8( value < "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo8( value < "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 8b, has gap"
-	when
-		    Foo8( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo8( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 9a, has gap"
-	when
-		    Foo9( value <= "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo9( value <= "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 9b, has gap"
-	when
-		    Foo9( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo9( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 10a, has gap"
-	when
-		    Foo10( value < "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo10( value < "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 10b, has gap"
-	when
-		    Foo10( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo10( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 11a, has gap"
-	when
-		    Foo11( value <= "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo11( value <= "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 11b, has gap"
-	when
-		    Foo11( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo11( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 #
@@ -272,129 +272,129 @@ end
 #
 
 rule "Date range 12a, has gap"
-	when
-		    not Foo12( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo12( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 13a, has gap"
-	when
-		    not Foo13( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo13( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 14a, has gap"
-	when
-		    not Foo14( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo14( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 15a, has gap"
-	when
-		    not Foo15( value <= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo15( value <= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 16a, has gap"
-	when
-		    not Foo16( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo16( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 16b, has gap"
-	when
-		    not Foo16( value == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo16( value == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 17a, has gap"
-	when
-		    not Foo17( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo17( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 17b, has gap"
-	when
-		    not Foo17( value == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo17( value == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 18a, has gap"
-	when
-		    not Foo18( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo18( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 18b, has gap"
-	when
-		    not Foo18( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo18( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 19a, has gap"
-	when
-		    not Foo19( value < "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo19( value < "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 19b, has gap"
-	when
-		    not Foo19( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo19( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 20a, has gap"
-	when
-		    not Foo20( value <= "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo20( value <= "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 20b, has gap"
-	when
-		    not Foo20( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo20( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 21a, has gap"
-	when
-		    not Foo21( value < "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo21( value < "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 21b, has gap"
-	when
-		    not Foo21( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo21( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 22a, has gap"
-	when
-		    not Foo22( value <= "03-Oct-2002" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo22( value <= "03-Oct-2002" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 22b, has gap"
-	when
-		    not Foo22( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo22( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 #
@@ -402,65 +402,65 @@ end
 #
 
 rule "Date range 23a, no gap"
-	when
-		    Foo23( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo23( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 23b, no gap"
-	when
-		    Foo23( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo23( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 24a, no gap"
-	when
-		    Foo24( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo24( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 24b, no gap"
-	when
-		    Foo24( value <= 27-Oct-2007 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo24( value <= 27-Oct-2007 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 25a, no gap"
-	when
-		    Foo25( value >= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value >= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 25b, no gap"
-	when
-		    Foo25( value <= "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value <= "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 25a, no gap"
-	when
-		    Foo25( value > "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value > "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 25b, no gap"
-	when
-		    Foo25( value == "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value == "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Date range 25c, no gap"
-	when
-		    Foo25( value < "27-Oct-2007" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value < "27-Oct-2007" )
+    then
+        System.out.println( "Test" );
 end
 */

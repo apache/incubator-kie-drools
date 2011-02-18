@@ -11,21 +11,21 @@ rule "simple rule"
     when
         Cheese( type == null )
     then
-		list.add( new Integer(5) ); 
+        list.add( new Integer(5) );
 end 
 
 rule "another rule"
-	when
-		Person( bigDecimal != null )
+    when
+        Person( bigDecimal != null )
     then 
-    	list.add( new Integer(6) );
+        list.add( new Integer(6) );
 end   
 
 rule "number not null"
     when
-     	Person( name== "whee", bigDecimal != 3 )
+         Person( name== "whee", bigDecimal != 3 )
     then
-    	list.add( new Integer(7) );
+        list.add( new Integer(7) );
 end   
 
 rule "global is null"
@@ -34,4 +34,4 @@ rule "global is null"
     then
         // str is null, we are just testing we don't get a null pointer
         list.add( p );
-end  	
+end

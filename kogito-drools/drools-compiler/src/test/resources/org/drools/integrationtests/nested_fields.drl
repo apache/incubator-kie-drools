@@ -9,14 +9,14 @@ import org.drools.Address
 
 
 rule "test something"
-	
-	when
-		p: Person( name=="Michael", 
-								(addresses[1].street == "Low" && 
-								addresses[0].street == "High"  )
-								)
-	then
-		p.name = "goober";
-		System.out.println(p.name);	
-		insert(new Address("Latona"));	
+
+    when
+        p: Person( name=="Michael",
+                                (addresses[1].street == "Low" &&
+                                addresses[0].street == "High"  )
+                                )
+    then
+        p.name = "goober";
+        System.out.println(p.name);
+        insert(new Address("Latona"));
 end

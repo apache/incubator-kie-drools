@@ -5,8 +5,8 @@ import java.util.List;
 global List list
 
 rule "Sample Rule" ruleflow-group "Group1"
-	when
-		s: String()
-	then
-		list.add(s);
+    when
+        s: String()
+    then
+        list.add(s);
 end

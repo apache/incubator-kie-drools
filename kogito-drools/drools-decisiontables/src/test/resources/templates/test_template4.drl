@@ -11,19 +11,19 @@ import blah.class2
 
 global Class1 obj1;
 function test() {
-	This is a function block
+    This is a function block
 }
 template "This_Is_Rule_Name_Prefix"
 colour
 minSize
 maxSize
 rule "This_Is_Rule_Name_Prefix @{row.rowNumber}"
-	when
-		Foo(myObject.getColour().equals(@{colour}), myObject.size() > @{minSize})
-		b: Bar()
-		eval(myObject.size() < @{maxSize})
-	then
-		myObject.setIsValid(true);
+    when
+        Foo(myObject.getColour().equals(@{colour}), myObject.size() > @{minSize})
+        b: Bar()
+        eval(myObject.size() < @{maxSize})
+    then
+        myObject.setIsValid(true);
 end
 end template
 

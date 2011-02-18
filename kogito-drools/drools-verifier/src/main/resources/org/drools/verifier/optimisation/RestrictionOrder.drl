@@ -54,66 +54,66 @@ global VerifierReport result;
 # Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
 #
 rule "Optimise restrictions inside operator"
-	when
+    when
 
-		$sp : SubPattern()
-	
-		(
-				$r1 :Restriction(
-					this memberOf $sp.items, 
-					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
-				) 
-			and
-				$r2 :Restriction(
-					this memberOf $sp.items,
-					path != $r1.path,
-					orderNumber < $r1.orderNumber,
-					( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-		) or (
-				$r1 :Restriction(
-					this memberOf $sp.items,
-					( operator == Operator.GREATER || == Operator.LESS )
-				)
-			and
-				$r2 :Restriction(
-					this memberOf $sp.items,
-					path != $r1.path,
-					orderNumber < $r1.orderNumber,
-					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-		) or (
-				$r1 :Restriction(
-					this memberOf $sp.items,
-					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
-				)
-			and
-				$r2 :Restriction(
-					this memberOf $sp.items,
-					path != $r1.path,
-					orderNumber < $r1.orderNumber,
-					( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-		)
+        $sp : SubPattern()
 
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $sp.getRulePath(), $sp.getRuleName());
-	
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.NOTE,
-								MessageType.OPTIMISATION,
-								$sp.getPattern(),
-								"Rule \"" + $r1.getRuleName() +
-								"\" would be more effective if the more restrictive component (" +
-								$r2 +
-								") could be before (" +
-								$r1 + ").",
-								list ) );
+        (
+                $r1 :Restriction(
+                    this memberOf $sp.items,
+                    ( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
+                )
+            and
+                $r2 :Restriction(
+                    this memberOf $sp.items,
+                    path != $r1.path,
+                    orderNumber < $r1.orderNumber,
+                    ( operator == Operator.GREATER || == Operator.LESS || == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+                )
+        ) or (
+                $r1 :Restriction(
+                    this memberOf $sp.items,
+                    ( operator == Operator.GREATER || == Operator.LESS )
+                )
+            and
+                $r2 :Restriction(
+                    this memberOf $sp.items,
+                    path != $r1.path,
+                    orderNumber < $r1.orderNumber,
+                    ( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL || == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+                )
+        ) or (
+                $r1 :Restriction(
+                    this memberOf $sp.items,
+                    ( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
+                )
+            and
+                $r2 :Restriction(
+                    this memberOf $sp.items,
+                    path != $r1.path,
+                    orderNumber < $r1.orderNumber,
+                    ( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+                )
+        )
+
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $sp.getRulePath(), $sp.getRuleName());
+
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.NOTE,
+                                MessageType.OPTIMISATION,
+                                $sp.getPattern(),
+                                "Rule \"" + $r1.getRuleName() +
+                                "\" would be more effective if the more restrictive component (" +
+                                $r2 +
+                                ") could be before (" +
+                                $r1 + ").",
+                                list ) );
 end
 
 
@@ -125,73 +125,73 @@ end
 # Example: { a:bar } < { baz == 1 } < { baz > 1 || < 1 } < { baz != 1 }
 #
 rule "Optimise restrictions inside constraint"
-	when
-		(
-				$r1 :Restriction(
-					( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
-				)
-			and
-				$r2 :Restriction(
-					parentPath == $r1.parentPath,
-					parentType == $r1.parentType,
-					orderNumber < $r1.orderNumber,
-					( operator 	== Operator.GREATER || 
-								== Operator.LESS || 
-								== Operator.GREATER_OR_EQUAL || 
-								== Operator.LESS_OR_EQUAL || 
-								== MatchesEvaluatorsDefinition.NOT_MATCHES || 
-								== Operator.NOT_EQUAL )
-				)
-		) or (
-				$r1 :Restriction(
-					( operator 	== Operator.GREATER || 
-								== Operator.LESS )
-				)
-			and
-				$r2 :Restriction(
-					parentPath == $r1.parentPath,
-					parentType == $r1.parentType,
-					orderNumber < $r1.orderNumber,
-					( operator 	== Operator.GREATER_OR_EQUAL || 
-								== Operator.LESS_OR_EQUAL || 
-								== MatchesEvaluatorsDefinition.NOT_MATCHES || 
-								== Operator.NOT_EQUAL )
-				)
-		) 
-		or (
-				$r1 :Restriction(
-					( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
-				)
-			and
-				$r2 :Restriction(
-					parentPath == $r1.parentPath,
-					parentType == $r1.parentType,
-					orderNumber < $r1.orderNumber,
-					( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
-				)
-		)
+    when
+        (
+                $r1 :Restriction(
+                    ( operator == Operator.EQUAL || == MatchesEvaluatorsDefinition.MATCHES )
+                )
+            and
+                $r2 :Restriction(
+                    parentPath == $r1.parentPath,
+                    parentType == $r1.parentType,
+                    orderNumber < $r1.orderNumber,
+                    ( operator 	== Operator.GREATER ||
+                                == Operator.LESS ||
+                                == Operator.GREATER_OR_EQUAL ||
+                                == Operator.LESS_OR_EQUAL ||
+                                == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                                == Operator.NOT_EQUAL )
+                )
+        ) or (
+                $r1 :Restriction(
+                    ( operator 	== Operator.GREATER ||
+                                == Operator.LESS )
+                )
+            and
+                $r2 :Restriction(
+                    parentPath == $r1.parentPath,
+                    parentType == $r1.parentType,
+                    orderNumber < $r1.orderNumber,
+                    ( operator 	== Operator.GREATER_OR_EQUAL ||
+                                == Operator.LESS_OR_EQUAL ||
+                                == MatchesEvaluatorsDefinition.NOT_MATCHES ||
+                                == Operator.NOT_EQUAL )
+                )
+        )
+        or (
+                $r1 :Restriction(
+                    ( operator == Operator.GREATER_OR_EQUAL || == Operator.LESS_OR_EQUAL )
+                )
+            and
+                $r2 :Restriction(
+                    parentPath == $r1.parentPath,
+                    parentType == $r1.parentType,
+                    orderNumber < $r1.orderNumber,
+                    ( operator == MatchesEvaluatorsDefinition.NOT_MATCHES || == Operator.NOT_EQUAL )
+                )
+        )
 
-		$pattern :Pattern(
-			path == $r1.patternPath
-		)
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $pattern.getPath(), $pattern.getRuleName());
-	
-		Collection list = new ArrayList();
-		list.add( $r1 );
-		list.add( $r2 );
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.NOTE,
-								MessageType.OPTIMISATION,
-								$pattern,
-								"Rule \"" + $r1.getRuleName() +
-								"\" would be more effective if the more restrictive component (" +
-								$r2 +
-								") could be before (" +
-								$r1 + ").",
-								list ) );
+        $pattern :Pattern(
+            path == $r1.patternPath
+        )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $pattern.getPath(), $pattern.getRuleName());
+
+        Collection list = new ArrayList();
+        list.add( $r1 );
+        list.add( $r2 );
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.NOTE,
+                                MessageType.OPTIMISATION,
+                                $pattern,
+                                "Rule \"" + $r1.getRuleName() +
+                                "\" would be more effective if the more restrictive component (" +
+                                $r2 +
+                                ") could be before (" +
+                                $r1 + ").",
+                                list ) );
 end
 
 # Eval should be last.
@@ -201,37 +201,37 @@ end
 # Example: Foo( eval( bar == 1), bar == 1 )
 #
 rule "Optimise predicates inside operator"
-	when
-	
-		$subPattern : SubPattern(
-			$pattern :pattern
-		)
-	
-		$eval :Eval(
-			this memberOf $subPattern.items
-		)
+    when
 
-		$restriction :Restriction(
-			this memberOf $subPattern.items,
-			orderNumber > $eval.orderNumber
-		)
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $subPattern.getRulePath(), $subPattern.getRuleName());
-	
-		Collection list = new ArrayList();
-		list.add( $eval );
-		list.add( $restriction );
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.NOTE,
-								MessageType.OPTIMISATION,
-								$pattern,
-								"Rule \"" + $subPattern.getRuleName() +
-								"\" would be more effective if the less expensive component, (" +
-								$restriction +
-								"), could be before (" +
-								$eval + ").",
-								list ) );
+        $subPattern : SubPattern(
+            $pattern :pattern
+        )
+
+        $eval :Eval(
+            this memberOf $subPattern.items
+        )
+
+        $restriction :Restriction(
+            this memberOf $subPattern.items,
+            orderNumber > $eval.orderNumber
+        )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $subPattern.getRulePath(), $subPattern.getRuleName());
+
+        Collection list = new ArrayList();
+        list.add( $eval );
+        list.add( $restriction );
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.NOTE,
+                                MessageType.OPTIMISATION,
+                                $pattern,
+                                "Rule \"" + $subPattern.getRuleName() +
+                                "\" would be more effective if the less expensive component, (" +
+                                $restriction +
+                                "), could be before (" +
+                                $eval + ").",
+                                list ) );
 end
 

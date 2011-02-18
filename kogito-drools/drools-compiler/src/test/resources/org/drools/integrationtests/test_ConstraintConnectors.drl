@@ -6,36 +6,36 @@ global java.util.List results;
 
 rule "1. && operator"
     salience 10
-    when    	
-		$person : Person( age > 30 && < 40 && hair == "red" )		    
+    when
+        $person : Person( age > 30 && < 40 && hair == "red" )
     then
         results.add( $person );
 end    
 
 rule "2. || operator"
     salience 8
-    when    	
-		$person : Person( age > 70 && < 90 || hair == "green" )		    
+    when
+        $person : Person( age > 70 && < 90 || hair == "green" )
     then
         results.add( $person );
 end    
 
 rule "3. Complex expression"
     salience 7
-    when    	
-		$person : Person( ( age == 70 && hair == "black" ) ||
-		                  ( age == 40 && hair == "pink" ) ||
-		                  ( age == 12 && ( hair == "yellow" || hair == "blue" ) ) )		    
+    when
+        $person : Person( ( age == 70 && hair == "black" ) ||
+                          ( age == 40 && hair == "pink" ) ||
+                          ( age == 12 && ( hair == "yellow" || hair == "blue" ) ) )
     then
         results.add( $person );
 end    
 
 rule "4. Constraint connectors"
-	salience 5
-	when
-	    # forcing a variable restriction so we can trigger the issue reported in JBRULES-909
-	    Person( $age : age == 48, hair == "blue" )  
-		$person : Person( age > $age || hair == "gray" )
-	then
-		results.add( $person );
+    salience 5
+    when
+        # forcing a variable restriction so we can trigger the issue reported in JBRULES-909
+        Person( $age : age == 48, hair == "blue" )
+        $person : Person( age > $age || hair == "gray" )
+    then
+        results.add( $person );
 end

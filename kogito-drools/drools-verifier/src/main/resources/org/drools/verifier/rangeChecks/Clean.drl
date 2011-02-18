@@ -34,52 +34,52 @@ global VerifierReport result;
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-# 		package org.drools.verifier.rangeChecks.patterns;
-#			rule "Range check for number patterns"
-#			rule "Range check for number patterns, !="
-#		package org.drools.verifier.rangeChecks.integers
-#			rule "Range check for integers, if smaller than or equal is missing"
-#			rule "Range check for integers, if greater than or equal is missing"
-#			rule "Range check for integers, equal and greater than"
-#			rule "Range check for integers, equal and smaller than"
-#		package org.drools.verifier.rangeChecks.doubles
-#			rule "Range check for doubles, if smaller than or equal is missing"
-#			rule "Range check for doubles, if greater than or equal is missing"
-#			rule "Range check for doubles, equal and greater than"
-#			rule "Range check for doubles, equal and smaller than"
-#		package org.drools.verifier.rangeChecks.dates
-#			rule "Range check for dates, if smaller than or equal is missing"
-#			rule "Range check for dates, if greater than or equal is missing"
-#			rule "Range check for dates, equal and greater than"
-#			rule "Range check for dates, equal and smaller than"
+#         package org.drools.verifier.rangeChecks.patterns;
+#            rule "Range check for number patterns"
+#            rule "Range check for number patterns, !="
+#        package org.drools.verifier.rangeChecks.integers
+#            rule "Range check for integers, if smaller than or equal is missing"
+#            rule "Range check for integers, if greater than or equal is missing"
+#            rule "Range check for integers, equal and greater than"
+#            rule "Range check for integers, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.doubles
+#            rule "Range check for doubles, if smaller than or equal is missing"
+#            rule "Range check for doubles, if greater than or equal is missing"
+#            rule "Range check for doubles, equal and greater than"
+#            rule "Range check for doubles, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.dates
+#            rule "Range check for dates, if smaller than or equal is missing"
+#            rule "Range check for dates, if greater than or equal is missing"
+#            rule "Range check for dates, equal and greater than"
+#            rule "Range check for dates, equal and smaller than"
 #
 # Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
 #
 rule "Merge gaps"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$g1 :Gap(
-			operator == Operator.GREATER_OR_EQUAL
-		)
-		$g2 :Gap( 
-			guid != $g1.guid,
-			field == $g1.field,
-			operator == Operator.LESS_OR_EQUAL,
-			valueAsString == $g1.valueAsString
-		)		
-	then	
-		result.remove( $g1 );
-		result.remove( $g2 );
-		retract( $g1 );
-		retract( $g2 );
-		
-		MissingNumberPattern mnp = new MissingNumberPattern( 
-											$g1.getField(), 
-											Operator.EQUAL, 
-											$g1.getField().getFieldType(), 
-											$g1.getValueAsString() );
-		result.add( mnp );
-		insert( mnp );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $g1 :Gap(
+            operator == Operator.GREATER_OR_EQUAL
+        )
+        $g2 :Gap(
+            guid != $g1.guid,
+            field == $g1.field,
+            operator == Operator.LESS_OR_EQUAL,
+            valueAsString == $g1.valueAsString
+        )
+    then
+        result.remove( $g1 );
+        result.remove( $g2 );
+        retract( $g1 );
+        retract( $g2 );
+
+        MissingNumberPattern mnp = new MissingNumberPattern(
+                                            $g1.getField(),
+                                            Operator.EQUAL,
+                                            $g1.getField().getFieldType(),
+                                            $g1.getValueAsString() );
+        result.add( mnp );
+        insert( mnp );
 end
 
 #
@@ -88,51 +88,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.integers
-#			rule "Range check for integers, if smaller than or equal is missing"
-#			rule "Range check for integers, if greater than or equal is missing"
-#			rule "Range check for integers, equal and greater than"
-#			rule "Range check for integers, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.integers
+#            rule "Range check for integers, if smaller than or equal is missing"
+#            rule "Range check for integers, if greater than or equal is missing"
+#            rule "Range check for integers, equal and greater than"
+#            rule "Range check for integers, equal and smaller than"
 #
 # Example: covered ( x > 10 ), ( x > 70 ) ( x < 100 )and ( x == 50 )
-# 			reports that ( x < 50 ), ( x > 50 ) and ( x <= 70 ) is missing.
+#             reports that ( x < 50 ), ( x > 50 ) and ( x <= 70 ) is missing.
 #
 rule "Remove useless integer gaps lesser or lesser and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > 10
-		$lower :NumberRestriction( 
-			valueType == Field.INT,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > 10
+        $lower :NumberRestriction(
+            valueType == Field.INT,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < 100
-		$higher :NumberRestriction( 
-			fieldPath == $lower.fieldPath,
-			value > $lower.value,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
-		)
-		
-		# No "<" or "<=" restrictions between these two
-		not NumberRestriction( 
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot, 
-			value > $lower.value,
-			value < $higher.value
-		)
+        # Covered x < 100
+        $higher :NumberRestriction(
+            fieldPath == $lower.fieldPath,
+            value > $lower.value,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+        )
 
-		# gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction.value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No "<" or "<=" restrictions between these two
+        not NumberRestriction(
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            value > $lower.value,
+            value < $higher.value
+        )
+
+        # gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction.value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 #
@@ -141,51 +141,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.integers
-#			rule "Range check for integers, if smaller than or equal is missing"
-#			rule "Range check for integers, if greater than or equal is missing"
-#			rule "Range check for integers, equal and greater than"
-#			rule "Range check for integers, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.integers
+#            rule "Range check for integers, if smaller than or equal is missing"
+#            rule "Range check for integers, if greater than or equal is missing"
+#            rule "Range check for integers, equal and greater than"
+#            rule "Range check for integers, equal and smaller than"
 #
 # Example: covered ( x > 10 ), ( x < 70 ) ( x < 100 )and ( x == 50 )
-#			reports that ( x < 50 ), ( x > 50 ) and ( x >= 70 ) is missing.
+#            reports that ( x < 50 ), ( x > 50 ) and ( x >= 70 ) is missing.
 #
 rule "Remove useless integer gaps greater or greater and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > 10
-		$lower :NumberRestriction( 
-			valueType == Field.INT,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > 10
+        $lower :NumberRestriction(
+            valueType == Field.INT,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < 100
-		$higher :NumberRestriction( 
-			fieldPath == $lower.fieldPath,
-			value > $lower.value,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
-		)
-		
-		# No "<" or "<=" restrictions between these two
-		not NumberRestriction( 
-			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot, 
-			value > $lower.value,
-			value < $higher.value
-		)
+        # Covered x < 100
+        $higher :NumberRestriction(
+            fieldPath == $lower.fieldPath,
+            value > $lower.value,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+        )
 
-		# gap ( x < 50 ) or ( x > 50 ) or ( x >= 70 )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction.value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No "<" or "<=" restrictions between these two
+        not NumberRestriction(
+            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            value > $lower.value,
+            value < $higher.value
+        )
+
+        # gap ( x < 50 ) or ( x > 50 ) or ( x >= 70 )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction.value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 #
@@ -194,51 +194,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.doubles
-#			rule "Range check for doubles, if smaller than or equal is missing"
-#			rule "Range check for doubles, if greater than or equal is missing"
-#			rule "Range check for doubles, equal and greater than"
-#			rule "Range check for doubles, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.doubles
+#            rule "Range check for doubles, if smaller than or equal is missing"
+#            rule "Range check for doubles, if greater than or equal is missing"
+#            rule "Range check for doubles, equal and greater than"
+#            rule "Range check for doubles, equal and smaller than"
 #
 # Example: covered ( x > 10.0 ), ( x > 70.0 ) ( x < 100.0 )and ( x == 50.0 )
-# 			reports that ( x < 50.0 ), ( x > 50.0 ) and ( x <= 70.0 ) is missing.
+#             reports that ( x < 50.0 ), ( x > 50.0 ) and ( x <= 70.0 ) is missing.
 #
 rule "Remove useless double gaps lesser or lesser and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > 10.0
-		$lower :NumberRestriction( 
-			valueType == Field.DOUBLE,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > 10.0
+        $lower :NumberRestriction(
+            valueType == Field.DOUBLE,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < 100.0
-		$higher :NumberRestriction( 
-			fieldPath == $lower.fieldPath,
-			value > $lower.value,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
-		)
-		
-		# No "<" or "<=" restrictions between these two
-		not NumberRestriction( 
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot, 
-			value > $lower.value,
-			value < $higher.value
-		)
+        # Covered x < 100.0
+        $higher :NumberRestriction(
+            fieldPath == $lower.fieldPath,
+            value > $lower.value,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+        )
 
-		# gap ( x < 50.0 ) or ( x > 50.0 ) or ( x <= 70.0 )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction.value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No "<" or "<=" restrictions between these two
+        not NumberRestriction(
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            value > $lower.value,
+            value < $higher.value
+        )
+
+        # gap ( x < 50.0 ) or ( x > 50.0 ) or ( x <= 70.0 )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction.value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 #
@@ -247,51 +247,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.doubles
-#			rule "Range check for doubles, if smaller than or equal is missing"
-#			rule "Range check for doubles, if greater than or equal is missing"
-#			rule "Range check for doubles, equal and greater than"
-#			rule "Range check for doubles, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.doubles
+#            rule "Range check for doubles, if smaller than or equal is missing"
+#            rule "Range check for doubles, if greater than or equal is missing"
+#            rule "Range check for doubles, equal and greater than"
+#            rule "Range check for doubles, equal and smaller than"
 #
 # Example: covered ( x > 10.0 ), ( x < 70.0 ) ( x < 100.0 )and ( x == 50.0 )
 # reports that ( x < 50.0 ), ( x > 50.0 ) and ( x >= 70.0 ) is missing.
 #
 rule "Remove useless double gaps greater or greater and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > 10.0
-		$lower :NumberRestriction( 
-			valueType == Field.DOUBLE,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > 10.0
+        $lower :NumberRestriction(
+            valueType == Field.DOUBLE,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < 100.0
-		$higher :NumberRestriction( 
-			fieldPath == $lower.fieldPath,
-			value > $lower.value,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
-		)
-		
-		# No "<" or "<=" restrictions between these two
-		not NumberRestriction( 
-			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot, 
-			value > $lower.value,
-			value < $higher.value
-		)
+        # Covered x < 100.0
+        $higher :NumberRestriction(
+            fieldPath == $lower.fieldPath,
+            value > $lower.value,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL)
+        )
 
-		# gap ( x < 50.0 ) or ( x > 50.0 ) or ( x >= 70.0 )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction.value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No "<" or "<=" restrictions between these two
+        not NumberRestriction(
+            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            value > $lower.value,
+            value < $higher.value
+        )
+
+        # gap ( x < 50.0 ) or ( x > 50.0 ) or ( x >= 70.0 )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction.value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 #
@@ -300,51 +300,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.dates
-#			rule "Range check for dates, if smaller than or equal is missing"
-#			rule "Range check for dates, if greater than or equal is missing"
-#			rule "Range check for dates, equal and greater than"
-#			rule "Range check for dates, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.dates
+#            rule "Range check for dates, if smaller than or equal is missing"
+#            rule "Range check for dates, if greater than or equal is missing"
+#            rule "Range check for dates, equal and greater than"
+#            rule "Range check for dates, equal and smaller than"
 #
 # Example: covered ( x > "01-Oct-2007" ), ( x > "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
 # reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x <= "15-Oct-2007" ) is missing.
 #
 rule "Remove useless date gaps lesser or lesser and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > "01-Oct-2007"
-		$lower :DateRestriction( 
-			valueType == Field.DATE,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > "01-Oct-2007"
+        $lower :DateRestriction(
+            valueType == Field.DATE,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < "20-Oct-2007"
-		$higher :DateRestriction( 
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
-			eval( value.after( $lower.getValue() ) )
-		)
-		
-		# No "<" or "<=" restrictions between these two
-		not DateRestriction( 
-			( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot, 
-			eval( value.after( $lower.getValue() ) ),
-			eval( value.before( $higher.getValue() ) )
-		)
+        # Covered x < "20-Oct-2007"
+        $higher :DateRestriction(
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
+            eval( value.after( $lower.getValue() ) )
+        )
 
-		# gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x <= "15-Oct-2007" )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction.value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No "<" or "<=" restrictions between these two
+        not DateRestriction(
+            ( operator == Operator.LESS_OR_EQUAL || == Operator.LESS ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            eval( value.after( $lower.getValue() ) ),
+            eval( value.before( $higher.getValue() ) )
+        )
+
+        # gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x <= "15-Oct-2007" )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction.value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 #
@@ -353,51 +353,51 @@ end
 # Type: None
 # Dependencies: Needs at least one of the following packages or rules to fire.
 #
-#		package org.drools.verifier.rangeChecks.dates
-#			rule "Range check for dates, if smaller than or equal is missing"
-#			rule "Range check for dates, if greater than or equal is missing"
-#			rule "Range check for dates, equal and greater than"
-#			rule "Range check for dates, equal and smaller than"
+#        package org.drools.verifier.rangeChecks.dates
+#            rule "Range check for dates, if smaller than or equal is missing"
+#            rule "Range check for dates, if greater than or equal is missing"
+#            rule "Range check for dates, equal and greater than"
+#            rule "Range check for dates, equal and smaller than"
 #
 # Example: covered ( x > "01-Oct-2007" ), ( x < "15-Oct-2007" ) ( x < "20-Oct-2007" )and ( x == "10-Oct-2007" )
 # reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x >= "15-Oct-2007" ) is missing.
 #
 rule "Remove useless date gaps greater or greater and equal"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		# Covered x > "01-Oct-2007"
-		$lower :DateRestriction( 
-			valueType == Field.DATE,
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
-		)
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        # Covered x > "01-Oct-2007"
+        $lower :DateRestriction(
+            valueType == Field.DATE,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL)
+        )
 
-		# Covered x < "20-Oct-2007"
-		$higher :DateRestriction( 
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot,
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
-			eval( value.after( $lower.getValue() ) )
-		)
-		
-		# No ">" or ">=" restrictions between these two
-		not DateRestriction( 
-			( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
-			fieldPath == $lower.fieldPath,
-			patternIsNot == $lower.patternIsNot,
-			eval( value.after( $lower.getValue() ) ),
-			eval( value.before( $higher.getValue() ) )
-		)
+        # Covered x < "20-Oct-2007"
+        $higher :DateRestriction(
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL),
+            eval( value.after( $lower.getValue() ) )
+        )
 
-		# gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x >= "15-Oct-2007" )
-		$gap :Gap(
-			restriction.fieldPath == $lower.fieldPath,
-			restriction.patternIsNot == $lower.patternIsNot,
-			restriction.value > $lower.value,
-			restriction .value < $higher.value
-		)
-	then
-		retract( $gap );
-		result.remove( $gap );
+        # No ">" or ">=" restrictions between these two
+        not DateRestriction(
+            ( operator == Operator.GREATER_OR_EQUAL || == Operator.GREATER ),
+            fieldPath == $lower.fieldPath,
+            patternIsNot == $lower.patternIsNot,
+            eval( value.after( $lower.getValue() ) ),
+            eval( value.before( $higher.getValue() ) )
+        )
+
+        # gap ( x < "10-Oct-2007" ) or ( x > "10-Oct-2007" ) or ( x >= "15-Oct-2007" )
+        $gap :Gap(
+            restriction.fieldPath == $lower.fieldPath,
+            restriction.patternIsNot == $lower.patternIsNot,
+            restriction.value > $lower.value,
+            restriction .value < $higher.value
+        )
+    then
+        retract( $gap );
+        result.remove( $gap );
 end
 
 

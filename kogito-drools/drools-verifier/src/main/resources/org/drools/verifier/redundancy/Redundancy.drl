@@ -35,23 +35,23 @@ global VerifierReport result;
 #
 # Dependencies:
 #
-#	Needs at least the following package:
-#		package org.drools.verifier.sumbumption
+#    Needs at least the following package:
+#        package org.drools.verifier.sumbumption
 #
 rule "Find redundancy"
-	when
-		$sub :Subsumption( )
-		
-		Subsumption(
-			left == $sub.right,
-			right == $sub.left
-		)
-		
-		not Redundancy(
-			items contains $sub.left, 
-			items contains $sub.right 
-		)
-	then
-		insert( new Redundancy( $sub.getLeft(), 
-								$sub.getRight() ) );
+    when
+        $sub :Subsumption( )
+
+        Subsumption(
+            left == $sub.right,
+            right == $sub.left
+        )
+
+        not Redundancy(
+            items contains $sub.left,
+            items contains $sub.right
+        )
+    then
+        insert( new Redundancy( $sub.getLeft(),
+                                $sub.getRight() ) );
 end

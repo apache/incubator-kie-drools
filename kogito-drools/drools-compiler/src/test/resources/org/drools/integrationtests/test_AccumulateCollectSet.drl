@@ -8,8 +8,8 @@ global List results;
 
 rule "External Function" salience 80
     when
-    	$set  : Set( size >= 3 ) 
-    	        from accumulate( Cheese( $type : type ),
+        $set  : Set( size >= 3 )
+                from accumulate( Cheese( $type : type ),
                                  collectSet( $type ) );
     then
         results.add( $set );

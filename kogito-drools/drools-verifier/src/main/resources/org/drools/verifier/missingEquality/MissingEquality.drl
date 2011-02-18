@@ -47,72 +47,72 @@ global VerifierReport result;
 # Example: val != 10 when val == 10 is missing.
 #
 rule "Missing restriction in LiteralRestrictions"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		#
-		# == and !=
-		#
-		(
-				$r :LiteralRestriction(
-					operator == Operator.EQUAL
-				)
-			and
-				not LiteralRestriction(
-					fieldPath == $r.fieldPath,
-					operator == Operator.NOT_EQUAL,
-					patternIsNot == $r.patternIsNot,
-					valueAsString == $r.valueAsString
-				)
-		) or (
-				$r :LiteralRestriction(
-					operator == Operator.NOT_EQUAL
-				)
-			and
-				not LiteralRestriction(
-					fieldPath == $r.fieldPath,
-					operator == Operator.EQUAL,
-					patternIsNot == $r.patternIsNot,
-					valueAsString == $r.valueAsString
-				)
-		#
-		# matches and not matches
-		#
-		) or (
-				$r :LiteralRestriction(
-					operator == MatchesEvaluatorsDefinition.MATCHES,
-					valueAsString == $r.valueAsString
-				)
-			and
-				not LiteralRestriction(
-					fieldPath == $r.fieldPath,
-					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
-					patternIsNot == $r.patternIsNot,
-					valueAsString == $r.valueAsString
-				)
-		) or (
-				$r :LiteralRestriction(
-					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
-					valueAsString == $r.valueAsString
-				)
-			and
-				not LiteralRestriction(
-					fieldPath == $r.fieldPath,
-					operator == MatchesEvaluatorsDefinition.MATCHES,
-					patternIsNot == $r.patternIsNot,
-					valueAsString == $r.valueAsString
-				)
-		)
-	then
-		result.add( new VerifierMessage(
-								new HashMap<String, String>(),
-								Severity.WARNING,
-								MessageType.MISSING_EQUALITY,
-								$r,
-								"Rule base covers " +
-								$r.getOperator().getOperatorString() + " " + $r.getValueAsString() +
-								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
-								" " + $r.getValueAsString()
-								) );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        #
+        # == and !=
+        #
+        (
+                $r :LiteralRestriction(
+                    operator == Operator.EQUAL
+                )
+            and
+                not LiteralRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == Operator.NOT_EQUAL,
+                    patternIsNot == $r.patternIsNot,
+                    valueAsString == $r.valueAsString
+                )
+        ) or (
+                $r :LiteralRestriction(
+                    operator == Operator.NOT_EQUAL
+                )
+            and
+                not LiteralRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == Operator.EQUAL,
+                    patternIsNot == $r.patternIsNot,
+                    valueAsString == $r.valueAsString
+                )
+        #
+        # matches and not matches
+        #
+        ) or (
+                $r :LiteralRestriction(
+                    operator == MatchesEvaluatorsDefinition.MATCHES,
+                    valueAsString == $r.valueAsString
+                )
+            and
+                not LiteralRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
+                    patternIsNot == $r.patternIsNot,
+                    valueAsString == $r.valueAsString
+                )
+        ) or (
+                $r :LiteralRestriction(
+                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
+                    valueAsString == $r.valueAsString
+                )
+            and
+                not LiteralRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == MatchesEvaluatorsDefinition.MATCHES,
+                    patternIsNot == $r.patternIsNot,
+                    valueAsString == $r.valueAsString
+                )
+        )
+    then
+        result.add( new VerifierMessage(
+                                new HashMap<String, String>(),
+                                Severity.WARNING,
+                                MessageType.MISSING_EQUALITY,
+                                $r,
+                                "Rule base covers " +
+                                $r.getOperator().getOperatorString() + " " + $r.getValueAsString() +
+                                ", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
+                                " " + $r.getValueAsString()
+                                ) );
 end
 
 #
@@ -123,126 +123,126 @@ end
 # Example: val != $var when val == $var is missing.
 #
 rule "Missing restriction in VariableRestrictions"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		#
-		# == and !=
-		#
-		(
-				$r :VariableRestriction(
-					operator == Operator.EQUAL
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == Operator.NOT_EQUAL,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		) or (
-				$r :VariableRestriction(
-					operator == Operator.NOT_EQUAL
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == Operator.EQUAL,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		#
-		# matches and not matches
-		#
-		) or (
-				$r :VariableRestriction(
-					operator == MatchesEvaluatorsDefinition.MATCHES
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		) or (
-				$r :VariableRestriction(
-					operator == MatchesEvaluatorsDefinition.NOT_MATCHES
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == MatchesEvaluatorsDefinition.MATCHES,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		#
-		# memberof and not memberof
-		#
-		) or (
-				$r :VariableRestriction(
-					operator == SetEvaluatorsDefinition.MEMBEROF
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == SetEvaluatorsDefinition.NOT_MEMBEROF,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		) or (
-				$r :VariableRestriction(
-					operator == SetEvaluatorsDefinition.NOT_MEMBEROF
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == SetEvaluatorsDefinition.MEMBEROF,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		#
-		# contains and not contains
-		#
-		) or (
-				$r :VariableRestriction(
-					operator == SetEvaluatorsDefinition.CONTAINS
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == SetEvaluatorsDefinition.NOT_CONTAINS,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		) or (
-				$r :VariableRestriction(
-					operator == SetEvaluatorsDefinition.NOT_CONTAINS
-				)
-			and
-				not VariableRestriction(
-					fieldPath == $r.fieldPath,
-					operator == SetEvaluatorsDefinition.CONTAINS,
-					patternIsNot == $r.patternIsNot,
-					variable.objectTypePath == $r.variable.objectTypePath,
-					variable.objectTypeType == $r.variable.objectTypeType
-				)
-		)
-	then
-		result.add( new VerifierMessage(
-								new HashMap<String, String>(),
-								Severity.WARNING,
-								MessageType.MISSING_EQUALITY,
-								$r,
-								"Rule base covers " +
-								$r.getOperator().getOperatorString() + " " + $r.getVariable().getName() +
-								", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
-								" " + $r.getVariable().getName()
-								) );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        #
+        # == and !=
+        #
+        (
+                $r :VariableRestriction(
+                    operator == Operator.EQUAL
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == Operator.NOT_EQUAL,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        ) or (
+                $r :VariableRestriction(
+                    operator == Operator.NOT_EQUAL
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == Operator.EQUAL,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        #
+        # matches and not matches
+        #
+        ) or (
+                $r :VariableRestriction(
+                    operator == MatchesEvaluatorsDefinition.MATCHES
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        ) or (
+                $r :VariableRestriction(
+                    operator == MatchesEvaluatorsDefinition.NOT_MATCHES
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == MatchesEvaluatorsDefinition.MATCHES,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        #
+        # memberof and not memberof
+        #
+        ) or (
+                $r :VariableRestriction(
+                    operator == SetEvaluatorsDefinition.MEMBEROF
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == SetEvaluatorsDefinition.NOT_MEMBEROF,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        ) or (
+                $r :VariableRestriction(
+                    operator == SetEvaluatorsDefinition.NOT_MEMBEROF
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == SetEvaluatorsDefinition.MEMBEROF,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        #
+        # contains and not contains
+        #
+        ) or (
+                $r :VariableRestriction(
+                    operator == SetEvaluatorsDefinition.CONTAINS
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == SetEvaluatorsDefinition.NOT_CONTAINS,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        ) or (
+                $r :VariableRestriction(
+                    operator == SetEvaluatorsDefinition.NOT_CONTAINS
+                )
+            and
+                not VariableRestriction(
+                    fieldPath == $r.fieldPath,
+                    operator == SetEvaluatorsDefinition.CONTAINS,
+                    patternIsNot == $r.patternIsNot,
+                    variable.objectTypePath == $r.variable.objectTypePath,
+                    variable.objectTypeType == $r.variable.objectTypeType
+                )
+        )
+    then
+        result.add( new VerifierMessage(
+                                new HashMap<String, String>(),
+                                Severity.WARNING,
+                                MessageType.MISSING_EQUALITY,
+                                $r,
+                                "Rule base covers " +
+                                $r.getOperator().getOperatorString() + " " + $r.getVariable().getName() +
+                                ", but it is missing " + MissingRange.getReversedOperator( $r.getOperator() ).getOperatorString() +
+                                " " + $r.getVariable().getName()
+                                ) );
 end

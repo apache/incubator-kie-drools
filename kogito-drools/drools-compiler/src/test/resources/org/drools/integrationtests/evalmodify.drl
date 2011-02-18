@@ -4,12 +4,12 @@ import org.drools.Cell
 import java.lang.Integer
 
 rule "test eval"
-	when
-		cell1 : Cell(value1:value != 0)
-		cell2 : Cell(value2:value < value1)				
-		eval (true)
-	then
-		System.out.println("setting value to " + (value2 + 1));
-		cell2.setValue(value2 + 1);
-		update(cell2);
+    when
+        cell1 : Cell(value1:value != 0)
+        cell2 : Cell(value2:value < value1)
+        eval (true)
+    then
+        System.out.println("setting value to " + (value2 + 1));
+        cell2.setValue(value2 + 1);
+        update(cell2);
 end

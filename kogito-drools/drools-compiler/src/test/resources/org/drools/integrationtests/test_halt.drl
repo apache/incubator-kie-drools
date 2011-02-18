@@ -12,9 +12,9 @@ then
 end
 
 rule "stop"
-	salience 10
+    salience 10
 when
-	Number( intValue == 10 )
+    Number( intValue == 10 )
 then
     drools.halt();
 end

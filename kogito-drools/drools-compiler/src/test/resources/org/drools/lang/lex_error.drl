@@ -1,8 +1,8 @@
 
 rule simple_rule 
   when
-	Student( name == "Andy )
+    Student( name == "Andy )
   then
-	Kapow
-	Poof
+    Kapow
+    Poof
 end

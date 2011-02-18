@@ -3,23 +3,23 @@ package org.drools.test;
 import org.drools.Cheese;
 
 rule "test1"
-	salience 10
-	no-loop true
-	when
+    salience 10
+    no-loop true
+    when
         cheese : Cheese( price == 15 )
     then
-    	update(cheese);
+        update(cheese);
 end
 
 
 rule "test2"
-	salience 0
-	no-loop true
-	when
+    salience 0
+    no-loop true
+    when
         cheese : Cheese( price == 15 )
     then
-    	cheese.setPrice( 14 );
-		update(cheese);
+        cheese.setPrice( 14 );
+        update(cheese);
 end
 
 

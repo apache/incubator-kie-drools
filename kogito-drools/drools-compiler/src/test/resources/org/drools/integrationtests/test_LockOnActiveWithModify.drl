@@ -1,27 +1,27 @@
 package org.drools;
 
 rule "calculate live"
-	agenda-group "calculate"
-	lock-on-active true
+    agenda-group "calculate"
+    lock-on-active true
     when
-    	$c : Cell( state == Cell.LIVE )
-    	     Neighbor( cell == $c, $n : neighbor )
+        $c : Cell( state == Cell.LIVE )
+             Neighbor( cell == $c, $n : neighbor )
     then
-		modify( $n ) {
-		    setValue( $n.getValue() + 1 )
-		}
+        modify( $n ) {
+            setValue( $n.getValue() + 1 )
+        }
 end  
 
 rule "calculate dead"
-	agenda-group "calculate"
-	lock-on-active true
+    agenda-group "calculate"
+    lock-on-active true
     when
-    	$c : Cell( state == Cell.DEAD )
-    	     Neighbor( cell == $c, $n : neighbor )
+        $c : Cell( state == Cell.DEAD )
+             Neighbor( cell == $c, $n : neighbor )
     then
-		modify( $n ) {
-		    setValue( $n.getValue() - 1 )
-		}
+        modify( $n ) {
+            setValue( $n.getValue() - 1 )
+        }
 end  
 
 rule "and there was life"

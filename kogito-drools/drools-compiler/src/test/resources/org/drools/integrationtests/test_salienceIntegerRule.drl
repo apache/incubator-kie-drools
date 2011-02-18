@@ -10,7 +10,7 @@ rule "Salience rule 1"
     when
         Person( )
     then
-		list.add( "Rule 1" );
+        list.add( "Rule 1" );
 end    
 
 # this rule shall fire third, since rule 4 has higher salience  but this is LIFO after rule 2
@@ -19,8 +19,8 @@ rule "Salience rule 3"
     when
         person: Person( )
     then
-		list.add( "Rule 3" );
-		retract(person);
+        list.add( "Rule 3" );
+        retract(person);
 end  
 
 # this rule shall fire second, since rule 4 has higher salience but this is LIFO before rule 3
@@ -29,7 +29,7 @@ rule "Salience rule 2"
     when
         person: Person( )
     then
-		list.add( "Rule 2" );
+        list.add( "Rule 2" );
 end      
 
 # this rule shall fire first since it has the higher salience
@@ -38,6 +38,6 @@ rule "Salience rule 4"
     when
         Person( )
     then
-		list.add( "Rule 4" );
+        list.add( "Rule 4" );
 end    
 

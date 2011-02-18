@@ -4,23 +4,23 @@ global java.util.List results
 
 rule "Hashing null"
         salience 10
-	when
-		Cheese( type == null )
-	then
-		results.add( "OK1" );
+    when
+        Cheese( type == null )
+    then
+        results.add( "OK1" );
 end
 
 rule "Hashing empty"
         salience 5
-	when
-		Cheese( type == "" )
-	then
-		results.add( "OK2" );
+    when
+        Cheese( type == "" )
+    then
+        results.add( "OK2" );
 end
 
 rule "Hashing value"
-	when
-		Cheese( type == "stilton" )
-	then
-		results.add( "OK3" );
+    when
+        Cheese( type == "stilton" )
+    then
+        results.add( "OK3" );
 end

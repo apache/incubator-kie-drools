@@ -17,7 +17,7 @@
 package org.drools.examples.pacman
 
 import java.awt.event.KeyEvent;
-	
+
 declare KeyEvent
     @role(event)
     @expires(0s)
@@ -27,7 +27,7 @@ end
 /**
  * Create a Direction for a character, based on a given keyCode. Return null
  * if the keyCode does not map to an arrow key.
- */	
+ */
 function Direction createDirection(Character character, KeyEvent keyCode) {
     DirectionEnum directionEnum;
     switch ( keyCode.getKeyCode() ) {    
@@ -36,7 +36,7 @@ function Direction createDirection(Character character, KeyEvent keyCode) {
             break;   
         }
         case 40 : { // DOWN
-        	directionEnum = DirectionEnum.DOWN;
+            directionEnum = DirectionEnum.DOWN;
             break;
         }
         case 37 : { // LEFT
@@ -44,11 +44,11 @@ function Direction createDirection(Character character, KeyEvent keyCode) {
             break;
         }
         case 39 : { // RIGHT
-        	directionEnum = DirectionEnum.RIGHT;
+            directionEnum = DirectionEnum.RIGHT;
             break;
         }
         default: {                
-        	return null;
+            return null;
         }
     }
     return Direction.newDirection( character, directionEnum );

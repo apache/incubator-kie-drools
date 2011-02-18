@@ -9,30 +9,30 @@ global java.util.List list4;
 
 
 rule "1. && operator with number range"
-    when    	
-		$person : Person( age > 30 && < 40, hair == "red" )		    
+    when
+        $person : Person( age > 30 && < 40, hair == "red" )
     then
         list1.add( $person );
 end    
 
 rule "2. && operator with != and strings"
-    when    	
-		$person : Person( hair != "blue" && != "purple", age > 30 && < 40  )		    
+    when
+        $person : Person( hair != "blue" && != "purple", age > 30 && < 40  )
     then
         list2.add( $person );
 end   
 
 rule "3. || operator with == and strings"
-    when    	
-		$person : Person( hair == "blue" ||  == "purple",   age < 30 )		    
+    when
+        $person : Person( hair == "blue" ||  == "purple",   age < 30 )
     then
         list3.add( $person );
 end   
 
 
 rule "4. ||  and && operator with ==  and != and strings"
-    when    	
-		$person : Person( age > 30 && < 40 || > 10 && < 20, hair == "red" || == "blue" )	
+    when
+        $person : Person( age > 30 && < 40 || > 10 && < 20, hair == "red" || == "blue" )
     then
         list4.add( $person );
 end  

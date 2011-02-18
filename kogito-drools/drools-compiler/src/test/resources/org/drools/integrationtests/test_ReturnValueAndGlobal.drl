@@ -6,15 +6,15 @@ global java.util.List   nonMatchingList;
 
 
 rule "Match type"
-	when
-		$cheese : Cheese( type == (cheeseType) )
-	then
-		matchingList.add( $cheese );
+    when
+        $cheese : Cheese( type == (cheeseType) )
+    then
+        matchingList.add( $cheese );
 end
 
 rule "Non matching type"
-	when
-		$cheese : Cheese( type != (cheeseType) )
-	then
-		nonMatchingList.add( $cheese );
+    when
+        $cheese : Cheese( type != (cheeseType) )
+    then
+        nonMatchingList.add( $cheese );
 end

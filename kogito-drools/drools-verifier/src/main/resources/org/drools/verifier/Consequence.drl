@@ -33,20 +33,20 @@ global VerifierReport result;
 
 
 rule "No action - possibly commented out"
-	when
-		$c :TextConsequence( ( text == null || == "" ) )
+    when
+        $c :TextConsequence( ( text == null || == "" ) )
 
-		$r :VerifierRule(
-			path == $c.rulePath
-		)
-	then
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getPath(), $r.getName());
-		
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.WARNING,
-								MessageType.MISSING_COMPONENT,
-								null,
-								$r + " has no RHS." ) );
+        $r :VerifierRule(
+            path == $c.rulePath
+        )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $r.getPath(), $r.getName());
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.WARNING,
+                                MessageType.MISSING_COMPONENT,
+                                null,
+                                $r + " has no RHS." ) );
 end

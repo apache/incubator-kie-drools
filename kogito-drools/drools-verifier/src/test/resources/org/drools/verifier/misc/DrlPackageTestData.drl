@@ -23,51 +23,51 @@ import com.sample.DroolsTest.Message;
 # Something
 #
 rule "Test 1"
-	when
-		    Foo( 
-		    	a > 10 
-		    )
-	then
-		System.out.println( "Test" );
+    when
+            Foo(
+                a > 10
+            )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Test 2"
-	when
-		    Foo( 
-		    	a > 10, 
-		    	b == 2
-		    )
-	then
-		System.out.println( "Test" );
+    when
+            Foo(
+                a > 10,
+                b == 2
+            )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Test 1 GG"
-	ruleflow-group "GG"
-	when
-		    Foo( 
-		    	a > 10 
-		    )
-	then
-		System.out.println( "Test" );
+    ruleflow-group "GG"
+    when
+            Foo(
+                a > 10
+            )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Test 2 GG"
-	ruleflow-group "GG"
-	when
-		    Foo( 
-		    	a > 10, 
-		    	b == 2
-		    )
-	then
-		System.out.println( "Test" );
+    ruleflow-group "GG"
+    when
+            Foo(
+                a > 10,
+                b == 2
+            )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Test 3"
-	when
-		    Bar( 
-		    	a > 10, 
-		    	b == 2
-		    )
-	then
-		System.out.println( "Test" );
+    when
+            Bar(
+                a > 10,
+                b == 2
+            )
+    then
+        System.out.println( "Test" );
 end

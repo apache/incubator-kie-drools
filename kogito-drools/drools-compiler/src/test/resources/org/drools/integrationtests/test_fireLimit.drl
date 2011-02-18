@@ -12,9 +12,9 @@ then
 end
 
 rule "stop"
-	salience 10
+    salience 10
 when
-	$old : Number( intValue == 20 )
+    $old : Number( intValue == 20 )
 then
     retract( $old );
     drools.halt();

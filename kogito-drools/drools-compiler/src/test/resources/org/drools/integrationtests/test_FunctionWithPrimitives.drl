@@ -5,7 +5,7 @@ import org.drools.Cheese;
 global java.util.List list
 
 function int addFive( int price ) {
-	return price + 5;
+    return price + 5;
 }
 
 rule "Function with Primitives"

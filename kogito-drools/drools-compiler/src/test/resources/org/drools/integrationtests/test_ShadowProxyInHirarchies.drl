@@ -1,23 +1,23 @@
 package org.drools;
 
 rule "grand parent"
-	when
-		GrandParent( name == "gp" )
-	then
-		// do something
+    when
+        GrandParent( name == "gp" )
+    then
+        // do something
 end
 
 rule "parent"
-	when
-		Parent( name == "p" )
-	then
-		// do something
+    when
+        Parent( name == "p" )
+    then
+        // do something
 end
 
 rule "child"
-	when
-		Child( name == "c" )
-	then
-		// do something
+    when
+        Child( name == "c" )
+    then
+        // do something
 end
 

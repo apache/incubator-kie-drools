@@ -9,13 +9,13 @@ fdsfdsfds
 
 
 rule "test something"
-	
-	when
-		p: Person( name=="Michael", 
-								(addresses[1].street == "Low" && 
-								addresses[0].street == "High"  )
-								)
-	then
-		p.name = "goober"
-		System.out.println(p.name)		
+
+    when
+        p: Person( name=="Michael",
+                                (addresses[1].street == "Low" &&
+                                addresses[0].street == "High"  )
+                                )
+    then
+        p.name = "goober"
+        System.out.println(p.name)
 end

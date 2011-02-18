@@ -6,8 +6,8 @@ import java.util.List
 global List list;
 
 rule "Hello World"
-	when
-		Message()
-	then
-	    list.add(kcontext.getRule().getName()); 
+    when
+        Message()
+    then
+        list.add(kcontext.getRule().getName());
 end

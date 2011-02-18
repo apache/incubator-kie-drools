@@ -8,5 +8,5 @@ rule "literal test rule"
     when
         Cheese( $x: type == "s\tti\"lto\nn" )
     then
-		list.add( $x );        
+        list.add( $x );
 end    

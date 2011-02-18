@@ -3,17 +3,17 @@ package org.drools;
 global java.util.List results;
 
 rule "5+ constraints with not"
-	when
-		FirstClass($i1 : item1, $i2 : item2, $i3 : item3, $i4 : item4, $i5 : item5) 
-		not SecondClass( item1 == $i1, item2 == $i2, item3 == $i3, item4 == $i4, item5 == $i5 ) 
-	then
-		results.add( "NOT" );
+    when
+        FirstClass($i1 : item1, $i2 : item2, $i3 : item3, $i4 : item4, $i5 : item5)
+        not SecondClass( item1 == $i1, item2 == $i2, item3 == $i3, item4 == $i4, item5 == $i5 )
+    then
+        results.add( "NOT" );
 end
 
 rule "5+ constraints with pattern"
-	when
-		FirstClass($i1 : item1, $i2 : item2, $i3 : item3, $i4 : item4, $i5 : item5) 
-		SecondClass( item1 == $i1, item2 == $i2, item3 == $i3, item4 == $i4, item5 == $i5 ) 
-	then
-		results.add( "EQUALS" );
+    when
+        FirstClass($i1 : item1, $i2 : item2, $i3 : item3, $i4 : item4, $i5 : item5)
+        SecondClass( item1 == $i1, item2 == $i2, item3 == $i3, item4 == $i4, item5 == $i5 )
+    then
+        results.add( "EQUALS" );
 end

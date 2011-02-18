@@ -9,5 +9,5 @@ rule "like stilton"
     when
         Cheese( type:type == "stilton", price > ( -1 )  )
     then
-		list.add( type );
+        list.add( type );
 end  

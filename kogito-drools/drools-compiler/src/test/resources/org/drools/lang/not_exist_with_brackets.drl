@@ -1,9 +1,9 @@
 package HR1
 
 rule simple_rule 
-  when  		  	
-  	not ( Cheese(type == "stilton") )
-  	exists ( Foo() )
+  when
+      not ( Cheese(type == "stilton") )
+      exists ( Foo() )
   then
-	funky();
+    funky();
 end

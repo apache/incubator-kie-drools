@@ -7,7 +7,7 @@ rule rule1
     when
         TestParam(val: value1 -> (val == null))
     then
-    	list.add("rule1 fired");
+        list.add("rule1 fired");
 end    
 
 
@@ -15,5 +15,5 @@ rule rule2
     when
         TestParam(val: value2 -> (val == null))
     then
-		list.add("rule2 fired");
+        list.add("rule2 fired");
 end  

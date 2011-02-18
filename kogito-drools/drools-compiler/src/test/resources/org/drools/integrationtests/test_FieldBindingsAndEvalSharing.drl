@@ -8,7 +8,7 @@ rule rule1
         TestParam(val: value1)
         eval(val == null)
     then
-    	list.add("rule1 fired");
+        list.add("rule1 fired");
 end    
 
 
@@ -17,5 +17,5 @@ rule rule2
         TestParam(val: value2)
         eval(val == null) #note its the same guts, but different binding
     then
-		list.add("rule2 fired");
+        list.add("rule2 fired");
 end  

@@ -3,30 +3,30 @@
 rule myrule 
   when
   then
-  	int i = 0;
-	i = 1;
-	i / 1;
-	i == 1;
-	i(i);
-	i = 'i';
-	i.i.i;
-	i\i;
-	i<i;
-	i>i;
-	i="i";	
-	++i;
-	i++;
-	--i;
-	i--;
-	i += i;
-	i -= i;
-	i *= i;
-	i /= i;
-	int i = 5;
-	for(int j; j<i; ++j) {
-	  System.out.println(j);
-	}	
-	Object o = new String("Hello");
-	String s = (String) o;	
-	
+      int i = 0;
+    i = 1;
+    i / 1;
+    i == 1;
+    i(i);
+    i = 'i';
+    i.i.i;
+    i\i;
+    i<i;
+    i>i;
+    i="i";
+    ++i;
+    i++;
+    --i;
+    i--;
+    i += i;
+    i -= i;
+    i *= i;
+    i /= i;
+    int i = 5;
+    for(int j; j<i; ++j) {
+      System.out.println(j);
+    }
+    Object o = new String("Hello");
+    String s = (String) o;
+
 end

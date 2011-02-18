@@ -8,19 +8,19 @@ import org.drools.Cheesery;
 
 global java.util.List list;
 
-rule "Your First Rule"	
-	when
-		$c : Cheese( type == "stilton" )
-		$p : Person( likes == $c.type )
-	then 
-		list.add( $p );
+rule "Your First Rule"
+    when
+        $c : Cheese( type == "stilton" )
+        $p : Person( likes == $c.type )
+    then
+        list.add( $p );
 end
 
 rule "Your Second Rule"
-	when
-		$c : Cheese( type == "cheddar" )
-		$p : Person( likes == $c.type )
-	then 
-		list.add( $p );
-		
+    when
+        $c : Cheese( type == "cheddar" )
+        $p : Person( likes == $c.type )
+    then
+        list.add( $p );
+
 end

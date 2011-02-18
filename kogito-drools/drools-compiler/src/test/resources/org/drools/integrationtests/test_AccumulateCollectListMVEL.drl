@@ -8,8 +8,8 @@ global List results;
 rule "External Function" salience 80
     dialect "mvel"
     when
-    	$list : List( size >= 5 ) 
-    	        from accumulate( Cheese( $type : type ),
+        $list : List( size >= 5 )
+                from accumulate( Cheese( $type : type ),
                                  collectList( $type ) );
     then
         results.add( $list );

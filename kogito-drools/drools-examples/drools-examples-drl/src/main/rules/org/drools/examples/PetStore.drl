@@ -33,16 +33,16 @@ global javax.swing.JTextArea textArea
 // insert each item in the shopping cart into the Working Memory 
 rule "Explode Cart"
     agenda-group "init"
-	auto-focus true    
+    auto-focus true
     salience 10
-	dialect "java"
-	when
-	    $order : Order( grossTotal == -1 )
-		$item : Purchase() from $order.items
-	then
-		insert( $item );
-		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();		
-		drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();		
+    dialect "java"
+    when
+        $order : Order( grossTotal == -1 )
+        $item : Purchase() from $order.items
+    then
+        insert( $item );
+        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
+        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
 end
 
 
@@ -50,18 +50,18 @@ end
 // Fish Food and dont already have a Fish Food Sample
 rule "Free Fish Food Sample"
     agenda-group "evaluate"
-	dialect "mvel"
-	when
-	    $order : Order()
-		not ( $p : Product( name == "Fish Food") && Purchase( product == $p ) )
-		not ( $p : Product( name == "Fish Food Sample") && Purchase( product == $p ) )		
-		exists ( $p : Product( name == "Gold Fish") && Purchase( product == $p ) )	
-		$fishFoodSample : Product( name == "Fish Food Sample" );
-	then
-		System.out.println( "Adding free Fish Food Sample to cart" );
-		purchase = new Purchase($order, $fishFoodSample);
-		insert( purchase );
-		$order.addItem( purchase );	
+    dialect "mvel"
+    when
+        $order : Order()
+        not ( $p : Product( name == "Fish Food") && Purchase( product == $p ) )
+        not ( $p : Product( name == "Fish Food Sample") && Purchase( product == $p ) )
+        exists ( $p : Product( name == "Gold Fish") && Purchase( product == $p ) )
+        $fishFoodSample : Product( name == "Fish Food Sample" );
+    then
+        System.out.println( "Adding free Fish Food Sample to cart" );
+        purchase = new Purchase($order, $fishFoodSample);
+        insert( purchase );
+        $order.addItem( purchase );
 end
 
 
@@ -69,27 +69,27 @@ end
 rule "Suggest Tank"
        agenda-group "evaluate"
        dialect "java"
-	when
-	    $order : Order()
-		not ( $p : Product( name == "Fish Tank") && Purchase( product == $p ) )	
-		ArrayList( $total : size > 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
-		$fishTank : Product( name == "Fish Tank" )		
-	then
-		requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 	
-end	
+    when
+        $order : Order()
+        not ( $p : Product( name == "Fish Tank") && Purchase( product == $p ) )
+        ArrayList( $total : size > 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
+        $fishTank : Product( name == "Fish Tank" )
+    then
+        requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total);
+end
 
 rule "Show Items"
     agenda-group "show items"
     dialect "java"
-	when
-	    $order : Order( )
-	    $p : Purchase( order == $order )
-	then	
+    when
+        $order : Order( )
+        $p : Purchase( order == $order )
+    then
         textArea.append( $p.getProduct() + "\n");
 end
 
 rule "do checkout"
-	    dialect "java"
+        dialect "java"
     when
     then
         doCheckout(frame, drools.getWorkingMemory());
@@ -98,34 +98,34 @@ end
 rule "Gross Total"
     agenda-group "checkout"
     dialect "mvel"
-	when
-	    $order : Order( grossTotal == -1)
-		Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
-   			        			   				 	   sum( $price ) )
-	then	
-	    modify( $order ) { grossTotal = total }
-	    textArea.append( "\ngross total=" + total + "\n" );
+    when
+        $order : Order( grossTotal == -1)
+        Number( total : doubleValue ) from accumulate( Purchase( $price : product.price ),
+                                                              sum( $price ) )
+    then
+        modify( $order ) { grossTotal = total }
+        textArea.append( "\ngross total=" + total + "\n" );
 end
 
 rule "Apply 5% Discount"
     agenda-group "checkout"
-	dialect "mvel"
-	when
-		$order : Order( grossTotal >= 10 && < 20 )
-	then
-		$order.discountedTotal = $order.grossTotal * 0.95;
-	    textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );		
+    dialect "mvel"
+    when
+        $order : Order( grossTotal >= 10 && < 20 )
+    then
+        $order.discountedTotal = $order.grossTotal * 0.95;
+        textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
 
 
 rule "Apply 10% Discount"
     agenda-group "checkout"
-	dialect "mvel"
-	when
-		$order : Order( grossTotal >= 20 )
-	then
-		$order.discountedTotal = $order.grossTotal * 0.90;
-	    textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );	
+    dialect "mvel"
+    when
+        $order : Order( grossTotal >= 20 )
+    then
+        $order.discountedTotal = $order.grossTotal * 0.90;
+        textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
 
 function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
@@ -142,7 +142,7 @@ function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
                                              options[0]);
 
        if (n == 0) {
- 	       workingMemory.setFocus( "checkout" );
+            workingMemory.setFocus( "checkout" );
        }   
 }
 
@@ -160,7 +160,7 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
                                              options[0]);
                                              
        System.out.print( "SUGGESTION: Would you like to buy a tank for your "
-  	                     + total + " fish? - " );
+                           + total + " fish? - " );
 
        if (n == 0) {
              Purchase purchase = new Purchase( order, fishTank );

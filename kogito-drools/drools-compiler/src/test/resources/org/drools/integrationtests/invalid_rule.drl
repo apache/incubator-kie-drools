@@ -9,9 +9,9 @@ global java.util.List list;
 
 rule "not rule test"
     when
-    	#error 2) incorrect field
+        #error 2) incorrect field
         $person : Person( $likes:likeypooh )
         not Cheese( type == $likes )
     then
-		list.add( $person );
+        list.add( $person );
 end    

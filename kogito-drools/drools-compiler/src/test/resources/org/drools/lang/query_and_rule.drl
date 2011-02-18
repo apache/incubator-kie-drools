@@ -2,29 +2,29 @@
 package foo
 
 rule bar
-	when
-		Baz()
-	then
-		Boo()
+    when
+        Baz()
+    then
+        Boo()
 end
 
 query "simple_query" 
     foo3 : Bar(a==3)
     foo4 : Bar(a4:a==4)
     Baz()
-	
+
 end
 
 rule bar2
-	when
-		Baz()
-	then
-		Boo()
+    when
+        Baz()
+    then
+        Boo()
 end
 
 query "simple_query2" 
     foo3 : Bar(a==3)
     foo4 : Bar(a4:a==4)
     Baz()
-	
+
 end

@@ -3,8 +3,8 @@ package org.drools.test;
 import org.drools.Sensor;
 
 rule "assertAllTemperatures"
-	when
-		p : Sensor( t : temperature )
-	then
-		insertLogical( new Integer( t ) );
+    when
+        p : Sensor( t : temperature )
+    then
+        insertLogical( new Integer( t ) );
 end

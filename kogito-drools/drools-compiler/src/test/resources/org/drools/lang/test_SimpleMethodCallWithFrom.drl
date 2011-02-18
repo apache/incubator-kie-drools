@@ -3,8 +3,8 @@ rule blah
 
  when 
 
-	Col1() from something.doIt( foo,bar,42,"hello",[ a : "b", "something" : 42, "a" : foo, x : [x:y]],"end", [a, "b", 42] )
-	Col2()
+    Col1() from something.doIt( foo,bar,42,"hello",[ a : "b", "something" : 42, "a" : foo, x : [x:y]],"end", [a, "b", 42] )
+    Col2()
  then
-	partay();
-end	
+    partay();
+end

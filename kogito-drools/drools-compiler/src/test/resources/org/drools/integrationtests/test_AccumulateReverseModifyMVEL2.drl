@@ -10,11 +10,11 @@ rule "Constraints everywhere" salience 80
     dialect "mvel"
     when
         $person      : Person( $likes : likes )
-    	$total       : Number( intValue > 20 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes, $p : price ),
+        $total       : Number( intValue > 20 )
+                               from accumulate( $cheese : Cheese( type == $likes, $p : price ),
                                                 init( int total = 0; ),
-    	                                        action( total += $p; ),
-    	                                        reverse( total -= $p; ),
+                                                action( total += $p; ),
+                                                reverse( total -= $p; ),
                                                 result( new Integer( total ) ) )
     then
         results.add( $total );

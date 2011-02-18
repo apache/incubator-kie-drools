@@ -9,10 +9,10 @@ global java.util.List list;
 
 rule "not rule test"
     when
-    	#and it had like instead of likes
+        #and it had like instead of likes
         $person : Person( $likes:likes )
         not Cheese( type == $likes )
     then
-		list.add( $person );
+        list.add( $person );
 end    
 

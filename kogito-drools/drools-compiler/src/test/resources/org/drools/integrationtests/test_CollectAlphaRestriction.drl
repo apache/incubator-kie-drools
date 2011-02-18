@@ -6,7 +6,7 @@ global java.util.List results;
 
 rule "Collect Alpha Restriction" salience 70
     when
-    	$cheeseList  : ArrayList(size > 0) from collect( Cheese( type == "stilton" ) );
+        $cheeseList  : ArrayList(size > 0) from collect( Cheese( type == "stilton" ) );
     then
         results.add($cheeseList);
 end

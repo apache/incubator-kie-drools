@@ -1,12 +1,12 @@
 package org.drools;
  
 rule "subnetworks with not"
-	when
-		not( 
-		    not( Perannotation name == "bob") ) and 
-		    not( Peannotation( name == "mark" ) ) 
-		) 
-	then
-	    // do something
+    when
+        not(
+            not( Perannotation name == "bob") ) and
+            not( Peannotation( name == "mark" ) )
+        )
+    then
+        // do something
 end
 

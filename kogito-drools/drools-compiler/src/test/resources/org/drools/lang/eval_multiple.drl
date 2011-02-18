@@ -1,12 +1,12 @@
 
 rule simple_rule 
   when
-	eval(abc("foo") + 5)
-	Foo()
-	eval(qed())
-	Bar()
+    eval(abc("foo") + 5)
+    Foo()
+    eval(qed())
+    Bar()
   then
-	Kapow
-	Poof
-	
+    Kapow
+    Poof
+
 end

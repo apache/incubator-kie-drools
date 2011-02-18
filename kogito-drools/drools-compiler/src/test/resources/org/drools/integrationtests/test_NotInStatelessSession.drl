@@ -3,8 +3,8 @@ package org.drools.test;
 global java.util.List list
 
 rule "new rule"
-	when
-		not Integer()
-	then
-		list.add( "not integer" );
+    when
+        not Integer()
+    then
+        list.add( "not integer" );
 end

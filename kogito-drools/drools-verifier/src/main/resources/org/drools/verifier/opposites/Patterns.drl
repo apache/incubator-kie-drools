@@ -34,58 +34,58 @@ global VerifierReport result;
 #
 # Dependencies:
 #
-#	Needs at least one of the following packages or rules to fire:
-# 		package org.drools.verifier.opposites;
-#			rule "Opposite LiteralRestrictions"
-#			rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
-#			rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
-#			rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
-#			rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
+#    Needs at least one of the following packages or rules to fire:
+#         package org.drools.verifier.opposites;
+#            rule "Opposite LiteralRestrictions"
+#            rule "Opposite LiteralRestrictions with ranges, greater or equal - less"
+#            rule "Opposite LiteralRestrictions with ranges, greater - less or equal"
+#            rule "Opposite LiteralRestrictions with ranges, less - greater for ints and dates"
+#            rule "Opposite LiteralRestrictions with ranges, less or equal - greater or equal for ints and dates"
 #
 # Example: 
-#			Pattern( a < b) 
-#			Pattern( a >= b )
+#            Pattern( a < b)
+#            Pattern( a >= b )
 #
 rule "Opposite Patterns"
-	when
-		$opposites :Opposites()
-		
-		$pp1 :SubPattern(
-			items contains $opposites.left
-		)
-		
-		$pp2 :SubPattern(
-			items contains $opposites.right
-		)
-		
-		# Check that these facts do not already exist
-		not Opposites( left == $pp1, right == $pp2 )
-		not Opposites( left == $pp2, right == $pp1 )
-		
-		# Check if all the restrictions in $pp1 have an opposite in $pp2.
-		forall (
-			$r1 :Restriction(
-					this memberOf $pp1.items
-			)
-			
-			Opposites( 
-					left == $r1,
-					right memberOf $pp2.items
-			)
-		)
+    when
+        $opposites :Opposites()
 
-		# Check if all the restrictions in $pp2 have an opposite in $pp1.
-		forall (
-			$r1 :Restriction(
-					this memberOf $pp2.items
-			)
-			
-			Opposites( 
-					right == $r1,
-					left memberOf $pp1.items
-			)
-		)
-	then 
-		# These two pattern possibilities are opposite.
-		insert( new Opposites( $pp1, $pp2 ));
+        $pp1 :SubPattern(
+            items contains $opposites.left
+        )
+
+        $pp2 :SubPattern(
+            items contains $opposites.right
+        )
+
+        # Check that these facts do not already exist
+        not Opposites( left == $pp1, right == $pp2 )
+        not Opposites( left == $pp2, right == $pp1 )
+
+        # Check if all the restrictions in $pp1 have an opposite in $pp2.
+        forall (
+            $r1 :Restriction(
+                    this memberOf $pp1.items
+            )
+
+            Opposites(
+                    left == $r1,
+                    right memberOf $pp2.items
+            )
+        )
+
+        # Check if all the restrictions in $pp2 have an opposite in $pp1.
+        forall (
+            $r1 :Restriction(
+                    this memberOf $pp2.items
+            )
+
+            Opposites(
+                    right == $r1,
+                    left memberOf $pp1.items
+            )
+        )
+    then
+        # These two pattern possibilities are opposite.
+        insert( new Opposites( $pp1, $pp2 ));
 end

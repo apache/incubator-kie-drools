@@ -16,13 +16,13 @@ import java.util.ArrayList;
 
 rule find seating
 
-	salience 30
-	no-loop true
+    salience 30
+    no-loop true
 
     when
-	    context => Context( state == Context.ASSIGN_SEATS ) 
-	    Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
-	    
+        context => Context( state == Context.ASSIGN_SEATS )
+        Seating( seatingId:id, seatingPid:pid, pathDone == true, seatingRightSeat:rightSeat, seatingRightGuestName:rightGuestName )
+
         Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
         Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
         count => Count()

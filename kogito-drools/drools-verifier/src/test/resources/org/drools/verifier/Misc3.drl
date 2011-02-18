@@ -20,34 +20,34 @@ import com.sample.DroolsTest.Message;
 
 /*
 rule "Redundant restrictions"
-	when
-		RedundancyPattern( a == 1, a == 1 )
-	then
-		// Something
+    when
+        RedundancyPattern( a == 1, a == 1 )
+    then
+        // Something
 end
 
 rule "Redundant rule 1, rules"
-	when
-		RedundancyPattern( a == 1 )
-		RedundancyPattern2( a == 1 )
-	then
-		System.out.println("TEST");
+    when
+        RedundancyPattern( a == 1 )
+        RedundancyPattern2( a == 1 )
+    then
+        System.out.println("TEST");
 end
 */
 rule "Redundant rule 2, rules"
-	when
-		RedundancyPattern( a == 1 )
-		RedundancyPattern2( a >= 1 )
-		RedundancyPattern3( a == 1, a == 1 )
-	then
-		System.out.println("TEST");
+    when
+        RedundancyPattern( a == 1 )
+        RedundancyPattern2( a >= 1 )
+        RedundancyPattern3( a == 1, a == 1 )
+    then
+        System.out.println("TEST");
 end
 
 rule "Equivalent rule"
-	when
-		BlaaBlaa( a == 1 )
-		RedundancyPattern( a == 1 )
-		RedundancyPattern2( a == 1 )
-	then
-		System.out.println("NOT A TEST");
+    when
+        BlaaBlaa( a == 1 )
+        RedundancyPattern( a == 1 )
+        RedundancyPattern2( a == 1 )
+    then
+        System.out.println("NOT A TEST");
 end

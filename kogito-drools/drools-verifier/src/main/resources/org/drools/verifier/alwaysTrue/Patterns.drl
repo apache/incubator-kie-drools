@@ -42,20 +42,20 @@ import java.util.HashMap;
 global VerifierReport result;
 
 rule "Pattern possibility that is always true"
-	when
-		a :Restriction()
-		b :Restriction()
-		$pp :SubPattern()
-		
-		Opposites(
-			(
-				left == a && right memberOf $pp.items
-			) && (
-				left == b && right memberOf $pp.items
-			)
-		)
-	then 
-		insert( new AlwaysTrue( $pp , a, b ));
+    when
+        a :Restriction()
+        b :Restriction()
+        $pp :SubPattern()
+
+        Opposites(
+            (
+                left == a && right memberOf $pp.items
+            ) && (
+                left == b && right memberOf $pp.items
+            )
+        )
+    then
+        insert( new AlwaysTrue( $pp , a, b ));
 end
 /*
 #
@@ -64,37 +64,37 @@ end
 # Dependencies: None
 #
 # Example:
-#		Pattern( a > 10 && a <= 10 )
+#        Pattern( a > 10 && a <= 10 )
 #
 rule "Pattern possibility that is always true"
-	when
-		$p :Pattern()
-		
-		$pp :SubPattern(
-			patternPath == $p.path
-		)
+    when
+        $p :Pattern()
 
-		# For each restriction in pattern possibility 
-		# there needs to be an opposite.
-		forall(
-			$r :Restriction(
-				this memberOf $pp.items
-			)
-			
-			Opposites( 
-				(
-					left == $r
-				&&
-					right memberOf $pp.items
-				) || (
-					left memberOf $pp.items
-				&&
-					right == $r
-				)
-			)
-		)
-	then 
-		insert( new AlwaysTrue( $pp ));
+        $pp :SubPattern(
+            patternPath == $p.path
+        )
+
+        # For each restriction in pattern possibility
+        # there needs to be an opposite.
+        forall(
+            $r :Restriction(
+                this memberOf $pp.items
+            )
+
+            Opposites(
+                (
+                    left == $r
+                &&
+                    right memberOf $pp.items
+                ) || (
+                    left memberOf $pp.items
+                &&
+                    right == $r
+                )
+            )
+        )
+    then
+        insert( new AlwaysTrue( $pp ));
 end
 */
 
@@ -103,41 +103,41 @@ end
 # Finds patterns that are always true.
 #
 # Dependencies:
-#	Needs at least one of the following packages or rules to fire:
-# 		package org.drools.verifier.alwaysTrue;
-#			rule "Pattern possibility that is always true"
+#    Needs at least one of the following packages or rules to fire:
+#         package org.drools.verifier.alwaysTrue;
+#            rule "Pattern possibility that is always true"
 #
 # Example:
-#		Pattern( a > 10 && a <= 10 )
+#        Pattern( a > 10 && a <= 10 )
 #
 rule "Pattern that is always true"
-	when
-		$p :Pattern()
+    when
+        $p :Pattern()
 
-		# Only report the ones that have restrictions.
-		exists SubPattern( patternPath == $p.path )
-		
-		# For each restriction in each pattern possibility for current pattern, 
-		# there needs to be an opposite.
-		forall(
-			$pp :SubPattern(
-				patternPath == $p.path
-			)
-			
-			AlwaysTrue(
-				cause == $pp
-			)
-		)
-		
-		$r :VerifierRule( path == $p.rulePath )
-	then 
-		Map<String,String> impactedRules = new HashMap<String,String>();
-		impactedRules.put( $r.getPath(), $r.getName());
-		
-		result.add( new VerifierMessage(
-								impactedRules,
-								Severity.NOTE,
-								MessageType.ALWAYS_TRUE,
-								$p,
-								$p + " in rule " + $r + " is always satisfied." ) );
+        # Only report the ones that have restrictions.
+        exists SubPattern( patternPath == $p.path )
+
+        # For each restriction in each pattern possibility for current pattern,
+        # there needs to be an opposite.
+        forall(
+            $pp :SubPattern(
+                patternPath == $p.path
+            )
+
+            AlwaysTrue(
+                cause == $pp
+            )
+        )
+
+        $r :VerifierRule( path == $p.rulePath )
+    then
+        Map<String,String> impactedRules = new HashMap<String,String>();
+        impactedRules.put( $r.getPath(), $r.getName());
+
+        result.add( new VerifierMessage(
+                                impactedRules,
+                                Severity.NOTE,
+                                MessageType.ALWAYS_TRUE,
+                                $p,
+                                $p + " in rule " + $r + " is always satisfied." ) );
 end

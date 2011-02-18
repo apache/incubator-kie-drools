@@ -7,53 +7,53 @@ global java.util.List list;
 
 rule "BigDec"
 
-	when
-		p: Person(bigDecimal < 100.01)
-	then
-		System.err.println("rule1");
-		list.add( p );
+    when
+        p: Person(bigDecimal < 100.01)
+    then
+        System.err.println("rule1");
+        list.add( p );
 end
 
 rule "BigInt"
-	when
-		p: Person(bigInteger < 100.1)
-	then
-	System.err.println("rule2");
-		list.add( p );
+    when
+        p: Person(bigInteger < 100.1)
+    then
+    System.err.println("rule2");
+        list.add( p );
 end
 
 rule "BigDec2"
 
-	when
-		p: Person(bigDecimal == 42)
-	then
-	System.err.println("rule3");
-		list.add( p );
+    when
+        p: Person(bigDecimal == 42)
+    then
+    System.err.println("rule3");
+        list.add( p );
 end
 
 rule "BigInt2"
-	when
-		p: Person(bigInteger == 42)
-	then
-	System.err.println("rule4");
-		list.add( p );
+    when
+        p: Person(bigInteger == 42)
+    then
+    System.err.println("rule4");
+        list.add( p );
 end
 
 rule "BigDec3"
 
-	when
-		p: Person(bigDecimal != 100)
-	then
-	System.err.println("rule5");
-		list.add( p );
+    when
+        p: Person(bigDecimal != 100)
+    then
+    System.err.println("rule5");
+        list.add( p );
 end
 
 rule "BigInt3"
-	when
-		p: Person(bigInteger != 100)
-	then
-	System.err.println("rule6");
-		list.add( p );
+    when
+        p: Person(bigInteger != 100)
+    then
+    System.err.println("rule6");
+        list.add( p );
 end
 
 

@@ -19,76 +19,76 @@ package com.misc.someData
 import com.sample.DroolsTest.Message;
 
 rule "nro 1."
-	when
-		Foo( bar > 10 )
-	then
-		System.out.println("Test");
+    when
+        Foo( bar > 10 )
+    then
+        System.out.println("Test");
 end
 
 rule "nro 2."
-	when
-		Foo( bar < 10 )
-	then
-		System.out.println("Test");
+    when
+        Foo( bar < 10 )
+    then
+        System.out.println("Test");
 end
 
 rule "Rule with patterns"
-	when
-		    Foo1()
-		    Foo1()
-		    TestPattern1( a == 10, b == 10, c == 10, d == 10, e == 10)
-		    TestPattern2()
-		    TestPattern3()
-		    TestPattern4()
-	then
-		System.out.println( "Test" );
+    when
+            Foo1()
+            Foo1()
+            TestPattern1( a == 10, b == 10, c == 10, d == 10, e == 10)
+            TestPattern2()
+            TestPattern3()
+            TestPattern4()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Field rule"
-	when
-		PatThePattern( gg > 100 )
-	then
-		System.out.println( "Test" );
+    when
+        PatThePattern( gg > 100 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Field rule 2"
-	when
-		PatThePattern()
-	then
-		System.out.println( "Test" );
+    when
+        PatThePattern()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Numbers 1"
-	when
-		NumbersInPattern( x == 10 )
-	then
-		System.out.println( "Test" );
+    when
+        NumbersInPattern( x == 10 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Numbers 2"
-	when
-		NumbersInPattern( x == 20 )
-	then
-		System.out.println( "Test" );
+    when
+        NumbersInPattern( x == 20 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Numbers 3"
-	when
-		NumbersInPattern( x == 30 )
-	then
-		System.out.println( "Test" );
+    when
+        NumbersInPattern( x == 30 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Numbers 5"
-	when
-		NumbersInPattern( x == 50 )
-	then
-		System.out.println( "Test" );
+    when
+        NumbersInPattern( x == 50 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Numbers 6"
-	when
-		NumbersInPattern( x == 60 )
-	then
-		System.out.println( "Test" );
+    when
+        NumbersInPattern( x == 60 )
+    then
+        System.out.println( "Test" );
 end

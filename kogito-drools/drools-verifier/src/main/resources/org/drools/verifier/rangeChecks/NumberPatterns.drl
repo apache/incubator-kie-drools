@@ -39,40 +39,40 @@ global VerifierReport result;
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
-# 					then Foo( bar == 30 ) is missing.
+#                     then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field(
-			( fieldType == Field.INT || == Field.DOUBLE )
-		)
-		(
-			# Where pattern is false.
-			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
-				from collect(
-					LiteralRestriction( 
-						fieldId == $f.id, 
-						patternIsNot == false, 
-						operator == Operator.EQUAL
-					)
-				)
-		) or (
-			# Where pattern is true.
-			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
-				from collect(
-					LiteralRestriction( 
-						fieldId == $f.path, 
-						patternIsNot == true, 
-						operator =valueator.EQUAL
-					)
-				)
-		)
-	then
-		Number number = FindMissingNumber.testForPattern( $list );
-		if( number != null ){
-			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.EQUAL, $f.getFieldType(), number.toString() );
-			result.add( mnp );
-		}
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field(
+            ( fieldType == Field.INT || == Field.DOUBLE )
+        )
+        (
+            # Where pattern is false.
+            $list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+                from collect(
+                    LiteralRestriction(
+                        fieldId == $f.id,
+                        patternIsNot == false,
+                        operator == Operator.EQUAL
+                    )
+                )
+        ) or (
+            # Where pattern is true.
+            $list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+                from collect(
+                    LiteralRestriction(
+                        fieldId == $f.path,
+                        patternIsNot == true,
+                        operator =valueator.EQUAL
+                    )
+                )
+        )
+    then
+        Number number = FindMissingNumber.testForPattern( $list );
+        if( number != null ){
+            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.EQUAL, $f.getFieldType(), number.toString() );
+            result.add( mnp );
+        }
 end
 
 #
@@ -81,38 +81,38 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == 10 ) and in "Rule 2" Foo( bar == 20 ) and in "Rule 3" Foo( bar == 40 )
-# 					then Foo( bar == 30 ) is missing.
+#                     then Foo( bar == 30 ) is missing.
 rule "Range check for number patterns, !="
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( 
-			( fieldType == Field.INT || == Field.DOUBLE ) 
-		)
-		(
-			# Where pattern is false.
-			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
-				from collect(
-					LiteralRestriction( 
-						fieldId == $f.path, 
-						patternIsNot == false, 
-						operator == Operator.NOT_EQUAL
-					)
-				)
-		) or (
-			# Where pattern is false.
-			$list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
-				from collect(
-					LiteralRestriction( 
-						fieldId == $f.path, 
-						pavaluesNot == true, 
-						operator == Operator.NOT_EQUAL
-					)
-				)
-		)
-	then
-		Number number = FindMissingNumber.testForPattern( $list );
-		if( number != null ){
-			MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.NOT_EQUAL, $f.getFieldType(), number.toString() );
-			result.add( mnp );
-		}
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field(
+            ( fieldType == Field.INT || == Field.DOUBLE )
+        )
+        (
+            # Where pattern is false.
+            $list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+                from collect(
+                    LiteralRestriction(
+                        fieldId == $f.path,
+                        patternIsNot == false,
+                        operator == Operator.NOT_EQUAL
+                    )
+                )
+        ) or (
+            # Where pattern is false.
+            $list :ArrayList( size > FindMissingNumber.MIN_NUMBER_OF_RESTRICTIONS )
+                from collect(
+                    LiteralRestriction(
+                        fieldId == $f.path,
+                        pavaluesNot == true,
+                        operator == Operator.NOT_EQUAL
+                    )
+                )
+        )
+    then
+        Number number = FindMissingNumber.testForPattern( $list );
+        if( number != null ){
+            MissingNumberPattern mnp = new MissingNumberPattern( $f, Operator.NOT_EQUAL, $f.getFieldType(), number.toString() );
+            result.add( mnp );
+        }
 end

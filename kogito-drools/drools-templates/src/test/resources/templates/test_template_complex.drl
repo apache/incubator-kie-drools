@@ -10,9 +10,9 @@ package This_is_a_ruleset;
 template "template1"
 first_name
 rule "How cool is @{first_name} @{row.rowNumber}"
-	when
-		user.getName().equals("@{first_name}")
-	then
+    when
+        user.getName().equals("@{first_name}")
+    then
 end
 end template
 
@@ -20,8 +20,8 @@ template "template2"
 first_name
 last_name
 rule "How uncool is @{first_name} @{row.rowNumber}"
-	when
-		user.getFirstName().equals("@{first_name}")
-	then
+    when
+        user.getFirstName().equals("@{first_name}")
+    then
 end
 end template

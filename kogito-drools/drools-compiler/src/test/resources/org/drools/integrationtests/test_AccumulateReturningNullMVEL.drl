@@ -6,9 +6,9 @@ rule "Accumulate Returning Null MVEL" salience 100
     dialect "mvel"
     when
         # emulating a null return value for accumulate
-    	$totalAmount : Number() from accumulate( Cheese( $price : price ),
+        $totalAmount : Number() from accumulate( Cheese( $price : price ),
                                                  init( ),
-    	                                         action( ),
+                                                 action( ),
                                                  result( null ) );
     then
         //System.out.println("Total amount = US$ "+$totalAmount );

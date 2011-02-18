@@ -8,8 +8,8 @@ global java.util.List results;
 rule "External Function" salience 80
     when
         $person : Person( $likes : likes )
-    	$avg    : Number( intValue >= 10 ) 
-    	                       from accumulate( $cheese : Cheese( type == $likes, $price : price ),
+        $avg    : Number( intValue >= 10 )
+                               from accumulate( $cheese : Cheese( type == $likes, $price : price ),
                                                 average( $price ) );
     then
         results.add( $avg );

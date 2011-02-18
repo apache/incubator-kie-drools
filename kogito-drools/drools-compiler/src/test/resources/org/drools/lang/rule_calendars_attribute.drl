@@ -1,9 +1,9 @@
 
 rule simple_rule 
-		calendars "cal1"
-		lock-on-active true
-	when
-		Foo()
-	then
-		bar();
+        calendars "cal1"
+        lock-on-active true
+    when
+        Foo()
+    then
+        bar();
 end

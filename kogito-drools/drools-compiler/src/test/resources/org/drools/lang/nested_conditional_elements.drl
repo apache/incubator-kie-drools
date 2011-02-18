@@ -1,10 +1,10 @@
-rule "test nested CEs"	
-	when
-	    not ( State( $state : state ) and
-	          not( Person( status == $state, $likes : likes ) and
-	               Cheese( type == $likes ) ) )
-	    Person( name == "Bob" )
-	    ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
-	then 
-		results.add("OK");		
+rule "test nested CEs"
+    when
+        not ( State( $state : state ) and
+              not( Person( status == $state, $likes : likes ) and
+                   Cheese( type == $likes ) ) )
+        Person( name == "Bob" )
+        ( Cheese( price == 10 ) or Cheese( type == "brie" ) )
+    then
+        results.add("OK");
 end

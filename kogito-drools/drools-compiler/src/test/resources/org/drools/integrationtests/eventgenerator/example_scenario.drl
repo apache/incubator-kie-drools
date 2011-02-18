@@ -6,95 +6,95 @@ import org.drools.integrationtests.eventgenerator.example.*;
 
 
 rule "Rule 1: check for expiry of sliding window (and reset window)"
-	no-loop true
-	#salience 0
-	when
-		PseudoSessionClock ( $currentTime : currentTime )
-		$sw : SlidingWindow ( state == SlidingWindow.DEFAULT, $windowStart : windowStart, $windowEnd : windowEnd < $currentTime )
-	then
-		System.out.println ("RULE 1  \"SLIDING WINDOW EXPIRED\" FIRED  : Sliding window "+$sw.getId()+" of Resource " + $sw.getParentId() + " has expired at (" + Tools.formattedDate($currentTime) +");  collecting follows");
-		//$sw.setLastUpdate($currentTime);
-		$sw.setState(SlidingWindow.COLLECT);
-		update ($sw);
+    no-loop true
+    #salience 0
+    when
+        PseudoSessionClock ( $currentTime : currentTime )
+        $sw : SlidingWindow ( state == SlidingWindow.DEFAULT, $windowStart : windowStart, $windowEnd : windowEnd < $currentTime )
+    then
+        System.out.println ("RULE 1  \"SLIDING WINDOW EXPIRED\" FIRED  : Sliding window "+$sw.getId()+" of Resource " + $sw.getParentId() + " has expired at (" + Tools.formattedDate($currentTime) +");  collecting follows");
+        //$sw.setLastUpdate($currentTime);
+        $sw.setState(SlidingWindow.COLLECT);
+        update ($sw);
 end
 
 rule "Rule 2: collect specified objects within sliding window"
-	no-loop true
-	#salience 0
-	when
-		$sw : SlidingWindow ( state == SlidingWindow.COLLECT, $windowStart : windowStart, $windowEnd : windowEnd )
+    no-loop true
+    #salience 0
+    when
+        $sw : SlidingWindow ( state == SlidingWindow.COLLECT, $windowStart : windowStart, $windowEnd : windowEnd )
         $evCount : Number()
-            from accumulate ( i: ProductionEvent( parentId == $sw.parentId, startTime >= $windowStart, endTime <= $windowEnd), 
-            				  count(i) )
-	then
-		System.out.println ("RULE 2  \"ACCUMULATE EVENTS IN SW\" FIRED : Found "+$evCount.intValue()+" PRODUCTION events within sliding window "+$sw.getId()+"("+Tools.formattedInterval($windowStart, $windowEnd)+");  evaluation follows");
-		//$sw.setEventsInWindow($swQ);
-		$sw.setNumberEvents($evCount.intValue());
-		$sw.setState(SlidingWindow.EVALUATE);
-		update ($sw);
+            from accumulate ( i: ProductionEvent( parentId == $sw.parentId, startTime >= $windowStart, endTime <= $windowEnd),
+                              count(i) )
+    then
+        System.out.println ("RULE 2  \"ACCUMULATE EVENTS IN SW\" FIRED : Found "+$evCount.intValue()+" PRODUCTION events within sliding window "+$sw.getId()+"("+Tools.formattedInterval($windowStart, $windowEnd)+");  evaluation follows");
+        //$sw.setEventsInWindow($swQ);
+        $sw.setNumberEvents($evCount.intValue());
+        $sw.setState(SlidingWindow.EVALUATE);
+        update ($sw);
 end
 
 rule "Rule 3a: number events abnormal; set status of NON-RED resource to RED"
-	no-loop true
-	salience 0
-	when
-		$stat : Status ( id == Status.OPERATIONAL, currentValue != Resource.STATUS_RED )
-		$sw : SlidingWindow ( parentId == $stat.resourceId, state == SlidingWindow.EVALUATE, numberEvents < 80 || > 95 ) 
-	then
-		System.out.println ("RULE 3a \"EVALUATION OF SW\" FIRED        : The number of PRODUCTION events found ("+$sw.getNumberEvents() +") within sliding window " + $sw.getId() + " is abnormal;");
-		System.out.println ("                                          Resource "+ $sw.getParentId() +" has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + " and needs to be set to " + Resource.OPERATIONAL_STATUS_VALUES[Resource.STATUS_RED] + ";  advance follows");
-		$sw.setState(SlidingWindow.ADVANCE);
-		update ($sw);
-		SimpleEventGenerator.sendGeneratedEvent(new StatusChangedEvent($sw.getParentId(), $stat.getCurrentValue(), Resource.STATUS_RED, $sw.getLastUpdate(), $sw.getLastUpdate()));
+    no-loop true
+    salience 0
+    when
+        $stat : Status ( id == Status.OPERATIONAL, currentValue != Resource.STATUS_RED )
+        $sw : SlidingWindow ( parentId == $stat.resourceId, state == SlidingWindow.EVALUATE, numberEvents < 80 || > 95 )
+    then
+        System.out.println ("RULE 3a \"EVALUATION OF SW\" FIRED        : The number of PRODUCTION events found ("+$sw.getNumberEvents() +") within sliding window " + $sw.getId() + " is abnormal;");
+        System.out.println ("                                          Resource "+ $sw.getParentId() +" has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + " and needs to be set to " + Resource.OPERATIONAL_STATUS_VALUES[Resource.STATUS_RED] + ";  advance follows");
+        $sw.setState(SlidingWindow.ADVANCE);
+        update ($sw);
+        SimpleEventGenerator.sendGeneratedEvent(new StatusChangedEvent($sw.getParentId(), $stat.getCurrentValue(), Resource.STATUS_RED, $sw.getLastUpdate(), $sw.getLastUpdate()));
 end
 
 rule "Rule 3b: number events normal; set status of NON-GREEN resource to GREEN"
-	no-loop true
-	salience 0
-	when
-		$stat : Status ( id == Status.OPERATIONAL, currentValue != Resource.STATUS_GREEN )
-		$sw : SlidingWindow ( parentId == $stat.resourceId, state == SlidingWindow.EVALUATE, numberEvents >= 80 && <= 95 ) 
-	then
-		System.out.println ("RULE 3b \"EVALUATION OF SW\" FIRED        : The number of PRODUCTION events found ("+$sw.getNumberEvents() +") within sliding window " + $sw.getId() + " is within the expected range;");
-		System.out.println ("                                          Resource "+ $sw.getParentId() +" has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + " and can be set to " + Resource.OPERATIONAL_STATUS_VALUES[Resource.STATUS_GREEN] + ";  advance follows");
-		$sw.setState(SlidingWindow.ADVANCE);
-		update ($sw);
-		SimpleEventGenerator.sendGeneratedEvent(new StatusChangedEvent($sw.getParentId(), $stat.getCurrentValue(), Resource.STATUS_GREEN, $sw.getLastUpdate(), $sw.getLastUpdate()));
+    no-loop true
+    salience 0
+    when
+        $stat : Status ( id == Status.OPERATIONAL, currentValue != Resource.STATUS_GREEN )
+        $sw : SlidingWindow ( parentId == $stat.resourceId, state == SlidingWindow.EVALUATE, numberEvents >= 80 && <= 95 )
+    then
+        System.out.println ("RULE 3b \"EVALUATION OF SW\" FIRED        : The number of PRODUCTION events found ("+$sw.getNumberEvents() +") within sliding window " + $sw.getId() + " is within the expected range;");
+        System.out.println ("                                          Resource "+ $sw.getParentId() +" has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + " and can be set to " + Resource.OPERATIONAL_STATUS_VALUES[Resource.STATUS_GREEN] + ";  advance follows");
+        $sw.setState(SlidingWindow.ADVANCE);
+        update ($sw);
+        SimpleEventGenerator.sendGeneratedEvent(new StatusChangedEvent($sw.getParentId(), $stat.getCurrentValue(), Resource.STATUS_GREEN, $sw.getLastUpdate(), $sw.getLastUpdate()));
 end
 
 rule "Rule 3c: none of the above conditions apply; however, the sliding window need to be advanced"
-	no-loop true
-	salience -1
-	when
-		$stat : Status ( id == Status.OPERATIONAL )
-		$sw : SlidingWindow ( state == SlidingWindow.EVALUATE ) 
-	then
-		System.out.println ("RULE 3c \"EVALUATION OF SW\" FIRED        : No change of the state of the resource "+ $sw.getParentId() +" required;");
-		System.out.println ("                                          Found "+$sw.getNumberEvents() +" PRODUCTION events within sliding window " + $sw.getId() +"; resource has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + ";  advance follows");
-		$sw.setState(SlidingWindow.ADVANCE);
-		update ($sw);
+    no-loop true
+    salience -1
+    when
+        $stat : Status ( id == Status.OPERATIONAL )
+        $sw : SlidingWindow ( state == SlidingWindow.EVALUATE )
+    then
+        System.out.println ("RULE 3c \"EVALUATION OF SW\" FIRED        : No change of the state of the resource "+ $sw.getParentId() +" required;");
+        System.out.println ("                                          Found "+$sw.getNumberEvents() +" PRODUCTION events within sliding window " + $sw.getId() +"; resource has status " + Resource.OPERATIONAL_STATUS_VALUES[$stat.getCurrentValue()] + ";  advance follows");
+        $sw.setState(SlidingWindow.ADVANCE);
+        update ($sw);
 end
 
 rule "Rule 4: do nothing but advancing the window"
-	no-loop true
-	salience -1
-	when
-		$sw : SlidingWindow ( state == SlidingWindow.ADVANCE ) 
-	then
-		$sw.advance();
-		System.out.println ("RULE 4  \"ADVANCE SLIDING WINDOW\" FIRED  : Reset sliding window to "+Tools.formattedInterval($sw.getWindowStart(), $sw.getWindowEnd())+";  action follows");
-		$sw.setState(SlidingWindow.DEFAULT);
-		update ($sw);
+    no-loop true
+    salience -1
+    when
+        $sw : SlidingWindow ( state == SlidingWindow.ADVANCE )
+    then
+        $sw.advance();
+        System.out.println ("RULE 4  \"ADVANCE SLIDING WINDOW\" FIRED  : Reset sliding window to "+Tools.formattedInterval($sw.getWindowStart(), $sw.getWindowEnd())+";  action follows");
+        $sw.setState(SlidingWindow.DEFAULT);
+        update ($sw);
 end
 
 rule "Rule 5: status changed event - set resource status to desired value"
-	no-loop true
-	when
-		$stat : Status ( id == Status.OPERATIONAL ) 
-		$stChEv : StatusChangedEvent( parentId == $stat.resourceId )
-	then
-		System.out.println ("RULE 5  \"CHANGE STATUS\" FIRED           : Change status from resource " + $stChEv.getParentId() + " from " + $stChEv.getParamOldValue() + " to " + $stChEv.getParamNewValue() + " (" + Tools.formattedDate($stChEv.getEndTime()) +")");
-		$stat.switchCurrentValue($stChEv.getParamOldValue(), $stChEv.getParamNewValue(), $stChEv.getEndTime());
-		update ($stat);
-		retract ($stChEv);
+    no-loop true
+    when
+        $stat : Status ( id == Status.OPERATIONAL )
+        $stChEv : StatusChangedEvent( parentId == $stat.resourceId )
+    then
+        System.out.println ("RULE 5  \"CHANGE STATUS\" FIRED           : Change status from resource " + $stChEv.getParentId() + " from " + $stChEv.getParamOldValue() + " to " + $stChEv.getParamNewValue() + " (" + Tools.formattedDate($stChEv.getEndTime()) +")");
+        $stat.switchCurrentValue($stChEv.getParamOldValue(), $stChEv.getParamNewValue(), $stChEv.getEndTime());
+        update ($stat);
+        retract ($stChEv);
 end

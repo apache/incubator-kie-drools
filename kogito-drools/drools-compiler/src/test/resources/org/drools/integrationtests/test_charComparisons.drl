@@ -3,7 +3,7 @@ package org.drools;
 global java.util.List results;
 
 rule "test chars 1"
-	salience 100
+    salience 100
 when
     Primitives( charPrimitive == 'a' ) 
 then
@@ -11,7 +11,7 @@ then
 end
 
 rule "test chars 2"
-	salience 90
+    salience 90
 when
     Primitives( $c1: charPrimitive == 'a' ) 
     Primitives( charPrimitive != $c1 )
@@ -20,7 +20,7 @@ then
 end
 
 rule "test chars 3"
-	salience 80
+    salience 80
 when
     Primitives( $c1: stringAttribute == 'a' ) 
     Primitives( charPrimitive == $c1 )

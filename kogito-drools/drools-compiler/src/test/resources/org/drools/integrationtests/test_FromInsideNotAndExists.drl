@@ -3,17 +3,17 @@ package org.drools;
 global java.util.List results;
 
 rule "exists with from"
-	when
-		Cheesery( $cheeses : cheeses ) 
-		exists( Cheese( type == "stilton" ) from $cheeses )
-	then
-		results.add( "1" );
+    when
+        Cheesery( $cheeses : cheeses )
+        exists( Cheese( type == "stilton" ) from $cheeses )
+    then
+        results.add( "1" );
 end
 
 rule "not with from"
-	when
-		Cheesery( $cheeses : cheeses ) 
-		not( Cheese( type == "cheddar" ) from $cheeses )
-	then
-		results.add( "2" );
+    when
+        Cheesery( $cheeses : cheeses )
+        not( Cheese( type == "cheddar" ) from $cheeses )
+    then
+        results.add( "2" );
 end

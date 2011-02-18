@@ -25,18 +25,18 @@ import org.drools.examples.cdss.service.RecommendationService;
 global RecommendationService recommendationService
 
 rule "Start Clinical Pathway X if diagnosed"
-	when
-		d: Diagnose( type == Terminology.DIAGNOSE_X )
-	then
-		retract(d);
-		drools.getWorkingMemory().startProcess(
-			"org.drools.examples.cdss.ClinicalPathwayX");
+    when
+        d: Diagnose( type == Terminology.DIAGNOSE_X )
+    then
+        retract(d);
+        drools.getWorkingMemory().startProcess(
+            "org.drools.examples.cdss.ClinicalPathwayX");
 end
 
 rule "Always do examination4 when patient older than 60"
-	when
-		Patient( age > 60 )
-	then
-		recommendationService.createRecommendation(
-			new Recommendation("Examination4"));
+    when
+        Patient( age > 60 )
+    then
+        recommendationService.createRecommendation(
+            new Recommendation("Examination4"));
 end

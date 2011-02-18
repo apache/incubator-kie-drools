@@ -3,21 +3,21 @@ package test;
 import org.drools.integrationtests.eventgenerator.*;
 
 query "all inserted events"
-	Event()
+    Event()
 end
 
 query "all inserted events with generation time < 1 min"
-	Event(eval(endTime<PseudoSessionClock.timeInMinutes(1)))
+    Event(eval(endTime<PseudoSessionClock.timeInMinutes(1)))
 end
 
 query "all inserted events with 2 min < generation time < 3 min"
-	Event(eval (endTime>PseudoSessionClock.timeInMinutes(2)), eval(endTime<PseudoSessionClock.timeInMinutes(3)))
+    Event(eval (endTime>PseudoSessionClock.timeInMinutes(2)), eval(endTime<PseudoSessionClock.timeInMinutes(3)))
 end
 
 query "all inserted events with parent resource A"
-	Event(parentId=="resA")
+    Event(parentId=="resA")
 end
 
 query "all inserted events with parent resource B"
-	Event(parentId=="resB")
+    Event(parentId=="resB")
 end

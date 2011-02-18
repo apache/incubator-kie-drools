@@ -15,10 +15,10 @@ type
 log
 
 rule "Cheese fans_@{row.rowNumber}"
-	when
-		Person(age == "@{age}")
-		Cheese(type == "@{type}")
-	then
-		list.add("@{log}");
+    when
+        Person(age == "@{age}")
+        Cheese(type == "@{type}")
+    then
+        list.add("@{log}");
 end
 end template

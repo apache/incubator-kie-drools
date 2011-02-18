@@ -10,10 +10,10 @@ global java.util.List results;
 
 rule "After Or Evals Collect from MVEL"
 salience 70
-	when
-		$jill     annotation Person( name == "jill" )
+    when
+        $jill     annotation Person( name == "jill" )
         $bob     annotation: Person( name == "bob" )
-		( eval( $jill != null ) or eval( $bob != null ) )
+        ( eval( $jill != null ) or eval( $bob != null ) )
         $addressList : ArrayList(size > 2) from collect( Address() from $bob.addresses )
     then
         results.add($addressList);

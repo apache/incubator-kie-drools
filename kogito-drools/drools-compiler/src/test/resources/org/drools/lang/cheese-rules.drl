@@ -10,7 +10,7 @@ rule cheese_rules
     when
         Bob is in atlanta
         Bob likes cheese
-	    #There exists a Guest with name of "Michael" and sex of "Male"
+        #There exists a Guest with name of "Michael" and sex of "Male"
         >Guest( name == seatingRightGuestName, rightGuestSex:sex, rightGuestHobby:hobby )
         >Guest( leftGuestName:name , sex != rightGuestSex, hobby == rightGuestHobby )
 

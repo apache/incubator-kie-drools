@@ -12,25 +12,25 @@ global List list3;
 global Cheesery cheesery;
 
 rule "test from using a global"
-	when
-		$cheese : Cheese() from cheesery.getCheeses()		
-	then
-		list1.add( $cheese );
+    when
+        $cheese : Cheese() from cheesery.getCheeses()
+    then
+        list1.add( $cheese );
 end
 
 
 rule "test from using a declaration"
-	when
-		$ch : Cheesery()
-		$cheese : Cheese() from $ch.getCheeses()		
-	then
-		list2.add( $cheese );
+    when
+        $ch : Cheesery()
+        $cheese : Cheese() from $ch.getCheeses()
+    then
+        list2.add( $cheese );
 end
 
 
 rule "test from with filter"
-	when
-		$cheese : Cheese(type == "stilton" ) from cheesery.getCheeses()		
-	then
-		list3.add( $cheese );
+    when
+        $cheese : Cheese(type == "stilton" ) from cheesery.getCheeses()
+    then
+        list3.add( $cheese );
 end

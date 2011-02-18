@@ -10,11 +10,11 @@ function boolean test() {
 
 rule type1
   when
-	$id : Something( duration == "foo")
+    $id : Something( duration == "foo")
   then
-  	The.method();
-  	attributes;
-  	rule;
-  	package;
+      The.method();
+      attributes;
+      rule;
+      package;
 end
 

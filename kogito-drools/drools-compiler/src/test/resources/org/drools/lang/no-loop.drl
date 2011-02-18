@@ -2,7 +2,7 @@
 rule rule1 
   no-loop false
   when
-  	not Cheese(type == "stilton")
+      not Cheese(type == "stilton")
   then
-	funky();
+    funky();
 end

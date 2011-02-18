@@ -19,115 +19,115 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 rule "Double gap rule 1"
-	when
-		DoublePattern1( value == 10.0 )
-	then
-		# gap > 10 <.
+    when
+        DoublePattern1( value == 10.0 )
+    then
+        # gap > 10 <.
 end
 
 rule "Double gap rule 2"
-	when
-		DoublePattern2( value >= 15.0 )
-	then
-		# gap < 15.
+    when
+        DoublePattern2( value >= 15.0 )
+    then
+        # gap < 15.
 end
 
 rule "Double gap rule 3"
-	when
-		DoublePattern3( value <= 15.0 )
-	then
-		# gap > 15.
+    when
+        DoublePattern3( value <= 15.0 )
+    then
+        # gap > 15.
 end
 
 rule "Double gap rule 4a"
-	when
-		DoublePattern4( value > 25.0 )
-	then
-		# gap == 25.
+    when
+        DoublePattern4( value > 25.0 )
+    then
+        # gap == 25.
 end
 
 rule "Double gap rule 4b"
-	when
-		DoublePattern4( value < 25.0 )
-	then
-		# gap == 25.
+    when
+        DoublePattern4( value < 25.0 )
+    then
+        # gap == 25.
 end
 
 rule "Double gap rule 5a"
-	when
-		DoublePattern5( value > 100.0 )
-	then
-		# gap 100 > x > 50.
+    when
+        DoublePattern5( value > 100.0 )
+    then
+        # gap 100 > x > 50.
 end
 
 rule "Double gap rule 5b"
-	when
-		DoublePattern5( value < 50.0 )
-	then
-		# gap 100 > x > 50.
+    when
+        DoublePattern5( value < 50.0 )
+    then
+        # gap 100 > x > 50.
 end
 
 rule "Double gap rule 6a"
-	when
-		DoublePattern6( value > 350.0 )
-	then
-		# gap < 350.
+    when
+        DoublePattern6( value > 350.0 )
+    then
+        # gap < 350.
 end
 
 rule "Double gap rule 6b"
-	when
-		DoublePattern6( value == 350.0 )
-	then
-		# gap < 350.
+    when
+        DoublePattern6( value == 350.0 )
+    then
+        # gap < 350.
 end
 
 rule "Double gap rule 7a"
-	when
-		DoublePattern7( value < 55.0 )
-	then
-		# gap > 55.
+    when
+        DoublePattern7( value < 55.0 )
+    then
+        # gap > 55.
 end
 
 rule "Double gap rule 7b"
-	when
-		DoublePattern7( value == 55.0 )
-	then
-		# gap > 55.
+    when
+        DoublePattern7( value == 55.0 )
+    then
+        # gap > 55.
 end
 
 rule "Double gap rule 8a"
-	when
-		DoublePattern8( value < 333.0 )
-	then
-		# No gap
+    when
+        DoublePattern8( value < 333.0 )
+    then
+        # No gap
 end
 
 rule "Double gap rule 8b"
-	when
-		DoublePattern8( value == 333.0 )
-	then
-		# No gap
+    when
+        DoublePattern8( value == 333.0 )
+    then
+        # No gap
 end
 
 rule "Double gap rule 8c"
-	when
-		DoublePattern8( value > 333.0 )
-	then
-		# No gap
+    when
+        DoublePattern8( value > 333.0 )
+    then
+        # No gap
 end
 
 rule "Double gap rule 9a"
-	when
-		DoublePattern9( value >= 400.0 )
-	then
-		# gap 400 > x > 399 
+    when
+        DoublePattern9( value >= 400.0 )
+    then
+        # gap 400 > x > 399
 end
 
 rule "Double gap rule 9b"
-	when
-		DoublePattern9( value <= 399.0 )
-	then
-		# gap 400 > x > 399 
+    when
+        DoublePattern9( value <= 399.0 )
+    then
+        # gap 400 > x > 399
 end
 
 /*
@@ -135,129 +135,129 @@ end
 # These rules have gaps
 #
 rule "Double range 1a, has gap"
-	when
-		    Foo1( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 2a, has gap"
-	when
-		    Foo2( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo2( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 3a, has gap"
-	when
-		    Foo3( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo3( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 4a, has gap"
-	when
-		    Foo4( value <= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo4( value <= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 5a, has gap"
-	when
-		    Foo5( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 5b, has gap"
-	when
-		    Foo5( value == 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo5( value == 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 6a, has gap"
-	when
-		    Foo6( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 6b, has gap"
-	when
-		    Foo6( value == 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo6( value == 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 7a, has gap"
-	when
-		    Foo7( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo7( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 7b, has gap"
-	when
-		    Foo7( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo7( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 8a, has gap"
-	when
-		    Foo8( value < 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo8( value < 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 8b, has gap"
-	when
-		    Foo8( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo8( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 9a, has gap"
-	when
-		    Foo9( value <= 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo9( value <= 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 9b, has gap"
-	when
-		    Foo9( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo9( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 10a, has gap"
-	when
-		    Foo10( value < 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo10( value < 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 10b, has gap"
-	when
-		    Foo10( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo10( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 11a, has gap"
-	when
-		    Foo11( value <= 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo11( value <= 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 11b, has gap"
-	when
-		    Foo11( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo11( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 #
@@ -265,129 +265,129 @@ end
 #
 
 rule "Double range 12a, has gap"
-	when
-		    not Foo12( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo12( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 13a, has gap"
-	when
-		    not Foo13( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo13( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 14a, has gap"
-	when
-		    not Foo14( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo14( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 15a, has gap"
-	when
-		    not Foo15( value <= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo15( value <= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 16a, has gap"
-	when
-		    not Foo16( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo16( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 16b, has gap"
-	when
-		    not Foo16( value == 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo16( value == 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 17a, has gap"
-	when
-		    not Foo17( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo17( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 17b, has gap"
-	when
-		    not Foo17( value == 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo17( value == 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 18a, has gap"
-	when
-		    not Foo18( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo18( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 18b, has gap"
-	when
-		    not Foo18( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo18( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 19a, has gap"
-	when
-		    not Foo19( value < 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo19( value < 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 19b, has gap"
-	when
-		    not Foo19( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo19( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 20a, has gap"
-	when
-		    not Foo20( value <= 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo20( value <= 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 20b, has gap"
-	when
-		    not Foo20( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo20( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 21a, has gap"
-	when
-		    not Foo21( value < 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo21( value < 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 21b, has gap"
-	when
-		    not Foo21( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo21( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 22a, has gap"
-	when
-		    not Foo22( value <= 40.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo22( value <= 40.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 22b, has gap"
-	when
-		    not Foo22( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo22( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 #
@@ -395,86 +395,86 @@ end
 #
 
 rule "Double range 23a, no gap"
-	when
-		    Foo23( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo23( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 23b, no gap"
-	when
-		    Foo23( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo23( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 24a, no gap"
-	when
-		    Foo24( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo24( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 24b, no gap"
-	when
-		    Foo24( value <= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo24( value <= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 25a, no gap"
-	when
-		    Foo25( value >= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value >= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 25b, no gap"
-	when
-		    Foo25( value <= 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value <= 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 25a, no gap"
-	when
-		    Foo25( value > 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value > 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 25b, no gap"
-	when
-		    Foo25( value == 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value == 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 25c, no gap"
-	when
-		    Foo25( value < 42.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo25( value < 42.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 27a, no gap"
-	when
-		    Foo27( value > 0.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo27( value > 0.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 27b, no gap"
-	when
-		    Foo27( value == 0.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo27( value == 0.0 )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Double range 27c, no gap"
-	when
-		    Foo27( value < 0.0 )
-	then
-		System.out.println( "Test" );
+    when
+            Foo27( value < 0.0 )
+    then
+        System.out.println( "Test" );
 end
 */

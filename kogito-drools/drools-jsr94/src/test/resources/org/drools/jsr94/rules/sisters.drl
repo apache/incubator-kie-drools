@@ -20,10 +20,10 @@ import org.drools.jsr94.rules.Person;
  
 rule FindSisters
     when
-    	$person1 : Person ( $name1:name )
-    	$person2 : Person ( $name2:name )
+        $person1 : Person ( $name1:name )
+        $person2 : Person ( $name2:name )
         eval( $person1.hasSister($person2) )
     then
-    	System.out.println($person1.getName() + " and " + $person2.getName() +" are sisters");
-    	insert( $person1.getName() + " and " + $person2.getName() +" are sisters");
+        System.out.println($person1.getName() + " and " + $person2.getName() +" are sisters");
+        insert( $person1.getName() + " and " + $person2.getName() +" are sisters");
 end

@@ -12,17 +12,17 @@ rule "not person then cheese"
     when
         not Person()
     then
-    	if (list.size() < 10) {
-    		list.add(new Integer(0));
-	   		insertLogical( cheese );
-	   	}
+        if (list.size() < 10) {
+            list.add(new Integer(0));
+               insertLogical( cheese );
+           }
 end
 rule "if cheese then person"
-	when
-		Cheese()
-	then
-    	if (list.size() < 10) {
-	   		list.add(new Integer(0));
-			insertLogical( person );
-	   	}
+    when
+        Cheese()
+    then
+        if (list.size() < 10) {
+               list.add(new Integer(0));
+            insertLogical( person );
+           }
 end

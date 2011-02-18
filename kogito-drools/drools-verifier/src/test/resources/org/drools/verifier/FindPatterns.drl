@@ -31,14 +31,14 @@ global VerifierReport result;
 
 
 rule "Find patterns"
-	when
-		$p :Pattern( )
-	then
-		result.add( new VerifierMessage(
-							new HashMap<String,String>(),
-							Severity.NOTE,
-							MessageType.NOT_SPECIFIED,
-							$p,
-							"This pattern was found." ) );
+    when
+        $p :Pattern( )
+    then
+        result.add( new VerifierMessage(
+                            new HashMap<String,String>(),
+                            Severity.NOTE,
+                            MessageType.NOT_SPECIFIED,
+                            $p,
+                            "This pattern was found." ) );
 
 end

@@ -11,7 +11,7 @@ rule "like cheese"
     when
         Cheese( t:type )
     then
-		list.add( t );
+        list.add( t );
 end    
 
 rule "like cheese2"

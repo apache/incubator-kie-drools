@@ -5,18 +5,18 @@ import org.drools.Cheese;
 global java.util.List list;
 
 rule delayed
-	duration 100
+    duration 100
     when
         cheese : Cheese( $type:type == "brie" )
     then
-		list.add( cheese );
-		insert(new Cheese("stilton", 42));
-		retract(cheese);
+        list.add( cheese );
+        insert(new Cheese("stilton", 42));
+        retract(cheese);
 end
 
 rule after_delayed
     when
         cheese : Cheese( $type:type == "stilton" )
     then
-		list.add( cheese );
+        list.add( cheese );
 end  

@@ -1,15 +1,15 @@
 package org.drools;
 
 rule "Hello World"
-	dialect "java"
-	when
-	then
-		System.out.println( "java" ); 
+    dialect "java"
+    when
+    then
+        System.out.println( "java" );
 end
 
 rule "GoodBye"
-	dialect "mvel"
-	when
-	then 
-		System.out.println( "mvel" );
+    dialect "mvel"
+    when
+    then
+        System.out.println( "mvel" );
 end

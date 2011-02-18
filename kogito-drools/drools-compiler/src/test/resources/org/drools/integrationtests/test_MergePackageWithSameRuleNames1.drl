@@ -3,8 +3,8 @@ package org.drools.test
 global java.util.List results;
 
 rule "rule1"
-	when
-		
-	then
-		results.add("rule1 for the package1");
+    when
+
+    then
+        results.add("rule1 for the package1");
 end

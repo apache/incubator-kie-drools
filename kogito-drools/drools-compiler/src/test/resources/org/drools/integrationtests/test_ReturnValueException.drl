@@ -3,12 +3,12 @@ package org.drools.test;
 import org.drools.Cheese;
 
 function String throwException( ) {
-	throw new Exception( "this should throw an exception" );
+    throw new Exception( "this should throw an exception" );
 }
 
 rule "Throw ReturnValue Exception"
     when
-    	Cheese( type == ( throwException( ) ) )
+        Cheese( type == ( throwException( ) ) )
     then
 
 end  

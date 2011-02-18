@@ -33,14 +33,14 @@ import java.util.GregorianCalendar;
 global VerifierReport result;
 
 function boolean checkDates(Date d1, Date d2, boolean up) {
-		Calendar c1 = new GregorianCalendar();
-		c1.setTime(d1);
-		Calendar c2 = new GregorianCalendar();
-		c2.setTime(d2);		
-		
-		c2.roll( Calendar.DATE, up );
-		
-		return ( 0 == c1.compareTo( c2 ) );
+        Calendar c1 = new GregorianCalendar();
+        c1.setTime(d1);
+        Calendar c2 = new GregorianCalendar();
+        c2.setTime(d2);
+
+        c2.roll( Calendar.DATE, up );
+
+        return ( 0 == c1.compareTo( c2 ) );
 }
 
 # If all ranges are not checked for a field.
@@ -48,31 +48,31 @@ function boolean checkDates(Date d1, Date d2, boolean up) {
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar > "27-Oct-2007" ) 
-#						and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
+#                        and in Foo( <= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
 #
 rule "Range check for dates, if smaller than or equal is missing"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.DATE )
-		
-		# Foo( bar > "27-Oct-2007" )
-		$r :DateRestriction( 
-			fieldPath == $f.path, 
-			operator == Operator.GREATER
-		)
-		
-		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value
-		)
-	then
-		Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
-		
-		result.add( gap );
-		insert( gap );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.DATE )
+
+        # Foo( bar > "27-Oct-2007" )
+        $r :DateRestriction(
+            fieldPath == $f.path,
+            operator == Operator.GREATER
+        )
+
+        # Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator  == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+    then
+        Gap gap = new Gap( $f, Operator.LESS_OR_EQUAL, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -80,31 +80,31 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar < "27-Oct-2007" ) 
-#						and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
+#                        and in Foo( >= "27-Oct-2007" || == "27-Oct-2007" ) is missing.
 #
 rule "Range check for dates, if greater than or equal is missing"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.DATE )
-		
-		# Foo( bar > "27-Oct-2007" )
-		$r :DateRestriction( 
-			fieldPath == $f.path, 
-			operator == Operator.LESS
-		)
-		
-		# Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			value == $r.value
-		)
-	then
-		Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
-		
-		result.add( gap );
-		insert( gap );
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.DATE )
+
+        # Foo( bar > "27-Oct-2007" )
+        $r :DateRestriction(
+            fieldPath == $f.path,
+            operator == Operator.LESS
+        )
+
+        # Check if Foo( bar == "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator  == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+    then
+        Gap gap = new Gap( $f, Operator.GREATER_OR_EQUAL, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -112,40 +112,40 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar <= "27-Oct-2007" ) 
-# 					and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" ) 
-#						then Foo( bar > "27-Oct-2007" ) is missing.
+#                     and no Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" || >= "28-Oct-2007" || == "28-Oct-2007" )
+#                        then Foo( bar > "27-Oct-2007" ) is missing.
 #
 rule "Range check for dates, equal and greater than"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.DATE )
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.DATE )
 
-		# Foo( bar == "27-Oct-2007" ) 
-		$r :DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
-		)
+        # Foo( bar == "27-Oct-2007" )
+        $r :DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL )
+        )
 
-		# Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot,  
-			value == $r.value 
-		)
-		
-		# Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			eval( checkDates( value, $r.getValue(), true ) ) 
-		)
-	then
-		Gap gap =  new Gap( $f, Operator.GREATER, $r );
-		
-		result.add( gap );
-		insert( gap );
+        # Check if Foo( bar > "27-Oct-2007" || >= "27-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.GREATER || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            value == $r.value
+        )
+
+        # Check if Foo( bar == "28-Oct-2007" || >= "28-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            eval( checkDates( value, $r.getValue(), true ) )
+        )
+    then
+        Gap gap =  new Gap( $f, Operator.GREATER, $r );
+
+        result.add( gap );
+        insert( gap );
 end
 
 # If all ranges are not checked for a field.
@@ -153,38 +153,38 @@ end
 # Type: Warning
 # Dependencies: None
 # Example: in "Rule 1" Foo( bar == "27-Oct-2007" || bar >= "27-Oct-2007" ) 
-# 					and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" ) 
-#						then Foo( bar < "27-Oct-2007" ) is missing.
+#                     and no Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" || <= "26-Oct-2007" || == "26-Oct-2007" )
+#                        then Foo( bar < "27-Oct-2007" ) is missing.
 #
 rule "Range check for dates, equal and smaller than"
-	@verifying_scopes("knowledge-package", "decision-table")
-	when
-		$f :Field( fieldType == Field.DATE )
+    @verifying_scopes("knowledge-package", "decision-table")
+    when
+        $f :Field( fieldType == Field.DATE )
 
-		# Foo( bar == "27-Oct-2007" ) 
-		$r :DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
-		)
+        # Foo( bar == "27-Oct-2007" )
+        $r :DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.GREATER_OR_EQUAL )
+        )
 
-		# Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			eval( value.equals($r.getValue()) ) 
-		)
-		
-		# Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
-		not	DateRestriction( 
-			fieldPath == $f.path, 
-			( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ), 
-			patternIsNot == $r.patternIsNot, 
-			eval( checkDates( value, $r.getValue(), false ) )
-		)
-	then
-		Gap gap =  new Gap( $f, Operator.LESS, $r );
-		
-		result.add( gap );
-		insert( gap );
+        # Check if Foo( bar < "27-Oct-2007" || <= "27-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.LESS || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            eval( value.equals($r.getValue()) )
+        )
+
+        # Check if Foo( bar == "26-Oct-2007" || <= "26-Oct-2007" ) is missing.
+        not	DateRestriction(
+            fieldPath == $f.path,
+            ( operator == Operator.EQUAL || == Operator.LESS_OR_EQUAL ),
+            patternIsNot == $r.patternIsNot,
+            eval( checkDates( value, $r.getValue(), false ) )
+        )
+    then
+        Gap gap =  new Gap( $f, Operator.LESS, $r );
+
+        result.add( gap );
+        insert( gap );
 end

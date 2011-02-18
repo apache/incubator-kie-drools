@@ -4,8 +4,8 @@ global java.util.List results;
 
 rule "test auto bindings 1"
 when
-	$p : Person();
-	$c : Cheese( type == $p.likes, price == $c.price  )
+    $p : Person();
+    $c : Cheese( type == $p.likes, price == $c.price  )
 then
     results.add( $p );
 end

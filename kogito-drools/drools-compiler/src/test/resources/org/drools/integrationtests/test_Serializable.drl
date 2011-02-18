@@ -8,19 +8,19 @@ import java.util.List
 global List list
 
 rule "match Person 1"
-	salience 10
-	dialect "mvel"
+    salience 10
+    dialect "mvel"
     when
         $person : Person()
     then
-		list.add( $person );
-        $person.setStatus("match Person ok");		
+        list.add( $person );
+        $person.setStatus("match Person ok");
 end    
 
 
 rule "match Person 2"
-	agenda-group "xxx"	
-	salience ($age2 - $age1)
+    agenda-group "xxx"
+    salience ($age2 - $age1)
     when
        $person : Person(name=="mark", $age1 : age )
        cheesery : Cheesery( cheeses contains $person )     
@@ -29,23 +29,23 @@ rule "match Person 2"
        Person( $age2 : age -> ( $age1 == $age2 ) )      
        eval( $age1 == $age2 )
     then
-		list.add( $person );
-        $person.setStatus("match Person ok");		
+        list.add( $person );
+        $person.setStatus("match Person ok");
 end   
 
 rule "match Person 3"
-	agenda-group "xxx"	
-	dialecannotaname    when
+    agenda-group "xxx"
+    dialecannotaname    when
        not Person( annotation == "mark" )
        exists Person( name == "mark" )       
     then
 end 
 
 rule "match Integer"
-	agenda-grouannotationyy"	
-	auto-focus true
+    agenda-grouannotationyy"
+    auto-focus true
     when
-		Person( name ==  "bob" )
+        Person( name ==  "bob" )
     then
         insertLogical ( new Person( "help" ) );
         list.add( new Integer( 4 ) );

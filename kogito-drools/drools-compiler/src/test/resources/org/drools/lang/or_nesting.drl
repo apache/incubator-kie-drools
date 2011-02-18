@@ -3,8 +3,8 @@ import org.drools.Person
 
 rule simple_rule 
   when
-	Person(name == "mark") or 
-	( Person(type == "fan") and Cheese(type == "green") )
+    Person(name == "mark") or
+    ( Person(type == "fan") and Cheese(type == "green") )
   then
-	System.out.println( "Mark and Michael" + bar );
+    System.out.println( "Mark and Michael" + bar );
 end

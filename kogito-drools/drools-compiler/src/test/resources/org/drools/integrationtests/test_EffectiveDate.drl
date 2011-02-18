@@ -6,10 +6,10 @@ package HelloWorld
 global java.util.List list;
 
 rule "Hello World"
-	date-effective "9-Jul-1974"
-	date-expires "10-Jul-1974"
-	when
-		$m : org.drools.Message()
-	then
-		$m.setFired(true); 
+    date-effective "9-Jul-1974"
+    date-expires "10-Jul-1974"
+    when
+        $m : org.drools.Message()
+    then
+        $m.setFired(true);
 end

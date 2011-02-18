@@ -7,10 +7,10 @@ import java.math.BigDecimal;
 global java.util.List list;
 
 rule "BigDec"
-	
-	when
-		Person($b : bigDecimal )
-		p : Person(bigDecimal < $b)
-	then 		
-		list.add( p );
+
+    when
+        Person($b : bigDecimal )
+        p : Person(bigDecimal < $b)
+    then
+        list.add( p );
 end

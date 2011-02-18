@@ -9,5 +9,5 @@ rule "match SerializeAddress"
     when
         $address : Address()
     then
-		results.add( $address );
+        results.add( $address );
 end  

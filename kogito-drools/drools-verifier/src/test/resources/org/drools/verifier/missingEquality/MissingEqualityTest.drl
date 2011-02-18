@@ -26,139 +26,139 @@ package org.drools.test
 
 
 rule "Missing equality 1"
-	when
-		MissingEqualityPattern1( value == 10 )
-	then 
-		#actions
+    when
+        MissingEqualityPattern1( value == 10 )
+    then
+        #actions
 end
 
 rule "Covered equality 1a"
-	when
-		CoveredEqualityPattern1( value == 10 )
-	then 
-		#actions
+    when
+        CoveredEqualityPattern1( value == 10 )
+    then
+        #actions
 end
 
 rule "Covered equality 1b"
-	when
-		CoveredEqualityPattern1( value != 10 )
-	then 
-		#actions
+    when
+        CoveredEqualityPattern1( value != 10 )
+    then
+        #actions
 end
 
 rule "Missing equality 2"
-	when
-		MissingEqualityPattern2( value matches "a" )
-	then 
-		#actions
+    when
+        MissingEqualityPattern2( value matches "a" )
+    then
+        #actions
 end
 
 rule "Covered equality 2a"
-	when
-		CoveredEqualityPattern2( value matches "a" )
-	then 
-		#actions
+    when
+        CoveredEqualityPattern2( value matches "a" )
+    then
+        #actions
 end
 
 rule "Covered equality 2b"
-	when
-		CoveredEqualityPattern2( value not matches "a" )
-	then 
-		#actions
+    when
+        CoveredEqualityPattern2( value not matches "a" )
+    then
+        #actions
 end
 
 rule "Missing equality 3"
-	when
-		$col :MissingEqualityCollection()
-		MissingEqualityPattern3( value memberOf $col )
-	then 
-		#actions
+    when
+        $col :MissingEqualityCollection()
+        MissingEqualityPattern3( value memberOf $col )
+    then
+        #actions
 end
 
 rule "Covered equality 3a"
-	when
-		$col :MissingEqualityCollection()
-		CoveredEqualityPattern3( value memberOf $col )
-	then 
-		#actions
+    when
+        $col :MissingEqualityCollection()
+        CoveredEqualityPattern3( value memberOf $col )
+    then
+        #actions
 end
 
 rule "Covered equality 3b"
-	when
-		$col :MissingEqualityCollection()
-		CoveredEqualityPattern3( value not memberOf $col )
-	then 
-		#actions
+    when
+        $col :MissingEqualityCollection()
+        CoveredEqualityPattern3( value not memberOf $col )
+    then
+        #actions
 end
 
 rule "Missing equality 4"
-	when
-		$value :MissingEqualityValue()
-		MissingEqualityPattern4( value contains $value )
-	then 
-		#actions
+    when
+        $value :MissingEqualityValue()
+        MissingEqualityPattern4( value contains $value )
+    then
+        #actions
 end
 
 rule "Covered equality 4a"
-	when
-		$value :MissingEqualityValue()
-		CoveredEqualityPattern4( value contains $value )
-	then 
-		#actions
+    when
+        $value :MissingEqualityValue()
+        CoveredEqualityPattern4( value contains $value )
+    then
+        #actions
 end
 
 rule "Covered equality 4b"
-	when
-		$value :MissingEqualityValue()
-		CoveredEqualityPattern4( value not contains $value )
-	then 
-		#actions
+    when
+        $value :MissingEqualityValue()
+        CoveredEqualityPattern4( value not contains $value )
+    then
+        #actions
 end
 
 rule "Missing equality 5"
-	when
-		MissingEqualityNumber( $n :number )
-		MissingEqualityPattern5( value == $n )
-	then 
-		#actions
+    when
+        MissingEqualityNumber( $n :number )
+        MissingEqualityPattern5( value == $n )
+    then
+        #actions
 end
 
 rule "Covered equality 5a"
-	when
-		MissingEqualityNumber( $n :number )
-		CoveredEqualityPattern5( value == $n )
-	then 
-		#actions
+    when
+        MissingEqualityNumber( $n :number )
+        CoveredEqualityPattern5( value == $n )
+    then
+        #actions
 end
 
 rule "Covered equality 5b"
-	when
-		MissingEqualityNumber( $n :number )
-		CoveredEqualityPattern5( value != $n )
-	then 
-		#actions
+    when
+        MissingEqualityNumber( $n :number )
+        CoveredEqualityPattern5( value != $n )
+    then
+        #actions
 end
 
 rule "Missing equality 6"
-	when
-		MissingEqualityString( $t :text )
-		MissingEqualityPattern6( value matches $t )
-	then 
-		#actions
+    when
+        MissingEqualityString( $t :text )
+        MissingEqualityPattern6( value matches $t )
+    then
+        #actions
 end
 
 rule "Covered equality 6a"
-	when
-		MissingEqualityString( $t :text )
-		CoveredEqualityPattern6( value matches $t )
-	then 
-		#actions
+    when
+        MissingEqualityString( $t :text )
+        CoveredEqualityPattern6( value matches $t )
+    then
+        #actions
 end
 
 rule "Covered equality 6b"
-	when
-		MissingEqualityString( $t :text )
-		CoveredEqualityPattern6( value not matches $t )
-	then 
-		#actions
+    when
+        MissingEqualityString( $t :text )
+        CoveredEqualityPattern6( value not matches $t )
+    then
+        #actions
 end

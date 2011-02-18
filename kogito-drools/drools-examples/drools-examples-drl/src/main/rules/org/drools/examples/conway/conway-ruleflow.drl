@@ -28,126 +28,126 @@ import org.drools.RuleBase;
 
 
 rule "register north east"
-	ruleflow-group "register neighbor"
+    ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row, $col : col )			
-	$northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )	
-then					
-	insert( new Neighbor( $cell, $northEast ) );
-	insert( new Neighbor( $northEast, $cell ) );		
+    $cell: Cell( $row : row, $col : col )
+    $northEast : Cell( row  == ($row - 1), col == ( $col + 1 ) )
+then
+    insert( new Neighbor( $cell, $northEast ) );
+    insert( new Neighbor( $northEast, $cell ) );
 end
 
 rule "register north"
-	ruleflow-group "register neighbor"	
+    ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row, $col : col )	
-	$north : Cell( row  == ($row - 1), col == $col )	
-then		
-	insert( new Neighbor( $cell, $north ) );
-	insert( new Neighbor( $north, $cell ) );		
+    $cell: Cell( $row : row, $col : col )
+    $north : Cell( row  == ($row - 1), col == $col )
+then
+    insert( new Neighbor( $cell, $north ) );
+    insert( new Neighbor( $north, $cell ) );
 end
 
 rule "register north west"
-	ruleflow-group "register neighbor"
+    ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row, $col : col )			
-	$northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )						
-then		
-	insert( new Neighbor( $cell, $northWest ) );
-	insert( new Neighbor( $northWest, $cell ) );		
+    $cell: Cell( $row : row, $col : col )
+    $northWest : Cell( row  == ($row - 1), col == ( $col - 1 ) )
+then
+    insert( new Neighbor( $cell, $northWest ) );
+    insert( new Neighbor( $northWest, $cell ) );
 end
 
 rule "register west"
-	ruleflow-group "register neighbor"
+    ruleflow-group "register neighbor"
 when
-	$cell: Cell( $row : row, $col : col )			
-	$west : Cell( row  == $row, col == ( $col - 1 ) )						
-then		
-	insert( new Neighbor( $cell, $west ) );
-	insert( new Neighbor( $west, $cell ) );			
+    $cell: Cell( $row : row, $col : col )
+    $west : Cell( row  == $row, col == ( $col - 1 ) )
+then
+    insert( new Neighbor( $cell, $west ) );
+    insert( new Neighbor( $west, $cell ) );
 end
 
 rule "Kill The Lonely"
-	ruleflow-group "evaluate"
-	no-loop
+    ruleflow-group "evaluate"
+    no-loop
 when
-#	A live cell has fewer than 2 live neighbors
-	theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
+#    A live cell has fewer than 2 live neighbors
+    theCell: Cell(liveNeighbors < 2, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	modify( theCell ) {setPhase(Phase.KILL)}
+    modify( theCell ) {setPhase(Phase.KILL)}
 end
 
 rule "Kill The Overcrowded"
-	ruleflow-group "evaluate"
-	no-loop
+    ruleflow-group "evaluate"
+    no-loop
 when
-#	A live cell has more than 3 live neighbors
-	theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
+#    A live cell has more than 3 live neighbors
+    theCell: Cell(liveNeighbors > 3, cellState == CellState.LIVE, phase == Phase.EVALUATE)
 then
-	modify( theCell ) {setPhase(Phase.KILL)}
+    modify( theCell ) {setPhase(Phase.KILL)}
 end
 
 rule "Give Birth"
-	ruleflow-group "evaluate"
-	no-loop
+    ruleflow-group "evaluate"
+    no-loop
 when
-#	A dead cell has 3 live neighbors
-	theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
+#    A dead cell has 3 live neighbors
+    theCell: Cell(liveNeighbors == 3, cellState == CellState.DEAD, phase == Phase.EVALUATE)
 then
-	modify( theCell ) {setPhase(Phase.BIRTH)}
+    modify( theCell ) {setPhase(Phase.BIRTH)}
 end
 
 rule "reset calculate"
-	ruleflow-group "reset calculate"
+    ruleflow-group "reset calculate"
 when
 then
-	WorkingMemory wm = drools.getWorkingMemory();
-	wm.clearRuleFlowGroup( "calculate" );
+    WorkingMemory wm = drools.getWorkingMemory();
+    wm.clearRuleFlowGroup( "calculate" );
 end
 
 rule "kill"
-	ruleflow-group "kill"
-	no-loop
+    ruleflow-group "kill"
+    no-loop
 when
-	theCell: Cell(phase == Phase.KILL)
+    theCell: Cell(phase == Phase.KILL)
 then
-	modify( theCell ) {setCellState(CellState.DEAD), setPhase(Phase.DONE)}
-end	
+    modify( theCell ) {setCellState(CellState.DEAD), setPhase(Phase.DONE)}
+end
  
 rule "birth"
-	ruleflow-group "birth"
-	no-loop
+    ruleflow-group "birth"
+    no-loop
 when
-	theCell: Cell(phase == Phase.BIRTH)
+    theCell: Cell(phase == Phase.BIRTH)
 then
-	modify( theCell ) {setCellState(CellState.LIVE), setPhase(Phase.DONE)}
-end	
+    modify( theCell ) {setCellState(CellState.LIVE), setPhase(Phase.DONE)}
+end
 
 rule "Calculate Live"
-	ruleflow-group "calculate"
-	lock-on-active	
+    ruleflow-group "calculate"
+    lock-on-active
 when
-	theCell: Cell(cellState == CellState.LIVE)
-	Neighbor(cell == theCell, $neighbor : neighbor)	
+    theCell: Cell(cellState == CellState.LIVE)
+    Neighbor(cell == theCell, $neighbor : neighbor)
 then
-	modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 ), setPhase( Phase.EVALUATE )}
-end	
+    modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() + 1 ), setPhase( Phase.EVALUATE )}
+end
 
 rule "Calculate Dead"
-	ruleflow-group "calculate"
-	lock-on-active	
+    ruleflow-group "calculate"
+    lock-on-active
 when
-	theCell: Cell(cellState == CellState.DEAD)
+    theCell: Cell(cellState == CellState.DEAD)
     Neighbor(cell == theCell, $neighbor : neighbor )
 then
-	modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 ), setPhase( Phase.EVALUATE )}	
-end	
+    modify( $neighbor ) {setLiveNeighbors( $neighbor.getLiveNeighbors() - 1 ), setPhase( Phase.EVALUATE )}
+end
 
 rule "Kill All"
-	ruleflow-group "kill all"	
-	no-loop
+    ruleflow-group "kill all"
+    no-loop
 when
-	theCell: Cell(cellState == CellState.LIVE)
+    theCell: Cell(cellState == CellState.LIVE)
 then
-	modify( theCell ) {setCellState(CellState.DEAD)}
+    modify( theCell ) {setCellState(CellState.DEAD)}
 end

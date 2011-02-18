@@ -11,7 +11,7 @@ rule "Stilton is memberOf Cheesery"
         Cheesery( $cheeses : cheeses )
         cheese : Cheese( type memberOf $cheeses )
     then
-		list.add( cheese );
+        list.add( cheese );
 end   
 
 rule "Muzzarela is not memberOf Cheesery"
@@ -19,5 +19,5 @@ rule "Muzzarela is not memberOf Cheesery"
         Cheesery( $cheeses : cheeses )
         cheese : Cheese( type not memberOf $cheeses )
     then
-		list.add( cheese );
+        list.add( cheese );
 end   

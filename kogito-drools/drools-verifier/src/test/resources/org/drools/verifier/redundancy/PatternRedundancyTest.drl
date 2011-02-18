@@ -19,59 +19,59 @@ package com.sample
 import com.sample.DroolsTest.Message;
 
 rule "Pattern redundancy without restrictions 1a"
-	when
-		    Foo1()
-	then
-		System.out.println( "Test" );
+    when
+            Foo1()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 1b"
-	when
-		    Foo1()
-	then
-		System.out.println( "Test" );
+    when
+            Foo1()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 2a"
-	when
-		    not Foo2()
-	then
-		System.out.println( "Test" );
+    when
+            not Foo2()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 2b"
-	when
-		    not Foo2()
-	then
-		System.out.println( "Test" );
+    when
+            not Foo2()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 3a"
-	when
-		    exists Foo3()
-	then
-		System.out.println( "Test" );
+    when
+            exists Foo3()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 3b"
-	when
-		    exists Foo3()
-	then
-		System.out.println( "Test" );
+    when
+            exists Foo3()
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 4a"
-	when
-		    forall( Foo4() )
-	then
-		System.out.println( "Test" );
+    when
+            forall( Foo4() )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy without restrictions 4b"
-	when
-		    forall( Foo4() )
-	then
-		System.out.println( "Test" );
+    when
+            forall( Foo4() )
+    then
+        System.out.println( "Test" );
 end
 
 #
@@ -79,57 +79,57 @@ end
 #
 
 rule "Pattern redundancy with restrictions 1a"
-	when
-		    Foo1( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 1b"
-	when
-		    Foo1( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            Foo1( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 2a"
-	when
-		    not Foo2( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo2( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 2b"
-	when
-		    not Foo2( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            not Foo2( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 3a"
-	when
-		    exists Foo3( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            exists Foo3( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 3b"
-	when
-		    exists Foo3( a == "b" )
-	then
-		System.out.println( "Test" );
+    when
+            exists Foo3( a == "b" )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 4a"
-	when
-		    forall( Foo4( a == "b" ) )
-	then
-		System.out.println( "Test" );
+    when
+            forall( Foo4( a == "b" ) )
+    then
+        System.out.println( "Test" );
 end
 
 rule "Pattern redundancy with restrictions 4b"
-	when
-		    forall( Foo4( a == "b" ) )
-	then
-		System.out.println( "Test" );
+    when
+            forall( Foo4( a == "b" ) )
+    then
+        System.out.println( "Test" );
 end
