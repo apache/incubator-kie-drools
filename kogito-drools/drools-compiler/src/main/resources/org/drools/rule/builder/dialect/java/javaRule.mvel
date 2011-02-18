@@ -85,14 +85,14 @@ public static class @{className} implements java.io.Serializable {
     
     @if{supportsReverse == "true"}
     private static class ReverseSnapshot implements java.io.Serializable {
-		@foreach{type : declarationTypes, declr : declarations} public final @{type} @{declr.identifier};@end{}
+        @foreach{type : declarationTypes, declr : declarations} public final @{type} @{declr.identifier};@end{}
         @foreach{declr : innerDeclarations}public final @{declr.extractor.extractToClassName} @{declr.identifier};@end{}
         
         public ReverseSnapshot(@foreach{type : declarationTypes, declr : declarations}final @{type} @{declr.identifier}@end{","}@if{innerDeclarations != empty && declarations != empty},@end{}
                                @foreach{declr : innerDeclarations}final @{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
                               ) {
-			@foreach{type : declarationTypes, declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
-    	    @foreach{declr : innerDeclarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+            @foreach{type : declarationTypes, declr : declarations}this.@{declr.identifier} = @{declr.identifier};@end{}
+            @foreach{declr : innerDeclarations}this.@{declr.identifier} = @{declr.identifier};@end{}
         }
     } 
     @end{}
