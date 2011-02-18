@@ -1687,7 +1687,7 @@ public class TestDRL {
             if ( ruleReturn!=null ) {
                 /** If return object is instanceof AST, get the toStringTree */
                 if ( ruleReturn.toString().indexOf(testRuleName+"_return")>0 ) {
-                    try {	// NullPointerException may happen here...
+                    try { // NullPointerException may happen here...
                         Class _return = Class.forName("org.drools.lang.DRLParser"+"$"+testRuleName+"_return");
                         Method[] methods = _return.getDeclaredMethods();
                         for(Method method : methods) {
@@ -1704,39 +1704,39 @@ public class TestDRL {
                 }
             }
 // @FIXME etirelli !!!
-//			org.antlr.gunit.gUnitExecuter.StreamVacuum stdoutVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedIn);
-//			org.antlr.gunit.gUnitExecuter.StreamVacuum stderrVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedErrIn);
-//			ps.close();
-//			ps2.close();
-//			System.setOut(console);			// Reset standard output
-//			System.setErr(consoleErr);		// Reset standard err out
-//			this.stdout = null;
-//			this.stderr = null;
-//			stdoutVacuum.start();
-//			stderrVacuum.start();
-//			stdoutVacuum.join();
-//			stderrVacuum.join();
-//			// retVal could be actual return object from rule, stderr or stdout
-//			if ( stderrVacuum.toString().length()>0 ) {
-//				this.stderr = stderrVacuum.toString();
-//				return this.stderr;
-//			}
+//            org.antlr.gunit.gUnitExecuter.StreamVacuum stdoutVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedIn);
+//            org.antlr.gunit.gUnitExecuter.StreamVacuum stderrVacuum = new org.antlr.gunit.gUnitExecuter.StreamVacuum(pipedErrIn);
+//            ps.close();
+//            ps2.close();
+//            System.setOut(console);            // Reset standard output
+//            System.setErr(consoleErr);        // Reset standard err out
+//            this.stdout = null;
+//            this.stderr = null;
+//            stdoutVacuum.start();
+//            stderrVacuum.start();
+//            stdoutVacuum.join();
+//            stderrVacuum.join();
+//            // retVal could be actual return object from rule, stderr or stdout
+//            if ( stderrVacuum.toString().length()>0 ) {
+//                this.stderr = stderrVacuum.toString();
+//                return this.stderr;
+//            }
 //            if ( parser.hasErrors() ) {
 //                this.stderr = parser.getErrors().toString();
 //                return this.stderr;
 //            }
-//			if ( stdoutVacuum.toString().length()>0 ) {
-//				this.stdout = stdoutVacuum.toString();
-//			}
-//			if ( astString!=null ) {	// Return toStringTree of AST
-//				return astString;
-//			}
-//			if ( ruleReturn!=null ) {
-//				return ruleReturn;
-//			}
-//			if ( stderrVacuum.toString().length()==0 && stdoutVacuum.toString().length()==0 ) {
-//				return null;
-//			}
+//            if ( stdoutVacuum.toString().length()>0 ) {
+//                this.stdout = stdoutVacuum.toString();
+//            }
+//            if ( astString!=null ) {    // Return toStringTree of AST
+//                return astString;
+//            }
+//            if ( ruleReturn!=null ) {
+//                return ruleReturn;
+//            }
+//            if ( stderrVacuum.toString().length()==0 && stdoutVacuum.toString().length()==0 ) {
+//                return null;
+//            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace(); System.exit(1);
         } catch (SecurityException e) {
@@ -1748,8 +1748,8 @@ public class TestDRL {
         } catch (InvocationTargetException e) {
             this.stderr = "error";
             return e.getCause().toString();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace(); System.exit(1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace(); System.exit(1);
         } catch (Exception e) {
             e.printStackTrace(); System.exit(1);
         }
@@ -1758,7 +1758,7 @@ public class TestDRL {
 
     // Modify the return value if the expected token type is OK or FAIL
     public Object examineParserExecResult(int tokenType, Object retVal) {
-        if ( tokenType==27 ) {	// expected Token: OK
+        if ( tokenType==27 ) { // expected Token: OK
             if ( this.stderr==null ) {
                 return "OK";
             }
@@ -1766,7 +1766,7 @@ public class TestDRL {
                 return "FAIL";
             }
         }
-        else if ( tokenType==28 ) {	// expected Token: FAIL
+        else if ( tokenType==28 ) { // expected Token: FAIL
             if ( this.stderr!=null ) {
                 return "FAIL";
             }
@@ -1774,7 +1774,7 @@ public class TestDRL {
                 return "OK";
             }
         }
-        else {	// return the same object for the other token types
+        else { // return the same object for the other token types
             return retVal;
         }
     }

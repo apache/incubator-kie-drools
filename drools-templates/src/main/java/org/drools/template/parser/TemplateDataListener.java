@@ -46,7 +46,7 @@ public class TemplateDataListener
 
     private Generator         generator;
 
-    //	private WorkingMemoryFileLogger logger;
+    // private WorkingMemoryFileLogger logger;
 
     public TemplateDataListener(final TemplateContainer tc) {
         this( 1,
@@ -100,8 +100,8 @@ public class TemplateDataListener
         columns = tc.getColumns();
         this.templateContainer = tc;
         session = ruleBase.newStatefulSession();
-        //		logger = new WorkingMemoryFileLogger(session);
-        //		logger.setFileName("log/event");
+        // logger = new WorkingMemoryFileLogger(session);
+        // logger.setFileName("log/event");
         this.generator = generator;
         session.setGlobal( "generator",
                            generator );
@@ -119,7 +119,7 @@ public class TemplateDataListener
             session.insert( currentRow );
         }
         session.fireAllRules();
-        //		logger.writeToDisk();
+        // logger.writeToDisk();
         session.dispose();
     }
 

@@ -30,12 +30,12 @@ public class EnvironmentFactory {
             Environment env = new EnvironmentImpl();
             env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[]{new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT)});
         return env;
-//		Environment environment = EnvironmentFactory.environment.get();
-//		if (environment == null) {
-//			environment = new EnvironmentImpl();
-//			EnvironmentFactory.environment.set(environment);
-//		}
-//		return environment;
+//        Environment environment = EnvironmentFactory.environment.get();
+//        if (environment == null) {
+//            environment = new EnvironmentImpl();
+//            EnvironmentFactory.environment.set(environment);
+//        }
+//        return environment;
     }
 
 }

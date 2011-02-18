@@ -62,14 +62,14 @@ public class PerformanceTest {
         ksession.dispose();
     }
 
-//	public static void main(String[] args) throws Exception {
-//		// Persistent process execution
-//		System.out.println("************************************");
-//		System.out.println("*** Persistent process execution ***");
-//		System.out.println("************************************");
-//		System.out.println();
-//		System.out.println("Initializing database");
-//		PoolingDataSource ds1 = new PoolingDataSource();
+//    public static void main(String[] args) throws Exception {
+//        // Persistent process execution
+//        System.out.println("************************************");
+//        System.out.println("*** Persistent process execution ***");
+//        System.out.println("************************************");
+//        System.out.println();
+//        System.out.println("Initializing database");
+//        PoolingDataSource ds1 = new PoolingDataSource();
 //        ds1.setUniqueName("jdbc/testDS1");
 //        ds1.setClassName("org.h2.jdbcx.JdbcDataSource");
 //        ds1.setMaxPoolSize(3);
@@ -80,27 +80,27 @@ public class PerformanceTest {
 //        ds1.init();
 //        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
 //
-//		System.out.println("Building knowledge base ... ");
-//		KnowledgeBase kbase = readKnowledgeBase();
-//		System.out.println("Initializing session ... ");
-//		Environment env = KnowledgeBaseFactory.newEnvironment();
+//        System.out.println("Building knowledge base ... ");
+//        KnowledgeBase kbase = readKnowledgeBase();
+//        System.out.println("Initializing session ... ");
+//        Environment env = KnowledgeBaseFactory.newEnvironment();
 //        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 //        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-//		// start a new process instance
-//		for (int i = 0; i < 100; i++) {
-//			ksession.startProcess("com.sample.empty", null);
-//		}
-//		System.out.println("Starting ... ");
-//		
-//		Thread.sleep(1000);
-//		long start = System.nanoTime();
-//		for (int i = 0; i < 10000; i++) {
-//			ksession.startProcess("com.sample.empty", null);
-//		}
-//		long end = System.nanoTime() - start;
-//		System.out.println("Total time = " + (end / 1000000) + "ms");
-//		ksession.dispose();
-//	}
+//        // start a new process instance
+//        for (int i = 0; i < 100; i++) {
+//            ksession.startProcess("com.sample.empty", null);
+//        }
+//        System.out.println("Starting ... ");
+//
+//        Thread.sleep(1000);
+//        long start = System.nanoTime();
+//        for (int i = 0; i < 10000; i++) {
+//            ksession.startProcess("com.sample.empty", null);
+//        }
+//        long end = System.nanoTime() - start;
+//        System.out.println("Total time = " + (end / 1000000) + "ms");
+//        ksession.dispose();
+//    }
 
     private static KnowledgeBase readKnowledgeBase() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

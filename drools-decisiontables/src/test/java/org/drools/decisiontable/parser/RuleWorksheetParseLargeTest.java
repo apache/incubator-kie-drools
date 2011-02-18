@@ -61,11 +61,11 @@ public class RuleWorksheetParseLargeTest {
         Package ruleset = listener.getRuleSet( );
         assertNotNull( ruleset );
 
-//		startTimer();
-//		String xml = ...;   // toXml() not in Package any more.
-//		System.out.println( xml );
-//		stopTimer();
-//		System.out.println("Time taken for rendering: " + getTime() + "ms");
+//        startTimer();
+//        String xml = ...;   // toXml() not in Package any more.
+//        System.out.println( xml );
+//        stopTimer();
+//        System.out.println("Time taken for rendering: " + getTime() + "ms");
     }
 
     private void startTimer() {

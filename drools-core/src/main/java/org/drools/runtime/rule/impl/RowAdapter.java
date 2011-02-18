@@ -26,7 +26,7 @@ import org.drools.runtime.rule.Row;
 public class RowAdapter implements Row {
 
     private Rule                 rule;
-    private LeftTuple 			 leftTuple;
+    private LeftTuple            leftTuple;
     private InternalFactHandle[] factHandles;
 
     public RowAdapter(final Rule rule,

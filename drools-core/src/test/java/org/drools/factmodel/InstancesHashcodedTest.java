@@ -47,7 +47,7 @@ public class InstancesHashcodedTest {
             <field name="cycle_code"       type="java.lang.String" value="cycleCode"/>
             <field name="issue_date"       type="java.util.Date"   value="issueDate"/>
         </dimension>
- */	
+ */
 
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
         byte[] d = builder.buildClass( classDef);
@@ -101,15 +101,15 @@ public class InstancesHashcodedTest {
             cd.getField("cutDate").getFieldAccessor().setValue(o2, cut);
             cd.getField("dueDate").getFieldAccessor().setValue(o2, d2);
 
-//			System.out.println(o1);
-//			System.out.println(o1.hashCode());
-//			System.out.println(o2);
-//			System.out.println(o2.hashCode());
-//			
-//			System.out.println(o1.equals(o2));
+//            System.out.println(o1);
+//            System.out.println(o1.hashCode());
+//            System.out.println(o2);
+//            System.out.println(o2.hashCode());
+//
+//            System.out.println(o1.equals(o2));
 
         } catch (Exception e) {
-//			e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 }

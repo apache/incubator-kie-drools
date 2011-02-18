@@ -80,11 +80,11 @@ import java.util.HashMap;
  *          just 'arguments'.  The case it couldn't handle was a call to an explicit
  *          generic method invocation (e.g. this.<E>doSomething()).  Using identifierSuffix
  *          may be overly aggressive--perhaps should create a more constrained thisSuffix rule?
- * 		
+ *
  *  Version 1.0.4 -- Hiroaki Nakamura, May 3, 2007
  *
- *	Fixed formalParameterDecls, localVariableDeclaration, forInit,
- *	and forVarControl to use variableModifier* not 'final'? (annotation)?
+ *  Fixed formalParameterDecls, localVariableDeclaration, forInit,
+ *  and forVarControl to use variableModifier* not 'final'? (annotation)?
  */
 public class JavaParser extends Parser {
     public static final String[] tokenNames = new String[] {

@@ -67,7 +67,7 @@ public class ExampleScenario {
         //FactTemplate ftEvent = new FactTemplateImpl();
         //pkg.addFactTemplate(ftEvent);
 
-        //	add the package to a rulebase (deploy the rule package).
+        // add the package to a rulebase (deploy the rule package).
         RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         try {
             ruleBase.addPackage (pkg);

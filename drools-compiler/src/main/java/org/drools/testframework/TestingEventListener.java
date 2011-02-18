@@ -36,7 +36,7 @@ import org.drools.spi.KnowledgeHelper;
  */
 public class TestingEventListener implements AgendaEventListener {
 
-    final Map<String, Integer>	firingCounts = new HashMap<String, Integer>(100);
+    final Map<String, Integer> firingCounts = new HashMap<String, Integer>(100);
 
     long totalFires;
 
@@ -82,34 +82,34 @@ public class TestingEventListener implements AgendaEventListener {
 //     * Inclusive means only the rules on the given set are allowed to fire.
 //     * The other rules will have their activation counted but not be allowed to fire.
 //     */
-//	static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
-//			boolean inclusive) {
-//		if (ruleNames.size() > 0) {
-//	    	if (inclusive) {
-//	    		Package[] pkgs = ruleBase.getPackages();
-//	    		for (int i = 0; i < pkgs.length; i++) {
-//					Rule[] rules = pkgs[i].getRules();
-//					for (int j = 0; j < rules.length; j++) {
-//						Rule rule = rules[j];
-//						if (!ruleNames.contains(rule.getName())) {
-//							rule.setConsequence(new NilConsequence());
-//						}
-//					}
-//				}
-//	    	} else {
-//	    		Package[] pkgs = ruleBase.getPackages();
-//	    		for (int i = 0; i < pkgs.length; i++) {
-//	    			Package pkg = pkgs[i];
-//	    			for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
-//						String name = (String) iter.next();
-//						Rule rule = pkg.getRule(name);
-//						rule.setConsequence(new NilConsequence());
-//					}
+//    static void stubOutRules(HashSet<String> ruleNames, RuleBase ruleBase,
+//            boolean inclusive) {
+//        if (ruleNames.size() > 0) {
+//            if (inclusive) {
+//                Package[] pkgs = ruleBase.getPackages();
+//                for (int i = 0; i < pkgs.length; i++) {
+//                    Rule[] rules = pkgs[i].getRules();
+//                    for (int j = 0; j < rules.length; j++) {
+//                        Rule rule = rules[j];
+//                        if (!ruleNames.contains(rule.getName())) {
+//                            rule.setConsequence(new NilConsequence());
+//                        }
+//                    }
+//                }
+//            } else {
+//                Package[] pkgs = ruleBase.getPackages();
+//                for (int i = 0; i < pkgs.length; i++) {
+//                    Package pkg = pkgs[i];
+//                    for (Iterator iter = ruleNames.iterator(); iter.hasNext();) {
+//                        String name = (String) iter.next();
+//                        Rule rule = pkg.getRule(name);
+//                        rule.setConsequence(new NilConsequence());
+//                    }
 //
-//	    		}
-//	    	}
-//    	}
-//	}
+//                }
+//            }
+//        }
+//    }
 
 
 

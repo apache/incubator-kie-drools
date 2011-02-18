@@ -325,7 +325,7 @@ public class RuleWorksheetParseTest {
         DRLOutput dout = new DRLOutput();
         p.renderDRL(dout);
         String drl = dout.getDRL();
-        //		System.out.println( drl );
+        // System.out.println( drl );
         assertTrue( drl.contains( "agenda-group \"foo bar\"" ) );
         assertTrue( drl.contains( "agenda-group \"10\\\" group\"" ) );
     }
@@ -349,7 +349,7 @@ public class RuleWorksheetParseTest {
             DRLOutput dout = new DRLOutput();
             p.renderDRL(dout);
             String drl = dout.getDRL();
-            //			System.out.println( drl );
+            // System.out.println( drl );
             fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
             System.err.println( e.getMessage() );
@@ -375,7 +375,7 @@ public class RuleWorksheetParseTest {
         DRLOutput dout = new DRLOutput();
         p.renderDRL(dout);
         String drl = dout.getDRL();
-        //		System.out.println( drl );
+        // System.out.println( drl );
         assertTrue( drl.contains( "no-loop true" ) );
         assertTrue( drl.contains( "agenda-group \"agroup\"" ) );
     }

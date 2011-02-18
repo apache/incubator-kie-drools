@@ -256,11 +256,11 @@ public class DefaultExpanderTest {
         String source = "rule \"TestNewDslSetup\"\ndialect \"mvel\"\nwhen\nWhen the credit rating is AA\nthen \nend";
         
 //        String source="rule \"TestNewDslSetup\"\n"+
-//    					"dialect \"mvel\"\n"+
-//						"when\n"+
-//							"When the credit rating is OK\n"+
-//						"then\n"+
-//						"end\n";
+//                        "dialect \"mvel\"\n"+
+//                        "when\n"+
+//                            "When the credit rating is OK\n"+
+//                        "then\n"+
+//                        "end\n";
     
         String drl = ex.expand(source);
         

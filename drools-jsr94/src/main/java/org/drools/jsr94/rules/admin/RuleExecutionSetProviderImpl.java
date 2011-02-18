@@ -75,7 +75,7 @@ public class RuleExecutionSetProviderImpl
     public RuleExecutionSet createRuleExecutionSet(final Element ruleExecutionSetElement,
                                                    final Map properties) throws RuleExecutionSetCreateException {
         try {
-            //    		 Prepare the DOM source
+            // Prepare the DOM source
             final Source source = new DOMSource( ruleExecutionSetElement );
 
             final XmlPackageReader xmlPackageReader = new XmlPackageReader( new SemanticModules() );

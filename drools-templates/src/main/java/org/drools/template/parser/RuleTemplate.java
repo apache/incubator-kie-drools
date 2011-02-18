@@ -104,7 +104,7 @@ public class RuleTemplate {
                 newLine.append(StringUtils.repeat("@end{}", optCols));
                 newLine.append("\n");
             }
-//			System.out.println("newLine: " + newLine);
+//            System.out.println("newLine: " + newLine);
             return newLine.toString();
 
         } catch (IOException e) {

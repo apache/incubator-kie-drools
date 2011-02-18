@@ -105,7 +105,8 @@ public class DynamicFact implements Map<String, Object> {
     }
 
     public Object remove(Object arg0) {
-        throw new UnsupportedOperationException();	}
+        throw new UnsupportedOperationException();
+    }
 
     public int size() {
         return this.typeDef.getFields().size();

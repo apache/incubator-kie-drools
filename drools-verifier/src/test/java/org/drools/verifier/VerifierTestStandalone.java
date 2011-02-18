@@ -74,7 +74,7 @@ class VerifierTestStandalone {
             // System.out.print(a.getResultAsXML());
             // a.writeComponentsHTML("/stash/");
             // a.writeComponentsHTML("/Users/michaelneale/foo.html");
-            //			a.writeComponentsHTML("/home/trikkola/");
+            // a.writeComponentsHTML("/home/trikkola/");
             // a.writeComponentsHTML("c:/");
 
             VerifierReport result = verifier.getResult();

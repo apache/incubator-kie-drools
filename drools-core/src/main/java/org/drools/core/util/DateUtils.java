@@ -70,11 +70,11 @@ public class DateUtils {
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input, DateFormats dateFormats) {
         try {
-//		    if (  dateFormat != null ) {
-//		        return dateFormat.parse( input );
-//		    } else {
-//		        return df.get().parse(input);
-//		    }
+//            if (  dateFormat != null ) {
+//                return dateFormat.parse( input );
+//            } else {
+//                return df.get().parse(input);
+//            }
             return df.get().parse(input);
         } catch (final ParseException e) {
             throw new IllegalArgumentException("Invalid date input format: ["

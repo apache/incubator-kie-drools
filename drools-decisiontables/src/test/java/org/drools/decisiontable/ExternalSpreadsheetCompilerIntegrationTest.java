@@ -98,10 +98,10 @@ public class ExternalSpreadsheetCompilerIntegrationTest {
         final Package pkg = builder.getPackage();
         assertNotNull( pkg );
         DroolsError[] errors = builder.getErrors().getErrors();
-//		for (int i = 0; i < errors.length; i++) {
-//			DroolsError error = errors[i];
-//			System.out.println(error.getMessage());
-//		}
+//        for (int i = 0; i < errors.length; i++) {
+//            DroolsError error = errors[i];
+//            System.out.println(error.getMessage());
+//        }
         assertEquals( 0,
                       errors.length );
 
