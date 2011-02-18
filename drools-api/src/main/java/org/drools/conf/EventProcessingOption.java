@@ -33,7 +33,6 @@ package org.drools.conf;
  * <li> memory management techniques may be employed when an event no longer can match other events
  * due to session clock continuous increment. </li>
  * 
- * @author etirelli
  *
  */
 public enum EventProcessingOption

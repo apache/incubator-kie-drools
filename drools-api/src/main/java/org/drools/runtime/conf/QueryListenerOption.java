@@ -28,7 +28,6 @@ package org.drools.runtime.conf;
  * the copy and improving query performance significantly.
  *  
  * 
- * @author etirelli
  */
 public enum QueryListenerOption implements SingleValueKnowledgeSessionOption {
 

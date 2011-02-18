@@ -20,7 +20,6 @@ package org.drools.runtime.conf;
 /**
  * A markup interface for MultiValueKnowledgeSessionConfiguration options
  * 
- * @author etirelli
  */
 public interface MultiValueKnowledgeSessionOption
     extends

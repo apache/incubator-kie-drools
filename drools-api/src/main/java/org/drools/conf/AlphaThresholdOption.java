@@ -20,7 +20,6 @@ package org.drools.conf;
 /**
  * A class for the alpha node hashing threshold configuration.
  * 
- * @author etirelli
  */
 public class AlphaThresholdOption implements SingleValueKnowledgeBaseOption {
 

@@ -21,7 +21,6 @@ import org.drools.conf.Option;
 /**
  * A markup interface for KnowledgeBuilderConfiguration options
  * 
- * @author etirelli
  */
 public interface KnowledgeBuilderOption
     extends

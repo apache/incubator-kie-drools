@@ -20,7 +20,6 @@ package org.drools.runtime.conf;
 /**
  * A markup interface for SingleValueKnowledgeSessionConfiguration options
  * 
- * @author etirelli
  */
 public interface SingleValueKnowledgeSessionOption
     extends

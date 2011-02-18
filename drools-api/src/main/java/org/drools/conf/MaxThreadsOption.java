@@ -20,7 +20,6 @@ package org.drools.conf;
 /**
  * A class for the max threads configuration.
  * 
- * @author etirelli
  */
 public class MaxThreadsOption implements SingleValueKnowledgeBaseOption {
 

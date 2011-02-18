@@ -24,7 +24,6 @@ import javax.management.ObjectName;
 /**
  * An MBean interface for Knowledge Session monitoring
  * 
- * @author etirelli
  */
 public interface KnowledgeSessionMonitoringMBean {
 

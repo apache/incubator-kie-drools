@@ -24,7 +24,6 @@ package org.drools.conf;
  * 
  * DEFAULT = discard
  * 
- * @author etirelli
  */
 public enum LogicalOverrideOption implements SingleValueKnowledgeBaseOption {
     

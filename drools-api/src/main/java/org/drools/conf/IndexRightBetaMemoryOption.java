@@ -24,7 +24,6 @@ package org.drools.conf;
  * 
  * DEFAULT = true
  * 
- * @author etirelli
  */
 public enum IndexRightBetaMemoryOption implements SingleValueKnowledgeBaseOption {
     

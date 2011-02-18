@@ -20,9 +20,6 @@ import java.util.List;
 
 import com.sun.tools.xjc.Options;
 
-/**
- * 
- */
 public interface JaxbConfiguration
     extends
     ResourceConfiguration {

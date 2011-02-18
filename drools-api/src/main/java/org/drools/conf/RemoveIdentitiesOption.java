@@ -24,7 +24,6 @@ package org.drools.conf;
  * 
  * DEFAULT = false
  * 
- * @author etirelli
  */
 public enum RemoveIdentitiesOption implements SingleValueKnowledgeBaseOption {
     
