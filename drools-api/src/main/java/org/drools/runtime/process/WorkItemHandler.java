@@ -43,19 +43,19 @@ package org.drools.runtime.process;
  */
 public interface WorkItemHandler {
 
-	/**
-	 * The given work item should be executed.
-	 * @param workItem the work item that should be executed
-	 * @param manager the manager that requested the work item to be executed
-	 */
+    /**
+     * The given work item should be executed.
+     * @param workItem the work item that should be executed
+     * @param manager the manager that requested the work item to be executed
+     */
     void executeWorkItem(WorkItem workItem,
                          WorkItemManager manager);
 
-	/**
-	 * The given work item should be aborted.
-	 * @param workItem the work item that should be aborted
-	 * @param manager the manager that requested the work item to be aborted
-	 */
+    /**
+     * The given work item should be aborted.
+     * @param workItem the work item that should be aborted
+     * @param manager the manager that requested the work item to be aborted
+     */
     void abortWorkItem(WorkItem workItem,
                        WorkItemManager manager);
 

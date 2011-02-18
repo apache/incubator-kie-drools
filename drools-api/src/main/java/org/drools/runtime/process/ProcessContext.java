@@ -23,23 +23,23 @@ import org.drools.runtime.KnowledgeContext;
  */
 public interface ProcessContext extends KnowledgeContext {
 
-	/**
-	 * Returns the process instance that is currently being
-	 * executed in this context.
-	 *  
-	 * @return the process instance that is currently being
-	 * executed in this context
-	 */
+    /**
+     * Returns the process instance that is currently being
+     * executed in this context.
+     *
+     * @return the process instance that is currently being
+     * executed in this context
+     */
     ProcessInstance getProcessInstance();
 
-	/**
-	 * Returns the node instance that is currently being
-	 * executed in this context, or <code>null</node> if no
-	 * node instance is currently being executed.
-	 *  
-	 * @return the node instance that is currently being
-	 * executed in this context
-	 */
+    /**
+     * Returns the node instance that is currently being
+     * executed in this context, or <code>null</node> if no
+     * node instance is currently being executed.
+     *
+     * @return the node instance that is currently being
+     * executed in this context
+     */
     NodeInstance getNodeInstance();
 
     /**

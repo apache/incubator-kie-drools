@@ -36,12 +36,12 @@ import org.drools.definition.process.Node;
  */
 public interface NodeInstance {
 
-	/**
-	 * The id of the node instance.  This is unique within the
-	 * node instance container this node instance lives in.
-	 * 
-	 * @return the id of the node instance
-	 */
+    /**
+     * The id of the node instance.  This is unique within the
+     * node instance container this node instance lives in.
+     *
+     * @return the id of the node instance
+     */
     long getId();
 
     /**

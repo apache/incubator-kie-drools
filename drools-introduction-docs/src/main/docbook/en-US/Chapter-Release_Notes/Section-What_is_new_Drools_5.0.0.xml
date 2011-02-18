@@ -552,7 +552,7 @@ $codes : List() from accumulate( Alarm( $c : code, $s : severity ),
 
           <programlisting>
 declare Person
-	@propertyChangeSupport
+  @propertyChangeSupport
 end</programlisting>
         </example>
     </section>
