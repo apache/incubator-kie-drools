@@ -4,85 +4,84 @@ import org.drools.Cheese;
 import org.drools.Person;
 
 Setup
-	EvalNode:
-	    eval, mock, tuple[0].object.age > 30;
-	LeftTupleSink:
-	    sink, eval;
-	Facts:
-	    new Person('darth', 35, 'brie'),     // h0     
-	    new Person('bobba', 22, 'stilton'),  // h1
-	    new Person('yoda', 832, 'stilton'),  // h2
-	    new Person('luke', 27, 'stilton');   // h3
-	
+    EvalNode:
+        eval, mock, tuple[0].object.age > 30;
+    LeftTupleSink:
+        sink, eval;
+    Facts:
+        new Person('darth', 35, 'brie'),     // h0
+        new Person('bobba', 22, 'stilton'),  // h1
+        new Person('yoda', 832, 'stilton'),  // h2
+        new Person('luke', 27, 'stilton');   // h3
+
 /**
  * check single left assertion and retraction
  */
 Test "Eval assert/retract"	
-	assert:
-	    eval, [[h1]];
-	sink:
-	    verify, assertLeft, count, 0;
-	assert:
-	    eval, [[h0]];
-	sink:
-	    verify, assertLeft, count, 1;
-	    verify, assertLeft, tuple0[0], is( h0 );
-	retract:
-	    eval, [[h0], [h1]];   
-	sink:
-	    verify, assertLeft, count, 1;   // still 1
-	    verify, retractLeft, count, 1;
-	    
+    assert:
+        eval, [[h1]];
+    sink:
+        verify, assertLeft, count, 0;
+    assert:
+        eval, [[h0]];
+    sink:
+        verify, assertLeft, count, 1;
+        verify, assertLeft, tuple0[0], is( h0 );
+    retract:
+        eval, [[h0], [h1]];
+    sink:
+        verify, assertLeft, count, 1;   // still 1
+        verify, retractLeft, count, 1;
+
 /**    
  * check single right assertion and retraction
  */
 Test "Eval assert, modify, retract"
-	assert:
-	    eval, [[h0], [h1], [h2]];
-	sink:
-	    verify, assertLeft, count, 2;
-	    verify, assertLeft, tuple0[0], is( h0 );  
-	    verify, assertLeft, tuple1[0], is( h2 );
-	modify:
-		eval, [[h0]];
-	sink:
-	    verify, assertLeft, count, 2; // still 2
-	    verify, retractLeft, count, 0; 
-	    verify, modifyLeft, count, 1;
-	    verify, modifyLeft, tuple0[0], is( h0 );
-	With:
-	    h0, age = 25;
-	modify:
-	    eval, [[h0]];
-	sink:
-	    verify, assertLeft, count, 2; // still 2
-	    verify, retractLeft, count, 1; 
-	    verify, retractLeft, tuple0[0], is( h0 );
-	    verify, modifyLeft, count, 1;
-	With:
-	    h1, age = 35;
-	modify:
-	    eval, [[h1]];
-	sink:
-	    verify, assertLeft, count, 3; // still 2
-	    verify, assertLeft, tuple2[0], is( h1 );
-	    verify, retractLeft, count, 1; 
-	    verify, modifyLeft, count, 1;
-	With:
-	    h2, age = 833;
-	modify:
-	    eval, [[h2]];
-	sink:
-	    verify, assertLeft, count, 3; // still 2
-	    verify, retractLeft, count, 1; 
-	    verify, modifyLeft, count, 2;
-	    verify, modifyLeft, tuple1[0], is( h2 );
-	retract:
-		eval, [[h1], [h2], [h0]];
-	sink:
-	    verify, assertLeft, count, 3; // still 2
-	    verify, retractLeft, count, 3; 
-	    verify, modifyLeft, count, 2;
+    assert:
+        eval, [[h0], [h1], [h2]];
+    sink:
+        verify, assertLeft, count, 2;
+        verify, assertLeft, tuple0[0], is( h0 );
+        verify, assertLeft, tuple1[0], is( h2 );
+    modify:
+        eval, [[h0]];
+    sink:
+        verify, assertLeft, count, 2; // still 2
+        verify, retractLeft, count, 0;
+        verify, modifyLeft, count, 1;
+        verify, modifyLeft, tuple0[0], is( h0 );
+    With:
+        h0, age = 25;
+    modify:
+        eval, [[h0]];
+    sink:
+        verify, assertLeft, count, 2; // still 2
+        verify, retractLeft, count, 1;
+        verify, retractLeft, tuple0[0], is( h0 );
+        verify, modifyLeft, count, 1;
+    With:
+        h1, age = 35;
+    modify:
+        eval, [[h1]];
+    sink:
+        verify, assertLeft, count, 3; // still 2
+        verify, assertLeft, tuple2[0], is( h1 );
+        verify, retractLeft, count, 1;
+        verify, modifyLeft, count, 1;
+    With:
+        h2, age = 833;
+    modify:
+        eval, [[h2]];
+    sink:
+        verify, assertLeft, count, 3; // still 2
+        verify, retractLeft, count, 1;
+        verify, modifyLeft, count, 2;
+        verify, modifyLeft, tuple1[0], is( h2 );
+    retract:
+        eval, [[h1], [h2], [h0]];
+    sink:
+        verify, assertLeft, count, 3; // still 2
+        verify, retractLeft, count, 3;
+        verify, modifyLeft, count, 2;
 
-	 
-	    
+

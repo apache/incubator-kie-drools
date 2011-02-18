@@ -1,210 +1,210 @@
 TestCase "Join Node assert/retract test case"
 
 Setup
-	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
-	LeftInputAdapterNode:
-	    lian0, otnLeft1;
-	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
-	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	JoinNode:
-	    join1, lian0, otnRight1;
-	    age, !=, p1;
-	JoinNode:
-	    join2, join1, otnRight2;
-	    age, !=, p1;
-	Facts:
-	    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 36),
-	    new org.drools.Person('yoda', 37), new org.drools.Person('luke', 38),
-	    new org.drools.Person('dave', 33), new org.drools.Person('bob', 32);
-	    
+    ObjectTypeNode:
+        otnLeft1, org.drools.Person;
+    LeftInputAdapterNode:
+        lian0, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;
+    Binding:
+         p1, 0, org.drools.Person, age;
+    JoinNode:
+        join1, lian0, otnRight1;
+        age, !=, p1;
+    JoinNode:
+        join2, join1, otnRight2;
+        age, !=, p1;
+    Facts:
+        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 36),
+        new org.drools.Person('yoda', 37), new org.drools.Person('luke', 38),
+        new org.drools.Person('dave', 33), new org.drools.Person('bob', 32);
+
 Test "Assert/retract test"	         
-	/**
-	 * check single left assertion and retraction
-	 */
-	assert:
-	    otnLeft1, [h0];
-	join1:
-	    leftMemory, [[h0]];
-	join2:
-	    leftMemory, [];   
-	retract:
-	    otnLeft1, [h0];  
-	/**    
-	 * check single right assertion and retraction
-	 */
-	assert:
-	    otnRight1, [h1];
-	join1:
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [];    
-	retract:
-	    otnRight1, [h1]; 
-	
-	/**        
-	 *  check single left then right assertion
-	 */ 
-	assert:
-	    otnLeft1, [h0];  
-	    otnRight1, [h1];
-	join1:
-	    leftMemory, [[h0]];  
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [[h0, h1]]; 
-	retract:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h1];
-	   
-	/**    
-	 *  check single right then left assertion
-	 */    
-	assert:
-	    otnRight1, [h1];
-	    otnLeft1, [h0];
-	join1:
-	    leftMemory, [[h0]];  
-	    rightMemory, [h1]  ;
-	join2:
-	    leftMemory, [[h0, h1]]; 
-	retract:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h1];    
-	
-	/**    
-	 * assert: two left and two right, with incremental first removal
-	 */
-	assert:
-	    otnLeft1, [h0, h1];
-	    otnRight1, [h2, h3];
-	join1:
-	    leftMemory, [[h0], [h1]];  
-	    rightMemory, [h2, h3];
-	join2:
-	    leftMemory, [[h0, h2], [h1, h2],
-	                [h0, h3], [h1, h3]];        
-	retract:
-	    otnLeft1, [h0];
-	join1:
-	    leftMemory, [[h1]];  
-	    rightMemory, [h2, h3];  
-	join2:
-	    leftMemory, [[h1, h2],
-	                [h1, h3]];               
-	retract:
-	    otnRight1, [h2];	
-	join1:
-	    leftMemory, [[h1]];  
-	    rightMemory, [h3];  
-	join2:
-	    leftMemory, [[h1, h3]];   
-	retract:
-	    otnLeft1, [h1];
-	    otnRight1, [h3]; 
-	join1:
-	    leftMemory, [];  
-	    rightMemory, [];  
-	join2:
-	    leftMemory, [];
-	
-	/**    
-	 * assert: two right and two left, with incremental last removal
-	 */
-	assert:
-	    otnRight1, [h2, h3];
-	    otnLeft1, [h0, h1];
-	join1:
-	    leftMemory, [[h0], [h1]];  
-	    rightMemory, [h2, h3];  
-	join2:
-	    leftMemory, [[h0, h2], [h0, h3],
-	                [h1, h2], [h1, h3]];        
-	retract:
-	    otnLeft1, [h1];
-	join1:
-	    leftMemory, [[h0]];
-	    rightMemory, [h2, h3];  
-	join2:
-	    leftMemory, [[h0, h2], [h0, h3]];               
-	retract:
-	    otnRight1, [h3];
-	join1:
-	    leftMemory, [[h0]];  
-	    rightMemory, [h2];  
-	join2:
-	    leftMemory, [[h0, h2]];   
-	retract:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h2]; 
-	join1:
-	    leftMemory, [];  
-	    rightMemory, [];  
-	join2:
-	    leftMemory, [];  
-	
-	/**   
-	 * assert: three left and three right, middle two are removed, and then iterated in reverse order
-	 */
-	assert:
-	    otnLeft1, [h0, h5, h2];
-	    otnRight1, [h3, h4, h1];
-	join1:
-	    leftMemory, [[h0], [h5], [h2]];
-	    rightMemory, [h3, h4, h1];      
-	join2:
-	    leftMemory, [[h0, h3], [h5, h3], [h2, h3],
-	                [h0, h4], [h5, h4], [h2, h4],
-	                [h0, h1], [h5, h1], [h2, h1]]; 
-	    rightMemory, [];
-	retract:        
-	    otnLeft1, [h5];
-	join1:
-	    leftMemory, [[h0], [h2]];
-	    rightMemory, [h3, h4, h1];      
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h4], [h2, h4],
-	                [h0, h1], [h2, h1]]; 
-	    rightMemory, [];
-	retract:        
-	    otnRight1, [h4];  
-	join1:
-	    leftMemory, [[h0], [h2]];
-	    rightMemory, [h3, h1];      
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h1], [h2, h1]]; 
-	    rightMemory, []   ;
-	assert:
-	    otnLeft1, [h5];
-	    otnRight1, [h4];  
-	join1:
-	    leftMemory, [[h0], [h2], [h5]];
-	    rightMemory, [h3, h1, h4] ;         
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h1], [h2, h1],                
-	                [h5, h3], [h5, h1],
-	                [h0, h4], [h2, h4], [h5, h4] ];
-	retract:        
-	    otnRight1, [h4]; 
-	join1:
-	    leftMemory, [[h0], [h2], [h5]];
-	    rightMemory, [h3, h1];          
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h1], [h2, h1],                
-	                [h5, h3], [h5, h1] ];      
-	retract:        
-	    otnLeft1, [h5];
-	join1:
-	    leftMemory, [[h0], [h2]];
-	    rightMemory, [h3, h1];          
-	join2:
-	    leftMemory, [[h0, h3], [h2, h3],
-	                [h0, h1], [h2, h1]];                             
+    /**
+     * check single left assertion and retraction
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];
+    retract:
+        otnLeft1, [h0];
+    /**
+     * check single right assertion and retraction
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1];
+    join2:
+        leftMemory, [];
+    retract:
+        otnRight1, [h1];
+
+    /**
+     *  check single left then right assertion
+     */
+    assert:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0, h1]];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+
+    /**
+     *  check single right then left assertion
+     */
+    assert:
+        otnRight1, [h1];
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h1]  ;
+    join2:
+        leftMemory, [[h0, h1]];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+
+    /**
+     * assert: two left and two right, with incremental first removal
+     */
+    assert:
+        otnLeft1, [h0, h1];
+        otnRight1, [h2, h3];
+    join1:
+        leftMemory, [[h0], [h1]];
+        rightMemory, [h2, h3];
+    join2:
+        leftMemory, [[h0, h2], [h1, h2],
+                    [h0, h3], [h1, h3]];
+    retract:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h1]];
+        rightMemory, [h2, h3];
+    join2:
+        leftMemory, [[h1, h2],
+                    [h1, h3]];
+    retract:
+        otnRight1, [h2];
+    join1:
+        leftMemory, [[h1]];
+        rightMemory, [h3];
+    join2:
+        leftMemory, [[h1, h3]];
+    retract:
+        otnLeft1, [h1];
+        otnRight1, [h3];
+    join1:
+        leftMemory, [];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+
+    /**
+     * assert: two right and two left, with incremental last removal
+     */
+    assert:
+        otnRight1, [h2, h3];
+        otnLeft1, [h0, h1];
+    join1:
+        leftMemory, [[h0], [h1]];
+        rightMemory, [h2, h3];
+    join2:
+        leftMemory, [[h0, h2], [h0, h3],
+                    [h1, h2], [h1, h3]];
+    retract:
+        otnLeft1, [h1];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h2, h3];
+    join2:
+        leftMemory, [[h0, h2], [h0, h3]];
+    retract:
+        otnRight1, [h3];
+    join1:
+        leftMemory, [[h0]];
+        rightMemory, [h2];
+    join2:
+        leftMemory, [[h0, h2]];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h2];
+    join1:
+        leftMemory, [];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+
+    /**
+     * assert: three left and three right, middle two are removed, and then iterated in reverse order
+     */
+    assert:
+        otnLeft1, [h0, h5, h2];
+        otnRight1, [h3, h4, h1];
+    join1:
+        leftMemory, [[h0], [h5], [h2]];
+        rightMemory, [h3, h4, h1];
+    join2:
+        leftMemory, [[h0, h3], [h5, h3], [h2, h3],
+                    [h0, h4], [h5, h4], [h2, h4],
+                    [h0, h1], [h5, h1], [h2, h1]];
+        rightMemory, [];
+    retract:
+        otnLeft1, [h5];
+    join1:
+        leftMemory, [[h0], [h2]];
+        rightMemory, [h3, h4, h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h4], [h2, h4],
+                    [h0, h1], [h2, h1]];
+        rightMemory, [];
+    retract:
+        otnRight1, [h4];
+    join1:
+        leftMemory, [[h0], [h2]];
+        rightMemory, [h3, h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h1], [h2, h1]];
+        rightMemory, []   ;
+    assert:
+        otnLeft1, [h5];
+        otnRight1, [h4];
+    join1:
+        leftMemory, [[h0], [h2], [h5]];
+        rightMemory, [h3, h1, h4] ;
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h1], [h2, h1],
+                    [h5, h3], [h5, h1],
+                    [h0, h4], [h2, h4], [h5, h4] ];
+    retract:
+        otnRight1, [h4];
+    join1:
+        leftMemory, [[h0], [h2], [h5]];
+        rightMemory, [h3, h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h1], [h2, h1],
+                    [h5, h3], [h5, h1] ];
+    retract:
+        otnLeft1, [h5];
+    join1:
+        leftMemory, [[h0], [h2]];
+        rightMemory, [h3, h1];
+    join2:
+        leftMemory, [[h0, h3], [h2, h3],
+                    [h0, h1], [h2, h1]];

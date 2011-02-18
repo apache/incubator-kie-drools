@@ -1,120 +1,120 @@
 TestCase "Exists node modify test case"
 
 Setup
-	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
-	LeftInputAdapterNode:
-	    lian1, otnLeft1;
-	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
-	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	ExistsNode:
-	    not1, lian1, otnRight1;
-	    org.drools.Person, age, !=, p1;
-	JoinNode:
-	    join2, not1, otnRight2;
-	    age, !=, p1;
-	Facts:
-	    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
-	    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
-	    new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
-	    new org.drools.Person('obi', 36), new org.drools.Person('han', 37);     
-	    
+    ObjectTypeNode:
+        otnLeft1, org.drools.Person;
+    LeftInputAdapterNode:
+        lian1, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;
+    Binding:
+         p1, 0, org.drools.Person, age;
+    ExistsNode:
+        not1, lian1, otnRight1;
+        org.drools.Person, age, !=, p1;
+    JoinNode:
+        join2, not1, otnRight2;
+        age, !=, p1;
+    Facts:
+        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
+        new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
+        new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
+        new org.drools.Person('obi', 36), new org.drools.Person('han', 37);
+
 Test "Exists node modify test"	    
-	/**        
-	 *  check single left then right assertion, initially not matched, the toggle matched and unmatched
-	 */ 
-	assert:
-	    otnLeft1, [h0];  
-	not1:
-	    leftMemory, [[h0]];  
-	    rightMemory, [];  
-	join2:
-	    leftMemory, []; 
-	assert:
-	    otnRight1, [h1];
-	not1:
-	    leftMemory, [[h0]]; 
-	    rightMemory, [h1]; 
-	join2:
-	    leftMemory, [];   
-	With:
-	    h1, age = 36;
-	modify:
-	    otnRight1, [h1];      
-	not1:
-	    leftMemory, [];     // h0 is removed from here, as it's blocked
-	    rightMemory, [h1];
-	join2:
-	    leftMemory, [[h0]];    
-	With:
-	    h1, age = 35;
-	modify:
-	    otnRight1, [h1];     
-	not1:
-	    leftMemory, [[h0]]; // h0 is back again, as it's no longer blocked
-	    rightMemory, [h1]; 
-	join2:
-	    leftMemory, []; 
-	retract:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h1];         
-	
-	
-	/**
-	 * check two left, two right
-	 */   
-	assert:
-	    otnRight1, [h6]; 
-	assert:
-	    otnLeft1, [h0, h1]; 
-	not1:
-	    leftMemory, [];     // memory is empty as h0 and h1 are blocked
-	join2:
-	    leftMemory, [[h0], [h1]];
-	assert:
-	    otnRight1, [h7];             
-	With:
-	    h6, age = 35;
-	modify:
-	    otnRight1, [h6];  // h7 still blocks h0 and h1
-	not1:
-	    leftMemory, [];     
-	join2:
-	    leftMemory, [[h0], [h1]];
-	With:
-	    h7, age = 35         ;
-	modify:
-	    otnRight1, [h7]; // h0 and h1 should now be unblocked
-	not1:
-	    leftMemory, [[h0], [h1]];      // h0 and h1 appear back in memory
-	join2:
-	    leftMemory, [];  
-	With:
-	    h6, age = 36;
-	modify:
-	    otnRight1, [h6];    
-	not1:
-	    leftMemory, [];      // h6 blocks both
-	join2:
-	    leftMemory, [[h0], [h1]];   
-	With:
-	    h0, age = 36;
-	modify:
-	    otnLeft1, [h0];    // h0 is now blocked by h7, while h1 remains blocked by h6
-	not1:
-	    leftMemory, [];      // remains empty
-	join2:
-	    leftMemory, [[h1], [h0]]; // the child order was reversed, because h0 was the last one modified       
-	With:
-	    h0, age = 36;
-	    h7, age = 36;
-	modify:
-	    otnLeft1, [h0];    // h0 is no longer blocked 
-	not1:
-	    leftMemory, [[h0]];      
-	join2:
-	    leftMemory, [[h1]];     
+    /**
+     *  check single left then right assertion, initially not matched, the toggle matched and unmatched
+     */
+    assert:
+        otnLeft1, [h0];
+    not1:
+        leftMemory, [[h0]];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+    assert:
+        otnRight1, [h1];
+    not1:
+        leftMemory, [[h0]];
+        rightMemory, [h1];
+    join2:
+        leftMemory, [];
+    With:
+        h1, age = 36;
+    modify:
+        otnRight1, [h1];
+    not1:
+        leftMemory, [];     // h0 is removed from here, as it's blocked
+        rightMemory, [h1];
+    join2:
+        leftMemory, [[h0]];
+    With:
+        h1, age = 35;
+    modify:
+        otnRight1, [h1];
+    not1:
+        leftMemory, [[h0]]; // h0 is back again, as it's no longer blocked
+        rightMemory, [h1];
+    join2:
+        leftMemory, [];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h1];
+
+
+    /**
+     * check two left, two right
+     */
+    assert:
+        otnRight1, [h6];
+    assert:
+        otnLeft1, [h0, h1];
+    not1:
+        leftMemory, [];     // memory is empty as h0 and h1 are blocked
+    join2:
+        leftMemory, [[h0], [h1]];
+    assert:
+        otnRight1, [h7];
+    With:
+        h6, age = 35;
+    modify:
+        otnRight1, [h6];  // h7 still blocks h0 and h1
+    not1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0], [h1]];
+    With:
+        h7, age = 35         ;
+    modify:
+        otnRight1, [h7]; // h0 and h1 should now be unblocked
+    not1:
+        leftMemory, [[h0], [h1]];      // h0 and h1 appear back in memory
+    join2:
+        leftMemory, [];
+    With:
+        h6, age = 36;
+    modify:
+        otnRight1, [h6];
+    not1:
+        leftMemory, [];      // h6 blocks both
+    join2:
+        leftMemory, [[h0], [h1]];
+    With:
+        h0, age = 36;
+    modify:
+        otnLeft1, [h0];    // h0 is now blocked by h7, while h1 remains blocked by h6
+    not1:
+        leftMemory, [];      // remains empty
+    join2:
+        leftMemory, [[h1], [h0]]; // the child order was reversed, because h0 was the last one modified
+    With:
+        h0, age = 36;
+        h7, age = 36;
+    modify:
+        otnLeft1, [h0];    // h0 is no longer blocked
+    not1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h1]];

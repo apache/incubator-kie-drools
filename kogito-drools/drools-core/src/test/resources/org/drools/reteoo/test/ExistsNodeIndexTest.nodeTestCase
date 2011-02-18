@@ -1,142 +1,142 @@
 TestCase "Exists node index test case"
 
 Setup
-	ObjectTypeNode:
-	    otnLeft1, org.drools.Person;
-	LeftInputAdapterNode:
-	    lian1, otnLeft1;
-	ObjectTypeNode:
-	    otnRight1, org.drools.Person;
-	ObjectTypeNode:
-	    otnRight2, org.drools.Person;
-	Binding:
-	     p1, 0, org.drools.Person, age;
-	ExistsNode:
-	    not1, lian1, otnRight1;
-	    org.drools.Person, age, ==, p1;
-	JoinNode:
-	    join2, not1, otnRight2;
-	    age, ==, p1;
-	Facts:
-	    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
-	    new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
-	    new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
-	    new org.drools.Person('obi', 36), new org.drools.Person('han', 37);  
-	    
+    ObjectTypeNode:
+        otnLeft1, org.drools.Person;
+    LeftInputAdapterNode:
+        lian1, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;
+    Binding:
+         p1, 0, org.drools.Person, age;
+    ExistsNode:
+        not1, lian1, otnRight1;
+        org.drools.Person, age, ==, p1;
+    JoinNode:
+        join2, not1, otnRight2;
+        age, ==, p1;
+    Facts:
+        new org.drools.Person('darth', 35), new org.drools.Person('bobba', 35),
+        new org.drools.Person('yoda', 35), new org.drools.Person('luke', 35),
+        new org.drools.Person('dave', 35), new org.drools.Person('bob', 36),
+        new org.drools.Person('obi', 36), new org.drools.Person('han', 37);
+
 Test "Exists node index test"	    
-	/**        
-	 *  check single left then right assertion, initially not matched, the toggle matched and unmatched
-	 */ 
-	assert:
-	    otnLeft1, [h0];  
-	not1:
-	    leftMemory, [[h0]];  
-	    rightMemory, [];  
-	join2:
-	    leftMemory, []; 
-	assert:
-	    otnRight1, [h6];
-	not1:
-	    leftMemory, [[h0]]; 
-	    rightMemory, [h6]; 
-	join2:
-	    leftMemory, [];   
-	With:
-	    h6, age = 35;
-	modify:
-	    otnRight1, [h6];      
-	not1:
-	    leftMemory, [];     // h0 is removed from here, as it's blocked
-	    rightMemory, [h6];
-	join2:
-	    leftMemory, [[h0]];    
-	With:
-	    h6, age = 36;
-	modify:
-	    otnRight1, [h6];     
-	not1:
-	    leftMemory, [[h0]]; // h0 is back again, as it's no longer blocked
-	    rightMemory, [h6]; 
-	join2:
-	    leftMemory, []; 
-	retract:
-	    otnLeft1, [h0]; 
-	    otnRight1, [h6];       
-	        
-	    
-	
-	/**
-	 * check two left, two right, initially not matched, toggle various matches.
-	 */   
-	assert:
-	    otnRight1, [h6]; 
-	    otnLeft1, [h0, h1]; 
-	not1:
-	    leftMemory, [[h0], [h1]];     
-	    rightMemory, [h6];
-	join2:
-	    leftMemory, [];
-	assert:
-	    otnRight1, [h7];             
-	With:
-	    h6, age = 35;
-	    h7, age = 35;
-	modify:
-	    otnRight1, [h6];  // h6 now blocks h0 and h1
-	not1:
-	    leftMemory, [];     
-	join2:
-	    leftMemory, [[h0], [h1]];     
-	modify:
-	    otnRight1, [h7]; // now h6 and h7 block, although due to lazy only h6 blocks at the moment
-	not1:
-	    leftMemory, [];     
-	join2:
-	    leftMemory, [[h0], [h1]];
-	With:
-	    h1, age = 34 ;
-	modify:
-	    otnLeft1, [h1];    
-	not1:
-	    leftMemory, [[h1]];     
-	join2:
-	    leftMemory, [[h0]];  
-	With:
-	    h6, age = 34;
-	    h7, age = 36;
-	modify:
-	    otnRight1, [h6, h7];  // h6 now blocks h1, h0 is no longer blocked   
-	not1:
-	    leftMemory, [[h0]];     
-	join2:
-	    leftMemory, [[h1]];
-	retract:
-	    otnLeft1, [h1];
-	With:
-	    h0, age = 34  ;
-	modify:
-	    otnLeft1, [h0];     // h0 should now be blocked by h6
-	not1:
-	    leftMemory, [];     
-	join2:
-	    leftMemory, [[h0]];   
-	With:
-	    h0, age = 35;
-	    h1, age = 35;
-	retract:
-	    otnLeft1, [h0, h1]; 
-	    otnRight1, [h6, h7]; 
-	    
-	/**
-	 * Test Blocking two, in index, with modify but no index change     
-	 */
-	assert:
-	    otnRight1, [h3]; 
-	    otnLeft1, [h0, h1]; 
-	not1:
-	    leftMemory, [];     
-	    rightMemory, [h3];
-	join2:
-	    leftMemory, [[h0], [h1]]; 
-	modify:
-	    otnRight1, [h3];    
+    /**
+     *  check single left then right assertion, initially not matched, the toggle matched and unmatched
+     */
+    assert:
+        otnLeft1, [h0];
+    not1:
+        leftMemory, [[h0]];
+        rightMemory, [];
+    join2:
+        leftMemory, [];
+    assert:
+        otnRight1, [h6];
+    not1:
+        leftMemory, [[h0]];
+        rightMemory, [h6];
+    join2:
+        leftMemory, [];
+    With:
+        h6, age = 35;
+    modify:
+        otnRight1, [h6];
+    not1:
+        leftMemory, [];     // h0 is removed from here, as it's blocked
+        rightMemory, [h6];
+    join2:
+        leftMemory, [[h0]];
+    With:
+        h6, age = 36;
+    modify:
+        otnRight1, [h6];
+    not1:
+        leftMemory, [[h0]]; // h0 is back again, as it's no longer blocked
+        rightMemory, [h6];
+    join2:
+        leftMemory, [];
+    retract:
+        otnLeft1, [h0];
+        otnRight1, [h6];
+
+
+
+    /**
+     * check two left, two right, initially not matched, toggle various matches.
+     */
+    assert:
+        otnRight1, [h6];
+        otnLeft1, [h0, h1];
+    not1:
+        leftMemory, [[h0], [h1]];
+        rightMemory, [h6];
+    join2:
+        leftMemory, [];
+    assert:
+        otnRight1, [h7];
+    With:
+        h6, age = 35;
+        h7, age = 35;
+    modify:
+        otnRight1, [h6];  // h6 now blocks h0 and h1
+    not1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0], [h1]];
+    modify:
+        otnRight1, [h7]; // now h6 and h7 block, although due to lazy only h6 blocks at the moment
+    not1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0], [h1]];
+    With:
+        h1, age = 34 ;
+    modify:
+        otnLeft1, [h1];
+    not1:
+        leftMemory, [[h1]];
+    join2:
+        leftMemory, [[h0]];
+    With:
+        h6, age = 34;
+        h7, age = 36;
+    modify:
+        otnRight1, [h6, h7];  // h6 now blocks h1, h0 is no longer blocked
+    not1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h1]];
+    retract:
+        otnLeft1, [h1];
+    With:
+        h0, age = 34  ;
+    modify:
+        otnLeft1, [h0];     // h0 should now be blocked by h6
+    not1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]];
+    With:
+        h0, age = 35;
+        h1, age = 35;
+    retract:
+        otnLeft1, [h0, h1];
+        otnRight1, [h6, h7];
+
+    /**
+     * Test Blocking two, in index, with modify but no index change
+     */
+    assert:
+        otnRight1, [h3];
+        otnLeft1, [h0, h1];
+    not1:
+        leftMemory, [];
+        rightMemory, [h3];
+    join2:
+        leftMemory, [[h0], [h1]];
+    modify:
+        otnRight1, [h3];
