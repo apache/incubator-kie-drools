@@ -173,12 +173,16 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public boolean isExternalFunction() {
-        return functions != null && ! functions.isEmpty();
+        return functions != null && !functions.isEmpty();
     }
 
     public PatternDescr getInputPattern() {
         if ( isSinglePattern() ) {
-            return (PatternDescr) this.input;
+            if( this.input instanceof PatternDescr ) {
+                return (PatternDescr) this.input;
+            } else {
+                return (PatternDescr) ((AndDescr)this.input).getDescrs().get( 0 );
+            }
         }
         return null;
     }
@@ -196,7 +200,7 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public boolean isSinglePattern() {
-        return this.input instanceof PatternDescr;
+        return this.input instanceof PatternDescr || (this.input instanceof AndDescr && ((AndDescr) this.input).getDescrs().size() == 1);
     }
 
     public boolean isMultiPattern() {
@@ -208,11 +212,13 @@ public class AccumulateDescr extends PatternSourceDescr
         return this.input != null;
     }
 
-    public static class AccumulateFunctionCallDescr implements Serializable {
+    public static class AccumulateFunctionCallDescr
+        implements
+        Serializable {
         private static final long serialVersionUID = 520l;
-        
-        private final String   function;
-        private final String[] params;
+
+        private final String      function;
+        private final String[]    params;
 
         public AccumulateFunctionCallDescr(String function,
                                            String[] params) {

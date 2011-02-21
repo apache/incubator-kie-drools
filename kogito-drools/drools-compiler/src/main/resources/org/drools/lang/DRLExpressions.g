@@ -11,6 +11,8 @@ options {
     import java.util.LinkedList;
     import org.drools.compiler.DroolsParserException;
     import org.drools.lang.ParserHelper;
+    import org.drools.lang.DroolsParserExceptionFactory;
+    import org.drools.CheckedDroolsException;
 }
 
 @members {
@@ -84,7 +86,7 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-    :	expression ( AT | DOUBLE_PIPE | DOUBLE_AMPER | PIPE | XOR | AMPER | SEMICOLON )
+    :	expression ( AT | SEMICOLON )
     ;
 
 // top level entry point for arbitrary expression parsing
@@ -97,34 +99,28 @@ conditionalExpression
     ;
 
 conditionalOrExpression
-  : conditionalAndExpression ( DOUBLE_PIPE 
-     ( (operator)=> operator shiftExpression
-     | conditionalAndExpression ) )*
+  : conditionalAndExpression ( DOUBLE_PIPE conditionalAndExpression )*
     ;
 
 conditionalAndExpression 
-  : inclusiveOrExpression ( DOUBLE_AMPER 
-    ( (operator)=> operator shiftExpression
-    | inclusiveOrExpression ) )*
+  : inclusiveOrExpression ( DOUBLE_AMPER inclusiveOrExpression )*
     ;
 
 inclusiveOrExpression
-  : exclusiveOrExpression ( PIPE
-    ( (operator)=> operator shiftExpression
-    | exclusiveOrExpression ) )*
+  : exclusiveOrExpression ( PIPE exclusiveOrExpression )*
     ;
 
 exclusiveOrExpression
-  : andExpression ( XOR 
-    ( (operator)=> operator shiftExpression
-    | andExpression ) )*
+  : andExpression ( XOR andExpression )*
     ;
 
 andExpression 
-  : equalityExpression ( AMPER 
-    ( (operator)=> operator shiftExpression
-    | equalityExpression ) )*
+  : andOrRestriction ( AMPER andOrRestriction )*
     ;
+    
+andOrRestriction
+  	: equalityExpression ( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(DOUBLE_PIPE|DOUBLE_AMPER) operator shiftExpression )*	
+  	;    
 
 equalityExpression 
   : instanceOfExpression ( ( EQUALS | NOT_EQUALS ) instanceOfExpression )*
@@ -154,8 +150,8 @@ relationalOp
     | GREATER_EQUALS 
     | LESS 
     | GREATER
-    | not_key neg_operator_key
-    | operator_key
+    | not_key neg_operator_key ((squareArguments)=> squareArguments)?
+    | operator_key  ((squareArguments)=> squareArguments)?
     )
     ;
 
@@ -311,6 +307,10 @@ superSuffix
     :	arguments
     |   	DOT ID ((LEFT_PAREN) => arguments)?
         ;
+
+squareArguments
+    : LEFT_SQUARE expressionList? RIGHT_SQUARE
+    ;
 
 arguments
     :	LEFT_PAREN expressionList? RIGHT_PAREN

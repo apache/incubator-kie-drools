@@ -23,6 +23,7 @@ import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -1082,9 +1083,9 @@ public class RuleParserTest extends TestCase {
                      parser.hasErrors() );
 
         final String rhs = (String) ((RuleDescr) pkg.getRules().get( 0 )).getConsequence();
-        String expected = "  \t//woot\n  \tfirst\n  \t\n  \t//\n  \t\n  \t/* lala\n  \t\n  \t*/\n  \tsecond  \n";
-        assertEquals( expected,
-                      rhs );
+        String expected = "\\s*//woot$\\s*first$\\s*$\\s*//$\\s*$\\s*/\\* lala$\\s*$\\s*\\*/$\\s*second$\\s*";
+        assertTrue( Pattern.compile( expected,
+                                     Pattern.DOTALL | Pattern.MULTILINE ).matcher( rhs ).matches() );
     }
 
     public void testLhsSemicolonDelim() throws Exception {
@@ -2687,7 +2688,7 @@ public class RuleParserTest extends TestCase {
     public void testSemicolon() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "semicolon.drl" );
-        
+
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
@@ -2823,21 +2824,6 @@ public class RuleParserTest extends TestCase {
                       people.getObjectType() );
     }
 
-    public void testAccessorPaths() throws Exception {
-        final String text = "org   .   drools/*comment*/\t  .Message( text not matches $c#comment\n. property )\n";
-
-        PatternDescr pattern = (PatternDescr) parse( "lhsPattern",
-                                                     text );
-
-        assertEquals( "org.drools.Message",
-                      pattern.getObjectType() );
-
-        ExprConstraintDescr fieldConstr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
-
-        assertEquals( "matches",
-                      fieldConstr.getExpression() );
-    }
-
     public void testOrCE() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_ce.drl" );
@@ -2892,9 +2878,9 @@ public class RuleParserTest extends TestCase {
     }
 
     public void testRuleParseLhs3() throws Exception {
-        final String text = "(or\nnot Person()\n(and Cheese()\nMeat()\nWine()))";
-        AndDescr pattern = (AndDescr) parse( "lhs",
-                                             text );
+        final String text = "rule X when (or\nnot Person()\n(and Cheese()\nMeat()\nWine())) then end";
+        AndDescr pattern = ((RuleDescr) parse( "rule",
+                                               text )).getLhs();
 
         assertEquals( 1,
                       pattern.getDescrs().size() );
@@ -2959,6 +2945,9 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "pluggable_operators.drl" );
 
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
         assertEquals( 1,
                       pkg.getRules().size() );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
@@ -2978,17 +2967,12 @@ public class RuleParserTest extends TestCase {
                       eventB.getObjectType() );
         assertEquals( 1,
                       eventB.getConstraint().getDescrs().size() );
-        final OrDescr or = (OrDescr) eventB.getConstraint().getDescrs().get( 0 );
-        assertEquals( 2,
-                      or.getDescrs().size() );
+        assertEquals( 1,
+                      eventB.getConstraint().getDescrs().size() );
 
-        final ExprConstraintDescr fcdB = (ExprConstraintDescr) or.getDescrs().get( 0 );
-        assertEquals( "after",
+        final ExprConstraintDescr fcdB = (ExprConstraintDescr) eventB.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this after[1,10] $a || this not after[15,20] $a",
                       fcdB.getExpression() );
-
-        final ExprConstraintDescr fcdB2 = (ExprConstraintDescr) or.getDescrs().get( 1 );
-        assertEquals( "after",
-                      fcdB2.getExpression() );
 
         final PatternDescr eventC = (PatternDescr) rule.getLhs().getDescrs().get( 2 );
         assertEquals( "$c",
@@ -2998,7 +2982,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       eventC.getConstraint().getDescrs().size() );
         final ExprConstraintDescr fcdC = (ExprConstraintDescr) eventC.getConstraint().getDescrs().get( 0 );
-        assertEquals( "finishes",
+        assertEquals( "this finishes $b",
                       fcdC.getExpression() );
 
         final PatternDescr eventD = (PatternDescr) rule.getLhs().getDescrs().get( 3 );
@@ -3009,7 +2993,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 1,
                       eventD.getConstraint().getDescrs().size() );
         final ExprConstraintDescr fcdD = (ExprConstraintDescr) eventD.getConstraint().getDescrs().get( 0 );
-        assertEquals( "starts",
+        assertEquals( "this not starts $a",
                       fcdD.getExpression() );
 
         final PatternDescr eventE = (PatternDescr) rule.getLhs().getDescrs().get( 4 );
@@ -3017,17 +3001,11 @@ public class RuleParserTest extends TestCase {
                       eventE.getIdentifier() );
         assertEquals( "EventE",
                       eventE.getObjectType() );
-        assertEquals( 2,
+        assertEquals( 1,
                       eventE.getConstraint().getDescrs().size() );
 
-        final AndDescr and = (AndDescr) eventE.getConstraint();
-
-        ExprConstraintDescr fcdE = (ExprConstraintDescr) and.getDescrs().get( 0 );
-        assertEquals( "before",
-                      fcdE.getExpression() );
-
-        fcdE = (ExprConstraintDescr) and.getDescrs().get( 1 );
-        assertEquals( "after",
+        ExprConstraintDescr fcdE = (ExprConstraintDescr) eventE.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this not before[1, 10] $b || after[1, 10] $c && this after[1, 5] $d",
                       fcdE.getExpression() );
     }
 
