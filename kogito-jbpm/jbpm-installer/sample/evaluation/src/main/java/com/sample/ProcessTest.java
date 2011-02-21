@@ -28,6 +28,7 @@ public class ProcessTest {
 			// start a new process instance
 			Map<String, Object> params = new HashMap<String, Object>();
 			params.put("employee", "krisv");
+			params.put("reason", "Yearly performance evaluation");
 			ksession.startProcess("com.sample.evaluation", params);
 			logger.close();
 		} catch (Throwable t) {
