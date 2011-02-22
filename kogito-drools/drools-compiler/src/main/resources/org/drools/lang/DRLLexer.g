@@ -3,6 +3,12 @@ lexer grammar DRLLexer;
 options { 
     language = Java;
 }
+
+tokens {
+    OPERATOR;
+    NEG_OPERATOR;
+    SHIFT_EXPR;
+}
   
 @header {
     package org.drools.lang;

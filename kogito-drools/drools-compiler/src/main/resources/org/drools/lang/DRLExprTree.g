@@ -1,9 +1,9 @@
-parser grammar DRLExpressions;
-              
+tree grammar DRLExprTree;
+
 options { 
     language = Java;
     tokenVocab = DRLLexer;
-    output = AST;
+    ASTLabelType=CommonTree;
 }
   
 @header {
@@ -19,48 +19,26 @@ options {
 @members {
     private ParserHelper helper;
                                                     
-    public DRLExpressions(TokenStream input,
-                          RecognizerSharedState state,
-                          ParserHelper helper ) {
-        this( input,
-              state );
-        this.helper = helper;
-    }
-
     public ParserHelper getHelper()                           { return helper; }
     public boolean hasErrors()                                { return helper.hasErrors(); }
     public List<DroolsParserException> getErrors()            { return helper.getErrors(); }
     public List<String> getErrorMessages()                    { return helper.getErrorMessages(); }
     public void enableEditorInterface()                       {        helper.enableEditorInterface(); }
     public void disableEditorInterface()                      {        helper.disableEditorInterface(); }
-    public LinkedList<DroolsSentence> getEditorInterface()    { return helper.getEditorInterface(); }
     public void reportError(RecognitionException ex)          {        helper.reportError( ex ); }
     public void emitErrorMessage(String msg)                  {}
-    
-    private boolean buildConstraint;
-    public void setBuildConstraint( boolean build ) { this.buildConstraint = build; }
-    public boolean isBuildConstraint() { return this.buildConstraint; }
-
-}
-
-// Alter code generation so catch-clauses get replace with
-// this action.
-@rulecatch {
-catch (RecognitionException re) {
-    throw re;
-}
 }
 
 // --------------------------------------------------------
 //                      GENERAL RULES
 // --------------------------------------------------------
 literal
-    :	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
-    |	DECIMAL 		{	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
-    |	HEX     		{	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
-    |	FLOAT   		{	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
-    |	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
-    |	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+    :	STRING     
+    |	DECIMAL 
+    |	HEX     
+    |	FLOAT   
+    |	BOOL    
+    |	NULL    
     ;
 
 typeList
@@ -68,8 +46,8 @@ typeList
     ;
 
 type
-    : 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-    |	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
+    : 	primitiveType (LEFT_SQUARE RIGHT_SQUARE)*
+    |	ID typeArguments? (DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
     ;
 
 typeArguments
@@ -84,46 +62,19 @@ typeArgument
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
-// the following dymmy rule is to force the AT symbol to be
-// included in the follow set of the expression on the DFAs
-dummy
-    :	expression ( AT | SEMICOLON )
-    ;
-
 // top level entry point for arbitrary expression parsing
 expression
-    :	conditionalExpression ((assignmentOperator) => assignmentOperator^ expression)?
+    :	^(assignmentOperator expression expression)
+    |   ^(QUESTION expression expression expression )
+    |   ^(DOUBLE_PIPE expression expression )
+    |   ^(DOUBLE_AMPER expression expression )
+    |   ^(PIPE expression expression )
+    |   ^(XOR expression expression )
+    |   ^(AMPER expression expression )
+    |   ^(PIPE expression expression )
+    |   ^(EQUALS expression expression )
+    |   ^(NOT_EQUALS expression expression )
     ;
-
-conditionalExpression
-  : conditionalOrExpression ( QUESTION^ expression COLON! expression )?
-    ;
-
-conditionalOrExpression
-  : conditionalAndExpression ( DOUBLE_PIPE^ conditionalAndExpression )*
-    ;
-
-conditionalAndExpression 
-  : inclusiveOrExpression ( DOUBLE_AMPER^ inclusiveOrExpression )*
-    ;
-
-inclusiveOrExpression
-  : exclusiveOrExpression ( PIPE^ exclusiveOrExpression )*
-    ;
-
-exclusiveOrExpression
-  : andExpression ( XOR^ andExpression )*
-    ;
-
-andExpression 
-  : andOrRestriction ( AMPER^ andOrRestriction )*
-    ;
-    
-andOrRestriction
-  	: (ee=equalityExpression -> $ee) 
-  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpression )
-  	  -> ^($lop $andOrRestriction ^($op {$ee.se1} $se2)))*	
-  	;    
 
 equalityExpression returns [CommonTree se1]
 @after { $se1 = $ie.se1; }
@@ -137,10 +88,7 @@ instanceOfExpression returns [CommonTree se1]
 
 inExpression returns [CommonTree se1]
 @after { $se1 = $rel.se1; }
-  : (rel=relationalExpression -> relationalExpression)
-    ( not_key in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN -> ^(NEG_OPERATOR[$in.text] $rel expression+)
-    | in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN -> ^($in $rel expression+)
-    )?
+  : rel=relationalExpression (not_key? in_key^ LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN )?
   ;
 
 relationalExpression returns [CommonTree se1]
@@ -166,8 +114,7 @@ relationalOp
     ;
 
 shiftExpression
-  : ad1=additiveExpression ( (shiftOp)=>so=shiftOp ad2=additiveExpression )*
-    -> ^(SHIFT_EXPR $ad1 ($so $ad2)* )
+  : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
     ;
 
 shiftOp
@@ -358,7 +305,7 @@ super_key
     ;
 
 instanceof_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID -> OPERATOR[$id]
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
     ;
 
 boolean_key
@@ -414,15 +361,17 @@ not_key
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID -> OPERATOR[$id]
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}?=> id=ID -> OPERATOR[$id]
+  :      {(helper.isPluggableEvaluator(false))}?=> id=ID
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}?=> id=ID  -> NEG_OPERATOR[$id]
+  :      {(helper.isPluggableEvaluator(true))}?=> id=ID 
   ;
+
+
 
 
