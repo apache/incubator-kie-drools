@@ -8,6 +8,9 @@ tokens {
     OPERATOR;
     NEG_OPERATOR;
     SHIFT_EXPR;
+    SHL_ASSIGN;
+    SHRB_ASSIGN;
+    SHR_ASSIGN;
 }
   
 @header {

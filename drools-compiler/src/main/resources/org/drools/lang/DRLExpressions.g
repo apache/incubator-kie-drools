@@ -121,7 +121,7 @@ andExpression
     
 andOrRestriction
   	: (ee=equalityExpression -> $ee) 
-  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpression )
+  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpressionTk )
   	  -> ^($lop $andOrRestriction ^($op {$ee.se1} $se2)))*	
   	;    
 
@@ -145,7 +145,7 @@ inExpression returns [CommonTree se1]
 
 relationalExpression returns [CommonTree se1]
 @after { $se1 = (CommonTree) $se.tree; }
-  : se=shiftExpression ( (relationalOp)=> relationalOp^ shiftExpression )*
+  : se=shiftExpressionTk ( (relationalOp)=> relationalOp^ shiftExpressionTk )*
   ;
 
 operator
@@ -164,10 +164,13 @@ relationalOp
     | operator_key^  ((squareArguments)=> squareArguments)?
     )
     ;
+    
+shiftExpressionTk
+    : se=shiftExpression -> SHIFT_EXPR[$se.text]
+    ;
 
 shiftExpression
-  : ad1=additiveExpression ( (shiftOp)=>so=shiftOp ad2=additiveExpression )*
-    -> ^(SHIFT_EXPR $ad1 ($so $ad2)* )
+  : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
     ;
 
 shiftOp
@@ -341,9 +344,9 @@ assignmentOperator
   |   OR_ASSIGN
   |   XOR_ASSIGN
   |   MOD_ASSIGN
-  |   LESS LESS EQUALS_ASSIGN
-  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN
-  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN
+  |   LESS LESS EQUALS_ASSIGN -> SHL_ASSIGN["<<="]
+  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN  -> SHRB_ASSIGN[">>>="]
+  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN  -> SHR_ASSIGN[">>="]
     ;
 
 // --------------------------------------------------------
