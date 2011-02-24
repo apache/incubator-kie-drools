@@ -34,6 +34,12 @@ options {
 // --------------------------------------------------------
 //                      EXPRESSIONS
 // --------------------------------------------------------
+constraint returns [ConstraintConnectiveDescr root]
+@init { $root = ConstraintConnectiveDescr.newAnd(); }
+@after { $root.addOrMerge( $ex.result ); }
+    :  ex=expression  
+    ;
+
 expression returns [BaseDescr result]
 @init { BaseDescr descr = null; }
 @after { $result = descr; }
@@ -77,7 +83,7 @@ expression returns [BaseDescr result]
        { descr = new RelationalExprDescr( $ao.start.getText(), $p1.result, $p2.result ); }
     |   ^(QUESTION expression expression expression )
     |   se=SHIFT_EXPR
-       { descr = new EvalDescr( $se.text ); }
+       { descr = new AtomicExprDescr( $se.text ); }
     ;
 
 assignmentOperator
