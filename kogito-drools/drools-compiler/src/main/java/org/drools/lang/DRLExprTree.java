@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g 2011-02-22 21:41:49
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g 2011-02-23 18:34:52
 
     package org.drools.lang;
 
@@ -123,8 +123,42 @@ public class DRLExprTree extends TreeParser {
 
 
 
+    // $ANTLR start "constraint"
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:37:1: constraint returns [ConstraintConnectiveDescr root] : ex= expression ;
+    public final ConstraintConnectiveDescr constraint() throws RecognitionException {
+        ConstraintConnectiveDescr root = null;
+
+        BaseDescr ex = null;
+
+
+         root = ConstraintConnectiveDescr.newAnd(); 
+        try {
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:40:5: (ex= expression )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:40:8: ex= expression
+            {
+            pushFollow(FOLLOW_expression_in_constraint87);
+            ex=expression();
+
+            state._fsp--;
+
+
+            }
+
+             root.addOrMerge( ex ); 
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+        }
+        return root;
+    }
+    // $ANTLR end "constraint"
+
+
     // $ANTLR start "expression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:37:1: expression returns [BaseDescr result] : ( ^(op= DOUBLE_PIPE p1= expression p2= expression ) | ^( DOUBLE_AMPER p1= expression p2= expression ) | ^( PIPE p1= expression p2= expression ) | ^( XOR p1= expression p2= expression ) | ^( AMPER p1= expression p2= expression ) | ^( EQUALS p1= expression p2= expression ) | ^( NOT_EQUALS p1= expression p2= expression ) | ^( LESS_EQUALS p1= expression p2= expression ) | ^( GREATER_EQUALS p1= expression p2= expression ) | ^( LESS p1= expression p2= expression ) | ^( GREATER p1= expression p2= expression ) | ^(op= OPERATOR p1= expression p2= expression ) | ^(op= NEG_OPERATOR p1= expression p2= expression ) | ^(ao= assignmentOperator p1= expression p2= expression ) | ^( QUESTION expression expression expression ) | se= SHIFT_EXPR );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:43:1: expression returns [BaseDescr result] : ( ^(op= DOUBLE_PIPE p1= expression p2= expression ) | ^( DOUBLE_AMPER p1= expression p2= expression ) | ^( PIPE p1= expression p2= expression ) | ^( XOR p1= expression p2= expression ) | ^( AMPER p1= expression p2= expression ) | ^( EQUALS p1= expression p2= expression ) | ^( NOT_EQUALS p1= expression p2= expression ) | ^( LESS_EQUALS p1= expression p2= expression ) | ^( GREATER_EQUALS p1= expression p2= expression ) | ^( LESS p1= expression p2= expression ) | ^( GREATER p1= expression p2= expression ) | ^(op= OPERATOR p1= expression p2= expression ) | ^(op= NEG_OPERATOR p1= expression p2= expression ) | ^(ao= assignmentOperator p1= expression p2= expression ) | ^( QUESTION expression expression expression ) | se= SHIFT_EXPR );
     public final BaseDescr expression() throws RecognitionException {
         BaseDescr result = null;
 
@@ -139,7 +173,7 @@ public class DRLExprTree extends TreeParser {
 
          BaseDescr descr = null; 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:40:5: ( ^(op= DOUBLE_PIPE p1= expression p2= expression ) | ^( DOUBLE_AMPER p1= expression p2= expression ) | ^( PIPE p1= expression p2= expression ) | ^( XOR p1= expression p2= expression ) | ^( AMPER p1= expression p2= expression ) | ^( EQUALS p1= expression p2= expression ) | ^( NOT_EQUALS p1= expression p2= expression ) | ^( LESS_EQUALS p1= expression p2= expression ) | ^( GREATER_EQUALS p1= expression p2= expression ) | ^( LESS p1= expression p2= expression ) | ^( GREATER p1= expression p2= expression ) | ^(op= OPERATOR p1= expression p2= expression ) | ^(op= NEG_OPERATOR p1= expression p2= expression ) | ^(ao= assignmentOperator p1= expression p2= expression ) | ^( QUESTION expression expression expression ) | se= SHIFT_EXPR )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:46:5: ( ^(op= DOUBLE_PIPE p1= expression p2= expression ) | ^( DOUBLE_AMPER p1= expression p2= expression ) | ^( PIPE p1= expression p2= expression ) | ^( XOR p1= expression p2= expression ) | ^( AMPER p1= expression p2= expression ) | ^( EQUALS p1= expression p2= expression ) | ^( NOT_EQUALS p1= expression p2= expression ) | ^( LESS_EQUALS p1= expression p2= expression ) | ^( GREATER_EQUALS p1= expression p2= expression ) | ^( LESS p1= expression p2= expression ) | ^( GREATER p1= expression p2= expression ) | ^(op= OPERATOR p1= expression p2= expression ) | ^(op= NEG_OPERATOR p1= expression p2= expression ) | ^(ao= assignmentOperator p1= expression p2= expression ) | ^( QUESTION expression expression expression ) | se= SHIFT_EXPR )
             int alt1=16;
             switch ( input.LA(1) ) {
             case DOUBLE_PIPE:
@@ -242,17 +276,17 @@ public class DRLExprTree extends TreeParser {
 
             switch (alt1) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:40:9: ^(op= DOUBLE_PIPE p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:46:9: ^(op= DOUBLE_PIPE p1= expression p2= expression )
                     {
-                    op=(CommonTree)match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_expression89); 
+                    op=(CommonTree)match(input,DOUBLE_PIPE,FOLLOW_DOUBLE_PIPE_in_expression125); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression93);
+                    pushFollow(FOLLOW_expression_in_expression129);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression97);
+                    pushFollow(FOLLOW_expression_in_expression133);
                     p2=expression();
 
                     state._fsp--;
@@ -266,17 +300,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:44:9: ^( DOUBLE_AMPER p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:50:9: ^( DOUBLE_AMPER p1= expression p2= expression )
                     {
-                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_expression121); 
+                    match(input,DOUBLE_AMPER,FOLLOW_DOUBLE_AMPER_in_expression157); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression125);
+                    pushFollow(FOLLOW_expression_in_expression161);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression129);
+                    pushFollow(FOLLOW_expression_in_expression165);
                     p2=expression();
 
                     state._fsp--;
@@ -290,17 +324,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:48:9: ^( PIPE p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:54:9: ^( PIPE p1= expression p2= expression )
                     {
-                    match(input,PIPE,FOLLOW_PIPE_in_expression151); 
+                    match(input,PIPE,FOLLOW_PIPE_in_expression187); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression155);
+                    pushFollow(FOLLOW_expression_in_expression191);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression159);
+                    pushFollow(FOLLOW_expression_in_expression195);
                     p2=expression();
 
                     state._fsp--;
@@ -314,17 +348,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:52:9: ^( XOR p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:58:9: ^( XOR p1= expression p2= expression )
                     {
-                    match(input,XOR,FOLLOW_XOR_in_expression181); 
+                    match(input,XOR,FOLLOW_XOR_in_expression217); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression185);
+                    pushFollow(FOLLOW_expression_in_expression221);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression189);
+                    pushFollow(FOLLOW_expression_in_expression225);
                     p2=expression();
 
                     state._fsp--;
@@ -338,17 +372,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 5 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:56:9: ^( AMPER p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:62:9: ^( AMPER p1= expression p2= expression )
                     {
-                    match(input,AMPER,FOLLOW_AMPER_in_expression211); 
+                    match(input,AMPER,FOLLOW_AMPER_in_expression247); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression215);
+                    pushFollow(FOLLOW_expression_in_expression251);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression219);
+                    pushFollow(FOLLOW_expression_in_expression255);
                     p2=expression();
 
                     state._fsp--;
@@ -362,17 +396,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 6 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:60:9: ^( EQUALS p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:66:9: ^( EQUALS p1= expression p2= expression )
                     {
-                    match(input,EQUALS,FOLLOW_EQUALS_in_expression241); 
+                    match(input,EQUALS,FOLLOW_EQUALS_in_expression277); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression245);
+                    pushFollow(FOLLOW_expression_in_expression281);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression249);
+                    pushFollow(FOLLOW_expression_in_expression285);
                     p2=expression();
 
                     state._fsp--;
@@ -384,17 +418,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 7 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:62:9: ^( NOT_EQUALS p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:68:9: ^( NOT_EQUALS p1= expression p2= expression )
                     {
-                    match(input,NOT_EQUALS,FOLLOW_NOT_EQUALS_in_expression271); 
+                    match(input,NOT_EQUALS,FOLLOW_NOT_EQUALS_in_expression307); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression275);
+                    pushFollow(FOLLOW_expression_in_expression311);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression279);
+                    pushFollow(FOLLOW_expression_in_expression315);
                     p2=expression();
 
                     state._fsp--;
@@ -406,17 +440,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 8 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:64:9: ^( LESS_EQUALS p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:70:9: ^( LESS_EQUALS p1= expression p2= expression )
                     {
-                    match(input,LESS_EQUALS,FOLLOW_LESS_EQUALS_in_expression301); 
+                    match(input,LESS_EQUALS,FOLLOW_LESS_EQUALS_in_expression337); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression305);
+                    pushFollow(FOLLOW_expression_in_expression341);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression309);
+                    pushFollow(FOLLOW_expression_in_expression345);
                     p2=expression();
 
                     state._fsp--;
@@ -428,17 +462,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 9 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:66:9: ^( GREATER_EQUALS p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:72:9: ^( GREATER_EQUALS p1= expression p2= expression )
                     {
-                    match(input,GREATER_EQUALS,FOLLOW_GREATER_EQUALS_in_expression331); 
+                    match(input,GREATER_EQUALS,FOLLOW_GREATER_EQUALS_in_expression367); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression335);
+                    pushFollow(FOLLOW_expression_in_expression371);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression339);
+                    pushFollow(FOLLOW_expression_in_expression375);
                     p2=expression();
 
                     state._fsp--;
@@ -450,17 +484,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 10 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:68:9: ^( LESS p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:74:9: ^( LESS p1= expression p2= expression )
                     {
-                    match(input,LESS,FOLLOW_LESS_in_expression361); 
+                    match(input,LESS,FOLLOW_LESS_in_expression397); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression365);
+                    pushFollow(FOLLOW_expression_in_expression401);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression369);
+                    pushFollow(FOLLOW_expression_in_expression405);
                     p2=expression();
 
                     state._fsp--;
@@ -472,17 +506,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 11 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:70:9: ^( GREATER p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:76:9: ^( GREATER p1= expression p2= expression )
                     {
-                    match(input,GREATER,FOLLOW_GREATER_in_expression391); 
+                    match(input,GREATER,FOLLOW_GREATER_in_expression427); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression395);
+                    pushFollow(FOLLOW_expression_in_expression431);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression399);
+                    pushFollow(FOLLOW_expression_in_expression435);
                     p2=expression();
 
                     state._fsp--;
@@ -494,17 +528,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 12 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:72:9: ^(op= OPERATOR p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:78:9: ^(op= OPERATOR p1= expression p2= expression )
                     {
-                    op=(CommonTree)match(input,OPERATOR,FOLLOW_OPERATOR_in_expression423); 
+                    op=(CommonTree)match(input,OPERATOR,FOLLOW_OPERATOR_in_expression459); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression427);
+                    pushFollow(FOLLOW_expression_in_expression463);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression431);
+                    pushFollow(FOLLOW_expression_in_expression467);
                     p2=expression();
 
                     state._fsp--;
@@ -516,17 +550,17 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 13 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:74:9: ^(op= NEG_OPERATOR p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:80:9: ^(op= NEG_OPERATOR p1= expression p2= expression )
                     {
-                    op=(CommonTree)match(input,NEG_OPERATOR,FOLLOW_NEG_OPERATOR_in_expression455); 
+                    op=(CommonTree)match(input,NEG_OPERATOR,FOLLOW_NEG_OPERATOR_in_expression491); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression459);
+                    pushFollow(FOLLOW_expression_in_expression495);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression463);
+                    pushFollow(FOLLOW_expression_in_expression499);
                     p2=expression();
 
                     state._fsp--;
@@ -538,21 +572,21 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 14 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:76:8: ^(ao= assignmentOperator p1= expression p2= expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:82:8: ^(ao= assignmentOperator p1= expression p2= expression )
                     {
-                    pushFollow(FOLLOW_assignmentOperator_in_expression486);
+                    pushFollow(FOLLOW_assignmentOperator_in_expression522);
                     ao=assignmentOperator();
 
                     state._fsp--;
 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression490);
+                    pushFollow(FOLLOW_expression_in_expression526);
                     p1=expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression494);
+                    pushFollow(FOLLOW_expression_in_expression530);
                     p2=expression();
 
                     state._fsp--;
@@ -564,22 +598,22 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 15 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:78:9: ^( QUESTION expression expression expression )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:84:9: ^( QUESTION expression expression expression )
                     {
-                    match(input,QUESTION,FOLLOW_QUESTION_in_expression519); 
+                    match(input,QUESTION,FOLLOW_QUESTION_in_expression555); 
 
                     match(input, Token.DOWN, null); 
-                    pushFollow(FOLLOW_expression_in_expression521);
+                    pushFollow(FOLLOW_expression_in_expression557);
                     expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression523);
+                    pushFollow(FOLLOW_expression_in_expression559);
                     expression();
 
                     state._fsp--;
 
-                    pushFollow(FOLLOW_expression_in_expression525);
+                    pushFollow(FOLLOW_expression_in_expression561);
                     expression();
 
                     state._fsp--;
@@ -590,10 +624,10 @@ public class DRLExprTree extends TreeParser {
                     }
                     break;
                 case 16 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:79:9: se= SHIFT_EXPR
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:85:9: se= SHIFT_EXPR
                     {
-                    se=(CommonTree)match(input,SHIFT_EXPR,FOLLOW_SHIFT_EXPR_in_expression539); 
-                     descr = new EvalDescr( (se!=null?se.getText():null) ); 
+                    se=(CommonTree)match(input,SHIFT_EXPR,FOLLOW_SHIFT_EXPR_in_expression575); 
+                     descr = new AtomicExprDescr( (se!=null?se.getText():null) ); 
 
                     }
                     break;
@@ -615,13 +649,13 @@ public class DRLExprTree extends TreeParser {
     };
 
     // $ANTLR start "assignmentOperator"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:83:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | SHL_ASSIGN | SHRB_ASSIGN | SHR_ASSIGN );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:89:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | SHL_ASSIGN | SHRB_ASSIGN | SHR_ASSIGN );
     public final DRLExprTree.assignmentOperator_return assignmentOperator() throws RecognitionException {
         DRLExprTree.assignmentOperator_return retval = new DRLExprTree.assignmentOperator_return();
         retval.start = input.LT(1);
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:84:5: ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | SHL_ASSIGN | SHRB_ASSIGN | SHR_ASSIGN )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:90:5: ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | SHL_ASSIGN | SHRB_ASSIGN | SHR_ASSIGN )
             // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExprTree.g:
             {
             if ( (input.LA(1)>=SHL_ASSIGN && input.LA(1)<=SHR_ASSIGN)||(input.LA(1)>=PLUS_ASSIGN && input.LA(1)<=MOD_ASSIGN)||input.LA(1)==EQUALS_ASSIGN ) {
@@ -652,53 +686,54 @@ public class DRLExprTree extends TreeParser {
 
  
 
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_expression89 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression93 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression97 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_expression121 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression125 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression129 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_PIPE_in_expression151 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression155 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression159 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_XOR_in_expression181 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression185 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression189 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_AMPER_in_expression211 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression215 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression219 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_EQUALS_in_expression241 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression245 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression249 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_NOT_EQUALS_in_expression271 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression275 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression279 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_EQUALS_in_expression301 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression305 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression309 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_EQUALS_in_expression331 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression335 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression339 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_LESS_in_expression361 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression365 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression369 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_GREATER_in_expression391 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression395 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression399 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_OPERATOR_in_expression423 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression427 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression431 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_NEG_OPERATOR_in_expression455 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression459 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression463 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_assignmentOperator_in_expression486 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression490 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression494 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_QUESTION_in_expression519 = new BitSet(new long[]{0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expression521 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression523 = new BitSet(new long[]{0x73807F07F80003F0L});
-    public static final BitSet FOLLOW_expression_in_expression525 = new BitSet(new long[]{0x0000000000000008L});
-    public static final BitSet FOLLOW_SHIFT_EXPR_in_expression539 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_constraint87 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_expression125 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression129 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression133 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_expression157 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression161 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression165 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_PIPE_in_expression187 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression191 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression195 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_XOR_in_expression217 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression221 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression225 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_AMPER_in_expression247 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression251 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression255 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_EQUALS_in_expression277 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression281 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression285 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_NOT_EQUALS_in_expression307 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression311 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression315 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_EQUALS_in_expression337 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression341 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression345 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_EQUALS_in_expression367 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression371 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression375 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_LESS_in_expression397 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression401 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression405 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_GREATER_in_expression427 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression431 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression435 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_OPERATOR_in_expression459 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression463 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression467 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_NEG_OPERATOR_in_expression491 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression495 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression499 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_assignmentOperator_in_expression522 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression526 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression530 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_QUESTION_in_expression555 = new BitSet(new long[]{0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expression557 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression559 = new BitSet(new long[]{0x73807F07F80003F0L});
+    public static final BitSet FOLLOW_expression_in_expression561 = new BitSet(new long[]{0x0000000000000008L});
+    public static final BitSet FOLLOW_SHIFT_EXPR_in_expression575 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_assignmentOperator0 = new BitSet(new long[]{0x0000000000000002L});
 
 }
