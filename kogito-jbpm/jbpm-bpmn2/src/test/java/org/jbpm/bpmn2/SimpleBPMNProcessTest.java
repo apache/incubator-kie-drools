@@ -1112,15 +1112,12 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
         KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
-
             public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
                 
             }
-
             public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
                 assertEquals("hello world", workItem.getParameter("coId"));
-            }
-            
+            }            
         });
         Document document = DocumentBuilderFactory.newInstance()
         .newDocumentBuilder().parse(new ByteArrayInputStream(
@@ -1341,6 +1338,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
             
         });
         ProcessInstance processInstance = ksession.startProcess("process", null);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
