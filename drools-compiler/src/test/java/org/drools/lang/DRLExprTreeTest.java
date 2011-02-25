@@ -33,6 +33,7 @@ import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.ConnectiveType;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.RelationalExprDescr;
 
@@ -40,7 +41,7 @@ import org.drools.lang.descr.RelationalExprDescr;
  * DRLExprTreeTest
  */
 public class DRLExprTreeTest extends TestCase {
-    
+
     DrlExprParser parser;
 
     protected void setUp() throws Exception {
@@ -59,17 +60,23 @@ public class DRLExprTreeTest extends TestCase {
         ConstraintConnectiveDescr result = parser.parse( source );
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
-        
-        assertEquals( 1, result.getDescrs().size());
-        
+
+        assertEquals( ConnectiveType.AND,
+                      result.getConnective() );
+        assertEquals( 1,
+                      result.getDescrs().size() );
+
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">", expr.getOperator() );
+        assertEquals( ">",
+                      expr.getOperator() );
 
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
-        
-        assertEquals( "a", left.getExpression() );
-        assertEquals( "b", right.getExpression() );
+
+        assertEquals( "a",
+                      left.getExpression() );
+        assertEquals( "b",
+                      right.getExpression() );
     }
 
     public void testAndConnective() throws Exception {
@@ -78,21 +85,30 @@ public class DRLExprTreeTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        assertEquals( 2, result.getDescrs().size());
-        
+        assertEquals( ConnectiveType.AND,
+                      result.getConnective() );
+        assertEquals( 2,
+                      result.getDescrs().size() );
+
         RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
-        assertEquals( ">", expr.getOperator() );
+        assertEquals( ">",
+                      expr.getOperator() );
         AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
         AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "a", left.getExpression() );
-        assertEquals( "b", right.getExpression() );
+        assertEquals( "a",
+                      left.getExpression() );
+        assertEquals( "b",
+                      right.getExpression() );
 
         expr = (RelationalExprDescr) result.getDescrs().get( 1 );
-        assertEquals( "!=", expr.getOperator() );
+        assertEquals( "!=",
+                      expr.getOperator() );
         left = (AtomicExprDescr) expr.getLeft();
         right = (AtomicExprDescr) expr.getRight();
-        assertEquals( "10", left.getExpression() );
-        assertEquals( "20", right.getExpression() );
+        assertEquals( "10",
+                      left.getExpression() );
+        assertEquals( "20",
+                      right.getExpression() );
     }
 
     public void testConnective2() throws Exception {
@@ -101,19 +117,47 @@ public class DRLExprTreeTest extends TestCase {
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
-        System.out.println( result );
+        assertEquals( ConnectiveType.AND,
+                      result.getConnective() );
+        assertEquals( 2,
+                      result.getDescrs().size() );
 
-    }
+        ConstraintConnectiveDescr or = (ConstraintConnectiveDescr) result.getDescrs().get( 0 );
+        assertEquals( ConnectiveType.OR,
+                      or.getConnective() );
+        assertEquals( 2,
+                      or.getDescrs().size() );
+        
+        RelationalExprDescr expr = (RelationalExprDescr) or.getDescrs().get( 0 );
+        assertEquals( ">",
+                      expr.getOperator() );
+        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
+        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
+        assertEquals( "a",
+                      left.getExpression() );
+        assertEquals( "b",
+                      right.getExpression() );
 
-    private void assertEqualsIgnoreWhitespace( final String expected,
-                                               final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
+        expr = (RelationalExprDescr) or.getDescrs().get( 1 );
+        assertEquals( "!=",
+                      expr.getOperator() );
+        left = (AtomicExprDescr) expr.getLeft();
+        right = (AtomicExprDescr) expr.getRight();
+        assertEquals( "10",
+                      left.getExpression() );
+        assertEquals( "20",
+                      right.getExpression() );
 
-        assertEquals( cleanExpected,
-                      cleanActual );
+        expr = (RelationalExprDescr) result.getDescrs().get( 1 );
+        assertEquals( "==",
+                      expr.getOperator() );
+        left = (AtomicExprDescr) expr.getLeft();
+        right = (AtomicExprDescr) expr.getRight();
+        assertEquals( "someMethod(10)",
+                      left.getExpression() );
+        assertEquals( "20",
+                      right.getExpression() );
+
     }
 
 }
