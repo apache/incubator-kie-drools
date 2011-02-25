@@ -972,6 +972,23 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
 	}
+	
+
+	public void testXORGateway() throws Exception {
+	    KnowledgeBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
+	    StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+	    Document document = DocumentBuilderFactory.newInstance()
+	    .newDocumentBuilder().parse(new ByteArrayInputStream(
+	            "<instanceMetadata><user approved=\"false\" /></instanceMetadata>".getBytes()));
+	    Map<String, Object> params = new HashMap<String, Object>();
+	    params.put("instanceMetadata", document);
+	    params.put("startMessage", DocumentBuilderFactory.newInstance()
+	            .newDocumentBuilder().parse(new ByteArrayInputStream(
+	                    "<task subject='foobar2'/>".getBytes())).getFirstChild());
+	    ProcessInstance processInstance = ksession.startProcess("process", params);
+	    assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
     
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
