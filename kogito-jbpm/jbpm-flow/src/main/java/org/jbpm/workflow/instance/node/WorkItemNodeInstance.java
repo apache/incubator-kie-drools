@@ -22,22 +22,36 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
+
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.definition.process.Node;
 import org.drools.process.core.Work;
+import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
-import org.drools.runtime.process.WorkItem;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.XPATHExpressionModifier;
+import org.jbpm.workflow.core.node.Assignment;
+import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.mvel2.MVEL;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Runtime counterpart of a work item node.
@@ -110,34 +124,94 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             triggerCompleted();
         }
     	this.workItemId = workItem.getId();
-    }
-    
+    }    
+
     protected WorkItem createWorkItem(WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
         workItem = new WorkItemImpl();
-        ((org.drools.process.instance.WorkItem) workItem).setName(work.getName());
-        ((org.drools.process.instance.WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
-        ((org.drools.process.instance.WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
-        for (Iterator<Map.Entry<String, String>> iterator = workItemNode.getInMappings().entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<String, String> mapping = iterator.next();
-            Object parameterValue = null;
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
-            if (variableScopeInstance != null) {
-            	parameterValue = variableScopeInstance.getVariable(mapping.getValue());
-            } else {
-            	try {
-            		parameterValue = MVEL.eval(mapping.getValue(), new NodeInstanceResolverFactory(this));
-            	} catch (Throwable t) {
-	                System.err.println("Could not find variable scope for variable " + mapping.getValue());
-	                System.err.println("when trying to execute Work Item " + work.getName());
-	                System.err.println("Continuing without setting parameter.");
-            	}
-            }
-            if (parameterValue != null) {
-            	((org.drools.process.instance.WorkItem) workItem).setParameter(mapping.getKey(), parameterValue);
-            }
+        ((WorkItem) workItem).setName(work.getName());
+        ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
+        ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
+        for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext(); ) {
+        	DataAssociation association = iterator.next();
+        	if(association.getAssignments() == null) {
+        		Object parameterValue = null;
+        		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+        		resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
+        		if (variableScopeInstance != null) {
+        			parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
+        		} else {
+        			try {
+        				parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
+        			} catch (Throwable t) {
+        				System.err.println("Could not find variable scope for variable " + association.getSources().get(0));
+        				System.err.println("when trying to execute Work Item " + work.getName());
+        				System.err.println("Continuing without setting parameter.");
+        			}
+        		}
+        		if (parameterValue != null) {
+        			((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
+        		}
+        	}
+        	else {
+        		String source = association.getSources().get(0);
+        		String target = association.getTarget();
+        		try {
+        			for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+        				Assignment assignment = it.next();
+        				String from = assignment.getFrom();
+        				String to = assignment.getTo();
+
+        				XPathFactory factory = XPathFactory.newInstance();
+        				XPath xpathFrom = factory.newXPath();
+
+        				XPathExpression exprFrom 
+        				= xpathFrom.compile(from);
+
+        				XPath xpathTo = factory.newXPath();
+
+        				XPathExpression exprTo 
+        				= xpathTo.compile(to);
+
+        				VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+        				resolveContextInstance(VariableScope.VARIABLE_SCOPE, source);
+
+        				Element targetElem =  null;
+        				
+        				if( ((WorkItem) workItem).getParameter(target) == null) {
+        					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        					Document doc = builder.newDocument();
+        					targetElem = doc.createElement(target);
+                			((WorkItem) workItem).setParameter(target, targetElem);
+        				}
+
+        				targetElem = (Element) ((WorkItem) workItem).getParameter(target);
+        				XPATHExpressionModifier modifier = new XPATHExpressionModifier();
+        				modifier.insertMissingData(to, targetElem);
+
+        				targetElem = ((Element)  exprTo.evaluate(((WorkItem) workItem).getParameter(target), XPathConstants.NODE));
+
+        				NodeList nl = (NodeList)  exprFrom.evaluate(variableScopeInstance.getVariable(source), XPathConstants.NODESET);
+
+        				for( int i =0 ; i<nl.getLength(); i++) {
+        					org.w3c.dom.Node n  = targetElem.getOwnerDocument().importNode(nl.item(i), true);
+        					if(n instanceof Attr) {
+        						targetElem.setAttributeNode((Attr) n);
+        					}
+        					else {
+        						targetElem.appendChild(n);
+        					}
+        				}
+        				
+        			}
+        		}
+        		catch(Exception e) {
+        			e.printStackTrace();
+        			throw new RuntimeException(e);
+        		}
+        	}
         }
+        
         for (Map.Entry<String, Object> entry: workItem.getParameters().entrySet()) {
         	if (entry.getValue() instanceof String) {
         		String s = (String) entry.getValue();
@@ -168,7 +242,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 for (Map.Entry<String, String> replacement: replacements.entrySet()) {
                 	s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
                 }
-                ((org.drools.process.instance.WorkItem) workItem).setParameter(entry.getKey(), s);
+                ((WorkItem) workItem).setParameter(entry.getKey(), s);
         	}
         }
         return workItem;
@@ -178,25 +252,83 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     	this.workItem = workItem;
     	WorkItemNode workItemNode = getWorkItemNode();
     	if (workItemNode != null) {
-	        for (Iterator<Map.Entry<String, String>> iterator = getWorkItemNode().getOutMappings().entrySet().iterator(); iterator.hasNext(); ) {
-	            Map.Entry<String, String> mapping = iterator.next();
-	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getValue());
-	            if (variableScopeInstance != null) {
-	            	Object value = workItem.getResult(mapping.getKey());
-	            	if (value == null) {
-	            		try {
-	                		value = MVEL.eval(mapping.getKey(), new WorkItemResolverFactory(workItem));
-	                	} catch (Throwable t) {
-	                		// do nothing
-	                	}
-	            	}
-	                variableScopeInstance.setVariable(mapping.getValue(), value);
-	            } else {
-	                System.err.println("Could not find variable scope for variable " + mapping.getValue());
-	                System.err.println("when trying to complete Work Item " + workItem.getName());
-	                System.err.println("Continuing without setting variable.");
-	            }
+	        for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext(); ) {
+	        	DataAssociation association = iterator.next();
+	        	if(association.getAssignments() == null) {
+	        		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	        		resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
+	        		if (variableScopeInstance != null) {
+	        			Object value = workItem.getResult(association.getSources().get(0));
+	        			if (value == null) {
+	        				try {
+	        					value = MVEL.eval(association.getSources().get(0), new WorkItemResolverFactory(workItem));
+	        				} catch (Throwable t) {
+	        					// do nothing
+	        				}
+	        			}
+	        			variableScopeInstance.setVariable(association.getTarget(), value);
+	        		} else {
+	        			System.err.println("Could not find variable scope for variable " + association.getTarget());
+	        			System.err.println("when trying to complete Work Item " + workItem.getName());
+	        			System.err.println("Continuing without setting variable.");
+	        		}
+	        	}
+	        	else {
+	        		String source = association.getSources().get(0);
+	        		String target = association.getTarget();
+	        		try {
+	        			for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+	        				Assignment assignment = it.next();
+	        				String from = assignment.getFrom();
+	        				String to = assignment.getTo();
+
+	        				XPathFactory factory = XPathFactory.newInstance();
+	        				XPath xpathFrom = factory.newXPath();
+
+	        				XPathExpression exprFrom 
+	        				= xpathFrom.compile(from);
+
+	        				XPath xpathTo = factory.newXPath();
+
+	        				XPathExpression exprTo 
+	        				= xpathTo.compile(to);
+
+	        				VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+	        				resolveContextInstance(VariableScope.VARIABLE_SCOPE, target);
+
+	        				Element targetElem =  null;
+	        				
+	        				if( variableScopeInstance.getVariable(target) == null) {
+	        					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	        					Document doc = builder.newDocument();
+	        					targetElem = doc.createElement(target);
+	        					variableScopeInstance.setVariable(target, targetElem);
+	        				}
+
+	        				targetElem = (Element) variableScopeInstance.getVariable(target);
+	        				XPATHExpressionModifier modifier = new XPATHExpressionModifier();
+	        				modifier.insertMissingData(to, targetElem);
+
+	        				targetElem = ((Element)  exprTo.evaluate(variableScopeInstance.getVariable(target), XPathConstants.NODE));
+
+	        				NodeList nl = (NodeList)  exprFrom.evaluate(workItem.getResult(source), XPathConstants.NODESET);
+
+	        				for( int i =0 ; i<nl.getLength(); i++) {
+	        					org.w3c.dom.Node n  = targetElem.getOwnerDocument().importNode(nl.item(i), true);
+	        					if(n instanceof Attr) {
+	        						targetElem.setAttributeNode((Attr) n);
+	        					}
+	        					else {
+	        						targetElem.appendChild(n);
+	        					}
+	        				}	        				
+	        			}
+	        		}
+	        		catch(Exception e) {
+	        			e.printStackTrace();
+	        			throw new RuntimeException(e);
+	        		}
+	        	}	        	
 	        }
     	}
         if (isInversionOfControl()) {
@@ -206,7 +338,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             triggerCompleted();
         }
     }
-    
+  
     public void cancel() {
     	WorkItem workItem = getWorkItem();
     	if (workItem != null &&

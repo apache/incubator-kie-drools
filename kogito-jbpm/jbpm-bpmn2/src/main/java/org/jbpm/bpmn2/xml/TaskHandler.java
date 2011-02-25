@@ -18,11 +18,21 @@ package org.jbpm.bpmn2.xml;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.drools.process.core.Work;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.ItemDefinition;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.Assignment;
+import org.jbpm.workflow.core.node.DataAssociation;
+import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
@@ -30,6 +40,9 @@ import org.xml.sax.SAXException;
 
 public class TaskHandler extends AbstractNodeHandler {
     
+	private Map<String, String> dataInputs = new HashMap<String, String>();
+	private Map<String, String> dataOutputs = new HashMap<String, String>();
+
     protected Node createNode(Attributes attrs) {
         return new WorkItemNode();
     }
@@ -47,8 +60,6 @@ public class TaskHandler extends AbstractNodeHandler {
         Work work = new WorkImpl();
         work.setName(name);
     	workItemNode.setWork(work);
-    	Map<String, String> dataInputs = new HashMap<String, String>();
-    	Map<String, String> dataOutputs = new HashMap<String, String>();
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();
@@ -86,18 +97,28 @@ public class TaskHandler extends AbstractNodeHandler {
         	subNode = subNode.getNextSibling();
 		}
     }
-    
+
     protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataInputs) {
 		// sourceRef
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
 		if ("sourceRef".equals(subNode.getNodeName())) {
-    		String from = subNode.getTextContent();
+    		String source = subNode.getTextContent();
     		// targetRef
     		subNode = subNode.getNextSibling();
-    		String to = subNode.getTextContent();
-    		workItemNode.addInMapping(
-				dataInputs.get(to),
-				from);
+    		String target = subNode.getTextContent();
+    		subNode = subNode.getNextSibling();
+    		List<Assignment> assignments = new LinkedList<Assignment>();
+    		while(subNode != null){
+    			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
+    			String from = ssubNode.getTextContent();
+    			String to = ssubNode.getNextSibling().getTextContent();
+    			assignments.add(new Assignment(null, from, to));
+
+        		subNode = subNode.getNextSibling();
+    		}
+    		workItemNode.addInAssociation(new DataAssociation(
+    				source,
+    				dataInputs.get(target), assignments, null));
 		} else {
 			// targetRef
 			String to = subNode.getTextContent();
@@ -112,11 +133,21 @@ public class TaskHandler extends AbstractNodeHandler {
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, WorkItemNode workItemNode, Map<String, String> dataOutputs) {
 		// sourceRef
 		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		String from = subNode.getTextContent();
+		String source = subNode.getTextContent();
 		// targetRef
 		subNode = subNode.getNextSibling();
-		String to = subNode.getTextContent();
-		workItemNode.addOutMapping(dataOutputs.get(from), to);
+		String target = subNode.getTextContent();
+		subNode = subNode.getNextSibling();
+		List<Assignment> assignments = new LinkedList<Assignment>();
+		while(subNode != null){
+			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
+			String from = ssubNode.getTextContent();
+			String to = ssubNode.getNextSibling().getTextContent();
+			assignments.add(new Assignment(null, from, to));
+
+    		subNode = subNode.getNextSibling();
+		}
+		workItemNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, null));
     }
 
     @Override
@@ -124,5 +155,90 @@ public class TaskHandler extends AbstractNodeHandler {
         throw new IllegalArgumentException(
             "Writing out should be handled by the WorkItemNodeHandler");
     }
+    
+    public Object end(final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
+		final Element element = parser.endElementBuilder();
+		Node node = (Node) parser.getCurrent();
+		// determine type of event definition, so the correct type of node
+		// can be generated
+    	handleNode(node, element, uri, localName, parser);
+		boolean found = false;
+		org.w3c.dom.Node xmlNode = element.getFirstChild();
+		while (xmlNode != null) {
+			String nodeName = xmlNode.getNodeName();
+			if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+				// create new timerNode
+				long id = node.getId();
+				ForEachNode forEachNode = new ForEachNode(node);
+				forEachNode.setId(id);
+				forEachNode.setName(node.getName());
+//				forEachNode.addNode(node);
+				forEachNode.setMetaData("UniqueId", ((WorkItemNode) node).getMetaData("UniqueId"));
+//				forEachNode.setMetaData(ProcessHandler.CONNECTIONS, ((WorkItemNode) node).getMetaData(ProcessHandler.CONNECTIONS));
+				forEachNode.setInMapping(((WorkItemNode) node).getInAssociations());
+				forEachNode.setOutMapping(((WorkItemNode) node).getOutAssociations());
+				node = forEachNode;
+				handleForEachNode(node, element, uri, localName, parser);
+				found = true;
+				break;
+			}
+			xmlNode = xmlNode.getNextSibling();
+		}
+		
+		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+		nodeContainer.addNode(node);
+		return node;
+	}
 
+	protected void handleForEachNode(final Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    	ForEachNode forEachNode = (ForEachNode) node;
+    	org.w3c.dom.Node xmlNode = element.getFirstChild();
+        while (xmlNode != null) {
+            String nodeName = xmlNode.getNodeName();
+            if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+            	readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+//        List<SequenceFlow> connections = (List<SequenceFlow>)
+//        forEachNode.getMetaData(ProcessHandler.CONNECTIONS);
+//        ProcessHandler.linkConnections(forEachNode, connections);
+//        ProcessHandler.linkBoundaryEvents(forEachNode);
+    }
+
+	protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        while (subNode != null) {
+            String nodeName = subNode.getNodeName();
+            if ("inputDataItem".equals(nodeName)) {
+            	String variableName = ((Element) subNode).getAttribute("id");
+            	String itemSubjectRef = ((Element) subNode).getAttribute("itemSubjectRef");
+            	DataType dataType = null;
+            	Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
+	            	((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+		        if (itemDefinitions != null) {
+		        	ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
+		        	if (itemDefinition != null) {
+		        		dataType = new ObjectDataType(itemDefinition.getStructureRef());
+		        	}
+		        }
+		        if (dataType == null) {
+		        	dataType = new ObjectDataType("java.lang.Object");
+		        }
+                if (variableName != null && variableName.trim().length() > 0) {
+                	forEachNode.setVariable(variableName, dataType);
+                }
+            }
+            else if("loopDataInput".equals(nodeName)) {
+                String inputVariable = subNode.getFirstChild().getTextContent();
+                if (inputVariable != null && inputVariable.trim().length() > 0) {
+                	forEachNode.setCollectionExpression(dataInputs.get(inputVariable));
+                }
+            }
+            subNode = subNode.getNextSibling();
+        }
+    }
 }

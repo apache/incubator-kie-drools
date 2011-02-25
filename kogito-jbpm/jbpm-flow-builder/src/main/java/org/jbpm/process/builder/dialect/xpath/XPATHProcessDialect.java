@@ -21,9 +21,12 @@ import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
+import org.jbpm.process.builder.dialect.xpath.XPATHActionBuilder;
+import org.jbpm.process.builder.dialect.xpath.XPATHReturnValueEvaluatorBuilder;
 
 public class XPATHProcessDialect implements ProcessDialect {
 
+	private static final ActionBuilder actionBuilder = new XPATHActionBuilder();
 	private static final ReturnValueEvaluatorBuilder returnValueBuilder = new XPATHReturnValueEvaluatorBuilder();
 	
 	public void addProcess(final ProcessBuildContext context) {
@@ -31,11 +34,11 @@ public class XPATHProcessDialect implements ProcessDialect {
 	}
 
 	public ActionBuilder getActionBuilder() {
-		throw new UnsupportedOperationException( "XPATHProcessDialect.getActionBuilder is not supported" );
+		return actionBuilder;
 	}
 
 	public ProcessClassBuilder getProcessClassBuilder() {
-        throw new UnsupportedOperationException( "XPATHLProcessDialect.getProcessClassBuilder is not supported" );
+        throw new UnsupportedOperationException( "MVELProcessDialect.getProcessClassBuilder is not supported" );
 	}
 
 	public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {

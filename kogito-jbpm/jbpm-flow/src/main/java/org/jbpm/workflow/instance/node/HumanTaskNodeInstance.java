@@ -16,7 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.runtime.process.WorkItem;
+import org.drools.process.instance.WorkItem;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.workflow.core.node.HumanTaskNode;

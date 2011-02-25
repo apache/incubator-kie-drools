@@ -2,6 +2,7 @@
   <name>jbpm-workitems</name>
   <comment>jBPM: a Business Process Management (BPM) Suite. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects>
+    <project>jbpm-bpmn2</project>
     <project>jbpm-flow</project>
     <project>jbpm-flow-builder</project>
   </projects>

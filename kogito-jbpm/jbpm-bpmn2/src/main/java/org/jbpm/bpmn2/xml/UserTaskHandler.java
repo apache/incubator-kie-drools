@@ -58,10 +58,10 @@ public class UserTaskHandler extends TaskHandler {
         	String nodeName = xmlNode.getNodeName();
         	if ("ioSpecification".equals(nodeName)) {
         		readIoSpecification(xmlNode, dataInputs, dataOutputs);
-        	} else if ("dataInputAssociation".equals(nodeName)) {
-        		readDataInputAssociation(xmlNode, humanTaskNode, dataInputs);
-        	} else if ("dataOutputAssociation".equals(nodeName)) {
-        		readDataOutputAssociation(xmlNode, humanTaskNode, dataOutputs);
+//        	} else if ("dataInputAssociation".equals(nodeName)) {
+ //       		readDataInputAssociation(xmlNode, humanTaskNode, dataInputs);
+  //      	} else if ("dataOutputAssociation".equals(nodeName)) {
+   //     		readDataOutputAssociation(xmlNode, humanTaskNode, dataOutputs);
         	} else if ("potentialOwner".equals(nodeName)) {
         		owners.add(readPotentialOwner(xmlNode, humanTaskNode));
         	}

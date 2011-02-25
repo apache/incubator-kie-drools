@@ -8,7 +8,9 @@
   <classpathentry kind="var" path="M2_REPO/javax/mail/mail/1.4/mail-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/javax/servlet/servlet-api/2.3/servlet-api-2.3.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.1.3/antlr-runtime-3.1.3.jar"/>
+  <classpathentry kind="var" path="M2_REPO/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr/3.2/antlr-3.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/antlr-runtime/3.2/antlr-runtime-3.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/avalon-framework/avalon-framework/4.1.3/avalon-framework-4.1.3.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-cli/2.0-SNAPSHOT/commons-cli-2.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.0/commons-compress-1.0.jar"/>
@@ -17,24 +19,26 @@
   <classpathentry kind="var" path="M2_REPO/commons-io/commons-io/1.4/commons-io-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-logging/commons-logging/1.1/commons-logging-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/commons-net/commons-net/2.0/commons-net-2.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.2.0.SNAPSHOT/drools-api-5.2.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-api/5.2.0.SNAPSHOT/drools-api-5.2.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.2.0.SNAPSHOT/drools-compiler-5.2.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-compiler/5.2.0.SNAPSHOT/drools-compiler-5.2.0.SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.2.0.SNAPSHOT/drools-core-5.2.0.SNAPSHOT.jar" sourcepath="M2_REPO/org/drools/drools-core/5.2.0.SNAPSHOT/drools-core-5.2.0.SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-api/5.2.0.M1/drools-api-5.2.0.M1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-compiler/5.2.0.M1/drools-compiler-5.2.0.M1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/drools/drools-core/5.2.0.M1/drools-core-5.2.0.M1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jdt/core/compiler/ecj/3.5.1/ecj-3.5.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/ftpserver/ftplet-api/1.0.4/ftplet-api-1.0.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/ftpserver/ftpserver-core/1.0.4/ftpserver-core-1.0.4.jar"/>
+  <classpathentry kind="src" path="/jbpm-bpmn2"/>
   <classpathentry kind="src" path="/jbpm-flow"/>
   <classpathentry kind="src" path="/jbpm-flow-builder"/>
   <classpathentry kind="var" path="M2_REPO/jdom/jdom/1.0/jdom-1.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.8.1/junit-4.8.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.14/log4j-1.2.14.jar"/>
   <classpathentry kind="var" path="M2_REPO/logkit/logkit/1.0.1/logkit-1.0.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.0-RC1/mina-core-2.0.0-RC1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.0.18-RC5/mvel2-2.0.18-RC5.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mvel/mvel2/2.1.RC1/mvel2-2.1.RC1.jar"/>
   <classpathentry kind="var" path="M2_REPO/rome/rome/0.9/rome-0.9.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/saxon/saxon/9.1.0.8/saxon-9.1.0.8.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/sf/saxon/saxon-xpath/9.1.0.8/saxon-xpath-9.1.0.8.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.0/slf4j-api-1.6.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.0/slf4j-log4j12-1.6.0.jar"/>
   <classpathentry kind="var" path="M2_REPO/jivesoftware/smack/3.0.4/smack-3.0.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-smtp/1.2/subethasmtp-smtp-1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/subethamail/subethasmtp-wiser/1.2/subethasmtp-wiser-1.2.jar"/>
 </classpath>
