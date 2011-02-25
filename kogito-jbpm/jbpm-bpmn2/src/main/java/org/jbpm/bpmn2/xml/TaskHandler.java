@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -30,7 +32,10 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+<<<<<<< HEAD
 import org.jbpm.workflow.core.impl.NodeImpl;
+=======
+>>>>>>> a35b808... implemented xpath including conditions and data asscoiations, implemented multi instance for work item nodes - like human task, sendtask
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
@@ -116,7 +121,6 @@ public class TaskHandler extends AbstractNodeHandler {
     			String from = ssubNode.getTextContent();
     			String to = ssubNode.getNextSibling().getTextContent();
     			assignments.add(new Assignment("XPath", from, to));
-
         		subNode = subNode.getNextSibling();
     		}
     		workItemNode.addInAssociation(new DataAssociation(
@@ -166,7 +170,6 @@ public class TaskHandler extends AbstractNodeHandler {
 			String from = ssubNode.getTextContent();
 			String to = ssubNode.getNextSibling().getTextContent();
 			assignments.add(new Assignment("XPath", from, to));
-
     		subNode = subNode.getNextSibling();
 		}
 		workItemNode.addOutAssociation(new DataAssociation(dataOutputs.get(source), target, assignments, null));
@@ -185,6 +188,7 @@ public class TaskHandler extends AbstractNodeHandler {
 		// determine type of event definition, so the correct type of node
 		// can be generated
     	handleNode(node, element, uri, localName, parser);
+		boolean found = false;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();

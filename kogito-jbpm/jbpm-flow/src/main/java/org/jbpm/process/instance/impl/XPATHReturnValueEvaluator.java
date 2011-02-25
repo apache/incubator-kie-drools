@@ -27,6 +27,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
@@ -47,9 +48,9 @@ public class XPATHReturnValueEvaluator
     public XPATHReturnValueEvaluator() {
     }
 
-    public XPATHReturnValueEvaluator(final String xpath,
+    public XPATHReturnValueEvaluator(final String expression,
                                     final String id) {
-        this.expression = xpath;
+        this.expression = expression;
         this.id = id;
     }
 
@@ -71,7 +72,6 @@ public class XPATHReturnValueEvaluator
     public Object evaluate(final ProcessContext context) throws Exception {        
     	XPathFactory factory = XPathFactory.newInstance();
     	XPath xpathEvaluator = factory.newXPath();
-
     	xpathEvaluator.setXPathFunctionResolver( 
     			new  XPathFunctionResolver() {
     				public XPathFunction resolveFunction(QName functionName, int arity)
@@ -93,7 +93,6 @@ public class XPATHReturnValueEvaluator
     				}
     			}
     	);
-    	
     	xpathEvaluator.setXPathVariableResolver(new XPathVariableResolver() {
             
             public Object resolveVariable(QName variableName) {
