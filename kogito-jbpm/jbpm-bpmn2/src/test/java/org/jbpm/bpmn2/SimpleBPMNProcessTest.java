@@ -973,7 +973,6 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertEquals(4, myList.size());
 	}
 	
-
 	public void testXORGateway() throws Exception {
 	    KnowledgeBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
 	    StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -988,8 +987,31 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	    ProcessInstance processInstance = ksession.startProcess("process", params);
 	    assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testDataInputAssociations() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataInputAssociations.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
 
-    
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                System.err.println(workItem.getParameter("coId"));
+                assertEquals("hello world", workItem.getParameter("coId"));
+            }
+            
+        });
+        Document document = DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder().parse(new ByteArrayInputStream(
+                "<user hello='hello world' />".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", document.getFirstChild());
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
@@ -1003,7 +1025,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
 		for (Process p : processes) {
 		    RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)p;
-//			System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
+			System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
 		    kbuilder.add(ResourceFactory.newReaderResource(
 		            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
 		}
