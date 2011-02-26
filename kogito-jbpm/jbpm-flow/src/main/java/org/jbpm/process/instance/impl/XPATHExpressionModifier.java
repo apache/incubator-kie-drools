@@ -63,13 +63,15 @@ public class XPATHExpressionModifier {
 
 	/**
 	 * Insert nodes into the specified XPath expression wherever
-	 * required To be precise, an node is added to its parent if:
+	 * required 
+	 * <p>
+	 * To be precise, a node is added to its parent if:
 	 * a) the node is an element...
 	 * b) that corresponds to an step...
 	 * c) that has a child axis...
 	 * d) whose parent had no children with its name...
 	 * e) and all preceding steps are element name tests.
-	 *
+	 * </p>
 	 * @param xpathExpr
 	 * @param namePool
 	 *
@@ -78,16 +80,20 @@ public class XPATHExpressionModifier {
 	 * @throws XPathExpressionException 
 	 */
 	@SuppressWarnings("unchecked")
-	public void insertMissingData(String xpath, Node contextNode)
+	public Node insertMissingData(String xpath, Node contextNode)
 	throws DOMException, TransformerException, XPathExpressionException {
+	    if (xpath.startsWith("/") && contextNode == null) {
+	        xpath = xpath.substring(1);
+	    }
+	    Node rootNode = contextNode;
 		XPathFactory xpf = new XPathFactoryImpl();
 		XPath xpe = xpf.newXPath();    	
 		XPathExpression xpathExpr = xpe.compile(xpath);
 
-		if ((contextNode == null) || !(contextNode instanceof Element) ||
-				!(xpathExpr instanceof XPathExpressionImpl)) {
-			return;
-		}
+//		if (contextNode == null || !(contextNode instanceof Element) ||
+//				!(xpathExpr instanceof XPathExpressionImpl)) {
+//			return;
+//		}
 
 		Expression expression = ((XPathExpressionImpl) xpathExpr).getInternalExpression();
 
@@ -103,7 +109,7 @@ public class XPATHExpressionModifier {
 			pathExpr = null;
 			step = (AxisExpression) expression;
 		} else {
-			return;
+			return contextNode;
 		}
 
 		while (step != null) {
@@ -125,18 +131,23 @@ public class XPATHExpressionModifier {
 					if (NodeKindTest.ELEMENT.getNodeKindMask() != nameTest.getNodeKindMask()) {
 						break;
 					}
-
-					NodeList children = ((Element) contextNode).getElementsByTagNameNS(childName.getNamespaceURI(),
-							childName.getLocalPart());
-					if ((children == null) || (children.getLength() == 0)) {
-						Node child = document.createElementNS(childName.getNamespaceURI(),
-								getQualifiedName(childName));
-						contextNode.appendChild(child);
-						contextNode = child;
-					} else if (children.getLength() == 1) {
-						contextNode = children.item(0);
+					if (contextNode == null) {
+					    contextNode = document.createElementNS(childName.getNamespaceURI(), childName.getLocalPart());
+					    document.appendChild(contextNode);
+					    rootNode = contextNode;
 					} else {
-						break;
+					    NodeList children = ((Element) contextNode).getElementsByTagNameNS(childName.getNamespaceURI(),
+					            childName.getLocalPart());
+					    if ((children == null) || (children.getLength() == 0)) {
+					        Node child = document.createElementNS(childName.getNamespaceURI(),
+					                getQualifiedName(childName));
+					        contextNode.appendChild(child);
+					        contextNode = child;
+					    } else if (children.getLength() == 1) {
+					        contextNode = children.item(0);
+					    } else {
+					        break;
+					    }
 					}
 				} else if (Axis.ATTRIBUTE == axisExpr.getAxis()) {
 					if (NodeKindTest.ATTRIBUTE.getNodeKindMask() != nameTest.getNodeKindMask()) {
@@ -184,6 +195,7 @@ public class XPATHExpressionModifier {
 				break;
 			}
 		}
+		return rootNode;
 	}
 
 	/**
@@ -233,6 +245,8 @@ public class XPATHExpressionModifier {
 			//                return doc;
 			//            }
 			// other element types are not handled
+		} else if (node == null) {
+		    return newDocument();
 		} else {
 			throw new TransformerException("Unable to convert DOM node to a Document");
 		}

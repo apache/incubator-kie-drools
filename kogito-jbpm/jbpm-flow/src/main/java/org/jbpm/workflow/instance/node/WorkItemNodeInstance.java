@@ -43,8 +43,6 @@ import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.mvel2.MVEL;
 
-
-
 /**
  * Runtime counterpart of a work item node.
  * 
