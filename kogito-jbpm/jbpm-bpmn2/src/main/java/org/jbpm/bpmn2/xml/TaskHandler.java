@@ -16,12 +16,19 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -32,10 +39,7 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
-<<<<<<< HEAD
 import org.jbpm.workflow.core.impl.NodeImpl;
-=======
->>>>>>> a35b808... implemented xpath including conditions and data asscoiations, implemented multi instance for work item nodes - like human task, sendtask
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
