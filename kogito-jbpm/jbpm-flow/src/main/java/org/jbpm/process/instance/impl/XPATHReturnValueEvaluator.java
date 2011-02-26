@@ -32,6 +32,7 @@ import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
 import javax.xml.xpath.XPathFunctionResolver;
+import javax.xml.xpath.XPathVariableResolver;
 
 import org.drools.runtime.process.ProcessContext;
 
@@ -41,7 +42,7 @@ public class XPATHReturnValueEvaluator
     Externalizable {
     private static final long   serialVersionUID = 510l;
 
-    private String              xpath;
+    private String              expression;
     private String              id;
 
     public XPATHReturnValueEvaluator() {
@@ -49,19 +50,19 @@ public class XPATHReturnValueEvaluator
 
     public XPATHReturnValueEvaluator(final String xpath,
                                     final String id) {
-        this.xpath = xpath;
+        this.expression = xpath;
         this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
 //        id = in.readUTF();
-        xpath = (String) in.readObject();
+        expression = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
 //        out.writeUTF( id );
-        out.writeObject(xpath);
+        out.writeObject(expression);
     }
 
     public String getDialect() {
@@ -70,9 +71,9 @@ public class XPATHReturnValueEvaluator
 
     public Object evaluate(final ProcessContext context) throws Exception {        
     	XPathFactory factory = XPathFactory.newInstance();
-    	XPath xpath = factory.newXPath();
+    	XPath xpathEvaluator = factory.newXPath();
 
-    	xpath.setXPathFunctionResolver( 
+    	xpathEvaluator.setXPathFunctionResolver( 
     			new  XPathFunctionResolver() {
     				public XPathFunction resolveFunction(QName functionName, int arity)
     				{
@@ -93,16 +94,20 @@ public class XPATHReturnValueEvaluator
     				}
     			}
     	);
-
-        XPathExpression expr 
-         = xpath.compile(this.xpath);
+    	
+    	xpathEvaluator.setXPathVariableResolver(new XPathVariableResolver() {
+            
+            public Object resolveVariable(QName variableName) {
+                return context.getVariable(variableName.getLocalPart());
+            }
+        });
 
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return expr.evaluate(builder.newDocument(), XPathConstants.BOOLEAN);
+        return xpathEvaluator.evaluate(this.expression, builder.newDocument(), XPathConstants.BOOLEAN);
     }
 
     public String toString() {
-        return this.xpath;
+        return this.expression;
     }
 
 }

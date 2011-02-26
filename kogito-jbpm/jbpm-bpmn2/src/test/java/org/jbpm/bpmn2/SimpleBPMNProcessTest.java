@@ -71,6 +71,7 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -308,6 +309,60 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testExclusiveSplitXPathAdvanced() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+	public void testExclusiveSplitXPathAdvanced2() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-vars-not-signaled.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+	public void testExclusiveSplitXPathAdvancedWithVars() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-with-vars.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 	
 	public void testExclusiveSplitDefault() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
