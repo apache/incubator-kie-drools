@@ -26,6 +26,7 @@ import org.drools.planner.core.localsearch.decider.selector.MoveFactorySelector;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
 import org.drools.planner.core.localsearch.decider.selector.TopListSelector;
 import org.drools.planner.core.move.factory.MoveFactory;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("selector")
 public class SelectorConfig {
@@ -83,11 +84,11 @@ public class SelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    public Selector buildSelector() {
+    public Selector buildSelector(ScoreDefinition scoreDefinition) {
         if (selectorConfigList != null) {
             List<Selector> selectorList = new ArrayList<Selector>(selectorConfigList.size());
             for (SelectorConfig selectorConfig : selectorConfigList) {
-                selectorList.add(selectorConfig.buildSelector());
+                selectorList.add(selectorConfig.buildSelector(scoreDefinition));
             }
             CompositeSelector selector = new CompositeSelector();
             selector.setSelectorList(selectorList);

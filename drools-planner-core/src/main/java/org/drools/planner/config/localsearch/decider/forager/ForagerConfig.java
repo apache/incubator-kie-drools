@@ -20,6 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.localsearch.decider.forager.AcceptedForager;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
 import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("forager")
 public class ForagerConfig {
@@ -66,7 +67,7 @@ public class ForagerConfig {
     // Builder methods
     // ************************************************************************
 
-    public Forager buildForager() {
+    public Forager buildForager(ScoreDefinition scoreDefinition) {
         if (forager != null) {
             return forager;
         } else if (foragerClass != null) {

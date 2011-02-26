@@ -517,3 +517,26 @@ After in *Selector.java:
     public void ...(LocalSearchStepScope localSearchStepScope) {
         ...
     }
+
+[MINOR] The Score has a new method: double[] toDoubleArray()
+If you use a custom Score implementation, you need to implement it:
+After in *Score.java:
+    public double[] toDoubleArray() {
+        return new double[]{hardScore, softScore, ...};
+    }
+
+[MINOR] SelectorConfig, AcceptorConfig and ForagerConfig's build method now have a ScoreDefinition argument.
+If you use any custom implementation for any of them, you need to adjust your method signature.
+Before in *SelectorConfig.java:
+    public Selector buildSelector(ScoreDefinition scoreDefinition) {
+After in *SelectorConfig.java:
+    public Selector buildSelector(ScoreDefinition scoreDefinition) {
+Before in *AcceptorConfig.java:
+    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
+After in *AcceptorConfig.java:
+    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
+Before in *ForagerConfig.java:
+    public Forager buildForager(ScoreDefinition scoreDefinition) {
+After in *ForagerConfig.java:
+    public Forager buildForager(ScoreDefinition scoreDefinition) {
+

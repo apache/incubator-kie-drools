@@ -576,7 +576,7 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
         single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
+      &lt;simulatedAnnealingStartingTemperature&gt;2hard/100soft&lt;/simulatedAnnealingStartingTemperature&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
@@ -597,7 +597,7 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
         &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;
     &lt;/forager&gt;</programlisting>
 
-        <para>This differs from phasing, another powerfull technique, where first simulated annealing is used, followed
+        <para>This differs from phasing, another powerful technique, where first simulated annealing is used, followed
         by tabu search.</para>
       </section>
     </section>

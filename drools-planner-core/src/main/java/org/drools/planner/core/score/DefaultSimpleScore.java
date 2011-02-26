@@ -48,19 +48,23 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
     // ************************************************************************
 
     public SimpleScore add(SimpleScore augment) {
-        return new DefaultSimpleScore(this.score + augment.getScore());
+        return new DefaultSimpleScore(score + augment.getScore());
     }
 
     public SimpleScore subtract(SimpleScore subtrahend) {
-        return new DefaultSimpleScore(this.score - subtrahend.getScore());
+        return new DefaultSimpleScore(score - subtrahend.getScore());
     }
 
     public SimpleScore multiply(double multiplicand) {
-        return new DefaultSimpleScore((int) Math.floor(this.score * multiplicand));
+        return new DefaultSimpleScore((int) Math.floor(score * multiplicand));
     }
 
     public SimpleScore divide(double divisor) {
-        return new DefaultSimpleScore((int) Math.floor(this.score / divisor));
+        return new DefaultSimpleScore((int) Math.floor(score / divisor));
+    }
+
+    public double[] toDoubleArray() {
+        return new double[]{score};
     }
 
     public boolean equals(Object o) {

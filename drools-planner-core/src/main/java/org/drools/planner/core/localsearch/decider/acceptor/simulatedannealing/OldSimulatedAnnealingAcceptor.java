@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,17 +25,14 @@ import org.drools.planner.core.score.Score;
 /**
  * The time gradient implementation of simulated annealing.
  */
-public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
+public class OldSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
-    protected Score startingTemperature;
+    protected double startingTemperature = 1.0;
 
-    protected Score temperature;
-    protected double[] temperatureParts;
-    protected int partsLength;
+    protected double temperature;
+    protected double temperatureMinimum = 1.0E-100; // Double.MIN_NORMAL is E-308 
 
-    protected double temperatureMinimum = 1.0E-100; // Double.MIN_NORMAL is E-308
-
-    public void setStartingTemperature(Score startingTemperature) {
+    public void setStartingTemperature(double startingTemperature) {
         this.startingTemperature = startingTemperature;
     }
 
@@ -45,39 +42,33 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     @Override
     public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        for (double startingTemperaturePart : startingTemperature.toDoubleArray()) {
-            if (startingTemperaturePart < 0.0) {
-                throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
-                        + ") cannot have negative part (" + startingTemperaturePart + ").");
-            }
+        if (startingTemperature < 0.0) {
+            throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
+                    + ") cannot be negative.");
+        }
+        if (startingTemperature < temperatureMinimum) {
+            throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
+                    + ") cannot be less than the temperatureMinimum (" + temperatureMinimum + ").");
         }
         temperature = startingTemperature;
-        temperatureParts = temperature.toDoubleArray();
-        partsLength = temperatureParts.length;
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
         LocalSearchSolverScope localSearchSolverScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope();
         Score lastStepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
-        if (moveScore.compareTo(lastStepScore) >= 0) {
+        if (moveScore.compareTo(lastStepScore) > 0) {
             return 1.0;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
-        double acceptChance = 1.0;
-        double[] scoreDifferenceParts = scoreDifference.toDoubleArray();
-        for (int i = 0; i < partsLength; i++) {
-            double scoreDifferencePart = scoreDifferenceParts[i];
-            double temperaturePart = temperatureParts[i];
-            double acceptChancePart;
-            if (scoreDifferencePart <= 0.0) {
-                // In this part it is moveScore is better than the lastStepScore, so do not disrupt the acceptChance
-                acceptChancePart = 1.0;
-            } else {
-                acceptChancePart = Math.exp(-scoreDifferencePart / temperaturePart);
-            }
-            acceptChance *= acceptChancePart;
+        // TODO don't abuse translateScoreToGraphValue
+        // TODO do hard and soft separately and then average their acceptChance
+        Double diff = localSearchSolverScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
+        if (diff == null) {
+            // more hard constraints broken, ignore it for now
+            return 0.0;
         }
+        double acceptChance = Math.exp(-diff / temperature);
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
             return 1.0;
         } else {
@@ -89,12 +80,9 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         super.stepTaken(localSearchStepScope);
         double timeGradient = localSearchStepScope.getTimeGradient();
-        temperature = startingTemperature.multiply(1.0 - timeGradient);
-        temperatureParts = temperature.toDoubleArray();
-        for (int i = 0; i < partsLength; i++) {
-            if (temperatureParts[i] < temperatureMinimum) {
-                temperatureParts[i] = temperatureMinimum;
-            }
+        temperature = startingTemperature * (1.0 - timeGradient);
+        if (temperature < temperatureMinimum) {
+            temperature = temperatureMinimum;
         }
         // TODO implement reheating
     }

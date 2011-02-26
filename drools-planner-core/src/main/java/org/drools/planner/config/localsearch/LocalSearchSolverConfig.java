@@ -28,6 +28,7 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolver;
 import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("localSearchSolver")
 public class LocalSearchSolverConfig extends AbstractSolverConfig {
@@ -99,19 +100,19 @@ public class LocalSearchSolverConfig extends AbstractSolverConfig {
         DefaultLocalSearchSolver localSearchSolver = new DefaultLocalSearchSolver();
         configureAbstractSolver(localSearchSolver);
         localSearchSolver.setTermination(terminationConfig.buildTermination(localSearchSolver.getScoreDefinition()));
-        localSearchSolver.setDecider(buildDecider());
+        localSearchSolver.setDecider(buildDecider(localSearchSolver.getScoreDefinition()));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             localSearchSolver.setAssertStepScoreIsUncorrupted(true);
         }
         return localSearchSolver;
     }
 
-    private Decider buildDecider() {
+    private Decider buildDecider(ScoreDefinition scoreDefinition) {
         DefaultDecider decider = new DefaultDecider();
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
-        decider.setSelector(selectorConfig.buildSelector());
-        decider.setAcceptor(acceptorConfig.buildAcceptor());
-        decider.setForager(foragerConfig.buildForager());
+        decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
+        decider.setAcceptor(acceptorConfig.buildAcceptor(scoreDefinition));
+        decider.setForager(foragerConfig.buildForager(scoreDefinition));
         if ( environmentMode == EnvironmentMode.TRACE) {
             decider.setAssertMoveScoreIsUncorrupted(true);
         }

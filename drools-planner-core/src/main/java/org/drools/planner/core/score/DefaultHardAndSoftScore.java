@@ -73,23 +73,27 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
     // ************************************************************************
 
     public HardAndSoftScore add(HardAndSoftScore augment) {
-        return new DefaultHardAndSoftScore(this.hardScore + augment.getHardScore(),
+        return new DefaultHardAndSoftScore(hardScore + augment.getHardScore(),
                 this.softScore + augment.getSoftScore());
     }
 
     public HardAndSoftScore subtract(HardAndSoftScore subtrahend) {
-        return new DefaultHardAndSoftScore(this.hardScore - subtrahend.getHardScore(),
+        return new DefaultHardAndSoftScore(hardScore - subtrahend.getHardScore(),
                 this.softScore - subtrahend.getSoftScore());
     }
 
     public HardAndSoftScore multiply(double multiplicand) {
-        return new DefaultHardAndSoftScore((int) Math.floor(this.hardScore * multiplicand),
+        return new DefaultHardAndSoftScore((int) Math.floor(hardScore * multiplicand),
                 (int) Math.floor(this.softScore * multiplicand));
     }
 
     public HardAndSoftScore divide(double divisor) {
-        return new DefaultHardAndSoftScore((int) Math.floor(this.hardScore / divisor),
+        return new DefaultHardAndSoftScore((int) Math.floor(hardScore / divisor),
                 (int) Math.floor(this.softScore / divisor));
+    }
+
+    public double[] toDoubleArray() {
+        return new double[]{hardScore, softScore};
     }
 
     public boolean equals(Object o) {

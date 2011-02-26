@@ -26,10 +26,13 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.LegacySimulatedAnnealingAcceptor;
+import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.OldSimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("acceptor")
 public class AcceptorConfig {
@@ -49,8 +52,8 @@ public class AcceptorConfig {
     protected Integer completeSolutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
 
-    protected Double simulatedAnnealingStartingTemperature = null;
-    protected Double simulatedAnnealingTemperatureSurvival = null;
+    protected Double oldSimulatedAnnealingStartingTemperature = null;
+    protected String simulatedAnnealingStartingTemperature = null;
 
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
     protected Double greatDelugeWaterRisingRate = null;
@@ -143,11 +146,19 @@ public class AcceptorConfig {
         this.partialSolutionTabuSize = partialSolutionTabuSize;
     }
 
-    public Double getSimulatedAnnealingStartingTemperature() {
+    public Double getOldSimulatedAnnealingStartingTemperature() {
+        return oldSimulatedAnnealingStartingTemperature;
+    }
+
+    public void setOldSimulatedAnnealingStartingTemperature(Double oldSimulatedAnnealingStartingTemperature) {
+        this.oldSimulatedAnnealingStartingTemperature = oldSimulatedAnnealingStartingTemperature;
+    }
+
+    public String getSimulatedAnnealingStartingTemperature() {
         return simulatedAnnealingStartingTemperature;
     }
 
-    public void setSimulatedAnnealingStartingTemperature(Double simulatedAnnealingStartingTemperature) {
+    public void setSimulatedAnnealingStartingTemperature(String simulatedAnnealingStartingTemperature) {
         this.simulatedAnnealingStartingTemperature = simulatedAnnealingStartingTemperature;
     }
 
@@ -171,7 +182,7 @@ public class AcceptorConfig {
     // Builder methods
     // ************************************************************************
 
-    public Acceptor buildAcceptor() {
+    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
         if (acceptor != null) {
             acceptorList.add(acceptor);
@@ -234,11 +245,16 @@ public class AcceptorConfig {
             }
             acceptorList.add(solutionTabuAcceptor);
         }
+        if (oldSimulatedAnnealingStartingTemperature != null) {
+            OldSimulatedAnnealingAcceptor oldSimulatedAnnealingAcceptor = new OldSimulatedAnnealingAcceptor();
+            oldSimulatedAnnealingAcceptor.setStartingTemperature(oldSimulatedAnnealingStartingTemperature);
+            acceptorList.add(oldSimulatedAnnealingAcceptor);
+        }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
-                || simulatedAnnealingStartingTemperature != null) {
+                || oldSimulatedAnnealingStartingTemperature != null || simulatedAnnealingStartingTemperature != null) {
             SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
             if (simulatedAnnealingStartingTemperature != null) {
-                simulatedAnnealingAcceptor.setStartingTemperature(simulatedAnnealingStartingTemperature);
+                simulatedAnnealingAcceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
             }
             acceptorList.add(simulatedAnnealingAcceptor);
         }

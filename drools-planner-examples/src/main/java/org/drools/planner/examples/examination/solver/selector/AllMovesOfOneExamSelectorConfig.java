@@ -19,6 +19,7 @@ package org.drools.planner.examples.examination.solver.selector;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.planner.core.localsearch.decider.selector.Selector;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
 /**
  * A custom selector configuration for the Examination example.
@@ -31,7 +32,7 @@ public class AllMovesOfOneExamSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     @Override
-    public Selector buildSelector() {
+    public Selector buildSelector(ScoreDefinition scoreDefinition) {
         // Note that all properties of SelectorConfig are ignored.
         return new AllMovesOfOneExamSelector();
     }
