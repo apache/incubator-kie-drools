@@ -36,7 +36,7 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
         this.hardScoreTimeGradientWeight = hardScoreTimeGradientWeight;
         if (hardScoreTimeGradientWeight < 0.0 || hardScoreTimeGradientWeight > 1.0) {
             throw new IllegalArgumentException("Property hardScoreTimeGradientWeight (" + hardScoreTimeGradientWeight
-                    + ") must be greater or equal to 0.0jg and smaller or equal to 1.0.");
+                    + ") must be greater or equal to 0.0 and smaller or equal to 1.0.");
         }
     }
 
