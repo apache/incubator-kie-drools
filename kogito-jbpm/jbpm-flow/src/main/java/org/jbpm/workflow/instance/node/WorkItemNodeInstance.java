@@ -24,9 +24,12 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.drools.WorkItemHandlerNotFoundException;
@@ -49,6 +52,7 @@ import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.mvel2.MVEL;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -147,6 +151,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         				System.err.println("Could not find variable scope for variable " + association.getSources().get(0));
         				System.err.println("when trying to execute Work Item " + work.getName());
         				System.err.println("Continuing without setting parameter.");
+        				throw new RuntimeException("Could not find variable scope for variable " + association.getSources().get(0));
         			}
         		}
         		if (parameterValue != null) {
@@ -165,50 +170,73 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         				XPathFactory factory = XPathFactory.newInstance();
         				XPath xpathFrom = factory.newXPath();
 
-        				XPathExpression exprFrom 
-        				= xpathFrom.compile(from);
+        				XPathExpression exprFrom = xpathFrom.compile(from);
 
         				XPath xpathTo = factory.newXPath();
 
-        				XPathExpression exprTo 
-        				= xpathTo.compile(to);
+        				XPathExpression exprTo = xpathTo.compile(to);
 
         				VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
         				resolveContextInstance(VariableScope.VARIABLE_SCOPE, source);
 
-        				Element targetElem =  null;
+        				Object targetElem = null;
         				
-        				if( ((WorkItem) workItem).getParameter(target) == null) {
-        					DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        					Document doc = builder.newDocument();
-        					targetElem = doc.createElement(target);
-                			((WorkItem) workItem).setParameter(target, targetElem);
-        				}
-
-        				targetElem = (Element) ((WorkItem) workItem).getParameter(target);
+        				Object parameter = ((WorkItem) workItem).getParameter(target);
         				XPATHExpressionModifier modifier = new XPATHExpressionModifier();
-        				modifier.insertMissingData(to, targetElem);
+        				// modify the tree, returning the root node
+        				parameter = modifier.insertMissingData(to, (org.w3c.dom.Node) parameter);
 
-        				targetElem = ((Element)  exprTo.evaluate(((WorkItem) workItem).getParameter(target), XPathConstants.NODE));
-
+        				// now pick the leaf for this operation
+        				if (parameter != null) {
+        	                org.w3c.dom.Node parent = ((org.w3c.dom.Node) parameter).getParentNode();
+        				    targetElem = exprTo.evaluate(parent, XPathConstants.NODE);
+        				    if (targetElem == null) {
+        				        throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + target);
+        				    }
+        				}
         				NodeList nl = (NodeList)  exprFrom.evaluate(variableScopeInstance.getVariable(source), XPathConstants.NODESET);
-
-        				for( int i =0 ; i<nl.getLength(); i++) {
-        					org.w3c.dom.Node n  = targetElem.getOwnerDocument().importNode(nl.item(i), true);
-        					if(n instanceof Attr) {
-        						targetElem.setAttributeNode((Attr) n);
-        					}
-        					else {
-        						targetElem.appendChild(n);
+        				if (nl.getLength() == 0) {
+        				    throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + source);
+        				}
+        				for (int i =0 ; i < nl.getLength(); i++) {
+        					
+        					if (!(targetElem instanceof org.w3c.dom.Node)) {
+        					    if (nl.item(i) instanceof Attr) {
+                                    targetElem = ((Attr) nl.item(i)).getValue();
+                                } else {
+                                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                                    Document doc = builder.newDocument();
+                                    targetElem = doc.createElement(target);
+                                    org.w3c.dom.Node n  = doc.importNode(nl.item(i), true);
+                                    ((org.w3c.dom.Node) targetElem).appendChild(n);
+                                }
+        					    parameter = targetElem;
+        					} else {
+        					    org.w3c.dom.Node n  = ((org.w3c.dom.Node) targetElem).getOwnerDocument().importNode(nl.item(i), true);
+        					    if (n instanceof Attr) {
+        					        ((Element) targetElem).setAttributeNode((Attr) n);
+        					    } else {
+        					        ((org.w3c.dom.Node) targetElem).appendChild(n);
+        					    }
         					}
         				}
         				
+        				((WorkItem) workItem).setParameter(target, parameter);
         			}
         		}
-        		catch(Exception e) {
+        		catch(XPathExpressionException e) {
         			e.printStackTrace();
         			throw new RuntimeException(e);
-        		}
+        		} catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                } catch (DOMException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                } catch (TransformerException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
         	}
         }
         
