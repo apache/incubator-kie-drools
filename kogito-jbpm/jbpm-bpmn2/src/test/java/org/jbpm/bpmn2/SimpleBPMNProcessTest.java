@@ -281,7 +281,6 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 	
-
 	public void testExclusiveSplitXPathAdvanced() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
