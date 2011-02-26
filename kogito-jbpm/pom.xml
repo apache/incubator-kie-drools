@@ -66,6 +66,19 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>servicemix</id>
+      <name>Service Mix repo</name>
+      <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
     <!-- used in jbpm-workitems for commons-finder -->
     <repository>
       <id>apache-incubating</id>
