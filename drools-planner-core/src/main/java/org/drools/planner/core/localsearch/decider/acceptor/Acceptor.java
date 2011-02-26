@@ -17,11 +17,13 @@
 package org.drools.planner.core.localsearch.decider.acceptor;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.decider.forager.Forager;
 
 /**
- * An Acceptor accepts or rejects a selected move for the Decider.
- * Notice that the Forager can still ignore the advice of the Acceptor.
+ * An Acceptor accepts or rejects a selected move for the {@link Decider}.
+ * Note that the {@link Forager} can still ignore the advice of the Acceptor.
  * @see AbstractAcceptor
  */
 public interface Acceptor extends LocalSearchSolverLifecycleListener {
