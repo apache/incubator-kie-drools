@@ -16,10 +16,16 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -35,6 +41,8 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -125,8 +133,27 @@ public class TaskHandler extends AbstractNodeHandler {
 			// assignment
 			subNode = subNode.getNextSibling();
     		org.w3c.dom.Node subSubNode = subNode.getFirstChild();
-			String from = subSubNode.getTextContent();
-    		workItemNode.getWork().setParameter(dataInputs.get(to), from);
+    		NodeList nl = subSubNode.getChildNodes();
+    		if (nl.getLength() > 1) {
+    		    // not supported ?
+    		    workItemNode.getWork().setParameter(dataInputs.get(to), subSubNode.getTextContent());
+    		    return;
+    		} else if (nl.getLength() == 0) {
+    		    return;
+    		}
+    		Object result = null;
+    		Object from = nl.item(0);
+    		if (from instanceof Text) {
+    		    String text = ((Text) from).getTextContent();
+    		    if (text.startsWith("\"") && text.endsWith("\"")) {
+                    result = text.substring(1, text.length() -1);
+    		    } else {
+    		        result = text;
+    		    }
+			} else {
+			    result = nl.item(0);
+			}
+    		workItemNode.getWork().setParameter(dataInputs.get(to), result);
 		}
     }
     

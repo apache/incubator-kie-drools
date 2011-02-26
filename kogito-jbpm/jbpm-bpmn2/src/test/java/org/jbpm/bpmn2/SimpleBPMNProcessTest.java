@@ -1035,6 +1035,58 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess("process", params);
     }
 	
+	public void testDataInputAssociationsWithString() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello", workItem.getParameter("coId"));
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
+	public void testDataInputAssociationsWithStringWithoutQuotes() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-no-quotes.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello", workItem.getParameter("coId"));
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
+	public void testDataInputAssociationsWithXMLLiteral() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-xml-literal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("id", ((org.w3c.dom.Node) workItem.getParameter("coId")).getNodeName());
+                assertEquals("some text", ((org.w3c.dom.Node) workItem.getParameter("coId")).getFirstChild().getTextContent());
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();

@@ -47,9 +47,8 @@ public class UserTaskHandler extends TaskHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	super.handleNode(node, element, uri, localName, parser);
     	HumanTaskNode humanTaskNode = (HumanTaskNode) node;
-        Work work = new WorkImpl();
+        Work work = humanTaskNode.getWork();
         work.setName("Human Task");
-    	humanTaskNode.setWork(work);
     	Map<String, String> dataInputs = new HashMap<String, String>();
     	Map<String, String> dataOutputs = new HashMap<String, String>();
     	List<String> owners = new ArrayList<String>();
