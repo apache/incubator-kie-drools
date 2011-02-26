@@ -54,29 +54,16 @@
 
   <repositories>
     <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <id>intalio-org</id>
+      <name>Intalio Inc Public Maven2 repo</name>
+      <url>http://www.intalio.org/public/maven2</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-snapshot-repository-group</id>
-      <name>JBoss SNAPSHOT Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
     <!-- used in jbpm-workitems for commons-finder -->
