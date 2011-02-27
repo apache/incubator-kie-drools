@@ -251,11 +251,9 @@ public class AcceptorConfig {
             acceptorList.add(oldSimulatedAnnealingAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
-                || oldSimulatedAnnealingStartingTemperature != null || simulatedAnnealingStartingTemperature != null) {
+                || simulatedAnnealingStartingTemperature != null) {
             SimulatedAnnealingAcceptor simulatedAnnealingAcceptor = new SimulatedAnnealingAcceptor();
-            if (simulatedAnnealingStartingTemperature != null) {
-                simulatedAnnealingAcceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
-            }
+            simulatedAnnealingAcceptor.setStartingTemperature(scoreDefinition.parseScore(simulatedAnnealingStartingTemperature));
             acceptorList.add(simulatedAnnealingAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.GREAT_DELUGE))

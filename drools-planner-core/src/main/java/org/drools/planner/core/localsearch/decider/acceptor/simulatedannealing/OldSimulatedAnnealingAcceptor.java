@@ -23,6 +23,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
 import org.drools.planner.core.score.Score;
 
 /**
+ * TODO remove as soon as the new SimulatedAnnealingAcceptor is tested on nurse rostering
  * The time gradient implementation of simulated annealing.
  */
 public class OldSimulatedAnnealingAcceptor extends AbstractAcceptor {

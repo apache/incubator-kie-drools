@@ -10,8 +10,8 @@
             <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
         </scoreDefinition>
         <termination>
-            <!--<maximumHoursSpend>2</maximumHoursSpend>-->
-            <maximumMinutesSpend>10</maximumMinutesSpend>
+            <maximumHoursSpend>2</maximumHoursSpend>
+            <!--<maximumMinutesSpend>10</maximumMinutesSpend>-->
         </termination>
         <selector>
             <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
@@ -19,10 +19,10 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>simulatedAnnealing-5</name>
+        <name>oldSimulatedAnnealing-8000</name>
         <localSearchSolver>
             <acceptor>
-                <simulatedAnnealingStartingTemperature>5.0</simulatedAnnealingStartingTemperature>
+                <oldSimulatedAnnealingStartingTemperature>8000.0</oldSimulatedAnnealingStartingTemperature>
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
             </acceptor>
             <forager>
@@ -32,11 +32,11 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>simulatedAnnealing-10</name>
+        <name>oldSimulatedAnnealing-10000</name>
         <localSearchSolver>
             <acceptor>
-                <simulatedAnnealingStartingTemperature>5.0</simulatedAnnealingStartingTemperature>
-                <completePropertyTabuSize>5</completePropertyTabuSize>
+                <oldSimulatedAnnealingStartingTemperature>10000.0</oldSimulatedAnnealingStartingTemperature>
+                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
             </acceptor>
             <forager>
                 <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -45,10 +45,23 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>simulatedAnnealing-20</name>
+        <name>simulatedAnnealing-2hard-8000soft</name>
         <localSearchSolver>
             <acceptor>
-                <simulatedAnnealingStartingTemperature>20.0</simulatedAnnealingStartingTemperature>
+                <simulatedAnnealingStartingTemperature>2hard/8000soft</simulatedAnnealingStartingTemperature>
+                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-2hard-10000soft</name>
+        <localSearchSolver>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
             </acceptor>
             <forager>
