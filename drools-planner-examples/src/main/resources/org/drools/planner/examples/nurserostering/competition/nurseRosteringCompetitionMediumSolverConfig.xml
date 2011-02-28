@@ -20,7 +20,7 @@
         </selector>
     </selector>
     <acceptor>
-      <simulatedAnnealingStartingTemperature>10.0</simulatedAnnealingStartingTemperature>
+      <simulatedAnnealingStartingTemperature>0hard/10soft</simulatedAnnealingStartingTemperature>
       <simulatedAnnealingTemperatureSurvival>0.997</simulatedAnnealingTemperatureSurvival>
       <completePropertyTabuSize>5</completePropertyTabuSize>
     </acceptor>

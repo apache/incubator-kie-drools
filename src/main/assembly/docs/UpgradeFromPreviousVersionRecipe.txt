@@ -540,3 +540,11 @@ Before in *ForagerConfig.java:
 After in *ForagerConfig.java:
     public Forager buildForager(ScoreDefinition scoreDefinition) {
 
+[MAJOR] Simulated annealing now supports working with hard constraints too (JBRULES-2911)
+The starting temperature (usually close the maximum score delta) is now a Score instead of a double.
+Before in *Config.xml:
+    <simulatedAnnealingStartingTemperature>20.0</simulatedAnnealingStartingTemperature>
+After in *Config.xml (if you're using HardAndSoftScore):
+    <simulatedAnnealingStartingTemperature>0hard/20soft</simulatedAnnealingStartingTemperature>
+After in *Config.xml (if you're using SimpleScore):
+    <simulatedAnnealingStartingTemperature>20</simulatedAnnealingStartingTemperature>
