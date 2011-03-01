@@ -36,6 +36,11 @@
       <version>2.0.0.GA</version>
     </dependency>
     <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
       <groupId>javax.persistence</groupId>
       <artifactId>persistence-api</artifactId>
     </dependency>
@@ -95,5 +100,17 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+	  <groupId>org.apache.activemq</groupId>
+	  <artifactId>activemq-all</artifactId>
+	  <version>5.2.0</version>
+	  <scope>test</scope>
+	</dependency>
+	<dependency>
+	  <groupId>org.easymock</groupId>
+	  <artifactId>easymock</artifactId>
+	  <version>3.0</version>
+	  <scope>test</scope>
+	</dependency>
   </dependencies>
 </project>
