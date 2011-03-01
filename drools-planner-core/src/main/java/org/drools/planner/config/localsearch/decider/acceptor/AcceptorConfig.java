@@ -26,7 +26,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.LegacySimulatedAnnealingAcceptor;
-import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.OldSimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.PropertyTabuAcceptor;
@@ -52,7 +51,6 @@ public class AcceptorConfig {
     protected Integer completeSolutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
 
-    protected Double oldSimulatedAnnealingStartingTemperature = null;
     protected String simulatedAnnealingStartingTemperature = null;
 
     protected Double greatDelugeWaterLevelUpperBoundRate = null;
@@ -146,14 +144,6 @@ public class AcceptorConfig {
         this.partialSolutionTabuSize = partialSolutionTabuSize;
     }
 
-    public Double getOldSimulatedAnnealingStartingTemperature() {
-        return oldSimulatedAnnealingStartingTemperature;
-    }
-
-    public void setOldSimulatedAnnealingStartingTemperature(Double oldSimulatedAnnealingStartingTemperature) {
-        this.oldSimulatedAnnealingStartingTemperature = oldSimulatedAnnealingStartingTemperature;
-    }
-
     public String getSimulatedAnnealingStartingTemperature() {
         return simulatedAnnealingStartingTemperature;
     }
@@ -244,11 +234,6 @@ public class AcceptorConfig {
                 solutionTabuAcceptor.setPartialTabuSize(partialSolutionTabuSize);
             }
             acceptorList.add(solutionTabuAcceptor);
-        }
-        if (oldSimulatedAnnealingStartingTemperature != null) {
-            OldSimulatedAnnealingAcceptor oldSimulatedAnnealingAcceptor = new OldSimulatedAnnealingAcceptor();
-            oldSimulatedAnnealingAcceptor.setStartingTemperature(oldSimulatedAnnealingStartingTemperature);
-            acceptorList.add(oldSimulatedAnnealingAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SIMULATED_ANNEALING))
                 || simulatedAnnealingStartingTemperature != null) {

@@ -19,10 +19,25 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
-        <name>oldSimulatedAnnealing-8000</name>
+        <name>tabuSearch</name>
+        <localSearchSolver>
+            <deciderScoreComparatorFactory>
+                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+            </deciderScoreComparatorFactory>
+            <acceptor>
+                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                <completeMoveTabuSize>7</completeMoveTabuSize>
+            </acceptor>
+            <forager>
+                <pickEarlyType>NEVER</pickEarlyType>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-0hard-8000soft</name>
         <localSearchSolver>
             <acceptor>
-                <oldSimulatedAnnealingStartingTemperature>8000.0</oldSimulatedAnnealingStartingTemperature>
+                <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
             </acceptor>
             <forager>
@@ -32,23 +47,10 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>oldSimulatedAnnealing-10000</name>
+        <name>simulatedAnnealing-0hard-10000soft</name>
         <localSearchSolver>
             <acceptor>
-                <oldSimulatedAnnealingStartingTemperature>10000.0</oldSimulatedAnnealingStartingTemperature>
-                <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-            </acceptor>
-            <forager>
-                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-                <minimalAcceptedSelection>4</minimalAcceptedSelection>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>simulatedAnnealing-2hard-8000soft</name>
-        <localSearchSolver>
-            <acceptor>
-                <simulatedAnnealingStartingTemperature>2hard/8000soft</simulatedAnnealingStartingTemperature>
+                <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
                 <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
             </acceptor>
             <forager>
@@ -67,21 +69,6 @@
             <forager>
                 <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
                 <minimalAcceptedSelection>4</minimalAcceptedSelection>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
-    <solverBenchmark>
-        <name>deciderScoreComparatorFactory-natural</name>
-        <localSearchSolver>
-            <deciderScoreComparatorFactory>
-                <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-            </deciderScoreComparatorFactory>
-            <acceptor>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-                <completeMoveTabuSize>7</completeMoveTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
             </forager>
         </localSearchSolver>
     </solverBenchmark>

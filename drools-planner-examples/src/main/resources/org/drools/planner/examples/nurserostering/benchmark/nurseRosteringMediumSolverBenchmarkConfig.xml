@@ -59,7 +59,7 @@
         </localSearchSolver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>simulatedAnnealing</name>
+        <name>simulatedAnnealing-0hard-8soft</name>
         <localSearchSolver>
             <selector>
                 <selector>
@@ -73,7 +73,55 @@
                 </selector>
             </selector>
             <acceptor>
-                <simulatedAnnealingStartingTemperature>10.0</simulatedAnnealingStartingTemperature>
+                <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
+                <completePropertyTabuSize>5</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-0hard-10soft</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+                </selector>
+            </selector>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>0hard/10soft</simulatedAnnealingStartingTemperature>
+                <completePropertyTabuSize>5</completePropertyTabuSize>
+            </acceptor>
+            <forager>
+                <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+                <minimalAcceptedSelection>4</minimalAcceptedSelection>
+            </forager>
+        </localSearchSolver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>simulatedAnnealing-2hard-10soft</name>
+        <localSearchSolver>
+            <selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+                </selector>
+                <selector>
+                    <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+                </selector>
+            </selector>
+            <acceptor>
+                <simulatedAnnealingStartingTemperature>2hard/10soft</simulatedAnnealingStartingTemperature>
                 <completePropertyTabuSize>5</completePropertyTabuSize>
             </acceptor>
             <forager>
