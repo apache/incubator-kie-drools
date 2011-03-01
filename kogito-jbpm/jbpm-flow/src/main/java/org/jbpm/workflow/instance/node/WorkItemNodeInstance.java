@@ -56,6 +56,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Runtime counterpart of a work item node.
@@ -194,15 +195,31 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         				        throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + target);
         				    }
         				}
-        				NodeList nl = (NodeList)  exprFrom.evaluate(variableScopeInstance.getVariable(source), XPathConstants.NODESET);
+        				NodeList nl = null;
+        				if (variableScopeInstance.getVariable(source) instanceof org.w3c.dom.Node) {
+        				     nl = (NodeList) exprFrom.evaluate(variableScopeInstance.getVariable(source), XPathConstants.NODESET);
+        				} else if (variableScopeInstance.getVariable(source) instanceof String) {
+        				    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+                            Document doc = builder.newDocument();
+                            //quirky: create a temporary element, use its nodelist
+                            Element temp = doc.createElement("temp");
+                            temp.appendChild(doc.createTextNode((String) variableScopeInstance.getVariable(source)));
+                            nl = temp.getChildNodes();
+        				} else if (variableScopeInstance.getVariable(source) == null) {
+        				    // don't throw errors yet ?
+        				    throw new RuntimeException("Source value was null for source " + source);
+        				}
+        				
         				if (nl.getLength() == 0) {
         				    throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + source);
         				}
-        				for (int i =0 ; i < nl.getLength(); i++) {
+        				for (int i = 0 ; i < nl.getLength(); i++) {
         					
         					if (!(targetElem instanceof org.w3c.dom.Node)) {
         					    if (nl.item(i) instanceof Attr) {
                                     targetElem = ((Attr) nl.item(i)).getValue();
+        					    } else if (nl.item(i) instanceof Text) {
+        					        targetElem = ((Text) nl.item(i)).getWholeText();
                                 } else {
                                     DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
                                     Document doc = builder.newDocument();
