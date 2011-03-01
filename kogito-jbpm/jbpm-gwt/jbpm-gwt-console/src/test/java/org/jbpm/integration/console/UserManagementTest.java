@@ -19,4 +19,4 @@ public class UserManagementTest {
 		fail("Unimplemented");
 		assertEquals(true, userManager.getActorsForGroup("krisv").contains("Knights Templar"));
 	}
-}
+}   

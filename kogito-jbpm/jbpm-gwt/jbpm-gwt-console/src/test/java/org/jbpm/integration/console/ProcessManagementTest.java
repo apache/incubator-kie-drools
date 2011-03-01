@@ -23,7 +23,7 @@ public class ProcessManagementTest extends JbpmTestCase{
 		public void instantiateProcesses(){
 			HashMap<String, Object> variables = new HashMap<String, Object>();
 			variables.put("key", "variable");
-			processManager.newInstance("Minimal");
+			processManager.newInstance("Minimal"); 
 			processManager.newInstance("UserTask", variables);
 			processManager.newInstance("UserTask", variables);
 		

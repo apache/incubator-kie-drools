@@ -38,7 +38,7 @@ public class TransformTest extends JbpmTestCase {
 	public void testTaskSummaryTransform(){
 		fail("Unimplemented");
 	}
-	
+	 
 	@Test
 	public void testTaskTransform(){
 		fail("Unimplemented");

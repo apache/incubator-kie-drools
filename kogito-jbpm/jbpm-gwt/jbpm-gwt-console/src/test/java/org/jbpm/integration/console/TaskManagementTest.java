@@ -19,7 +19,7 @@ public class TaskManagementTest extends JbpmTestCase {
 	@After
 	public void destroyManager(){
 		taskManager= null;
-	}
+	} 
 	@Test
 	public void testAssignTask(){
 		taskManager.connect();
