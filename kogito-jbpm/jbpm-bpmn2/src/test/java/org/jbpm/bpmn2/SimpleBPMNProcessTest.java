@@ -29,6 +29,7 @@ import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1179,6 +1180,48 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 //                assertEquals("mynode", ((Element) workItem.getParameter("Comment")).getFirstChild().getNodeName());
 //                assertEquals("user", ((Element) workItem.getParameter("Comment")).getFirstChild().getFirstChild().getNodeName());
 //                assertEquals("hello world", ((Element) workItem.getParameter("coId")).getFirstChild().getFirstChild().getAttributes().getNamedItem("hello").getNodeValue());
+            }
+            
+        });
+        Document document = DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder().parse(new ByteArrayInputStream(
+                "<user hello='hello world' />".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", document.getFirstChild());
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+
+	public void testDataOutputAssociationsforHumanTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder;
+				try {
+					builder = factory.newDocumentBuilder();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+//					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+				final Map<String, Object> results = new HashMap<String, Object>();
+
+		        // process metadata
+		        org.w3c.dom.Document processMetadaDoc = builder.newDocument();
+		        org.w3c.dom.Element processMetadata = processMetadaDoc.createElement("previoustasksowner");
+		        processMetadaDoc.appendChild(processMetadata);
+//		        org.w3c.dom.Element procElement = processMetadaDoc.createElement("previoustasksowner");
+		        processMetadata.setAttribute("primaryname", "my_result");
+//		        processMetadata.appendChild(procElement);            
+		        results.put("output", processMetadata);
+
+				mgr.completeWorkItem(workItem.getId(), results);
             }
             
         });
