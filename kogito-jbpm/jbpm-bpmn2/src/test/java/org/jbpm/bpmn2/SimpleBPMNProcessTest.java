@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,11 +42,7 @@ import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
 import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
@@ -72,8 +67,6 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import bitronix.tm.TransactionManagerServices;
 
 public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 
@@ -1284,7 +1277,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         ProcessInstance processInstance = ksession.startProcess("process", params);
     }
-
+	
 	public void testDataOutputAssociations() throws Exception {
         KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -1337,7 +1330,6 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
             
         });
         ProcessInstance processInstance = ksession.startProcess("process", null);
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
     }
 	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
