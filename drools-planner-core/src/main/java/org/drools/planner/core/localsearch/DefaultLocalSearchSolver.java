@@ -140,8 +140,11 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         termination.solvingEnded(localSearchSolverScope);
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
         long timeMillisSpend = localSearchSolverScope.calculateTimeMillisSpend();
-        long averageCalculateCountPerSecond = (timeMillisSpend == 0L) ? 0L
-                : localSearchSolverScope.getCalculateCount() * 1000L / timeMillisSpend;
+        if (timeMillisSpend == 0L) {
+            // Avoid divide by zero exception on a fast CPU
+            timeMillisSpend = 1L;
+        }
+        long averageCalculateCountPerSecond = localSearchSolverScope.getCalculateCount() * 1000L / timeMillisSpend;
         logger.info("Solved at step index ({}) with time spend ({}) for best score ({})"
                 + " with average calculate count per second ({}).", new Object[]{
                 localSearchSolverScope.getLastCompletedLocalSearchStepScope().getStepIndex(),
