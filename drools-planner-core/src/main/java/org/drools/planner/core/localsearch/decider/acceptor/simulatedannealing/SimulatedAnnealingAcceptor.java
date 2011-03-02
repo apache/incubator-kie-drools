@@ -29,9 +29,10 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     protected Score startingTemperature;
 
-    protected Score temperature;
-    protected double[] temperatureParts;
     protected int partsLength;
+    protected double[] startingTemperatureParts;
+    // No protected Score temperature do avoid rounding errors when using Score.multiply(double)
+    protected double[] temperatureParts;
 
     protected double temperatureMinimum = 1.0E-100; // Double.MIN_NORMAL is E-308
 
@@ -51,9 +52,9 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
                         + ") cannot have negative part (" + startingTemperaturePart + ").");
             }
         }
-        temperature = startingTemperature;
-        temperatureParts = temperature.toDoubleArray();
-        partsLength = temperatureParts.length;
+        startingTemperatureParts = startingTemperature.toDoubleArray();
+        temperatureParts = startingTemperatureParts;
+        partsLength = startingTemperatureParts.length;
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
@@ -89,9 +90,10 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         super.stepTaken(localSearchStepScope);
         double timeGradient = localSearchStepScope.getTimeGradient();
-        temperature = startingTemperature.multiply(1.0 - timeGradient);
-        temperatureParts = temperature.toDoubleArray();
+        double reverseTimeGradient = 1.0 - timeGradient;
+        temperatureParts = new double[partsLength];
         for (int i = 0; i < partsLength; i++) {
+            temperatureParts[i] = startingTemperatureParts[i] * reverseTimeGradient;
             if (temperatureParts[i] < temperatureMinimum) {
                 temperatureParts[i] = temperatureMinimum;
             }

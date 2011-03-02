@@ -29,6 +29,7 @@ import org.drools.planner.core.localsearch.decider.forager.Forager;
 public interface Acceptor extends LocalSearchSolverLifecycleListener {
 
     /**
+     * TODO the use for an acceptChance between 0.0 and 1.0 is unproven. A boolean instead of a double is sufficient?
      * @param moveScope not null
      * @return never negative; if rejected 0.0; if accepted higher than 0.0 (usually 1.0)
      */
