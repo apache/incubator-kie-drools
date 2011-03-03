@@ -119,7 +119,9 @@ public class MVELReturnValueEvaluator
 	                                           factory );
 
         if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values" );
+            throw new RuntimeException( "Constraints must return boolean values: " + 
+        		unit.getExpression() + " returns " + value + 
+        		(value == null? "" : " (type=" + value.getClass()));
         }
         return ((Boolean) value).booleanValue();
 
