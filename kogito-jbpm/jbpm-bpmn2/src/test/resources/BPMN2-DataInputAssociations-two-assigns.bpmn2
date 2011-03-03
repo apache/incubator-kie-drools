@@ -31,10 +31,6 @@
           <from>.</from>
           <to>foo</to>
         </assignment>
-      </dataInputAssociation>
-      <dataInputAssociation>
-        <sourceRef>instanceMetadata</sourceRef>
-        <targetRef>_BF09B923-BE11-4447-BECB-609BD86C59EF_Comment</targetRef>
         <assignment>
           <from>.</from>
           <to>foo/bar</to>
