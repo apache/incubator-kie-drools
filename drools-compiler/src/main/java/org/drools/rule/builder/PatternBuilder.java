@@ -718,24 +718,23 @@ public class PatternBuilder
             if ( value.startsWith( "(" ) ) {
                 // it's a return value
                 value = value.substring( 1, value.length() -1 );
-//                restriction = buildRestriction( context,
-//                                                pattern,
-//                                                extractor,
-//                                                fieldConstraintDescr,
-//                                                (ReturnValueRestrictionDescr) restrictionDescr );
                 
                 restriction = buildRestriction( context,
-                                                                                                 (Pattern) context.getBuildStack().peek(),
-                                                                                                 extractor,
-                                                                                                 fdescr,
-                                                                                                 new ReturnValueRestrictionDescr( operator, (notPos >= 0), null, value ));
-//                VariableConstraint constraint = new VariableConstraint( extractor,
-//                                                                        restriction );                
+                                                (Pattern) context.getBuildStack().peek(),
+                                                extractor,
+                                                fdescr,
+                                                new ReturnValueRestrictionDescr( operator, (notPos >= 0), null, value ));            
+            } else if ( value.indexOf( '.' ) >= 0) {
+                restriction = buildRestriction( context,
+                                                extractor,
+                                                fdescr,
+                                                new QualifiedIdentifierRestrictionDescr(operator, (notPos >= 0), null, value) );
+                                                //(QualifiedIdentifierRestrictionDescr) restrictionDescr );                
             } else {
                 restriction =  buildRestriction( context,
-                                                                                           extractor,
-                                                                                           fdescr,
-                                                                                           new VariableRestrictionDescr( operator, (notPos >= 0), null, value ));
+                                                 extractor,
+                                                 fdescr,
+                                                 new VariableRestrictionDescr( operator, (notPos >= 0), null, value ));
                 registerReadAccessor( context,
                                       pattern.getObjectType(),
                                       fieldName,
