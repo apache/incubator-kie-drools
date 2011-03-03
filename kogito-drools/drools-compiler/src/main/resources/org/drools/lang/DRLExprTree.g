@@ -43,7 +43,7 @@ constraint returns [ConstraintConnectiveDescr root]
 expression returns [BaseDescr result]
 @init { BaseDescr descr = null; }
 @after { $result = descr; }
-    :   ^(op=DOUBLE_PIPE p1=expression p2=expression )  
+    :   ^(DOUBLE_PIPE p1=expression p2=expression )  
        { descr = ConstraintConnectiveDescr.newOr(); 
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p1.result );  
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p2.result ); }
@@ -63,18 +63,19 @@ expression returns [BaseDescr result]
        { descr = ConstraintConnectiveDescr.newIncAnd(); 
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p1.result );  
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p2.result ); }
-    |   ^(op=relationalOp p1=expression p2=expression )
-       { descr = new RelationalExprDescr( $op.text, $p1.result, $p2.result ); }
-    |   ^(op=NEG_OPERATOR p1=expression p2=expression )
-       { descr = new RelationalExprDescr( "not "+$op.text, $p1.result, $p2.result ); }
+    |   ^(ro=relationalOp p1=expression p2=expression )
+       { descr = new RelationalExprDescr( $ro.text, $p1.result, $p2.result ); }
+    |   ^(no=NEG_OPERATOR p1=expression p2=expression )
+       { descr = new RelationalExprDescr( "not "+$no.text, $p1.result, $p2.result ); }
     | 	^(ao=assignmentOperator p1=expression p2=expression)    
-       { descr = new RelationalExprDescr( $ao.start.getText(), $p1.result, $p2.result ); }
-    |   ^(mathOp expression expression )
+       { descr = new RelationalExprDescr( $ao.text, $p1.result, $p2.result ); }
+    |   ^(PAR_EXPRESSION expression)
+    |   ^(mathOp expression expression? )
     |   ^(unaryOp expression)
     |   ^(QUESTION expression expression expression )
     |   ^(CAST TYPE expression)
-    |   se=literal
-       { descr = new AtomicExprDescr( $se.text ); }
+    |   pr=primary
+       { descr = new AtomicExprDescr( $pr.text ); }
     ;
 
 assignmentOperator
@@ -123,22 +124,19 @@ mathOp
     ;
     
 unaryOp
-    :   PLUS
-    |   MINUS
-    |   INCR
+    :   INCR
     |   DECR
     |   TILDE
     |   NEGATION
     ;
 
-unaryExpressionNotPlusMinus
-    :   primary selector* (INCR|DECR)?
+primaryParent
+    :   ^(primary selector* (INCR|DECR)?)
+    |   ^(primary nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments) )
     ;
     
 primary
-    :	parExpression
-    |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
-    |   ^(PRIMARY literal)
+    :	^(PRIMARY literal)
     |   ^(PRIMARY super_key superSuffix)
     |   ^(PRIMARY new_key creator)
     |   ^(PRIMARY TYPE (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key)
@@ -163,10 +161,6 @@ mapEntry
     :	^(MAP_ENTRY expression expression)
     ;
 
-parExpression
-    :   expression
-    ;
-
 identifierSuffix
     :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
     |	((LEFT_SQUARE) => LEFT_SQUARE expression RIGHT_SQUARE)+ // can also be matched by selector, but do here
@@ -179,19 +173,28 @@ creator
     ;
 
 createdName
-    :	//ID typeArguments?
-        //( DOT ID typeArguments?)*
-        //|	primitiveType
+    :	ID typeArguments?
+        ( DOT ID typeArguments?)*
+        | TYPE
+    ;
+
+typeArguments
+    :	LESS typeArgument (COMMA typeArgument)* GREATER
+    ;
+
+typeArgument
+    :	TYPE
+    |	QUESTION ((extends_key | super_key) TYPE)?
     ;
 
 innerCreator
-    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> ID classCreatorRest
+    :	ID classCreatorRest
     ;
 
 arrayCreatorRest
     :   LEFT_SQUARE
     (   RIGHT_SQUARE (LEFT_SQUARE RIGHT_SQUARE)* arrayInitializer
-        |   expression RIGHT_SQUARE ({!helper.validateLT(2,"]")}?=>LEFT_SQUARE expression RIGHT_SQUARE)* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)*
+        |   expression RIGHT_SQUARE (LEFT_SQUARE expression RIGHT_SQUARE)* (LEFT_SQUARE RIGHT_SQUARE)*
         )
     ;
 
@@ -213,7 +216,11 @@ explicitGenericInvocation
     ;
 
 nonWildcardTypeArguments
-    :	LESS //typeList GREATER
+    :	LESS typeList GREATER
+    ;
+
+typeList
+    :	TYPE (COMMA TYPE)* 
     ;
 
 explicitGenericInvocationSuffix

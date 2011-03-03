@@ -20,6 +20,7 @@ tokens {
     LIST;
     MAP;
     MAP_ENTRY;
+    PAR_EXPRESSION;
 }
   
 @header {
