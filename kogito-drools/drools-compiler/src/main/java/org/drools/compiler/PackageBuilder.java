@@ -61,6 +61,7 @@ import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -935,9 +936,12 @@ public class PackageBuilder {
             }
 
             // is it a regular fact or an event?
-            String role = typeDescr.getAnnotation( TypeDeclaration.Role.ID ).getValue();
-            if ( role != null ) {
-                type.setRole( TypeDeclaration.Role.parseRole( role ) );
+            AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
+            if ( annotationDescr != null ) {
+                String role = annotationDescr.getValue();
+                if ( role != null ) {
+                    type.setRole( TypeDeclaration.Role.parseRole( role ) );
+                }                
             }
 
             //sotty: need to resolve supertype and interfaces, if imported
@@ -965,7 +969,11 @@ public class PackageBuilder {
             }
 
             // is it a POJO or a template?
-            String templateName = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE ).getValue();
+            annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
+            String templateName = null;
+            if ( annotationDescr != null ) {
+                templateName = annotationDescr.getValue();
+            }
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -977,7 +985,11 @@ public class PackageBuilder {
                     continue;
                 }
             } else {
-                String className = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS ).getValue();
+                annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
+                String className = null;
+                if ( annotationDescr != null ) {
+                    className = annotationDescr.getValue();
+                }
                 if ( className == null ) {
                     className = type.getTypeName();
                 }
@@ -1010,7 +1022,11 @@ public class PackageBuilder {
                 }
             }
 
-            String timestamp = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP ).getValue();
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
+            String timestamp = null;
+            if ( annotationDescr != null ) {
+                timestamp = annotationDescr.getValue();
+            }
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1019,7 +1035,12 @@ public class PackageBuilder {
                                                                   timestamp,
                                                                   type.new TimestampAccessorSetter() );
             }
-            String duration = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION ).getValue();
+            
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
+            String duration = null;
+            if ( annotationDescr != null ) {
+                duration = annotationDescr.getValue();
+            }            
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1028,7 +1049,12 @@ public class PackageBuilder {
                                                                   duration,
                                                                   type.new DurationAccessorSetter() );
             }
-            String expiration = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE ).getValue();
+
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
+            String expiration = null;
+            if ( annotationDescr != null ) {
+                expiration = annotationDescr.getValue();
+            }               
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();

@@ -1773,6 +1773,9 @@ public class MiscTest {
         final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_PropertyChangeTypeDecl.drl" ) ),
                      ResourceType.DRL );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -2812,6 +2815,9 @@ public class MiscTest {
     public void testPredicateException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_PredicateException.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

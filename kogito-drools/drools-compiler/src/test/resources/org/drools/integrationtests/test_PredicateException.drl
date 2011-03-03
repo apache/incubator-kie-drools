@@ -8,7 +8,7 @@ function boolean throwException(Object object) {
 
 rule "Throw Predicate Exception"
     when
-        Cheese( type1:type -> ( throwException( type1 ) ) )
+        Cheese( type1:type, eval( throwException( type1 ) ) )
     then
 
 end  
