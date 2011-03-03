@@ -113,7 +113,6 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (!workItemNode.isWaitForCompletion()) {
             triggerCompleted();
         }
-
         this.workItemId = workItem.getId();
     }    
 
