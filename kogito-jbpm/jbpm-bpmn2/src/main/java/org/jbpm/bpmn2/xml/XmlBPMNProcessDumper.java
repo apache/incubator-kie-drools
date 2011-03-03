@@ -156,6 +156,10 @@ public class XmlBPMNProcessDumper {
         if (((org.jbpm.workflow.core.WorkflowProcess) process).isDynamic()) {
         	xmlDump.append("tns:adHoc=\"true\" ");
         }
+        String version = process.getVersion();
+        if (version != null && !"".equals(version)) {
+            xmlDump.append("tns:version=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(version) + "\" ");
+        }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
         visitLanes(process, xmlDump);
