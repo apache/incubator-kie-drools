@@ -60,10 +60,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XML11Serializer;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
-
 /**
  * Runtime counterpart of a work item node.
  * 
@@ -263,13 +259,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (target != null) {
             org.w3c.dom.Node parent = null;
                 parent = ((org.w3c.dom.Node) target).getParentNode();
-            XMLSerializer ser = new XML11Serializer(new OutputStreamWriter(System.out), new OutputFormat());
-            try {
-                ser.serialize(parent);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+                
+            //in case we need to debug the code, a quirky way to get the xml out to System.out:
+//            XMLSerializer ser = new XML11Serializer(new OutputStreamWriter(System.out), new OutputFormat());
+//            try {
+//                ser.serialize(parent);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
             targetElem = exprTo.evaluate(parent, XPathConstants.NODE);
             
             if (targetElem == null) {
