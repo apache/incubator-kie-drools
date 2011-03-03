@@ -64,13 +64,17 @@ literal
     ;
 
 typeList
-    :	type (COMMA type)*
-    ;
+    :	type (COMMA type)* -> ^(TYPE_LIST type+)
+        ;
 
 type
+    : 	tm=typeMatch -> TYPE[$tm.text]
+    ;
+    
+typeMatch
     : 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
     |	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-    ;
+    ;    
 
 typeArguments
     :	LESS typeArgument (COMMA typeArgument)* GREATER
@@ -121,7 +125,7 @@ andExpression
     
 andOrRestriction
   	: (ee=equalityExpression -> $ee) 
-  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpressionTk )
+  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpression )
   	  -> ^($lop $andOrRestriction ^($op {$ee.se1} $se2)))*	
   	;    
 
@@ -145,7 +149,7 @@ inExpression returns [CommonTree se1]
 
 relationalExpression returns [CommonTree se1]
 @after { $se1 = (CommonTree) $se.tree; }
-  : se=shiftExpressionTk ( (relationalOp)=> relationalOp^ shiftExpressionTk )*
+  : se=shiftExpression ( (relationalOp)=> relationalOp^ shiftExpression )*
   ;
 
 operator
@@ -165,44 +169,42 @@ relationalOp
     )
     ;
     
-shiftExpressionTk
-    : se=shiftExpression -> SHIFT_EXPR[$se.text]
-    ;
-
 shiftExpression
-  : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
+  : additiveExpression ( (shiftOp)=>shiftOp^ additiveExpression )*
     ;
 
 shiftOp
-    :	(LESS LESS | GREATER GREATER GREATER | GREATER GREATER )
+    :	(LESS LESS -> SHL["<<"]
+        | GREATER GREATER GREATER -> SHRB[">>>"]
+        | GREATER GREATER -> SHR[">>"] )
     ;
 
 additiveExpression
-  :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
+  :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS^ | MINUS^) multiplicativeExpression )*
     ;
 
 multiplicativeExpression
-  :   unaryExpression ( ( STAR | DIV | MOD ) unaryExpression )*
+  :   unaryExpression ( ( STAR^ | DIV^ | MOD^ ) unaryExpression )*
     ;
 
 unaryExpression
-    :   PLUS unaryExpression
-    |	MINUS unaryExpression
-    |   INCR primary
-    |   DECR primary
+    :   PLUS^ unaryExpression
+    |	MINUS^ unaryExpression
+    |   INCR^ primary
+    |   DECR^ primary
     |   unaryExpressionNotPlusMinus
     ;
 
 unaryExpressionNotPlusMinus
-    :   TILDE unaryExpression
-    | 	NEGATION unaryExpression
+    :   TILDE^ unaryExpression
+    | 	NEGATION^ unaryExpression
     |   (castExpression)=>castExpression
     |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
     ;
     
 castExpression
-    :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN unaryExpression
-    |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
+    :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN unaryExpression -> ^(CAST primitiveType unaryExpression)
+    |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus -> ^(CAST type unaryExpressionNotPlusMinus)
     ;
     
 primitiveType
@@ -219,35 +221,35 @@ primitiveType
 primary
     :	(parExpression)=> parExpression
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
-    |   (literal)=> literal
+    |   (literal)=> literal -> ^(PRIMARY literal)
     //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
-    |   (super_key)=> super_key superSuffix
-    |   (new_key)=> new_key creator
-    |   (primitiveType)=> primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key
+    |   (super_key)=> super_key superSuffix -> ^(PRIMARY super_key superSuffix)
+    |   (new_key)=> new_key creator -> ^(PRIMARY new_key creator)
+    |   (primitiveType)=> primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key -> ^(PRIMARY primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key)
     //|   void_key DOT class_key
-    |   (inlineMapExpression)=> inlineMapExpression
-    |   (inlineListExpression)=> inlineListExpression
-    |   (ID)=>ID ((DOT ID)=>DOT ID)* ((identifierSuffix)=>identifierSuffix)?
+    |   (inlineMapExpression)=> inlineMapExpression -> ^(PRIMARY inlineMapExpression)
+    |   (inlineListExpression)=> inlineListExpression -> ^(PRIMARY inlineListExpression)
+    |   (ID)=>ID ((DOT ID)=>DOT ID)* ((identifierSuffix)=>identifierSuffix)? -> ^(PRIMARY ID (DOT ID)* identifierSuffix?)
     ;
 
 inlineListExpression
-    :   LEFT_SQUARE expressionList? RIGHT_SQUARE	
+    :   LEFT_SQUARE expressionList? RIGHT_SQUARE -> ^(LIST expressionList?)	
     ;
     
 inlineMapExpression
-    :	LEFT_SQUARE mapExpressionList+ RIGHT_SQUARE
+    :	LEFT_SQUARE mapExpressionList RIGHT_SQUARE -> ^(MAP mapExpressionList)
     ;
 
 mapExpressionList
-    :	mapEntry (COMMA mapEntry)*
+    :	mapEntry (COMMA! mapEntry)*
     ;
     
 mapEntry
-    :	expression COLON expression
+    :	expression COLON expression -> ^(MAP_ENTRY expression+)
     ;
 
 parExpression
-    :	LEFT_PAREN expression RIGHT_PAREN
+    :	LEFT_PAREN! expression RIGHT_PAREN!
     ;
 
 identifierSuffix
@@ -365,39 +367,39 @@ instanceof_key
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID -> TYPE[$id]
     ;
 
 char_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID -> TYPE[$id]
     ;
 
 byte_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID -> TYPE[$id]
     ;
 
 short_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID -> TYPE[$id]
     ;
 
 int_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID -> TYPE[$id]
     ;
 
 float_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID -> TYPE[$id]
     ;
 
 long_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID -> TYPE[$id]
     ;
 
 double_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID -> TYPE[$id]
     ;
 
 void_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID -> TYPE[$id]
     ;
 
 this_key
