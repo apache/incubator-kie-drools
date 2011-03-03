@@ -114,7 +114,7 @@ public class RuleTerminalNode extends BaseNode
         for (String str : rule.getRequiredDeclarations() ) {
             this.declarations[i++] = decls.get( str );
         }
-        Arrays.sort( this.declarations, SortDeclarations.isntance  );
+        Arrays.sort( this.declarations, SortDeclarations.instance  );
     }
 
     // ------------------------------------------------------------
@@ -448,7 +448,7 @@ public class RuleTerminalNode extends BaseNode
     }
     
     public static class SortDeclarations implements Comparator<Declaration> {
-        public final static SortDeclarations isntance = new SortDeclarations();
+        public final static SortDeclarations instance = new SortDeclarations();
         public int compare(Declaration d1,
                            Declaration d2) {
             return ( d1.getIdentifier().compareTo( d2.getIdentifier() ) );

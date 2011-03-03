@@ -320,24 +320,27 @@ public class MVELCompilationUnit
               vals[i++] = workingMemory.getGlobal( this.globalIdentifiers[j] );
             }
         }
-             
-        InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
+        
         IdentityHashMap<Object, FactHandle> identityMap = null;
         if ( knowledgeHelper != null ) {
             identityMap = new IdentityHashMap<Object, FactHandle>();
         }
         
-        if ( this.previousDeclarations != null ) {
-            for ( int j = 0, length = this.previousDeclarations.length; j < length; j++ ) {
-                Declaration decl = this.previousDeclarations[j];
-                InternalFactHandle handle = getFactHandle( decl, 
-                                                           handles );
-                
-                Object o = decl.getValue( (InternalWorkingMemory) workingMemory, handle.getObject() );
-                if ( knowledgeHelper != null ) {
-                    identityMap.put( decl.getIdentifier(), handle );
+             
+        if ( tuples != null ) {
+            InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
+            if ( this.previousDeclarations != null ) {
+                for ( int j = 0, length = this.previousDeclarations.length; j < length; j++ ) {
+                    Declaration decl = this.previousDeclarations[j];
+                    InternalFactHandle handle = getFactHandle( decl, 
+                                                               handles );
+                    
+                    Object o = decl.getValue( (InternalWorkingMemory) workingMemory, handle.getObject() );
+                    if ( knowledgeHelper != null && decl.isPatternDeclaration() ) {
+                        identityMap.put( decl.getIdentifier(), handle );
+                    }
+                    vals[i++] = o;
                 }
-                vals[i++] = o;
             }
         }
         
@@ -349,8 +352,10 @@ public class MVELCompilationUnit
             }
         }
         
-        for ( Object o : otherVars ) {
-            vals[i++] = o;
+        if ( otherVars != null ) {
+            for ( Object o : otherVars ) {
+                vals[i++] = o;
+            }
         }
         
         if ( knowledgeHelper != null ) {

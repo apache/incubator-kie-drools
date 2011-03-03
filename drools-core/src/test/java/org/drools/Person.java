@@ -34,7 +34,7 @@ public class Person {
     private String state;
     private String country;
     
-    private Map addresses;
+    private Map<String, Address> addresses;
     
     private List addressList;
     
@@ -119,11 +119,11 @@ public class Person {
         this.street = street;
     }
 
-    public Map getAddresses() {
+    public Map<String, Address> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(Map addresses) {
+    public void setAddresses(Map<String, Address> addresses) {
         this.addresses = addresses;
     }
 

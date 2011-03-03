@@ -433,7 +433,7 @@ public class Rule
     }
 
     public String[] getRequiredDeclarations() {
-        return requiredDeclarations;
+        return requiredDeclarations != null ? requiredDeclarations : new String[0];
     }
 
     public void setRequiredDeclarations(String[] requiredDeclarations) {

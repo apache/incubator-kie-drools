@@ -200,6 +200,10 @@ public class MiscTest {
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -234,6 +238,10 @@ public class MiscTest {
     public void testStaticFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_StaticField.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -324,7 +332,9 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        System.out.println( builder.getErrors().toString() );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -832,6 +842,9 @@ public class MiscTest {
                                                   Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( drl ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -1188,6 +1201,10 @@ public class MiscTest {
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
@@ -1353,6 +1370,11 @@ public class MiscTest {
                                                             getClass() ),
                       ResourceType.DRL );
 
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -1381,8 +1403,12 @@ public class MiscTest {
     public void testExtends() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
+        
         final Package pkg = builder.getPackage();
-        System.out.println( builder.getErrors() );
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
@@ -1592,6 +1618,10 @@ public class MiscTest {
     public void testLiteralWithEscapes() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_literal_with_escapes.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -2182,6 +2212,9 @@ public class MiscTest {
     public void testPredicate() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_rule_test.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -2626,6 +2659,9 @@ public class MiscTest {
     public void testPredicateAsFirstPattern() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "predicate_as_first_pattern.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }          
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -2823,6 +2859,10 @@ public class MiscTest {
     public void testMultiRestrictionFieldConstraint() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MultiRestrictionFieldConstraint.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+                
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
