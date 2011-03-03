@@ -937,12 +937,10 @@ public class PackageBuilder {
 
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
-            if ( annotationDescr != null ) {
-                String role = annotationDescr.getValue();
-                if ( role != null ) {
-                    type.setRole( TypeDeclaration.Role.parseRole( role ) );
-                }                
-            }
+            String role = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            if ( role != null ) {
+                type.setRole( TypeDeclaration.Role.parseRole( role ) );
+            }                
 
             //sotty: need to resolve supertype and interfaces, if imported
 
@@ -970,10 +968,7 @@ public class PackageBuilder {
 
             // is it a POJO or a template?
             annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
-            String templateName = null;
-            if ( annotationDescr != null ) {
-                templateName = annotationDescr.getValue();
-            }
+            String templateName = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -986,10 +981,7 @@ public class PackageBuilder {
                 }
             } else {
                 annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
-                String className = null;
-                if ( annotationDescr != null ) {
-                    className = annotationDescr.getValue();
-                }
+                String className = ( annotationDescr != null ) ? annotationDescr.getText() : null;
                 if ( className == null ) {
                     className = type.getTypeName();
                 }
@@ -1023,10 +1015,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-            String timestamp = null;
-            if ( annotationDescr != null ) {
-                timestamp = annotationDescr.getValue();
-            }
+            String timestamp = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1037,10 +1026,7 @@ public class PackageBuilder {
             }
             
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
-            String duration = null;
-            if ( annotationDescr != null ) {
-                duration = annotationDescr.getValue();
-            }            
+            String duration = ( annotationDescr != null ) ? annotationDescr.getText() : null;            
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1051,10 +1037,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
-            String expiration = null;
-            if ( annotationDescr != null ) {
-                expiration = annotationDescr.getValue();
-            }               
+            String expiration = ( annotationDescr != null ) ? annotationDescr.getText() : null;             
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
@@ -1126,7 +1109,8 @@ public class PackageBuilder {
 
             PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
-                String idx = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getValue();
+                AnnotationDescr annonDescr = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION );
+                String idx = ( annonDescr != null ) ? annonDescr.getText() : null;
                 if ( idx != null ) {
                     field.setIndex( Integer.valueOf( idx ) );
                 }

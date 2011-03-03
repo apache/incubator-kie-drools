@@ -29,13 +29,16 @@ import java.util.Map;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ArrayIterator;
+import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.WorkingMemory;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 
 public class MVELDataProvider
     implements
@@ -50,8 +53,6 @@ public class MVELDataProvider
 
     private Serializable            expr;
 
-    private transient Declaration[] requiredDeclarations;
-
     public MVELDataProvider() {
 
     }
@@ -59,6 +60,7 @@ public class MVELDataProvider
     public MVELDataProvider(final MVELCompilationUnit unit,
                             final String id) {
         this.unit = unit;
+        this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -86,17 +88,11 @@ public class MVELDataProvider
     }
 
     public Declaration[] getRequiredDeclarations() {
-        //return new Declaration[]{};
-        return this.requiredDeclarations;
+        return this.unit.getPreviousDeclarations();
     }
 
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved) {
-        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
-            if ( this.requiredDeclarations[i].equals( declaration ) ) {
-                this.requiredDeclarations[i] = resolved;
-            }
-        }
         this.unit.replaceDeclaration( declaration,
                                       resolved );
     }
@@ -109,13 +105,7 @@ public class MVELDataProvider
                                final WorkingMemory wm,
                                final PropagationContext ctx,
                                final Object executionContext) {
-        DroolsMVELFactory factory = (DroolsMVELFactory) executionContext;
-
-        factory.setContext( tuple,
-                            null,
-                            null,
-                            wm,
-                            null );
+        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, null, (InternalWorkingMemory) wm );
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expr,

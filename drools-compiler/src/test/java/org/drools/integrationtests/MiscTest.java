@@ -182,12 +182,8 @@ public class MiscTest {
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
                                                             getClass() ),
                       ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( errors.size() > 0 ) {
-            for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( error );
-            }
-            throw new IllegalArgumentException( "Could not parse knowledge." );
+        if ( kbuilder.hasErrors() ) {
+            fail(kbuilder.getErrors().toString());
         }
         assertFalse( kbuilder.hasErrors() );
 
