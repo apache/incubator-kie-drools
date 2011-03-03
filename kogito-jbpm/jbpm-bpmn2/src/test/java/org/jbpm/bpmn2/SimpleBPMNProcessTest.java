@@ -1225,11 +1225,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
             }
             
         });
-        Document document = DocumentBuilderFactory.newInstance()
-        .newDocumentBuilder().parse(new ByteArrayInputStream(
-                "<user hello='hello world' />".getBytes()));
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("instanceMetadata", document.getFirstChild());
         ProcessInstance processInstance = ksession.startProcess("process", params);
     }
 

@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,6 +59,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XML11Serializer;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Runtime counterpart of a work item node.
@@ -255,14 +261,17 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
         // now pick the leaf for this operation
         if (target != null) {
-        	org.w3c.dom.Node parent = null;
-        	if(isInput) {
-            parent = ((org.w3c.dom.Node) target).getParentNode();
-        	}
-        	else {
-        		parent = (org.w3c.dom.Node) target;
-        	}
+            org.w3c.dom.Node parent = null;
+                parent = ((org.w3c.dom.Node) target).getParentNode();
+            XMLSerializer ser = new XML11Serializer(new OutputStreamWriter(System.out), new OutputFormat());
+            try {
+                ser.serialize(parent);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             targetElem = exprTo.evaluate(parent, XPathConstants.NODE);
+            
             if (targetElem == null) {
                 throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + targetExpr);
             }
