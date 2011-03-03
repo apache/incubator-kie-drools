@@ -7,10 +7,19 @@ options {
 tokens {
     OPERATOR;
     NEG_OPERATOR;
-    SHIFT_EXPR;
     SHL_ASSIGN;
     SHRB_ASSIGN;
     SHR_ASSIGN;
+    SHL;
+    SHR;
+    SHRB;
+    TYPE;
+    TYPE_LIST;
+    CAST;
+    PRIMARY;
+    LIST;
+    MAP;
+    MAP_ENTRY;
 }
   
 @header {

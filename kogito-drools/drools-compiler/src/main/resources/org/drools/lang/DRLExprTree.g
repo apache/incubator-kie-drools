@@ -63,26 +63,17 @@ expression returns [BaseDescr result]
        { descr = ConstraintConnectiveDescr.newIncAnd(); 
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p1.result );  
          ((ConstraintConnectiveDescr)descr).addOrMerge( $p2.result ); }
-    |   ^(EQUALS p1=expression p2=expression )
-       { descr = new RelationalExprDescr( "==", $p1.result, $p2.result ); }
-    |   ^(NOT_EQUALS p1=expression p2=expression )
-       { descr = new RelationalExprDescr( "!=", $p1.result, $p2.result ); }
-    |   ^(LESS_EQUALS p1=expression p2=expression )
-       { descr = new RelationalExprDescr( "<=", $p1.result, $p2.result ); }
-    |   ^(GREATER_EQUALS p1=expression p2=expression )
-       { descr = new RelationalExprDescr( ">=", $p1.result, $p2.result ); }
-    |   ^(LESS p1=expression p2=expression )
-       { descr = new RelationalExprDescr( "<", $p1.result, $p2.result ); }
-    |   ^(GREATER p1=expression p2=expression )
-       { descr = new RelationalExprDescr( ">", $p1.result, $p2.result ); }
-    |   ^(op=OPERATOR p1=expression p2=expression )
+    |   ^(op=relationalOp p1=expression p2=expression )
        { descr = new RelationalExprDescr( $op.text, $p1.result, $p2.result ); }
     |   ^(op=NEG_OPERATOR p1=expression p2=expression )
        { descr = new RelationalExprDescr( "not "+$op.text, $p1.result, $p2.result ); }
     | 	^(ao=assignmentOperator p1=expression p2=expression)    
        { descr = new RelationalExprDescr( $ao.start.getText(), $p1.result, $p2.result ); }
+    |   ^(mathOp expression expression )
+    |   ^(unaryOp expression)
     |   ^(QUESTION expression expression expression )
-    |   se=SHIFT_EXPR
+    |   ^(CAST TYPE expression)
+    |   se=literal
        { descr = new AtomicExprDescr( $se.text ); }
     ;
 
@@ -100,3 +91,203 @@ assignmentOperator
     |   SHRB_ASSIGN
     |   SHR_ASSIGN
     ;
+    
+relationalOp
+    :   EQUALS
+    |   NOT_EQUALS
+    |   GREATER_EQUALS
+    |   LESS_EQUALS
+    |   LESS
+    |   GREATER
+    |   OPERATOR
+    ;    
+
+literal
+    :	STRING     
+    |	DECIMAL 
+    |	HEX     
+    |	FLOAT   
+    |	BOOL    
+    |	NULL    
+    ;
+
+mathOp
+    :	SHL
+    |   SHRB
+    |   SHR
+    |   PLUS
+    |   MINUS
+    |   STAR
+    |   DIV
+    |   MOD
+    ;
+    
+unaryOp
+    :   PLUS
+    |   MINUS
+    |   INCR
+    |   DECR
+    |   TILDE
+    |   NEGATION
+    ;
+
+unaryExpressionNotPlusMinus
+    :   primary selector* (INCR|DECR)?
+    ;
+    
+primary
+    :	parExpression
+    |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
+    |   ^(PRIMARY literal)
+    |   ^(PRIMARY super_key superSuffix)
+    |   ^(PRIMARY new_key creator)
+    |   ^(PRIMARY TYPE (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key)
+    |   ^(PRIMARY inlineMapExpression)
+    |   ^(PRIMARY inlineListExpression)
+    |   ^(PRIMARY ID (DOT ID)* identifierSuffix?)
+    ;
+
+inlineListExpression
+    :   ^(LIST expressionList?)	
+    ;
+    
+inlineMapExpression
+    :	^(MAP mapExpressionList)
+    ;
+
+mapExpressionList
+    :	mapEntry+
+    ;
+    
+mapEntry
+    :	^(MAP_ENTRY expression expression)
+    ;
+
+parExpression
+    :   expression
+    ;
+
+identifierSuffix
+    :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
+    |	((LEFT_SQUARE) => LEFT_SQUARE expression RIGHT_SQUARE)+ // can also be matched by selector, but do here
+    |   arguments 
+    ;
+
+creator
+    :	nonWildcardTypeArguments? createdName
+        (arrayCreatorRest | classCreatorRest)
+    ;
+
+createdName
+    :	//ID typeArguments?
+        //( DOT ID typeArguments?)*
+        //|	primitiveType
+    ;
+
+innerCreator
+    :	{!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> ID classCreatorRest
+    ;
+
+arrayCreatorRest
+    :   LEFT_SQUARE
+    (   RIGHT_SQUARE (LEFT_SQUARE RIGHT_SQUARE)* arrayInitializer
+        |   expression RIGHT_SQUARE ({!helper.validateLT(2,"]")}?=>LEFT_SQUARE expression RIGHT_SQUARE)* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)*
+        )
+    ;
+
+variableInitializer
+    :	arrayInitializer
+        |   expression
+    ;
+
+arrayInitializer
+    :	LEFT_CURLY (variableInitializer (COMMA variableInitializer)* (COMMA)? )? RIGHT_CURLY
+    ;
+
+classCreatorRest
+    :	arguments //classBody?		//sotty:  restored classBody to allow for inline, anonymous classes
+    ;
+
+explicitGenericInvocation
+    :	nonWildcardTypeArguments arguments
+    ;
+
+nonWildcardTypeArguments
+    :	LESS //typeList GREATER
+    ;
+
+explicitGenericInvocationSuffix
+    :	super_key superSuffix
+    |   	ID arguments
+    ;
+
+selector
+    :   (DOT super_key)=>DOT super_key superSuffix
+    |   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
+    |   (DOT ID)=>DOT ID ((LEFT_PAREN) => arguments)?
+    //|   DOT this_key
+    |   (LEFT_SQUARE)=>LEFT_SQUARE expression RIGHT_SQUARE
+    ;
+
+superSuffix
+    :	arguments
+    |   	DOT ID ((LEFT_PAREN) => arguments)?
+        ;
+
+squareArguments
+    : LEFT_SQUARE expressionList? RIGHT_SQUARE
+    ;
+
+arguments
+    :	LEFT_PAREN expressionList? RIGHT_PAREN
+    ;
+
+expressionList
+  :   expression (COMMA expression)*
+  ;
+
+// --------------------------------------------------------
+//                      KEYWORDS
+// --------------------------------------------------------
+extends_key
+    :      ID
+    ;
+
+super_key
+    :      ID
+    ;
+
+instanceof_key
+    :      OPERATOR
+    ;
+
+this_key
+    :      ID
+    ;
+
+class_key
+    :      ID
+    ;
+
+new_key
+    :      ID
+    ;
+
+not_key
+    :      ID
+    ;
+
+in_key
+  :      OPERATOR
+  ;
+
+operator_key
+  :      OPERATOR
+  ;
+
+neg_operator_key
+  :      NEG_OPERATOR
+  ;
+
+
+
