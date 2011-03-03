@@ -19,6 +19,7 @@ package org.drools.rule;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.Restriction;
 
@@ -78,5 +79,10 @@ public class OrCompositeRestriction extends AbstractCompositeRestriction {
             clone[i] = (Restriction) this.restrictions[i].clone();
         }
         return new OrCompositeRestriction( clone );
+    }
+
+    public Evaluator getEvaluator() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

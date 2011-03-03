@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -7,6 +8,7 @@ import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.RuleBuildContext;
@@ -32,7 +34,15 @@ public class MVELSalienceBuilder
                                                                  new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
                                                                                       context.getPackageBuilder().getGlobals() ) );
 
-            Declaration[] previousDeclarations = (Declaration[]) decls.values().toArray( new Declaration[decls.size()] );
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+            int i = usedIdentifiers.getDeclarations().keySet().size();
+            Declaration[] previousDeclarations = new Declaration[i];
+            i = 0;
+            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+                previousDeclarations[i] = decls.get( id );
+            }
+            Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
+            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) context.getRuleDescr().getSalience(),
                                                                        analysis,
                                                                        previousDeclarations,

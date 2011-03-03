@@ -6,7 +6,7 @@ global java.util.List list;
 
 rule "literal test rule"
     when
-        Cheese( $x: type == "s\tti\"lto\nn" )
+        Cheese( $x: type, type == "s\tti\"lto\nn" )
     then
         list.add( $x );
 end    

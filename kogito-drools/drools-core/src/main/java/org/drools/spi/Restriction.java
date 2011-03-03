@@ -52,6 +52,8 @@ public interface Restriction
      */
     void replaceDeclaration(Declaration oldDecl,
                             Declaration newDecl);
+    
+    public Evaluator getEvaluator();
 
     /**
      * Returns true if this is a temporal restriction

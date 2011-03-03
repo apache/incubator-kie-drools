@@ -9,7 +9,7 @@ rule "predicate rule test"
     when
         $person1 : Person( $age1 : age )
         // We have no autoboxing of primtives, so have to do by hand
-        person2 : Person( $age2:age -> ( $age2 == ( $age1 + two.intValue() ) ) )
+        person2 : Person( $age2:age, eval( $age2 == ( $age1 + two.intValue() ) ) )
     then
         list.add( $person1 );
         list.add( person2 );

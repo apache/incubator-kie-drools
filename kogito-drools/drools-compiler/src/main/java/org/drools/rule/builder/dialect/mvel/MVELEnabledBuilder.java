@@ -1,13 +1,19 @@
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.EnabledBuilder;
@@ -25,22 +31,31 @@ public class MVELEnabledBuilder
             // This builder is re-usable in other dialects, so specify by name            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
-            Map<String,Class<?>> otherVars = new HashMap<String, Class<?>>();
-            otherVars.put( "rule", org.drools.rule.Rule.class );
+            Map<String, Class< ? >> otherVars = new HashMap<String, Class< ? >>();
+            otherVars.put( "rule",
+                           org.drools.rule.Rule.class );
 
-           Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations(context.getRule());
-            
-           AnalysisResult analysis = dialect.analyzeExpression( context,
-                                                                context.getRuleDescr(),
-                                                                (String) context.getRuleDescr().getEnabled(),
-                                                                new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( declrs ), 
-                                                                                      context.getPackageBuilder().getGlobals() ),
-                                                                otherVars );
+            Map<String, Declaration> declrs = context.getDeclarationResolver().getDeclarations( context.getRule() );
 
-            Declaration[] previousDeclarations = declrs.values().toArray( new Declaration[declrs.size()] );
-            
+            AnalysisResult analysis = dialect.analyzeExpression( context,
+                                                                 context.getRuleDescr(),
+                                                                 (String) context.getRuleDescr().getEnabled(),
+                                                                 new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses( declrs ),
+                                                                                       context.getPackageBuilder().getGlobals() ),
+                                                                 otherVars );
+
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+            int i = usedIdentifiers.getDeclarations().keySet().size();
+            Declaration[] previousDeclarations = new Declaration[i];
+            i = 0;
+            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+                previousDeclarations[i] = declrs.get( id );
+            }
+            Arrays.sort( previousDeclarations, SortDeclarations.instance  );            
+
             String exprStr = (String) context.getRuleDescr().getEnabled();
-            exprStr = exprStr.substring( 1, exprStr.length()-1 )+" ";
+            exprStr = exprStr.substring( 1,
+                                         exprStr.length() - 1 ) + " ";
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( exprStr,
                                                                        analysis,
                                                                        previousDeclarations,

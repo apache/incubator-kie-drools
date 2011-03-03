@@ -46,6 +46,16 @@ public class MVELDumper extends ReflectiveVisitor {
     public MVELDumper() {
 
     }
+    
+    
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
     public String dump(FieldConstraintDescr fieldConstr) {
         return this.dump( fieldConstr, false );
@@ -128,7 +138,7 @@ public class MVELDumper extends ReflectiveVisitor {
         return descrString;
     }
 
-    private String processRestriction(String evaluator,
+    public String processRestriction(String evaluator,
                                       boolean isNegated,
                                       String value) {
         Operator op = Operator.determineOperator( evaluator, isNegated );

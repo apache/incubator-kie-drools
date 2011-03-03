@@ -71,6 +71,7 @@ public class MVELExprAnalyzer {
                                                 final Map<String, Class<?>> localTypes) {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
+            MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             // creating a reusable parser configuration
@@ -146,7 +147,6 @@ public class MVELExprAnalyzer {
                 parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
             }
 
-            MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             Class returnType =  MVEL.analyze( expr,
                                               parserContext2 );
 
@@ -186,6 +186,7 @@ public class MVELExprAnalyzer {
         result.setIdentifiers( identifiers );
 
         final Set<String> notBound = new HashSet<String>( identifiers );
+        notBound.remove( "this" );
         Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
         Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
 

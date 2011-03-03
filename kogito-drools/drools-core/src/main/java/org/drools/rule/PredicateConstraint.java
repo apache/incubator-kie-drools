@@ -30,6 +30,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Restriction;
@@ -402,6 +403,11 @@ public class PredicateConstraint extends MutableTypeConstraint
         public void resetFactHandle() {
             this.rightObject = null;
         }
+    }
+
+    public Evaluator getEvaluator() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

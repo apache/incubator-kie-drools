@@ -117,7 +117,7 @@ public class MVELConsequenceBuilder
                 declrStr[j] = str;
                 declarations[j++] = decls.get( str );
             }
-            Arrays.sort( declarations, SortDeclarations.isntance  );
+            Arrays.sort( declarations, SortDeclarations.instance  );
             context.getRule().setRequiredDeclarations( declrStr );
             
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,

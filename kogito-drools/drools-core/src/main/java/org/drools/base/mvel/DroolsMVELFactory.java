@@ -275,7 +275,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         }
  
         if (vr != null && vr.getType() != null) {
-            throw new CompileException("variable already defined within scope: " + vr.getType() + " " + name);
+            throw new RuntimeException("variable already defined within scope: " + vr.getType() + " " + name);
         }
         else {
             return addResolver(name, new LocalVariableResolver(this, name), value);
@@ -297,7 +297,7 @@ public class DroolsMVELFactory extends BaseVariableResolverFactory
         }
  
         if (vr != null && vr.getType() != null) {
-            throw new CompileException("variable already defined within scope: " + vr.getType() + " " + name);
+            throw new RuntimeException("variable already defined within scope: " + vr.getType() + " " + name);
         }
         else {
             return addResolver(name, new LocalVariableResolver(this, name, type), value);
