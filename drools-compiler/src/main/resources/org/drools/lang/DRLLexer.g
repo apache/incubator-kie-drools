@@ -4,25 +4,6 @@ options {
     language = Java;
 }
 
-tokens {
-    OPERATOR;
-    NEG_OPERATOR;
-    SHL_ASSIGN;
-    SHRB_ASSIGN;
-    SHR_ASSIGN;
-    SHL;
-    SHR;
-    SHRB;
-    TYPE;
-    TYPE_LIST;
-    CAST;
-    PRIMARY;
-    LIST;
-    MAP;
-    MAP_ENTRY;
-    PAR_EXPRESSION;
-}
-  
 @header {
     package org.drools.lang;
 
