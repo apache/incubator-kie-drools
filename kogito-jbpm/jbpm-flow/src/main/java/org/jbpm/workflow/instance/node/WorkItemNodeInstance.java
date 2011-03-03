@@ -16,8 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -280,7 +278,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.newDocument();
             //quirky: create a temporary element, use its nodelist
-            Element temp = doc.createElement("temp");
+            Element temp = doc.createElementNS(null, "temp");
             temp.appendChild(doc.createTextNode((String) source));
             nl = temp.getChildNodes();
         } else if (source == null) {
@@ -347,16 +345,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 	        			System.err.println("when trying to complete Work Item " + workItem.getName());
 	        			System.err.println("Continuing without setting variable.");
 	        		}
-	        	}
-	        	else {
+	        	} else {
 	        		String source = association.getSources().get(0);
 	        		String target = association.getTarget();
 	        		try {
-	        			for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+	        			for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
 	        			    handleAssignment(it.next(), source, target, false);
 	        			}
-	        		}
-	        		catch(Exception e) {
+	        		} catch (Exception e) {
 	        			e.printStackTrace();
 	        			throw new RuntimeException(e);
 	        		}

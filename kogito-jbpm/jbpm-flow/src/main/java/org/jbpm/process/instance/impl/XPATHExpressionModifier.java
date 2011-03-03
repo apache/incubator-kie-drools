@@ -154,7 +154,9 @@ public class XPATHExpressionModifier {
 					    if ((children == null) || (children.getLength() == 0)) {
 					        Node child = document.createElementNS(childName.getNamespaceURI(),
 					                getQualifiedName(childName));
-					        contextNode.appendChild(contextNode.getOwnerDocument().importNode(child, true));
+					        Document currentDoc = (Document) (contextNode instanceof Document ? contextNode : contextNode.getOwnerDocument());
+					        
+					        contextNode.appendChild(currentDoc.importNode(child, true));
 					        contextNode = child;
 					    } else if (children.getLength() == 1) {
 					        contextNode = children.item(0);
