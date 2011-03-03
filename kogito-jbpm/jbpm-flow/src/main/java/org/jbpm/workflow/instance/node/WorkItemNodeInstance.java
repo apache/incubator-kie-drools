@@ -16,6 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,6 +44,10 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.mvel2.MVEL;
+
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.XML11Serializer;
+import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * Runtime counterpart of a work item node.
@@ -221,6 +227,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         System.out.println("when trying to complete Work Item " + workItem.getName());
                         System.out.println("Continuing without setting variable.");
                     }
+
                 } else {
                     try {
                         for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {

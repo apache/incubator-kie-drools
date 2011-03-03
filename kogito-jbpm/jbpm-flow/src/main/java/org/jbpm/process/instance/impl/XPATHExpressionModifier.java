@@ -86,6 +86,10 @@ public class XPATHExpressionModifier {
 	        xpath = xpath.substring(1);
 	    }
 	    Node rootNode = contextNode;
+	    if (contextNode != null) {
+	        contextNode = contextNode.getOwnerDocument();
+	    }
+	    
 		XPathFactory xpf = new XPathFactoryImpl();
 		XPath xpe = xpf.newXPath();    	
 		XPathExpression xpathExpr = xpe.compile(xpath);
@@ -136,12 +140,21 @@ public class XPATHExpressionModifier {
 					    document.appendChild(contextNode);
 					    rootNode = contextNode;
 					} else {
-					    NodeList children = ((Element) contextNode).getElementsByTagNameNS(childName.getNamespaceURI(),
+					    
+					    NodeList children = null;
+					    if (contextNode instanceof Element) {
+					        children = ((Element) contextNode).getElementsByTagNameNS(childName.getNamespaceURI(),
 					            childName.getLocalPart());
+					    } else if (contextNode instanceof Document) {
+					        children = ((Document) contextNode).getElementsByTagNameNS(childName.getNamespaceURI(),
+	                                childName.getLocalPart());
+					    } else {
+					        throw new IllegalArgumentException(contextNode + " is of unsupported type");
+					    }
 					    if ((children == null) || (children.getLength() == 0)) {
 					        Node child = document.createElementNS(childName.getNamespaceURI(),
 					                getQualifiedName(childName));
-					        contextNode.appendChild(child);
+					        contextNode.appendChild(contextNode.getOwnerDocument().importNode(child, true));
 					        contextNode = child;
 					    } else if (children.getLength() == 1) {
 					        contextNode = children.item(0);
@@ -231,7 +244,7 @@ public class XPATHExpressionModifier {
 	public static Document toDOMDocument(Node node) throws TransformerException {
 		// If the node is the document, just cast it
 		if (node instanceof Document) {
-			return (Document) node;
+		    return newDocument();
 			// If the node is an element
 		} else if (node instanceof Element) {
 			Element elem = (Element) node;
