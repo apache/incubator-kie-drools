@@ -130,15 +130,15 @@ unaryOp
     |   NEGATION
     ;
 
-primaryParent
+unaryExpressionNotPlusMinus
     :   ^(primary selector* (INCR|DECR)?)
-    |   ^(primary nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments) )
     ;
     
 primary
     :	^(PRIMARY literal)
-    |   ^(PRIMARY super_key superSuffix)
-    |   ^(PRIMARY new_key creator)
+    |   nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
+    |   ^(PRIMARY ID superSuffix)
+    |   ^(PRIMARY ID creator)
     |   ^(PRIMARY TYPE (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key)
     |   ^(PRIMARY inlineMapExpression)
     |   ^(PRIMARY inlineListExpression)
