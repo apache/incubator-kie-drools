@@ -64,8 +64,8 @@ literal
     ;
 
 typeList
-    :	type (COMMA type)* -> ^(TYPE_LIST type+)
-        ;
+    :	type (COMMA type)*
+    ;
 
 type
     : 	tm=typeMatch -> TYPE[$tm.text]
@@ -198,8 +198,8 @@ unaryExpression
 unaryExpressionNotPlusMinus
     :   TILDE^ unaryExpression
     | 	NEGATION^ unaryExpression
-    |   (castExpression)=>castExpression
-    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
+    |   (castExpression)=>castExpression^
+    |   primary^ ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
     ;
     
 castExpression
@@ -219,7 +219,7 @@ primitiveType
     ;
 
 primary
-    :	(parExpression)=> parExpression
+    :	(parExpression)=> parExpression -> ^(parExpression)
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
     |   (literal)=> literal -> ^(PRIMARY literal)
     //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
@@ -249,7 +249,7 @@ mapEntry
     ;
 
 parExpression
-    :	LEFT_PAREN! expression RIGHT_PAREN!
+    :	LEFT_PAREN expression RIGHT_PAREN -> ^(PAR_EXPRESSION expression)
     ;
 
 identifierSuffix
