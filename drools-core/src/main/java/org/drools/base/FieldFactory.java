@@ -42,7 +42,7 @@ public class FieldFactory {
                                            ValueType valueType,
                                            DateFormats dateFormats) {
         FieldValue field = null;
-        if ( value == null ) {
+        if ( value == null || "null".equals( value )) {
             valueType = ValueType.NULL_TYPE;
         }
         
