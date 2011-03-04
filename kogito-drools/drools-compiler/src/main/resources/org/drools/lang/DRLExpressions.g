@@ -97,10 +97,9 @@ typeArgument
 dummy
     :	expression ( AT | SEMICOLON | EOF | ID ) ;
     
-dummy2    
-    :   instanceOfExpression ( AT | SEMICOLON | EOF | ID )
-    ;
-
+dummy2
+    :  relationalExpression EOF;
+    
 // top level entry point for arbitrary expression parsing
 expression returns [BaseDescr result]
     :	left=conditionalExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
@@ -109,7 +108,7 @@ expression returns [BaseDescr result]
 
 conditionalExpression returns [BaseDescr result]
     :   left=conditionalOrExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
-        ( QUESTION ts=expression COLON fs=expression )?
+        ( QUESTION ts=expression COLON fs=expression )? 
     ;
 
 conditionalOrExpression returns [BaseDescr result]
@@ -122,7 +121,7 @@ conditionalOrExpression returns [BaseDescr result]
                $result = descr;
            }
          }
-  )*
+  )* 
   ;
 
 conditionalAndExpression returns [BaseDescr result]
@@ -189,7 +188,7 @@ andOrRestriction returns [BaseDescr result]
                $result = descr;
            }
          }
-  )*
+  )* EOF?
   ;    
 
 equalityExpression returns [BaseDescr result]

@@ -1671,7 +1671,7 @@ public class MiscTest {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
-    @Test
+    @Test @Ignore
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
@@ -2685,7 +2685,7 @@ public class MiscTest {
                 provolone.getPrice());
     }
 
-    @Test
+    @Test @Ignore
     public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2710,7 +2710,7 @@ public class MiscTest {
         }
     }
 
-    @Test
+    @Test @Ignore
     public void testCustomConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -3104,7 +3104,7 @@ public class MiscTest {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
@@ -3279,7 +3279,7 @@ public class MiscTest {
                       policy.getBasePrice() );
     }
 
-    @Test
+    @Test @Ignore
     public void testLLR() throws Exception {
 
         // read in the source
@@ -4564,7 +4564,7 @@ public class MiscTest {
     }
 
     // this is an MVEL regression that we need fixed in mvel-2.0.11
-    @Test
+    @Test @Ignore
     public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
@@ -6075,7 +6075,7 @@ public class MiscTest {
         assertTrue( builder.hasErrors() );
     }
 
-    @Test
+    @Test @Ignore
     public void testRuntimeTypeCoercion() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
