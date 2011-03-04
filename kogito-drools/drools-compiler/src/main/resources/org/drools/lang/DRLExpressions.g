@@ -45,6 +45,9 @@ options {
     private boolean buildDescr;
     public void setBuildDescr( boolean build ) { this.buildDescr = build; }
     public boolean isBuildDescr() { return this.buildDescr; }
+    
+    public void setLeftMostExpr( String value ) { helper.setLeftMostExpr( value ); }
+    public String getLeftMostExpr() { return helper.getLeftMostExpr(); }
 }
 
 // Alter code generation so catch-clauses get replace with
@@ -279,7 +282,8 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
     |   left=primary { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
-        ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?  
+        ((selector)=>selector)* { if( buildDescr && state.backtracking == 0 && helper.getLeftMostExpr() == null ) { helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); } }
+        ((INCR|DECR)=> (INCR|DECR))? 
     ;
     
 castExpression

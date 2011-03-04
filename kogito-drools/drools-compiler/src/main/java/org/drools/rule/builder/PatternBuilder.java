@@ -227,10 +227,44 @@ public class PatternBuilder
         context.getBuildStack().push( pattern );
 
         for ( BindingDescr b : patternDescr.getBindings() ) {
-            build( context,
-                   pattern,
-                   b,
-                   null ); // null containers get added to the pattern
+            if( true ) { // TODO: replace this by legacy mode configuration
+                String expression = b.getExpression();
+                
+                DrlExprParser parser = new DrlExprParser();
+                ConstraintConnectiveDescr result = parser.parse( expression );
+                if ( parser.hasErrors() ) {
+                    for ( DroolsParserException error : parser.getErrors() ) {
+                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                      descr,
+                                                                      null,
+                                                                      "Unable to parser pattern expression:\n" + error.getMessage() ) );
+                    }
+                    return null;
+                }
+                String left = parser.getLeftMostExpr();
+                // BELLOW is a hack.. need to implement it properly
+                if( expression.equals( left ) ) {
+                    // it is just a bind, so build it
+                    build( context,
+                           pattern,
+                           b,
+                           null ); // null containers get added to the pattern
+                } else {
+                    // it is both a binding and a constraint
+                    b.setExpression( left );
+                    build( context,
+                           pattern,
+                           b,
+                           null ); // null containers get added to the pattern
+                    b.setExpression( expression );
+                }
+                
+            } else {
+                build( context,
+                       pattern,
+                       b,
+                       null ); // null containers get added to the pattern
+            }
         }
 
         List<DescrBranch> literalConstraints = new ArrayList<DescrBranch>();
@@ -316,8 +350,7 @@ public class PatternBuilder
                              List<DescrBranch> variablesIndexes,
                              List<DescrBranch> variableConstraints ) {
         DrlExprParser parser = new DrlExprParser();
-        ConstraintConnectiveDescr result = null;
-        result = parser.parse( descr.getText() );
+        ConstraintConnectiveDescr result = parser.parse( descr.getText() );
         if ( parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),

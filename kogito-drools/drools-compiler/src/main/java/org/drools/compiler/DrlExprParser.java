@@ -51,6 +51,7 @@ public class DrlExprParser {
                                        state );
             DRLExpressions parser = new DRLExpressions( input, state, helper );
             parser.setBuildDescr( true );
+            parser.setLeftMostExpr( null ); // setting initial value just in case
             BaseDescr expr = parser.conditionalAndExpression();
             if ( expr != null && !parser.hasErrors() ) {
                 constraint = ConstraintConnectiveDescr.newAnd();
@@ -60,6 +61,10 @@ public class DrlExprParser {
             helper.reportError( e );
         }
         return constraint;
+    }
+    
+    public String getLeftMostExpr() {
+        return helper != null ? helper.getLeftMostExpr() : null;
     }
 
     /**
