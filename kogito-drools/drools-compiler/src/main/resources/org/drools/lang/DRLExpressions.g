@@ -334,7 +334,13 @@ mapEntry
 
 parExpression returns [BaseDescr result]
     :	LEFT_PAREN expr=expression RIGHT_PAREN 
-        {  if( buildDescr && state.backtracking == 0 ) { $result = $expr.result; }  }
+        {  if( buildDescr && state.backtracking == 0 ) { 
+               $result = $expr.result; 
+               if( $result instanceof AtomicExprDescr ) {
+                   ((AtomicExprDescr)$result).setExpression("(" +((AtomicExprDescr)$result).getExpression() + ")" );
+               } 
+           }  
+        }
     ;
 
 identifierSuffix
