@@ -3,7 +3,7 @@ package org.drools;
 global java.util.List results;
 
 rule "Test enabled expression 1"
-	@ruleID(1234)
+    @ruleID(1234)
     #arbitrary expression using a rule metadata
     enabled ( rule.metaAttributes["ruleID"] == "1234" )
   when
@@ -13,7 +13,7 @@ rule "Test enabled expression 1"
 end
 
 rule "Test enabled expression 2"
-	@ruleID(1234)
+    @ruleID(1234)
     # using bound variables 
     enabled ( "Michael".equals( $name ) )
   when
@@ -23,7 +23,7 @@ rule "Test enabled expression 2"
 end
 
 rule "Test enabled expression 3"
-	@ruleID(1234)
+    @ruleID(1234)
     # using simple expressions 
     enabled ( 1 + 1 == 2 )
   when
@@ -33,7 +33,7 @@ rule "Test enabled expression 3"
 end
 
 rule "Test enabled expression 4"
-	@ruleID(1234)
+    @ruleID(1234)
     # using a false expression 
     enabled ( 1 + 1 == 5 )
   when
