@@ -8,6 +8,7 @@ options {
     package org.drools.lang;
 
     import org.drools.compiler.DroolsParserException;
+    import org.drools.core.util.StringUtils;
 }
  
 @members {
@@ -80,8 +81,8 @@ fragment
 IntegerTypeSuffix : ('l'|'L') ;
 
 STRING
-    :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
-     | ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'')
+    :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"') { setText( StringUtils.unescapeJava( getText() ) ); }
+    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') { setText( StringUtils.unescapeJava( getText() ) ); }
     ;
 
 
@@ -92,9 +93,6 @@ TimePeriod
     | (('0'..'9')+ 's') (('0'..'9')+ 'ms'?)?
     | (('0'..'9')+ 'ms'?)
     ;
-
-
-
 
 fragment
 HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;

@@ -28,7 +28,7 @@ end
 
 rule "Test Array" salience 0
   when
-    Primitives( $array : primitiveIntArray -> (($array != null) && ($array.length > 0)))
+    Primitives( $array : primitiveIntArray, eval(($array != null) && ($array.length > 0)))
   then
     result.add( new Integer( $array.length ) );
 end
