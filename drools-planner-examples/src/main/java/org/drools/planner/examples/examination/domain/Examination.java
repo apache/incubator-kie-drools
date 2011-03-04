@@ -118,7 +118,6 @@ public class Examination extends AbstractPersistable implements Solution {
         this.score = (HardAndSoftScore) score;
     }
 
-
     public boolean isInitialized() {
         return (examList != null);
     }

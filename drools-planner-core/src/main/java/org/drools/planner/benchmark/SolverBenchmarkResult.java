@@ -60,5 +60,5 @@ public class SolverBenchmarkResult {
     public void setSolvedSolutionFile(File solvedSolutionFile) {
         this.solvedSolutionFile = solvedSolutionFile;
     }
-    
+
 }

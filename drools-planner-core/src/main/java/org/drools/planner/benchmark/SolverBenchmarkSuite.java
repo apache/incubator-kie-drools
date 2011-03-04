@@ -82,7 +82,6 @@ public class SolverBenchmarkSuite {
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmark> solverBenchmarkList = null;
 
-
     public File getBenchmarkDirectory() {
         return benchmarkDirectory;
     }
@@ -314,8 +313,8 @@ public class SolverBenchmarkSuite {
             }
         }
         JFreeChart chart = ChartFactory.createBarChart(
-            "Best score summary (higher score is better)", "Data", "Score",
-            dataset, PlotOrientation.VERTICAL, true, true, false
+                "Best score summary (higher score is better)", "Data", "Score",
+                dataset, PlotOrientation.VERTICAL, true, true, false
         );
         CategoryItemRenderer renderer = ((CategoryPlot) chart.getPlot()).getRenderer();
         CategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator();

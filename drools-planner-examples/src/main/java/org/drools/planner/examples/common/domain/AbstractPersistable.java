@@ -57,7 +57,7 @@ public abstract class AbstractPersistable implements Serializable {
 //    }
 
     public String toString() {
-        return "[" + getClass().getName().replaceAll(".*\\.", "") + "-"+ id + "]";
+        return "[" + getClass().getName().replaceAll(".*\\.", "") + "-" + id + "]";
     }
 
 }

@@ -34,5 +34,5 @@ public class LoggingMain {
         DOMConfigurator.configure(getClass().getResource(loggingConfig));
         logger = LoggerFactory.getLogger(getClass());
     }
-    
+
 }

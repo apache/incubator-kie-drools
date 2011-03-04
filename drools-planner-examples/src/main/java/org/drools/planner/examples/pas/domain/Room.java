@@ -96,9 +96,9 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
         return department.countDisallowedAdmissionPart(admissionPart)
-            + countDisallowedPatientGender(admissionPart.getPatient())
-            + countMissingRequiredRoomProperties(admissionPart.getPatient())
-            + countMissingPreferredRoomProperties(admissionPart.getPatient());
+                + countDisallowedPatientGender(admissionPart.getPatient())
+                + countMissingRequiredRoomProperties(admissionPart.getPatient())
+                + countMissingPreferredRoomProperties(admissionPart.getPatient());
         // TODO preferredMaximumRoomCapacity and specialism
     }
 

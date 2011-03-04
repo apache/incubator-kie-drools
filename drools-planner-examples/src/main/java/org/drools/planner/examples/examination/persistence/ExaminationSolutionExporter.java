@@ -60,7 +60,7 @@ public class ExaminationSolutionExporter extends AbstractTxtSolutionExporter {
                 bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }
         }
-        
+
     }
 
 }

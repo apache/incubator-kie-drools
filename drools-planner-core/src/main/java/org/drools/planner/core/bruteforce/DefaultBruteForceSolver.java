@@ -30,7 +30,7 @@ import org.drools.planner.core.solver.AbstractSolverScope;
 /**
  * Default implementation of {@link BruteForceSolver}.
  */
-public class DefaultBruteForceSolver extends AbstractSolver implements BruteForceSolver  {
+public class DefaultBruteForceSolver extends AbstractSolver implements BruteForceSolver {
 
     protected BruteForceSolverScope bruteForceSolverScope = new BruteForceSolverScope();
 
@@ -71,7 +71,7 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
     public AbstractSolverScope getAbstractSolverScope() {
         return bruteForceSolverScope;
     }
-    
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

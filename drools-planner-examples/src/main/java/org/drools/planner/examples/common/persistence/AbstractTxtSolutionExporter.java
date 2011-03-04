@@ -60,7 +60,7 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
         public void setBufferedWriter(BufferedWriter bufferedWriter) {
             this.bufferedWriter = bufferedWriter;
         }
-        
+
         public abstract void setSolution(Solution solution);
 
         public abstract void writeSolution() throws IOException;

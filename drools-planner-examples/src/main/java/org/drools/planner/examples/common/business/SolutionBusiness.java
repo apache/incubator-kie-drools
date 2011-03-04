@@ -136,7 +136,6 @@ public class SolutionBusiness {
         this.abstractSolverScope = ((AbstractSolver) solver).getAbstractSolverScope();
     }
 
-
     public List<File> getUnsolvedFileList() {
         List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolverExampleFileFilter()));
         Collections.sort(unsolvedFileList);
@@ -232,5 +231,5 @@ public class SolutionBusiness {
         }
 
     }
-    
+
 }

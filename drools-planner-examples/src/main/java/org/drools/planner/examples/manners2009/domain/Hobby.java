@@ -31,7 +31,7 @@ public enum Hobby {
         }
         return null;
     }
-    
+
     private String code;
 
     private Hobby(String code) {

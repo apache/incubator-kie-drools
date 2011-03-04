@@ -170,7 +170,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.score = (HardAndSoftScore) score;
     }
 
-
     public boolean isInitialized() {
         return (bedDesignationList != null);
     }

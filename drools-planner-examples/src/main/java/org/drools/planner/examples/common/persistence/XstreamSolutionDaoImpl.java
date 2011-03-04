@@ -42,7 +42,7 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
     private String dirName;
     private File dataDir;
 
-    public XstreamSolutionDaoImpl(String dirName, Class ... xstreamAnnotations) {
+    public XstreamSolutionDaoImpl(String dirName, Class... xstreamAnnotations) {
         this.dirName = dirName;
         dataDir = new File("data/" + dirName);
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363

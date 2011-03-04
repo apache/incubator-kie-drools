@@ -104,7 +104,6 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
             manners2009.setSeatList(seatList);
         }
 
-
         private void readJobListGuestListAndHobbyPracticianList(Manners2009 manners2009)
                 throws IOException {
             readConstantLine("Num,Profession,SubProf,Gender,Spt1,Spt2,Spt3");

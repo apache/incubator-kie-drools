@@ -66,7 +66,6 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.room = room;
     }
 
-
     public String getLabel() {
         return course + "-" + lectureIndexInCourse;
     }

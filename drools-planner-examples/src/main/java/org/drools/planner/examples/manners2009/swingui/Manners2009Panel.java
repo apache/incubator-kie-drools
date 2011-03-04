@@ -69,7 +69,7 @@ public class Manners2009Panel extends SolutionPanel {
             tablePanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createEmptyBorder(5, 5, 5, 5),
                     BorderFactory.createTitledBorder("Table " + table.getTableIndex())
-                    ));
+            ));
             add(tablePanel);
             tablePanelMap.put(table, tablePanel);
             for (int y = 0; y < edgeLength; y++) {

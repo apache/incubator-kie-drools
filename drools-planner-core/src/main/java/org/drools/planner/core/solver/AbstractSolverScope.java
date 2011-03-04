@@ -201,8 +201,8 @@ public abstract class AbstractSolverScope {
             throw new IllegalStateException(
                     "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
                             + realScore + ").\n"
-                    + "Presumed workingMemory:\n" + buildConstraintOccurrenceSummary(workingMemory)
-                    + "Real workingMemory:\n" + buildConstraintOccurrenceSummary(tmpWorkingMemory));
+                            + "Presumed workingMemory:\n" + buildConstraintOccurrenceSummary(workingMemory)
+                            + "Real workingMemory:\n" + buildConstraintOccurrenceSummary(tmpWorkingMemory));
         }
     }
 

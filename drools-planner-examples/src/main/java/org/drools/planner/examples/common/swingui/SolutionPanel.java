@@ -46,7 +46,6 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     public abstract void resetPanel();
 
-
     public Dimension getPreferredScrollableViewportSize() {
         return PREFERRED_SCROLLABLE_VIEWPORT_SIZE;
     }

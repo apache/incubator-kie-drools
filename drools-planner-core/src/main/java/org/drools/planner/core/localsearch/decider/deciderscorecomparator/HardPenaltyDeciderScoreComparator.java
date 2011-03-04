@@ -23,7 +23,7 @@ import org.drools.planner.core.score.HardAndSoftScore;
 
 /**
  * Compares 2 HardAndSoftScore based on the calculation the hard multiplied by a weight to the soft.
-*/
+ */
 public class HardPenaltyDeciderScoreComparator implements Comparator<Score> {
 
     private int hardWeight;

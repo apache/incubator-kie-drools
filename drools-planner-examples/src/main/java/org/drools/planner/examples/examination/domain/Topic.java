@@ -69,7 +69,6 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
         this.coincidenceTopicSet = coincidenceTopicSet;
     }
 
-
     public boolean hasCoincidenceTopic() {
         return coincidenceTopicSet != null;
     }

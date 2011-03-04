@@ -137,7 +137,7 @@ public class BestScoreStatistic implements SolverStatistic {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "utf-8");
             writer.append("\"TimeMillisSpend\"");
             for (String configName : configNameList) {
-                writer.append(",\"").append(configName.replaceAll("\\\"","\\\"")).append("\"");
+                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append("\"");
             }
             writer.append("\n");
             for (TimeToBestScoresLine timeToBestScoresLine : timeToBestScoresLineList) {

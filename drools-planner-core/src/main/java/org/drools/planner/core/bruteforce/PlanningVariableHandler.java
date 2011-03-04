@@ -60,7 +60,6 @@ public class PlanningVariableHandler {
         }
     }
 
-
     public boolean hasNext() {
         return planningValueListIterator.hasNext();
     }

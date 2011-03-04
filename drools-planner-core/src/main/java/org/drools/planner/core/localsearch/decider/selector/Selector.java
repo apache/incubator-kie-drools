@@ -30,5 +30,5 @@ import org.drools.planner.core.move.Move;
 public interface Selector extends DeciderAware, LocalSearchSolverLifecycleListener {
 
     Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope);
-    
+
 }

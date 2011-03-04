@@ -113,7 +113,7 @@ public class LocalSearchSolverConfig extends AbstractSolverConfig {
         decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
         decider.setAcceptor(acceptorConfig.buildAcceptor(scoreDefinition));
         decider.setForager(foragerConfig.buildForager(scoreDefinition));
-        if ( environmentMode == EnvironmentMode.TRACE) {
+        if (environmentMode == EnvironmentMode.TRACE) {
             decider.setAssertMoveScoreIsUncorrupted(true);
         }
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {

@@ -33,7 +33,7 @@ public class SelectorConfig {
 
     @XStreamImplicit(itemFieldName = "selector")
     private List<SelectorConfig> selectorConfigList = null;
-    
+
     private MoveFactory moveFactory = null;
     private Class<MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
@@ -147,5 +147,5 @@ public class SelectorConfig {
             topSize = inheritedConfig.getTopSize();
         }
     }
-    
+
 }

@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WorkflowFrame extends JFrame {
-    
+
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private SolutionBusiness solutionBusiness;
@@ -214,12 +214,12 @@ public class WorkflowFrame extends JFrame {
         solutionPanel.setEnabled(!solving);
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
-        progressBar.setString(solving ?  "Solving..." : null);
+        progressBar.setString(solving ? "Solving..." : null);
         showConstraintScoreMapDialogAction.setEnabled(!solving);
     }
 
     private class SolveAction extends AbstractAction {
-        
+
         // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
         private ExecutorService solvingExecutor = Executors.newFixedThreadPool(1);
 
@@ -275,6 +275,7 @@ public class WorkflowFrame extends JFrame {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");
                 }
+
                 public String getDescription() {
                     return "Solver xml files";
                 }
@@ -300,6 +301,7 @@ public class WorkflowFrame extends JFrame {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");
                 }
+
                 public String getDescription() {
                     return "Solver xml files";
                 }

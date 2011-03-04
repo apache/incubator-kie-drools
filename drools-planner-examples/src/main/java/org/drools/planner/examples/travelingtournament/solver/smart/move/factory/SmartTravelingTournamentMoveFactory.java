@@ -61,7 +61,6 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
         }
     }
 
-
     public List<Move> createMoveList(Solution solution) {
         TravelingTournament travelingTournament = (TravelingTournament) solution;
         List<Move> moveList = new ArrayList<Move>();
@@ -128,8 +127,7 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
             for (ListIterator<Day> firstDayIt = dayList.listIterator(); firstDayIt.hasNext();) {
                 Day firstDay = firstDayIt.next();
                 Map<Team, Match> firstDayTeamMap = dayTeamMap.get(firstDay);
-                for (ListIterator<Day> secondDayIt = dayList.listIterator(firstDayIt.nextIndex()); secondDayIt.hasNext();)
-                {
+                for (ListIterator<Day> secondDayIt = dayList.listIterator(firstDayIt.nextIndex()); secondDayIt.hasNext();) {
                     Day secondDay = secondDayIt.next();
                     List<Match> clonedFirstDayMatchList = new ArrayList<Match>(firstDayTeamMap.values());
                     while (!clonedFirstDayMatchList.isEmpty()) {
@@ -150,7 +148,7 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
                             otherInFirst = !otherInFirst;
                         }
                         // assert(rotateList.size() % 2 == 0);
-                        
+
                         // if size is 2 then addCachedHomeAwaySwapMoves will have done it
                         if (rotateList.size() > 2) {
                             List<Match> emptyList = Collections.emptyList();
@@ -175,7 +173,7 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
                     while (!clonedFirstTeamMatchList.isEmpty()) {
                         List<Match> firstRotateList = new ArrayList<Match>();
                         List<Match> secondRotateList = new ArrayList<Match>();
-                        
+
                         Match firstStartMatch = clonedFirstTeamMatchList.remove(0);
                         Team firstStartTeam = getOtherTeam(firstStartMatch, firstTeam);
                         Day startDay = firstStartMatch.getDay();
@@ -193,37 +191,37 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
                         while (!teamToFind.equals(firstStartTeam)) {
 //                            boolean shortcut = visitedTeamMap.containsKey(teamToFind);
 //                            if (shortcut) {
-            Match firstRepairMatch = homeTeamAwayTeamMap
-                    .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
-                    .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);
-            if (!clonedFirstTeamMatchList.contains(firstRepairMatch)) {
-                            if (visitedTeamMap.containsKey(teamToFind)) {
-                                // shortcut splitoff is possible
-                                Match shortcutMatch = visitedTeamMap.get(teamToFind);
-                                int shortcutSize = firstRotateList.indexOf(shortcutMatch) + 1;
-                                int reverseShortcutSize = firstRotateList.size() - shortcutSize;
-                                List<Match> firstShortcutRotateList = new ArrayList<Match>(
-                                        firstRotateList.subList(0, shortcutSize));
-                                for (Match match : firstShortcutRotateList) {
-                                    visitedTeamMap.remove(getOtherTeam(match, firstTeam));
+                            Match firstRepairMatch = homeTeamAwayTeamMap
+                                    .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
+                                    .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);
+                            if (!clonedFirstTeamMatchList.contains(firstRepairMatch)) {
+                                if (visitedTeamMap.containsKey(teamToFind)) {
+                                    // shortcut splitoff is possible
+                                    Match shortcutMatch = visitedTeamMap.get(teamToFind);
+                                    int shortcutSize = firstRotateList.indexOf(shortcutMatch) + 1;
+                                    int reverseShortcutSize = firstRotateList.size() - shortcutSize;
+                                    List<Match> firstShortcutRotateList = new ArrayList<Match>(
+                                            firstRotateList.subList(0, shortcutSize));
+                                    for (Match match : firstShortcutRotateList) {
+                                        visitedTeamMap.remove(getOtherTeam(match, firstTeam));
+                                    }
+                                    List<Match> secondShortcutRotateList = new ArrayList<Match>(
+                                            secondRotateList.subList(reverseShortcutSize, secondRotateList.size()));
+                                    firstRotateList = new ArrayList<Match>(
+                                            firstRotateList.subList(shortcutSize, firstRotateList.size()));
+                                    secondRotateList = new ArrayList<Match>(
+                                            secondRotateList.subList(0, reverseShortcutSize));
+                                    addTeamRotateMove(moveList, firstShortcutRotateList, secondShortcutRotateList);
                                 }
-                                List<Match> secondShortcutRotateList = new ArrayList<Match>(
-                                        secondRotateList.subList(reverseShortcutSize, secondRotateList.size()));
-                                firstRotateList = new ArrayList<Match>(
-                                        firstRotateList.subList(shortcutSize, firstRotateList.size()));
-                                secondRotateList = new ArrayList<Match>(
-                                        secondRotateList.subList(0, reverseShortcutSize));
-                                addTeamRotateMove(moveList, firstShortcutRotateList, secondShortcutRotateList);
-                            }
-                firstTeamIsHomeTeam = !firstTeamIsHomeTeam;
+                                firstTeamIsHomeTeam = !firstTeamIsHomeTeam;
 //                            Team firstRepairHomeTeam = (firstTeamIsHomeTeam ^ shortcut) ? firstTeam : teamToFind;
 //                            Team firstRepairAwayTeam = (firstTeamIsHomeTeam ^ shortcut) ? teamToFind : firstTeam;
 //                            Match firstRepairMatch = homeTeamAwayTeamMap
 //                                    .get(firstRepairHomeTeam).get(firstRepairAwayTeam);
-             firstRepairMatch = homeTeamAwayTeamMap
-                    .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
-                    .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);
-            }
+                                firstRepairMatch = homeTeamAwayTeamMap
+                                        .get(firstTeamIsHomeTeam ? firstTeam : teamToFind)
+                                        .get(firstTeamIsHomeTeam ? teamToFind : firstTeam);
+                            }
 
                             Day repairDay = firstRepairMatch.getDay();
                             Match secondRepairMatch = teamDayMap.get(secondTeam).get(repairDay);
@@ -243,7 +241,7 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
         }
 
         private void addTeamRotateMove(List<Move> moveList, List<Match> firstRotateList, List<Match> secondRotateList) {
-            assert(firstRotateList.size() == secondRotateList.size());
+            assert (firstRotateList.size() == secondRotateList.size());
             // if size is 1 then addCachedHomeAwaySwapMoves will have done it
             // if size is 2 then addDayRotation will have done it by 1 list of size 4
             if (firstRotateList.size() > 2) {

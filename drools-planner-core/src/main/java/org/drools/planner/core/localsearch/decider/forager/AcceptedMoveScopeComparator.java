@@ -29,7 +29,7 @@ public class AcceptedMoveScopeComparator implements Comparator<MoveScope> {
     public AcceptedMoveScopeComparator(Comparator<? extends Score> deciderScoreComparator) {
         this.deciderScoreComparator = deciderScoreComparator;
     }
-    
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

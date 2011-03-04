@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.nurserostering.solver.move;
 
-
 import org.drools.WorkingMemory;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;

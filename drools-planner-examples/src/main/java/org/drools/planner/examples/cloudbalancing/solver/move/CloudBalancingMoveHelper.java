@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.cloudbalancing.solver.move;
 
-
 import org.drools.WorkingMemory;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;

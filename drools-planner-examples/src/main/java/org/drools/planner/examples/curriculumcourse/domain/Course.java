@@ -90,7 +90,7 @@ public class Course extends AbstractPersistable implements Comparable<Course> {
 
     @Override
     public String toString() {
-        return code + "{" + teacher +"}";
+        return code + "{" + teacher + "}";
     }
 
 }

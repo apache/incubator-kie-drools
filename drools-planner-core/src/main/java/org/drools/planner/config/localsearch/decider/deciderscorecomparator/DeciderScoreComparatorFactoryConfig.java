@@ -108,7 +108,7 @@ public class DeciderScoreComparatorFactoryConfig {
                 return deciderScoreComparatorClass.newInstance();
             } catch (InstantiationException e) {
                 throw new IllegalArgumentException("deciderScoreComparatorClass ("
-                        + deciderScoreComparatorClass.getName()  + ") does not have a public no-arg constructor", e);
+                        + deciderScoreComparatorClass.getName() + ") does not have a public no-arg constructor", e);
             } catch (IllegalAccessException e) {
                 throw new IllegalArgumentException("deciderScoreComparatorClass ("
                         + deciderScoreComparatorClass.getName() + ") does not have a public no-arg constructor", e);

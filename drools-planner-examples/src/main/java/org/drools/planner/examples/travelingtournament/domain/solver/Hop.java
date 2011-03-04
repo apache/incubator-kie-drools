@@ -60,9 +60,8 @@ public class Hop implements Comparable<Hop>, Serializable {
         this.toTeam = toTeam;
     }
 
-
     public int getDistance() {
-        Map<Team,Integer> distanceToTeamMap = fromTeam.getDistanceToTeamMap();
+        Map<Team, Integer> distanceToTeamMap = fromTeam.getDistanceToTeamMap();
         return distanceToTeamMap.get(toTeam);
     }
 
@@ -101,5 +100,5 @@ public class Hop implements Comparable<Hop>, Serializable {
     public String toString() {
         return team + ": " + fromTeam + " -> " + toTeam;
     }
-    
+
 }

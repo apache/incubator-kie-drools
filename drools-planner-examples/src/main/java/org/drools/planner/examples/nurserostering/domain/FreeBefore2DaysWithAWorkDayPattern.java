@@ -33,7 +33,7 @@ public class FreeBefore2DaysWithAWorkDayPattern extends Pattern {
 
     @Override
     public String toString() {
-        return "Free on "  + freeDayOfWeek + " followed by a work day within 2 days";
+        return "Free on " + freeDayOfWeek + " followed by a work day within 2 days";
     }
 
 }

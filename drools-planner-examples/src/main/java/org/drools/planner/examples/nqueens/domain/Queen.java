@@ -48,7 +48,6 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
         return (x - y);
     }
 
-
     public int compareTo(Queen other) {
         return new CompareToBuilder()
                 .append(x, other.x)
@@ -69,5 +68,5 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
     public String toString() {
         return super.toString() + " " + x + " @ " + y;
     }
-    
+
 }

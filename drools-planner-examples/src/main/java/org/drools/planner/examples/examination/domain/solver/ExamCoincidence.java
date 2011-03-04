@@ -53,5 +53,5 @@ public class ExamCoincidence implements Serializable {
     public void setFirstExam(Exam firstExam) {
         this.firstExam = firstExam;
     }
-    
+
 }

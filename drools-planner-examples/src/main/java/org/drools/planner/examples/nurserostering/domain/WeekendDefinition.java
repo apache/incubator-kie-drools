@@ -49,12 +49,14 @@ public enum WeekendDefinition {
         this.firstDayOfWeekend = dayOfWeekend1;
         this.lastDayOfWeekend = dayOfWeekend2;
     }
+
     private WeekendDefinition(String code, DayOfWeek dayOfWeekend1, DayOfWeek dayOfWeekend2, DayOfWeek dayOfWeekend3) {
         this.code = code;
         this.dayOfWeekSet = EnumSet.of(dayOfWeekend1, dayOfWeekend2, dayOfWeekend3);
         this.firstDayOfWeekend = dayOfWeekend1;
         this.lastDayOfWeekend = dayOfWeekend3;
     }
+
     private WeekendDefinition(String code, DayOfWeek dayOfWeekend1, DayOfWeek dayOfWeekend2, DayOfWeek dayOfWeekend3,
             DayOfWeek dayOfWeekend4) {
         this.code = code;

@@ -45,7 +45,7 @@ public interface Termination extends LocalSearchSolverAware, LocalSearchSolverLi
      * should be carefull not to return a tempature above 1.0.
      * @param localSearchStepScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
-     * At the start of a search t is 0.0 and at the end of a search t would be 1.0.
+     *         At the start of a search t is 0.0 and at the end of a search t would be 1.0.
      */
     double calculateTimeGradient(LocalSearchStepScope localSearchStepScope);
 

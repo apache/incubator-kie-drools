@@ -77,7 +77,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         protected void assertElementName(Element element, String name) {
             if (!element.getName().equals(name)) {
                 throw new IllegalStateException("Element name (" + element.getName()
-                        + ") should be " + name +".");
+                        + ") should be " + name + ".");
             }
         }
 

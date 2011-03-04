@@ -72,7 +72,6 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         return teamList.size();
     }
 
-
     public Collection<? extends Object> getFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(dayList);

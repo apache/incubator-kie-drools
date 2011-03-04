@@ -82,7 +82,6 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
                 || examCoincidence.getFirstExam() == this;
     }
 
-
     public int compareTo(Exam other) {
         return new CompareToBuilder()
                 .append(period, other.period)

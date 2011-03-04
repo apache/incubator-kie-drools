@@ -60,16 +60,16 @@ public interface Solver {
      * for the {@link #solve()} to actually return.
      * <p/>
      * This method is thread-safe.
+     * @return true if successful
      * @see #isTerminatedEarly()
      * @see Future#cancel(boolean)
-     * @return true if successful
      */
     boolean terminateEarly();
 
     /**
      * This method is thread-safe.
-     * @see Future#isCancelled()
      * @return true if terminateEarly has been called since the {@Solver} started.
+     * @see Future#isCancelled()
      */
     boolean isTerminatedEarly();
 
@@ -77,6 +77,7 @@ public interface Solver {
      * @param eventListener never null
      */
     void addEventListener(SolverEventListener eventListener);
+
     /**
      * @param eventListener never null
      */

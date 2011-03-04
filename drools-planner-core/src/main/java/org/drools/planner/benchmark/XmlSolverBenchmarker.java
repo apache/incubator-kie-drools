@@ -45,7 +45,7 @@ public class XmlSolverBenchmarker {
         xStream.processAnnotations(SolverBenchmark.class);
     }
 
-    public void addXstreamAnnotations(Class ... xstreamAnnotations) {
+    public void addXstreamAnnotations(Class... xstreamAnnotations) {
         xStream.processAnnotations(xstreamAnnotations);
     }
 

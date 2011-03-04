@@ -90,7 +90,7 @@ public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFact
                         for (AssignmentSequence rightAssignmentSequence : rightAssignmentSequenceList) {
                             List<Assignment> rightAssignmentList = rightAssignmentSequence.getAssignmentList();
                             for (int rightIndex = 0; rightIndex <= rightAssignmentList.size() - SWITCH_LENGTH; rightIndex++) {
-                                
+
                                 List<Move> subMoveList = new ArrayList<Move>(SWITCH_LENGTH * 2);
                                 for (Assignment leftAssignment : leftAssignmentList
                                         .subList(leftIndex, leftIndex + SWITCH_LENGTH)) {

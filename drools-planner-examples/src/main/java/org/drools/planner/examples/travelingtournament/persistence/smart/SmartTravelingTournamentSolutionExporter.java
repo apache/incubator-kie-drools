@@ -79,7 +79,7 @@ public class SmartTravelingTournamentSolutionExporter extends AbstractTxtSolutio
                             if (match.getHomeTeam().equals(team)) {
                                 opponentIsHome = false;
                                 opponentTeam = match.getAwayTeam();
-                            } else  if (match.getAwayTeam().equals(team)) {
+                            } else if (match.getAwayTeam().equals(team)) {
                                 opponentIsHome = true;
                                 opponentTeam = match.getHomeTeam();
                             }

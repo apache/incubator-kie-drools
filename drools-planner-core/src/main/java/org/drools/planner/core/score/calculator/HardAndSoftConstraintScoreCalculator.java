@@ -28,5 +28,5 @@ public interface HardAndSoftConstraintScoreCalculator extends ScoreCalculator {
     int getSoftConstraintsBroken();
 
     void setSoftConstraintsBroken(int softConstraintsBroken);
-    
+
 }

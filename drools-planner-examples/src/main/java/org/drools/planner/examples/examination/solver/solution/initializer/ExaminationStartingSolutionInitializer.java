@@ -76,7 +76,7 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
                     examToHandleList.add(new ExamToHandle(coincidenceExam));
                 }
             }
-            
+
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
             for (Period period : periodList) {
                 for (ExamToHandle examToHandle : examToHandleList) {

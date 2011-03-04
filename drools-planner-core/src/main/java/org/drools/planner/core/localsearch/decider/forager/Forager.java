@@ -38,5 +38,5 @@ public interface Forager extends LocalSearchSolverLifecycleListener {
     int getAcceptedMovesSize();
 
     List<Move> getTopList(int topSize);
-    
+
 }

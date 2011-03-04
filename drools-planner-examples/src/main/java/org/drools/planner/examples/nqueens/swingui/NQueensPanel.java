@@ -59,7 +59,7 @@ public class NQueensPanel extends SolutionPanel {
         removeAll();
         NQueens nQueens = getNQueens();
         int n = nQueens.getN();
-        List<Queen> queenList =  nQueens.getQueenList();
+        List<Queen> queenList = nQueens.getQueenList();
         setLayout(new GridLayout(n, n));
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {

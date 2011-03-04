@@ -56,42 +56,42 @@ public class ExamplesApp extends JFrame {
     private Container createContentPane() {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
         contentPane.add(new JLabel("Which example do you want to see?"));
-        contentPane.add(new JButton(new AbstractAction("N queens"){
+        contentPane.add(new JButton(new AbstractAction("N queens") {
             public void actionPerformed(ActionEvent e) {
                 new NQueensApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Miss Manners 2009"){
+        contentPane.add(new JButton(new AbstractAction("Miss Manners 2009") {
             public void actionPerformed(ActionEvent e) {
                 new Manners2009App().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)"){
+        contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)") {
             public void actionPerformed(ActionEvent e) {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track3)"){
+        contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track3)") {
             public void actionPerformed(ActionEvent e) {
                 new CurriculumCourseApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track1)"){
+        contentPane.add(new JButton(new AbstractAction("Examination timetabling (ITC2007 track1)") {
             public void actionPerformed(ActionEvent e) {
                 new ExaminationApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Patient admission schedule (hospital bed planning)"){
+        contentPane.add(new JButton(new AbstractAction("Patient admission schedule (hospital bed planning)") {
             public void actionPerformed(ActionEvent e) {
                 new PatientAdmissionScheduleApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Nurse rostering (INRC2010)"){
+        contentPane.add(new JButton(new AbstractAction("Nurse rostering (INRC2010)") {
             public void actionPerformed(ActionEvent e) {
                 new NurseRosteringApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Cloud balancing"){
+        contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
             public void actionPerformed(ActionEvent e) {
                 new CloudBalancingApp().init(false);
             }

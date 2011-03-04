@@ -63,7 +63,6 @@ public class NQueens extends AbstractPersistable implements Solution {
         return nList;
     }
 
-    
     public Collection<? extends Object> getFacts() {
         return queenList;
     }

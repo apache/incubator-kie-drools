@@ -113,15 +113,15 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             logger.info("NurseRoster {} with {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
                     " {} shiftDates, {} shifts and {} requests.",
                     new Object[]{nurseRoster.getCode(),
-                        nurseRoster.getSkillList().size(),
-                        nurseRoster.getShiftTypeList().size(),
-                        nurseRoster.getPatternList().size(),
-                        nurseRoster.getContractList().size(),
-                        nurseRoster.getEmployeeList().size(),
-                        nurseRoster.getShiftDateList().size(),
-                        nurseRoster.getShiftList().size(),
-                        nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
-                            + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size()
+                            nurseRoster.getSkillList().size(),
+                            nurseRoster.getShiftTypeList().size(),
+                            nurseRoster.getPatternList().size(),
+                            nurseRoster.getContractList().size(),
+                            nurseRoster.getEmployeeList().size(),
+                            nurseRoster.getShiftDateList().size(),
+                            nurseRoster.getShiftList().size(),
+                            nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
+                                    + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size()
                     });
 
             return nurseRoster;
@@ -158,7 +158,8 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             if (startYear > endYear) {
                 throw new IllegalStateException("The startYear (" + startYear
                         + " must be before endYear (" + endYear + ").");
-            } if (startYear < endYear) {
+            }
+            if (startYear < endYear) {
                 int tmpYear = startYear;
                 calendar.setTime(startDate);
                 while (tmpYear < endYear) {
@@ -342,10 +343,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                 + " None of the test data exhibits such a pattern.");
                     } else {
                         switch (patternEntryElementList.size()) {
-                            case 2 :
+                            case 2:
                                 pattern = new ShiftType2DaysPattern();
                                 break;
-                            case 3 :
+                            case 3:
                                 pattern = new ShiftType3DaysPattern();
                                 break;
                             default:
@@ -473,10 +474,10 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                         + "\n None of the test data exhibits such a pattern.");
                             }
                             switch (patternEntryIndex) {
-                                case 0 :
+                                case 0:
                                     castedPattern.setDayIndex0ShiftType(shiftType);
                                     break;
-                                case 1 :
+                                case 1:
                                     castedPattern.setDayIndex1ShiftType(shiftType);
                                     break;
                             }
@@ -500,13 +501,13 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                                         + "\n None of the test data exhibits such a pattern.");
                             }
                             switch (patternEntryIndex) {
-                                case 0 :
+                                case 0:
                                     castedPattern.setDayIndex0ShiftType(shiftType);
                                     break;
-                                case 1 :
+                                case 1:
                                     castedPattern.setDayIndex1ShiftType(shiftType);
                                     break;
-                                case 2 :
+                                case 2:
                                     castedPattern.setDayIndex2ShiftType(shiftType);
                                     break;
                             }

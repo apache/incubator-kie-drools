@@ -43,5 +43,5 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
         // TODO this should be better done in stepTaken
         return Collections.singletonList(localSearchStepScope.createOrGetClonedSolution());
     }
-    
+
 }

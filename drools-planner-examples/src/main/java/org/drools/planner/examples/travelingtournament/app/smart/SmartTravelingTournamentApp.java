@@ -31,7 +31,6 @@ public class SmartTravelingTournamentApp extends AbstractTravelingTournamentApp 
     public static final String SOLVER_CONFIG
             = "/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentSolverConfig.xml";
 
-
     public static void main(String[] args) {
         new SmartTravelingTournamentApp().init();
     }

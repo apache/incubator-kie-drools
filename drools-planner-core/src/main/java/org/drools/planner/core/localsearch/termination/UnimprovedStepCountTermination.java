@@ -33,7 +33,7 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-    
+
     private int calculateUnimprovedStepCount(LocalSearchStepScope localSearchStepScope) {
         int bestStepIndex = localSearchStepScope.getLocalSearchSolverScope().getBestSolutionStepIndex();
         int stepIndex = localSearchStepScope.getStepIndex();

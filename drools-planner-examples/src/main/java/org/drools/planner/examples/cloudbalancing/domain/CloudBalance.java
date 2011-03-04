@@ -70,7 +70,6 @@ public class CloudBalance extends AbstractPersistable implements Solution {
         this.score = (HardAndSoftScore) score;
     }
 
-
     public boolean isInitialized() {
         return (cloudAssignmentList != null);
     }

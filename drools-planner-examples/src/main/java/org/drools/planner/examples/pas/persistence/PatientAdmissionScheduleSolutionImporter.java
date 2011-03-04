@@ -183,7 +183,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                         Specialism specialism = idToSpecialismMap.get(specialismId);
                         if (specialism == null) {
                             throw new IllegalArgumentException("Read line (" + line
-                                + ") has a non existing specialismId (" + specialismId + ").");
+                                    + ") has a non existing specialismId (" + specialismId + ").");
                         }
                         departmentSpecialism.setSpecialism(specialism);
                         departmentSpecialismList.add(departmentSpecialism);
@@ -252,7 +252,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                         Specialism specialism = idToSpecialismMap.get(specialismId);
                         if (specialism == null) {
                             throw new IllegalArgumentException("Read line (" + line
-                                + ") has a non existing specialismId (" + specialismId + ").");
+                                    + ") has a non existing specialismId (" + specialismId + ").");
                         }
                         roomSpecialism.setSpecialism(specialism);
                         roomSpecialism.setPriority(priority);
@@ -282,7 +282,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                         roomEquipmentId++;
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
-                            + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
+                                + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
@@ -389,7 +389,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                     Specialism specialism = (specialismId == 0) ? null : idToSpecialismMap.get(specialismId);
                     if (specialism == null) {
                         throw new IllegalArgumentException("Read line (" + line
-                            + ") has a non existing specialismId (" + specialismId + ").");
+                                + ") has a non existing specialismId (" + specialismId + ").");
                     }
                     admissionPart.setSpecialism(specialism);
                     int admissionPartFirstNightIndex = nextFirstNightIndex;
@@ -445,7 +445,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                         requiredPatientEquipmentId++;
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
-                            + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
+                                + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
                 patient.setRequiredPatientEquipmentList(requiredPatientEquipmentOfPatientList);
@@ -476,7 +476,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                         }
                     } else if (hasEquipment != 0) {
                         throw new IllegalArgumentException("Read line (" + line
-                            + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
+                                + ") is expected to have 0 or 1 hasEquipment (" + hasEquipment + ").");
                     }
                 }
                 patient.setPreferredPatientEquipmentList(preferredPatientEquipmentOfPatientList);
@@ -519,7 +519,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             String[] lineTokens = line.split("\\ ");
             if (lineTokens.length != numberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " +  numberOfTokens + " tokens seperated by a space ( ).");
+                        + ") is expected to contain " + numberOfTokens + " tokens seperated by a space ( ).");
             }
             return lineTokens;
         }
@@ -528,7 +528,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             String[] lineTokens = line.split("\\|");
             if (lineTokens.length != numberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " +  numberOfTokens + " tokens seperated by a pipeline (|).");
+                        + ") is expected to contain " + numberOfTokens + " tokens seperated by a pipeline (|).");
             }
             for (int i = 0; i < lineTokens.length; i++) {
                 lineTokens[i] = lineTokens[i].trim();

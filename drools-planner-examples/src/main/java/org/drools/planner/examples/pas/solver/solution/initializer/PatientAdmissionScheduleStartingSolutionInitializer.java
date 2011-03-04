@@ -161,7 +161,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
     private List<BedDesignation> createBedDesignationList(PatientAdmissionSchedule patientAdmissionSchedule) {
         List<BedDesignationInitializationWeight> initializationWeightList
                 = new ArrayList<BedDesignationInitializationWeight>(
-                        patientAdmissionSchedule.getAdmissionPartList().size());
+                patientAdmissionSchedule.getAdmissionPartList().size());
         for (AdmissionPart admissionPart : patientAdmissionSchedule.getAdmissionPartList()) {
             BedDesignation bedDesignation = new BedDesignation();
             bedDesignation.setId(admissionPart.getId());

@@ -204,7 +204,6 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         this.score = (HardAndSoftScore) score;
     }
 
-
     public boolean isInitialized() {
         return (assignmentList != null);
     }
@@ -229,7 +228,6 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         facts.addAll(shiftOffRequestList);
         facts.addAll(shiftOnRequestList);
         // TODO add more properties
-
 
         if (isInitialized()) {
             facts.addAll(assignmentList);

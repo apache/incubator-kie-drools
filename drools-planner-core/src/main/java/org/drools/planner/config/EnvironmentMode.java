@@ -31,18 +31,18 @@ public enum EnvironmentMode {
     /**
      * The trace mode does a few more assertions (such as {@link DefaultDecider#assertMoveScoreIsUncorrupted})
      * than the {@link #DEBUG} mode at a horrible performance cost.
-     * <p>
+     * <p/>
      * The trace mode is reproducible (see {@link #REPRODUCIBLE} mode).
-     * <p>
+     * <p/>
      * The trace mode is horribly slow.
      */
     TRACE,
     /**
      * The debug mode turns on most assertions (such as {@link DefaultDecider#assertUndoMoveIsUncorrupted})
      * to fail-fast on a bug in a {@link Move} implementation, in a score rule or something else.
-     * <p>
+     * <p/>
      * The debug mode is reproducible (see {@link #REPRODUCIBLE} mode).
-     * <p>
+     * <p/>
      * The debug mode is slow.
      */
     DEBUG,
@@ -63,7 +63,7 @@ public enum EnvironmentMode {
     /**
      * The production mode is the fastest and the most robust, but not reproducible.
      * It is recommended for a production environment.
-     * <p>
+     * <p/>
      * The random seed is different on every run, which makes it more robust against an unlucky random seed.
      * An unlucky random seed gives a bad result on a certain data set with a certain solver configuration.
      * Note that in most use cases the impact of the random seed is relatively low on the result.

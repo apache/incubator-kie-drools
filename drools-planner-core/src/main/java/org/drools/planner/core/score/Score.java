@@ -45,7 +45,7 @@ public interface Score<S extends Score> extends Comparable<S> {
      * @param multiplicand value to be multiplied by this Score.
      * @return this * multiplicand
      */
-    S multiply(double  multiplicand);
+    S multiply(double multiplicand);
 
     /**
      * Returns a Score whose value is (this / divisor).
@@ -58,7 +58,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns an array of doubles representing the Score.
      * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
-     * <p>
+     * <p/>
      * A greater score level uses a lower array index than a lesser score level.
      * The length of the returned array is stable for a specific Score implementation.
      * For example: -0hard/-7soft returns new double{-0.0, -7.0}

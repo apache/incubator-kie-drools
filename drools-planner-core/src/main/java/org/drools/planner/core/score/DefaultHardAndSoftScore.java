@@ -123,13 +123,13 @@ public final class DefaultHardAndSoftScore extends AbstractScore<HardAndSoftScor
                 return 1;
             }
         } else {
-           if (softScore < other.getSoftScore()) {
-               return -1;
-           } else if (softScore > other.getSoftScore()) {
-               return 1;
-           } else {
-               return 0;
-           }
+            if (softScore < other.getSoftScore()) {
+                return -1;
+            } else if (softScore > other.getSoftScore()) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 

@@ -35,7 +35,7 @@ public interface Solution {
     /**
      * Returns the Score of this Solution.
      * @return null if the Solution is uninitialized
-     * or the last calculated Score is dirty the new Score has not yet been recalculated
+     *         or the last calculated Score is dirty the new Score has not yet been recalculated
      */
     Score getScore();
 

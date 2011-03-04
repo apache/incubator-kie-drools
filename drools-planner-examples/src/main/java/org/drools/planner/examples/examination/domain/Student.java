@@ -25,7 +25,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
  */
 @XStreamAlias("Student")
 public class Student extends AbstractPersistable implements Comparable<Student> {
-    
+
     public int compareTo(Student other) {
         return new CompareToBuilder()
                 .append(id, other.id)

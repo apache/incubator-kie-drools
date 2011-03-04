@@ -25,7 +25,7 @@ import org.drools.planner.examples.common.app.LoggingMain;
 public abstract class AbstractSolutionImporter extends LoggingMain {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
-    
+
     protected SolutionDao solutionDao;
 
     public AbstractSolutionImporter(SolutionDao solutionDao) {

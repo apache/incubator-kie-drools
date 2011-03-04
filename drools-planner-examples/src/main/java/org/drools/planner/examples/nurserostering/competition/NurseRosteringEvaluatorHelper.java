@@ -63,7 +63,7 @@ public class NurseRosteringEvaluatorHelper extends LoggingMain {
             }
         }
     }
-    
+
     protected NurseRosteringApp nurseRosteringApp;
     protected SolutionBusiness solutionBusiness;
 

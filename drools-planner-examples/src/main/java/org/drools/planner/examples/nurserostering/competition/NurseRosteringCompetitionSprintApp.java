@@ -69,7 +69,7 @@ public class NurseRosteringCompetitionSprintApp extends LoggingMain {
         }
         importer = new NurseRosteringSolutionImporter();
         exporter = new NurseRosteringSolutionExporter();
-        
+
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         ((LocalSearchSolverConfig) configurer.getConfig()).getTerminationConfig()

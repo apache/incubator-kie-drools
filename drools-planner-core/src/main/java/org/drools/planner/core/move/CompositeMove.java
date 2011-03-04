@@ -31,7 +31,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEna
  * A CompositeMove is composed out of multiple other moves.
  * <p/>
  * Warning: one of the moveList moves should not rely on the effect on of a previous moveList move
- * to create an uncorrupted undoMove. In other words, 
+ * to create an uncorrupted undoMove. In other words,
  * @see Move
  */
 public class CompositeMove implements Move, TabuPropertyEnabled {

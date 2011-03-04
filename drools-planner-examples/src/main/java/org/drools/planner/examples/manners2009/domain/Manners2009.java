@@ -96,7 +96,6 @@ public class Manners2009 extends AbstractPersistable implements Solution {
         this.score = (SimpleScore) score;
     }
 
-
     public boolean isInitialized() {
         return (seatDesignationList != null);
     }

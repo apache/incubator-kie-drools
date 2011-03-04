@@ -135,7 +135,6 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.score = (HardAndSoftScore) score;
     }
 
-
     public boolean isInitialized() {
         return (lectureList != null);
     }

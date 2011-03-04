@@ -56,7 +56,6 @@ public class CloudBalancingPanel extends SolutionPanel {
     private static final int TEXT_AREA_ROWS = 4;
     private static final int TEXT_AREA_COLUMNS = 14;
 
-
     public CloudBalancingPanel() {
         setLayout(new GridLayout(0, 1));
     }
@@ -89,8 +88,8 @@ public class CloudBalancingPanel extends SolutionPanel {
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         JTextArea cloudComputerLabel = new JTextArea("CloudComputer", TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
         cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),

@@ -86,13 +86,13 @@ public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
 
     public int compareTo(SimpleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
-       if (score < other.getScore()) {
-           return -1;
-       } else if (score > other.getScore()) {
-           return 1;
-       } else {
-           return 0;
-       }
+        if (score < other.getScore()) {
+            return -1;
+        } else if (score > other.getScore()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     public String toString() {
