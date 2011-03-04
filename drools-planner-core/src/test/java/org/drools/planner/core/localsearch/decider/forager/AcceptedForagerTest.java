@@ -71,6 +71,7 @@ public class AcceptedForagerTest {
         assertTrue(topList.contains(e.getMove()));
         forager.solvingEnded(localSearchSolverScope);
     }
+
     @Test
     public void testPickMoveFirstBestScoreImproving() {
         // Setup
@@ -101,6 +102,7 @@ public class AcceptedForagerTest {
         assertTrue(topList.contains(d.getMove()));
         forager.solvingEnded(localSearchSolverScope);
     }
+
     @Test
     public void testPickMoveFirstLastStepScoreImproving() {
         // Setup

@@ -24,10 +24,10 @@ import org.slf4j.LoggerFactory;
 public abstract class LoggingTest {
 
     public static final String DEFAULT_LOGGING_CONFIG = "/org/drools/planner/examples/common/app/log4j-test.xml";
-    
+
     @BeforeClass
     public static void configureLogging() {
         DOMConfigurator.configure(LoggingTest.class.getResource(DEFAULT_LOGGING_CONFIG));
     }
-    
+
 }
