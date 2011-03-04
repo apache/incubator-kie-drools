@@ -41,7 +41,7 @@ public class DrlExprParser {
     }
 
     /** Parse an expression from text */
-    public ConstraintConnectiveDescr parse( final String text ) throws DroolsParserException {
+    public ConstraintConnectiveDescr parse( final String text ) {
         ConstraintConnectiveDescr constraint = null;
         try {
             DRLLexer lexer = new DRLLexer( new ANTLRStringStream( text ) );
