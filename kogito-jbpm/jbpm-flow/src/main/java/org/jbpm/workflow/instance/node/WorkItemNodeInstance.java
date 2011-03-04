@@ -289,12 +289,20 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (_assignmentsLogger.isDebugEnabled()) {
             //let's make noise about this assignment
             _assignmentsLogger.debug("========== ASSIGN ==========");
-            _assignmentsLogger.debug("Assignment between '" + from + "' and '" + to + "'");
+            _assignmentsLogger.debug("Assignment between '" + from + "' with '"+ sourceExpr +"' and '" + to + "' with '" + targetExpr +"'");
             _assignmentsLogger.debug("========== SOURCE ==========");
-            _assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) source));
+            if (source instanceof org.w3c.dom.Node) {
+            	_assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) source));
+            } else {
+            	_assignmentsLogger.debug(String.valueOf(source));
+            }
             _assignmentsLogger.debug("============================");
             _assignmentsLogger.debug("========== TARGET ==========");
-            _assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) target));
+            if (target instanceof org.w3c.dom.Node) {
+            	_assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) target));
+            } else {
+            	_assignmentsLogger.debug(String.valueOf(target));
+            }
             _assignmentsLogger.debug("============================");
         }
         
