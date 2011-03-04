@@ -686,7 +686,7 @@ public class PatternBuilder
                                          Pattern pattern,
                                          DescrBranch branch,
                                          Object object) {
-        if ( branch.isIndexable()) {
+        if ( branch.isSimple()) {
             RelationalExprDescr red = (RelationalExprDescr) branch.getDescr();
             String fieldName = ((AtomicExprDescr) red.getLeft()).getExpression();            
             String value = ((AtomicExprDescr) red.getRight()).getExpression().trim();
