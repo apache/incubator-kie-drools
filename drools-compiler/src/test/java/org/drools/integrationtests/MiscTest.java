@@ -1954,7 +1954,7 @@ public class MiscTest {
                       ((List) session.getGlobal( "list" )).get( 0 ) );
     }
 
-    @Test
+    @Test @Ignore
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );

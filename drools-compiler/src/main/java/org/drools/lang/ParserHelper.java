@@ -63,6 +63,7 @@ public class ParserHelper {
     private RecognizerSharedState                     state                    = null;
 
     public Stack<DescrBuilder< ? >>                   builderContext           = null;
+    private String                                    leftMostExpr             = null;
 
     public ParserHelper(TokenStream input,
                         RecognizerSharedState state) {
@@ -74,6 +75,14 @@ public class ParserHelper {
 
     public LinkedList<DroolsSentence> getEditorInterface() {
         return editorInterface;
+    }
+
+    public void setLeftMostExpr( String value ) {
+        this.leftMostExpr = value;
+    }
+
+    public String getLeftMostExpr() {
+        return this.leftMostExpr;
     }
 
     public void enableEditorInterface() {
@@ -668,12 +677,11 @@ public class ParserHelper {
     public <T extends DescrBuilder< ? >> T end( Class<T> clazz,
                                                 DescrBuilder< ? > builder ) {
         if ( state.backtracking == 0 ) {
-            if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   AttributeDescrBuilder.class.isAssignableFrom( clazz ) || 
+            if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   AttributeDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz )) ){
+                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) || ForallDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
