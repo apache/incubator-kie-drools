@@ -12,6 +12,7 @@ import org.antlr.runtime.Token;
 import org.antlr.runtime.TokenStream;
 import org.antlr.runtime.UnwantedTokenException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
@@ -907,7 +908,7 @@ public class DRLParser {
                               null,
                               DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return null;
-            return safeStripStringDelimiters( id.getText() );
+            return StringUtils.unescapeJava( safeStripStringDelimiters( id.getText() ) );
         } else {
             throw new MismatchedTokenException( DRLLexer.ID,
                                                 input );
@@ -1219,7 +1220,7 @@ public class DRLParser {
                                  DroolsEditorType.STRING_CONST );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute.value( safeStripStringDelimiters( value.getText() ) );
+                attribute.value( StringUtils.unescapeJava( safeStripStringDelimiters( value.getText() ) ) );
             }
         } finally {
             if ( attribute != null ) {
@@ -2301,7 +2302,7 @@ public class DRLParser {
                                  null,
                                  null,
                                  DroolsEditorType.STRING_CONST );
-            ep = safeStripStringDelimiters( epStr.getText() );
+            ep =  StringUtils.unescapeJava( safeStripStringDelimiters( epStr.getText() ) );
         } else {
             Token epID = match( input,
                                 DRLLexer.ID,

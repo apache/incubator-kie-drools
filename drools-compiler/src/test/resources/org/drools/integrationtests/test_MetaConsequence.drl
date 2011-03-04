@@ -11,7 +11,8 @@ rule "Test Consequence"
     @price(123.00)
     @errorMSG(Stop)
     @userMSG("Please Stop")
-  wheannotation   Person(name == "Michael")
+  when
+    Person(name == "Michael")
   then
     results.add( drools.getRule().getMetaAttribute("foo"));
     results.add( drools.getRule().getMetaAttribute("foo2"));
