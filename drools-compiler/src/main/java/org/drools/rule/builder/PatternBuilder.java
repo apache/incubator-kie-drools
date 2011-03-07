@@ -226,6 +226,11 @@ public class PatternBuilder
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
         context.getBuildStack().push( pattern );
 
+        List<DescrBranch> literalConstraints = new ArrayList<DescrBranch>();
+        List<DescrBranch> literalIndexes = new ArrayList<DescrBranch>();
+        List<DescrBranch> variableConstraints = new ArrayList<DescrBranch>();
+        List<DescrBranch> variableIndexes = new ArrayList<DescrBranch>();
+
         for ( BindingDescr b : patternDescr.getBindings() ) {
             if( true ) { // TODO: replace this by legacy mode configuration
                 String expression = b.getExpression();
@@ -257,6 +262,14 @@ public class PatternBuilder
                            b,
                            null ); // null containers get added to the pattern
                     b.setExpression( expression );
+                    
+                    // needs to build the actual constraints as well
+                    processExpr( context,
+                                 new ExprConstraintDescr( b.getExpression() ),
+                                 literalIndexes,
+                                 literalConstraints,
+                                 variableIndexes,
+                                 variableConstraints );
                 }
                 
             } else {
@@ -267,10 +280,6 @@ public class PatternBuilder
             }
         }
 
-        List<DescrBranch> literalConstraints = new ArrayList<DescrBranch>();
-        List<DescrBranch> literalIndexes = new ArrayList<DescrBranch>();
-        List<DescrBranch> variableConstraints = new ArrayList<DescrBranch>();
-        List<DescrBranch> variableIndexes = new ArrayList<DescrBranch>();
         for ( BaseDescr b : patternDescr.getDescrs() ) {
             processExpr( context,
                          (ExprConstraintDescr) b,
