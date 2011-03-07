@@ -1,3 +1,2 @@
-#place your comments here - this is just a description for your own purposes.
-[then]Mostre {$object}=System.out.println({$object});
-[when]{$object} éé igual a {$value}={$object}: SampleObject(value == {$value});
+[consequence][]Mostre {$object}=System.out.println({$object});
+[condition][]{$object} Ã© igual a {$value}={$object}: SampleObject(value == {$value});
