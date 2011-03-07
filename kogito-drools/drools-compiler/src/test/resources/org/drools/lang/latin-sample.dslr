@@ -6,7 +6,7 @@ expander latin.dsl;  // so I had to change the filename to this
 
 rule "Latin Sample"
     when
-        Objeto �� igual a 1
+        Objeto é igual a 1
     then
         Mostre Objeto
 end

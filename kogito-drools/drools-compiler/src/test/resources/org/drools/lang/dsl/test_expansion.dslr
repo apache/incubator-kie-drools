@@ -12,7 +12,7 @@ consulta "a query"
 fim
 
 regra "average \"bob\"" salience -10
- faça
+ faÃ§a
    # a comment in the consequence
    Log "just an average bob"
    Show last name
@@ -26,7 +26,7 @@ regra "average \"bob\"" salience -10
 fim
 
 regra "a second rule" agenda-group test
- faça
+ faÃ§a
 >  System.out.println("bla")
  se
    the Product

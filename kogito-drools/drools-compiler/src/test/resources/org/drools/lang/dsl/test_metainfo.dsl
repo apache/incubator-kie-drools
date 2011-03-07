@@ -1,4 +1,4 @@
-[keyword][*]regra {atributos} faca {rhs} se {lhs} fim=rule {atributos} \\n when\\n    {lhs}\\n then\\n    {rhs}\\n end
+[keyword][*]regra {atributos} faça {rhs} se {lhs} fim=rule {atributos} \\n when\\n {lhs}\\n then\\n {rhs}\\n end
 [keyword][*]consulta=query
 [keyword][]fim=end
 [condition][woolfel.ecommerce.model.Customer]the Customer=cust : Customer()
