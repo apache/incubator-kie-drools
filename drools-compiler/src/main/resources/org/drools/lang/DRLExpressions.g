@@ -222,10 +222,22 @@ inExpression returns [BaseDescr result]
   ;
 
 relationalExpression returns [BaseDescr result]
-  : left=shiftExpression { if( buildDescr && state.backtracking == 0 ) { $result = ( $left.result != null ) ? $left.result : new AtomicExprDescr( $left.text ) ; } }
+  : left=shiftExpression 
+    { if( buildDescr && state.backtracking == 0 ) { 
+          $result = ( $left.result != null && 
+                      ( (!($left.result instanceof AtomicExprDescr)) || 
+                        ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ? 
+                    $left.result : 
+                    new AtomicExprDescr( $left.text ) ; } 
+    }
   ( (relationalOp)=> op=relationalOp right=shiftExpression 
          { if( buildDescr && state.backtracking == 0 ) {
-               $result = new RelationalExprDescr( $op.text, $result,  ( $right.result != null ) ? $right.result : new AtomicExprDescr( $right.text ) );
+               BaseDescr descr = ( $right.result != null && 
+                                 ( (!($right.result instanceof AtomicExprDescr)) || 
+                                   ($right.text.equals(((AtomicExprDescr)$right.result).getExpression())) )) ? 
+		                    $right.result : 
+		                    new AtomicExprDescr( $right.text ) ;
+               $result = new RelationalExprDescr( $op.text, $result, descr );
            }
          }
   )*
@@ -305,7 +317,7 @@ primitiveType
 primary returns [BaseDescr result]
     :	(parExpression)=> expr=parExpression {  if( buildDescr && state.backtracking == 0 ) { $result = $expr.result; }  }
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
-    |   (literal)=> literal
+    |   (literal)=> literal { if( buildDescr && state.backtracking == 0 ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
     //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
     |   (super_key)=> super_key superSuffix 
     |   (new_key)=> new_key creator 
