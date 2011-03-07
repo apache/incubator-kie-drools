@@ -412,7 +412,7 @@ public class PatternBuilder
                        ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
                        expr );
 
-            boolean literal = descrBranch.getRuleBindings().isEmpty();
+            boolean literal = descrBranch.getRuleBindings().isEmpty() && descrBranch.getGlobalBindings().isEmpty();
 
             if ( indexable ) {
                 if ( literal ) {
