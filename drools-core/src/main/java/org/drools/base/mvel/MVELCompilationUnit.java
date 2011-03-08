@@ -304,8 +304,14 @@ public class MVELCompilationUnit
                                               final Object[] otherVars,
                                               final Object thisObject,
                                               final InternalWorkingMemory workingMemory) {
-        int varLength = inputIdentifiers.length;
-        Object[] vals = new Object[inputIdentifiers.length];
+        int varLength = inputIdentifiers.length + 3 + 
+                        (thisObject != null ? 1 : 0) + 
+                        (otherVars != null ? otherVars.length : 0) + 
+                        (globalIdentifiers != null ? globalIdentifiers.length : 0) +
+                        (previousDeclarations != null ? previousDeclarations.length : 0) +
+                        (localDeclarations != null ? localDeclarations.length : 0);
+        
+        Object[] vals = new Object[varLength];
         
         int i = 0;
         if ( thisObject != null ) {
