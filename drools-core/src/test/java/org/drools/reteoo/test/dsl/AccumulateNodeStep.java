@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.tool.Rule;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.accumulators.SumAccumulateFunction;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -41,6 +42,7 @@ import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
+import org.drools.spi.KnowledgeHelper;
 import org.mockito.Mockito;
 
 public class AccumulateNodeStep
@@ -53,8 +55,8 @@ public class AccumulateNodeStep
         this.reteTesterHelper = reteTesterHelper;
     }
 
-    public void execute(Map<String, Object> context,
-                        List<String[]> args) {
+    public void execute( Map<String, Object> context,
+                         List<String[]> args ) {
         BuildContext buildContext = (BuildContext) context.get( "BuildContext" );
 
         if ( args.size() >= 1 ) {
@@ -91,7 +93,7 @@ public class AccumulateNodeStep
                 resultPattern = reteTesterHelper.getPattern( buildContext.getNextId(),
                                                              Number.class.getName() );
             } catch ( Exception e ) {
-                throw new IllegalArgumentException( "Not possible to process arguments: "+Arrays.toString( a ));
+                throw new IllegalArgumentException( "Not possible to process arguments: " + Arrays.toString( a ) );
             }
 
             BetaConstraints betaSourceConstraints = new EmptyBetaConstraints();
@@ -124,7 +126,8 @@ public class AccumulateNodeStep
                                                                                                operator,
                                                                                                val );
                     } catch ( IntrospectionException e ) {
-                        throw new IllegalArgumentException("Unable to configure alpha constraint: "+Arrays.toString( a ), e);
+                        throw new IllegalArgumentException( "Unable to configure alpha constraint: " + Arrays.toString( a ),
+                                                            e );
                     }
                 }
             }
@@ -132,15 +135,17 @@ public class AccumulateNodeStep
             NodeTestCase testCase = (NodeTestCase) context.get( "TestCase" );
             List<String> classImports = new ArrayList<String>();
             List<String> pkgImports = new ArrayList<String>();
-            for( String imp : testCase.getImports() ) {
-                if( imp.endsWith( ".*" ) ) {
-                    pkgImports.add( imp.substring( 0, imp.lastIndexOf( '.' ) ) );
+            for ( String imp : testCase.getImports() ) {
+                if ( imp.endsWith( ".*" ) ) {
+                    pkgImports.add( imp.substring( 0,
+                                                   imp.lastIndexOf( '.' ) ) );
                 } else {
                     classImports.add( imp );
                 }
-                
+
             }
-            
+
+            Declaration decl = (Declaration) context.get( expr );
             // build an external function executor
             MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                            expr,
@@ -150,10 +155,10 @@ public class AccumulateNodeStep
                                                                            new String[]{}, // imported fields
                                                                            new String[]{}, // global identifiers
                                                                            new Declaration[]{}, // previous declarations
-                                                                           new Declaration[]{ (Declaration) context.get( expr ) }, // local declarations
+                                                                           new Declaration[]{decl}, // local declarations
                                                                            new String[]{}, // other identifiers
-                                                                           new String[]{}, // input identifiers
-                                                                           new String[]{}, // input types
+                                                                           new String[]{"this", "drools", "kcontext", "rule", decl.getIdentifier()}, // input identifiers
+                                                                           new String[]{Object.class.getName(), KnowledgeHelper.class.getName(), KnowledgeHelper.class.getName(), Rule.class.getName(), decl.getValueType().getClassType().getName()}, // input types
                                                                            4,
                                                                            false );
 
@@ -166,7 +171,7 @@ public class AccumulateNodeStep
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration
                                                     new Declaration[]{}, // inner declarations
-                                                    new Accumulator[] { accumulator } );
+                                                    new Accumulator[]{accumulator} );
             AccumulateNode accNode = new AccumulateNode( buildContext.getNextId(),
                                                          leftTupleSource,
                                                          rightObjectSource,
