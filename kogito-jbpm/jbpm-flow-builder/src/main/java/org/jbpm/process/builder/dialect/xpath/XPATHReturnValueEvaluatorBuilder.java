@@ -18,15 +18,18 @@ package org.jbpm.process.builder.dialect.xpath;
 
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.ReturnValueDescr;
+import org.drools.rule.builder.PackageBuildContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
 import org.jbpm.process.instance.impl.XPATHReturnValueEvaluator;
-import org.drools.rule.builder.PackageBuildContext;
 
-public class XPATHReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBuilder {
+public class XPATHReturnValueEvaluatorBuilder
+    implements
+    ReturnValueEvaluatorBuilder {
 
     public XPATHReturnValueEvaluatorBuilder() {
+
     }
 
     public void build(final PackageBuildContext context,
@@ -37,7 +40,8 @@ public class XPATHReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBui
         String text = descr.getText();
 
         try {
-            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text, null );
+            XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text,
+                                                                          null );
 
             constraintNode.setEvaluator( expr );
             

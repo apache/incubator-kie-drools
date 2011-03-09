@@ -16,6 +16,9 @@
 
 package org.jbpm.bpmn2;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +29,10 @@ import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -68,14 +75,13 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import java.io.ByteArrayInputStream;
 
 public class SimpleBPMNProcessTest extends JbpmTestCase {
 
@@ -308,6 +314,60 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
+	
+	public void testExclusiveSplitXPathAdvanced() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+	public void testExclusiveSplitXPathAdvanced2() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-vars-not-signaled.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
+	
+	public void testExclusiveSplitXPathAdvancedWithVars() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitXPath-advanced-with-vars.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        Element hi = doc.createElement("hi");
+        Element ho = doc.createElement("ho");
+        hi.appendChild(ho);
+        Attr attr = doc.createAttribute("value");
+        ho.setAttributeNode(attr);
+        attr.setValue("a");
+        params.put("x", hi);
+        params.put("y", "Second");
+        ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+    }
 	
 	public void testExclusiveSplitDefault() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
@@ -972,7 +1032,257 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 		assertEquals(4, myList.size());
 	}
-    
+	
+	public void testXORGateway() throws Exception {
+	    KnowledgeBase kbase = createKnowledgeBase("BPMN2-gatewayTest.bpmn2");
+	    StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+	    Document document = DocumentBuilderFactory.newInstance()
+	    .newDocumentBuilder().parse(new ByteArrayInputStream(
+	            "<instanceMetadata><user approved=\"false\" /></instanceMetadata>".getBytes()));
+	    Map<String, Object> params = new HashMap<String, Object>();
+	    params.put("instanceMetadata", document);
+	    params.put("startMessage", DocumentBuilderFactory.newInstance()
+	            .newDocumentBuilder().parse(new ByteArrayInputStream(
+	                    "<task subject='foobar2'/>".getBytes())).getFirstChild());
+	    ProcessInstance processInstance = ksession.startProcess("process", params);
+	    assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+	
+	public void testDataInputAssociations() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello world", workItem.getParameter("coId"));
+            }
+            
+        });
+        Document document = DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder().parse(new ByteArrayInputStream(
+                "<user hello='hello world' />".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", document.getFirstChild());
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+	
+	public void testDataInputAssociationsWithStringObject() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-object.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello", workItem.getParameter("coId"));
+            }
+            
+        });
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", "hello");
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+	
+	public void testDataInputAssociationsWithLazyLoading() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-lazy-creating.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("mydoc", ((Element) workItem.getParameter("coId")).getNodeName());
+                assertEquals("mynode", ((Element) workItem.getParameter("coId")).getFirstChild().getNodeName());
+                assertEquals("user", ((Element) workItem.getParameter("coId")).getFirstChild().getFirstChild().getNodeName());
+                assertEquals("hello world", ((Element) workItem.getParameter("coId")).getFirstChild().getFirstChild().getAttributes().getNamedItem("hello").getNodeValue());
+            }
+            
+        });
+        Document document = DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder().parse(new ByteArrayInputStream(
+                "<user hello='hello world' />".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", document.getFirstChild());
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+	
+	public void testDataInputAssociationsWithString() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello", workItem.getParameter("coId"));
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
+	public void testDataInputAssociationsWithStringWithoutQuotes() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-string-no-quotes.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("hello", workItem.getParameter("coId"));
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
+	public void testDataInputAssociationsWithXMLLiteral() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-xml-literal.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("id", ((org.w3c.dom.Node) workItem.getParameter("coId")).getNodeName());
+                assertEquals("some text", ((org.w3c.dom.Node) workItem.getParameter("coId")).getFirstChild().getTextContent());
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+
+	public void testDataInputAssociationsWithTwoAssigns() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataInputAssociations-two-assigns.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                assertEquals("foo", ((Element) workItem.getParameter("Comment")).getNodeName());
+//                assertEquals("mynode", ((Element) workItem.getParameter("Comment")).getFirstChild().getNodeName());
+//                assertEquals("user", ((Element) workItem.getParameter("Comment")).getFirstChild().getFirstChild().getNodeName());
+//                assertEquals("hello world", ((Element) workItem.getParameter("coId")).getFirstChild().getFirstChild().getAttributes().getNamedItem("hello").getNodeValue());
+            }
+            
+        });
+        Document document = DocumentBuilderFactory.newInstance()
+        .newDocumentBuilder().parse(new ByteArrayInputStream(
+                "<user hello='hello world' />".getBytes()));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("instanceMetadata", document.getFirstChild());
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+
+	public void testDataOutputAssociationsforHumanTask() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-HumanTask.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder builder;
+				try {
+					builder = factory.newDocumentBuilder();
+				} catch (ParserConfigurationException e) {
+					// TODO Auto-generated catch block
+//					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+				final Map<String, Object> results = new HashMap<String, Object>();
+
+		        // process metadata
+		        org.w3c.dom.Document processMetadaDoc = builder.newDocument();
+		        org.w3c.dom.Element processMetadata = processMetadaDoc.createElement("previoustasksowner");
+		        processMetadaDoc.appendChild(processMetadata);
+//		        org.w3c.dom.Element procElement = processMetadaDoc.createElement("previoustasksowner");
+		        processMetadata.setAttribute("primaryname", "my_result");
+//		        processMetadata.appendChild(procElement);            
+		        results.put("output", processMetadata);
+
+				mgr.completeWorkItem(workItem.getId(), results);
+            }
+            
+        });
+        Map<String, Object> params = new HashMap<String, Object>();
+        ProcessInstance processInstance = ksession.startProcess("process", params);
+    }
+
+	public void testDataOutputAssociations() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                try {
+                    Document document = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder().parse(new ByteArrayInputStream(
+                            "<user hello='hello world' />".getBytes()));
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put("output", document.getFirstChild());
+                    mgr.completeWorkItem(workItem.getId(), params);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+                
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
+	public void testDataOutputAssociationsXmlNode() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-DataOutputAssociations-xml-node.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+
+            public void abortWorkItem(WorkItem manager, WorkItemManager mgr) {
+                
+            }
+
+            public void executeWorkItem(WorkItem workItem, WorkItemManager mgr) {
+                try {
+                    Document document = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder().parse(new ByteArrayInputStream(
+                            "<user hello='hello world' />".getBytes()));
+                    Map<String, Object> params = new HashMap<String, Object>();
+                    params.put("output", document.getFirstChild());
+                    mgr.completeWorkItem(workItem.getId(), params);
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
+                
+            }
+            
+        });
+        ProcessInstance processInstance = ksession.startProcess("process", null);
+    }
+	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
@@ -986,10 +1296,11 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
 		for (Process p : processes) {
 		    RuleFlowProcess ruleFlowProcess = (RuleFlowProcess)p;
-//			System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
-		    kbuilder.add(ResourceFactory.newReaderResource(
-		            new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
+			System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess));
+			kbuilder.add(ResourceFactory.newReaderResource(
+			                                   new StringReader(XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))), ResourceType.BPMN2);
 		}
+		kbuilder.add(ResourceFactory.newReaderResource(new InputStreamReader(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process))), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error: kbuilder.getErrors()) {
 				System.err.println(error);
@@ -1000,6 +1311,28 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		return kbase;
 	}
+	
+	private KnowledgeBase createKnowledgeBaseWithoutDumper(String process) throws Exception {
+        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        ((PackageBuilderConfiguration) conf).initSemanticModules();
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
+        ((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNExtensionsSemanticModule());
+//      ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
+        XmlProcessReader processReader = new XmlProcessReader(
+            ((PackageBuilderConfiguration) conf).getSemanticModules());
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
+        kbuilder.add(ResourceFactory.newReaderResource(new InputStreamReader(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process))), ResourceType.BPMN2);
+        if (!kbuilder.getErrors().isEmpty()) {
+            for (KnowledgeBuilderError error: kbuilder.getErrors()) {
+                System.err.println(error);
+            }
+            throw new IllegalArgumentException("Errors while parsing knowledge base");
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        return kbase;
+    }
 	
 	private StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
 //	    Environment env = KnowledgeBaseFactory.newEnvironment();

@@ -68,4 +68,43 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            
+            <Bundle-SymbolicName>org.jbpm.flow-persistence-jpa;singleton:=true</Bundle-SymbolicName>
+            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}",org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
+            <Import-Package>*</Import-Package>
+            <Export-Package>org.jbpm.persistence.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
