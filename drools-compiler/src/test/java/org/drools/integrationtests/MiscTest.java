@@ -1682,7 +1682,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
