@@ -214,9 +214,12 @@ public class MiscTest {
                            list );
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
-        session.fireAllRules();
+        int fired = session.fireAllRules();
 
         list = (List) session.getGlobal( "list" );
+
+        assertEquals( 4,
+                      fired );
         assertEquals( 4,
                       list.size() );
 
@@ -1406,11 +1409,11 @@ public class MiscTest {
     public void testExtends() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
-        
+
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
-        }        
-        
+        }
+
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -1443,10 +1446,11 @@ public class MiscTest {
                                              4 );
         FactHandle handle2 = session.insert( mycheese2 );
         session.fireAllRules();
-        
+
         assertEquals( "rule 4",
                       list.get( 0 ) );
-        assertEquals( 1, list.size() );
+        assertEquals( 1,
+                      list.size() );
 
         //Test 3 levels of inheritance, all levels
         list = new ArrayList();
@@ -1460,7 +1464,8 @@ public class MiscTest {
         //System.out.println(list.toString());
         assertEquals( "rule 3",
                       list.get( 0 ) );
-        assertEquals( 1, list.size() );
+        assertEquals( 1,
+                      list.size() );
 
         //Test 3 levels of inheritance, third only
         list = new ArrayList();
@@ -1484,10 +1489,10 @@ public class MiscTest {
         FactHandle handle5 = session.insert( mycheese5 );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertEquals( 0, list.size() );
+        assertEquals( 0,
+                      list.size() );
 
     }
-
 
     @Test
     public void testExtends2() {
