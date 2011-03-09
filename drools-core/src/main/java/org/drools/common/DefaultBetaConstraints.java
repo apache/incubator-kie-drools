@@ -38,6 +38,7 @@ import org.drools.reteoo.RightTupleMemory;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.VariableRestriction;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 
@@ -168,10 +169,11 @@ public class DefaultBetaConstraints
     public static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
-        } else {
-            return false;
+            if( variableConstraint.getRestriction() instanceof VariableRestriction ){
+                return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
+             }
         }
+        return false;
     }
     
 
