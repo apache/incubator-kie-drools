@@ -35,6 +35,7 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly-drools-planner.xml</descriptor>
           </descriptors>
+          <appendAssemblyId>false</appendAssemblyId> 
         </configuration>
       </plugin>
     </plugins>
