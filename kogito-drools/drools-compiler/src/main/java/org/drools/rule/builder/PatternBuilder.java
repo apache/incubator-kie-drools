@@ -375,15 +375,19 @@ public class PatternBuilder
 
             boolean indexable = false;
             boolean simple = false;
+            boolean returnValue = false;
             if ( d instanceof RelationalExprDescr ) {
                 RelationalExprDescr red = (RelationalExprDescr) d;
                 if ( red.getLeft() instanceof AtomicExprDescr &&
                       red.getRight() instanceof AtomicExprDescr ) {
                     simple = true;
-                    String expr = ((AtomicExprDescr) red.getRight()).getExpression();
-                    if ( "==".equals( red.getOperator() ) && (expr != null && !expr.trim().startsWith( "(" )) ) {
+                    String expr = ((AtomicExprDescr) red.getRight()).getExpression().trim();
+                    if ( "==".equals( red.getOperator() ) && (expr != null && !expr.startsWith( "(" )) ) {
                         // we have an indexable constraint
                         indexable = true;
+                    } 
+                    if( expr.startsWith( "(" ) ) {
+                        returnValue = true;
                     }
                 }
             }
@@ -412,7 +416,8 @@ public class PatternBuilder
                        ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
                        expr );
 
-            boolean literal = descrBranch.getRuleBindings().isEmpty() && descrBranch.getGlobalBindings().isEmpty();
+            boolean literal = descrBranch.getRuleBindings().isEmpty() && 
+                              descrBranch.getGlobalBindings().isEmpty() ;
 
             if ( indexable ) {
                 if ( literal ) {
@@ -421,7 +426,7 @@ public class PatternBuilder
                     variablesIndexes.add( descrBranch );
                 }
             } else {
-                if ( literal ) {
+                if ( literal && !returnValue ) {
                     literalConstraints.add( descrBranch );
                 } else {
                     variableConstraints.add( descrBranch );
