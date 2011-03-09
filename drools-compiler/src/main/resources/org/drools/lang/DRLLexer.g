@@ -81,8 +81,8 @@ fragment
 IntegerTypeSuffix : ('l'|'L') ;
 
 STRING
-    :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"') { setText( StringUtils.unescapeJava( getText() ) ); }
-    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') { setText( StringUtils.unescapeJava( getText() ) ); }
+    :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
+    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') 
     ;
 
 

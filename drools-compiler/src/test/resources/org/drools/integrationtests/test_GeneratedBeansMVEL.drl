@@ -28,10 +28,6 @@ declare Bankruptcy
 end
 
 
-
-
-
-
 rule 'Try it again'
        dialect "mvel"
     when

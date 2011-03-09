@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-03-04 14:59:00
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-03-08 18:12:12
 
     package org.drools.lang;
 
@@ -925,9 +925,6 @@ public class DRLLexer extends Lexer {
 
                     }
 
-                    if ( state.backtracking==0 ) {
-                       setText( StringUtils.unescapeJava( getText() ) ); 
-                    }
 
                     }
                     break;
@@ -986,9 +983,6 @@ public class DRLLexer extends Lexer {
 
                     }
 
-                    if ( state.backtracking==0 ) {
-                       setText( StringUtils.unescapeJava( getText() ) ); 
-                    }
 
                     }
                     break;
