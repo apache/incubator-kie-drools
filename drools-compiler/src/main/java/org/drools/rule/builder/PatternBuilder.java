@@ -232,9 +232,9 @@ public class PatternBuilder
         List<DescrBranch> variableIndexes = new ArrayList<DescrBranch>();
 
         for ( BindingDescr b : patternDescr.getBindings() ) {
-            if( true ) { // TODO: replace this by legacy mode configuration
+            if ( true ) { // TODO: replace this by legacy mode configuration
                 String expression = b.getExpression();
-                
+
                 DrlExprParser parser = new DrlExprParser();
                 ConstraintConnectiveDescr result = parser.parse( expression );
                 if ( parser.hasErrors() ) {
@@ -248,7 +248,7 @@ public class PatternBuilder
                 }
                 String left = parser.getLeftMostExpr();
                 // BELLOW is a hack.. need to implement it properly
-                if( expression.equals( left ) ) {
+                if ( expression.equals( left ) ) {
                     // it is just a bind, so build it
                     build( context,
                            pattern,
@@ -262,7 +262,7 @@ public class PatternBuilder
                            b,
                            null ); // null containers get added to the pattern
                     b.setExpression( expression );
-                    
+
                     // needs to build the actual constraints as well
                     processExpr( context,
                                  new ExprConstraintDescr( b.getExpression() ),
@@ -271,7 +271,7 @@ public class PatternBuilder
                                  variableIndexes,
                                  variableConstraints );
                 }
-                
+
             } else {
                 build( context,
                        pattern,
@@ -636,7 +636,7 @@ public class PatternBuilder
         if ( branch.isSimple() ) {
             RelationalExprDescr red = (RelationalExprDescr) branch.getDescr();
             String fieldName = ((AtomicExprDescr) red.getLeft()).getExpression();
-            String value = ((AtomicExprDescr) red.getRight()).getExpression();
+            AtomicExprDescr right = (AtomicExprDescr) red.getRight();
 
             // if 'this.' is used, strip it
             String[] identifiers = fieldName.split( "\\." );
@@ -654,9 +654,12 @@ public class PatternBuilder
             FieldValue field = null;
             try {
 
-                int dotPos = value.indexOf( '.' );
-                int parenPos = value.indexOf( '(' ); // need to make sure this isn't a method @TODO handle methods/functions
-                if ( dotPos >= 0 && parenPos < 0 ) {
+                String value = right.getExpression();
+                
+                // TODO: the following is a very weak check as strings and number literals might contain such characters
+                int dotPos = right.getExpression().indexOf( '.' );
+                int parenPos = right.getExpression().indexOf( '(' ); // need to make sure this isn't a method @TODO handle methods/functions
+                if ( (!right.isLiteral()) && dotPos >= 0 && parenPos < 0 ) {
                     final String className = value.substring( 0,
                                                               dotPos );
                     String classFieldName = value.substring( dotPos + 1 );
@@ -679,7 +682,7 @@ public class PatternBuilder
                                                                       "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + value + "'" ) );
                     }
                 } else {
-                    if ( context.getConfiguration().isProcessStringEscapes() ) {
+                    if ( right.isLiteral() && value.startsWith( "\"" ) && context.getConfiguration().isProcessStringEscapes() ) {
                         value = StringUtils.unescapeJava( (String) value );
                     }
                     field = FieldFactory.getFieldValue( value,
@@ -690,7 +693,7 @@ public class PatternBuilder
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               red,
                                                               e,
-                                                              "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + value + "'" ) );
+                                                              "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + right.getExpression() + "'" ) );
             }
 
             if ( field == null ) {
@@ -698,8 +701,8 @@ public class PatternBuilder
                 return;
             }
 
-            Target right = getRightTarget( extractor );
-            Target left = Target.FACT;
+            Target rightTarget = getRightTarget( extractor );
+            Target leftTarget = Target.FACT;
             String operator = red.getOperator();
 
             // extractor the operator and determine if it's negated or not
@@ -714,8 +717,8 @@ public class PatternBuilder
                                                       operator,
                                                       (notPos >= 0),
                                                       null,
-                                                      left,
-                                                      right );
+                                                      leftTarget,
+                                                      rightTarget );
             if ( evaluator == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               red,
@@ -747,12 +750,12 @@ public class PatternBuilder
                    container );
         }
     }
-    
-    private void buildVariableConstraint(RuleBuildContext context,
-                                         Pattern pattern,
-                                         DescrBranch branch,
-                                         Object object) {
-        if ( branch.isSimple()) {
+
+    private void buildVariableConstraint( RuleBuildContext context,
+                                          Pattern pattern,
+                                          DescrBranch branch,
+                                          Object object ) {
+        if ( branch.isSimple() ) {
             RelationalExprDescr red = (RelationalExprDescr) branch.getDescr();
             String fieldName = ((AtomicExprDescr) red.getLeft()).getExpression();
             String value = ((AtomicExprDescr) red.getRight()).getExpression().trim();
