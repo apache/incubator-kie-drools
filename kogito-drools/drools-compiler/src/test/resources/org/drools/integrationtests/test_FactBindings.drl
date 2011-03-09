@@ -6,7 +6,7 @@ import org.drools.Person;
 rule "simple rule"
     no-loop true
     when
-        $pnamenotationon( name == "big cheese", $cheese : cheese )
+        $person : Person( name == "big cheese", $cheese : cheese )
     then
            update( $cheese );
         update( $person );

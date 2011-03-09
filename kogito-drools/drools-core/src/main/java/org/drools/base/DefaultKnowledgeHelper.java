@@ -342,7 +342,7 @@ public class DefaultKnowledgeHelper
         // NOTE: it would probably be a good idea to create a specific attribute for that
             for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
-                if ( handle != null ) {
+                if ( handle != null && identityMap != null ) {
                     identityMap.put( object,
                                      handle );
                     break;
