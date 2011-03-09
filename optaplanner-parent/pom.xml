@@ -39,23 +39,6 @@
     </repository>
   </repositories>
 
-  <build>
-    <plugins>
-      <!-- TODO temporarily added for the nurse rostering competition-->
-      <!-- Run command: mvn clean package assembly:assembly -DskipTests -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-2</version>
-        <configuration>
-          <descriptors>
-            <descriptor>src/main/assembly/nurseRosteringCompetition/nurseRosteringCompetitionAssembly.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <modules>
     <module>drools-planner-core</module>
     <module>drools-planner-examples</module>
@@ -71,6 +54,7 @@
       </activation>
       <modules>
         <module>drools-planner-docs</module>
+        <module>drools-planner-distribution</module>
       </modules>
     </profile>
   </profiles>
