@@ -23,13 +23,10 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.drools.lang.DRLExprTree;
 import org.drools.lang.DRLExpressions;
-import org.drools.lang.DRLExpressions.conditionalAndExpression_return;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.ParserHelper;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 
 /**
@@ -44,7 +41,7 @@ public class DrlExprParser {
     }
 
     /** Parse an expression from text */
-    public ConstraintConnectiveDescr parse( final String text ) throws DroolsParserException {
+    public ConstraintConnectiveDescr parse( final String text ) {
         ConstraintConnectiveDescr constraint = null;
         try {
             DRLLexer lexer = new DRLLexer( new ANTLRStringStream( text ) );
@@ -53,20 +50,21 @@ public class DrlExprParser {
             helper = new ParserHelper( input,
                                        state );
             DRLExpressions parser = new DRLExpressions( input, state, helper );
-            conditionalAndExpression_return expr = parser.conditionalAndExpression();
+            parser.setBuildDescr( true );
+            parser.setLeftMostExpr( null ); // setting initial value just in case
+            BaseDescr expr = parser.conditionalAndExpression();
             if ( expr != null && !parser.hasErrors() ) {
-                CommonTree tree = (CommonTree) expr.getTree();
-                CommonTreeNodeStream nodes = new CommonTreeNodeStream( tree );
-                nodes.setTokenStream( input );
-                // Create a tree walker attached to the nodes stream
-                DRLExprTree walker = new DRLExprTree( nodes );
-                walker.setHelper( helper );
-                constraint = walker.constraint();
+                constraint = ConstraintConnectiveDescr.newAnd();
+                constraint.addOrMerge( expr );
             }
         } catch ( RecognitionException e ) {
             helper.reportError( e );
         }
         return constraint;
+    }
+    
+    public String getLeftMostExpr() {
+        return helper != null ? helper.getLeftMostExpr() : null;
     }
 
     /**

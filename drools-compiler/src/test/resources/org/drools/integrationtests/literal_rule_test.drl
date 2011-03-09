@@ -8,7 +8,7 @@ global Cheesery cheesery;
 
 rule "literal test rule"
     when
-        Cheese( $x: type == "stilton" )
+        Cheese( $x: type, type == "stilton" )
     then
         list.add( $x );
 end    

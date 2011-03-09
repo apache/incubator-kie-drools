@@ -241,9 +241,22 @@ public class ReturnValueRestriction
 
     public boolean isAllowed(final InternalReadAccessor extractor,
                              final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemoiry,
+                             final InternalWorkingMemory workingMemory,
                              final ContextEntry context) {
-        throw new UnsupportedOperationException( "does not support method call isAllowed(Object object, InternalWorkingMemory workingMemoiry)" );
+        try {
+            FieldValue value = this.expression.evaluate( handle.getObject(),
+                                                         null,
+                                                         this.previousDeclarations,
+                                                         this.localDeclarations,
+                                                         workingMemory,
+                                                         null );
+            return this.evaluator.evaluate( workingMemory,
+                                            this.readAccessor,
+                                            handle.getObject(),
+                                            value );
+        } catch ( final Exception e ) {
+            throw new RuntimeDroolsException( e );
+        }            
     }
 
     public boolean isAllowedCachedLeft(final ContextEntry context,

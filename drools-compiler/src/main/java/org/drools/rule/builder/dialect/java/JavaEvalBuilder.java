@@ -74,7 +74,7 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         final Declaration[] declarations = decls.values().toArray( new Declaration[decls.size()]);
-        Arrays.sort( declarations, SortDeclarations.isntance  );
+        Arrays.sort( declarations, SortDeclarations.instance  );
         
         final EvalCondition eval = new EvalCondition( declarations );
 

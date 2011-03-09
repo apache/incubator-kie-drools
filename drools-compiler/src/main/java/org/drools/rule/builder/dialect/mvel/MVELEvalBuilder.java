@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.EvalDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -72,8 +74,14 @@ public class MVELEvalBuilder
                                                                               new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
                                                                                                    context.getPackageBuilder().getGlobals() ) );
 
-            Collection<Declaration> col = decls.values();
-            Declaration[] previousDeclarations = (Declaration[]) col.toArray( new Declaration[col.size()] );
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+            int i = usedIdentifiers.getDeclarations().keySet().size();
+            Declaration[] previousDeclarations = new Declaration[i];
+            i = 0;
+            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+                previousDeclarations[i] = decls.get( id );
+            }
+            Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
             
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( (String) evalDescr.getContent(),
                                                                        analysis,

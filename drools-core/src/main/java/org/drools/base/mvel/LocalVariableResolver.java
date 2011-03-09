@@ -71,15 +71,15 @@ public class LocalVariableResolver implements VariableResolver {
     public void setValue(Object value) {
         if (knownType != null && value != null && value.getClass() != knownType) {
             if (!DataConversion.canConvert(knownType, value.getClass())) {
-                throw new CompileException("cannot assign " + value.getClass().getName() + " to type: "
-                        + knownType.getName(), null, 0);
+                throw new RuntimeException("cannot assign " + value.getClass().getName() + " to type: "
+                        + knownType.getName());
             }
             try {
                 value = DataConversion.convert(value, knownType);
             }
             catch (Exception e) {
-                throw new CompileException("cannot convert value of " + value.getClass().getName()
-                        + " to: " + knownType.getName(), null, 0);
+                throw new RuntimeException("cannot convert value of " + value.getClass().getName()
+                        + " to: " + knownType.getName());
             }
         }
         

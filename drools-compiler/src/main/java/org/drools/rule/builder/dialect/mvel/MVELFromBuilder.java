@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,8 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FromDescr;
+import org.drools.lang.descr.MVELExprDescr;
+import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.Declaration;
 import org.drools.rule.From;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -55,7 +58,7 @@ public class MVELFromBuilder
                                       final Pattern prefixPattern) {
         final FromDescr fromDescr = (FromDescr) descr;
 
-        final AccessorDescr accessor = (AccessorDescr) fromDescr.getDataSource();
+        final MVELExprDescr expr = (MVELExprDescr) fromDescr.getDataSource();
         From from = null;
         try {
             // This builder is re-usable in other dialects, so specify by name
@@ -63,7 +66,7 @@ public class MVELFromBuilder
             
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
-            String text = (String) accessor.toString();
+            String text = (String) expr.getText();
             AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                  descr,
                                                                  text,
@@ -73,11 +76,20 @@ public class MVELFromBuilder
                 // something bad happened
                 return null;
             }
-            Collection<Declaration> col = decls.values();
-            Declaration[] previousDeclarations = (Declaration[]) col.toArray( new Declaration[col.size()] );
+            
+            final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();            
+            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()];
+            String[] declrStr = new String[declarations.length];
+            int j = 0;
+            for (String str : usedIdentifiers.getDeclarations().keySet() ) {
+                declrStr[j] = str;
+                declarations[j++] = decls.get( str );
+            }
+            Arrays.sort( declarations, SortDeclarations.instance  );            
+            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
-                                                                       previousDeclarations,
+                                                                       declarations,
                                                                        null,
                                                                        null,
                                                                        context );
@@ -95,7 +107,7 @@ public class MVELFromBuilder
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fromDescr,
                                                           null,
-                                                          "Unable to build expression for 'from' : " + e.getMessage() + " '" + accessor + "'" ) );
+                                                          "Unable to build expression for 'from' : " + e.getMessage() + " '" + expr.getText() + "'" ) );
             return null;
         }
 

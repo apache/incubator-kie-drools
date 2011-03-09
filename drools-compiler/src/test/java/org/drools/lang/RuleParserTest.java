@@ -52,7 +52,6 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -714,7 +713,23 @@ public class RuleParserTest extends TestCase {
         ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 0 );
 
         assertEquals( "location==\"atlanta\\\"\"",
-                          constr.getText() );
+                      constr.getText() );
+    }
+
+    public void testRuleParseLhsWithStringQuotes2() throws Exception {
+        final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                             text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertNotNull( rule );
+
+        AndDescr lhs = rule.getLhs();
+        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 0 );
+
+        assertEquals( "type == \"s\\tti\\\"lto\\nn\"",
+                      constr.getText() );
     }
 
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {

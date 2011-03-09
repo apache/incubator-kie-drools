@@ -4,19 +4,11 @@ options {
     language = Java;
 }
 
-tokens {
-    OPERATOR;
-    NEG_OPERATOR;
-    SHIFT_EXPR;
-    SHL_ASSIGN;
-    SHRB_ASSIGN;
-    SHR_ASSIGN;
-}
-  
 @header {
     package org.drools.lang;
 
     import org.drools.compiler.DroolsParserException;
+    import org.drools.core.util.StringUtils;
 }
  
 @members {
@@ -90,7 +82,7 @@ IntegerTypeSuffix : ('l'|'L') ;
 
 STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
-     | ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'')
+    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') 
     ;
 
 
@@ -101,9 +93,6 @@ TimePeriod
     | (('0'..'9')+ 's') (('0'..'9')+ 'ms'?)?
     | (('0'..'9')+ 'ms'?)
     ;
-
-
-
 
 fragment
 HexDigit : ('0'..'9'|'a'..'f'|'A'..'F') ;

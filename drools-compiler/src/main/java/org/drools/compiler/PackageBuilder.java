@@ -61,6 +61,7 @@ import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.FactTemplateDescr;
@@ -935,10 +936,11 @@ public class PackageBuilder {
             }
 
             // is it a regular fact or an event?
-            String role = typeDescr.getAnnotation( TypeDeclaration.Role.ID ).getValue();
+            AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
+            String role = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
-            }
+            }                
 
             //sotty: need to resolve supertype and interfaces, if imported
 
@@ -965,7 +967,8 @@ public class PackageBuilder {
             }
 
             // is it a POJO or a template?
-            String templateName = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE ).getValue();
+            annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
+            String templateName = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -977,7 +980,8 @@ public class PackageBuilder {
                     continue;
                 }
             } else {
-                String className = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS ).getValue();
+                annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
+                String className = ( annotationDescr != null ) ? annotationDescr.getText() : null;
                 if ( className == null ) {
                     className = type.getTypeName();
                 }
@@ -1010,7 +1014,8 @@ public class PackageBuilder {
                 }
             }
 
-            String timestamp = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP ).getValue();
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
+            String timestamp = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1019,7 +1024,9 @@ public class PackageBuilder {
                                                                   timestamp,
                                                                   type.new TimestampAccessorSetter() );
             }
-            String duration = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION ).getValue();
+            
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
+            String duration = ( annotationDescr != null ) ? annotationDescr.getText() : null;            
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1028,7 +1035,9 @@ public class PackageBuilder {
                                                                   duration,
                                                                   type.new DurationAccessorSetter() );
             }
-            String expiration = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE ).getValue();
+
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
+            String expiration = ( annotationDescr != null ) ? annotationDescr.getText() : null;             
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
@@ -1100,7 +1109,8 @@ public class PackageBuilder {
 
             PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
-                String idx = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getValue();
+                AnnotationDescr annonDescr = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION );
+                String idx = ( annonDescr != null ) ? annonDescr.getText() : null;
                 if ( idx != null ) {
                     field.setIndex( Integer.valueOf( idx ) );
                 }

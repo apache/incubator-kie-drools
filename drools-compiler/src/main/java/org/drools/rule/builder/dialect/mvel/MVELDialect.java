@@ -549,6 +549,7 @@ public class MVELDialect
         int i = 0;
         for( Entry<String, Class<?>> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
             strList.add(  e.getKey() );
+            ids.add(  e.getKey() );            
             resolvedInputs.put( e.getKey(), e.getValue() );
         }
         String[] globalIdentifiers = strList.toArray( new String[strList.size()] );
@@ -581,8 +582,9 @@ public class MVELDialect
             i = 0;
             for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
-                if ( !analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) ) {
+                if ( !analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) || "rule".equals( entry.getKey() ) ) {
                     // no point including them if they aren't used
+                    // and rule was already included
                     continue;
                 }
                 ids.add( (String) entry.getKey() );

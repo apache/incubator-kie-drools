@@ -38,12 +38,18 @@ public class FieldFactory {
     private FieldFactory() {
     }
 
-    public static FieldValue getFieldValue(final String value,
+    public static FieldValue getFieldValue(String value,
                                            ValueType valueType,
                                            DateFormats dateFormats) {
         FieldValue field = null;
-        if ( value == null ) {
+        if ( value == null || "null".equals( value )) {
             valueType = ValueType.NULL_TYPE;
+        }
+        
+        value = value.trim();
+        if ( (value.startsWith( "\"" ) && value.endsWith( "\"" )) ||
+              value.startsWith( "'" ) && value.endsWith( "'" ) ) {
+            value = value.substring( 1, value.length() - 1 );
         }
 
         if ( valueType == ValueType.NULL_TYPE ) {

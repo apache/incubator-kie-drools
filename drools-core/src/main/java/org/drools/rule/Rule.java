@@ -77,7 +77,7 @@ public class Rule
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
     private Map<String, Declaration> declarations;
-    private String[]                 requiredDeclarations;
+    private String[]                 requiredDeclarations = new String[0];
 
     private GroupElement             lhsRoot;
 
@@ -433,7 +433,7 @@ public class Rule
     }
 
     public String[] getRequiredDeclarations() {
-        return requiredDeclarations;
+        return requiredDeclarations != null ? requiredDeclarations : new String[0];
     }
 
     public void setRequiredDeclarations(String[] requiredDeclarations) {

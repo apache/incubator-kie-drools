@@ -3,7 +3,6 @@ parser grammar DRLExpressions;
 options { 
     language = Java;
     tokenVocab = DRLLexer;
-    output = AST;
 }
   
 @header {
@@ -14,6 +13,12 @@ options {
     import org.drools.lang.ParserHelper;
     import org.drools.lang.DroolsParserExceptionFactory;
     import org.drools.CheckedDroolsException;
+
+    import org.drools.lang.descr.AtomicExprDescr;
+    import org.drools.lang.descr.BaseDescr;
+    import org.drools.lang.descr.ConstraintConnectiveDescr;
+    import org.drools.lang.descr.RelationalExprDescr;
+    
 }
 
 @members {
@@ -37,10 +42,12 @@ options {
     public void reportError(RecognitionException ex)          {        helper.reportError( ex ); }
     public void emitErrorMessage(String msg)                  {}
     
-    private boolean buildConstraint;
-    public void setBuildConstraint( boolean build ) { this.buildConstraint = build; }
-    public boolean isBuildConstraint() { return this.buildConstraint; }
-
+    private boolean buildDescr;
+    public void setBuildDescr( boolean build ) { this.buildDescr = build; }
+    public boolean isBuildDescr() { return this.buildDescr; }
+    
+    public void setLeftMostExpr( String value ) { helper.setLeftMostExpr( value ); }
+    public String getLeftMostExpr() { return helper.getLeftMostExpr(); }
 }
 
 // Alter code generation so catch-clauses get replace with
@@ -56,9 +63,9 @@ catch (RecognitionException re) {
 // --------------------------------------------------------
 literal
     :	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
-    |	DECIMAL 		{	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
-    |	HEX     		{	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
-    |	FLOAT   		{	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
+    |	DECIMAL     {	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	HEX         {	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
+    |	FLOAT       {	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
     |	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
     |	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
     ;
@@ -68,9 +75,13 @@ typeList
     ;
 
 type
+    : 	tm=typeMatch 
+    ;
+    
+typeMatch
     : 	(primitiveType) => ( primitiveType ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
     |	( ID ((typeArguments)=>typeArguments)? (DOT ID ((typeArguments)=>typeArguments)? )* ((LEFT_SQUARE RIGHT_SQUARE)=> LEFT_SQUARE RIGHT_SQUARE)* )
-    ;
+    ;    
 
 typeArguments
     :	LESS typeArgument (COMMA typeArgument)* GREATER
@@ -87,65 +98,149 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-    :	expression ( AT | SEMICOLON | EOF)
-    ;
-
-// top level entry point for arbitrary expression parsing
-expression
-    :	conditionalExpression ((assignmentOperator) => assignmentOperator^ expression)?
-    ;
-
-conditionalExpression
-  : conditionalOrExpression ( QUESTION^ expression COLON! expression )?
-    ;
-
-conditionalOrExpression
-  : conditionalAndExpression ( DOUBLE_PIPE^ conditionalAndExpression )*
-    ;
-
-conditionalAndExpression 
-  : inclusiveOrExpression ( DOUBLE_AMPER^ inclusiveOrExpression )*
-    ;
-
-inclusiveOrExpression
-  : exclusiveOrExpression ( PIPE^ exclusiveOrExpression )*
-    ;
-
-exclusiveOrExpression
-  : andExpression ( XOR^ andExpression )*
-    ;
-
-andExpression 
-  : andOrRestriction ( AMPER^ andOrRestriction )*
-    ;
+    :	expression ( AT | SEMICOLON | EOF | ID ) ;
     
-andOrRestriction
-  	: (ee=equalityExpression -> $ee) 
-  	  (( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator se2=shiftExpressionTk )
-  	  -> ^($lop $andOrRestriction ^($op {$ee.se1} $se2)))*	
-  	;    
-
-equalityExpression returns [CommonTree se1]
-@after { $se1 = $ie.se1; }
-  : ie=instanceOfExpression ( ( EQUALS^ | NOT_EQUALS^ ) instanceOfExpression )*
+dummy2
+    :  relationalExpression EOF;
+    
+// top level entry point for arbitrary expression parsing
+expression returns [BaseDescr result]
+    :	left=conditionalExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+        ((assignmentOperator) => op=assignmentOperator left=expression)?
     ;
 
-instanceOfExpression returns [CommonTree se1]
-@after { $se1 = $ie.se1; }
-  : ie=inExpression (instanceof_key^ type)?
+conditionalExpression returns [BaseDescr result]
+    :   left=conditionalOrExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+        ( QUESTION ts=expression COLON fs=expression )? 
     ;
 
-inExpression returns [CommonTree se1]
-@after { $se1 = $rel.se1; }
-  : (rel=relationalExpression -> relationalExpression)
-    ( not_key in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN -> ^(NEG_OPERATOR[$in.text] $rel expression+)
-    | in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN -> ^($in $rel expression+)
+conditionalOrExpression returns [BaseDescr result]
+  : left=conditionalAndExpression  { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( DOUBLE_PIPE right=conditionalAndExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )* 
+  ;
+
+conditionalAndExpression returns [BaseDescr result]
+  : left=inclusiveOrExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( DOUBLE_AMPER right=inclusiveOrExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )*
+  ;
+
+inclusiveOrExpression returns [BaseDescr result]
+  : left=exclusiveOrExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( PIPE right=exclusiveOrExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newIncOr(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )*
+  ;
+
+exclusiveOrExpression returns [BaseDescr result]
+  : left=andExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( XOR right=andExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newXor(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )*
+  ;
+
+andExpression returns [BaseDescr result]
+  : left=andOrRestriction { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( AMPER right=andOrRestriction 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newIncAnd(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )*
+  ;
+    
+andOrRestriction returns [BaseDescr result]
+  : left=equalityExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator right=shiftExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = $lop.text.equals("||") ? ConstraintConnectiveDescr.newOr() : ConstraintConnectiveDescr.newAnd(); 
+               descr.addOrMerge( $result );  
+               
+               RelationalExprDescr re = new RelationalExprDescr( $op.text, new AtomicExprDescr( $left.text ), new AtomicExprDescr( $right.text ) );
+               descr.addOrMerge( re ); 
+               $result = descr;
+           }
+         }
+  )* EOF?
+  ;    
+
+equalityExpression returns [BaseDescr result]
+  : left=instanceOfExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( ( op=EQUALS | op=NOT_EQUALS ) right=instanceOfExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               $result = new RelationalExprDescr( $op.text, $left.result, $right.result );
+           }
+         }
+  )*
+  ;
+
+instanceOfExpression returns [BaseDescr result]
+  : left=inExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  (op=instanceof_key right=type
+         { if( buildDescr && state.backtracking == 0 ) {
+               $result = new RelationalExprDescr( $op.text, $left.result, new AtomicExprDescr($right.text) );
+           }
+         }
+  )?
+  ;
+
+inExpression returns [BaseDescr result]
+  : left=relationalExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+    ( not_key in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN
+    | in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN 
     )?
   ;
 
-relationalExpression returns [CommonTree se1]
-@after { $se1 = (CommonTree) $se.tree; }
-  : se=shiftExpressionTk ( (relationalOp)=> relationalOp^ shiftExpressionTk )*
+relationalExpression returns [BaseDescr result]
+  : left=shiftExpression 
+    { if( buildDescr && state.backtracking == 0 ) { 
+          $result = ( $left.result != null && 
+                      ( (!($left.result instanceof AtomicExprDescr)) || 
+                        ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ? 
+                    $left.result : 
+                    new AtomicExprDescr( $left.text ) ; } 
+    }
+  ( (relationalOp)=> op=relationalOp right=shiftExpression 
+         { if( buildDescr && state.backtracking == 0 ) {
+               BaseDescr descr = ( $right.result != null && 
+                                 ( (!($right.result instanceof AtomicExprDescr)) || 
+                                   ($right.text.equals(((AtomicExprDescr)$right.result).getExpression())) )) ? 
+		                    $right.result : 
+		                    new AtomicExprDescr( $right.text ) ;
+               $result = new RelationalExprDescr( $op.text, $result, descr );
+           }
+         }
+  )*
   ;
 
 operator
@@ -160,53 +255,56 @@ relationalOp
     | GREATER_EQUALS 
     | LESS 
     | GREATER
-    | not_key neg_operator_key^ ((squareArguments)=> squareArguments)?
-    | operator_key^  ((squareArguments)=> squareArguments)?
+    | not_key neg_operator_key ((squareArguments)=> squareArguments)?
+    | operator_key  ((squareArguments)=> squareArguments)?
     )
     ;
     
-shiftExpressionTk
-    : se=shiftExpression -> SHIFT_EXPR[$se.text]
-    ;
-
-shiftExpression
-  : additiveExpression ( (shiftOp)=>shiftOp additiveExpression )*
-    ;
+shiftExpression returns [BaseDescr result]
+  : left=additiveExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+    ( (shiftOp)=>shiftOp additiveExpression )*
+  ;
 
 shiftOp
-    :	(LESS LESS | GREATER GREATER GREATER | GREATER GREATER )
+    :	( LESS LESS 
+        | GREATER GREATER GREATER 
+        | GREATER GREATER  )
     ;
 
-additiveExpression
-  :   multiplicativeExpression ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
+additiveExpression returns [BaseDescr result]
+    :   left=multiplicativeExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+        ( (PLUS|MINUS)=> (PLUS | MINUS) multiplicativeExpression )*
     ;
 
-multiplicativeExpression
-  :   unaryExpression ( ( STAR | DIV | MOD ) unaryExpression )*
+multiplicativeExpression returns [BaseDescr result]
+    :   left=unaryExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+      ( ( STAR | DIV | MOD ) unaryExpression )*
     ;
 
-unaryExpression
+unaryExpression returns [BaseDescr result]
     :   PLUS unaryExpression
     |	MINUS unaryExpression
     |   INCR primary
     |   DECR primary
-    |   unaryExpressionNotPlusMinus
+    |   left=unaryExpressionNotPlusMinus { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
     ;
 
-unaryExpressionNotPlusMinus
+unaryExpressionNotPlusMinus returns [BaseDescr result]
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
-    |   primary ((selector)=>selector)* ((INCR|DECR)=> (INCR|DECR))?
+    |   left=primary { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+        ((selector)=>selector)* { if( buildDescr && state.backtracking == 0 && helper.getLeftMostExpr() == null ) { helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); } }
+        ((INCR|DECR)=> (INCR|DECR))? 
     ;
     
 castExpression
-    :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN unaryExpression
+    :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN expr=unaryExpression 
     |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
     ;
     
 primitiveType
-    : boolean_key
+    :   boolean_key
     |	char_key
     |	byte_key
     |	short_key
@@ -216,26 +314,26 @@ primitiveType
     |	double_key
     ;
 
-primary
-    :	(parExpression)=> parExpression
+primary returns [BaseDescr result]
+    :	(parExpression)=> expr=parExpression {  if( buildDescr && state.backtracking == 0 ) { $result = $expr.result; }  }
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
-    |   (literal)=> literal
+    |   (literal)=> literal { if( buildDescr && state.backtracking == 0 ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
     //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
-    |   (super_key)=> super_key superSuffix
-    |   (new_key)=> new_key creator
-    |   (primitiveType)=> primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key
+    |   (super_key)=> super_key superSuffix 
+    |   (new_key)=> new_key creator 
+    |   (primitiveType)=> primitiveType (LEFT_SQUARE RIGHT_SQUARE)* DOT class_key 
     //|   void_key DOT class_key
-    |   (inlineMapExpression)=> inlineMapExpression
+    |   (inlineMapExpression)=> inlineMapExpression 
     |   (inlineListExpression)=> inlineListExpression
-    |   (ID)=>ID ((DOT ID)=>DOT ID)* ((identifierSuffix)=>identifierSuffix)?
+    |   (ID)=>ID ((DOT ID)=>DOT ID)* ((identifierSuffix)=>identifierSuffix)? 
     ;
 
 inlineListExpression
-    :   LEFT_SQUARE expressionList? RIGHT_SQUARE	
+    :   LEFT_SQUARE expressionList? RIGHT_SQUARE 
     ;
     
 inlineMapExpression
-    :	LEFT_SQUARE mapExpressionList+ RIGHT_SQUARE
+    :	LEFT_SQUARE mapExpressionList RIGHT_SQUARE 
     ;
 
 mapExpressionList
@@ -243,11 +341,18 @@ mapExpressionList
     ;
     
 mapEntry
-    :	expression COLON expression
+    :	expression COLON expression 
     ;
 
-parExpression
-    :	LEFT_PAREN expression RIGHT_PAREN
+parExpression returns [BaseDescr result]
+    :	LEFT_PAREN expr=expression RIGHT_PAREN 
+        {  if( buildDescr && state.backtracking == 0 ) { 
+               $result = $expr.result; 
+               if( $result instanceof AtomicExprDescr ) {
+                   ((AtomicExprDescr)$result).setExpression("(" +((AtomicExprDescr)$result).getExpression() + ")" );
+               } 
+           }  
+        }
     ;
 
 identifierSuffix
@@ -344,9 +449,9 @@ assignmentOperator
   |   OR_ASSIGN
   |   XOR_ASSIGN
   |   MOD_ASSIGN
-  |   LESS LESS EQUALS_ASSIGN -> SHL_ASSIGN["<<="]
-  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN  -> SHRB_ASSIGN[">>>="]
-  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN  -> SHR_ASSIGN[">>="]
+  |   LESS LESS EQUALS_ASSIGN 
+  |   (GREATER GREATER GREATER)=> GREATER GREATER GREATER EQUALS_ASSIGN 
+  |   (GREATER GREATER)=> GREATER GREATER EQUALS_ASSIGN  
     ;
 
 // --------------------------------------------------------
@@ -361,31 +466,31 @@ super_key
     ;
 
 instanceof_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID -> OPERATOR[$id]
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID 
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID 
     ;
 
 char_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID 
     ;
 
 byte_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID 
     ;
 
 short_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID 
     ;
 
 int_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID 
     ;
 
 float_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID 
     ;
 
 long_key
@@ -393,11 +498,11 @@ long_key
     ;
 
 double_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID 
     ;
 
 void_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID 
     ;
 
 this_key
@@ -417,15 +522,15 @@ not_key
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID -> OPERATOR[$id]
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID 
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}?=> id=ID -> OPERATOR[$id]
+  :      {(helper.isPluggableEvaluator(false))}?=> id=ID 
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}?=> id=ID  -> NEG_OPERATOR[$id]
+  :      {(helper.isPluggableEvaluator(true))}?=> id=ID 
   ;
 
 

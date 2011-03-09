@@ -90,11 +90,7 @@ public class VariableConstraint extends MutableTypeConstraint
     }
 
     public Evaluator getEvaluator() {
-        if ( this.restriction instanceof UnificationRestriction ) {
-            return ((UnificationRestriction) this.restriction).getEvaluator();
-        } else {
-            return ((VariableRestriction) this.restriction).getEvaluator();
-        }
+        return this.restriction.getEvaluator();
     }
     
     public Restriction getRestriction() {

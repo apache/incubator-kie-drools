@@ -13,7 +13,7 @@
 <emphasis role="bold">Objective:</emphasis> Configuration example that finds the solution from a large number of available cross products
 </screen>
 
-    <para>The golf example solves a "riddle" style problem that is simple enough to state in sentences, but for which a conventional algorithmic solition is not obvious. It does this by searching for a suitable combination from a "space" of possible solutions.</para>
+    <para>The golf example solves a "riddle" style problem that is simple enough to state in sentences, but for which a conventional algorithmic solution is not obvious. It does this by searching for a suitable combination from a "space" of possible solutions.</para>
 
     <section>
       <title>The riddle</title>
@@ -30,7 +30,7 @@
         </listitem>
 
         <listitem>
-          <para>The golfer to Fred�s immediate right is wearing blue pants.</para>
+          <para>The golfer to Fred's immediate right is wearing blue pants.</para>
         </listitem>
 
         <listitem>

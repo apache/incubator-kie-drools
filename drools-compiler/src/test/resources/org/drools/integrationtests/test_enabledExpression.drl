@@ -7,7 +7,7 @@ rule "Test enabled expression 1"
     #arbitrary expression using a rule metadata
     enabled ( rule.metaAttributes["ruleID"] == "1234" )
   when
-  annotationrson(name == "Michael")
+    Person(name == "Michael")
   then
     results.add( "1" );
 end
@@ -17,7 +17,7 @@ rule "Test enabled expression 2"
     # using bound variables 
     enabled ( "Michael".equals( $name ) )
   when
- annotationerson( $name : name )
+    Person( $name : name )
   then
     results.add( "2" );
 end
@@ -26,7 +26,7 @@ rule "Test enabled expression 3"
     @ruleID(1234)
     # using simple expressions 
     enabled ( 1 + 1 == 2 )
-annotationhen
+  when
     Person( $name : name )
   then
     results.add( "3" );
@@ -35,7 +35,7 @@ end
 rule "Test enabled expression 4"
     @ruleID(1234)
     # using a false expression 
-    enabled ( 1 +annotation= 5 )
+    enabled ( 1 + 1 == 5 )
   when
     Person( $name : name )
   then
