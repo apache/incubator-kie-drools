@@ -2677,9 +2677,12 @@ public class DRLParser {
                         if ( state.failed ) return;
                     } else {
                         String value = chunk( DRLLexer.LEFT_PAREN,
-                                              DRLLexer.RIGHT_PAREN );
+                                              DRLLexer.RIGHT_PAREN ).trim();
                         if ( state.failed ) return;
                         if ( state.backtracking == 0 ) {
+                            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+                                value = StringUtils.unescapeJava( value );
+                            }
                             annotation.value( value );
                         }
                     }
@@ -2784,7 +2787,10 @@ public class DRLParser {
                 if ( state.failed ) return;
             }
 
-            String value = safeStripStringDelimiters( elementValue() );
+            String value = elementValue();
+            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+                value = safeStripStringDelimiters( StringUtils.unescapeJava( value ) );
+            }
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {

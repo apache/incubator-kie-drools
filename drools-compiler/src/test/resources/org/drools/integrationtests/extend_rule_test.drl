@@ -17,14 +17,14 @@ end
 rule "test rule 2" extends "test rule 1"
     enabled false
     when
-        Cheese( price <= 6.00) from c
+        Cheese( price <= 6) from c
     then
         list.add( new String ("rule 2") );
 end 
 
 rule "test rule 3" extends "test rule 2"
     when
-        Cheese( price > 1.00 ) from c
+        Cheese( price > 1 ) from c
     then
         list.add( new String ("rule 3") );
 end 
@@ -41,7 +41,7 @@ rule "test rule 2b" extends "test rule 1b"
     
     when
 
-        Cheese( price < 5.00) from return ([c])
+        Cheese( price < 5) from return ([c])
     then
         list.add( new String ("rule 2b") );
 end 
@@ -51,7 +51,7 @@ end
 rule "test rule 4" 
 
     when
-        Cheese( price > 1.00 , price < 6.00) 
+        Cheese( price > 1 , price < 6 ) 
     then
         list.add( new String ("rule 4") );
 end 
