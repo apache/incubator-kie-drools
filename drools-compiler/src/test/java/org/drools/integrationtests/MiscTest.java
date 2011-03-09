@@ -1406,11 +1406,11 @@ public class MiscTest {
     public void testExtends() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
-
+        
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
-        }
-
+        }        
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -1419,53 +1419,53 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
 
         //Test 2 levels of inheritance, and basic rule
-        final List list = new ArrayList();
+        List list = new ArrayList();
         session.setGlobal( "list",
                            list );
         final Cheese mycheese = new Cheese( "cheddar",
                                             4 );
         FactHandle handle = session.insert( mycheese );
         session.fireAllRules();
-        //System.out.println(((List) session.getGlobal( "list" )).toString());
+
         assertEquals( 2,
-                      ((List) session.getGlobal( "list" )).size() );
+                      list.size() );
         assertEquals( "rule 4",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
+                      list.get( 0 ) );
         assertEquals( "rule 2b",
-                      ((List) session.getGlobal( "list" )).get( 1 ) );
+                      list.get( 1 ) );
 
         //Test 2nd level (parent) to make sure rule honors the extend rule
-        final List list2 = new ArrayList();
+        list = new ArrayList();
         session.setGlobal( "list",
-                           list2 );
+                           list );
         session.retract( handle );
         final Cheese mycheese2 = new Cheese( "notcheddar",
                                              4 );
         FactHandle handle2 = session.insert( mycheese2 );
         session.fireAllRules();
-        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        
         assertEquals( "rule 4",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertTrue( ((List) session.getGlobal( "list" )).size() == 1 );
+                      list.get( 0 ) );
+        assertEquals( 1, list.size() );
 
         //Test 3 levels of inheritance, all levels
-        final List list3 = new ArrayList();
+        list = new ArrayList();
         session.setGlobal( "list",
-                           list3 );
+                           list );
         session.retract( handle2 );
         final Cheese mycheese3 = new Cheese( "stilton",
                                              6 );
         FactHandle handle3 = session.insert( mycheese3 );
         session.fireAllRules();
-        //System.out.println(((List) session.getGlobal( "list" )).toString());
+        //System.out.println(list.toString());
         assertEquals( "rule 3",
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertTrue( ((List) session.getGlobal( "list" )).size() == 1 );
+                      list.get( 0 ) );
+        assertEquals( 1, list.size() );
 
         //Test 3 levels of inheritance, third only
-        final List list4 = new ArrayList();
+        list = new ArrayList();
         session.setGlobal( "list",
-                           list4 );
+                           list );
         session.retract( handle3 );
         final Cheese mycheese4 = new Cheese( "notstilton",
                                              6 );
@@ -1475,18 +1475,19 @@ public class MiscTest {
         assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
 
         //Test 3 levels of inheritance, 2nd only 
-        final List list5 = new ArrayList();
+        list = new ArrayList();
         session.setGlobal( "list",
-                           list5 );
+                           list );
         session.retract( handle4 );
         final Cheese mycheese5 = new Cheese( "stilton",
                                              7 );
         FactHandle handle5 = session.insert( mycheese5 );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
+        assertEquals( 0, list.size() );
 
     }
+
 
     @Test
     public void testExtends2() {
