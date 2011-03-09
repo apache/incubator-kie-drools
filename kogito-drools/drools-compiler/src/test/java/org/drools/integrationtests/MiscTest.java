@@ -1967,7 +1967,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
@@ -2706,7 +2705,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2732,7 +2730,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testCustomConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -3127,7 +3124,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
@@ -3303,7 +3299,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testLLR() throws Exception {
 
         // read in the source
@@ -3691,8 +3686,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateVariableBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
@@ -3741,7 +3734,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateVariableBindingError() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -4598,7 +4590,6 @@ public class MiscTest {
 
     // this is an MVEL regression that we need fixed in mvel-2.0.11
     @Test
-    @Ignore
     public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
@@ -6126,7 +6117,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testRuntimeTypeCoercion() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );

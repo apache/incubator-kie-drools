@@ -4,14 +4,14 @@ global java.util.List results
 
 rule "rule 1" 
     when
-        Cheese( $pr : price <= 6.00)
+        Cheese( $pr : price <= 6 )
     then
         results.add( "1" );
 end 
 
 rule "rule 2"
     when
-        Cheese( $pr : price > 8.49 ) 
+        Cheese( $pr : price > 8 ) 
     then
         results.add( "2" );
 end 
