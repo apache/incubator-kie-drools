@@ -169,7 +169,7 @@ $ mvn -DskipTests clean install
       example:</para>
 
       <programlisting>$ cd drools-planner-examples/
-$ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
+$ mvn exec:exec
 ...</programlisting>
     </section>
   </section>

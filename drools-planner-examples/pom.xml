@@ -45,19 +45,13 @@
               <argument>-server</argument>
               <argument>-classpath</argument>
               <classpath/>
-              <argument>${exec.mainClass}</argument>
-              <!-- Program arguments can be set at mvn exec:exec -->
-              <argument>${exec.programArgs}</argument>
+              <argument>org.drools.planner.examples.app.ExamplesApp</argument>
             </arguments>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
   </build>
-  <properties>
-    <!-- default is a workaround for http://jira.codehaus.org/browse/MEXEC-35 -->
-    <exec.programArgs>default</exec.programArgs>
-  </properties>
 
   <dependencies>
     <!-- Internal dependencies -->
