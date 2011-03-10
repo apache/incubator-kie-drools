@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly>
-  <id>drools-planner-distribution</id>
+  <id>assembly-drools-planner</id>
   <formats>
+    <format>dir</format>
     <format>zip</format>
   </formats>
 
@@ -40,13 +41,13 @@
     </fileSet>
     <!-- Examples -->
     <fileSet>
-      <directory>../drools-planner-examples</directory>
-      <outputDirectory/>
+      <directory>../drools-planner-examples/data</directory>
+      <outputDirectory>data</outputDirectory>
       <includes>
-        <include>data/**/input/*.*</include>
-        <include>data/**/unsolved/*.xml</include>
-        <include>data/**/solved/*.xml</include>
-        <include>data/**/output/*.*</include>
+        <include>**/input/*.*</include>
+        <include>**/unsolved/*.xml</include>
+        <include>**/solved/*.xml</include>
+        <include>**/output/*.*</include>
       </includes>
     </fileSet>
   </fileSets>
@@ -57,6 +58,15 @@
         <exclude>org.drools.planner:drools-planner-docs</exclude>
       </excludes>
       <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+
+    <dependencySet>
+      <includes>
+        <include>org.drools.planner:drools-planner-core:jar:javadoc</include>
+      </includes>
+      <outputDirectory>javadoc</outputDirectory>
+      <unpack>true</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
   </dependencySets>
 

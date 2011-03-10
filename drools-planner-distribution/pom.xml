@@ -49,6 +49,12 @@
     </dependency>
     <dependency>
       <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-examples</artifactId>
     </dependency>
     <dependency>
