@@ -19,7 +19,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>unix</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory/>
+      <outputDirectory>examples</outputDirectory>
       <includes>
         <include>**/*.sh</include>
       </includes>
@@ -29,7 +29,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>dos</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory/>
+      <outputDirectory>examples</outputDirectory>
       <includes>
         <include>**/*.bat</include>
       </includes>
@@ -42,7 +42,7 @@
     <!-- Examples -->
     <fileSet>
       <directory>../drools-planner-examples/data</directory>
-      <outputDirectory>data</outputDirectory>
+      <outputDirectory>examples/data</outputDirectory>
       <includes>
         <include>**/input/*.*</include>
         <include>**/unsolved/*.xml</include>
@@ -50,7 +50,7 @@
         <include>**/output/*.*</include>
       </includes>
     </fileSet>
-    <!-- Manual -->
+    <!-- Reference manual -->
     <fileSet>
       <directory>../drools-planner-docs/target/docbook/publish/en-US</directory>
       <outputDirectory>reference_manual</outputDirectory>
@@ -60,11 +60,18 @@
   <dependencySets>
     <dependencySet>
       <excludes>
+        <exclude>org.drools.planner:drools-planner-examples</exclude>
         <exclude>org.drools.planner:drools-planner-docs</exclude>
+        <exclude>*:javadoc</exclude>
       </excludes>
-      <outputDirectory>lib</outputDirectory>
+      <outputDirectory>binaries</outputDirectory>
     </dependencySet>
-
+    <dependencySet>
+      <includes>
+        <include>org.drools.planner:drools-planner-examples</include>
+      </includes>
+      <outputDirectory>examples/binaries</outputDirectory>
+    </dependencySet>
     <dependencySet>
       <includes>
         <include>org.drools.planner:drools-planner-core:*:javadoc</include>
