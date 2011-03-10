@@ -83,9 +83,6 @@ public class Operator
                                              final boolean isNegated) {
         Operator op = CACHE.get( getKey( operatorId,
                                          isNegated ) );
-        if ( op == null ) {
-            throw new RuntimeDroolsException( "unable to determine operator for symbol [" + (isNegated ? "not " : "") + operatorId + "]" );
-        }
         return op;
     }
 
