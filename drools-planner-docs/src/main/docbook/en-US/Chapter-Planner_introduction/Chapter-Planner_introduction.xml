@@ -168,7 +168,7 @@ $ mvn -DskipTests clean install
       <para>After that, you can run any example directly from the command line, just run this command and pick an
       example:</para>
 
-      <programlisting>$ cd drools-planner-examples/
+      <programlisting>$ cd drools-planner-examples
 $ mvn exec:exec
 ...</programlisting>
     </section>
