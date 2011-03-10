@@ -1,6 +1,5 @@
 package org.drools.lang;
 
-import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.Operator;
 
 /**
@@ -115,13 +114,8 @@ public class DroolsSoftKeywords {
 
     public static boolean isOperator( final String operator,
                                       final boolean negated ) {
-        try {
-            Operator.determineOperator( operator,
-                                        negated );
-            return true;
-        } catch ( RuntimeDroolsException rde ) {
-            return false;
-        }
+        return Operator.determineOperator( operator,
+                                           negated ) != null;
     }
 
 }
