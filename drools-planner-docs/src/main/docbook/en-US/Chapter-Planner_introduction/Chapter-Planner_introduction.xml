@@ -99,7 +99,7 @@
 
     <para>Drools Planner is a beta module of Drools. The API is almost stable but backward incompatible changes can
     occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
-    deal with any backwards incompatible changes between versions. You can find this recipe in subversion and in every
+    deal with any backwards incompatible changes between versions. You can find this recipe on GitHub and in every
     release.</para>
 
     <para>Drools Planner, like Drools, is open source software under the Apache Software License.</para>
@@ -156,19 +156,19 @@
     <section>
       <title>Build it from source</title>
 
-      <para>You can also easily build it from source yourself. Checkout drools from subversion and do a maven 2
+      <para>You can also easily build it from source yourself. Clone drools from GitHub and do a maven 2
       build:</para>
 
-      <programlisting>$ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ drools
+      <programlisting>$ git clone git@github.com:droolsjbpm/drools-planner.git drools-planner
 ...
-$ cd drools
+$ cd drools-planner
 $ mvn -DskipTests clean install
 ...</programlisting>
 
       <para>After that, you can run any example directly from the command line, just run this command and pick an
       example:</para>
 
-      <programlisting>$ cd drools-planner/drools-planner-examples/
+      <programlisting>$ cd drools-planner-examples/
 $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.app.ExamplesApp"
 ...</programlisting>
     </section>
