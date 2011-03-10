@@ -5788,6 +5788,9 @@ public class MiscTest {
     public void testAutovivificationOfVariableRestrictions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoVivificationVR.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
