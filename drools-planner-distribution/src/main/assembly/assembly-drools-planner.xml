@@ -50,6 +50,11 @@
         <include>**/output/*.*</include>
       </includes>
     </fileSet>
+    <!-- Manual -->
+    <fileSet>
+      <directory>../drools-planner-docs/target/docbook/publish/en-US</directory>
+      <outputDirectory>reference_manual</outputDirectory>
+    </fileSet>
   </fileSets>
 
   <dependencySets>
@@ -62,7 +67,7 @@
 
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-core:jar:javadoc</include>
+        <include>org.drools.planner:drools-planner-core:*:javadoc</include>
       </includes>
       <outputDirectory>javadoc</outputDirectory>
       <unpack>true</unpack>
