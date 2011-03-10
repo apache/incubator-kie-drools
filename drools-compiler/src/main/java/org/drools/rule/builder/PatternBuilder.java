@@ -825,6 +825,14 @@ public class PatternBuilder
                                       (AcceptsReadAccessor) restriction );
             }
 
+            if ( restriction == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              red,
+                                                              null,
+                                                              "Unable to create restriction on expression '" + branch.getExpression() + "'" ) );
+                return;                
+            }
+            
             VariableConstraint constraint = new VariableConstraint( extractor,
                                                                     restriction );
             registerReadAccessor( context,
