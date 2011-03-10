@@ -290,11 +290,13 @@ unaryExpression returns [BaseDescr result]
     ;
 
 unaryExpressionNotPlusMinus returns [BaseDescr result]
+@init { boolean isLeft = false; }
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
-    |   left=primary { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
-        ((selector)=>selector)* { if( buildDescr && state.backtracking == 0 && helper.getLeftMostExpr() == null ) { helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); } }
+    |   { isLeft = helper.getLeftMostExpr() == null;}
+        left=primary { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+        ((selector)=>selector)* { if( buildDescr && state.backtracking == 0 && isLeft ) { helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); } }
         ((INCR|DECR)=> (INCR|DECR))? 
     ;
     
