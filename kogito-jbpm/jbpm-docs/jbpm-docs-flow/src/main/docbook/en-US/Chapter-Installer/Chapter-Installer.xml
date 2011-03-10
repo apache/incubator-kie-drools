@@ -49,6 +49,8 @@
     </para>
 
     <para>This could take a while (REALLY, not kidding, we are downloading an application server and Eclipse installation).  The script however always shows which file it is downloading (you could for example check whether it is still downloading by checking the whether the size of the file in question in the jbpm-installer/lib folder is still increasing). If you want to avoid downloading specific components (because you will not be using them or you already have them installed somewhere else), check below for running only specific parts of the demo or directing the installer to an already installed component.</para>
+    
+    <para>(To limit the amount of data that needs to be downloaded, we have disabled the download of the Eclipse BIRT plugin for reporting by default. If you want to try out reporting as well in the jBPM console, make sure to put the jBPM.birt.download property in the build.properties file to true before running the installer.)</para>
 
     <para>Once the demo setup has finished, you can start playing with the various components by starting the demo setup:</para>
 

@@ -91,6 +91,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		String name = attrs.getValue("name");
 		String packageName = attrs.getValue("http://www.jboss.org/drools", "packageName");
 		String dynamic = attrs.getValue("http://www.jboss.org/drools", "adHoc");
+		String version = attrs.getValue("http://www.jboss.org/drools", "version");
 
 		RuleFlowProcess process = new RuleFlowProcess();
 		process.setAutoComplete(true);
@@ -107,6 +108,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 		if ("true".equals(dynamic)) {
 			process.setDynamic(true);
 			process.setAutoComplete(false);
+		}
+		if (version != null) {
+			process.setVersion(version);
 		}
 
 		((ProcessBuildData) parser.getData()).addProcess(process);

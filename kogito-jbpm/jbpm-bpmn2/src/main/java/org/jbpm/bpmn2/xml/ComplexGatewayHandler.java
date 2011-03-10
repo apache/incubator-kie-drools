@@ -25,11 +25,11 @@ public class ComplexGatewayHandler extends AbstractNodeHandler {
     
     protected Node createNode(Attributes attrs) {
         final String type = attrs.getValue("gatewayDirection");
-        if ("converging".equals(type)) {
+        if ("Converging".equals(type)) {
         	Join join = new Join();
         	join.setType(Join.TYPE_UNDEFINED);
         	return join;
-        } else if ("diverging".equals(type)) {
+        } else if ("Diverging".equals(type)) {
         	Split split = new Split();
         	split.setType(Split.TYPE_UNDEFINED);
         	return split;
