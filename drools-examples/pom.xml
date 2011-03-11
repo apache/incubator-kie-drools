@@ -15,8 +15,8 @@
   <name>Drools :: Examples</name>
 
   <modules>
-    <module>drools-examples-drl</module>
-    <module>drools-examples-fusion</module>
+    <module>drools-expert-examples</module>
+    <module>drools-fusion-examples</module>
   </modules>
 
   <repositories>
