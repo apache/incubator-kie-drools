@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.examples
+package org.drools.examples.honestpolitician
  
-import org.drools.examples.HonestPoliticianExample.Politician;
-import org.drools.examples.HonestPoliticianExample.Hope;
+import org.drools.examples.honestpolitician.Politician;
+import org.drools.examples.honestpolitician.Hope;
  
 rule "We have an honest Politician"
     salience 10
