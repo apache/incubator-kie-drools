@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Change directory to the directory of the script
+cd `dirname $0`
+
 mainJar=binaries/drools-planner-examples-${project.version}.jar
 mainClass=org.drools.planner.examples.app.ExamplesApp
 
