@@ -161,7 +161,7 @@ end</programlisting>
     <code>Hope</code> object. (That action is highlighted green.) The
     insertion of the <code>Hope</code> object activates "Hope Lives" and
     de-activates "Hope is Dead"; it also activates "Corrupt the Honest"
-    for each inserted honested politician. Rule "Hope Lives" executes,
+    for each inserted honest politician. Rule "Hope Lives" executes,
     printing  "Hurrah!!! Democracy Lives". Then, for each politician, rule
     "Corrupt the Honest" fires, printing "I'm an evil corporation and I
     have corrupted X", where X is the name of the politician, and modifies
