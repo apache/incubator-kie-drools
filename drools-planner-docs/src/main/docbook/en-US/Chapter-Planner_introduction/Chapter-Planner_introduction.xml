@@ -9,8 +9,9 @@
   <section>
     <title>What is Drools Planner?</title>
 
-    <para><emphasis role="bold">Drools Planner does automated planning </emphasis>by combining a search algorithm with
-    the power of the Drools rule engine. Good examples of such planning problems include:</para>
+    <para><emphasis role="bold"><link xlink:href="http://www.jboss.org/drools/drools-planner">Drools Planner</link>
+    optimizes automated planning</emphasis> by combining a search algorithm with the power of the Drools rule engine.
+    Use cases of planning problems include:</para>
 
     <itemizedlist>
       <listitem>
@@ -97,10 +98,11 @@
   <section>
     <title>Status of Drools Planner</title>
 
-    <para>Drools Planner is a beta module of Drools. The API is almost stable but backward incompatible changes can
-    occur. With the recipe called <filename>UpgradeFromPreviousVersionRecipe.txt</filename> you can easily upgrade and
-    deal with any backwards incompatible changes between versions. You can find this recipe on GitHub and in every
-    release.</para>
+    <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can
+    occur. With the recipe called
+    <link xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/docs/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
+    you can easily upgrade and deal with any backwards incompatible changes between versions.
+    This recipe is included in every release.</para>
 
     <para>Drools Planner, like Drools, is open source software under the Apache Software License.</para>
   </section>
@@ -177,7 +179,7 @@ $ mvn exec:exec
   </section>
 
   <section>
-    <title>Questions, issues, patches and blogs</title>
+    <title>Questions, issues and blogs</title>
 
     <para>Your questions and remarks are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user
     mailing list</link>. Start the subject of your mail with <literal>[planner]</literal>. You can read/write to the
@@ -189,13 +191,12 @@ $ mvn exec:exec
     or for this manual to <link xlink:href="https://jira.jboss.org/jira/browse/JBRULES">the drools issue tracker</link>.
     Select the component <literal>drools-planner</literal>.</para>
 
-    <para>Patches are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
+    <para>Pull requests (and patches) are very welcome and get priority treatment! Attach them to a JIRA issue and optionally send a mail to
     the dev mailing list to get the issue fixed fast. By open sourcing your improvements, you 'll benefit from our peer
     review, improvements made upon your improvements and maybe even a thank you on our blog.</para>
 
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> and twitter (<link
-    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey</link>) for news. If Drools Planner helps you, don't forget
-    to blog or to <link xlink:href="http://twitter.com/#search?q=%23DroolsPlanner">twitter (hashtag
-    #DroolsPlanner)</link> about it!</para>
+    xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news.
+    If Drools Planner helps you, don't forget to blog or to twitter about it!</para>
   </section>
 </chapter>
