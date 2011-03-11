@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.honestpolitician;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -65,43 +65,6 @@ public class HonestPoliticianExample {
         klogger.close();
 
         ksession.dispose();
-    }
-
-    public static class Politician {
-        private String  name;
-
-        private boolean honest;
-
-        public Politician() {
-
-        }
-
-        public Politician(String name,
-                          boolean honest) {
-            super();
-            this.name = name;
-            this.honest = honest;
-        }
-
-        public boolean isHonest() {
-            return honest;
-        }
-
-        public void setHonest(boolean honest) {
-            this.honest = honest;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    public static class Hope {
-
-        public Hope() {
-
-        }
-
     }
 
 }
