@@ -113,12 +113,14 @@
 
       <para>You can download a release of Drools Planner from <link
       xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. To run an example, just
-      run the script (<filename>runExamples.sh</filename> on linux or <filename>runExamples.bat</filename> on windows)
-      and pick an example:</para>
+      open the directory <filename>examples</filename> and run the script (<filename>runExamples.sh</filename> on linux
+      or <filename>runExamples.bat</filename> on windows) and pick an example:</para>
 
-      <programlisting>$ ./runExamples.sh</programlisting>
+      <programlisting>$ cd examples
+$ ./runExamples.sh</programlisting>
 
-      <programlisting>$ runExamples.bat</programlisting>
+      <programlisting>$ cd examples
+$ runExamples.bat</programlisting>
     </section>
 
     <section>
