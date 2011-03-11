@@ -35,6 +35,12 @@
       <artifactId>drools-templates</artifactId>
     </dependency>
 
+    <!-- Needed for logging -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+
     <!-- External dependencies -->
     <dependency>
       <groupId>foxtrot</groupId>
