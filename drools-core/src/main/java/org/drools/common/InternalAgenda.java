@@ -18,6 +18,7 @@ package org.drools.common;
 
 import org.drools.Agenda;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -46,13 +47,11 @@ public interface InternalAgenda
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final Rule rule,
-                                       final GroupElement subrule);
+                                       final RuleTerminalNode rtn);
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
-                                                         final Rule rule,
-                                                         final GroupElement subrule);
+                                                         final RuleTerminalNode rtn);
     
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,

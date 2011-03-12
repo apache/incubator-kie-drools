@@ -37,6 +37,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -171,26 +172,22 @@ public class DefaultAgenda
     public AgendaItem createAgendaItem(final LeftTuple tuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final Rule rule,
-                                       final GroupElement subrule) {
+                                       final RuleTerminalNode rtn) {
         return new AgendaItem( activationCounter++,
                                tuple,
                                salience,
                                context,
-                               rule,
-                               subrule );
+                               rtn );
     }
 
     public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
                                                          final PropagationContext context,
-                                                         final Rule rule,
-                                                         final GroupElement subrule) {
+                                                         final RuleTerminalNode rtn) {
         return new ScheduledAgendaItem( activationCounter++,
                                         tuple,
                                         this,
                                         context,
-                                        rule,
-                                        subrule );
+                                        rtn );
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {

@@ -27,6 +27,7 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
@@ -58,8 +59,6 @@ public class DefaultKnowledgeHelper
 
     private static final long                   serialVersionUID = 510l;
 
-    private Rule                                rule;
-    private GroupElement                        subrule;
     private Activation                          activation;
     private Tuple                               tuple;
     private InternalWorkingMemoryActions        workingMemory;
@@ -81,8 +80,6 @@ public class DefaultKnowledgeHelper
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        rule = (Rule) in.readObject();
-        subrule = (GroupElement) in.readObject();
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
@@ -90,8 +87,6 @@ public class DefaultKnowledgeHelper
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( rule );
-        out.writeObject( subrule );
         out.writeObject( activation );
         out.writeObject( tuple );
         out.writeObject( workingMemory );
@@ -99,8 +94,6 @@ public class DefaultKnowledgeHelper
     }
 
     public void setActivation(final Activation agendaItem) {
-        this.rule = agendaItem.getRule();
-        this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         // -- JBRULES-2558: logical inserts must be properly preserved
         this.previousJustified = agendaItem.getLogicalDependencies();
@@ -110,8 +103,6 @@ public class DefaultKnowledgeHelper
     }
 
     public void reset() {
-        this.rule = null;
-        this.subrule = null;
         this.activation = null;
         this.tuple = null;
         this.identityMap = null;
@@ -128,7 +119,7 @@ public class DefaultKnowledgeHelper
         FactHandle handle = this.workingMemory.insert( object,
                                                        dynamic,
                                                        false,
-                                                       this.rule,
+                                                       this.activation.getRule(),
                                                        this.activation );
         if ( this.identityMap != null ) {
             this.getIdentityMap().put( object,
@@ -162,7 +153,7 @@ public class DefaultKnowledgeHelper
             FactHandle handle = this.workingMemory.insert( object,
                                                            dynamic,
                                                            true,
-                                                           this.rule,
+                                                           this.activation.getRule(),
                                                            this.activation );
 
             if ( this.identityMap != null ) {
@@ -207,7 +198,7 @@ public class DefaultKnowledgeHelper
                        final Object newObject){
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
                                                                                                   newObject,
-                                                                                                  this.rule,
+                                                                                                  this.activation.getRule(),
                                                                                                   this.activation );
         if ( getIdentityMap() != null ) {
             this.getIdentityMap().put( newObject,
@@ -218,7 +209,7 @@ public class DefaultKnowledgeHelper
     public void update(final FactHandle handle) {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).update( handle,
                                                                                                   ((InternalFactHandle)handle).getObject(),
-                                                                                                  this.rule,
+                                                                                                  this.activation.getRule(),
                                                                                                   this.activation );
     }
 
@@ -235,7 +226,7 @@ public class DefaultKnowledgeHelper
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).retract( handle,
                                                                                                    true,
                                                                                                    true,
-                                                                                                   this.rule,
+                                                                                                   this.activation.getRule(),
                                                                                                    this.activation );
         if ( this.identityMap != null ) {
             this.getIdentityMap().remove( ((InternalFactHandle) handle).getObject() );
@@ -243,7 +234,7 @@ public class DefaultKnowledgeHelper
     }
 
     public Rule getRule() {
-        return this.rule;
+        return this.activation.getRule();
     }
 
     public Tuple getTuple() {
@@ -283,7 +274,7 @@ public class DefaultKnowledgeHelper
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+        return (Declaration) ((AgendaItem)this.activation).getRuleTerminalNode().getSubRule().getOuterDeclarations().get( identifier );
     }
 
     public void halt() {
