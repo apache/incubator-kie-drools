@@ -8,13 +8,9 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <!--
-    TODO make this packing pom and make 2 submodules: example-waltz and example-manners
-    (and possibly example-common too)
-  -->
-  <artifactId>drools-examples-fusion</artifactId>
-  <packaging>jar</packaging>
-  <name>Drools :: Examples Fusion</name>
+  <artifactId>drools-expert-examples</artifactId>
+
+  <name>Drools Expert examples</name>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -30,11 +26,25 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-templates</artifactId>
+    </dependency>
+
+    <!-- Needed for logging -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>looks</artifactId>
+      <groupId>foxtrot</groupId>
+      <artifactId>foxtrot</artifactId>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
@@ -77,6 +87,23 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <executable>java</executable>
+          <!-- only waltz12 is configured at the moment -->
+          <!-- TODO waltz50, manners64 and manners128 -->
+          <arguments>
+            <argument>-Xms1024M</argument>
+            <argument>-Xmx1024M</argument>
+            <argument>-cp</argument>
+            <classpath/>
+            <argument>${project.mainClass}</argument>
+            <argument>waltz12.dat</argument>
+          </arguments>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>

@@ -127,7 +127,7 @@ D finished
 
         <listitem>
           <para>In the "Audit View" click the "Open Log" button and select
-          the file "&lt;drools-examples-drl-dir&gt;/log/state.log".</para>
+          the file "&lt;drools-expert-examples-dir&gt;/log/state.log".</para>
         </listitem>
       </orderedlist>
 

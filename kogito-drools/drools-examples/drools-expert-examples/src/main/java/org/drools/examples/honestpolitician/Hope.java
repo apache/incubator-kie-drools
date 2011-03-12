@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.ticker;
+package org.drools.examples.honestpolitician;
 
-public class Ticker {
-    private String symbol;
-    private double price;
+public class Hope {
 
+    public Hope() {
 
-    public String getSymbol() {
-        return symbol;
     }
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-    public double getPrice() {
-        return price;
-    }
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-
 
 }

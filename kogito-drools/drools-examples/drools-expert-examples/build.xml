@@ -1,6 +1,6 @@
 <project name="Drools" basedir=".">
   <!-- This ant build file is just for executing the various benchmarks used in drools-examples.
-       People new to Drools should stick to importing the drools-examples-drl project into an
+       People new to Drools should stick to importing the drools-expert-examples project into an
        Eclipse workspace that already has the Eclipse plugin installed, and executing examples
        from there.
 
