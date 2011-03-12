@@ -230,11 +230,6 @@ public class PatternBuilder
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
         context.getBuildStack().push( pattern );
 
-        List<DescrBranch> literalConstraints = new ArrayList<DescrBranch>();
-        List<DescrBranch> literalIndexes = new ArrayList<DescrBranch>();
-        List<DescrBranch> variableConstraints = new ArrayList<DescrBranch>();
-        List<DescrBranch> variableIndexes = new ArrayList<DescrBranch>();
-
         for ( BindingDescr b : patternDescr.getBindings() ) {
             if ( true ) { // TODO: replace this by legacy mode configuration
                 String expression = b.getExpression();
@@ -285,39 +280,7 @@ public class PatternBuilder
             build(context,
                   pattern,
                  (ExprConstraintDescr) b);
-//            processExpr( context,
-//                         (ExprConstraintDescr) b,
-//                         literalIndexes,
-//                         literalConstraints,
-//                         variableIndexes,
-//                         variableConstraints );
         }
-
-//        for ( DescrBranch branch : literalIndexes ) {
-//            buildLiteralConstraint( context,
-//                                    pattern,
-//                                    branch,
-//                                    null );
-//        }
-//        for ( DescrBranch branch : literalConstraints ) {
-//            buildLiteralConstraint( context,
-//                                    pattern,
-//                                    branch,
-//                                    null );
-//        }
-//
-//        for ( DescrBranch branch : variableIndexes ) {
-//            buildVariableConstraint( context,
-//                                     pattern,
-//                                     branch,
-//                                     null );
-//        }
-//        for ( DescrBranch branch : variableConstraints ) {
-//            buildVariableConstraint( context,
-//                                     pattern,
-//                                     branch,
-//                                     null );
-//        }
 
         if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
