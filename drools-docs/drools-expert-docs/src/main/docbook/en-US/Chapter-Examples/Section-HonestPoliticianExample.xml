@@ -7,7 +7,7 @@
   <title>Honest Politician Example</title>
 
     <programlisting><emphasis role="bold">Name:</emphasis> Honest Politician
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.HonestPoliticianExample 
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.honestpolitician.HonestPoliticianExample
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> HonestPoliticianExample.drl
 <emphasis role="bold">Objective:</emphasis> Illustrate the concept of "truth maintenance" based on the logical insertion of facts
@@ -173,4 +173,4 @@ end</programlisting>
     dead" activates and fires printing "We are all Doomed!!! Democracy is
     Dead".</para>
 
-  </section>
+</section>

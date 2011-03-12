@@ -1033,12 +1033,12 @@ public class PatternBuilder
                                                                          null,
                                                                          false );
 
-            String operator = red.getOperator();
+            String operator = red.getOperator().trim();
 
             // extractor the operator and determine if it's negated or not
-            int notPos = operator.indexOf( "not" );
-            if ( notPos >= 0 ) {
-                red.getOperator().substring( notPos + 3 );
+            boolean negated = operator.startsWith( "not " );
+            if ( negated ) {
+                operator = red.getOperator().substring( 4 );
             }
 
             FieldConstraintDescr fdescr = new FieldConstraintDescr( fieldName );
@@ -1054,7 +1054,7 @@ public class PatternBuilder
                                                 extractor,
                                                 fdescr,
                                                 new ReturnValueRestrictionDescr( operator,
-                                                                                 (notPos >= 0),
+                                                                                 negated,
                                                                                  null,
                                                                                  value ) );
             } else if ( value.indexOf( '.' ) >= 0 ) {
@@ -1062,7 +1062,7 @@ public class PatternBuilder
                                                 extractor,
                                                 fdescr,
                                                 new QualifiedIdentifierRestrictionDescr( operator,
-                                                                                         (notPos >= 0),
+                                                                                         negated,
                                                                                          null,
                                                                                          value ) );
                 //(QualifiedIdentifierRestrictionDescr) restrictionDescr );                
@@ -1071,7 +1071,7 @@ public class PatternBuilder
                                                  extractor,
                                                  fdescr,
                                                  new VariableRestrictionDescr( operator,
-                                                                               (notPos >= 0),
+                                                                               negated,
                                                                                null,
                                                                                value ) );
                 registerReadAccessor( context,

@@ -8,13 +8,8 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <!--
-    TODO make this packing pom and make 2 submodules: example-waltz and example-manners
-    (and possibly example-common too)
-  -->
-  <artifactId>drools-examples-drl</artifactId>
-  <packaging>jar</packaging>
-  <name>Drools :: Examples DRL</name>
+  <artifactId>drools-fusion-examples</artifactId>
+  <name>Drools Fusion examples</name>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -30,19 +25,11 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-decisiontables</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-templates</artifactId>
-    </dependency>
 
     <!-- External dependencies -->
     <dependency>
-      <groupId>foxtrot</groupId>
-      <artifactId>foxtrot</artifactId>
+      <groupId>com.jgoodies</groupId>
+      <artifactId>looks</artifactId>
     </dependency>
     <dependency>
       <groupId>com.jgoodies</groupId>
@@ -85,23 +72,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <executable>java</executable>
-          <!-- only waltz12 is configured at the moment -->
-          <!-- TODO waltz50, manners64 and manners128 -->
-          <arguments>
-            <argument>-Xms1024M</argument>
-            <argument>-Xmx1024M</argument>
-            <argument>-cp</argument>
-            <classpath/>
-            <argument>${project.mainClass}</argument>
-            <argument>waltz12.dat</argument>
-          </arguments>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 </project>
