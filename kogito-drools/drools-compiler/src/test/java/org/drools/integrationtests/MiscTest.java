@@ -4568,6 +4568,9 @@ public class MiscTest {
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

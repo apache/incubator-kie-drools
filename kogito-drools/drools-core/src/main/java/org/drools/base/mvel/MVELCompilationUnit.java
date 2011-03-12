@@ -34,6 +34,7 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ModifyInterceptor;
+import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
@@ -334,10 +335,17 @@ public class MVELCompilationUnit
         
              
         if ( tuples != null ) {
-            InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
             if ( this.previousDeclarations != null ) {
-                for ( int j = 0, length = this.previousDeclarations.length; j < length; j++ ) {
-                    Declaration decl = this.previousDeclarations[j];
+                
+                // Consequences with 'or's will have different declaration offsets, so use the one's from the RTN's subrule.
+                Declaration[] prevDecl = this.previousDeclarations;
+                if ( knowledgeHelper != null ) {
+                    prevDecl = ((AgendaItem)knowledgeHelper.getActivation()).getRuleTerminalNode().getDeclarations();
+                }
+                InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
+                
+                for ( int j = 0, length = prevDecl.length; j < length; j++ ) {
+                    Declaration decl = prevDecl[j];
                     InternalFactHandle handle = getFactHandle( decl, 
                                                                handles );
                     
@@ -369,22 +377,22 @@ public class MVELCompilationUnit
         }
         
         VariableResolverFactory locals = new CachingMapVariableResolverFactory(new HashMap<String, Object>());
-        DroolsMVELResolverFactory factory =  new DroolsMVELResolverFactory(inputIdentifiers, vals, locals);
+        DroolsMVELIndexedFactory factory =  new DroolsMVELIndexedFactory(inputIdentifiers, vals, locals);
         factory.setKnowledgeHelper( knowledgeHelper );
         return factory;
     }
     
-    public static class DroolsMVELResolverFactory extends IndexedVariableResolverFactory {
+    public static class DroolsMVELIndexedFactory extends IndexedVariableResolverFactory {
         
         private KnowledgeHelper knowledgeHelper;
 
-        public DroolsMVELResolverFactory(String[] varNames,
+        public DroolsMVELIndexedFactory(String[] varNames,
                                          Object[] values) {
             super( varNames,
                    values );
         }
         
-        public DroolsMVELResolverFactory(String[] varNames,
+        public DroolsMVELIndexedFactory(String[] varNames,
                                          Object[] values,
                                          VariableResolverFactory factory) {
             super( varNames,
@@ -405,56 +413,6 @@ public class MVELCompilationUnit
     private static InternalFactHandle getFactHandle(Declaration declaration, InternalFactHandle[] handles) {
         return handles[ declaration.getPattern().getOffset() ];
     }
-    
-
-//    public DroolsMVELFactory getFactory() {
-//        Set<String> resolvedGlobals = null;
-//        if ( globalIdentifiers != null ) {
-//            resolvedGlobals = new HashSet<String>( globalIdentifiers.length );
-//            for ( int i = 0, length = globalIdentifiers.length; i < length; i++ ) {
-//                resolvedGlobals.add( globalIdentifiers[i] );
-//            }
-//        }
-//
-//        Map<String, Declaration> previousDeclarationsMap = null;
-//        if ( previousDeclarations != null ) {
-//            previousDeclarationsMap = new HashMap<String, Declaration>( previousDeclarations.length );
-//            for ( Declaration declr : previousDeclarations ) {
-//                previousDeclarationsMap.put( declr.getIdentifier(),
-//                                             declr );
-//            }
-//        }
-//
-//        Map<String, Declaration> localDeclarationsMap = null;
-//        if ( localDeclarations != null ) {
-//            localDeclarationsMap = new HashMap<String, Declaration>( localDeclarations.length );
-//            for ( Declaration declr : localDeclarations ) {
-//                localDeclarationsMap.put( declr.getIdentifier(),
-//                                          declr );
-//            }
-//        }
-//
-//        DroolsMVELFactory factory = null;
-//        if ( shadowIdentifiers == null ) {
-//
-//            factory = new DroolsMVELFactory( previousDeclarationsMap,
-//                                             localDeclarationsMap,
-//                                             resolvedGlobals,
-//                                             inputIdentifiers );
-//        } else {
-//            Set<String> set = new HashSet<String>( shadowIdentifiers.length );
-//            for ( String string  : shadowIdentifiers ) {
-//                set.add( string );
-//            }
-//            factory = new DroolsMVELShadowFactory( previousDeclarationsMap,
-//                                                   localDeclarationsMap,
-//                                                   resolvedGlobals,
-//                                                   inputIdentifiers,
-//                                                   set );
-//        }
-//
-//        return factory;
-//    }
 
     public static Serializable compile(final String text,
                                        final ClassLoader classLoader,
@@ -549,6 +507,10 @@ public class MVELCompilationUnit
     public Declaration[] getPreviousDeclarations() {
         return previousDeclarations;
     }
+    
+    public void setPreviousDeclarations(Declaration[] previousDeclarations) {
+        this.previousDeclarations = previousDeclarations;
+    }    
 
     public Declaration[] getLocalDeclarations() {
         return localDeclarations;

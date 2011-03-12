@@ -681,15 +681,13 @@ public class InputMarshaller {
         LeftTuple leftTuple = context.terminalTupleMap.get( pos );
 
         int salience = stream.readInt();
-
-        //PropagationContext context,
+        
         String pkgName = stream.readUTF();
         String ruleName = stream.readUTF();
         Package pkg = ruleBase.getPackage( pkgName );
         Rule rule = pkg.getRule( ruleName );
 
         RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) leftTuple.getLeftTupleSink();
-        GroupElement subRule = ruleTerminalNode.getSubRule();
 
         PropagationContext pc = context.propagationContexts.get( stream.readLong() );
 
@@ -697,8 +695,7 @@ public class InputMarshaller {
                                                 leftTuple,
                                                 salience,
                                                 pc,
-                                                rule,
-                                                subRule );
+                                                ruleTerminalNode );
 
         leftTuple.setObject( activation );
 

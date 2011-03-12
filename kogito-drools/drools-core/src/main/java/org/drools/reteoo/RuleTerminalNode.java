@@ -190,8 +190,7 @@ public class RuleTerminalNode extends BaseNode
         if ( timer != null ) {
             final ScheduledAgendaItem item = agenda.createScheduledAgendaItem( tuple,
                                                                                context,
-                                                                               this.rule,
-                                                                               this.subrule );
+                                                                               this );
 
             agenda.scheduleItem( item,
                                  workingMemory );
@@ -219,8 +218,7 @@ public class RuleTerminalNode extends BaseNode
                                                                                           this.rule,
                                                                                           workingMemory ),
                                                              context,
-                                                             this.rule,
-                                                             this.subrule );
+                                                             this);
             item.setSequenence( this.sequence );
 
             tuple.setObject( item );
@@ -328,8 +326,7 @@ public class RuleTerminalNode extends BaseNode
             if ( item == null ) {
                 item = agenda.createScheduledAgendaItem( leftTuple,
                                                          context,
-                                                         this.rule,
-                                                         this.subrule );
+                                                         this );
             }
             agenda.scheduleItem( (ScheduledAgendaItem) item,
                                  workingMemory );
@@ -361,8 +358,7 @@ public class RuleTerminalNode extends BaseNode
                                                                              this.rule,
                                                                              workingMemory ),
                                                 context,
-                                                this.rule,
-                                                this.subrule );
+                                                this  );
                 item.setSequenence( this.sequence );
             } else {
                 item.setSalience( rule.getSalience().getValue( leftTuple,

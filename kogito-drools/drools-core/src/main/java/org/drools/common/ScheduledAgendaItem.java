@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
@@ -51,9 +52,8 @@ public class ScheduledAgendaItem extends AgendaItem
                                final LeftTuple tuple,
                                final InternalAgenda agenda,
                                final PropagationContext context,
-                               final Rule rule,
-                               final GroupElement subrule) {
-        super(activationNumber, tuple, 0, context, rule, subrule);
+                               final RuleTerminalNode rtn) {
+        super(activationNumber, tuple, 0, context, rtn );
         this.agenda = agenda;
     }
 
