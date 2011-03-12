@@ -2193,6 +2193,9 @@ public class MiscTest {
     public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -4560,7 +4563,7 @@ public class MiscTest {
 
     }
 
-    @Test(timeout = 5000)
+    @Test //(timeout = 5000)
     // TODO remove explicit timout after the MVEL issue is fixed
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();

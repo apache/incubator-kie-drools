@@ -97,9 +97,9 @@ public class ClassFieldAccessorStore
     }
 
     public synchronized ClassFieldReader getReader(final String className,
-                                                   final String fieldName,
+                                                   String fieldName,
                                                    final AcceptsReadAccessor target,
-                                                   final AccessorKey.AccessorType accessorType) {
+                                                   final AccessorKey.AccessorType accessorType) {                
         AccessorKey key = new AccessorKey( className,
                                            fieldName,
                                            accessorType );
