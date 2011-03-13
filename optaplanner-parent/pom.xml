@@ -59,4 +59,23 @@
     </profile>
   </profiles>
 
+  <!-- TODO remove me: HACK to deal with drools being FUBAR -->
+  <dependencies>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-api</artifactId>
+      <version>5.2.0.M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <version>5.2.0.M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <version>5.2.0.M1</version>
+    </dependency>
+  </dependencies>
+
 </project>
