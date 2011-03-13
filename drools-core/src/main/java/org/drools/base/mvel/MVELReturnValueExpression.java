@@ -86,7 +86,7 @@ public class MVELReturnValueExpression
         }
 
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
-                                                                                   null,
+                                                                                   object,
                                                                                    factory ) );
     }
 

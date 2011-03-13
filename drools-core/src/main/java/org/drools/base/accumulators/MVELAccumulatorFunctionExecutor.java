@@ -48,8 +48,6 @@ public class MVELAccumulatorFunctionExecutor
 
     private static final long                          serialVersionUID = 510l;
 
-    private final Object                               dummy            = new Object();
-
     private MVELCompilationUnit                        unit;
     private org.drools.runtime.rule.AccumulateFunction function;
 
@@ -118,7 +116,7 @@ public class MVELAccumulatorFunctionExecutor
         VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) leftTuple, null, handle.getObject(), (InternalWorkingMemory) workingMemory );
         
         final Object value = MVEL.executeExpression( this.expression,
-                                                     this.dummy,
+                                                     handle.getObject(),
                                                      factory );
         if ( this.function.supportsReverse() ) {
             ((MVELAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),

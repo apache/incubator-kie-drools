@@ -2880,7 +2880,7 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().endsWith( "this should throw an exception" ) );
+            e.getCause().getMessage().contains( "this should throw an exception" );
         }
     }
 
@@ -3481,6 +3481,10 @@ public class MiscTest {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }  
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase( config );
@@ -4464,6 +4468,9 @@ public class MiscTest {
     public void testQualifiedFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -4495,6 +4502,9 @@ public class MiscTest {
     public void testEvalRewrite() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

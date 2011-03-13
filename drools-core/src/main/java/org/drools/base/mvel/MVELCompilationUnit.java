@@ -232,6 +232,7 @@ public class MVELCompilationUnit
                 for ( Method item : cls.getMethods() ) {
                     if ( methodName.equals( item.getName() ) ) {
                         method = item;
+                        break;
                     }
                 }
                 resolvedImports.put( method.getName(),

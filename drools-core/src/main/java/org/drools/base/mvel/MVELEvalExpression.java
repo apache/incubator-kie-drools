@@ -89,7 +89,7 @@ public class MVELEvalExpression
         }
 
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                                 new Object(),
+                                                                 null,
                                                                  factory );
         return result.booleanValue();
     }
