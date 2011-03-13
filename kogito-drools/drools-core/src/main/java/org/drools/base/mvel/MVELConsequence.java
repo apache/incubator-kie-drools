@@ -99,11 +99,11 @@ public class MVELConsequence
                     System.out.println( DebugTools.decompile( compexpr ) );
                 }
                 MVEL.executeDebugger( compexpr,
-                                      null,
+                                      knowledgeHelper,
                                       factory );
             } else {
                 MVEL.executeExpression( compexpr,
-                                        null,
+                                        knowledgeHelper,
                                         factory );
             }
         } finally {

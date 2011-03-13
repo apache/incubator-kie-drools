@@ -138,7 +138,6 @@ public class MVELDialect
 
     private boolean                                        strictMode;
     private int                                            languageLevel;
-    public static final Object                             COMPILER_LOCK                  = new Object();
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
