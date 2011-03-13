@@ -36,7 +36,7 @@ import org.drools.planner.examples.nurserostering.domain.request.ShiftOffRequest
 import org.drools.planner.examples.nurserostering.domain.request.ShiftOnRequest;
 
 @XStreamAlias("NurseRoster")
-public class NurseRoster extends AbstractPersistable implements Solution {
+public class NurseRoster extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private String code;
 
@@ -200,8 +200,8 @@ public class NurseRoster extends AbstractPersistable implements Solution {
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (HardAndSoftScore) score;
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
     }
 
     public boolean isInitialized() {

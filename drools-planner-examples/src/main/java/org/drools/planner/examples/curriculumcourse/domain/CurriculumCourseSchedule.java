@@ -29,7 +29,7 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CurriculumCourseSchedule")
-public class CurriculumCourseSchedule extends AbstractPersistable implements Solution {
+public class CurriculumCourseSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private String name;
 
@@ -131,8 +131,8 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (HardAndSoftScore) score;
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
     }
 
     public boolean isInitialized() {

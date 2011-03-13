@@ -30,7 +30,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 
 @XStreamAlias("PatientAdmissionSchedule")
-public class PatientAdmissionSchedule extends AbstractPersistable implements Solution {
+public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private List<Specialism> specialismList;
     private List<Equipment> equipmentList;
@@ -166,8 +166,8 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (HardAndSoftScore) score;
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
     }
 
     public boolean isInitialized() {

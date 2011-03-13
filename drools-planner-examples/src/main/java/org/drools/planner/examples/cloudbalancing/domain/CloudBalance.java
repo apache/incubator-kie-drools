@@ -29,7 +29,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CloudBalance")
-public class CloudBalance extends AbstractPersistable implements Solution {
+public class CloudBalance extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private List<CloudComputer> cloudComputerList;
     private List<CloudProcess> cloudProcessList;
@@ -66,8 +66,8 @@ public class CloudBalance extends AbstractPersistable implements Solution {
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (HardAndSoftScore) score;
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
     }
 
     public boolean isInitialized() {

@@ -348,20 +348,20 @@
 
     <para>You need to implement the <literal>Solution</literal> interface:</para>
 
-    <programlisting language="java">public interface Solution {
+    <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
 
-    Score getScore();
-    void setScore(Score score);
+    S getScore();
+    void setScore(S score);
 
     Collection&lt;? extends Object&gt; getFacts();
 
-    Solution cloneSolution();
+    Solution&lt;S&gt; cloneSolution();
 
 }</programlisting>
 
-    <para>For example, an NQueens instance just holds a list of all its queens:</para>
+    <para>For example, an <literal>NQueens</literal> instance just holds a list of all its queens:</para>
 
-    <programlisting language="java">public class NQueens implements Solution {
+    <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     private List&lt;Queen&gt; queenList;
 
@@ -374,8 +374,8 @@
 
       <para>A <literal>Solution</literal> requires a score property. The score property is null if the
       <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The score property
-      is usually typed to the specific <literal>Score</literal> implementation you use. For example, NQueens uses a
-      <literal>SimpleScore</literal>:</para>
+      is usually typed to the specific <literal>Score</literal> implementation you use. For example,
+      <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
 
       <programlisting language="java">    private SimpleScore score;
 
@@ -383,15 +383,17 @@
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (SimpleScore) score;
+    public void setScore(SimpleScore score) {
+        this.score = score;
     }</programlisting>
+
+      <para>Most use cases use a <literal>HardAndSoftScore</literal> instead.</para>
     </section>
 
     <section>
       <title>The getFacts method</title>
 
-      <para>All Objects returned by the <literal>getFacts()</literal> method will be asserted into the drools working
+      <para>All objects returned by the <literal>getFacts()</literal> method will be asserted into the drools working
       memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns all
       <literal>Queen</literal> instances.</para>
 

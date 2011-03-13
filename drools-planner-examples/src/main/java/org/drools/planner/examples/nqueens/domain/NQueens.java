@@ -25,7 +25,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-public class NQueens extends AbstractPersistable implements Solution {
+public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {
 
     private List<Queen> queenList;
 
@@ -43,8 +43,8 @@ public class NQueens extends AbstractPersistable implements Solution {
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (SimpleScore) score;
+    public void setScore(SimpleScore score) {
+        this.score = score;
     }
 
     public int getN() {

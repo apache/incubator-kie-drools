@@ -27,7 +27,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-public class TravelingTournament extends AbstractPersistable implements Solution {
+public class TravelingTournament extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private List<Day> dayList;
     private List<Team> teamList;
@@ -64,8 +64,8 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         return score;
     }
 
-    public void setScore(Score score) {
-        this.score = (HardAndSoftScore) score;
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
     }
 
     public int getN() {

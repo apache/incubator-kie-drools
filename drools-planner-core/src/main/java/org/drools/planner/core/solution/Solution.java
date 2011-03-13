@@ -30,20 +30,20 @@ import org.drools.planner.core.Solver;
  * Drools Planner will continuously modify the same solution for scalability reasons
  * and clone it to recall the best solution.
  */
-public interface Solution {
+public interface Solution<S extends Score> {
 
     /**
      * Returns the Score of this Solution.
      * @return null if the Solution is uninitialized
      *         or the last calculated Score is dirty the new Score has not yet been recalculated
      */
-    Score getScore();
+    S getScore();
 
     /**
      * Called by the {@link Solver} when the Score of this Solution has been calculated.
      * @param score null if the Solution has changed and the new Score has not yet been recalculated
      */
-    void setScore(Score score);
+    void setScore(S score);
 
     /**
      * Called by the {@link Solver} when the solution needs to be asserted into an empty WorkingMemory.
@@ -59,6 +59,6 @@ public interface Solution {
      * A clone must also shallow copy the score.
      * @return never null, a clone of which the properties that change during solving are deep cloned
      */
-    Solution cloneSolution();
+    Solution<S> cloneSolution();
 
 }

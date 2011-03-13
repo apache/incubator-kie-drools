@@ -298,7 +298,6 @@ IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as need
 From 5.1.0.M2 to 5.1.0.CR1
 --------------------------
 
-
 Custom ScoreDefinition implementations needs to implement the Double translateScoreToGraphValue(S score) method.
 After in *ScoreDefinition.java:
     public Double translateScoreToGraphValue(HardAndSoftScore score) {
@@ -308,7 +307,6 @@ After in *ScoreDefinition.java:
             return null;
         }
     }
-
 
 A benchmarker config no longer supports solvedSolutionVerbosity (only ALL was supported anyway).
 Before in *BenchmarkConfig.xml:
@@ -548,3 +546,39 @@ After in *Config.xml (if you're using HardAndSoftScore):
     <simulatedAnnealingStartingTemperature>0hard/20soft</simulatedAnnealingStartingTemperature>
 After in *Config.xml (if you're using SimpleScore):
     <simulatedAnnealingStartingTemperature>20</simulatedAnnealingStartingTemperature>
+
+[MAJOR] Solution now has a generic type of Score: Solution<S extends Score> (JBRULES-2924)
+Your Solution implementation itself should not be generic, but it should define it's Score type through implements.
+Before in *.java if you use a SimpleScore:
+    public class ... implements Solution {
+        ...
+        public void setScore(Score score) {
+            this.score = (SimpleScore) score;
+        }
+        ...
+    }
+After in *.java if you use a SimpleScore:
+    public class ... implements Solution<SimpleScore> {
+        ...
+        public void setScore(SimpleScore score) {
+            this.score = score;
+        }
+        ...
+    }
+Before in *.java if you use a HardAndSoftScore:
+    public class ... implements Solution {
+        ...
+        public void setScore(Score score) {
+            this.score = (HardAndSoftScore) score;
+        }
+        ...
+    }
+After in *.java if you use a HardAndSoftScore:
+    public class ... implements Solution<HardAndSoftScore> {
+        ...
+        public void setScore(HardAndSoftScore score) {
+            this.score = score;
+        }
+        ...
+    }
+
