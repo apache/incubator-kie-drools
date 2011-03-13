@@ -82,7 +82,7 @@ After:
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
     </scoreDefinition>
 
-From 5.0.1 to 5.1.0.m1
+From 5.0.1 to 5.1.0.M1
 ----------------------
 
 In 5.1.0.m2, Drools Solver has been renamed to Drools Planner,
@@ -197,7 +197,7 @@ After:
      solver.getBestSolution().getScore()
 
 
-From 5.1.0.m1 to 5.1.0.m2
+From 5.1.0.M1 to 5.1.0.M2
 -------------------------
 
 Drools Solver has been renamed to Drools Planner.
@@ -295,7 +295,7 @@ A custom ConstraintOccurrence implementation should now use the weight in its eq
 IntConstraintOccurrence and DoubleConstraintOccurrence have been changed as needed.
 
 
-From 5.1.0.m2 to 5.1.0.cr1
+From 5.1.0.M2 to 5.1.0.CR1
 --------------------------
 
 
@@ -454,14 +454,14 @@ Before in *BenchmarkConfig.xml:
     <sortSolverBenchmarks>true</sortSolverBenchmarks>
 
 
-From 5.1.0 to 5.2.0.m1
+From 5.1.0 to 5.2.0.M1
 ----------------------
 
 The example DRL's no longer use the optional character ';' at the end of lines in the LHS.
 If you copied that practice from the examples, it's recommended to remove them from your DRL's too.
 
 
-From 5.2.0.m1 to 5.2.0.m2
+From 5.2.0.M1 to 5.2.0.M2
 -------------------------
 
 [MINOR] XmlSolverConfigurer.buildSolver() no longer returns a LocalSearchSolver, now it returns just a Solver.
