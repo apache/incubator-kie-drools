@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
@@ -158,6 +159,9 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.optimizers.OptimizerFactory;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class MiscTest {
@@ -193,6 +197,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore // @FIXME MVEL does not yet support dynamic .* static method imports
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -1907,8 +1912,8 @@ public class MiscTest {
     }
 
     @Test
-    public void testBigDecimalWithFromAndEval() throws Exception {
-        String rule = "package org.test;\n";
+    public void testBigDecimalWithFromAndEval() throws Exception {        
+        String rule = "package org.test;\n";     
         rule += "rule \"Test Rule\"\n";
         rule += "when\n";
         rule += "    $dec : java.math.BigDecimal() from java.math.BigDecimal.TEN;\n";
@@ -1918,8 +1923,8 @@ public class MiscTest {
         rule += "end";
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new StringReader( rule ) );
-
+        builder.addPackageFromDrl( new StringReader( rule ) );      
+        
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
@@ -3746,19 +3751,6 @@ public class MiscTest {
     }
 
     @Test
-    // TODO we now allow bindings on declarations, so update the test for this
-    public void testDuplicateVariableBindingError() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        assertFalse( pkg.isValid() );
-        System.out.println( pkg.getErrorSummary() );
-        assertEquals( 6,
-                      pkg.getErrorSummary().split( "\n" ).length );
-    }
-
-    @Test
     public void testShadowProxyInHirarchies() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ShadowProxyInHirarchies.drl" ) ) );
@@ -5271,6 +5263,9 @@ public class MiscTest {
     public void testBindingsOnConnectiveExpressions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_bindings.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
