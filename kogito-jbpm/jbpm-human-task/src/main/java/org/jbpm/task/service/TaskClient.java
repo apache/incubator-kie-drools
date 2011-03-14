@@ -25,6 +25,7 @@ import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddCommentResponseHandler;
@@ -33,6 +34,7 @@ import org.jbpm.task.service.TaskClientHandler.DeleteAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.DeleteCommentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.jbpm.task.service.TaskClientHandler.QueryGenericResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
@@ -561,6 +563,178 @@ public class TaskClient  {
         handler.addResponseHandler( cmd.getId(),
                                     responseHandler );
         connector.write( cmd );
+    }
+    
+    public void query(String qlString, 
+    					 Integer size, 
+    					 Integer offset, 
+    					 QueryGenericResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object>( 3 );
+    	args.add( qlString );
+    	args.add( size );
+    	args.add( offset );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.QueryGenericRequest,
+    							   args );
+    	handler.addResponseHandler( cmd.getId(), 
+    								responseHandler );
+    	connector.write( cmd );
+    }
+    
+    public void register(long taskId,
+    		String userId,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( Operation.Register );
+    	args.add( taskId );
+    	args.add( userId );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.OperationRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void remove(long taskId,
+    		String userId,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( Operation.Remove );
+    	args.add( taskId );
+    	args.add( userId );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.OperationRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void nominate(long taskId,
+    		String userId,
+    		List<OrganizationalEntity> potentialOwners,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( taskId );
+    	args.add( userId );
+    	args.add( potentialOwners );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.NominateTaskRequest,
+    							   args );
+
+    	handler.addResponseHandler( cmd.getId(), 
+    								responseHandler );
+
+    	connector.write( cmd );
+    }
+
+    public void activate(long taskId, 
+    		String userId,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	
+    	args.add( Operation.Activate );
+    	args.add( taskId );
+    	args.add( userId );
+    	Command cmd = new Command( counter.getAndIncrement(), 
+    							   CommandName.OperationRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void setOutput(long taskId,
+    		String userId, 
+    		ContentData outputContentData, 
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( taskId );
+    	args.add( userId );
+    	args.add( outputContentData );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.SetOutputRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void deleteOutput(long taskId,
+    		String userId,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 2 );
+    	args.add( taskId );
+    	args.add( userId );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.DeleteOutputRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void setFault(long taskId, 
+    		String userId, 
+    		FaultData fault, 
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( taskId );
+    	args.add( userId );
+    	args.add( fault );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.SetFaultRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void deleteFault(long taskId,
+    		String userId,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 2 );
+    	args.add( taskId );
+    	args.add( userId );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.DeleteFaultRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
+    }
+    
+    public void setPriority(long taskId,
+    		String userId,
+    		int priority,
+    		TaskOperationResponseHandler responseHandler) {
+    	List<Object> args = new ArrayList<Object> ( 3 );
+    	args.add( taskId );
+    	args.add( userId );
+    	args.add( priority );
+    	Command cmd = new Command( counter.getAndIncrement(),
+    							   CommandName.SetPriorityRequest,
+    							   args );
+    	
+    	handler.addResponseHandler( cmd.getId(),
+    								responseHandler );
+    	
+    	connector.write( cmd );
     }
     
     public boolean connect() {

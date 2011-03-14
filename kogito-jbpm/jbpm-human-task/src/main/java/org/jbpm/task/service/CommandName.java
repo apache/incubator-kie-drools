@@ -94,5 +94,15 @@ public enum CommandName {
     RegisterForEventRequest,
     EventTriggerResponse,
     
-    RegisterClient
+    RegisterClient,
+    
+    QueryGenericRequest,
+    QueryGenericResponse,
+    
+    NominateTaskRequest,
+    SetOutputRequest,
+    SetFaultRequest,
+    SetPriorityRequest,
+    DeleteOutputRequest,
+    DeleteFaultRequest
 }

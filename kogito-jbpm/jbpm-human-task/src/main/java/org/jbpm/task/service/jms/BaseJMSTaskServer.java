@@ -15,14 +15,14 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jbpm.task.service.TaskServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseJMSTaskServer extends TaskServer {
 
 	private boolean running;
-	private static final Log logger = LogFactory.getLog(BaseJMSTaskServer.class);
+	private static final Logger logger = LoggerFactory.getLogger(BaseJMSTaskServer.class);
 	private JMSTaskServerHandler handler;
 	private Properties connectionProperties;
 	private Context context;

@@ -17,14 +17,14 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jbpm.task.service.BaseHandler;
 import org.jbpm.task.service.TaskClientConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JMSTaskClientConnector implements TaskClientConnector {
 	
-	private static final Log log = LogFactory.getLog(JMSTaskClientConnector.class);
+	private static final Logger logger = LoggerFactory.getLogger(JMSTaskClientConnector.class);
 	protected QueueConnection connection;
 	protected QueueSession session;
 	protected Queue queue;
@@ -86,7 +86,7 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 			this.connection.start();
 			return true;
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return false;
 	}
@@ -169,7 +169,7 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 				if (!"102".equals(e.getErrorCode())) {
 					throw new RuntimeException("No se pudo recibir respuesta JMS", e);
 				}
-				log.info(e.getMessage());
+				logger.info(e.getMessage());
 				return;
 			} catch (Exception e) {
 				throw new RuntimeException("Error inesperado recibiendo respuesta JMS", e);
@@ -178,7 +178,7 @@ public class JMSTaskClientConnector implements TaskClientConnector {
 					try {
 						consumer.close();
 					} catch (Exception e) {
-						log.info("No se pudo cerrar el consumer: " + e.getMessage());
+						logger.info("No se pudo cerrar el consumer: " + e.getMessage());
 					}
 				}
 			}

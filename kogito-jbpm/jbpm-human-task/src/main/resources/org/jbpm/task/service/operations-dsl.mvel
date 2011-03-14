@@ -116,6 +116,22 @@
                 status = [ Status.InProgress ],
                 allowed = [ Allowed.Owner  ],      
                 newStatus = Status.Failed
-            } ]                
+            } ],
+    Operation.Register
+    	: [ new OperationCommand().{
+    			status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
+    			allowed = [ Allowed.Anyone ]
+    	    } ], 
+    Operation.Remove
+    	: [ new OperationCommand().{
+    			status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
+    			allowed = [ Allowed.Anyone ]
+    		} ],
+    Operation.Activate
+    	: [ new OperationCommand().{
+    			status = [ Status.Created ],
+    			allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
+    			newStatus = Status.Ready
+    		} ]
 ]          
   
