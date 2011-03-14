@@ -213,13 +213,9 @@ public class PatternBuilder
 
         if ( duplicateBindings ) {
             // rewrite existing bindings into == constraints, so it unifies
-            FieldConstraintDescr varDescr = new FieldConstraintDescr( "this" );
-            varDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   patternDescr.getIdentifier() ) );
-            build( context,
-                   pattern,
-                   (FieldConstraintDescr) varDescr,
-                   null );
+            build(context, 
+                  pattern, 
+                  new ExprConstraintDescr("this == " + patternDescr.getIdentifier() ));            
         }
 
         if ( objectType instanceof ClassObjectType ) {
@@ -406,10 +402,10 @@ public class PatternBuilder
             String fieldName = ((AtomicExprDescr) exprDescr.getLeft()).getExpression();
             String value = rdescr.getExpression().trim();
             
-            DescrBranch rightExpr = new DescrBranch(  );            
+            ExprBindings rightExpr = new ExprBindings( );            
             setInputs( context,
                        rightExpr,
-                       ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
+                       ((ClassObjectType) pattern.getObjectType()).getClassType(),
                        value ); 
             
             String[] parts = fieldName.split( "\\." );
@@ -443,7 +439,7 @@ public class PatternBuilder
             
             if ( fieldName.indexOf( '.' ) >= 0 ||  fieldName.indexOf( '[' ) >= 0 || fieldName.indexOf( '(' ) >= 0 ) {
                 // if left has any inputs then we need to rewrite to eval
-                DescrBranch leftExpr = new DescrBranch(  );            
+                ExprBindings leftExpr = new ExprBindings(  );            
                 setInputs( context,
                            leftExpr,
                            ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
@@ -483,7 +479,7 @@ public class PatternBuilder
             Restriction restriction = null;
             // is it a literal? Does not include enums
             if ( rdescr.isLiteral() ) {
-                restriction =  buildRestriction( context, extractor, new LiteralRestrictionDescr( operator, notPos >= 0, value ) );
+                restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, notPos >= 0, value ) );
             } else {            
                 // is it an enum?
                 int dotPos = value.indexOf( '.' );
@@ -494,7 +490,7 @@ public class PatternBuilder
                     try {
                         final Class cls = context.getDialect().getTypeResolver().resolveType( className );
                         if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
-                            restriction =  buildRestriction( context, extractor, new LiteralRestrictionDescr( operator, negatedOperator, value ) );
+                            restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, negatedOperator, value ) );
                         }
                     } catch ( ClassNotFoundException e ) {
                         // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
@@ -604,91 +600,6 @@ public class PatternBuilder
         
         
     }
-    
-//    public void processExpr( RuleBuildContext context,
-//                             ExprConstraintDescr descr,
-//                             List<DescrBranch> literalIndexes,
-//                             List<DescrBranch> literalConstraints,
-//                             List<DescrBranch> variablesIndexes,
-//                             List<DescrBranch> variableConstraints ) {
-//        DrlExprParser parser = new DrlExprParser();
-//        ConstraintConnectiveDescr result = parser.parse( descr.getText() );
-//        if ( parser.hasErrors() ) {
-//            for ( DroolsParserException error : parser.getErrors() ) {
-//                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                              descr,
-//                                                              null,
-//                                                              "Unable to parser pattern expression:\n" + error.getMessage() ) );
-//            }
-//            return;
-//        }
-//
-//        for ( Iterator<BaseDescr> it = result.getDescrs().iterator(); it.hasNext(); ) {
-//            BaseDescr d = it.next();
-//
-//            boolean indexable = false;
-//            boolean simple = false;
-//            boolean returnValue = false;
-//            boolean rightIsLiteral = false;
-//            if ( d instanceof RelationalExprDescr ) {
-//                RelationalExprDescr red = (RelationalExprDescr) d;
-//                if ( red.getLeft() instanceof AtomicExprDescr &&
-//                      red.getRight() instanceof AtomicExprDescr ) {
-//                    simple = true;
-//                    String expr = ((AtomicExprDescr) red.getRight()).getExpression().trim();
-//                    if ( "==".equals( red.getOperator() ) && (expr != null && !expr.startsWith( "(" )) ) {
-//                        // we have an indexable constraint
-//                        indexable = true;
-//                    } 
-//                    if( expr.startsWith( "(" ) ) {
-//                        returnValue = true;
-//                    }
-//                }
-//                rightIsLiteral = ((AtomicExprDescr) red.getRight()).isLiteral();
-//            }
-//
-//            StringBuilder sbuilder = new StringBuilder();
-//            renderConstraint( sbuilder,
-//                              d );
-//
-//            String expr = sbuilder.toString().trim();
-//
-//            if ( expr.startsWith( "eval" ) ) {
-//                // strip evals, as mvel won't understand those.
-//                int startParen = expr.indexOf( '(' ) + 1;
-//                int endParen = expr.lastIndexOf( ')' );
-//                expr = expr.substring( startParen,
-//                                       endParen );
-//            }
-//
-//            DescrBranch descrBranch = new DescrBranch( expr,
-//                                                       d,
-//                                                       simple,
-//                                                       indexable );
-//
-//            setInputs( context,
-//                       descrBranch,
-//                       ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
-//                       expr );
-//
-//            boolean literal = ( descrBranch.getRuleBindings().isEmpty() && 
-//                              descrBranch.getGlobalBindings().isEmpty() ) || rightIsLiteral;
-//            if ( indexable ) {
-//                if ( literal ) {
-//                    literalIndexes.add( descrBranch );
-//                } else {
-//                    variablesIndexes.add( descrBranch );
-//                }
-//            } else {
-//                if ( literal && !returnValue ) {
-//                    literalConstraints.add( descrBranch );
-//                } else {
-//                    variableConstraints.add( descrBranch );
-//                }
-//            }
-//
-//        }
-//    }
 
     private String builtInOperators = "> >= < <= == != && ||";
 
@@ -739,9 +650,9 @@ public class PatternBuilder
     }
 
     private void setInputs( RuleBuildContext context,
-                              DescrBranch descrBranch,
-                              Class thisClass,
-                              String expr ) {
+                            ExprBindings descrBranch,
+                            Class thisClass,
+                            String expr ) {
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
         ParserConfiguration conf = new ParserConfiguration();
@@ -775,39 +686,15 @@ public class PatternBuilder
 
     }
 
-    public static class DescrBranch {
-        private String      expression;
-        private BaseDescr   descr;
+    public static class ExprBindings {
         private Set<String> globalBindings;
         private Set<String> ruleBindings;
-        private boolean     indexable;
-        private boolean     simple;
 
-        public DescrBranch(String expression,
-                           BaseDescr descr,
-                           boolean simple,
-                           boolean indexable) {
-            this.expression = expression;
-            this.descr = descr;
-            this.indexable = indexable;
-            this.simple = simple;
+        public ExprBindings() {
             this.globalBindings = new HashSet<String>();
             this.ruleBindings = new HashSet<String>();
         }
         
-        public DescrBranch() {
-            this.globalBindings = new HashSet<String>();
-            this.ruleBindings = new HashSet<String>();
-        }        
-
-        public String getExpression() {
-            return expression;
-        }
-
-        public BaseDescr getDescr() {
-            return descr;
-        }
-
         public Set<String> getGlobalBindings() {
             return globalBindings;
         }
@@ -816,423 +703,8 @@ public class PatternBuilder
             return ruleBindings;
         }
 
-        public void setDescr( BaseDescr descr ) {
-            this.descr = descr;
-        }
-
-        public boolean isIndexable() {
-            return indexable;
-        }
-
-        public boolean isSimple() {
-            return this.simple;
-        }
-
     }
 
-    private void buildConstraint( final RuleBuildContext context,
-                                  final Pattern pattern,
-                                  final Object constraint,
-                                  final AbstractCompositeConstraint container ) {
-        if ( constraint instanceof BindingDescr ) {
-            buildRuleBindings( context,
-                   pattern,
-                   (BindingDescr) constraint,
-                   container );
-        } else if ( constraint instanceof FieldConstraintDescr ) {
-            build( context,
-                   pattern,
-                   (FieldConstraintDescr) constraint,
-                   container );
-        } else if ( constraint instanceof PredicateDescr ) {
-            buildEval( context,
-                   pattern,
-                   (PredicateDescr) constraint,
-                   container );
-        } else if ( constraint instanceof AndDescr ) {
-            AndConstraint and = new AndConstraint();
-            for ( Iterator it = ((AndDescr) constraint).getDescrs().iterator(); it.hasNext(); ) {
-                this.buildConstraint( context,
-                                      pattern,
-                                      it.next(),
-                                      and );
-            }
-
-            if ( container == null ) {
-                pattern.addConstraint( and );
-            } else {
-                if ( and.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                    this.setConstraintType( pattern,
-                                            (MutableTypeConstraint) and );
-                }
-                container.addConstraint( and );
-            }
-        } else if ( constraint instanceof OrDescr ) {
-            OrConstraint or = new OrConstraint();
-            for ( Iterator it = ((OrDescr) constraint).getDescrs().iterator(); it.hasNext(); ) {
-                this.buildConstraint( context,
-                                      pattern,
-                                      it.next(),
-                                      or );
-            }
-
-            if ( container == null ) {
-                pattern.addConstraint( or );
-            } else {
-                if ( or.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                    this.setConstraintType( pattern,
-                                            (MutableTypeConstraint) or );
-                }
-                container.addConstraint( or );
-            }
-        } else {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          (BaseDescr) constraint,
-                                                          null,
-                                                          "This is a bug: unable to build constraint descriptor: '" + constraint + "' in rule '" + context.getRule().getName() + "'" ) );
-        }
-    }
-
-//    private void buildLiteralConstraint( final RuleBuildContext context,
-//                                         final Pattern pattern,
-//                                         final DescrBranch branch,
-//                                         final AbstractCompositeConstraint container ) {
-//        if ( branch.isSimple() ) {
-//            RelationalExprDescr red = (RelationalExprDescr) branch.getDescr();
-//            String fieldName = ((AtomicExprDescr) red.getLeft()).getExpression();
-//            AtomicExprDescr right = (AtomicExprDescr) red.getRight();
-//
-//            // if 'this.' is used, strip it
-//            String[] identifiers = fieldName.split( "\\." );
-//            if ( identifiers.length == 2 && "this".equals( identifiers[0] ) ) {
-//                fieldName = identifiers[1];
-//            }
-//
-//            final InternalReadAccessor extractor = getFieldReadAccessor( context,
-//                                                                         red,
-//                                                                         pattern.getObjectType(),
-//                                                                         fieldName,
-//                                                                         null,
-//                                                                         false );
-//
-//            FieldValue field = null;
-//            try {
-//
-//                String value = right.getExpression();
-//                
-//                // TODO: the following is a very weak check as strings and number literals might contain such characters
-//                int dotPos = right.getExpression().indexOf( '.' );
-//                int parenPos = right.getExpression().indexOf( '(' ); // need to make sure this isn't a method @TODO handle methods/functions
-//                if ( (!right.isLiteral()) && dotPos >= 0 && parenPos < 0 ) {
-//                    final String className = value.substring( 0,
-//                                                              dotPos );
-//                    String classFieldName = value.substring( dotPos + 1 );
-//                    try {
-//                        final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
-//                        field = FieldFactory.getFieldValue( staticClass.getField( classFieldName ).get( null ),
-//                                                            extractor.getValueType(),
-//                                                            context.getPackageBuilder().getDateFormats() );
-//                        if ( field.isObjectField() ) {
-//                            ((ObjectFieldImpl) field).setEnum( true );
-//                            ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
-//                            ((ObjectFieldImpl) field).setFieldName( classFieldName );
-//                        }
-//                    } catch ( final ClassNotFoundException e ) {
-//                        // nothing to do, as it is not a class name with static field
-//                    } catch ( final Exception e ) {
-//                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                                      red,
-//                                                                      e,
-//                                                                      "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + value + "'" ) );
-//                    }
-//                } else {
-//                    if ( right.isLiteral() && value.startsWith( "\"" ) && context.getConfiguration().isProcessStringEscapes() ) {
-//                        value = StringUtils.unescapeJava( (String) value );
-//                    }
-//                    field = FieldFactory.getFieldValue( value,
-//                                                        extractor.getValueType(),
-//                                                        context.getPackageBuilder().getDateFormats() );
-//                }
-//            } catch ( final Exception e ) {
-//                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                              red,
-//                                                              e,
-//                                                              "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + right.getExpression() + "'" ) );
-//            }
-//
-//            if ( field == null ) {
-//                //return null;
-//                return;
-//            }
-//
-//            Target rightTarget = getRightTarget( extractor );
-//            Target leftTarget = Target.FACT;
-//            String operator = red.getOperator();
-//
-//            // extractor the operator and determine if it's negated or not
-//            int notPos = operator.indexOf( "not" );
-//            if ( notPos >= 0 ) {
-//                operator = red.getOperator().substring( notPos + 3 );
-//            }
-//
-//            final Evaluator evaluator = getEvaluator( context,
-//                                                      red,
-//                                                      extractor.getValueType(),
-//                                                      operator,
-//                                                      (notPos >= 0),
-//                                                      null,
-//                                                      leftTarget,
-//                                                      rightTarget );
-//            if ( evaluator == null ) {
-//                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                              red,
-//                                                              null,
-//                                                              "Unable to create Evaluator for type '" + extractor.getValueType() + "' on expression '" + branch.getExpression() + "'" ) );
-//                return;
-//            }
-//
-//            LiteralRestriction restriction = new LiteralRestriction( field,
-//                                                                     evaluator,
-//                                                                     extractor );
-//            LiteralConstraint constraint = new LiteralConstraint( extractor,
-//                                                                  (LiteralRestriction) restriction );
-//            registerReadAccessor( context,
-//                                  pattern.getObjectType(),
-//                                  fieldName,
-//                                  (LiteralConstraint) constraint );
-//            registerReadAccessor( context,
-//                                  pattern.getObjectType(),
-//                                  fieldName,
-//                                  restriction );
-//
-//            pattern.addConstraint( constraint );
-//        } else {
-//            PredicateDescr pdescr = new PredicateDescr( branch.getExpression() );
-//            buildEval( context,
-//                   pattern,
-//                   pdescr,
-//                   container );
-//        }
-//    }
-//
-//    private void buildVariableConstraint( RuleBuildContext context,
-//                                          Pattern pattern,
-//                                          DescrBranch branch,
-//                                          Object object ) {
-//        if ( branch.isSimple() ) {
-//            RelationalExprDescr red = (RelationalExprDescr) branch.getDescr();
-//            String fieldName = ((AtomicExprDescr) red.getLeft()).getExpression();
-//            String value = ((AtomicExprDescr) red.getRight()).getExpression().trim();
-//
-//            // if 'this.' is used, strip it
-//            String[] identifiers = fieldName.split( "\\." );
-//            if ( identifiers.length == 2 && "this".equals( identifiers[0] ) ) {
-//                fieldName = identifiers[1];
-//            }
-//
-//            final InternalReadAccessor extractor = getFieldReadAccessor( context,
-//                                                                         red,
-//                                                                         pattern.getObjectType(),
-//                                                                         fieldName,
-//                                                                         null,
-//                                                                         false );
-//
-//            String operator = red.getOperator().trim();
-//
-//            // extractor the operator and determine if it's negated or not
-//            boolean negated = operator.startsWith( "not " );
-//            if ( negated ) {
-//                operator = red.getOperator().substring( 4 );
-//            }
-//
-//            FieldConstraintDescr fdescr = new FieldConstraintDescr( fieldName );
-//
-//            Restriction restriction;
-//            if ( value.startsWith( "(" ) ) {
-//                // it's a return value
-//                value = value.substring( 1,
-//                                         value.length() - 1 );
-//
-//                restriction = buildRestriction( context,
-//                                                (Pattern) context.getBuildStack().peek(),
-//                                                extractor,
-//                                                fdescr,
-//                                                new ReturnValueRestrictionDescr( operator,
-//                                                                                 negated,
-//                                                                                 null,
-//                                                                                 value ) );
-//            } else if ( value.indexOf( '.' ) >= 0 ) {
-//                restriction = buildRestriction( context,
-//                                                extractor,
-//                                                fdescr,
-//                                                new QualifiedIdentifierRestrictionDescr( operator,
-//                                                                                         negated,
-//                                                                                         null,
-//                                                                                         value ) );
-//                //(QualifiedIdentifierRestrictionDescr) restrictionDescr );                
-//            } else {
-//                restriction = buildRestriction( context,
-//                                                 extractor,
-//                                                 fdescr,
-//                                                 new VariableRestrictionDescr( operator,
-//                                                                               negated,
-//                                                                               null,
-//                                                                               value ) );
-//                registerReadAccessor( context,
-//                                      pattern.getObjectType(),
-//                                      fieldName,
-//                                      (AcceptsReadAccessor) restriction );
-//            }
-//
-//            if ( restriction == null ) {
-//                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                              red,
-//                                                              null,
-//                                                              "Unable to create restriction on expression '" + branch.getExpression() + "'" ) );
-//                return;                
-//            }
-//            
-//            VariableConstraint constraint = new VariableConstraint( extractor,
-//                                                                    restriction );
-//            registerReadAccessor( context,
-//                                  pattern.getObjectType(),
-//                                  fieldName,
-//                                  constraint );
-//            pattern.addConstraint( constraint );
-//        } else {
-//            PredicateDescr pdescr = new PredicateDescr( branch.getExpression() );
-//            buildEval( context,
-//                   pattern,
-//                   pdescr,
-//                   null );
-//        }
-//    }
-
-    private void build( final RuleBuildContext context,
-                        final Pattern pattern,
-                        final FieldConstraintDescr fieldConstraintDescr,
-                        final AbstractCompositeConstraint container ) {
-        String fieldName = fieldConstraintDescr.getFieldName();
-
-        //        if ( fieldName.indexOf( '[' ) > -1 ) {
-        //            rewriteToEval( context,
-        //                           pattern,
-        //                           fieldConstraintDescr,
-        //                           container );
-        //
-        //            // after building the predicate, we are done, so return
-        //            return;
-        //        }
-
-        if ( fieldName.indexOf( '.' ) > -1 ) {
-            // we have a composite field name
-            String[] identifiers = fieldName.split( "\\." );
-            if ( identifiers.length == 2 && ((pattern.getDeclaration() != null && identifiers[0].equals( pattern.getDeclaration().getIdentifier() )) || ("this".equals( identifiers[0] ))) ) {
-                // we have a self reference, so, it is fine to do direct access
-                fieldName = identifiers[1];
-            }
-            //             else {
-            //                rewriteToEval( context,
-            //                               pattern,
-            //                               fieldConstraintDescr,
-            //                               container );
-            //
-            //                // after building the predicate, we are done, so return
-            //                return;
-            //            }
-        }
-
-        // if it is not a complex expression, just build a simple field constraint
-        final InternalReadAccessor extractor = getFieldReadAccessor( context,
-                                                                     fieldConstraintDescr,
-                                                                     pattern.getObjectType(),
-                                                                     fieldName,
-                                                                     null,
-                                                                     false );
-        if ( extractor == null ) {
-            if ( fieldConstraintDescr.getFieldName().startsWith( "this." ) ) {
-                // it may still be MVEL special syntax, like map key syntax, so try eval
-                rewriteToEval( context,
-                               pattern,
-                               fieldConstraintDescr,
-                               container );
-
-                // after building the predicate, we are done, so return
-                return;
-            } else {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              fieldConstraintDescr,
-                                                              null,
-                                                              "Unable to create Field Extractor for '" + fieldName + "' of '" + pattern.getObjectType().toString() + "' in rule '" + context.getRule().getName() + "'" ) );
-                return;
-            }
-        }
-
-        Restriction restriction = createRestriction( context,
-                                                     pattern,
-                                                     fieldConstraintDescr,
-                                                     fieldConstraintDescr.getRestriction(),
-                                                     extractor );
-
-        if ( restriction == null ) {
-            // error was already logged during restriction creation failure
-            return;
-        }
-
-        Constraint constraint = null;
-        if ( restriction instanceof AbstractCompositeRestriction ) {
-            constraint = new MultiRestrictionFieldConstraint( extractor,
-                                                              restriction );
-        } else if ( restriction instanceof LiteralRestriction ) {
-            constraint = new LiteralConstraint( extractor,
-                                                (LiteralRestriction) restriction );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (LiteralConstraint) constraint );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (LiteralRestriction) restriction );
-        } else if ( restriction instanceof VariableRestriction || restriction instanceof UnificationRestriction ) {
-            constraint = new VariableConstraint( extractor,
-                                                 restriction );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (AcceptsReadAccessor) restriction );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (AcceptsReadAccessor) restriction );
-        } else if ( restriction instanceof ReturnValueRestriction ) {
-            constraint = new ReturnValueConstraint( extractor,
-                                                    (ReturnValueRestriction) restriction );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (ReturnValueConstraint) constraint );
-            registerReadAccessor( context,
-                                  pattern.getObjectType(),
-                                  fieldName,
-                                  (ReturnValueRestriction) restriction );
-        } else {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          fieldConstraintDescr,
-                                                          null,
-                                                          "This is a bug: Unkown restriction type '" + restriction.getClass() + "' for pattern '" + pattern.getObjectType().toString() + "' in rule '" + context.getRule().getName() + "'" ) );
-        }
-
-        if ( container == null ) {
-            pattern.addConstraint( constraint );
-        } else {
-            if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                this.setConstraintType( pattern,
-                                        (MutableTypeConstraint) constraint );
-            }
-            container.addConstraint( constraint );
-        }
-    }
 
     /**
      * @param pattern
@@ -1253,114 +725,7 @@ public class PatternBuilder
         constraint.setType( type );
     }
 
-    private void rewriteToEval( final RuleBuildContext context,
-                                final Pattern pattern,
-                                final FieldConstraintDescr fieldConstraintDescr,
-                                final AbstractCompositeConstraint container ) {
-        // it is a complex expression, so we need to turn it into an MVEL predicate
-        Dialect dialect = context.getDialect();
 
-        // switch to MVEL dialect
-        MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-        boolean strictMode = mvelDialect.isStrictMode();
-        mvelDialect.setStrictMode( false );
-        context.setDialect( mvelDialect );
-
-        // analyze field type
-        Class resultType = getFieldReturnType( pattern,
-                                               fieldConstraintDescr );
-
-        PredicateDescr predicateDescr = new PredicateDescr();
-        MVELDumper dumper = new MVELDumper( context );
-        predicateDescr.setContent( dumper.dump( fieldConstraintDescr,
-                                                Date.class.isAssignableFrom( resultType ) ) );
-
-        buildEval( context,
-               pattern,
-               predicateDescr,
-               container );
-
-        mvelDialect.setStrictMode( strictMode );
-        // fall back to original dialect
-        context.setDialect( dialect );
-    }
-
-    /**
-     * @param pattern
-     * @param fieldConstraintDescr
-     * @return
-     */
-    private Class getFieldReturnType( final Pattern pattern,
-                                      final FieldConstraintDescr fieldConstraintDescr ) {
-        String dummyField = "__DUMMY__";
-        String dummyExpr = dummyField + "." + fieldConstraintDescr.getFieldName();
-        ExpressionCompiler compiler = new ExpressionCompiler( dummyExpr );
-        ParserContext mvelcontext = new ParserContext();
-        mvelcontext.addInput( dummyField,
-                              ((ClassObjectType) pattern.getObjectType()).getClassType() );
-        compiler.compile( mvelcontext );
-        Class resultType = compiler.getReturnType();
-        return resultType;
-    }
-
-    private Restriction createRestriction( final RuleBuildContext context,
-                                           final Pattern pattern,
-                                           final FieldConstraintDescr fieldConstraintDescr,
-                                           final RestrictionConnectiveDescr top,
-                                           final InternalReadAccessor extractor ) {
-        Restriction[] restrictions = new Restriction[top.getRestrictions().size()];
-        int index = 0;
-
-        for ( Iterator it = top.getRestrictions().iterator(); it.hasNext(); ) {
-            RestrictionDescr restrictionDescr = (RestrictionDescr) it.next();
-
-            if ( restrictionDescr instanceof RestrictionConnectiveDescr ) {
-                restrictions[index++] = this.createRestriction( context,
-                                                                pattern,
-                                                                fieldConstraintDescr,
-                                                                (RestrictionConnectiveDescr) restrictionDescr,
-                                                                extractor );
-
-            } else {
-                restrictions[index] = buildRestriction( context,
-                                                        pattern,
-                                                        extractor,
-                                                        fieldConstraintDescr,
-                                                        restrictionDescr );
-                if ( restrictions[index] == null ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  fieldConstraintDescr,
-                                                                  null,
-                                                                  "Unable to create restriction '" + restrictionDescr.toString() + "' for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '" + context.getRule().getName() + "'" ) );
-                }
-                index++;
-            }
-        }
-
-        if ( restrictions.length > 1 ) {
-            AbstractCompositeRestriction composite = null;
-            if ( top.getConnective() == RestrictionConnectiveDescr.AND ) {
-                composite = new AndCompositeRestriction( restrictions );
-            } else if ( top.getConnective() == RestrictionConnectiveDescr.OR ) {
-                composite = new OrCompositeRestriction( restrictions );
-            } else {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              fieldConstraintDescr,
-                                                              null,
-                                                              "This is a bug: Impossible to create a composite restriction for connective: " + top.getConnective() + "' for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '"
-                                                                      + context.getRule().getName() + "'" ) );
-            }
-
-            return composite;
-        } else if ( restrictions.length == 1 ) {
-            return restrictions[0];
-        }
-        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                      fieldConstraintDescr,
-                                                      null,
-                                                      "This is a bug: trying to create a restriction for an empty restriction list for field '" + fieldConstraintDescr.getFieldName() + "' in the rule '" + context.getRule().getName() + "'" ) );
-        return null;
-    }
 
     private void buildRuleBindings( final RuleBuildContext context,
                                     final Pattern pattern,
@@ -1370,13 +735,9 @@ public class PatternBuilder
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable() ) ) {
             // rewrite existing bindings into == constraints, so it unifies
-            FieldConstraintDescr descr = new FieldConstraintDescr( fieldBindingDescr.getExpression() );
-            descr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                fieldBindingDescr.getVariable() ) );
-            build( context,
-                   pattern,
-                   (FieldConstraintDescr) descr,
-                   container );
+            build(context, 
+                  pattern, 
+                  new ExprConstraintDescr(fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() ));
             return;
         }
 
@@ -1559,103 +920,11 @@ public class PatternBuilder
         declaration.setReadAccessor( extractor );
         
         return declaration;
-    }
-    
-    
-    private Restriction buildRestriction( final RuleBuildContext context,
-                                          final Pattern pattern,
-                                          final InternalReadAccessor extractor,
-                                          final FieldConstraintDescr fieldConstraintDescr,
-                                          final RestrictionDescr restrictionDescr ) {
-        Restriction restriction = null;
-        if ( restrictionDescr instanceof LiteralRestrictionDescr ) {
-//            restriction = buildRestriction( context,
-//                                            extractor,
-//                                            fieldConstraintDescr,
-//                                            (LiteralRestrictionDescr) restrictionDescr );
-        } else if ( restrictionDescr instanceof QualifiedIdentifierRestrictionDescr ) {
-            restriction = buildRestriction( context,
-                                            extractor,
-                                            fieldConstraintDescr,
-                                            (QualifiedIdentifierRestrictionDescr) restrictionDescr );
-        } else if ( restrictionDescr instanceof VariableRestrictionDescr ) {
-            restriction = buildRestriction( context,
-                                            extractor,
-                                            fieldConstraintDescr,
-                                            (VariableRestrictionDescr) restrictionDescr );
-        } else if ( restrictionDescr instanceof ReturnValueRestrictionDescr ) {
-            restriction = buildRestriction( context,
-                                            pattern,
-                                            extractor,
-                                            fieldConstraintDescr,
-                                            (ReturnValueRestrictionDescr) restrictionDescr );
+    }   
 
-        }
-
-        return restriction;
-    }
-
-    private Restriction buildRestriction( final RuleBuildContext context,
-                                                 final InternalReadAccessor extractor,
-                                                 final String fieldName,
-                                                 final VariableRestrictionDescr variableRestrictionDescr ) {
-        if ( variableRestrictionDescr.getIdentifier() == null || variableRestrictionDescr.getIdentifier().equals( "" ) ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          variableRestrictionDescr,
-                                                          null,
-                                                          "Identifier not defined for binding field '" + fieldName + "'" ) );
-            return null;
-        }
-
-        Declaration declaration = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                   variableRestrictionDescr.getIdentifier() );
-
-        if ( declaration == null ) {
-            // trying to create implicit declaration
-            final Pattern thisPattern = (Pattern) context.getBuildStack().peek();
-            final Declaration implicit = this.createDeclarationObject( context,
-                                                                       variableRestrictionDescr.getIdentifier(),
-                                                                       thisPattern );
-            if ( implicit != null ) {
-                declaration = implicit;
-            } else {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              variableRestrictionDescr,
-                                                              null,
-                                                              "Unable to return Declaration for identifier '" + variableRestrictionDescr.getIdentifier() + "'" ) );
-                return null;
-            }
-        }
-
-        Target right = getRightTarget( extractor );
-        Target left = (declaration.isPatternDeclaration() && !(Date.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( declaration.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-        final Evaluator evaluator = getEvaluator( context,
-                                                  variableRestrictionDescr,
-                                                  extractor.getValueType(),
-                                                  variableRestrictionDescr.getEvaluator(),
-                                                  variableRestrictionDescr.isNegated(),
-                                                  variableRestrictionDescr.getParameterText(),
-                                                  left,
-                                                  right );
-        if ( evaluator == null ) {
-            return null;
-        }
-
-        Restriction restriction = new VariableRestriction( extractor,
-                                                           declaration,
-                                                           evaluator );
-
-        if ( declaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) ) {
-            // declaration is query argument, so allow for unification.
-            restriction = new UnificationRestriction( (VariableRestriction) restriction );
-        }
-
-        return restriction;
-    }
-
-    private LiteralRestriction buildRestriction( final RuleBuildContext context,
-                                                 final InternalReadAccessor extractor,
-                                                 final LiteralRestrictionDescr literalRestrictionDescr ) {
+    private LiteralRestriction buildLiteralRestriction( final RuleBuildContext context,
+                                                        final InternalReadAccessor extractor,
+                                                        final LiteralRestrictionDescr literalRestrictionDescr ) {
         FieldValue field = null;
         try {
             String value = literalRestrictionDescr.getText().trim();
@@ -1700,149 +969,6 @@ public class PatternBuilder
                                        extractor );
     }
 
-    private Restriction buildRestriction( final RuleBuildContext context,
-                                          final InternalReadAccessor extractor,
-                                          final FieldConstraintDescr fieldConstraintDescr,
-                                          final QualifiedIdentifierRestrictionDescr qiRestrictionDescr ) {
-        FieldValue field = null;
-        String t = qiRestrictionDescr.getText();
-        final String[] parts = t.split( "\\." );
-
-        Declaration implicit = null;
-        if ( "this".equals( parts[0] ) ) {
-            implicit = this.createDeclarationObject( context,
-                                                     parts[1],
-                                                     (Pattern) context.getBuildStack().peek() );
-        }
-        if ( implicit == null ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                                      parts[0] );
-            // if a declaration exists, then it may be a variable direct property access, not an enum
-            if ( decl != null ) {
-                if ( decl.isPatternDeclaration() ) {
-                    implicit = this.createDeclarationObject( context,
-                                                             t.substring( t.indexOf( '.' ) + 1 ),
-                                                             decl.getPattern() );
-
-                } else {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  qiRestrictionDescr,
-                                                                  "",
-                                                                  "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
-                    return null;
-                }
-            }
-        }
-
-        if ( implicit != null ) {
-            Target right = getRightTarget( extractor );
-            Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-            final Evaluator evaluator = getEvaluator( context,
-                                                      qiRestrictionDescr,
-                                                      extractor.getValueType(),
-                                                      qiRestrictionDescr.getEvaluator(),
-                                                      qiRestrictionDescr.isNegated(),
-                                                      qiRestrictionDescr.getParameterText(),
-                                                      left,
-                                                      right );
-            if ( evaluator == null ) {
-                return null;
-            }
-
-            return new VariableRestriction( extractor,
-                                            implicit,
-                                            evaluator );
-        }
-
-        //        // if only 2 parts, it may be a composed direct property access
-        //        if ( parts.length == 2 ) {
-        //            Declaration implicit = null;
-        //            if ( "this".equals( parts[0] ) ) {
-        //                implicit = this.createDeclarationObject( context,
-        //                                                         parts[1],
-        //                                                         (Pattern) context.getBuildStack().peek() );
-        //            } else {
-        //                final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
-        //                                                                                          parts[0] );
-        //                // if a declaration exists, then it may be a variable direct property access, not an enum
-        //                if ( decl != null ) {
-        //                    if ( decl.isPatternDeclaration() ) {
-        //                        implicit = this.createDeclarationObject( context,
-        //                                                                 parts[1],
-        //                                                                 decl.getPattern() );
-        //
-        //                    } else {
-        //                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-        //                                                                      qiRestrictionDescr,
-        //                                                                      "",
-        //                                                                      "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
-        //                        return null;
-        //                    }
-        //                }
-        //            }
-        //
-        //            if ( implicit != null ) {
-        //                Target right = getRightTarget( extractor );
-        //                Target left = (implicit.isPatternDeclaration() && !(Date.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( implicit.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-        //                final Evaluator evaluator = getEvaluator( context,
-        //                                                          qiRestrictionDescr,
-        //                                                          extractor.getValueType(),
-        //                                                          qiRestrictionDescr.getEvaluator(),
-        //                                                          qiRestrictionDescr.isNegated(),
-        //                                                          qiRestrictionDescr.getParameterText(),
-        //                                                          left,
-        //                                                          right );
-        //                if ( evaluator == null ) {
-        //                    return null;
-        //                }
-        //
-        //                return new VariableRestriction( extractor,
-        //                                                implicit,
-        //                                                evaluator );
-        //            }
-        //        }
-
-        final int lastDot = qiRestrictionDescr.getText().lastIndexOf( '.' );
-        final String className = qiRestrictionDescr.getText().substring( 0,
-                                                                         lastDot );
-        final String fieldName = qiRestrictionDescr.getText().substring( lastDot + 1 );
-        try {
-            final Class staticClass = context.getDialect().getTypeResolver().resolveType( className );
-            field = FieldFactory.getFieldValue( staticClass.getField( fieldName ).get( null ),
-                                                extractor.getValueType(),
-                                                context.getPackageBuilder().getDateFormats() );
-            if ( field.isObjectField() ) {
-                ((ObjectFieldImpl) field).setEnum( true );
-                ((ObjectFieldImpl) field).setEnumName( staticClass.getName() );
-                ((ObjectFieldImpl) field).setFieldName( fieldName );
-            }
-        } catch ( final ClassNotFoundException e ) {
-            // nothing to do, as it is not a class name with static field
-        } catch ( final Exception e ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          qiRestrictionDescr,
-                                                          e,
-                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + qiRestrictionDescr.getText() + "'" ) );
-        }
-
-        Target right = getRightTarget( extractor );
-        Target left = Target.FACT;
-        final Evaluator evaluator = getEvaluator( context,
-                                                  qiRestrictionDescr,
-                                                  extractor.getValueType(),
-                                                  qiRestrictionDescr.getEvaluator(),
-                                                  qiRestrictionDescr.isNegated(),
-                                                  qiRestrictionDescr.getParameterText(),
-                                                  left,
-                                                  right );
-        if ( evaluator == null ) {
-            return null;
-        }
-
-        return new LiteralRestriction( field,
-                                       evaluator,
-                                       extractor );
-    }
 
     private Target getRightTarget( final InternalReadAccessor extractor ) {
         Target right = (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
@@ -2011,13 +1137,4 @@ public class PatternBuilder
         return evaluator;
     }
 
-    
-
-    private Restriction buildRestriction(RuleBuildContext context,
-                                         InternalReadAccessor extractor,
-                                         FieldConstraintDescr fdescr,
-                                         VariableRestrictionDescr variableRestrictionDescr) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
