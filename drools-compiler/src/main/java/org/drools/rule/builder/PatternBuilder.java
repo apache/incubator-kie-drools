@@ -340,19 +340,18 @@ public class PatternBuilder
             if ( d instanceof AtomicExprDescr ) {  
                 expr = ((AtomicExprDescr)d).getExpression();
             } else {
-                relDescr = (RelationalExprDescr) d;
-                if (  relDescr.getLeft() instanceof AtomicExprDescr &&
-                      relDescr.getRight() instanceof AtomicExprDescr ) {
-                      simple = true;
+                if( d instanceof RelationalExprDescr ) {
+                    relDescr = (RelationalExprDescr) d;
+                    if (  relDescr.getLeft() instanceof AtomicExprDescr &&
+                          relDescr.getRight() instanceof AtomicExprDescr ) {
+                          simple = true;
+                    }
                 }
-        
                 StringBuilder sbuilder = new StringBuilder();
                 renderConstraint( sbuilder,
                                   d );    
                 expr = sbuilder.toString().trim();                
             }
-            
-
             
             if ( expr.startsWith( "eval" ) ) {
                 // strip evals, as mvel won't understand those.
@@ -367,7 +366,7 @@ public class PatternBuilder
                        pattern,
                        pdescr,
                        null );  
-                return;                
+                continue;                
             }
            
             boolean isCollection =  Collection.class.isAssignableFrom( ((ClassObjectType)pattern.getObjectType()).getClassType() ) ;
@@ -389,7 +388,7 @@ public class PatternBuilder
                 // fall back to original dialect
                 context.setDialect( dialect );
                 mvelDialect.setStrictMode( strictMode );
-                return;
+                continue;
             }
             
             if ( !(d instanceof RelationalExprDescr ) ) {
@@ -425,7 +424,7 @@ public class PatternBuilder
                         
                         // fall back to original dialect
                         context.setDialect( dialect );
-                        return;                       
+                        continue;                       
                     } else {
                         // it's a redundant this so trim
                         fieldName = parts[1];
@@ -457,7 +456,7 @@ public class PatternBuilder
                     
                     // fall back to original dialect
                     context.setDialect( dialect );
-                    return;                  
+                    continue;                  
                 }
             }
 
@@ -467,19 +466,17 @@ public class PatternBuilder
                                                                          fieldName,
                                                                          null,
                                                                          false );
-            String operator = relDescr.getOperator();
+            String operator = relDescr.getOperator().trim();
             // extractor the operator and determine if it's negated or not
-            int notPos = operator.indexOf( "not" );
-            boolean negatedOperator = false;
-            if ( notPos >= 0 ) {
-                negatedOperator = true;
-                operator = operator.substring( notPos + 3 ).trim();
+            boolean negatedOperator = operator.startsWith( "not " );
+            if ( negatedOperator ) {
+                operator = operator.substring( 4 );
             }
             
             Restriction restriction = null;
             // is it a literal? Does not include enums
             if ( rdescr.isLiteral() ) {
-                restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, notPos >= 0, value ) );
+                restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, negatedOperator, value ) );
             } else {            
                 // is it an enum?
                 int dotPos = value.indexOf( '.' );
@@ -501,7 +498,7 @@ public class PatternBuilder
             if ( restriction != null ) {
                 pattern.addConstraint( new LiteralConstraint( extractor,
                                        ( LiteralRestriction ) restriction ) );
-                return;
+                continue;
             }
 
             Declaration declr = null;
@@ -520,7 +517,7 @@ public class PatternBuilder
                                                                       d,
                                                                       null,
                                                                       "Unable to return Declaration for identifier '" + value + "'" ) );
-                        return;
+                        continue;
                     }
                 }        
             }
@@ -549,7 +546,7 @@ public class PatternBuilder
                                                                               d,
                                                                               "",
                                                                               "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
-                                return;
+                                continue;
                             }
                         }
                     }
@@ -568,7 +565,7 @@ public class PatternBuilder
                                                           left,
                                                           right );
                 if ( evaluator == null ) {
-                    return;
+                    continue;
                 }
 
                 restriction = new VariableRestriction( extractor,
@@ -586,7 +583,7 @@ public class PatternBuilder
                                                 (Pattern) context.getBuildStack().peek(),
                                                 extractor,
                                                 new ReturnValueRestrictionDescr( operator,
-                                                                                 (notPos >= 0),
+                                                                                 negatedOperator,
                                                                                  null,
                                                                                  value ) );   
                 
@@ -639,7 +636,9 @@ public class PatternBuilder
             boolean afterFirst = false;
             for ( BaseDescr c : ((ConstraintConnectiveDescr) d).getDescrs() ) {
                 if ( afterFirst ) {
+                    sbuilder.append( " " );
                     sbuilder.append( ((ConstraintConnectiveDescr) d).getConnective().toString() );
+                    sbuilder.append( " " );
                 } else {
                     afterFirst = true;
                 }
