@@ -70,6 +70,23 @@ literal
     |	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
     ;
 
+operator
+  : ( EQUALS
+    | NOT_EQUALS
+    | relationalOp
+    )
+    ;
+
+relationalOp
+  : ( LESS_EQUALS
+    | GREATER_EQUALS 
+    | LESS 
+    | GREATER
+    | not_key neg_operator_key ((squareArguments)=> squareArguments)?
+    | operator_key  ((squareArguments)=> squareArguments)?
+    )
+    ;
+    
 typeList
     :	type (COMMA type)*
     ;
@@ -165,10 +182,10 @@ exclusiveOrExpression returns [BaseDescr result]
          }
   )*
   ;
-
+  
 andExpression returns [BaseDescr result]
-  : left=andOrRestriction { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
-  ( AMPER right=andOrRestriction 
+  : left=equalityExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( AMPER right=equalityExpression 
          { if( buildDescr && state.backtracking == 0 ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newIncAnd(); 
                descr.addOrMerge( $result );  
@@ -179,21 +196,6 @@ andExpression returns [BaseDescr result]
   )*
   ;
     
-andOrRestriction returns [BaseDescr result]
-  : left=equalityExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
-  ( ((DOUBLE_PIPE|DOUBLE_AMPER) operator)=>(lop=DOUBLE_PIPE|lop=DOUBLE_AMPER) op=operator right=shiftExpression 
-         { if( buildDescr && state.backtracking == 0 ) {
-               ConstraintConnectiveDescr descr = $lop.text.equals("||") ? ConstraintConnectiveDescr.newOr() : ConstraintConnectiveDescr.newAnd(); 
-               descr.addOrMerge( $result );  
-               
-               RelationalExprDescr re = new RelationalExprDescr( $op.text, new AtomicExprDescr( $left.text ), new AtomicExprDescr( $right.text ) );
-               descr.addOrMerge( re ); 
-               $result = descr;
-           }
-         }
-  )* EOF?
-  ;    
-
 equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
   ( ( op=EQUALS | op=NOT_EQUALS ) right=instanceOfExpression 
@@ -228,37 +230,58 @@ relationalExpression returns [BaseDescr result]
                       ( (!($left.result instanceof AtomicExprDescr)) || 
                         ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ? 
                     $left.result : 
-                    new AtomicExprDescr( $left.text ) ; } 
+                    new AtomicExprDescr( $left.text ) ; 
+      } 
     }
-  ( (relationalOp)=> op=relationalOp right=shiftExpression 
+  ( (orRestriction[null])=> right=orRestriction[$result]
          { if( buildDescr && state.backtracking == 0 ) {
-               BaseDescr descr = ( $right.result != null && 
-                                 ( (!($right.result instanceof AtomicExprDescr)) || 
-                                   ($right.text.equals(((AtomicExprDescr)$right.result).getExpression())) )) ? 
-		                    $right.result : 
-		                    new AtomicExprDescr( $right.text ) ;
-               $result = new RelationalExprDescr( $op.text, $result, descr );
+               $result = $right.result;
            }
          }
   )*
   ;
 
-operator
-  : ( EQUALS
-    | NOT_EQUALS
-    | relationalOp
-    )
-    ;
+orRestriction[BaseDescr inp] returns [BaseDescr result]
+  : left=andRestriction[$inp] { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+    ( (DOUBLE_PIPE andRestriction[null])=>lop=DOUBLE_PIPE right=andRestriction[$inp] 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+   )* EOF?
+  ;    
 
-relationalOp
-  : ( LESS_EQUALS
-    | GREATER_EQUALS 
-    | LESS 
-    | GREATER
-    | not_key neg_operator_key ((squareArguments)=> squareArguments)?
-    | operator_key  ((squareArguments)=> squareArguments)?
-    )
-    ;
+andRestriction[BaseDescr inp] returns [BaseDescr result]
+  : left=singleRestriction[$inp] { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
+  ( (DOUBLE_AMPER singleRestriction[null])=>lop=DOUBLE_AMPER right=singleRestriction[$inp] 
+         { if( buildDescr && state.backtracking == 0 ) {
+               ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
+               descr.addOrMerge( $result );  
+               descr.addOrMerge( $right.result ); 
+               $result = descr;
+           }
+         }
+  )* 
+  ;    
+  
+singleRestriction[BaseDescr inp] returns [BaseDescr result]
+  :  op=operator value=shiftExpression
+         { if( buildDescr && state.backtracking == 0 ) {
+               BaseDescr descr = ( $value.result != null && 
+                                 ( (!($value.result instanceof AtomicExprDescr)) || 
+                                   ($value.text.equals(((AtomicExprDescr)$value.result).getExpression())) )) ? 
+		                    $value.result : 
+		                    new AtomicExprDescr( $value.text ) ;
+               $result = new RelationalExprDescr( $op.text, $inp, descr );
+           }
+         }
+  |  LEFT_PAREN orRestriction[$inp] RIGHT_PAREN
+  ;  
+  
+    
     
 shiftExpression returns [BaseDescr result]
   : left=additiveExpression { if( buildDescr && state.backtracking == 0 ) { $result = $left.result; } }
