@@ -4566,8 +4566,7 @@ public class MiscTest {
 
     }
 
-    @Test //(timeout = 5000)
-    // TODO remove explicit timout after the MVEL issue is fixed
+    @Test
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
@@ -4601,6 +4600,93 @@ public class MiscTest {
                       list.size() );
         assertTrue( list.contains( map ) );
     }
+    
+    @Test
+    public void testNoneTypeSafeDeclarations() {
+        // same namespace
+        String str = "package org.drools\n" +
+            "global java.util.List list\n" +
+            "declare Person\n" +
+            "    @typesafe(false)\n" +
+            "end\n" +
+            "rule testTypeSafe\n dialect \"mvel\" when\n" +
+            "   $p : Person( object.street == 's1' )\n" +
+            "then\n" +
+            "   list.add( $p );\n" +
+            "end\n";
+        
+        executeTypeSafeDeclarations( str, true );   
+    
+        // different namespace with import
+        str = "package org.drools.test\n" +
+            "import org.drools.Person\n" +
+            "global java.util.List list\n" +
+            "declare Person\n" +
+            "    @typesafe(false)\n" +
+            "end\n" +
+            "rule testTypeSafe\n dialect \"mvel\" when\n" +
+            "   $p : Person( object.street == 's1' )\n" +
+            "then\n" +
+            "   list.add( $p );\n" +
+            "end\n";            
+        executeTypeSafeDeclarations( str, true );  
+        
+        // different namespace without import using qualified name
+        str = "package org.drools.test\n" +
+            "global java.util.List list\n" +
+            "declare org.drools.Person\n" +
+            "    @typesafe(false)\n" +
+            "end\n" +
+            "rule testTypeSafe\n dialect \"mvel\" when\n" +
+            "   $p : org.drools.Person( object.street == 's1' )\n" +
+            "then\n" +
+            "   list.add( $p );\n" +
+            "end\n";        
+        executeTypeSafeDeclarations( str, true );  
+        
+        // this should fail as it's not declared non typesafe 
+        str = "package org.drools.test\n" +
+            "global java.util.List list\n" +
+            "declare org.drools.Person\n" +
+            "    @typesafe(true)\n" +
+            "end\n" +
+            "rule testTypeSafe\n dialect \"mvel\" when\n" +
+            "   $p : org.drools.Person( object.street == 's1' )\n" +
+            "then\n" +
+            "   list.add( $p );\n" +
+            "end\n";        
+        executeTypeSafeDeclarations( str, false );            
+    }    
+    
+    private void executeTypeSafeDeclarations(String str, boolean mustSucceed) {            
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            if ( mustSucceed ) {
+                fail( kbuilder.getErrors().toString() );
+            } else {
+                return;
+            }
+        } 
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        Address a = new Address("s1" );
+        Person p = new Person( "yoda" );
+        p.setObject( a );
+        
+        ksession.insert( p );
+        ksession.fireAllRules();
+        assertEquals( p, list.get(0));        
+    }    
 
     // this is an MVEL regression that we need fixed in mvel-2.0.11
     @Test
@@ -5149,8 +5235,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
+            fail( kbuilder.getErrors().toString() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -5193,8 +5278,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
+            fail( kbuilder.getErrors().toString() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

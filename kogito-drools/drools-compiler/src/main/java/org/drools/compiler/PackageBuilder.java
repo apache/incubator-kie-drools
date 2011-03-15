@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -140,6 +141,8 @@ public class PackageBuilder {
     protected DateFormats                     dateFormats;
 
     private ProcessBuilder                    processBuilder;
+    
+    private Map<String, TypeDeclaration>     builtinTypes;
 
     /**
      * Use this when package is starting from scratch.
@@ -209,6 +212,9 @@ public class PackageBuilder {
         globals = new HashMap<String, Class< ? >>();
 
         processBuilder = createProcessBuilder();
+        
+        builtinTypes = new HashMap<String, TypeDeclaration>();
+        initBuiltinTypeDeclarations();
     }
 
     public PackageBuilder(RuleBase ruleBase,
@@ -245,6 +251,22 @@ public class PackageBuilder {
         globals = new HashMap<String, Class< ? >>();
 
         processBuilder = createProcessBuilder();
+        
+        builtinTypes = new HashMap<String, TypeDeclaration>();
+        initBuiltinTypeDeclarations();
+    }
+    
+    private void initBuiltinTypeDeclarations() {
+        TypeDeclaration colType = new TypeDeclaration("Collection");
+        colType.setTypesafe( false );
+        colType.setTypeClass( Collection.class );
+        builtinTypes.put( "java.util.Collection", colType );
+        
+        TypeDeclaration mapType = new TypeDeclaration("Map");
+        mapType.setTypesafe( false );
+        mapType.setTypeClass( Map.class );
+        builtinTypes.put( "java.util.Map", mapType );
+        
     }
 
     private ProcessBuilder createProcessBuilder() {
@@ -704,19 +726,6 @@ public class PackageBuilder {
             pkg = pkgRegistry.getPackage();
         }
 
-        //            // create new base package if it doesn't exist, as we always merge the newPkg into the existing one, 
-        //            // to isolate the base package from further possible changes to newPkg.
-        //            if ( pkg == null ) {
-        //                // create a new package, use the same parent classloader as the incoming new package
-        //                pkg = new Package( newPkg.getName(),
-        //                                   new MapBackedClassLoader( newPkg.getPackageScopeClassLoader().getParent() ) );
-        //                //newPkg.getPackageScopeClassLoader() );
-        //                pkgs.put( pkg.getName(),
-        //                          pkg );
-        //                // add the dialect registry composite classloader (which uses the above classloader as it's parent)
-        //                this.packageClassLoader.addClassLoader( pkg.getDialectRuntimeRegistry().getClassLoader() );
-        //            }
-
         if ( pkg == null ) {
             pkg = newPackage( new PackageDescr( newPkg.getName() ) ).getPackage();
         }
@@ -735,7 +744,7 @@ public class PackageBuilder {
         // we have to do this before the merging, as it does some classloader resolving
         TypeDeclaration lastType = null;
         try {
-            // Add the type declarations to the RuleBase
+            // Resolve the class for the type declaation
             if ( newPkg.getTypeDeclarations() != null ) {
                 // add type declarations
                 for ( TypeDeclaration type : newPkg.getTypeDeclarations().values() ) {
@@ -916,6 +925,59 @@ public class PackageBuilder {
 
     }
 
+    public TypeDeclaration getTypeDeclaration(Class cls) {
+        TypeDeclaration tdecl = this.builtinTypes.get( ( cls.getName() ) );
+        
+        PackageRegistry pkgReg = null;
+        if ( tdecl == null ) {
+            pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+            if ( pkgReg != null ) {
+                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+            }
+        }
+        
+        Class originalCls = cls;
+        while ( tdecl == null && cls != Object.class ) {
+            cls = cls.getSuperclass();
+            if ( cls == null ) {
+                break;
+            }
+            tdecl = this.builtinTypes.get( ( cls.getName() ) );
+            if ( tdecl == null ) {
+                pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                if ( pkgReg != null ) {
+                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                }
+            }
+        }        
+        
+        if ( tdecl == null ) {
+            Class[] intfs = originalCls.getInterfaces();
+            for ( Class intf : intfs ) {
+                cls = intf;
+                pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                if ( pkgReg != null ) {
+                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                }
+                while ( tdecl == null ) {
+                    cls = cls.getSuperclass();
+                    if ( cls == null ) {
+                        break;
+                    }
+                    tdecl = this.builtinTypes.get( ( cls.getName() ) );
+                    if ( tdecl == null ) {
+                        pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                        if ( pkgReg != null ) {
+                            tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+                        }
+                    }
+                }             
+            }
+        }
+
+        return tdecl;
+    }
+    
     /**
      * @param packageDescr
      */
@@ -924,13 +986,38 @@ public class PackageBuilder {
 
         PackageRegistry pkgRegistry = null;
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
-            // make sure namespace is set on components
-            if ( isEmpty( typeDescr.getNamespace() ) ) {
-                typeDescr.setNamespace( packageDescr.getNamespace() );
+            String namespace = null;
+            String typename = null; // always strip the qualified naemspace if it exists, 
+                                    // as the declr is added to the target package anyway
+            int dotPos = typeDescr.getTypeName().lastIndexOf( '.' );
+            if ( dotPos >= 0 ) {
+                namespace = typeDescr.getTypeName().substring( 0, dotPos );
+                typename = typeDescr.getTypeName().substring( dotPos + 1 );
+            } else {
+                // check imports
+                try {
+                    Class cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                    namespace = cls.getPackage().getName();
+                } catch ( ClassNotFoundException e ) {
+                    // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
+                    namespace = packageDescr.getNamespace(); // set the default namespace
+                }
+                typename = typeDescr.getTypeName();
             }
+
+            if ( !namespace.equals( packageDescr.getNamespace() )) {
+                // If the type declaration is for a different namespace, process that separately.
+                PackageDescr altDescr = new PackageDescr(namespace);
+                altDescr.addTypeDeclaration( typeDescr );
+                newPackage( altDescr );
+                continue;
+            }
+            
+            // make sure namespace is set on components
+            typeDescr.setNamespace(namespace);
             pkgRegistry = this.pkgRegistryMap.get( typeDescr.getNamespace() );
 
-            TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
+            TypeDeclaration type = new TypeDeclaration( typename );
             if ( resource != null && ((InternalResource) resource).hasURL() ) {
                 type.setResource( this.resource );
             }
@@ -940,7 +1027,13 @@ public class PackageBuilder {
             String role = ( annotationDescr != null ) ? annotationDescr.getText() : null;
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
-            }                
+            }      
+            
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
+            String typesafe = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            if ( typesafe != null ) {
+                type.setTypesafe( Boolean.parseBoolean( typesafe ) );
+            }             
 
             //sotty: need to resolve supertype and interfaces, if imported
 
