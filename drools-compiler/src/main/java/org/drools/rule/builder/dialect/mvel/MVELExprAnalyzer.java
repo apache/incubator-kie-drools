@@ -79,18 +79,20 @@ public class MVELExprAnalyzer {
             conf.setImports( dialect.getImports() );
             conf.setPackageImports( (HashSet) dialect.getPackgeImports() );
 
-            conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
-
+            conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );          
+            
             // first compilation is for verification only
             // @todo proper source file name
             final ParserContext parserContext1 = new ParserContext( conf );
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
-            MVEL.analysisCompile( expr,
-                                  parserContext1 );
+            Class returnType  = MVEL.analyze( expr,
+                                              parserContext1 );
 
             Set<String> requiredInputs = parserContext1.getInputs().keySet();
+            HashMap<String, Class> variables = parserContext1.getVariables();
+
 
             // now, set the required input types and compile again
             final ParserContext parserContext2 = new ParserContext( conf );
@@ -98,64 +100,69 @@ public class MVELExprAnalyzer {
             parserContext2.setStrongTyping( true );
             parserContext2.setInterceptors( dialect.getInterceptors() );
             
-            if ( localTypes != null ) {
-                for ( Entry<String, Class<?>> entry : localTypes.entrySet() ) {
-                    parserContext2.addInput( entry.getKey(),
-                                             entry.getValue() );
-                }
-            }
-            
-            for ( String str : requiredInputs ) {
-                if ( availableIdentifiers.getThisClass() != null ) {
-                    if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), str ) != null ) {
-                        continue;
+            if ( context.isTypesafe() ) {            
+                if ( localTypes != null ) {
+                    for ( Entry<String, Class<?>> entry : localTypes.entrySet() ) {
+                        parserContext2.addInput( entry.getKey(),
+                                                 entry.getValue() );
                     }
                 }
                 
-                Class cls = availableIdentifiers.getDeclarations().get( str );
-                if ( cls != null ) {
-                    parserContext2.addInput( str,
-                                             cls );
-                    continue;
-                }
-                
-                if ( cls == null ) {
-                    cls = availableIdentifiers.getGlobals().get( str );
+                for ( String str : requiredInputs ) {
+                    if ( availableIdentifiers.getThisClass() != null ) {
+                        if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), str ) != null ) {
+                            continue;
+                        }
+                    }
+                    
+                    Class cls = availableIdentifiers.getDeclarations().get( str );
                     if ( cls != null ) {
                         parserContext2.addInput( str,
                                                  cls );
                         continue;
                     }
+                    
+                    if ( cls == null ) {
+                        cls = availableIdentifiers.getGlobals().get( str );
+                        if ( cls != null ) {
+                            parserContext2.addInput( str,
+                                                     cls );
+                            continue;
+                        }
+                    }
+                    
+                    if ( cls == null ) {
+                        if ( str.equals( "drools" ) ) {
+                            parserContext2.addInput( "drools",
+                                                     KnowledgeHelper.class );
+                        } else if ( str.equals( "kcontext" ) ) {
+                            parserContext2.addInput( "kcontext",
+                                                     RuleContext.class );
+                        }
+                        if ( str.equals( "rule" ) ) {
+                            parserContext2.addInput( "rule",
+                                                     Rule.class );
+                        }
+                    }
                 }
                 
-                if ( cls == null ) {
-                    if ( str.equals( "drools" ) ) {
-                        parserContext2.addInput( "drools",
-                                                 KnowledgeHelper.class );
-                    } else if ( str.equals( "kcontext" ) ) {
-                        parserContext2.addInput( "kcontext",
-                                                 RuleContext.class );
-                    }
-                    if ( str.equals( "rule" ) ) {
-                        parserContext2.addInput( "rule",
-                                                 Rule.class );
-                    }
+                if ( availableIdentifiers.getThisClass() != null ) {
+                    parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
                 }
-            }
-            
-            if ( availableIdentifiers.getThisClass() != null ) {
-                parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
+    
+                returnType =  MVEL.analyze( expr,
+                                            parserContext2 );
+                
+                requiredInputs = parserContext2.getInputs().keySet();
+                variables = parserContext2.getVariables();
             }
 
-            Class returnType =  MVEL.analyze( expr,
-                                              parserContext2 );
-
-            result = analyze( parserContext2.getInputs().keySet(),
+            result = analyze( requiredInputs,
                               availableIdentifiers );
             
             result.setReturnType( returnType );
             
-            result.setMvelVariables( parserContext2.getVariables() );
+            result.setMvelVariables( variables );
         } else {
             result = analyze( (Set<String>) Collections.EMPTY_SET,
                               availableIdentifiers );
