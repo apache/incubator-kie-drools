@@ -625,7 +625,7 @@ public class MVELDialect
                                                                        inputIdentifiers,
                                                                        inputTypes,
                                                                        languageLevel,
-                                                                       strictMode );
+                                                                       context.isTypesafe()  );
 
         return compilationUnit;
     }
