@@ -43,6 +43,7 @@ import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DrlExprParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.StringUtils;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
@@ -90,6 +91,7 @@ import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.SlidingLengthWindow;
 import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
@@ -226,6 +228,14 @@ public class PatternBuilder
 
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
         context.getBuildStack().push( pattern );
+        
+        if ( pattern.getObjectType() instanceof ClassObjectType ) {
+            Class cls = ((ClassObjectType)pattern.getObjectType()).getClassType();
+            TypeDeclaration typeDeclr = context.getPackageBuilder().getTypeDeclaration( cls );
+            if  ( typeDeclr != null ) {
+                context.setTypesafe( typeDeclr.isTypesafe() );
+            }
+        }
 
         for ( BindingDescr b : patternDescr.getBindings() ) {
             if ( true ) { // TODO: replace this by legacy mode configuration
@@ -351,7 +361,7 @@ public class PatternBuilder
                 renderConstraint( sbuilder,
                                   d );    
                 expr = sbuilder.toString().trim();                
-            }
+            }            
             
             if ( expr.startsWith( "eval" ) ) {
                 // strip evals, as mvel won't understand those.
@@ -367,16 +377,11 @@ public class PatternBuilder
                        pdescr,
                        null );  
                 continue;                
-            }
-           
-            boolean isCollection =  Collection.class.isAssignableFrom( ((ClassObjectType)pattern.getObjectType()).getClassType() ) ;
-            if ( !simple || isCollection ) {
+            }                      
+                        
+            if ( !simple || !context.isTypesafe() ) {
                 Dialect dialect = context.getDialect();
                 MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-                boolean strictMode = mvelDialect.isStrictMode();
-                if( isCollection ) {
-                    mvelDialect.setStrictMode( false );
-                }
                 context.setDialect( mvelDialect );
                 
                 PredicateDescr pdescr = new PredicateDescr( expr );
@@ -387,7 +392,6 @@ public class PatternBuilder
                 
                 // fall back to original dialect
                 context.setDialect( dialect );
-                mvelDialect.setStrictMode( strictMode );
                 continue;
             }
             

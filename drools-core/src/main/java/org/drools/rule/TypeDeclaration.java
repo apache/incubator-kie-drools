@@ -43,6 +43,7 @@ public class TypeDeclaration
 
     public static final String ATTR_CLASS               = "class";
     public static final String ATTR_TEMPLATE            = "template";
+    public static final String ATTR_TYPESAFE            = "typesafe";
     public static final String ATTR_DURATION            = "duration";
     public static final String ATTR_TIMESTAMP           = "timestamp";
     public static final String ATTR_EXPIRE              = "expires";
@@ -92,6 +93,7 @@ public class TypeDeclaration
     private ClassDefinition      typeClassDef;
     private Resource             resource;
     private boolean              dynamic;
+    private boolean              typesafe;
 
     private transient ObjectType objectType;
     private long                 expirationOffset = -1;
@@ -368,5 +370,15 @@ public class TypeDeclaration
     public void setDynamic(boolean dynamic) {
         this.dynamic = dynamic;
     }
+
+    public boolean isTypesafe() {
+        return typesafe;
+    }
+
+    public void setTypesafe(boolean typesafe) {
+        this.typesafe = typesafe;
+    }
+    
+    
 
 }

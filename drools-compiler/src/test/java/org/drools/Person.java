@@ -54,6 +54,8 @@ public class Person
     }
 
     private List<Address>     addresses        = new ArrayList<Address>();
+    
+    public Object object;
 
     //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     //        name    = (String)in.readObject();
@@ -302,5 +304,15 @@ public class Person
     public void setHappy(boolean happy) {
         this.happy = happy;
     }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
+    
+    
 
 }
