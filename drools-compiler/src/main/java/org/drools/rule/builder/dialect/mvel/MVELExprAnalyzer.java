@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -89,15 +90,29 @@ public class MVELExprAnalyzer {
                     parserContext1.addInput( (String) entry.getKey(), (Class) entry.getValue() );
                 }
             }
+            if ( availableIdentifiers.getThisClass() != null  ) {
+                parserContext1.addInput( "this",
+                                         availableIdentifiers.getThisClass());
+            }            
+            
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
             Class returnType  = MVEL.analyze( expr,
                                               parserContext1 );
 
-            Set<String> requiredInputs = parserContext1.getInputs().keySet();
+            Set<String> requiredInputs = new HashSet(); 
+            requiredInputs.addAll( parserContext1.getInputs().keySet() );
             HashMap<String, Class<?>> variables = (HashMap<String, Class<?>>) ((Map)parserContext1.getVariables());
 
+            // MVEL includes direct fields of context object in non-strict mode. so we need to strip those
+            if ( availableIdentifiers.getThisClass() != null ) {
+                for ( Iterator<String> it = requiredInputs.iterator(); it.hasNext();) {
+                    if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), it.next()  ) != null ) {
+                        it.remove();
+                    }
+                }
+            }            
 
             // now, set the required input types and compile again
             final ParserContext parserContext2 = new ParserContext( conf );
@@ -113,13 +128,7 @@ public class MVELExprAnalyzer {
                     }
                 }
                 
-                for ( String str : requiredInputs ) {
-                    if ( availableIdentifiers.getThisClass() != null ) {
-                        if (  PropertyTools.getFieldOrAccessor(  availableIdentifiers.getThisClass(), str ) != null ) {
-                            continue;
-                        }
-                    }
-                    
+                for ( String str : requiredInputs ) {                    
                     Class cls = availableIdentifiers.getDeclarations().get( str );
                     if ( cls != null ) {
                         parserContext2.addInput( str,
