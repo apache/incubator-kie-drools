@@ -32,5 +32,13 @@ public class BoundIdentifiers {
         return thisClass;
     }
     
+    public String toString() {
+        StringBuilder sbuilder = new StringBuilder();
+        sbuilder.append( "thisClass: " + thisClass );
+        sbuilder.append( "declarations:" + declarations + "\n" );
+        sbuilder.append( "globals:" + globals + "\n" );
+        
+        return sbuilder.toString();
+    }
     
 }

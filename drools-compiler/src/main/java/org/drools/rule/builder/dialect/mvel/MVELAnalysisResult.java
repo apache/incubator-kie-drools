@@ -31,12 +31,11 @@ import org.drools.compiler.BoundIdentifiers;
 public class MVELAnalysisResult implements AnalysisResult {
     
     private BoundIdentifiers boundIdentifiers = null;
-    private Set identifiers = Collections.EMPTY_SET;
-    private Set localVariables = Collections.EMPTY_SET;
-    private Set notBoundedIdentifiers = Collections.EMPTY_SET;
+    private Set<String> identifiers = Collections.EMPTY_SET;
+    private Set<String> localVariables = Collections.EMPTY_SET;
+    private Set<String> notBoundedIdentifiers = Collections.EMPTY_SET;
     
-    private Map mvelVariables;
-    private Map mvelInputs;
+    private Map<String,  Class<?>> mvelVariables;
     
     private Class returnType;
     
@@ -47,30 +46,30 @@ public class MVELAnalysisResult implements AnalysisResult {
         this.boundIdentifiers = boundIdentifiers;
         
     }
-    public Set getIdentifiers() {
+    public Set<String> getIdentifiers() {
         return identifiers;
     }
     public void setIdentifiers(Set identifiers) {
         this.identifiers = identifiers;
     }
-    public Set getLocalVariables() {
+    public Set<String> getLocalVariables() {
         return this.localVariables;
     }
     public void setLocalVariables(Set localVariables) {
         this.localVariables = localVariables;
     }
-    public Set getNotBoundedIdentifiers() {
+    public Set<String> getNotBoundedIdentifiers() {
         return notBoundedIdentifiers;
     }
     public void setNotBoundedIdentifiers(Set notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
 
-    public Map getMvelVariables() {
+    public Map<String, Class<?>>  getMvelVariables() {
         return mvelVariables;
     }
     
-    public void setMvelVariables(Map mvelVariables) {
+    public void setMvelVariables(Map<String,  Class<?>>  mvelVariables) {
         this.mvelVariables = mvelVariables;
     }
     public Class getReturnType() {
@@ -86,7 +85,6 @@ public class MVELAnalysisResult implements AnalysisResult {
                ",\n localVariables=" + localVariables + 
                ",\n notBoundedIdentifiers=" + notBoundedIdentifiers + 
                ",\n mvelVariables=" + mvelVariables+ 
-               ",\n mvelInputs=" + mvelInputs + 
                ",\n returnType=" + returnType + "]";
     }
 
