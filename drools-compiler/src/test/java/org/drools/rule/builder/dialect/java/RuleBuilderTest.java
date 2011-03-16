@@ -42,6 +42,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -269,10 +270,7 @@ public class RuleBuilderTest {
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigDecimal",
                                                   "$bd" );
-        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
-                                                                     "10" );
-        fcd.addRestriction( restr );
+        ExprConstraintDescr fcd = new ExprConstraintDescr( "this == 10" );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );
@@ -300,10 +298,7 @@ public class RuleBuilderTest {
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigInteger",
                                                   "$bd" );
-        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
-                                                                     "10" );
-        fcd.addRestriction( restr );
+        ExprConstraintDescr fcd = new ExprConstraintDescr( "this==10" );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );
