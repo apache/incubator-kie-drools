@@ -529,10 +529,11 @@ public class MVELDialect
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
         
-        if ( analysis.getBoundIdentifiers().getThisClass()  != null ) {
+        if ( analysis.getBoundIdentifiers().getThisClass() != null || ( localDeclarations  != null && localDeclarations.length > 0 ) ) {
+            Class cls = analysis.getBoundIdentifiers().getThisClass();
             ids.add( "this" );
             resolvedInputs.put( "this",
-                                analysis.getBoundIdentifiers().getThisClass() );
+                                 (cls != null) ? cls : Object.class ); // the only time cls is null is in accumumulate's acc/reverse
         }
         ids.add(  "drools" );
         resolvedInputs.put( "drools", 

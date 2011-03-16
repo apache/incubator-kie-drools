@@ -300,24 +300,19 @@ public class MVELCompilationUnit
                         languageLevel );
     }
     
-    public VariableResolverFactory getFactory(final KnowledgeHelper knowledgeHelper,
+    public DroolsMVELIndexedFactory getFactory(final KnowledgeHelper knowledgeHelper,
                                               final Rule rule,
+                                              final Object rightObject,
                                               final LeftTuple tuples,
                                               final Object[] otherVars,
-                                              final Object thisObject,
                                               final InternalWorkingMemory workingMemory) {
-        int varLength = inputIdentifiers.length + 3 + 
-                        (thisObject != null ? 1 : 0) + 
-                        (otherVars != null ? otherVars.length : 0) + 
-                        (globalIdentifiers != null ? globalIdentifiers.length : 0) +
-                        (previousDeclarations != null ? previousDeclarations.length : 0) +
-                        (localDeclarations != null ? localDeclarations.length : 0);
+        int varLength = inputIdentifiers.length;
         
         Object[] vals = new Object[varLength];
         
         int i = 0;
-        if ( thisObject != null ) {
-            vals[i++] = thisObject;
+        if ( rightObject != null ) {
+            vals[i++] = rightObject;
         }
         vals[i++] = knowledgeHelper;
         vals[i++] = knowledgeHelper;
@@ -336,7 +331,7 @@ public class MVELCompilationUnit
         
              
         if ( tuples != null ) {
-            if ( this.previousDeclarations != null ) {
+            if ( this.previousDeclarations != null && this.previousDeclarations.length > 0 ) {
                 
                 // Consequences with 'or's will have different declaration offsets, so use the one's from the RTN's subrule.
                 Declaration[] prevDecl = this.previousDeclarations;
@@ -359,19 +354,22 @@ public class MVELCompilationUnit
             }
         }
         
-        if ( this.localDeclarations != null ) {
+        if ( this.localDeclarations != null && this.localDeclarations.length > 0 ) {
             for ( int j = 0, length = this.localDeclarations.length; j < length; j++ ) {
                 Declaration decl = this.localDeclarations[j];
-                Object o = decl.getValue( (InternalWorkingMemory) workingMemory, thisObject);
+                Object o = decl.getValue( (InternalWorkingMemory) workingMemory, rightObject);
                 vals[i++] = o;
             }
         }
         
+        int otherVarsPos = 0;
         if ( otherVars != null ) {
+            otherVarsPos = i;
             for ( Object o : otherVars ) {
                 vals[i++] = o;
             }
         }
+        int otherVarsLength = i - otherVarsPos;
         
         if ( knowledgeHelper != null ) {
             knowledgeHelper.setIdentityMap( identityMap );
@@ -379,6 +377,8 @@ public class MVELCompilationUnit
         
         VariableResolverFactory locals = new CachingMapVariableResolverFactory(new HashMap<String, Object>());
         DroolsMVELIndexedFactory factory =  new DroolsMVELIndexedFactory(inputIdentifiers, vals, locals);
+        factory.setOtherVarsPos( otherVarsPos );
+        factory.setOtherVarsLength( otherVarsLength );
         factory.setKnowledgeHelper( knowledgeHelper );
         return factory;
     }
@@ -386,6 +386,9 @@ public class MVELCompilationUnit
     public static class DroolsMVELIndexedFactory extends IndexedVariableResolverFactory {
         
         private KnowledgeHelper knowledgeHelper;
+        
+        private int otherVarsPos;
+        private int otherVarsLength;
 
         public DroolsMVELIndexedFactory(String[] varNames,
                                          Object[] values) {
@@ -394,7 +397,7 @@ public class MVELCompilationUnit
         }
         
         public DroolsMVELIndexedFactory(String[] varNames,
-                                         Object[] values,
+                                        Object[] values,
                                          VariableResolverFactory factory) {
             super( varNames,
                    values,
@@ -409,6 +412,21 @@ public class MVELCompilationUnit
             this.knowledgeHelper = knowledgeHelper;
         }
 
+        public int getOtherVarsPos() {
+            return otherVarsPos;
+        }
+
+        public void setOtherVarsPos(int otherVarsPos) {
+            this.otherVarsPos = otherVarsPos;
+        }
+
+        public int getOtherVarsLength() {
+            return otherVarsLength;
+        }
+
+        public void setOtherVarsLength(int otherVarsLength) {
+            this.otherVarsLength = otherVarsLength;
+        }
     }
     
     private static InternalFactHandle getFactHandle(Declaration declaration, InternalFactHandle[] handles) {

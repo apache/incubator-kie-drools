@@ -113,7 +113,7 @@ public class MVELAccumulatorFunctionExecutor
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
         
-        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) leftTuple, null, handle.getObject(), (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, null, (InternalWorkingMemory) workingMemory );
         
         final Object value = MVEL.executeExpression( this.expression,
                                                      handle.getObject(),
