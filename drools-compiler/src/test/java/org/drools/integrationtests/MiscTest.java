@@ -6599,6 +6599,7 @@ public class MiscTest {
                 fail( "KnowledgeBuilder should have errors" );
             }
         } catch ( Exception e ) {
+            e.printStackTrace();
             fail( "Exception should not be thrown " );
         }
     }
