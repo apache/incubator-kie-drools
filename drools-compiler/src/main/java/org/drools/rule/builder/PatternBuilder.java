@@ -580,8 +580,11 @@ public class PatternBuilder
 
             if ( restriction == null ) {
                 Dialect dialect = context.getDialect();
-                MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-                context.setDialect( mvelDialect );
+                if ( !value.startsWith( "(" )) {
+                    // it's not a traditional return value, so override the dialect
+                    MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
+                    context.setDialect( mvelDialect );
+                }
                 
                 // execute it as a return value
                 restriction = buildRestriction( context,

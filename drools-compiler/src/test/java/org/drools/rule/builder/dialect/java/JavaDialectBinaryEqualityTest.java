@@ -23,7 +23,9 @@ import org.drools.rule.EvalCondition;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
+import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
+import org.drools.rule.VariableConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
@@ -45,18 +47,20 @@ public class JavaDialectBinaryEqualityTest{
         
         // test return value
         Pattern p1 = ( Pattern ) rule1.getLhs().getChildren().get( 0 );
-        ReturnValueConstraint rvc1 = ( ReturnValueConstraint ) p1.getConstraints().get( 1 );
-        ReturnValueExpression rve1 = rvc1.getExpression();
+        VariableConstraint rvc1 = ( VariableConstraint ) p1.getConstraints().get( 1 );        
+        ReturnValueExpression rve1 = ((ReturnValueRestriction) rvc1.getRestriction()).getExpression();
         
-        Pattern p2 = ( Pattern ) rule2.getLhs().getChildren().get( 0 );
-        ReturnValueConstraint rvc2 = ( ReturnValueConstraint ) p2.getConstraints().get( 1 );
-        ReturnValueExpression rve2 = rvc2.getExpression();
+        Pattern p2 = ( Pattern ) rule2.getLhs().getChildren().get( 0 );        
+        VariableConstraint rvc2 = ( VariableConstraint ) p2.getConstraints().get( 1 );        
+        ReturnValueExpression rve2 = ((ReturnValueRestriction) rvc2.getRestriction()).getExpression();        
+        
         assertNotSame( rve1, rve2 );
         assertEquals( rve1, rve2 );
         
         Pattern p3 = ( Pattern ) rule3.getLhs().getChildren().get( 0 );
-        ReturnValueConstraint rvc3 = ( ReturnValueConstraint ) p3.getConstraints().get( 1 );
-        ReturnValueExpression rve3 = rvc3.getExpression();
+        VariableConstraint rvc3 = ( VariableConstraint ) p3.getConstraints().get( 1 );        
+        ReturnValueExpression rve3 = ((ReturnValueRestriction) rvc3.getRestriction()).getExpression();
+        
         assertNotSame( rve1, rve3 );
         assertThat(rve1, not( equalTo( rve3 ) ) );
         

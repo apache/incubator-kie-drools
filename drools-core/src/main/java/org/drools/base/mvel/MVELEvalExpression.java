@@ -112,5 +112,35 @@ public class MVELEvalExpression
         
         return clone;
     }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        if ( expr == null ) {
+            throw new RuntimeException( "this MVELPredicateExpression must be compiled for hashCode" );
+        }
+        result = prime * result + unit.getExpression().hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+
+        if ( expr == null ) {
+            throw new RuntimeException( "this MVELReturnValueExpression must be compiled for equality" );
+        }
+
+        MVELEvalExpression other = (MVELEvalExpression) obj;
+        if ( other.expr == null ) {
+            throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
+        }
+                
+        return this.unit.getExpression().equals( other.unit.getExpression() );
+    }
+        
 
 }
