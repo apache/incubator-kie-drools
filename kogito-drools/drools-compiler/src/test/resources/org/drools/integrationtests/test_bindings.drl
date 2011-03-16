@@ -4,7 +4,7 @@ global java.util.List results;
 
 rule "bindings"
 when
-    Cheese( $t : type == "stilton" || $p : price == 10 )
+    Cheese( $p : price, $t : type, type == "stilton" || price == 10 )
 then
     results.add( $t );
     results.add( new Integer( $p ) );
