@@ -11,7 +11,7 @@ function boolean testIllegalChars() {
 rule "test MAIN 1"
     salience  10
     when
-        Cheese( $type : type -> ( 3 < 4 && 4 > 3 ),
+        Cheese( $type : type, eval( 3 < 4 && 4 > 3 ),
                 price < ( new Integer( 100 ) ) )
         eval( 3 < 4 && 4 > 3 )
         eval( testIllegalChars() )

@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
-    <artifactId>drools</artifactId>
+    <artifactId>droolsjbpm-parent</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
