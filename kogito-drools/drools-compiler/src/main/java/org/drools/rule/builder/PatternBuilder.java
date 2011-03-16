@@ -587,16 +587,17 @@ public class PatternBuilder
                                                                                  negatedOperator,
                                                                                  null,
                                                                                  value ) );   
-                
                 // fall back to original dialect
                 context.setDialect( dialect );               
              
             }
             
+            if( restriction == null || extractor == null ) {
+                // something failed and an error should already have been reported
+                return;
+            }
             pattern.addConstraint( new VariableConstraint( extractor, restriction ) );
         }
-        
-        
     }
 
     private String builtInOperators = "> >= < <= == != && ||";
@@ -622,14 +623,14 @@ public class PatternBuilder
                 String operator = red.getOperator();
 
                 // extractor the operator and determine if it's negated or not
-                int notPos = operator.indexOf( "not" );
-                if ( notPos >= 0 ) {
-                    operator = red.getOperator().substring( notPos + 3 );
+                boolean negated = operator.startsWith( "not " );
+                if ( negated ) {
+                    operator = red.getOperator().substring( 4 );
                 }
 
                 // as there is no && or || operator we know this is atomic
                 String s = dumper.processRestriction( operator,
-                                                      (notPos >= 0),
+                                                      negated,
                                                       ((AtomicExprDescr) ((RelationalExprDescr) d).getRight()).getExpression() );
                 sbuilder.append( s );
             }
