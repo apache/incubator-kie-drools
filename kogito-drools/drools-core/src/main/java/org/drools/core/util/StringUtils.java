@@ -871,7 +871,7 @@ public class StringUtils {
                         out.write('\'');
                         break;
                     case '\"':
-                        out.write("\\\"");
+                        out.write("\"");
                         break;
                     case 'r':
                         out.write('\r');
