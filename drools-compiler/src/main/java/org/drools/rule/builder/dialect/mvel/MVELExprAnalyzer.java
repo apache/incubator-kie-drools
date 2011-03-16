@@ -84,6 +84,11 @@ public class MVELExprAnalyzer {
             // first compilation is for verification only
             // @todo proper source file name
             final ParserContext parserContext1 = new ParserContext( conf );
+            if ( localTypes != null ) {
+                for ( Entry entry : localTypes.entrySet() ) {
+                    parserContext1.addInput( (String) entry.getKey(), (Class) entry.getValue() );
+                }
+            }
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
@@ -91,7 +96,7 @@ public class MVELExprAnalyzer {
                                               parserContext1 );
 
             Set<String> requiredInputs = parserContext1.getInputs().keySet();
-            HashMap<String, Class> variables = parserContext1.getVariables();
+            HashMap<String, Class<?>> variables = (HashMap<String, Class<?>>) ((Map)parserContext1.getVariables());
 
 
             // now, set the required input types and compile again
@@ -153,8 +158,10 @@ public class MVELExprAnalyzer {
                 returnType =  MVEL.analyze( expr,
                                             parserContext2 );
                 
-                requiredInputs = parserContext2.getInputs().keySet();
-                variables = parserContext2.getVariables();
+                requiredInputs = new HashSet();
+                requiredInputs.addAll( parserContext2.getInputs().keySet() );
+                requiredInputs.addAll(  variables.keySet() );
+                variables = (HashMap<String, Class<?>>) ((Map)parserContext2.getVariables());
             }
 
             result = analyze( requiredInputs,
@@ -166,7 +173,7 @@ public class MVELExprAnalyzer {
         } else {
             result = analyze( (Set<String>) Collections.EMPTY_SET,
                               availableIdentifiers );
-            result.setMvelVariables( Collections.<String, Class> emptyMap() );
+            result.setMvelVariables( Collections.<String, Class<?>> emptyMap() );
 
         }
         return result;
