@@ -93,7 +93,7 @@ public class TypeDeclaration
     private ClassDefinition      typeClassDef;
     private Resource             resource;
     private boolean              dynamic;
-    private boolean              typesafe;
+    private boolean              typesafe =  true;
 
     private transient ObjectType objectType;
     private long                 expirationOffset = -1;
@@ -108,6 +108,7 @@ public class TypeDeclaration
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeTemplate = null;
+        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -125,6 +126,7 @@ public class TypeDeclaration
         this.resource = (Resource) in.readObject();
         this.expirationOffset = in.readLong();
         this.dynamic = in.readBoolean();
+        this.typesafe = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -141,6 +143,7 @@ public class TypeDeclaration
         out.writeObject( this.resource );
         out.writeLong( expirationOffset );
         out.writeBoolean( dynamic );
+        out.writeBoolean( typesafe );
     }
 
     /**
