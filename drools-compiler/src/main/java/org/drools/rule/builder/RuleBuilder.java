@@ -109,7 +109,7 @@ public class RuleBuilder {
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             String value = context.getRuleDescr().getAnnotation(metaAttr).getValue();
             if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
-                value = StringUtils.unescapeJava( value.substring( 1, value.length()-1 ) );
+                value = value.substring( 1, value.length()-1 );
             }
             rule.addMetaAttribute( metaAttr, value );
         }

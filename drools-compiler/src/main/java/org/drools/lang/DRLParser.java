@@ -2789,7 +2789,7 @@ public class DRLParser {
 
             String value = elementValue();
             if( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
-                value = safeStripStringDelimiters( StringUtils.unescapeJava( value ) );
+                value = StringUtils.unescapeJava( value );
             }
             if ( state.failed ) return;
 
