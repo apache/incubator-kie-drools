@@ -36,6 +36,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/drools.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/drools.git</developerConnection>
+    <url>https://github.com/droolsjbpm/drools</url>
+  </scm>
+
   <modules>
     <module>drools-core</module>
     <module>drools-compiler</module>
