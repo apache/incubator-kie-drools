@@ -208,11 +208,11 @@ public class RuleBuilderTest {
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
         ruleDescr.addAnnotation( "ruleId",
-                                    "123" );
+                                 "123" );
         ruleDescr.addAnnotation( "author",
-                                    "Bob Doe" );
+                                 "Bob Doe" );
         ruleDescr.addAnnotation( "text",
-                                    "\"It's a quoted\\\" string\"" );
+                                 "\"It's a quoted\" string\"" );
 
         // creates expected results
         // defining expectations on the mock object
