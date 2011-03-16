@@ -170,10 +170,9 @@ public class JavaConsequenceBuilderTest {
                                                   declr);
 
             String expected = " System.out.println(\"this is a test\");\n" + 
-                              "{ org.drools.Cheese __obj__ = (org.drools.Cheese) ( $cheese );\n" + 
-                              "__obj__.setPrice( 10 );\n" + 
-                              "__obj__.setAge( age );\n" + 
-                              "update( __obj__ );}\n" + 
+                              "{$cheese.setPrice( 10 );\n" + 
+                              "$cheese.setAge( age );\n" + 
+                              "drools.update( $cheese__Handle__ );}\n" + 
                               "System.out.println(\"we are done\");\n";
 
             assertNotNull( context.getErrors().toString(),
