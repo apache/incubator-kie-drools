@@ -3056,7 +3056,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( 5,
                       descr.getAnnotationNames().size() );
         assertNotNull( descr.getAnnotation( "name1" ) );
-        assertEquals( "value",
+        assertEquals( "\"value\"",
                           descr.getAnnotation( "name2" ).getValue() );
         assertEquals( "10",
                           descr.getAnnotation( "name3" ).getValue( "k1" ) );
@@ -3150,7 +3150,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "fact",
                       type.getAnnotation( "role" ).getValue() );
-        assertEquals( "Models a person",
+        assertEquals( "\"Models a person\"",
                       type.getAnnotation( "doc" ).getValue( "descr" ) );
         assertEquals( "Bob",
                       type.getAnnotation( "doc" ).getValue( "author" ) );
