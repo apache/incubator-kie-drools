@@ -120,8 +120,8 @@ public class MVELReturnValueExpression
         if ( other.expr == null ) {
             throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
         }
-
-        return this.expr.equals( other.expr );
+                
+        return this.unit.getExpression().equals( other.unit.getExpression() );
     }
 
     public void replaceDeclaration(Declaration declaration,
