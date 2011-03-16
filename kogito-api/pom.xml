@@ -36,6 +36,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/droolsjbpm-knowledge.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/droolsjbpm-knowledge.git</developerConnection>
+    <url>https://github.com/droolsjbpm/droolsjbpm-knowledge</url>
+  </scm>
+
   <modules>
     <module>knowledge-api</module>
   </modules>
