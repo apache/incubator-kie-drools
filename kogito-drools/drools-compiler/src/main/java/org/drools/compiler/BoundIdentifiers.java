@@ -34,7 +34,7 @@ public class BoundIdentifiers {
     
     public String toString() {
         StringBuilder sbuilder = new StringBuilder();
-        sbuilder.append( "thisClass: " + thisClass );
+        sbuilder.append( "thisClass: " + thisClass + "\n" );
         sbuilder.append( "declarations:" + declarations + "\n" );
         sbuilder.append( "globals:" + globals + "\n" );
         
