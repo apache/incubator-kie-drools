@@ -46,7 +46,7 @@
     war into your application server deploy folder.  This version that should deploy without any changes
     on JBoss AS 5.1.0.  Note: If you want to deploy on other (versions of an) application server, you might
     have to adjust the dependencies inside the war based on the default libraries provided by your
-    application server.  The latest version of the designer can be found <ulink url="http://people.redhat.com/tsurdilo/oryx/1.0.0.047-SNAPSHOT/">here</ulink>.</para>
+    application server.  The latest version of the designer can be found <ulink url="http://people.redhat.com/tsurdilo/oryx/1.0.0.049-SNAPSHOT/">here</ulink>.</para>
     
     <para>To open up the designer, open up Guvnor (e.g. <ulink url="http://localhost:8080/drools-guvnor">
     http://localhost:8080/drools-guvnor</ulink>) and either open up an existing BPMN2 process or create
