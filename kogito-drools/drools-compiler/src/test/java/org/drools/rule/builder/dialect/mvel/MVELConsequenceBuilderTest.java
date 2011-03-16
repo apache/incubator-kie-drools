@@ -120,7 +120,7 @@ public class MVELConsequenceBuilderTest {
                                                                             null,
                                                                             tuple,
                                                                             null ),
-                                                new RuleTerminalNode(0, null, new Rule(), subrule, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
+                                                new RuleTerminalNode(0, null, context.getRule(), subrule, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );

@@ -105,7 +105,7 @@ public class MVELDataProvider
                                final WorkingMemory wm,
                                final PropagationContext ctx,
                                final Object executionContext) {
-        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, null, (InternalWorkingMemory) wm );
+        VariableResolverFactory factory = unit.getFactory( null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) wm );
 
         //this.expression.
         final Object result = MVEL.executeExpression( this.expr,

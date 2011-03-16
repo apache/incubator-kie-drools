@@ -118,8 +118,10 @@ public class MVELConsequenceBuilder
                 declarations[j++] = decls.get( str );
             }
             Arrays.sort( declarations, SortDeclarations.instance  );
+            for ( int i = 0; i < declrStr.length; i++) {
+                declrStr[i] = declarations[i].getIdentifier();
+            }
             context.getRule().setRequiredDeclarations( declrStr );
-            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        declarations,
