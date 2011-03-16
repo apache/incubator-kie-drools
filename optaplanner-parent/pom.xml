@@ -39,6 +39,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/drools-planner.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/drools-planner.git</developerConnection>
+    <url>https://github.com/droolsjbpm/drools-planner</url>
+  </scm>
+
   <modules>
     <module>drools-planner-core</module>
     <module>drools-planner-examples</module>
