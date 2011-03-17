@@ -59,6 +59,8 @@ import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
 
+import antlr.collections.List;
+
 public class RuleBuilderTest {
 
     /**
@@ -77,38 +79,21 @@ public class RuleBuilderTest {
         // just checking there is no parsing errors
         assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
+        
+        pkg.addGlobal( "results", List.class );
 
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
         ruleDescr.addAttribute( new AttributeDescr( "dialect",
                                                     "java" ) );
+        
+        pkgBuilder.addPackage( pkgDescr );
 
-        final TypeResolver typeResolver = new ClassTypeResolver( new HashSet(),
-                                                                 this.getClass().getClassLoader() );
-        // make an automatic import for the current package
-        typeResolver.addImport( pkgDescr.getName() + ".*" );
-        typeResolver.addImport( "java.lang.*" );
+        assertTrue( pkgBuilder.getErrors().toString(),
+                    pkgBuilder.getErrors().isEmpty() );
 
-        final RuleBuilder builder = new RuleBuilder();
-
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        Dialect dialect = dialectRegistry.getDialect( "java" );
-
-        RuleBuildContext context = new RuleBuildContext( pkgBuilder,
-                                                         ruleDescr,
-                                                         dialectRegistry,
-                                                         pkg,
-                                                         dialect );
-
-        builder.build( context );
-
-        assertTrue( context.getErrors().toString(),
-                           context.getErrors().isEmpty() );
-
-        final Rule rule = context.getRule();
+        final Rule rule = pkgBuilder.getPackage().getRule( "test nested CEs" );
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
