@@ -11,7 +11,7 @@ rule "Do  not loop  forever"
     then     
         list.add( cheese );
         if ( list.size() > 2 ) {
-            throw new Exception( "this should not loop" );
+            drools.halt();
         }
         update( cheese );
 end  

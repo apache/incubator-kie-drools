@@ -25,7 +25,6 @@ import org.junit.Test;
 
 public class QueryBuilderTest extends DroolsTestCase {
 
-    // FIXME: TODO: Fix the use of VariableDescr without disabling node memory indexing
     @Test
     @Ignore
     public void testRuleWithQuery() throws Exception {
@@ -45,20 +44,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         queryDescr.setLhs( lhs );
         PatternDescr pattern = new PatternDescr( Person.class.getName() );
         lhs.addDescr( pattern );
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$name" ) );
-        pattern.addConstraint( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "age" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$age" ) );
-        pattern.addConstraint( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "likes" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$likes" ) );
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint(  new ExprConstraintDescr("$name : name")  );
+        pattern.addConstraint( new ExprConstraintDescr("$age : age") );
+        pattern.addConstraint( new ExprConstraintDescr("$likes : likes") );
 
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );

@@ -14,7 +14,7 @@ rule "r"
            l.add(new Person("0"));
            if (l.size() > 2)
         {
-            throw new Exception( "this should not loop" );
+           kcontext.getKnowledgeRuntime().halt();
         }
            insertLogical( a );
 end
