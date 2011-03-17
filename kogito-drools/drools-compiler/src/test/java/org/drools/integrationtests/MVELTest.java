@@ -323,13 +323,15 @@ public class MVELTest {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors()  );
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackage( packageDescr );
 
-        System.out.println( builder.getErrors() );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
 
         final Package pkg = builder.getPackage();
 

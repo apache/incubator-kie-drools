@@ -326,6 +326,9 @@ public class FirstOrderLogicTest {
     public void testNot() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "not_rule_test.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
  
         final RuleBase ruleBase = getRuleBase();

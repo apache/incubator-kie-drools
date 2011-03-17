@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -49,6 +50,7 @@ public class OutOfMemoryTest {
     }
 
     @Test
+    @Ignore
     public void testStatefulSessionsCreation() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
@@ -78,6 +80,7 @@ public class OutOfMemoryTest {
     }
 
     @Test
+    @Ignore
     public void testAgendaLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_OutOfMemory.drl" ) ) );

@@ -5,6 +5,7 @@ import java.io.Reader;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -21,6 +22,7 @@ public class WorkingMemoryLoggerTest {
 
     private static final String LOG = "session";
     @Test
+    @Ignore
     public void testOutOfMemory() throws Exception {
         PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(DRL);

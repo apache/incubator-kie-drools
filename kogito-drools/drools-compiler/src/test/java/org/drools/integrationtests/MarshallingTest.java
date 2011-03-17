@@ -85,6 +85,9 @@ public class MarshallingTest {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( reader );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = SerializationHelper.serializeObject( builder.getPackage() );
 
         assertEquals( 0,
@@ -1269,7 +1272,13 @@ public class MarshallingTest {
             }
         }
 
-        String drl = "package foo.bar \n" + "import com.billasurf.Board\n" + "rule 'MyGoodRule' \n dialect 'mvel' \n when Board() then System.err.println(42); \n end\n";
+        String drl = "package foo.bar \n" + 
+           "import com.billasurf.Board\n" + 
+           "rule 'MyGoodRule' \n dialect 'mvel' \n when " +
+           "   Board() " + 
+           "then \n" +
+           " System.err.println(42); \n" +
+           "end\n";
 
         PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration( loader ) );
         builder.addPackageFromDrl( new StringReader( drl ) );

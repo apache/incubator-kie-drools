@@ -14,7 +14,7 @@ end
 
 rule "not rule with bound variable"
     when
-        not Cheese( $price:price -> ( $price == 5 ) )
+        not Cheese( $price:price, eval ( $price == 5 ) )
     then
         list.add( new Integer( 6 ) );
 end

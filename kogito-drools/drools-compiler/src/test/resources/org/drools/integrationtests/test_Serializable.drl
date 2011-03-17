@@ -26,7 +26,7 @@ rule "match Person 2"
        cheesery : Cheesery( cheeses contains $person )     
        cheeses : List() from cheesery.getCheeses()           
        Person( age < ( $age1 ) )
-       Person( $age2 : age -> ( $age1 == $age2 ) )      
+       Person( $age2 : age, eval( $age1 == $age2 ) )      
        eval( $age1 == $age2 )
     then
         list.add( $person );
@@ -35,14 +35,15 @@ end
 
 rule "match Person 3"
     agenda-group "xxx"
-    dialecannotaname    when
-       not Person( annotation == "mark" )
+    dialect "mvel"
+    when
+       not Person( name == "mark" )
        exists Person( name == "mark" )       
     then
 end 
 
 rule "match Integer"
-    agenda-grouannotationyy"
+    agenda-group "yyy"
     auto-focus true
     when
         Person( name ==  "bob" )
