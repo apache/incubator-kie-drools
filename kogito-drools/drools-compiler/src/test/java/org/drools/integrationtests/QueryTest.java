@@ -174,7 +174,11 @@ public class QueryTest {
     public void testQueryWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
-
+        if ( builder.hasErrors()) {
+            fail( builder.getErrors().toString() );
+        }
+        
+        
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );

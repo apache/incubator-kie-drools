@@ -49,6 +49,14 @@ public class ModifyInterceptor
     public int doAfter(Object value,
                        ASTNode node,
                        VariableResolverFactory factory) {
+        while ( factory != null && !(factory instanceof DroolsMVELIndexedFactory)) {
+            factory = factory.getNextFactory();
+        }
+        
+        if ( factory == null ) {
+            throw new RuntimeException( "Unable to find DroolsMVELIndexedFactory" );
+        }
+        
         ((DroolsMVELIndexedFactory)factory).getKnowledgeHelper().update( value );
         return 0;
     }
