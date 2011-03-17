@@ -17,6 +17,7 @@ import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
+import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
@@ -1520,7 +1521,8 @@ public class DRLParser {
                     }
                     if ( state.failed ) return null;
 
-                    lhsAnd( or, allowOr );
+                    lhsAnd( or,
+                            allowOr );
                     if ( state.failed ) return null;
                     if ( state.backtracking == 0 ) {
                         helper.end( CEDescrBuilder.class,
@@ -1731,7 +1733,8 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            lhsOr( exists, allowOr );
+            lhsOr( exists,
+                   allowOr );
             if ( state.failed ) return null;
 
             if ( !prefixed ) {
@@ -1800,7 +1803,8 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            lhsOr( not, allowOr );
+            lhsOr( not,
+                   allowOr );
             if ( state.failed ) return null;
 
             if ( !prefixed ) {
@@ -1943,7 +1947,8 @@ public class DRLParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return null;
 
-        BaseDescr descr = lhsOr( ce, allowOr );
+        BaseDescr descr = lhsOr( ce,
+                                 allowOr );
         if ( state.failed ) return null;
 
         match( input,
@@ -2111,7 +2116,7 @@ public class DRLParser {
         if ( state.failed ) return;
 
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) ) {
-            // TODO: over clause
+            patternBehavior( pattern );
         }
 
         if ( helper.validateIdentifierKey( DroolsSoftKeywords.FROM ) ) {
@@ -2210,6 +2215,85 @@ public class DRLParser {
     }
 
     /**
+     * patternBehavior := OVER 
+     *                    behaviorDef (COMMA behavior)* 
+     *                    ID COLON ID  LEFT_PAREN expression RIGHT_PAREN                    
+     * @param pattern
+     * @throws RecognitionException 
+     */
+    private void patternBehavior( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.OVER,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+
+        behaviorDef( pattern );
+        if ( state.failed ) return;
+
+        while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+            match( input,
+                   DRLLexer.COMMA,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            behaviorDef( pattern );
+            if ( state.failed ) return;
+        }
+    }
+
+    /**
+     * behaviorDef := ID COLON ID LEFT_PAREN expression RIGHT_PAREN                    
+     * @param pattern
+     * @throws RecognitionException 
+     */
+    private void behaviorDef( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        BehaviorDescrBuilder< ? > behavior = helper.start( BehaviorDescrBuilder.class,
+                                                           null,
+                                                           null );
+        try {
+            Token type = match( input,
+                                DRLLexer.ID,
+                                null,
+                                null,
+                                DroolsEditorType.IDENTIFIER_PATTERN );
+            if ( state.failed ) return;
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+
+            Token subtype = match( input,
+                                   DRLLexer.ID,
+                                   null,
+                                   null,
+                                   DroolsEditorType.IDENTIFIER_PATTERN );
+            if ( state.failed ) return;
+
+            if ( state.backtracking == 0 ) {
+                behavior.type( type.getText(),
+                               subtype.getText() );
+            }
+
+            List<String> parameters = parameters();
+            if ( state.failed ) return;
+            
+            if ( state.backtracking == 0 ) {
+                behavior.parameters( parameters );
+            }
+        } finally {
+            helper.end( BehaviorDescrBuilder.class,
+                        null );
+        }
+    }
+
+    /**
      * patternSource := FROM
      *                ( accumulate
      *                | collect
@@ -2302,7 +2386,7 @@ public class DRLParser {
                                  null,
                                  null,
                                  DroolsEditorType.STRING_CONST );
-            ep =  StringUtils.unescapeJava( safeStripStringDelimiters( epStr.getText() ) );
+            ep = StringUtils.unescapeJava( safeStripStringDelimiters( epStr.getText() ) );
         } else {
             Token epID = match( input,
                                 DRLLexer.ID,
@@ -2680,7 +2764,7 @@ public class DRLParser {
                                               DRLLexer.RIGHT_PAREN ).trim();
                         if ( state.failed ) return;
                         if ( state.backtracking == 0 ) {
-                            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+                            if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
                                 value = StringUtils.unescapeJava( value );
                             }
                             annotation.value( value );
@@ -2788,7 +2872,7 @@ public class DRLParser {
             }
 
             String value = elementValue();
-            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+            if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
                 value = StringUtils.unescapeJava( value );
             }
             if ( state.failed ) return;

@@ -49,6 +49,7 @@ import org.drools.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.definition.process.Process;
@@ -928,18 +929,18 @@ public class PackageBuilder {
 
     }
 
-    public TypeDeclaration getTypeDeclaration(Class cls) {
+    public TypeDeclaration getTypeDeclaration(Class<?> cls) {
         TypeDeclaration tdecl = this.builtinTypes.get( (cls.getName()) );
 
         PackageRegistry pkgReg = null;
         if ( tdecl == null ) {
-            pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if ( pkgReg != null ) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
         }
 
-        Class originalCls = cls;
+        Class<?> originalCls = cls;
         while ( tdecl == null && cls != Object.class ) {
             cls = cls.getSuperclass();
             if ( cls == null ) {
@@ -947,7 +948,7 @@ public class PackageBuilder {
             }
             tdecl = this.builtinTypes.get( (cls.getName()) );
             if ( tdecl == null ) {
-                pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
+                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
                 if ( pkgReg != null ) {
                     tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                 }
@@ -955,10 +956,10 @@ public class PackageBuilder {
         }
 
         if ( tdecl == null ) {
-            Class[] intfs = originalCls.getInterfaces();
-            for ( Class intf : intfs ) {
+            Class<?>[] intfs = originalCls.getInterfaces();
+            for ( Class<?> intf : intfs ) {
                 cls = intf;
-                pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
+                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
                 if ( pkgReg != null ) {
                     tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                 }
@@ -969,7 +970,7 @@ public class PackageBuilder {
                     }
                     tdecl = this.builtinTypes.get( (cls.getName()) );
                     if ( tdecl == null ) {
-                        pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
+                        pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
                         if ( pkgReg != null ) {
                             tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                         }
@@ -979,18 +980,6 @@ public class PackageBuilder {
         }
 
         return tdecl;
-    }
-
-    private String getPackage(Class cls) {
-        // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
-        java.lang.Package pkg = cls.getPackage();
-        if ( pkg == null ) {
-            int dotPos = cls.getName().lastIndexOf( '.' );
-            return cls.getName().substring( 0,
-                                            dotPos - 1 );
-        } else {
-            return pkg.getName();
-        }
     }
 
     /**
@@ -1012,8 +1001,8 @@ public class PackageBuilder {
             } else {
                 // check imports
                 try {
-                    Class cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
-                    namespace = getPackage( cls );
+                    Class<?> cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                    namespace = ClassUtils.getPackage( cls );
                 } catch ( ClassNotFoundException e ) {
                     // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
                     namespace = packageDescr.getNamespace(); // set the default namespace

@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +53,7 @@ import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
@@ -66,10 +68,7 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.reteoo.LeftTuple;
@@ -85,7 +84,6 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
@@ -95,7 +93,6 @@ import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
 import org.junit.Ignore;
@@ -1205,8 +1202,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final PatternDescr patternDescr = new PatternDescr( StockTick.class.getName(),
                                                             "$tick" );
-        final SlidingWindowDescr windowDescr = new SlidingWindowDescr( "time",
-                                                                       "60000" );
+        final BehaviorDescr windowDescr = new BehaviorDescr( "window" );
+        windowDescr.setSubType( "time" );
+        windowDescr.setParameters( Collections.singletonList( "60000" ) );
         patternDescr.addBehavior( windowDescr );
 
         lhs.addDescr( patternDescr );
