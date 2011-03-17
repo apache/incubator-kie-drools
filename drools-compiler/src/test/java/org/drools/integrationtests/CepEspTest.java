@@ -107,7 +107,7 @@ public class CepEspTest {
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
             System.out.println( parser.getErrors() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( parser.getErrors().toString() );
         }
         // pre build the package
         builder.addPackage( packageDescr );

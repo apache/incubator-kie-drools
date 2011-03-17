@@ -62,12 +62,13 @@ catch (RecognitionException re) {
 //                      GENERAL RULES
 // --------------------------------------------------------
 literal
-    :	STRING      {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
-    |	DECIMAL     {	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
-    |	HEX         {	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
-    |	FLOAT       {	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
-    |	BOOL        {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
-    |	NULL        {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+    :	STRING        {	helper.emit($STRING, DroolsEditorType.STRING_CONST);	}
+    |	DECIMAL       {	helper.emit($DECIMAL, DroolsEditorType.NUMERIC_CONST);	}
+    |	HEX           {	helper.emit($HEX, DroolsEditorType.NUMERIC_CONST);	}
+    |	FLOAT         {	helper.emit($FLOAT, DroolsEditorType.NUMERIC_CONST);	}
+    |	BOOL          {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
+    |	NULL          {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
+    |   TIME_INTERVAL {	helper.emit($TIME_INTERVAL, DroolsEditorType.NULL_CONST); }
     ;
 
 operator
