@@ -131,7 +131,7 @@ public class PackageBuilder {
 
     private CompositeClassLoader              rootClassLoader;
 
-    private Map<String, Class<?>>           globals;
+    private Map<String, Class< ? >>           globals;
 
     private Resource                          resource;
 
@@ -142,8 +142,8 @@ public class PackageBuilder {
     protected DateFormats                     dateFormats;
 
     private ProcessBuilder                    processBuilder;
-    
-    private Map<String, TypeDeclaration>     builtinTypes;
+
+    private Map<String, TypeDeclaration>      builtinTypes;
 
     /**
      * Use this when package is starting from scratch.
@@ -213,7 +213,7 @@ public class PackageBuilder {
         globals = new HashMap<String, Class< ? >>();
 
         processBuilder = createProcessBuilder();
-        
+
         builtinTypes = new HashMap<String, TypeDeclaration>();
         initBuiltinTypeDeclarations();
     }
@@ -252,22 +252,24 @@ public class PackageBuilder {
         globals = new HashMap<String, Class< ? >>();
 
         processBuilder = createProcessBuilder();
-        
+
         builtinTypes = new HashMap<String, TypeDeclaration>();
         initBuiltinTypeDeclarations();
     }
-    
+
     private void initBuiltinTypeDeclarations() {
-        TypeDeclaration colType = new TypeDeclaration("Collection");
+        TypeDeclaration colType = new TypeDeclaration( "Collection" );
         colType.setTypesafe( false );
         colType.setTypeClass( Collection.class );
-        builtinTypes.put( "java.util.Collection", colType );
-        
-        TypeDeclaration mapType = new TypeDeclaration("Map");
+        builtinTypes.put( "java.util.Collection",
+                          colType );
+
+        TypeDeclaration mapType = new TypeDeclaration( "Map" );
         mapType.setTypesafe( false );
         mapType.setTypeClass( Map.class );
-        builtinTypes.put( "java.util.Map", mapType );
-        
+        builtinTypes.put( "java.util.Map",
+                          mapType );
+
     }
 
     private ProcessBuilder createProcessBuilder() {
@@ -285,7 +287,7 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader reader ) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final DrlParser parser = new DrlParser();
@@ -297,7 +299,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDrl( Resource resource ) throws DroolsParserException,
+    public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                       IOException {
         this.resource = resource;
         final DrlParser parser = new DrlParser();
@@ -316,7 +318,7 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromXml( final Reader reader ) throws DroolsParserException,
+    public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
@@ -332,7 +334,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromXml( final Resource resource ) throws DroolsParserException,
+    public void addPackageFromXml(final Resource resource) throws DroolsParserException,
                                                             IOException {
         this.resource = resource;
 
@@ -359,8 +361,8 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader source,
-                                   final Reader dsl ) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader source,
+                                   final Reader dsl) throws DroolsParserException,
                                                      IOException {
         this.resource = new ReaderResource( source );
 
@@ -374,7 +376,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDslr( final Resource resource ) throws DroolsParserException,
+    public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
                                                              IOException {
         this.resource = resource;
 
@@ -401,7 +403,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromBrl( final Resource resource ) throws DroolsParserException {
+    public void addPackageFromBrl(final Resource resource) throws DroolsParserException {
         this.resource = resource;
         try {
             BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
@@ -429,7 +431,7 @@ public class PackageBuilder {
         }
     }
 
-    public void addDsl( Resource resource ) throws IOException {
+    public void addDsl(Resource resource) throws IOException {
         this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -447,11 +449,11 @@ public class PackageBuilder {
     /**
      * Add a ruleflow (.rfm) asset to this package.
      */
-    public void addRuleFlow( Reader processSource ) {
+    public void addRuleFlow(Reader processSource) {
         addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml( Resource resource ) {
+    public void addProcessFromXml(Resource resource) {
         this.resource = resource;
 
         try {
@@ -467,13 +469,13 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addProcessFromXml( Reader processSource ) {
+    public void addProcessFromXml(Reader processSource) {
         addProcessFromXml( new ReaderResource( processSource ) );
     }
 
-    public void addKnowledgeResource( Resource resource,
+    public void addKnowledgeResource(Resource resource,
                                       ResourceType type,
-                                      ResourceConfiguration configuration ) {
+                                      ResourceConfiguration configuration) {
         try {
             if ( ResourceType.DRL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
@@ -576,7 +578,7 @@ public class PackageBuilder {
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
-    public void addPackage( final PackageDescr packageDescr ) {
+    public void addPackage(final PackageDescr packageDescr) {
         validateUniqueRuleNames( packageDescr );
 
         String dialectName = this.defaultDialect;
@@ -684,7 +686,7 @@ public class PackageBuilder {
     /**
      * This checks to see if it should all be in the one namespace.
      */
-    private boolean checkNamespace( String newName ) {
+    private boolean checkNamespace(String newName) {
         if ( this.configuration == null ) return true;
         if ( (!this.pkgRegistryMap.isEmpty()) && (!this.pkgRegistryMap.containsKey( newName )) ) {
             return this.configuration.isAllowMultipleNamespaces();
@@ -692,7 +694,7 @@ public class PackageBuilder {
         return true;
     }
 
-    public boolean isEmpty( String string ) {
+    public boolean isEmpty(String string) {
         return (string == null || string.trim().length() == 0);
     }
 
@@ -713,14 +715,14 @@ public class PackageBuilder {
         }
     }
 
-    private List getResults( List results ) {
+    private List getResults(List results) {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             results = pkgRegistry.getDialectCompiletimeRegistry().addResults( results );
         }
         return results;
     }
 
-    public synchronized void addPackage( final Package newPkg ) {
+    public synchronized void addPackage(final Package newPkg) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( newPkg.getName() );
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -769,8 +771,8 @@ public class PackageBuilder {
      * but this class does some work (including combining imports, compilation data, globals,
      * and the actual Rule objects into the package).
      */
-    private void mergePackage( final Package pkg,
-                               final Package newPkg ) {
+    private void mergePackage(final Package pkg,
+                               final Package newPkg) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
@@ -841,7 +843,7 @@ public class PackageBuilder {
     //        return;
     //    }
 
-    private void validateUniqueRuleNames( final PackageDescr packageDescr ) {
+    private void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set<String> names = new HashSet<String>();
         for ( final RuleDescr rule : packageDescr.getRules() ) {
             final String name = rule.getName();
@@ -854,7 +856,7 @@ public class PackageBuilder {
         }
     }
 
-    private PackageRegistry newPackage( final PackageDescr packageDescr ) {
+    private PackageRegistry newPackage(final PackageDescr packageDescr) {
         Package pkg;
         if ( this.ruleBase == null || (pkg = this.ruleBase.getPackage( packageDescr.getName() )) == null ) {
             // there is no rulebase or it does not define this package so define it
@@ -891,7 +893,7 @@ public class PackageBuilder {
         return pkgRegistry;
     }
 
-    private void mergePackage( final PackageDescr packageDescr ) {
+    private void mergePackage(final PackageDescr packageDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         for ( final ImportDescr importEntry : packageDescr.getImports() ) {
@@ -927,8 +929,8 @@ public class PackageBuilder {
     }
 
     public TypeDeclaration getTypeDeclaration(Class cls) {
-        TypeDeclaration tdecl = this.builtinTypes.get( ( cls.getName() ) );
-        
+        TypeDeclaration tdecl = this.builtinTypes.get( (cls.getName()) );
+
         PackageRegistry pkgReg = null;
         if ( tdecl == null ) {
             pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
@@ -936,22 +938,22 @@ public class PackageBuilder {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
         }
-        
+
         Class originalCls = cls;
         while ( tdecl == null && cls != Object.class ) {
             cls = cls.getSuperclass();
             if ( cls == null ) {
                 break;
             }
-            tdecl = this.builtinTypes.get( ( cls.getName() ) );
+            tdecl = this.builtinTypes.get( (cls.getName()) );
             if ( tdecl == null ) {
                 pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
                 if ( pkgReg != null ) {
                     tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                 }
             }
-        }        
-        
+        }
+
         if ( tdecl == null ) {
             Class[] intfs = originalCls.getInterfaces();
             for ( Class intf : intfs ) {
@@ -965,35 +967,36 @@ public class PackageBuilder {
                     if ( cls == null ) {
                         break;
                     }
-                    tdecl = this.builtinTypes.get( ( cls.getName() ) );
+                    tdecl = this.builtinTypes.get( (cls.getName()) );
                     if ( tdecl == null ) {
                         pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
                         if ( pkgReg != null ) {
                             tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                         }
                     }
-                }             
+                }
             }
         }
 
         return tdecl;
     }
-    
+
     private String getPackage(Class cls) {
         // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
         java.lang.Package pkg = cls.getPackage();
         if ( pkg == null ) {
             int dotPos = cls.getName().lastIndexOf( '.' );
-            return cls.getName().substring( 0, dotPos - 1);
+            return cls.getName().substring( 0,
+                                            dotPos - 1 );
         } else {
             return pkg.getName();
         }
     }
-    
+
     /**
      * @param packageDescr
      */
-    private void processTypeDeclarations( final PackageDescr packageDescr ) {
+    private void processTypeDeclarations(final PackageDescr packageDescr) {
         PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         PackageRegistry pkgRegistry = null;
@@ -1003,7 +1006,8 @@ public class PackageBuilder {
                                     // as the declr is added to the target package anyway
             int dotPos = typeDescr.getTypeName().lastIndexOf( '.' );
             if ( dotPos >= 0 ) {
-                namespace = typeDescr.getTypeName().substring( 0, dotPos );
+                namespace = typeDescr.getTypeName().substring( 0,
+                                                               dotPos );
                 typename = typeDescr.getTypeName().substring( dotPos + 1 );
             } else {
                 // check imports
@@ -1017,16 +1021,16 @@ public class PackageBuilder {
                 typename = typeDescr.getTypeName();
             }
 
-            if ( !namespace.equals( packageDescr.getNamespace() )) {
+            if ( !namespace.equals( packageDescr.getNamespace() ) ) {
                 // If the type declaration is for a different namespace, process that separately.
-                PackageDescr altDescr = new PackageDescr(namespace);
+                PackageDescr altDescr = new PackageDescr( namespace );
                 altDescr.addTypeDeclaration( typeDescr );
                 newPackage( altDescr );
                 continue;
             }
-            
+
             // make sure namespace is set on components
-            typeDescr.setNamespace(namespace);
+            typeDescr.setNamespace( namespace );
             pkgRegistry = this.pkgRegistryMap.get( typeDescr.getNamespace() );
 
             TypeDeclaration type = new TypeDeclaration( typename );
@@ -1036,16 +1040,16 @@ public class PackageBuilder {
 
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
-            String role = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+            String role = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
-            }      
-            
+            }
+
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
-            String typesafe = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+            String typesafe = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( typesafe != null ) {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
-            }             
+            }
 
             //sotty: need to resolve supertype and interfaces, if imported
 
@@ -1072,8 +1076,8 @@ public class PackageBuilder {
             }
 
             // is it a POJO or a template?
-            annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
-            String templateName = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
+            String templateName = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -1086,7 +1090,7 @@ public class PackageBuilder {
                 }
             } else {
                 annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
-                String className  = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+                String className = (annotationDescr != null) ? annotationDescr.getValue() : null;
 
                 if ( StringUtils.isEmpty( className ) ) {
                     className = type.getTypeName();
@@ -1121,7 +1125,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-            String timestamp = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+            String timestamp = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1130,9 +1134,9 @@ public class PackageBuilder {
                                                                   timestamp,
                                                                   type.new TimestampAccessorSetter() );
             }
-            
+
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
-            String duration = ( annotationDescr != null ) ? annotationDescr.getValue() : null;            
+            String duration = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1143,7 +1147,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
-            String expiration = ( annotationDescr != null ) ? annotationDescr.getValue() : null;             
+            String expiration = (annotationDescr != null) ? annotationDescr.getValue() : null;
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
@@ -1172,8 +1176,8 @@ public class PackageBuilder {
      * @throws InvocationTargetException
      * @throws NoSuchFieldException
      */
-    private final void buildFieldAccessors( final TypeDeclaration type,
-                                            final PackageRegistry pkgRegistry ) throws SecurityException,
+    private final void buildFieldAccessors(final TypeDeclaration type,
+                                            final PackageRegistry pkgRegistry) throws SecurityException,
                                                                                IllegalArgumentException,
                                                                                InstantiationException,
                                                                                IllegalAccessException,
@@ -1196,9 +1200,9 @@ public class PackageBuilder {
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
      */
-    private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
+    private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
                                        TypeDeclaration type,
-                                       PackageRegistry pkgRegistry ) {
+                                       PackageRegistry pkgRegistry) {
         // need to fix classloader?
         ClassBuilder cb = new ClassBuilder();
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
@@ -1216,7 +1220,7 @@ public class PackageBuilder {
             PriorityQueue<TypeFieldDescr> queue = new PriorityQueue<TypeFieldDescr>();
             for ( TypeFieldDescr field : flds.values() ) {
                 AnnotationDescr annonDescr = field.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION );
-                String idx = ( annonDescr != null ) ? annonDescr.getText() : null;
+                String idx = (annonDescr != null) ? annonDescr.getText() : null;
                 if ( idx != null ) {
                     field.setIndex( Integer.valueOf( idx ) );
                 }
@@ -1253,7 +1257,7 @@ public class PackageBuilder {
         }
     }
 
-    private void addFunction( final FunctionDescr functionDescr ) {
+    private void addFunction(final FunctionDescr functionDescr) {
         functionDescr.setResource( this.resource );
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
@@ -1262,22 +1266,22 @@ public class PackageBuilder {
                              this.resource );
     }
 
-    private void preCompileAddFunction( final FunctionDescr functionDescr ) {
+    private void preCompileAddFunction(final FunctionDescr functionDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.preCompileAddFunction( functionDescr,
                                        pkgRegistry.getTypeResolver() );
     }
 
-    private void postCompileAddFunction( final FunctionDescr functionDescr ) {
+    private void postCompileAddFunction(final FunctionDescr functionDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.postCompileAddFunction( functionDescr,
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate( final PackageDescr pkgDescr,
-                                  final FactTemplateDescr factTemplateDescr ) {
+    private void addFactTemplate(final PackageDescr pkgDescr,
+                                  final FactTemplateDescr factTemplateDescr) {
         final List fields = new ArrayList();
         int index = 0;
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
@@ -1302,7 +1306,7 @@ public class PackageBuilder {
                                                                 (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
-    private void addRule( final RuleDescr ruleDescr ) {
+    private void addRule(final RuleDescr ruleDescr) {
         ruleDescr.setResource( resource );
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
@@ -1391,7 +1395,7 @@ public class PackageBuilder {
         return this.configuration;
     }
 
-    public PackageRegistry getPackageRegistry( String name ) {
+    public PackageRegistry getPackageRegistry(String name) {
         return this.pkgRegistryMap.get( name );
     }
 
@@ -1417,7 +1421,7 @@ public class PackageBuilder {
         return expander;
     }
 
-    public Map<String, Class<?>> getGlobals() {
+    public Map<String, Class< ? >> getGlobals() {
         return this.globals;
     }
 
@@ -1492,7 +1496,7 @@ public class PackageBuilder {
             return this.inError;
         }
 
-        public void addError( final CompilationProblem err ) {
+        public void addError(final CompilationProblem err) {
             this.errors.add( err );
             this.inError = true;
         }
@@ -1630,7 +1634,7 @@ public class PackageBuilder {
         }
     }
 
-    private String ucFirst( final String name ) {
+    private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 

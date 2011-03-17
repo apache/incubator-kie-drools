@@ -1,5 +1,6 @@
 package org.drools.reteoo;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import org.junit.After;
@@ -56,13 +57,18 @@ public class ReteooBuilderPerformanceTest {
 
     private static Package generatePackage(int ruleCount) throws DroolsParserException {
         StringReader    reader  = new StringReader(generateRules(ruleCount));
-
-        System.out.println("Parsing rules");
-        PackageDescr pkgDescr = new DrlParser().parse(reader);
-
+        
         System.out.println("Generating packages");
-        PackageBuilder pkgBuilder = new PackageBuilder(new PackageBuilderConfiguration());
-        pkgBuilder.addPackage(pkgDescr);
+        PackageBuilder pkgBuilder = new PackageBuilder();
+        try {
+            pkgBuilder.addPackageFromDrl( reader );
+        } catch ( IOException e ) { 
+            fail( "Unable to parse rules\n" + e.getMessage());
+        }
+
+        if ( pkgBuilder.hasErrors() ) {
+            fail( pkgBuilder.getErrors().toString() );
+        }
 
         return pkgBuilder.getPackage();
     }

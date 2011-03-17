@@ -189,7 +189,7 @@ public class LargeRuleBase {
                 + status + " ) \n "
                 + " 		cheeses : List() from cheesery.getCheeses() \n "
                 + "		Person( age < ( $age1 ) ) \n "
-                + "		Person( $age2 : age -> ( $age1 == $age2 ) ) \n "
+                + "		Person( $age2 : age, eval( $age1 == $age2 ) ) \n "
                 + "		eval( $age1 == $age2 ) \n " + "   then \n "
                 + "		list.add( $person ); \n "
                 + "		$person.setStatus(\"match Person ok\"); \n " + " end \n";
