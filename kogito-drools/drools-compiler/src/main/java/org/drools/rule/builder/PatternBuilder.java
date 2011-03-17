@@ -161,8 +161,8 @@ public class PatternBuilder
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
-                final boolean isEvent = context.getPkg().isEvent( userProvidedClass );
+                final Class<?> userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
+                final boolean isEvent = context.getPackageBuilder().getPackageRegistry( userProvidedClass.getPackage().getName() ).getPackage().isEvent( userProvidedClass );
                 objectType = new ClassObjectType( userProvidedClass,
                                                   isEvent );
             } catch ( final ClassNotFoundException e ) {

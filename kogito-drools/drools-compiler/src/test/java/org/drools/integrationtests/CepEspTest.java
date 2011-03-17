@@ -164,6 +164,9 @@ public class CepEspTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
                       ResourceType.DRL );
+        
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -226,6 +229,7 @@ public class CepEspTest {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testPackageSerializationWithEvents() throws Exception {
         // read in the source
@@ -235,24 +239,16 @@ public class CepEspTest {
 
         // get the package
         Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1,
+        assertEquals( 2,
                       pkgs.size() );
-        KnowledgePackage kpkg = pkgs.iterator().next();
 
         // serialize the package
-        Package internalPkg = ((KnowledgePackageImp) kpkg).pkg; // nasty trick for test purposes
-        byte[] serializedPkg = DroolsStreamUtils.streamOut( internalPkg );
-
-        // recreate the pkg using a new kbuilder
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder2.add( ResourceFactory.newByteArrayResource( serializedPkg ),
-                       ResourceType.PKG );
-        assertFalse( kbuilder2.getErrors().toString(),
-                     kbuilder2.hasErrors() );
+        byte[] serializedPkg = DroolsStreamUtils.streamOut( pkgs );
+        pkgs = (Collection<KnowledgePackage>) DroolsStreamUtils.streamIn( serializedPkg );
 
         // create the kbase
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+        kbase.addKnowledgePackages( pkgs );
 
         // create the session
         KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
