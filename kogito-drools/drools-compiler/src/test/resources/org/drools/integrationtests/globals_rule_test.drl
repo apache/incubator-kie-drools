@@ -8,7 +8,7 @@ global java.lang.String string
 
 rule "global rule test"
     when
-        Cheese( $type : type ->  ( $type.equals( string ) ), type == ( string ), type == string )
+        Cheese( $type : type, eval  ( $type.equals( string ) ), type == ( string ), type == string )
         eval( string.equals( "stilton" ) )
         eval( $type.equals( string ) )
     then

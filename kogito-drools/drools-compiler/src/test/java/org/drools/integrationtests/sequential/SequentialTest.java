@@ -291,7 +291,7 @@ public class SequentialTest {
         assertEquals( person, list.get( 6 ));
     }
 
-    @Test @Ignore
+    @Test
     public void testProfileSequential() throws Exception {
 
         runTestProfileManyRulesAndFacts( true,
@@ -305,7 +305,7 @@ public class SequentialTest {
         Thread.sleep( 100 );
     }
 
-    @Test @Ignore
+    @Test
     public void testProfileRETE() throws Exception {
         runTestProfileManyRulesAndFacts( false,
                                          "Normal RETE mode",
@@ -335,7 +335,7 @@ public class SequentialTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testPerfJDT() throws Exception {
         runTestProfileManyRulesAndFacts( true,
                                          "JDT",
@@ -343,7 +343,7 @@ public class SequentialTest {
         
     }
 
-    @Test @Ignore
+    @Test
     public void testPerfMVEL() throws Exception {
         runTestProfileManyRulesAndFacts( true,
                                          "MVEL",
@@ -360,6 +360,9 @@ public class SequentialTest {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( file ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         Properties properties = new Properties();

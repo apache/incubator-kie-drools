@@ -139,6 +139,9 @@ public class ExecutionFlowControlTest {
     public void testNoLoop() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "no-loop.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
