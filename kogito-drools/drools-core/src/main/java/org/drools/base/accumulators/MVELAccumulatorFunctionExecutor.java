@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.WorkingMemory;
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalFactHandle;
