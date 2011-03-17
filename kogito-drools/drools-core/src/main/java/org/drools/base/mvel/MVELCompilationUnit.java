@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.RuntimeDroolsException;
@@ -45,9 +46,14 @@ import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.UnresolveablePropertyException;
+import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.BaseVariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
+import org.mvel2.integration.impl.IndexVariableResolver;
 import org.mvel2.integration.impl.IndexedVariableResolverFactory;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 public class MVELCompilationUnit
     implements
@@ -383,26 +389,39 @@ public class MVELCompilationUnit
         return factory;
     }
     
-    public static class DroolsMVELIndexedFactory extends IndexedVariableResolverFactory {
+    public static class DroolsMVELIndexedFactory extends BaseVariableResolverFactory {
         
         private KnowledgeHelper knowledgeHelper;
         
         private int otherVarsPos;
         private int otherVarsLength;
+        
+        private Object[] values;
 
         public DroolsMVELIndexedFactory(String[] varNames,
                                          Object[] values) {
-            super( varNames,
-                   values );
+            this.indexedVariableNames = varNames;
+            this.values = values;
+            this.indexedVariableResolvers = createResolvers(values);
         }
         
         public DroolsMVELIndexedFactory(String[] varNames,
                                         Object[] values,
-                                         VariableResolverFactory factory) {
-            super( varNames,
-                   values,
-                   factory );
+                                        VariableResolverFactory factory) {
+            this.indexedVariableNames = varNames;
+            this.values = values;
+            this.nextFactory = new MapVariableResolverFactory();
+            this.nextFactory.setNextFactory(factory);
+            this.indexedVariableResolvers = createResolvers(values);
         }
+        
+        private static VariableResolver[] createResolvers(Object[] values) {
+            VariableResolver[] vr = new VariableResolver[values.length];
+            for (int i = 0; i < values.length; i++) {
+                vr[i] = new IndexVariableResolver(i, values);
+            }
+            return vr;
+        }        
 
         public KnowledgeHelper getKnowledgeHelper() {
             return knowledgeHelper;
@@ -427,6 +446,93 @@ public class MVELCompilationUnit
         public void setOtherVarsLength(int otherVarsLength) {
             this.otherVarsLength = otherVarsLength;
         }
+        
+        public VariableResolver createIndexedVariable(int index, String name, Object value) {
+            indexedVariableResolvers[index].setValue( value );
+            return indexedVariableResolvers[index];
+        }
+
+        public VariableResolver getIndexedVariableResolver(int index) {
+            return indexedVariableResolvers[index];
+        }
+
+        public VariableResolver createVariable(String name, Object value) {
+            VariableResolver vr = getResolver( name );
+            if ( vr != null ) {
+                vr.setValue( value );
+                return vr;
+            } else {
+                if (nextFactory == null) nextFactory = new MapVariableResolverFactory(new HashMap());
+                return nextFactory.createVariable(name, value);
+            }
+        }
+
+        public VariableResolver createVariable(String name, Object value, Class<?> type) {
+            VariableResolver vr = getResolver( name );
+            if ( vr != null ) {
+                if ( vr.getType() != null ) {
+                    throw new RuntimeException("variable already defined within scope: " + vr.getType() + " " + name);
+                } else {
+                    vr.setValue( value );
+                    return vr;
+                }
+            } else {
+                if (nextFactory == null) nextFactory = new MapVariableResolverFactory(new HashMap());
+                return nextFactory.createVariable(name, value, type);
+            }
+        }
+
+        public VariableResolver getVariableResolver(String name) {
+            VariableResolver vr = getResolver(name);
+            if (vr != null) return vr;
+            else if (nextFactory != null) {
+                return nextFactory.getVariableResolver(name);
+            }
+
+            throw new UnresolveablePropertyException("unable to resolve variable '" + name + "'");
+        }
+
+        public boolean isResolveable(String name) {
+            return isTarget(name) || (nextFactory != null && nextFactory.isResolveable(name));
+        }
+
+        protected VariableResolver addResolver(String name, VariableResolver vr) {
+            variableResolvers.put(name, vr);
+            return vr;
+        }
+
+        private VariableResolver getResolver(String name) {
+            for (int i = 0; i < indexedVariableNames.length; i++) {
+                if (indexedVariableNames[i].equals(name)) {
+                    return indexedVariableResolvers[i];
+                }
+            }
+            return null;
+        }
+
+        public boolean isTarget(String name) {
+            for (String indexedVariableName : indexedVariableNames) {
+                if (indexedVariableName.equals(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public Set<String> getKnownVariables() {
+
+            return new HashSet<String>(0);
+        }
+
+        public void clear() {
+            // variableResolvers.clear();
+
+        }
+
+        @Override
+        public boolean isIndexedFactory() {
+            return true;
+        }        
     }
     
     private static InternalFactHandle getFactHandle(Declaration declaration, InternalFactHandle[] handles) {
