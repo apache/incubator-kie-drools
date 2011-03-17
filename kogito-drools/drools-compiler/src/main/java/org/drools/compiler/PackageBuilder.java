@@ -50,6 +50,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.xml.XmlPackageReader;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.StringUtils;
 import org.drools.definition.process.Process;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
@@ -1008,7 +1009,7 @@ public class PackageBuilder {
                 // check imports
                 try {
                     Class cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
-                    namespace = cls.getPackage().getName();
+                    namespace = getPackage( cls );
                 } catch ( ClassNotFoundException e ) {
                     // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
                     namespace = packageDescr.getNamespace(); // set the default namespace
@@ -1035,13 +1036,13 @@ public class PackageBuilder {
 
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
-            String role = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            String role = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
             }      
             
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
-            String typesafe = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            String typesafe = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
             if ( typesafe != null ) {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
             }             
@@ -1072,21 +1073,22 @@ public class PackageBuilder {
 
             // is it a POJO or a template?
             annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
-            String templateName = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            String templateName = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
                 if ( template != null ) {
                     type.setTypeTemplate( template );
                 } else {
-                    this.results.add( new TypeDeclarationError( "Template not found '" + template + "' for type '" + type.getTypeName() + "'",
+                    this.results.add( new TypeDeclarationError( "Template not found for TypeDeclaration '" + template + "' for type '" + type.getTypeName() + "'",
                                                                 typeDescr.getLine() ) );
                     continue;
                 }
             } else {
-                annotationDescr =  typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
-                String className = ( annotationDescr != null ) ? annotationDescr.getText() : null;
-                if ( className == null ) {
+                annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
+                String className  = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
+
+                if ( StringUtils.isEmpty( className ) ) {
                     className = type.getTypeName();
                 }
                 type.setFormat( TypeDeclaration.Format.POJO );
@@ -1105,21 +1107,21 @@ public class PackageBuilder {
                             buildFieldAccessors( type,
                                                  pkgRegistry );
                         } catch ( Exception e ) {
-                            this.results.add( new TypeDeclarationError( "Error creating field accessors for '" + className + "' for type '" + type.getTypeName() + "'",
+                            this.results.add( new TypeDeclarationError( "Error creating field accessors for TypeDeclaration '" + className + "' for type '" + type.getTypeName() + "'",
                                                                         typeDescr.getLine() ) );
                             continue;
                         }
                     }
                 } catch ( final ClassNotFoundException e ) {
 
-                    this.results.add( new TypeDeclarationError( "Class not found '" + className + "' for type '" + type.getTypeName() + "'",
+                    this.results.add( new TypeDeclarationError( "Class not found TypeDeclaration'" + className + "' for type '" + type.getTypeName() + "'",
                                                                 typeDescr.getLine() ) );
                     continue;
                 }
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-            String timestamp = ( annotationDescr != null ) ? annotationDescr.getText() : null;
+            String timestamp = ( annotationDescr != null ) ? annotationDescr.getValue() : null;
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1130,7 +1132,7 @@ public class PackageBuilder {
             }
             
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
-            String duration = ( annotationDescr != null ) ? annotationDescr.getText() : null;            
+            String duration = ( annotationDescr != null ) ? annotationDescr.getValue() : null;            
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1141,7 +1143,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
-            String expiration = ( annotationDescr != null ) ? annotationDescr.getText() : null;             
+            String expiration = ( annotationDescr != null ) ? annotationDescr.getValue() : null;             
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();

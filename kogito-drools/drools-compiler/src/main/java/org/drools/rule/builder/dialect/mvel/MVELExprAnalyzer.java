@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.runtime.rule.RuleContext;
@@ -98,8 +99,18 @@ public class MVELExprAnalyzer {
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
-            Class returnType  = MVEL.analyze( expr,
-                                              parserContext1 );
+            Class returnType  = null;
+            
+            try {
+                returnType =  MVEL.analyze( expr,
+                                            parserContext1 );
+            } catch ( Exception e) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              null,
+                                                              null,
+                                                              "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+                return null;
+            }            
 
             Set<String> requiredInputs = new HashSet(); 
             requiredInputs.addAll( parserContext1.getInputs().keySet() );
@@ -164,8 +175,16 @@ public class MVELExprAnalyzer {
                     parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
                 }
     
-                returnType =  MVEL.analyze( expr,
-                                            parserContext2 );
+                try {
+                    returnType =  MVEL.analyze( expr,
+                                                parserContext2 );
+                } catch ( Exception e) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  null,
+                                                                  null,
+                                                                  "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+                    return null;
+                }   
                 
                 requiredInputs = new HashSet();
                 requiredInputs.addAll( parserContext2.getInputs().keySet() );
