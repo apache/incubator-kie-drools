@@ -471,6 +471,16 @@ public class PatternBuilder
                                                                          fieldName,
                                                                          null,
                                                                          false );
+            
+            if ( extractor == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              d,
+                                                              null,
+                                                              "Unable to build constraint as  '" + fieldName + "' is invalid" ) );
+                continue;                
+            }
+            
+            
             String operator = relDescr.getOperator().trim();
             // extractor the operator and determine if it's negated or not
             boolean negatedOperator = operator.startsWith( "not " );

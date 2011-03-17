@@ -930,7 +930,7 @@ public class PackageBuilder {
         
         PackageRegistry pkgReg = null;
         if ( tdecl == null ) {
-            pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+            pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
             if ( pkgReg != null ) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
@@ -944,7 +944,7 @@ public class PackageBuilder {
             }
             tdecl = this.builtinTypes.get( ( cls.getName() ) );
             if ( tdecl == null ) {
-                pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
                 if ( pkgReg != null ) {
                     tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                 }
@@ -955,7 +955,7 @@ public class PackageBuilder {
             Class[] intfs = originalCls.getInterfaces();
             for ( Class intf : intfs ) {
                 cls = intf;
-                pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
                 if ( pkgReg != null ) {
                     tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                 }
@@ -966,7 +966,7 @@ public class PackageBuilder {
                     }
                     tdecl = this.builtinTypes.get( ( cls.getName() ) );
                     if ( tdecl == null ) {
-                        pkgReg = this.pkgRegistryMap.get( cls.getPackage().getName() );
+                        pkgReg = this.pkgRegistryMap.get( getPackage( cls ) );
                         if ( pkgReg != null ) {
                             tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
                         }
@@ -976,6 +976,17 @@ public class PackageBuilder {
         }
 
         return tdecl;
+    }
+    
+    private String getPackage(Class cls) {
+        // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
+        java.lang.Package pkg = cls.getPackage();
+        if ( pkg == null ) {
+            int dotPos = cls.getName().lastIndexOf( '.' );
+            return cls.getName().substring( 0, dotPos - 1);
+        } else {
+            return pkg.getName();
+        }
     }
     
     /**

@@ -39,7 +39,7 @@ public class MVELSalienceBuilder
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
             for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
-                previousDeclarations[i] = decls.get( id );
+                previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
             

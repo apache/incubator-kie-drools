@@ -49,7 +49,7 @@ public class MVELEnabledBuilder
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
             for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
-                previousDeclarations[i] = declrs.get( id );
+                previousDeclarations[i++] = declrs.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  );            
 

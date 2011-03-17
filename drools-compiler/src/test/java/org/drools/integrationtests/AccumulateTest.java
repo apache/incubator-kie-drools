@@ -68,8 +68,7 @@ public class AccumulateTest {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            System.out.println( parser.getErrors() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors());
         }
         // pre build the package
         JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
@@ -77,6 +76,9 @@ public class AccumulateTest {
         jconf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackage( packageDescr );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         // add the package to a rulebase
