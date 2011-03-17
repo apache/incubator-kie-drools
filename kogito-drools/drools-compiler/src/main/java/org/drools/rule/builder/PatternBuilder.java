@@ -18,7 +18,6 @@ package org.drools.rule.builder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,10 +32,6 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.base.extractors.BaseObjectClassFieldReader;
-import org.drools.base.field.ObjectFieldImpl;
-import org.drools.base.mvel.MVELReturnValueExpression;
-import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
@@ -44,48 +39,34 @@ import org.drools.compiler.Dialect;
 import org.drools.compiler.DrlExprParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageRegistry;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.MVELDumper;
-import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RelationalExprDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.SlidingWindowDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.AbstractCompositeConstraint;
-import org.drools.rule.AbstractCompositeRestriction;
-import org.drools.rule.AndCompositeRestriction;
-import org.drools.rule.AndConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
-import org.drools.rule.MultiRestrictionFieldConstraint;
 import org.drools.rule.MutableTypeConstraint;
-import org.drools.rule.OrCompositeRestriction;
-import org.drools.rule.OrConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.Query;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
@@ -96,7 +77,6 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.rule.builder.dialect.mvel.MVELReturnValueBuilder;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
@@ -109,8 +89,6 @@ import org.drools.spi.Restriction;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.PropertyAccessor;
-import org.mvel2.compiler.ExpressionCompiler;
 import org.mvel2.util.PropertyTools;
 
 /**
@@ -161,8 +139,10 @@ public class PatternBuilder
             objectType = new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class<?> userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
-                final boolean isEvent = context.getPackageBuilder().getPackageRegistry( userProvidedClass.getPackage().getName() ).getPackage().isEvent( userProvidedClass );
+                final Class< ? > userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
+                PackageRegistry pkgr = context.getPackageBuilder().getPackageRegistry( ClassUtils.getPackage( userProvidedClass ) );
+                org.drools.rule.Package pkg = pkgr == null ? context.getPkg() : pkgr.getPackage();
+                final boolean isEvent = pkg.isEvent( userProvidedClass );
                 objectType = new ClassObjectType( userProvidedClass,
                                                   isEvent );
             } catch ( final ClassNotFoundException e ) {
@@ -215,9 +195,9 @@ public class PatternBuilder
 
         if ( duplicateBindings ) {
             // rewrite existing bindings into == constraints, so it unifies
-            build(context, 
-                  pattern, 
-                  new ExprConstraintDescr("this == " + patternDescr.getIdentifier() ));            
+            build( context,
+                   pattern,
+                   new ExprConstraintDescr( "this == " + patternDescr.getIdentifier() ) );
         }
 
         if ( objectType instanceof ClassObjectType ) {
@@ -228,11 +208,11 @@ public class PatternBuilder
 
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
         context.getBuildStack().push( pattern );
-        
+
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
-            Class cls = ((ClassObjectType)pattern.getObjectType()).getClassType();
+            Class cls = ((ClassObjectType) pattern.getObjectType()).getClassType();
             TypeDeclaration typeDeclr = context.getPackageBuilder().getTypeDeclaration( cls );
-            if  ( typeDeclr != null ) {
+            if ( typeDeclr != null ) {
                 context.setTypesafe( typeDeclr.isTypesafe() );
             }
         }
@@ -257,9 +237,9 @@ public class PatternBuilder
                 if ( expression.equals( left ) ) {
                     // it is just a bind, so build it
                     buildRuleBindings( context,
-                           pattern,
-                           b,
-                           null ); // null containers get added to the pattern
+                                       pattern,
+                                       b,
+                                       null ); // null containers get added to the pattern
                 } else {
                     // it is both a binding and a constraint
                     b.setExpression( left );
@@ -270,9 +250,9 @@ public class PatternBuilder
                     b.setExpression( expression );
 
                     // needs to build the actual constraints as well
-                    build(context,
-                          pattern,
-                          new ExprConstraintDescr( b.getExpression() ));
+                    build( context,
+                           pattern,
+                           new ExprConstraintDescr( b.getExpression() ) );
                 }
 
             } else {
@@ -284,9 +264,9 @@ public class PatternBuilder
         }
 
         for ( BaseDescr b : patternDescr.getDescrs() ) {
-            build(context,
-                  pattern,
-                 (ExprConstraintDescr) b);
+            build( context,
+                   pattern,
+                   (ExprConstraintDescr) b );
         }
 
         if ( patternDescr.getSource() != null ) {
@@ -301,13 +281,11 @@ public class PatternBuilder
 
         for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
             if ( pattern.getObjectType().isEvent() ) {
-                if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getType() ) ) {
-                    SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
-                    SlidingTimeWindow window = new SlidingTimeWindow( swd.getLength() );
+                if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+                    SlidingTimeWindow window = new SlidingTimeWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
                     pattern.addBehavior( window );
-                } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getType() ) ) {
-                    SlidingWindowDescr swd = (SlidingWindowDescr) behaviorDescr;
-                    SlidingLengthWindow window = new SlidingLengthWindow( (int) swd.getLength() );
+                } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
+                    SlidingLengthWindow window = new SlidingLengthWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
                     pattern.addBehavior( window );
                 }
             } else {
@@ -340,78 +318,78 @@ public class PatternBuilder
             }
             return;
         }
-        
+
         for ( Iterator<BaseDescr> it = result.getDescrs().iterator(); it.hasNext(); ) {
             BaseDescr d = it.next();
-        
-            boolean simple = false;  
+
+            boolean simple = false;
             String expr = null;
             RelationalExprDescr relDescr = null;
-            if ( d instanceof AtomicExprDescr ) {  
-                expr = ((AtomicExprDescr)d).getExpression();
+            if ( d instanceof AtomicExprDescr ) {
+                expr = ((AtomicExprDescr) d).getExpression();
             } else {
-                if( d instanceof RelationalExprDescr ) {
+                if ( d instanceof RelationalExprDescr ) {
                     relDescr = (RelationalExprDescr) d;
-                    if (  relDescr.getLeft() instanceof AtomicExprDescr &&
+                    if ( relDescr.getLeft() instanceof AtomicExprDescr &&
                           relDescr.getRight() instanceof AtomicExprDescr ) {
-                          simple = true;
+                        simple = true;
                     }
                 }
                 StringBuilder sbuilder = new StringBuilder();
                 renderConstraint( sbuilder,
                                   d,
                                   0 ); // root, so no priority at all    
-                expr = sbuilder.toString().trim();                
-            }            
-            
+                expr = sbuilder.toString().trim();
+            }
+
             if ( expr.startsWith( "eval" ) ) {
                 // strip evals, as mvel won't understand those.
                 int startParen = expr.indexOf( '(' ) + 1;
                 int endParen = expr.lastIndexOf( ')' );
                 expr = expr.substring( startParen,
                                        endParen );
-                
+
                 // this will build the eval using the specified dialect
-                PredicateDescr pdescr = new PredicateDescr( expr );
-                buildEval( context,
-                       pattern,
-                       pdescr,
-                       null );  
-                continue;                
-            }                      
-                        
-            if ( !simple || !context.isTypesafe() ) {
-                Dialect dialect = context.getDialect();
-                MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-                context.setDialect( mvelDialect );
-                
                 PredicateDescr pdescr = new PredicateDescr( expr );
                 buildEval( context,
                            pattern,
                            pdescr,
                            null );
-                
+                continue;
+            }
+
+            if ( !simple || !context.isTypesafe() ) {
+                Dialect dialect = context.getDialect();
+                MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
+                context.setDialect( mvelDialect );
+
+                PredicateDescr pdescr = new PredicateDescr( expr );
+                buildEval( context,
+                           pattern,
+                           pdescr,
+                           null );
+
                 // fall back to original dialect
                 context.setDialect( dialect );
                 continue;
             }
-            
-            if ( !(d instanceof RelationalExprDescr ) ) {
-                throw new RuntimeException("What caused this?: " + d);
-            }                        
-            
+
+            if ( !(d instanceof RelationalExprDescr) ) {
+                throw new RuntimeException( "What caused this?: " + d );
+            }
+
             RelationalExprDescr exprDescr = (RelationalExprDescr) d;
-            
+
             AtomicExprDescr rdescr = ((AtomicExprDescr) exprDescr.getRight());
             String fieldName = ((AtomicExprDescr) exprDescr.getLeft()).getExpression();
             String value = rdescr.getExpression().trim();
-            
-            ExprBindings rightExpr = new ExprBindings( );            
+
+            ExprBindings rightExpr = new ExprBindings();
             setInputs( context,
                        rightExpr,
-                       (pattern.getObjectType() instanceof ClassObjectType) ?  ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
-                       value ); 
-            
+                       (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
+                       value );
+
             String[] parts = fieldName.split( "\\." );
             if ( parts.length == 2 ) {
                 if ( "this".equals( parts[0].trim() ) ) {
@@ -420,48 +398,47 @@ public class PatternBuilder
                         Dialect dialect = context.getDialect();
                         MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                         context.setDialect( mvelDialect );
-                        
+
                         PredicateDescr pdescr = new PredicateDescr( expr );
                         buildEval( context,
                                    pattern,
                                    pdescr,
                                    null );
-                        
+
                         // fall back to original dialect
                         context.setDialect( dialect );
-                        continue;                       
+                        continue;
                     } else {
                         // it's a redundant this so trim
                         fieldName = parts[1];
                     }
-                } else if (  pattern.getDeclaration() != null && parts[0].trim().equals( pattern.getDeclaration().getIdentifier() ) ) {
+                } else if ( pattern.getDeclaration() != null && parts[0].trim().equals( pattern.getDeclaration().getIdentifier() ) ) {
                     // it's a redundant declaration so trim
                     fieldName = parts[1];
                 }
             }
-                                   
-            
-            if ( fieldName.indexOf( '.' ) >= 0 ||  fieldName.indexOf( '[' ) >= 0 || fieldName.indexOf( '(' ) >= 0 ) {
+
+            if ( fieldName.indexOf( '.' ) >= 0 || fieldName.indexOf( '[' ) >= 0 || fieldName.indexOf( '(' ) >= 0 ) {
                 // if left has any inputs then we need to rewrite to eval
-                ExprBindings leftExpr = new ExprBindings(  );            
+                ExprBindings leftExpr = new ExprBindings();
                 setInputs( context,
                            leftExpr,
                            ((ClassObjectType) ((Pattern) context.getBuildStack().peek()).getObjectType()).getClassType(),
-                           fieldName );   
-                if ( !leftExpr.getRuleBindings().isEmpty()) {
+                           fieldName );
+                if ( !leftExpr.getRuleBindings().isEmpty() ) {
                     Dialect dialect = context.getDialect();
                     MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                     context.setDialect( mvelDialect );
-                    
+
                     PredicateDescr pdescr = new PredicateDescr( expr );
                     buildEval( context,
                                pattern,
                                pdescr,
                                null );
-                    
+
                     // fall back to original dialect
                     context.setDialect( dialect );
-                    continue;                  
+                    continue;
                 }
             }
 
@@ -471,28 +448,31 @@ public class PatternBuilder
                                                                          fieldName,
                                                                          null,
                                                                          false );
-            
+
             if ( extractor == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               d,
                                                               null,
                                                               "Unable to build constraint as  '" + fieldName + "' is invalid" ) );
-                continue;                
+                continue;
             }
-            
-            
+
             String operator = relDescr.getOperator().trim();
             // extractor the operator and determine if it's negated or not
             boolean negatedOperator = operator.startsWith( "not " );
             if ( negatedOperator ) {
                 operator = operator.substring( 4 );
             }
-            
+
             Restriction restriction = null;
             // is it a literal? Does not include enums
             if ( rdescr.isLiteral() ) {
-                restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, negatedOperator, value ) );
-            } else {            
+                restriction = buildLiteralRestriction( context,
+                                                       extractor,
+                                                       new LiteralRestrictionDescr( operator,
+                                                                                    negatedOperator,
+                                                                                    value ) );
+            } else {
                 // is it an enum?
                 int dotPos = value.indexOf( '.' );
                 if ( dotPos >= 0 ) {
@@ -502,17 +482,21 @@ public class PatternBuilder
                     try {
                         final Class cls = context.getDialect().getTypeResolver().resolveType( className );
                         if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
-                            restriction =  buildLiteralRestriction( context, extractor, new LiteralRestrictionDescr( operator, negatedOperator, value ) );
+                            restriction = buildLiteralRestriction( context,
+                                                                   extractor,
+                                                                   new LiteralRestrictionDescr( operator,
+                                                                                                negatedOperator,
+                                                                                                value ) );
                         }
                     } catch ( ClassNotFoundException e ) {
                         // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
-                    }                
+                    }
                 }
             }
-            
+
             if ( restriction != null ) {
                 pattern.addConstraint( new LiteralConstraint( extractor,
-                                       ( LiteralRestriction ) restriction ) );
+                                                              (LiteralRestriction) restriction ) );
                 continue;
             }
 
@@ -525,8 +509,8 @@ public class PatternBuilder
                     // trying to create implicit declaration
                     final Pattern thisPattern = (Pattern) context.getBuildStack().peek();
                     declr = this.createDeclarationObject( context,
-                                                         value,
-                                                         thisPattern );
+                                                          value,
+                                                          thisPattern );
                     if ( declr == null ) {
                         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                       d,
@@ -534,9 +518,9 @@ public class PatternBuilder
                                                                       "Unable to return Declaration for identifier '" + value + "'" ) );
                         continue;
                     }
-                }        
+                }
             }
-            
+
             if ( declr == null ) {
                 parts = value.split( "\\." );
                 if ( parts.length == 2 ) {
@@ -544,7 +528,7 @@ public class PatternBuilder
                         declr = this.createDeclarationObject( context,
                                                               parts[1].trim(),
                                                               (Pattern) context.getBuildStack().peek() );
-                        value = parts[1].trim();                        
+                        value = parts[1].trim();
                     } else {
                         declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                                  parts[0].trim() );
@@ -555,7 +539,7 @@ public class PatternBuilder
                                                                       parts[1].trim(),
                                                                       declr.getPattern() );
                                 value = parts[1].trim();
-    
+
                             } else {
                                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                               d,
@@ -567,7 +551,7 @@ public class PatternBuilder
                     }
                 }
             }
-            
+
             if ( declr != null ) {
                 Target right = getRightTarget( extractor );
                 Target left = (declr.isPatternDeclaration() && !(Date.class.isAssignableFrom( declr.getExtractor().getExtractToClass() ) || Number.class.isAssignableFrom( declr.getExtractor().getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
@@ -586,21 +570,21 @@ public class PatternBuilder
                 restriction = new VariableRestriction( extractor,
                                                        declr,
                                                        evaluator );
-                
+
                 if ( declr.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) ) {
                     // declaration is query argument, so allow for unification.
                     restriction = new UnificationRestriction( (VariableRestriction) restriction );
-                }                
+                }
             }
 
             if ( restriction == null ) {
                 Dialect dialect = context.getDialect();
-                if ( !value.startsWith( "(" )) {
+                if ( !value.startsWith( "(" ) ) {
                     // it's not a traditional return value, so override the dialect
                     MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                     context.setDialect( mvelDialect );
                 }
-                
+
                 // execute it as a return value
                 restriction = buildRestriction( context,
                                                 (Pattern) context.getBuildStack().peek(),
@@ -608,17 +592,18 @@ public class PatternBuilder
                                                 new ReturnValueRestrictionDescr( operator,
                                                                                  negatedOperator,
                                                                                  null,
-                                                                                 value ) );   
+                                                                                 value ) );
                 // fall back to original dialect
-                context.setDialect( dialect );               
-             
+                context.setDialect( dialect );
+
             }
-            
-            if( restriction == null || extractor == null ) {
+
+            if ( restriction == null || extractor == null ) {
                 // something failed and an error should already have been reported
                 return;
             }
-            pattern.addConstraint( new VariableConstraint( extractor, restriction ) );
+            pattern.addConstraint( new VariableConstraint( extractor,
+                                                           restriction ) );
         }
     }
 
@@ -660,10 +645,10 @@ public class PatternBuilder
         } else if ( d instanceof AtomicExprDescr ) {
             sbuilder.append( ((AtomicExprDescr) d).getExpression() );
         } else if ( d instanceof ConstraintConnectiveDescr ) {
-            ConstraintConnectiveDescr cc = (ConstraintConnectiveDescr) d; 
+            ConstraintConnectiveDescr cc = (ConstraintConnectiveDescr) d;
             boolean afterFirst = false;
-            boolean wrapParenthesis = parentPriority > cc.getConnective().getPrecedence(); 
-            if( wrapParenthesis ) {
+            boolean wrapParenthesis = parentPriority > cc.getConnective().getPrecedence();
+            if ( wrapParenthesis ) {
                 sbuilder.append( "( " );
             }
             for ( BaseDescr c : cc.getDescrs() ) {
@@ -678,7 +663,7 @@ public class PatternBuilder
                                   c,
                                   cc.getConnective().getPrecedence() );
             }
-            if( wrapParenthesis ) {
+            if ( wrapParenthesis ) {
                 sbuilder.append( " )" );
             }
         }
@@ -729,7 +714,7 @@ public class PatternBuilder
             this.globalBindings = new HashSet<String>();
             this.ruleBindings = new HashSet<String>();
         }
-        
+
         public Set<String> getGlobalBindings() {
             return globalBindings;
         }
@@ -739,7 +724,6 @@ public class PatternBuilder
         }
 
     }
-
 
     /**
      * @param pattern
@@ -760,8 +744,6 @@ public class PatternBuilder
         constraint.setType( type );
     }
 
-
-
     private void buildRuleBindings( final RuleBuildContext context,
                                     final Pattern pattern,
                                     final BindingDescr fieldBindingDescr,
@@ -770,9 +752,9 @@ public class PatternBuilder
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable() ) ) {
             // rewrite existing bindings into == constraints, so it unifies
-            build(context, 
-                  pattern, 
-                  new ExprConstraintDescr(fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() ));
+            build( context,
+                   pattern,
+                   new ExprConstraintDescr( fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() ) );
             return;
         }
 
@@ -917,14 +899,16 @@ public class PatternBuilder
      * @param identifier
      * @param pattern
      * @return
-     */    
+     */
     private Declaration createDeclarationObject( final RuleBuildContext context,
                                                  final String identifier,
                                                  final Pattern pattern ) {
-        return createDeclarationObject(context, identifier, identifier, pattern );
-        
+        return createDeclarationObject( context,
+                                        identifier,
+                                        identifier,
+                                        pattern );
+
     }
-    
 
     private Declaration createDeclarationObject( final RuleBuildContext context,
                                                  final String identifier,
@@ -933,11 +917,14 @@ public class PatternBuilder
         final BindingDescr implicitBinding = new BindingDescr( identifier,
                                                                expr );
 
-        final Declaration declaration = new Declaration( identifier, null, pattern, true );
-        
+        final Declaration declaration = new Declaration( identifier,
+                                                         null,
+                                                         pattern,
+                                                         true );
+
         InternalReadAccessor extractor = null;
-        if ( expr.indexOf( '.' ) >= 0 ||  expr.indexOf( '[' ) >= 0 || expr.indexOf( '(' ) >= 0 ) {
-            throw new RuntimeException("This shouldn't execute at the moment, it's stub code ready for mvel expr");
+        if ( expr.indexOf( '.' ) >= 0 || expr.indexOf( '[' ) >= 0 || expr.indexOf( '(' ) >= 0 ) {
+            throw new RuntimeException( "This shouldn't execute at the moment, it's stub code ready for mvel expr" );
             //new MVELClassFieldR
         } else {
             extractor = getFieldReadAccessor( context,
@@ -945,7 +932,7 @@ public class PatternBuilder
                                               pattern.getObjectType(),
                                               implicitBinding.getExpression(),
                                               declaration,
-                                              false );            
+                                              false );
         }
 
         if ( extractor == null ) {
@@ -953,9 +940,9 @@ public class PatternBuilder
         }
 
         declaration.setReadAccessor( extractor );
-        
+
         return declaration;
-    }   
+    }
 
     private LiteralRestriction buildLiteralRestriction( final RuleBuildContext context,
                                                         final InternalReadAccessor extractor,
@@ -968,10 +955,10 @@ public class PatternBuilder
             ParserConfiguration pconf = new ParserConfiguration();
             pconf.setImports( dialect.getImports() );
             pconf.setPackageImports( (HashSet) dialect.getPackgeImports() );
-            ParserContext pctx = new ParserContext(pconf);
-            
-            
-            field = FieldFactory.getFieldValue( MVEL.executeExpression( MVEL.compileExpression( value, pctx ) ),
+            ParserContext pctx = new ParserContext( pconf );
+
+            field = FieldFactory.getFieldValue( MVEL.executeExpression( MVEL.compileExpression( value,
+                                                                                                pctx ) ),
                                                 extractor.getValueType(),
                                                 context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
@@ -1003,7 +990,6 @@ public class PatternBuilder
                                        evaluator,
                                        extractor );
     }
-
 
     private Target getRightTarget( final InternalReadAccessor extractor ) {
         Target right = (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;

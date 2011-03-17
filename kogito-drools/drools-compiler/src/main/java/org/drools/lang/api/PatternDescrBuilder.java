@@ -42,5 +42,7 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?>>
     
     public SourceDescrBuilder<?> from();
     
+    public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
+
     public P end();
 }

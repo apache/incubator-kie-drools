@@ -63,6 +63,10 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
         return new SourceDescrBuilderImpl<PatternDescrBuilder<P>>( this );
     }
 
+    public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior() {
+        return new BehaviorDescrBuilderImpl<PatternDescrBuilder<P>>( this );
+    }
+
     public P end() {
         return parent;
     }

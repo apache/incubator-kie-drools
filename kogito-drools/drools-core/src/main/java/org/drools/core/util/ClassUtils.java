@@ -238,4 +238,22 @@ public final class ClassUtils {
             return !list.contains( name );
         }
     }
+
+    /**
+     * Extracts the package name from the given class object
+     * @param cls
+     * @return
+     */
+    public static String getPackage(Class<?> cls) {
+        // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
+        java.lang.Package pkg = cls.getPackage();
+        if ( pkg == null ) {
+            int dotPos = cls.getName().lastIndexOf( '.' );
+            return cls.getName().substring( 0,
+                                            dotPos - 1 );
+        } else {
+            return pkg.getName();
+        }
+    }
+    
 }
