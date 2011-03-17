@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
 import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.ast.ASTNode;
