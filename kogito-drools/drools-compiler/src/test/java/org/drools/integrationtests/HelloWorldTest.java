@@ -58,7 +58,6 @@ public class HelloWorldTest {
             public int onBreak(Frame frame) {
                 System.out.println("onBreak");
                 for (String var: frame.getFactory().getKnownVariables()) {
-                    System.out.println("  " + var);
                     knownVariables.add(var);
                 }
                 return 0;
@@ -80,7 +79,12 @@ public class HelloWorldTest {
         ksession.insert(message);
         ksession.fireAllRules();
         logger.close();
-        assertEquals( 2, knownVariables.size() );
+        assertEquals( 6, knownVariables.size() );
+        assertTrue(knownVariables.contains("drools"));
+        assertTrue(knownVariables.contains("myMessage"));
+        assertTrue(knownVariables.contains("rule"));
+        assertTrue(knownVariables.contains("kcontext"));
+        assertTrue(knownVariables.contains("this"));        
         assertTrue(knownVariables.contains("m"));
         assertTrue(knownVariables.contains("myMessage"));
     }
@@ -91,11 +95,8 @@ public class HelloWorldTest {
             ResourceFactory.newClassPathResource("Sample.drl", HelloWorldTest.class),
             ResourceType.DRL);
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
-            }
-            throw new IllegalArgumentException("Could not parse knowledge.");
+        if (kbuilder.hasErrors()) {
+           fail( kbuilder.getErrors().toString() );
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());

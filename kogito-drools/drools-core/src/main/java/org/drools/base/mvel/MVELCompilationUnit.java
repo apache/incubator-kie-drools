@@ -520,8 +520,11 @@ public class MVELCompilationUnit
         }
 
         public Set<String> getKnownVariables() {
-
-            return new HashSet<String>(0);
+            Set<String> vars = new HashSet<String>();
+            for (int i = 0; i < indexedVariableNames.length; i++) {
+                vars.add( indexedVariableNames[i]  );
+            }            
+            return vars;
         }
 
         public void clear() {

@@ -3060,7 +3060,7 @@ public class RuleParserTest extends TestCase {
                           descr.getAnnotation( "name2" ).getValue() );
         assertEquals( "10",
                           descr.getAnnotation( "name3" ).getValue( "k1" ) );
-        assertEquals( "a",
+        assertEquals( "\"a\"",
                       descr.getAnnotation( "name4" ).getValue( "k1" ) );
         assertEquals( "Math.max( 10 + 25, 22 ) % 2 + someVariable",
                       descr.getAnnotation( "name4" ).getValue( "formula" ) );
@@ -3152,7 +3152,7 @@ public class RuleParserTest extends TestCase {
                       type.getAnnotation( "role" ).getValue() );
         assertEquals( "\"Models a person\"",
                       type.getAnnotation( "doc" ).getValue( "descr" ) );
-        assertEquals( "Bob",
+        assertEquals( "\"Bob\"",
                       type.getAnnotation( "doc" ).getValue( "author" ) );
         assertEquals( "Calendar.getInstance().getDate()",
                       type.getAnnotation( "doc" ).getValue( "date" ) );

@@ -29,7 +29,9 @@ public class Java5Test extends DroolsTestCase {
         
         final PackageBuilder builder = new PackageBuilder( conf );
         builder.addPackageFromDrl( new InputStreamReader( this.getClass().getResourceAsStream( "java5_rule.drl" ) ) );
-        assertFalse( builder.hasErrors() );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
     }
 
     @Test
