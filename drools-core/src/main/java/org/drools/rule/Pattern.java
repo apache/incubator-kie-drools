@@ -226,17 +226,12 @@ public class Pattern
     }
 
     public Declaration addDeclaration(final String identifier) {
-        if ( this.constraints == Collections.EMPTY_LIST ) {
-            this.constraints = new ArrayList( 1 );
-        }
-
         Declaration declaration = this.declarations != null ? (Declaration) this.declarations.get( identifier ) : null;
         if ( declaration == null ) {
             declaration = new Declaration( identifier,
                                            null,
                                            this,                                           
                                            true );
-            this.constraints.add( declaration );
             if ( this.declarations == null ) {
                 this.declarations = new HashMap( 2 ); // default to avoid immediate resize
             }

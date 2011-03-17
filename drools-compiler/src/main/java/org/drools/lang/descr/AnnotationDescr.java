@@ -41,6 +41,10 @@ public class AnnotationDescr extends BaseDescr {
     public String getName() {
         return this.name;
     }
+    
+    public boolean hasValue() {
+        return !this.values.isEmpty();
+    }
 
     public String getValue() {
         return this.values.get( VALUE );

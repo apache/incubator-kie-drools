@@ -409,7 +409,7 @@ public class PatternBuilder
             ExprBindings rightExpr = new ExprBindings( );            
             setInputs( context,
                        rightExpr,
-                       ((ClassObjectType) pattern.getObjectType()).getClassType(),
+                       (pattern.getObjectType() instanceof ClassObjectType) ?  ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
                        value ); 
             
             String[] parts = fieldName.split( "\\." );

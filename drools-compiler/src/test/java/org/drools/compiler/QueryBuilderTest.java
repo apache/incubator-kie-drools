@@ -11,6 +11,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -123,10 +124,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$type" ) );
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint( new ExprConstraintDescr("type == $type") );
 
         // Another query, no parameters
         QueryDescr queryDescr2 = new QueryDescr( "query2" );

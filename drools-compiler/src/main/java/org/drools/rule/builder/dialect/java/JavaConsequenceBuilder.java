@@ -289,6 +289,11 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                                                        new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals() ),
                                                                                        analysis != null ?  analysis.getMvelVariables() : null );
 
+           if ( mvelAnalysis == null ) {
+               // something bad happened, issue already logged in errors
+               return false;
+           }
+           
            Class ret = mvelAnalysis.getReturnType();
 
            if ( ret == null ) {
