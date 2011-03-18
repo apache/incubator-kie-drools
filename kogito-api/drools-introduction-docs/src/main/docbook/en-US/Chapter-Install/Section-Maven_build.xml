@@ -9,48 +9,43 @@
   <section>
     <title>Building the Source</title>
 
-    <para>Now that we have the source the next step is to build and install
-    the source. Since version 3.1 Drools uses Maven 2 to build the system. There are two profiles
-    available which enable the associated modules "documentation" and
-    "Eclipse"; this enables quicker building of the core modules for
-    developers. The Eclipse profile will download Eclipse into the
-    drools-Eclipse folder, which is over 100MB download (It depends on your operating system), however this only
-    needs to be done once; if you wish you can move that Eclipse download into
-    another location and specify it with
-    -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror. The
-    following builds all the jars, the documentation and the Eclipse zip with
-    a local folder specified to avoid downloading Eclipse:</para>
+    <para>Now that we have the source the next step is to build and install the source. Since version 3.1 Drools uses
+    Maven 2 to build the system. There are two profiles available which enable the associated modules "documentation"
+    and "Eclipse"; this enables quicker building of the core modules for developers. The Eclipse profile will download
+    Eclipse into the drools-Eclipse folder, which is over 100MB download (It depends on your operating system), however
+    this only needs to be done once; if you wish you can move that Eclipse download into another location and specify it
+    with -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror. The following builds all the jars, the
+    documentation and the Eclipse zip with a local folder specified to avoid downloading Eclipse:</para>
 
     <programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror</programlisting>
 
-    <para>You can produce distribution builds, which puts everything into
-    zips, as follows:</para>
-<programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
+    <para>You can produce distribution builds, which puts everything into zips, as follows:</para>
+
+    <programlisting>mvn -Declipse -Ddocumentation clean install -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
 mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assembly -DlocalEclipseDrop=/folder/jboss-drools/local-Eclipse-drop-mirror
 </programlisting>
 
-    <para>Note that install must be done first as javadoc:javadoc won't work
-    unless the jars are in the local maven repo, but the tests can be skipped
-    on the second run. assembly:assembly fails unless you increase the
-    available memory to Maven, on windows the following command worked well:
-    set MAVEN_OPTS=-Xmx512m</para>
+    <para>Note that install must be done first as javadoc:javadoc won't work unless the jars are in the local maven
+    repo, but the tests can be skipped on the second run. assembly:assembly fails unless you increase the available
+    memory to Maven, on windows the following command worked well: set MAVEN_OPTS=-Xmx512m</para>
 
-    <para>Type <command>mvn clean</command> to clear old artifacts, and then test and built the
-    source, and report on any errors.</para>
+    <para>Type <command>mvn clean</command> to clear old artifacts, and then test and built the source, and report on
+    any errors.</para>
 
-    <para>The resulting jars are put in the /target directory from the top
-    level of the project.</para>
+    <para>The resulting jars are put in the <filename>/target</filename> directory from the top level of the
+    project.</para>
 
-    <para>As maven builds each module it will install the resulting jars in
-    the local Maven 2 repository automatically. Where it can be easily used
-    from other project <filename>pom.xml</filename> or copied else where.</para>
+    <para>As maven builds each module it will install the resulting jars in the local Maven 2 repository automatically.
+    Where it can be easily used from other project <filename>pom.xml</filename> or copied else where.</para>
 
     <screenshot>
-      <info>Installed Drools Jars</info>
+      <info>
+        Installed Drools Jars
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/mvn_install4.png" />
+          <imagedata fileref="images/Chapter-Install/mvn_install4.png"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -59,15 +54,13 @@ mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assem
   <section>
     <title>Building the Manual</title>
 
-  <para>
-    The building of the manual is now integrated into the maven build process, and is built by either using the profile (-Ddocumentation) switch or
-    cding into the main directory.
-  </para>
+    <para>The building of the manual is now integrated into the maven build process, and is built by either using the
+    profile (-Ddocumentation) switch or cding into the main directory.</para>
 
     <para>Drools uses <indexterm>
         <primary>docbook</primary>
-      </indexterm>Docbook for this manual. Maven is used to build documents and this build produces three different formats, 
-      all sharing the same images directory.</para>
+      </indexterm>Docbook for this manual. Maven is used to build documents and this build produces three different
+    formats, all sharing the same images directory.</para>
 
     <itemizedlist>
       <listitem>
@@ -81,8 +74,8 @@ mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assem
             <primary>html</primary>
           </indexterm>html</para>
 
-        <para>The manual is split into multiple documents and placed in a
-        frameset. The left frame provides navigation</para>
+        <para>The manual is split into multiple documents and placed in a frameset. The left frame provides
+        navigation</para>
       </listitem>
 
       <listitem>
@@ -92,10 +85,11 @@ mvn -Ddocumentation -Declipse -DskipTests package javadoc:javadoc assembly:assem
       </listitem>
     </itemizedlist>
 
-    <para>The manual can be generated from the project <filename>pom.xml</filename> by
-    calling <command>mvn package</command> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
-    Documentation is generated into each drools-docs subdirectory's <filename>target/</filename> directory. Running <command>mvn -Ddocumentation package assembly:assembly</command>
-    in the Drools project root generates and copies the documentation into a zip file. This zip file is located in the root folders <filename>target/</filename>
+    <para>The manual can be generated from the project <filename>pom.xml</filename> by calling <command>mvn
+    package</command> in the drools-docs directory or adding the -Ddocumentation switch when you build the sources.
+    Documentation is generated into each drools-docs subdirectory's <filename>target/</filename> directory. Running
+    <command>mvn -Ddocumentation package assembly:assembly</command> in the Drools project root generates and copies the
+    documentation into a zip file. This zip file is located in the root folders <filename>target/</filename>
     directory.</para>
 
     <programlisting>[trikkola@trikkola trunk]$ mvn -Ddocumentation clean package assembly:assembly
@@ -195,9 +189,8 @@ WAGON_VERSION: 1.0-beta-2
 [INFO] Finished at: Tue Apr 07 15:11:14 EEST 2009
 [INFO] Final Memory: 48M/178M
 [INFO] ------------------------------------------------------------------------&gt;</programlisting>
-    <para>The generated manual can be found in the
-    <filename>target/drools-docs-$VERSION.jar</filename> file, a compressed archive with all formats.</para>
 
+    <para>The generated manual can be found in the <filename>target/drools-docs-$VERSION.jar</filename> file, a
+    compressed archive with all formats.</para>
   </section>
-
 </section>
