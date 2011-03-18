@@ -24,13 +24,13 @@
     </listitem>
   </itemizedlist>
 
-To checkout Drools source code just execute the following command.
+   To checkout Drools source code just execute the following command. 
 
-<programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ trunk</programlisting>
+  <programlisting>fmeyer:~/jboss $ svn checkout http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/ trunk</programlisting>
 
-And wait to complete the files download.
+   And wait to complete the files download. 
 
-<programlisting>A    trunk/drools-repository
+  <programlisting>A    trunk/drools-repository
 A    trunk/drools-repository/.classpath
 A    trunk/drools-repository/.project
 A    trunk/drools-repository/doc
@@ -95,22 +95,29 @@ A    trunk/drools-examples/drools-expert-examples/build.xml
  U   trunk
 Checked out revision 13656.</programlisting>
 
+   
 
+  <para>Although, we highly recommend command line tools to work with repository you can also use both Eclipse's
+  integrated SVN client or TortoiseSVN</para>
 
-  <para>Although, we highly recommend command line tools to work with repository you can also use both Eclipse's integrated SVN client or TortoiseSVN</para> 
+   
 
-  <para>Setup TortoiseSVN to checkout from the subversion repository and click
-  <literal>OK</literal>. Once the checkout has finished you should see the
-  folders as shown below.</para>
+  <para>Setup TortoiseSVN to checkout from the subversion repository and click <literal>OK</literal>. Once the checkout
+  has finished you should see the folders as shown below.</para>
+
+   
 
   <screenshot>
     <info>Setup TortoiseSVN checkout</info>
+
     <mediaobject>
       <imageobject>
         <imagedata fileref="images/Chapter-Install/svn_checkout1.png" />
       </imageobject>
     </mediaobject>
   </screenshot>
+
+   
 
   <screenshot>
     <info>Finished Checkout</info>
@@ -122,6 +129,8 @@ Checked out revision 13656.</programlisting>
     </mediaobject>
   </screenshot>
 
+   
+
   <screenshot>
     <info>Checked out directories</info>
 
@@ -131,4 +140,6 @@ Checked out revision 13656.</programlisting>
       </imageobject>
     </mediaobject>
   </screenshot>
+
+   
 </section>

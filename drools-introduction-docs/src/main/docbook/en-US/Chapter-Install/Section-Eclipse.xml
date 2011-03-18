@@ -11,91 +11,105 @@
 
     <para>With the <indexterm>
         <primary>Eclipse</primary>
-      </indexterm>Eclipse project files generated they can now be imported
-    into Eclipse. When starting Eclipse open the workspace in the root of your
-    subversion checkout.</para>
+      </indexterm>Eclipse project files generated they can now be imported into Eclipse. When starting Eclipse open the
+    workspace in the root of your subversion checkout.</para>
 
     <screenshot>
-      <info>Open Eclipse Workspace</info>
+      <info>
+        Open Eclipse Workspace
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import1.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import1.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Select Import</info>
+      <info>
+        Select Import
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import2.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import2.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Import Existing Projects</info>
+      <info>
+        Import Existing Projects
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import3.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import3.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Select all ticked projects</info>
+      <info>
+        Select all ticked projects
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import4.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import4.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
-    <para>When calling <command>mvn install</command> all the project
-    dependencies were downloaded and added to the local Maven repository.
-    Eclipse cannot find those dependencies unless you tell it where that
-    repository is. To do this setup an M2_REPO classpath variable.</para>
+    <para>When calling <command>mvn install</command> all the project dependencies were downloaded and added to the
+    local Maven repository. Eclipse cannot find those dependencies unless you tell it where that repository is. To do
+    this setup an <literal>M2_REPO</literal> classpath variable.</para>
 
     <screenshot>
-      <info>Open the Preferences dialogue window</info>
+      <info>
+        Open the Preferences dialogue window
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import6.jpg" />
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-
-    <screenshot>
-      <info>Select New Classpath Variable</info>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import7.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import6.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>Set the M2_REPO location</info>
+      <info>
+        Select New Classpath Variable
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import8.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import7.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
 
     <screenshot>
-      <info>M2_REPO is now set</info>
+      <info>
+        Set the M2_REPO location
+      </info>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Install/eclipse_import9.jpg" />
+          <imagedata fileref="images/Chapter-Install/eclipse_import8.jpg"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+
+    <screenshot>
+      <info>
+        M2_REPO is now set
+      </info>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Install/eclipse_import9.jpg"></imagedata>
         </imageobject>
       </mediaobject>
     </screenshot>
