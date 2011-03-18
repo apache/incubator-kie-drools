@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import java.util.List;
+
 public class VariableRestrictionDescr extends EvaluatorBasedRestrictionDescr {
 
     private static final long serialVersionUID = 510l;
@@ -27,7 +29,7 @@ public class VariableRestrictionDescr extends EvaluatorBasedRestrictionDescr {
                                     final String identifier ) {
         super( evaluator,
                false,
-               null );
+               (List<String>)null );
         this.setText( identifier );
     }
 

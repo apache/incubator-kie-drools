@@ -17,6 +17,7 @@ package org.drools.lang.descr;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -41,7 +42,7 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
                                    final String text) {
         this( evaluator,
               false,
-              null,
+              (List<String>) null,
               text,
               TYPE_STRING );// default type is string if not specified
     }
@@ -51,7 +52,7 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
                                    final String text) {
         this( evaluator,
               isNegated,
-              null,
+              (List<String>) null,
               text,
               TYPE_STRING );// default type is string if not specified
     }
@@ -64,6 +65,18 @@ public class LiteralRestrictionDescr extends EvaluatorBasedRestrictionDescr {
         super( evaluator,
                isNegated,
                parameterText );
+        this.setText( text );
+        this.type = type;
+    }
+
+    public LiteralRestrictionDescr(final String evaluator,
+                                   final boolean isNegated,
+                                   final List<String> parameters,
+                                   final String text,
+                                   final int type) {
+        super( evaluator,
+               isNegated,
+               parameters );
         this.setText( text );
         this.type = type;
     }

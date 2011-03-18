@@ -18,6 +18,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.AttributeSupportBuilder;
+import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
@@ -668,6 +669,11 @@ public class ParserHelper {
                 builderContext.push( accumulate );
                 setStart( accumulate );
                 return (T) accumulate;
+            } else if ( BehaviorDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                BehaviorDescrBuilder< ? > behavior = ((PatternDescrBuilder< ? >) builderContext.peek()).behavior();
+                builderContext.push( behavior );
+                setStart( behavior );
+                return (T) behavior;
             }
         }
         return null;
@@ -681,7 +687,9 @@ public class ParserHelper {
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) || ForallDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) || 
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
