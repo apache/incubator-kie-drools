@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 14:05:07 src/main/resources/org/drools/semantics/java/parser/Java.g 2011-03-03 22:21:08
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g 2011-03-18 13:08:43
 
     package org.drools.rule.builder.dialect.java.parser;
 
@@ -9,123 +9,123 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class JavaLexer extends Lexer {
-    public static final int T__29=29;
-    public static final int T__28=28;
-    public static final int T__27=27;
-    public static final int T__26=26;
-    public static final int FloatTypeSuffix=15;
-    public static final int T__25=25;
-    public static final int OctalLiteral=10;
-    public static final int T__24=24;
     public static final int EOF=-1;
-    public static final int Identifier=4;
-    public static final int T__93=93;
-    public static final int T__94=94;
-    public static final int T__91=91;
-    public static final int T__92=92;
-    public static final int T__90=90;
-    public static final int COMMENT=22;
-    public static final int T__99=99;
-    public static final int T__98=98;
-    public static final int T__97=97;
-    public static final int T__96=96;
-    public static final int T__95=95;
-    public static final int T__80=80;
-    public static final int T__81=81;
-    public static final int T__82=82;
-    public static final int T__83=83;
-    public static final int LINE_COMMENT=23;
-    public static final int IntegerTypeSuffix=13;
-    public static final int T__85=85;
-    public static final int T__84=84;
-    public static final int T__87=87;
-    public static final int T__86=86;
-    public static final int T__89=89;
-    public static final int T__88=88;
-    public static final int T__71=71;
-    public static final int WS=21;
-    public static final int T__72=72;
-    public static final int T__70=70;
-    public static final int FloatingPointLiteral=6;
-    public static final int JavaIDDigit=20;
-    public static final int T__76=76;
-    public static final int T__75=75;
-    public static final int T__74=74;
-    public static final int Letter=19;
-    public static final int EscapeSequence=16;
-    public static final int T__73=73;
-    public static final int T__79=79;
-    public static final int T__78=78;
-    public static final int T__77=77;
-    public static final int T__68=68;
-    public static final int T__69=69;
-    public static final int T__66=66;
-    public static final int T__67=67;
-    public static final int T__64=64;
-    public static final int T__65=65;
-    public static final int T__62=62;
-    public static final int T__63=63;
-    public static final int T__118=118;
-    public static final int CharacterLiteral=7;
-    public static final int T__119=119;
-    public static final int T__116=116;
-    public static final int T__117=117;
-    public static final int T__114=114;
-    public static final int T__115=115;
-    public static final int Exponent=14;
-    public static final int T__61=61;
-    public static final int T__60=60;
-    public static final int HexDigit=12;
-    public static final int T__55=55;
-    public static final int T__56=56;
-    public static final int T__57=57;
-    public static final int T__58=58;
-    public static final int T__51=51;
-    public static final int T__52=52;
-    public static final int T__53=53;
-    public static final int T__54=54;
-    public static final int T__107=107;
-    public static final int T__108=108;
-    public static final int T__109=109;
-    public static final int T__59=59;
-    public static final int T__103=103;
-    public static final int T__104=104;
-    public static final int T__105=105;
-    public static final int T__106=106;
-    public static final int T__111=111;
-    public static final int T__110=110;
-    public static final int T__113=113;
-    public static final int T__112=112;
-    public static final int T__50=50;
-    public static final int T__42=42;
-    public static final int T__43=43;
-    public static final int HexLiteral=9;
-    public static final int T__40=40;
-    public static final int T__41=41;
-    public static final int T__46=46;
-    public static final int T__47=47;
-    public static final int T__44=44;
-    public static final int T__45=45;
-    public static final int T__48=48;
-    public static final int T__49=49;
-    public static final int T__102=102;
-    public static final int T__101=101;
-    public static final int T__100=100;
-    public static final int DecimalLiteral=11;
-    public static final int StringLiteral=8;
+    public static final int T__24=24;
+    public static final int T__25=25;
+    public static final int T__26=26;
+    public static final int T__27=27;
+    public static final int T__28=28;
+    public static final int T__29=29;
     public static final int T__30=30;
     public static final int T__31=31;
     public static final int T__32=32;
     public static final int T__33=33;
     public static final int T__34=34;
-    public static final int ENUM=5;
     public static final int T__35=35;
     public static final int T__36=36;
     public static final int T__37=37;
     public static final int T__38=38;
     public static final int T__39=39;
+    public static final int T__40=40;
+    public static final int T__41=41;
+    public static final int T__42=42;
+    public static final int T__43=43;
+    public static final int T__44=44;
+    public static final int T__45=45;
+    public static final int T__46=46;
+    public static final int T__47=47;
+    public static final int T__48=48;
+    public static final int T__49=49;
+    public static final int T__50=50;
+    public static final int T__51=51;
+    public static final int T__52=52;
+    public static final int T__53=53;
+    public static final int T__54=54;
+    public static final int T__55=55;
+    public static final int T__56=56;
+    public static final int T__57=57;
+    public static final int T__58=58;
+    public static final int T__59=59;
+    public static final int T__60=60;
+    public static final int T__61=61;
+    public static final int T__62=62;
+    public static final int T__63=63;
+    public static final int T__64=64;
+    public static final int T__65=65;
+    public static final int T__66=66;
+    public static final int T__67=67;
+    public static final int T__68=68;
+    public static final int T__69=69;
+    public static final int T__70=70;
+    public static final int T__71=71;
+    public static final int T__72=72;
+    public static final int T__73=73;
+    public static final int T__74=74;
+    public static final int T__75=75;
+    public static final int T__76=76;
+    public static final int T__77=77;
+    public static final int T__78=78;
+    public static final int T__79=79;
+    public static final int T__80=80;
+    public static final int T__81=81;
+    public static final int T__82=82;
+    public static final int T__83=83;
+    public static final int T__84=84;
+    public static final int T__85=85;
+    public static final int T__86=86;
+    public static final int T__87=87;
+    public static final int T__88=88;
+    public static final int T__89=89;
+    public static final int T__90=90;
+    public static final int T__91=91;
+    public static final int T__92=92;
+    public static final int T__93=93;
+    public static final int T__94=94;
+    public static final int T__95=95;
+    public static final int T__96=96;
+    public static final int T__97=97;
+    public static final int T__98=98;
+    public static final int T__99=99;
+    public static final int T__100=100;
+    public static final int T__101=101;
+    public static final int T__102=102;
+    public static final int T__103=103;
+    public static final int T__104=104;
+    public static final int T__105=105;
+    public static final int T__106=106;
+    public static final int T__107=107;
+    public static final int T__108=108;
+    public static final int T__109=109;
+    public static final int T__110=110;
+    public static final int T__111=111;
+    public static final int T__112=112;
+    public static final int T__113=113;
+    public static final int T__114=114;
+    public static final int T__115=115;
+    public static final int T__116=116;
+    public static final int T__117=117;
+    public static final int T__118=118;
+    public static final int T__119=119;
+    public static final int Identifier=4;
+    public static final int ENUM=5;
+    public static final int FloatingPointLiteral=6;
+    public static final int CharacterLiteral=7;
+    public static final int StringLiteral=8;
+    public static final int HexLiteral=9;
+    public static final int OctalLiteral=10;
+    public static final int DecimalLiteral=11;
+    public static final int HexDigit=12;
+    public static final int IntegerTypeSuffix=13;
+    public static final int Exponent=14;
+    public static final int FloatTypeSuffix=15;
+    public static final int EscapeSequence=16;
     public static final int UnicodeEscape=17;
     public static final int OctalEscape=18;
+    public static final int Letter=19;
+    public static final int JavaIDDigit=20;
+    public static final int WS=21;
+    public static final int COMMENT=22;
+    public static final int LINE_COMMENT=23;
 
         public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
         protected boolean enumIsKeyword = true;
@@ -142,15 +142,15 @@ public class JavaLexer extends Lexer {
         super(input,state);
 
     }
-    public String getGrammarFileName() { return "src/main/resources/org/drools/semantics/java/parser/Java.g"; }
+    public String getGrammarFileName() { return "C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g"; }
 
     // $ANTLR start "T__24"
     public final void mT__24() throws RecognitionException {
         try {
             int _type = T__24;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:11:7: ( 'package' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:11:9: 'package'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:11:7: ( 'package' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:11:9: 'package'
             {
             match("package"); 
 
@@ -170,8 +170,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__25;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:12:7: ( ';' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:12:9: ';'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:12:7: ( ';' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:12:9: ';'
             {
             match(';'); 
 
@@ -190,8 +190,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__26;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:13:7: ( 'import' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:13:9: 'import'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:13:7: ( 'import' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:13:9: 'import'
             {
             match("import"); 
 
@@ -211,8 +211,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__27;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:14:7: ( 'static' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:14:9: 'static'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:14:7: ( 'static' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:14:9: 'static'
             {
             match("static"); 
 
@@ -232,8 +232,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__28;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:15:7: ( '.' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:15:9: '.'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:15:7: ( '.' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:15:9: '.'
             {
             match('.'); 
 
@@ -252,8 +252,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__29;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:16:7: ( '*' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:16:9: '*'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:16:7: ( '*' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:16:9: '*'
             {
             match('*'); 
 
@@ -272,8 +272,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__30;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:17:7: ( 'class' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:17:9: 'class'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:17:7: ( 'class' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:17:9: 'class'
             {
             match("class"); 
 
@@ -293,8 +293,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__31;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:18:7: ( 'extends' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:18:9: 'extends'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:18:7: ( 'extends' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:18:9: 'extends'
             {
             match("extends"); 
 
@@ -314,8 +314,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__32;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:19:7: ( 'implements' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:19:9: 'implements'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:19:7: ( 'implements' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:19:9: 'implements'
             {
             match("implements"); 
 
@@ -335,8 +335,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__33;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:20:7: ( '<' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:20:9: '<'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:20:7: ( '<' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:20:9: '<'
             {
             match('<'); 
 
@@ -355,8 +355,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__34;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:21:7: ( ',' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:21:9: ','
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:21:7: ( ',' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:21:9: ','
             {
             match(','); 
 
@@ -375,8 +375,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__35;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:22:7: ( '>' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:22:9: '>'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:22:7: ( '>' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:22:9: '>'
             {
             match('>'); 
 
@@ -395,8 +395,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__36;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:23:7: ( '&' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:23:9: '&'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:23:7: ( '&' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:23:9: '&'
             {
             match('&'); 
 
@@ -415,8 +415,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__37;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:24:7: ( '{' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:24:9: '{'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:24:7: ( '{' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:24:9: '{'
             {
             match('{'); 
 
@@ -435,8 +435,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__38;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:25:7: ( '}' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:25:9: '}'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:25:7: ( '}' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:25:9: '}'
             {
             match('}'); 
 
@@ -455,8 +455,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__39;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:26:7: ( 'interface' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:26:9: 'interface'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:26:7: ( 'interface' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:26:9: 'interface'
             {
             match("interface"); 
 
@@ -476,8 +476,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__40;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:27:7: ( 'void' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:27:9: 'void'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:27:7: ( 'void' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:27:9: 'void'
             {
             match("void"); 
 
@@ -497,8 +497,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__41;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:28:7: ( '[' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:28:9: '['
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:28:7: ( '[' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:28:9: '['
             {
             match('['); 
 
@@ -517,8 +517,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__42;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:29:7: ( ']' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:29:9: ']'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:29:7: ( ']' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:29:9: ']'
             {
             match(']'); 
 
@@ -537,8 +537,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__43;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:30:7: ( 'throws' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:30:9: 'throws'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:30:7: ( 'throws' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:30:9: 'throws'
             {
             match("throws"); 
 
@@ -558,8 +558,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__44;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:31:7: ( '=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:31:9: '='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:31:7: ( '=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:31:9: '='
             {
             match('='); 
 
@@ -578,8 +578,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__45;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:32:7: ( 'public' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:32:9: 'public'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:32:7: ( 'public' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:32:9: 'public'
             {
             match("public"); 
 
@@ -599,8 +599,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__46;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:33:7: ( 'protected' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:33:9: 'protected'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:33:7: ( 'protected' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:33:9: 'protected'
             {
             match("protected"); 
 
@@ -620,8 +620,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__47;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:34:7: ( 'private' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:34:9: 'private'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:34:7: ( 'private' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:34:9: 'private'
             {
             match("private"); 
 
@@ -641,8 +641,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__48;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:35:7: ( 'abstract' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:35:9: 'abstract'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:35:7: ( 'abstract' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:35:9: 'abstract'
             {
             match("abstract"); 
 
@@ -662,8 +662,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__49;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:36:7: ( 'final' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:36:9: 'final'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:36:7: ( 'final' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:36:9: 'final'
             {
             match("final"); 
 
@@ -683,8 +683,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__50;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:37:7: ( 'native' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:37:9: 'native'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:37:7: ( 'native' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:37:9: 'native'
             {
             match("native"); 
 
@@ -704,8 +704,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__51;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:38:7: ( 'synchronized' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:38:9: 'synchronized'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:38:7: ( 'synchronized' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:38:9: 'synchronized'
             {
             match("synchronized"); 
 
@@ -725,8 +725,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__52;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:39:7: ( 'transient' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:39:9: 'transient'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:39:7: ( 'transient' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:39:9: 'transient'
             {
             match("transient"); 
 
@@ -746,8 +746,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__53;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:40:7: ( 'volatile' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:40:9: 'volatile'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:40:7: ( 'volatile' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:40:9: 'volatile'
             {
             match("volatile"); 
 
@@ -767,8 +767,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__54;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:41:7: ( 'strictfp' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:41:9: 'strictfp'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:41:7: ( 'strictfp' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:41:9: 'strictfp'
             {
             match("strictfp"); 
 
@@ -788,8 +788,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__55;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:42:7: ( 'boolean' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:42:9: 'boolean'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:42:7: ( 'boolean' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:42:9: 'boolean'
             {
             match("boolean"); 
 
@@ -809,8 +809,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__56;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:43:7: ( 'char' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:43:9: 'char'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:43:7: ( 'char' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:43:9: 'char'
             {
             match("char"); 
 
@@ -830,8 +830,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__57;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:44:7: ( 'byte' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:44:9: 'byte'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:44:7: ( 'byte' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:44:9: 'byte'
             {
             match("byte"); 
 
@@ -851,8 +851,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__58;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:45:7: ( 'short' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:45:9: 'short'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:45:7: ( 'short' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:45:9: 'short'
             {
             match("short"); 
 
@@ -872,8 +872,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__59;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:46:7: ( 'int' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:46:9: 'int'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:46:7: ( 'int' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:46:9: 'int'
             {
             match("int"); 
 
@@ -893,8 +893,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__60;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:47:7: ( 'long' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:47:9: 'long'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:47:7: ( 'long' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:47:9: 'long'
             {
             match("long"); 
 
@@ -914,8 +914,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__61;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:48:7: ( 'float' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:48:9: 'float'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:48:7: ( 'float' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:48:9: 'float'
             {
             match("float"); 
 
@@ -935,8 +935,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__62;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:49:7: ( 'double' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:49:9: 'double'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:49:7: ( 'double' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:49:9: 'double'
             {
             match("double"); 
 
@@ -956,8 +956,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__63;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:50:7: ( '?' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:50:9: '?'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:50:7: ( '?' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:50:9: '?'
             {
             match('?'); 
 
@@ -976,8 +976,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__64;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:51:7: ( 'super' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:51:9: 'super'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:51:7: ( 'super' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:51:9: 'super'
             {
             match("super"); 
 
@@ -997,8 +997,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__65;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:52:7: ( '(' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:52:9: '('
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:52:7: ( '(' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:52:9: '('
             {
             match('('); 
 
@@ -1017,8 +1017,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__66;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:53:7: ( ')' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:53:9: ')'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:53:7: ( ')' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:53:9: ')'
             {
             match(')'); 
 
@@ -1037,8 +1037,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__67;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:54:7: ( '...' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:54:9: '...'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:54:7: ( '...' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:54:9: '...'
             {
             match("..."); 
 
@@ -1058,8 +1058,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__68;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:55:7: ( 'null' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:55:9: 'null'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:55:7: ( 'null' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:55:9: 'null'
             {
             match("null"); 
 
@@ -1079,8 +1079,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__69;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:56:7: ( 'true' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:56:9: 'true'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:56:7: ( 'true' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:56:9: 'true'
             {
             match("true"); 
 
@@ -1100,8 +1100,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__70;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:57:7: ( 'false' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:57:9: 'false'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:57:7: ( 'false' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:57:9: 'false'
             {
             match("false"); 
 
@@ -1121,8 +1121,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__71;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:58:7: ( '@' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:58:9: '@'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:58:7: ( '@' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:58:9: '@'
             {
             match('@'); 
 
@@ -1141,8 +1141,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__72;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:59:7: ( 'default' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:59:9: 'default'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:59:7: ( 'default' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:59:9: 'default'
             {
             match("default"); 
 
@@ -1162,8 +1162,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__73;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:60:7: ( 'assert' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:60:9: 'assert'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:60:7: ( 'assert' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:60:9: 'assert'
             {
             match("assert"); 
 
@@ -1183,8 +1183,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__74;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:61:7: ( ':' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:61:9: ':'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:61:7: ( ':' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:61:9: ':'
             {
             match(':'); 
 
@@ -1203,8 +1203,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__75;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:62:7: ( 'if' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:62:9: 'if'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:62:7: ( 'if' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:62:9: 'if'
             {
             match("if"); 
 
@@ -1224,8 +1224,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__76;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:63:7: ( 'else' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:63:9: 'else'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:63:7: ( 'else' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:63:9: 'else'
             {
             match("else"); 
 
@@ -1245,8 +1245,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__77;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:64:7: ( 'for' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:64:9: 'for'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:64:7: ( 'for' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:64:9: 'for'
             {
             match("for"); 
 
@@ -1266,8 +1266,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__78;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:65:7: ( 'while' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:65:9: 'while'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:65:7: ( 'while' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:65:9: 'while'
             {
             match("while"); 
 
@@ -1287,8 +1287,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__79;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:66:7: ( 'do' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:66:9: 'do'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:66:7: ( 'do' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:66:9: 'do'
             {
             match("do"); 
 
@@ -1308,10 +1308,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__80;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:67:7: ( 'try' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:67:9: 'try'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:67:7: ( 'switch' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:67:9: 'switch'
             {
-            match("try"); 
+            match("switch"); 
 
 
             }
@@ -1329,10 +1329,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__81;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:68:7: ( 'finally' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:68:9: 'finally'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:68:7: ( 'return' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:68:9: 'return'
             {
-            match("finally"); 
+            match("return"); 
 
 
             }
@@ -1350,10 +1350,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__82;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:69:7: ( 'switch' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:69:9: 'switch'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:69:7: ( 'throw' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:69:9: 'throw'
             {
-            match("switch"); 
+            match("throw"); 
 
 
             }
@@ -1371,10 +1371,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__83;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:70:7: ( 'return' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:70:9: 'return'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:70:7: ( 'break' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:70:9: 'break'
             {
-            match("return"); 
+            match("break"); 
 
 
             }
@@ -1392,10 +1392,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__84;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:71:7: ( 'throw' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:71:9: 'throw'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:71:7: ( 'continue' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:71:9: 'continue'
             {
-            match("throw"); 
+            match("continue"); 
 
 
             }
@@ -1413,10 +1413,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__85;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:72:7: ( 'break' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:72:9: 'break'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:72:7: ( 'try' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:72:9: 'try'
             {
-            match("break"); 
+            match("try"); 
 
 
             }
@@ -1434,10 +1434,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__86;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:73:7: ( 'continue' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:73:9: 'continue'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:73:7: ( 'catch' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:73:9: 'catch'
             {
-            match("continue"); 
+            match("catch"); 
 
 
             }
@@ -1455,10 +1455,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__87;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:74:7: ( 'modify' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:74:9: 'modify'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:74:7: ( 'finally' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:74:9: 'finally'
             {
-            match("modify"); 
+            match("finally"); 
 
 
             }
@@ -1476,10 +1476,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__88;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:75:7: ( 'update' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:75:9: 'update'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:75:7: ( 'modify' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:75:9: 'modify'
             {
-            match("update"); 
+            match("modify"); 
 
 
             }
@@ -1497,10 +1497,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__89;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:76:7: ( 'retract' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:76:9: 'retract'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:76:7: ( 'update' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:76:9: 'update'
             {
-            match("retract"); 
+            match("update"); 
 
 
             }
@@ -1518,10 +1518,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__90;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:77:7: ( 'exitPoints' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:77:9: 'exitPoints'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:77:7: ( 'retract' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:77:9: 'retract'
             {
-            match("exitPoints"); 
+            match("retract"); 
 
 
             }
@@ -1539,10 +1539,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__91;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:7: ( 'entryPoints' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:78:9: 'entryPoints'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:78:7: ( 'exitPoints' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:78:9: 'exitPoints'
             {
-            match("entryPoints"); 
+            match("exitPoints"); 
 
 
             }
@@ -1560,10 +1560,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__92;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:7: ( 'channels' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:79:9: 'channels'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:79:7: ( 'entryPoints' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:79:9: 'entryPoints'
             {
-            match("channels"); 
+            match("entryPoints"); 
 
 
             }
@@ -1581,10 +1581,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__93;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:7: ( 'catch' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:80:9: 'catch'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:80:7: ( 'channels' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:80:9: 'channels'
             {
-            match("catch"); 
+            match("channels"); 
 
 
             }
@@ -1602,8 +1602,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__94;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:7: ( 'case' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:81:9: 'case'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:81:7: ( 'case' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:81:9: 'case'
             {
             match("case"); 
 
@@ -1623,8 +1623,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__95;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:7: ( '+=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:82:9: '+='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:82:7: ( '+=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:82:9: '+='
             {
             match("+="); 
 
@@ -1644,8 +1644,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__96;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:7: ( '-=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:83:9: '-='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:83:7: ( '-=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:83:9: '-='
             {
             match("-="); 
 
@@ -1665,8 +1665,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__97;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:7: ( '*=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:84:9: '*='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:84:7: ( '*=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:84:9: '*='
             {
             match("*="); 
 
@@ -1686,8 +1686,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__98;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:7: ( '/=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:85:9: '/='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:85:7: ( '/=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:85:9: '/='
             {
             match("/="); 
 
@@ -1707,8 +1707,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__99;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:7: ( '&=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:86:9: '&='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:86:7: ( '&=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:86:9: '&='
             {
             match("&="); 
 
@@ -1728,8 +1728,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__100;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:8: ( '|=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:87:10: '|='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:87:8: ( '|=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:87:10: '|='
             {
             match("|="); 
 
@@ -1749,8 +1749,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__101;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:8: ( '^=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:88:10: '^='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:88:8: ( '^=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:88:10: '^='
             {
             match("^="); 
 
@@ -1770,8 +1770,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__102;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:8: ( '%=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:89:10: '%='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:89:8: ( '%=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:89:10: '%='
             {
             match("%="); 
 
@@ -1791,8 +1791,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__103;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:8: ( '||' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:90:10: '||'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:90:8: ( '||' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:90:10: '||'
             {
             match("||"); 
 
@@ -1812,8 +1812,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__104;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:8: ( '&&' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:91:10: '&&'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:91:8: ( '&&' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:91:10: '&&'
             {
             match("&&"); 
 
@@ -1833,8 +1833,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__105;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:8: ( '|' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:92:10: '|'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:92:8: ( '|' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:92:10: '|'
             {
             match('|'); 
 
@@ -1853,8 +1853,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__106;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:8: ( '^' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:93:10: '^'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:93:8: ( '^' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:93:10: '^'
             {
             match('^'); 
 
@@ -1873,8 +1873,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__107;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:8: ( '==' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:94:10: '=='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:94:8: ( '==' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:94:10: '=='
             {
             match("=="); 
 
@@ -1894,8 +1894,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__108;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:8: ( '!=' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:95:10: '!='
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:95:8: ( '!=' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:95:10: '!='
             {
             match("!="); 
 
@@ -1915,8 +1915,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__109;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:8: ( 'instanceof' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:96:10: 'instanceof'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:96:8: ( 'instanceof' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:96:10: 'instanceof'
             {
             match("instanceof"); 
 
@@ -1936,8 +1936,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__110;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:8: ( '+' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:97:10: '+'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:97:8: ( '+' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:97:10: '+'
             {
             match('+'); 
 
@@ -1956,8 +1956,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__111;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:8: ( '-' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:98:10: '-'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:98:8: ( '-' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:98:10: '-'
             {
             match('-'); 
 
@@ -1976,8 +1976,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__112;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:8: ( '/' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:99:10: '/'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:99:8: ( '/' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:99:10: '/'
             {
             match('/'); 
 
@@ -1996,8 +1996,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__113;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:8: ( '%' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:100:10: '%'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:100:8: ( '%' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:100:10: '%'
             {
             match('%'); 
 
@@ -2016,8 +2016,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__114;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:8: ( '++' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:101:10: '++'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:101:8: ( '++' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:101:10: '++'
             {
             match("++"); 
 
@@ -2037,8 +2037,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__115;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:8: ( '--' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:102:10: '--'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:102:8: ( '--' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:102:10: '--'
             {
             match("--"); 
 
@@ -2058,8 +2058,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__116;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:8: ( '~' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:103:10: '~'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:103:8: ( '~' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:103:10: '~'
             {
             match('~'); 
 
@@ -2078,8 +2078,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__117;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:8: ( '!' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:104:10: '!'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:104:8: ( '!' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:104:10: '!'
             {
             match('!'); 
 
@@ -2098,8 +2098,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__118;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:8: ( 'this' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:105:10: 'this'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:105:8: ( 'this' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:105:10: 'this'
             {
             match("this"); 
 
@@ -2119,8 +2119,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = T__119;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:8: ( 'new' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:106:10: 'new'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:106:8: ( 'new' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:106:10: 'new'
             {
             match("new"); 
 
@@ -2140,8 +2140,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = HexLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:12: ( '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )? )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:14: '0' ( 'x' | 'X' ) ( HexDigit )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
             if ( input.LA(1)=='X'||input.LA(1)=='x' ) {
@@ -2153,7 +2153,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:28: ( HexDigit )+
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:28: ( HexDigit )+
             int cnt1=0;
             loop1:
             do {
@@ -2167,7 +2167,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:28: HexDigit
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:28: HexDigit
             	    {
             	    mHexDigit(); 
 
@@ -2183,7 +2183,7 @@ public class JavaLexer extends Lexer {
                 cnt1++;
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:38: ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:38: ( IntegerTypeSuffix )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -2192,7 +2192,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1023:38: IntegerTypeSuffix
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1057:38: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2217,10 +2217,10 @@ public class JavaLexer extends Lexer {
         try {
             int _type = DecimalLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:16: ( ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )? )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:18: ( '0' | '1' .. '9' ( '0' .. '9' )* ) ( IntegerTypeSuffix )?
             {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:18: ( '0' | '1' .. '9' ( '0' .. '9' )* )
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -2238,17 +2238,17 @@ public class JavaLexer extends Lexer {
             }
             switch (alt4) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:19: '0'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:19: '0'
                     {
                     match('0'); 
 
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:25: '1' .. '9' ( '0' .. '9' )*
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:25: '1' .. '9' ( '0' .. '9' )*
                     {
                     matchRange('1','9'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:34: ( '0' .. '9' )*
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:34: ( '0' .. '9' )*
                     loop3:
                     do {
                         int alt3=2;
@@ -2261,7 +2261,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt3) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:34: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:34: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2279,7 +2279,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:45: ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:45: ( IntegerTypeSuffix )?
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -2288,7 +2288,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt5) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1025:45: IntegerTypeSuffix
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1059:45: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2313,11 +2313,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = OctalLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:14: ( '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )? )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:16: '0' ( '0' .. '7' )+ ( IntegerTypeSuffix )?
             {
             match('0'); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:20: ( '0' .. '7' )+
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:20: ( '0' .. '7' )+
             int cnt6=0;
             loop6:
             do {
@@ -2331,7 +2331,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt6) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:21: '0' .. '7'
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:21: '0' .. '7'
             	    {
             	    matchRange('0','7'); 
 
@@ -2347,7 +2347,7 @@ public class JavaLexer extends Lexer {
                 cnt6++;
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:32: ( IntegerTypeSuffix )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:32: ( IntegerTypeSuffix )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -2356,7 +2356,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt7) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1027:32: IntegerTypeSuffix
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1061:32: IntegerTypeSuffix
                     {
                     mIntegerTypeSuffix(); 
 
@@ -2379,8 +2379,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "HexDigit"
     public final void mHexDigit() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1030:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1030:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1064:10: ( ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1064:12: ( '0' .. '9' | 'a' .. 'f' | 'A' .. 'F' )
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='F')||(input.LA(1)>='a' && input.LA(1)<='f') ) {
                 input.consume();
@@ -2403,8 +2403,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "IntegerTypeSuffix"
     public final void mIntegerTypeSuffix() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1033:19: ( ( 'l' | 'L' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1033:21: ( 'l' | 'L' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:19: ( ( 'l' | 'L' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1067:21: ( 'l' | 'L' )
             {
             if ( input.LA(1)=='L'||input.LA(1)=='l' ) {
                 input.consume();
@@ -2429,14 +2429,14 @@ public class JavaLexer extends Lexer {
         try {
             int _type = FloatingPointLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:5: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix )
             int alt19=4;
             alt19 = dfa19.predict(input);
             switch (alt19) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:9: ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )?
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:9: ( '0' .. '9' )+
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:9: ( '0' .. '9' )+
                     int cnt8=0;
                     loop8:
                     do {
@@ -2450,7 +2450,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt8) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:10: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2467,7 +2467,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     match('.'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:25: ( '0' .. '9' )*
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:25: ( '0' .. '9' )*
                     loop9:
                     do {
                         int alt9=2;
@@ -2480,7 +2480,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt9) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:26: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:26: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2492,7 +2492,7 @@ public class JavaLexer extends Lexer {
                         }
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:37: ( Exponent )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:37: ( Exponent )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -2501,7 +2501,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:37: Exponent
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:37: Exponent
                             {
                             mExponent(); 
 
@@ -2510,7 +2510,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:47: ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:47: ( FloatTypeSuffix )?
                     int alt11=2;
                     int LA11_0 = input.LA(1);
 
@@ -2519,7 +2519,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt11) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1036:47: FloatTypeSuffix
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1070:47: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2532,10 +2532,10 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:9: '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )?
                     {
                     match('.'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:13: ( '0' .. '9' )+
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:13: ( '0' .. '9' )+
                     int cnt12=0;
                     loop12:
                     do {
@@ -2549,7 +2549,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt12) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:14: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:14: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2565,7 +2565,7 @@ public class JavaLexer extends Lexer {
                         cnt12++;
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:25: ( Exponent )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:25: ( Exponent )?
                     int alt13=2;
                     int LA13_0 = input.LA(1);
 
@@ -2574,7 +2574,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt13) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:25: Exponent
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:25: Exponent
                             {
                             mExponent(); 
 
@@ -2583,7 +2583,7 @@ public class JavaLexer extends Lexer {
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:35: ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:35: ( FloatTypeSuffix )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -2592,7 +2592,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt14) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1037:35: FloatTypeSuffix
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1071:35: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2605,9 +2605,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1038:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1072:9: ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )?
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1038:9: ( '0' .. '9' )+
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1072:9: ( '0' .. '9' )+
                     int cnt15=0;
                     loop15:
                     do {
@@ -2621,7 +2621,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt15) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1038:10: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1072:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2638,7 +2638,7 @@ public class JavaLexer extends Lexer {
                     } while (true);
 
                     mExponent(); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1038:30: ( FloatTypeSuffix )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1072:30: ( FloatTypeSuffix )?
                     int alt16=2;
                     int LA16_0 = input.LA(1);
 
@@ -2647,7 +2647,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt16) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1038:30: FloatTypeSuffix
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1072:30: FloatTypeSuffix
                             {
                             mFloatTypeSuffix(); 
 
@@ -2660,9 +2660,9 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1039:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:9: ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix
                     {
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1039:9: ( '0' .. '9' )+
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:9: ( '0' .. '9' )+
                     int cnt17=0;
                     loop17:
                     do {
@@ -2676,7 +2676,7 @@ public class JavaLexer extends Lexer {
 
                         switch (alt17) {
                     	case 1 :
-                    	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1039:10: '0' .. '9'
+                    	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:10: '0' .. '9'
                     	    {
                     	    matchRange('0','9'); 
 
@@ -2692,7 +2692,7 @@ public class JavaLexer extends Lexer {
                         cnt17++;
                     } while (true);
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1039:21: ( Exponent )?
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:21: ( Exponent )?
                     int alt18=2;
                     int LA18_0 = input.LA(1);
 
@@ -2701,7 +2701,7 @@ public class JavaLexer extends Lexer {
                     }
                     switch (alt18) {
                         case 1 :
-                            // src/main/resources/org/drools/semantics/java/parser/Java.g:1039:21: Exponent
+                            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1073:21: Exponent
                             {
                             mExponent(); 
 
@@ -2727,8 +2727,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "Exponent"
     public final void mExponent() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1043:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1043:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1077:10: ( ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+ )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1077:12: ( 'e' | 'E' ) ( '+' | '-' )? ( '0' .. '9' )+
             {
             if ( input.LA(1)=='E'||input.LA(1)=='e' ) {
                 input.consume();
@@ -2739,7 +2739,7 @@ public class JavaLexer extends Lexer {
                 recover(mse);
                 throw mse;}
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1043:22: ( '+' | '-' )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1077:22: ( '+' | '-' )?
             int alt20=2;
             int LA20_0 = input.LA(1);
 
@@ -2748,7 +2748,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt20) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:
                     {
                     if ( input.LA(1)=='+'||input.LA(1)=='-' ) {
                         input.consume();
@@ -2765,7 +2765,7 @@ public class JavaLexer extends Lexer {
 
             }
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1043:33: ( '0' .. '9' )+
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1077:33: ( '0' .. '9' )+
             int cnt21=0;
             loop21:
             do {
@@ -2779,7 +2779,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt21) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1043:34: '0' .. '9'
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1077:34: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -2807,8 +2807,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "FloatTypeSuffix"
     public final void mFloatTypeSuffix() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1046:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1046:19: ( 'f' | 'F' | 'd' | 'D' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1080:17: ( ( 'f' | 'F' | 'd' | 'D' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1080:19: ( 'f' | 'F' | 'd' | 'D' )
             {
             if ( input.LA(1)=='D'||input.LA(1)=='F'||input.LA(1)=='d'||input.LA(1)=='f' ) {
                 input.consume();
@@ -2833,11 +2833,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = CharacterLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1049:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1049:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1083:5: ( '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\'' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1083:9: '\\'' ( EscapeSequence | ~ ( '\\'' | '\\\\' ) ) '\\''
             {
             match('\''); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1049:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1083:14: ( EscapeSequence | ~ ( '\\'' | '\\\\' ) )
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -2855,14 +2855,14 @@ public class JavaLexer extends Lexer {
             }
             switch (alt22) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1049:16: EscapeSequence
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1083:16: EscapeSequence
                     {
                     mEscapeSequence(); 
 
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1049:33: ~ ( '\\'' | '\\\\' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1083:33: ~ ( '\\'' | '\\\\' )
                     {
                     if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
                         input.consume();
@@ -2896,11 +2896,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = StringLiteral;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1053:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1053:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1087:5: ( '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1087:8: '\"' ( EscapeSequence | ~ ( '\\\\' | '\"' ) )* '\"'
             {
             match('\"'); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1053:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1087:12: ( EscapeSequence | ~ ( '\\\\' | '\"' ) )*
             loop23:
             do {
                 int alt23=3;
@@ -2916,14 +2916,14 @@ public class JavaLexer extends Lexer {
 
                 switch (alt23) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1053:14: EscapeSequence
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1087:14: EscapeSequence
             	    {
             	    mEscapeSequence(); 
 
             	    }
             	    break;
             	case 2 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1053:31: ~ ( '\\\\' | '\"' )
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1087:31: ~ ( '\\\\' | '\"' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -2958,7 +2958,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "EscapeSequence"
     public final void mEscapeSequence() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1058:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1092:5: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' ) | UnicodeEscape | OctalEscape )
             int alt24=3;
             int LA24_0 = input.LA(1);
 
@@ -3009,7 +3009,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt24) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1058:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1092:9: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\\\"' | '\\'' | '\\\\' )
                     {
                     match('\\'); 
                     if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -3025,14 +3025,14 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1059:9: UnicodeEscape
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1093:9: UnicodeEscape
                     {
                     mUnicodeEscape(); 
 
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1060:9: OctalEscape
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1094:9: OctalEscape
                     {
                     mOctalEscape(); 
 
@@ -3049,7 +3049,7 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "OctalEscape"
     public final void mOctalEscape() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:5: ( '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) ( '0' .. '7' ) | '\\\\' ( '0' .. '7' ) )
             int alt25=3;
             int LA25_0 = input.LA(1);
 
@@ -3095,25 +3095,25 @@ public class JavaLexer extends Lexer {
             }
             switch (alt25) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:9: '\\\\' ( '0' .. '3' ) ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:14: ( '0' .. '3' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:15: '0' .. '3'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:14: ( '0' .. '3' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:15: '0' .. '3'
                     {
                     matchRange('0','3'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:25: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:26: '0' .. '7'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:25: ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:36: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1065:37: '0' .. '7'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:36: ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1099:37: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3123,18 +3123,18 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1100:9: '\\\\' ( '0' .. '7' ) ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:14: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:15: '0' .. '7'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1100:14: ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1100:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
                     }
 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:25: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1066:26: '0' .. '7'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1100:25: ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1100:26: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3144,11 +3144,11 @@ public class JavaLexer extends Lexer {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1067:9: '\\\\' ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1101:9: '\\\\' ( '0' .. '7' )
                     {
                     match('\\'); 
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1067:14: ( '0' .. '7' )
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1067:15: '0' .. '7'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1101:14: ( '0' .. '7' )
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1101:15: '0' .. '7'
                     {
                     matchRange('0','7'); 
 
@@ -3168,8 +3168,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "UnicodeEscape"
     public final void mUnicodeEscape() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1072:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1072:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1106:5: ( '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1106:9: '\\\\' 'u' HexDigit HexDigit HexDigit HexDigit
             {
             match('\\'); 
             match('u'); 
@@ -3191,8 +3191,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = ENUM;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1075:5: ( 'enum' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1075:7: 'enum'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1109:5: ( 'enum' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1109:7: 'enum'
             {
             match("enum"); 
 
@@ -3213,11 +3213,11 @@ public class JavaLexer extends Lexer {
         try {
             int _type = Identifier;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1079:5: ( Letter ( Letter | JavaIDDigit )* )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1079:9: Letter ( Letter | JavaIDDigit )*
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1113:5: ( Letter ( Letter | JavaIDDigit )* )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1113:9: Letter ( Letter | JavaIDDigit )*
             {
             mLetter(); 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1079:16: ( Letter | JavaIDDigit )*
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1113:16: ( Letter | JavaIDDigit )*
             loop26:
             do {
                 int alt26=2;
@@ -3230,7 +3230,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt26) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:
             	    {
             	    if ( input.LA(1)=='$'||(input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
             	        input.consume();
@@ -3264,8 +3264,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "Letter"
     public final void mLetter() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1087:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1121:5: ( '\\u0024' | '\\u0041' .. '\\u005a' | '\\u005f' | '\\u0061' .. '\\u007a' | '\\u00c0' .. '\\u00d6' | '\\u00d8' .. '\\u00f6' | '\\u00f8' .. '\\u00ff' | '\\u0100' .. '\\u1fff' | '\\u3040' .. '\\u318f' | '\\u3300' .. '\\u337f' | '\\u3400' .. '\\u3d2d' | '\\u4e00' .. '\\u9fff' | '\\uf900' .. '\\ufaff' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:
             {
             if ( input.LA(1)=='$'||(input.LA(1)>='A' && input.LA(1)<='Z')||input.LA(1)=='_'||(input.LA(1)>='a' && input.LA(1)<='z')||(input.LA(1)>='\u00C0' && input.LA(1)<='\u00D6')||(input.LA(1)>='\u00D8' && input.LA(1)<='\u00F6')||(input.LA(1)>='\u00F8' && input.LA(1)<='\u1FFF')||(input.LA(1)>='\u3040' && input.LA(1)<='\u318F')||(input.LA(1)>='\u3300' && input.LA(1)<='\u337F')||(input.LA(1)>='\u3400' && input.LA(1)<='\u3D2D')||(input.LA(1)>='\u4E00' && input.LA(1)<='\u9FFF')||(input.LA(1)>='\uF900' && input.LA(1)<='\uFAFF') ) {
                 input.consume();
@@ -3288,8 +3288,8 @@ public class JavaLexer extends Lexer {
     // $ANTLR start "JavaIDDigit"
     public final void mJavaIDDigit() throws RecognitionException {
         try {
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1104:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' | '\\uff10' .. '\\uff19' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1138:5: ( '\\u0030' .. '\\u0039' | '\\u0660' .. '\\u0669' | '\\u06f0' .. '\\u06f9' | '\\u0966' .. '\\u096f' | '\\u09e6' .. '\\u09ef' | '\\u0a66' .. '\\u0a6f' | '\\u0ae6' .. '\\u0aef' | '\\u0b66' .. '\\u0b6f' | '\\u0be7' .. '\\u0bef' | '\\u0c66' .. '\\u0c6f' | '\\u0ce6' .. '\\u0cef' | '\\u0d66' .. '\\u0d6f' | '\\u0e50' .. '\\u0e59' | '\\u0ed0' .. '\\u0ed9' | '\\u1040' .. '\\u1049' | '\\uff10' .. '\\uff19' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:
             {
             if ( (input.LA(1)>='0' && input.LA(1)<='9')||(input.LA(1)>='\u0660' && input.LA(1)<='\u0669')||(input.LA(1)>='\u06F0' && input.LA(1)<='\u06F9')||(input.LA(1)>='\u0966' && input.LA(1)<='\u096F')||(input.LA(1)>='\u09E6' && input.LA(1)<='\u09EF')||(input.LA(1)>='\u0A66' && input.LA(1)<='\u0A6F')||(input.LA(1)>='\u0AE6' && input.LA(1)<='\u0AEF')||(input.LA(1)>='\u0B66' && input.LA(1)<='\u0B6F')||(input.LA(1)>='\u0BE7' && input.LA(1)<='\u0BEF')||(input.LA(1)>='\u0C66' && input.LA(1)<='\u0C6F')||(input.LA(1)>='\u0CE6' && input.LA(1)<='\u0CEF')||(input.LA(1)>='\u0D66' && input.LA(1)<='\u0D6F')||(input.LA(1)>='\u0E50' && input.LA(1)<='\u0E59')||(input.LA(1)>='\u0ED0' && input.LA(1)<='\u0ED9')||(input.LA(1)>='\u1040' && input.LA(1)<='\u1049')||(input.LA(1)>='\uFF10' && input.LA(1)<='\uFF19') ) {
                 input.consume();
@@ -3314,8 +3314,8 @@ public class JavaLexer extends Lexer {
         try {
             int _type = WS;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1122:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1122:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1156:5: ( ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' ) )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1156:8: ( ' ' | '\\r' | '\\t' | '\\u000C' | '\\n' )
             {
             if ( (input.LA(1)>='\t' && input.LA(1)<='\n')||(input.LA(1)>='\f' && input.LA(1)<='\r')||input.LA(1)==' ' ) {
                 input.consume();
@@ -3343,12 +3343,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1126:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1126:9: '/*' ( options {greedy=false; } : . )* '*/'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1160:5: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1160:9: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1126:14: ( options {greedy=false; } : . )*
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1160:14: ( options {greedy=false; } : . )*
             loop27:
             do {
                 int alt27=2;
@@ -3373,7 +3373,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt27) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1126:42: .
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1160:42: .
             	    {
             	    matchAny(); 
 
@@ -3404,12 +3404,12 @@ public class JavaLexer extends Lexer {
         try {
             int _type = LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:5: ( '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n' )
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:7: '//' (~ ( '\\n' | '\\r' ) )* ( '\\r' )? '\\n'
             {
             match("//"); 
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:12: (~ ( '\\n' | '\\r' ) )*
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:12: (~ ( '\\n' | '\\r' ) )*
             loop28:
             do {
                 int alt28=2;
@@ -3422,7 +3422,7 @@ public class JavaLexer extends Lexer {
 
                 switch (alt28) {
             	case 1 :
-            	    // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:12: ~ ( '\\n' | '\\r' )
+            	    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:12: ~ ( '\\n' | '\\r' )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFF') ) {
             	        input.consume();
@@ -3442,7 +3442,7 @@ public class JavaLexer extends Lexer {
                 }
             } while (true);
 
-            // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:26: ( '\\r' )?
+            // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:26: ( '\\r' )?
             int alt29=2;
             int LA29_0 = input.LA(1);
 
@@ -3451,7 +3451,7 @@ public class JavaLexer extends Lexer {
             }
             switch (alt29) {
                 case 1 :
-                    // src/main/resources/org/drools/semantics/java/parser/Java.g:1130:26: '\\r'
+                    // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1164:26: '\\r'
                     {
                     match('\r'); 
 
@@ -3474,754 +3474,754 @@ public class JavaLexer extends Lexer {
     // $ANTLR end "LINE_COMMENT"
 
     public void mTokens() throws RecognitionException {
-        // src/main/resources/org/drools/semantics/java/parser/Java.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
+        // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:8: ( T__24 | T__25 | T__26 | T__27 | T__28 | T__29 | T__30 | T__31 | T__32 | T__33 | T__34 | T__35 | T__36 | T__37 | T__38 | T__39 | T__40 | T__41 | T__42 | T__43 | T__44 | T__45 | T__46 | T__47 | T__48 | T__49 | T__50 | T__51 | T__52 | T__53 | T__54 | T__55 | T__56 | T__57 | T__58 | T__59 | T__60 | T__61 | T__62 | T__63 | T__64 | T__65 | T__66 | T__67 | T__68 | T__69 | T__70 | T__71 | T__72 | T__73 | T__74 | T__75 | T__76 | T__77 | T__78 | T__79 | T__80 | T__81 | T__82 | T__83 | T__84 | T__85 | T__86 | T__87 | T__88 | T__89 | T__90 | T__91 | T__92 | T__93 | T__94 | T__95 | T__96 | T__97 | T__98 | T__99 | T__100 | T__101 | T__102 | T__103 | T__104 | T__105 | T__106 | T__107 | T__108 | T__109 | T__110 | T__111 | T__112 | T__113 | T__114 | T__115 | T__116 | T__117 | T__118 | T__119 | HexLiteral | DecimalLiteral | OctalLiteral | FloatingPointLiteral | CharacterLiteral | StringLiteral | ENUM | Identifier | WS | COMMENT | LINE_COMMENT )
         int alt30=107;
         alt30 = dfa30.predict(input);
         switch (alt30) {
             case 1 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:10: T__24
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:10: T__24
                 {
                 mT__24(); 
 
                 }
                 break;
             case 2 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:16: T__25
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:16: T__25
                 {
                 mT__25(); 
 
                 }
                 break;
             case 3 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:22: T__26
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:22: T__26
                 {
                 mT__26(); 
 
                 }
                 break;
             case 4 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:28: T__27
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:28: T__27
                 {
                 mT__27(); 
 
                 }
                 break;
             case 5 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:34: T__28
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:34: T__28
                 {
                 mT__28(); 
 
                 }
                 break;
             case 6 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:40: T__29
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:40: T__29
                 {
                 mT__29(); 
 
                 }
                 break;
             case 7 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:46: T__30
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:46: T__30
                 {
                 mT__30(); 
 
                 }
                 break;
             case 8 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:52: T__31
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:52: T__31
                 {
                 mT__31(); 
 
                 }
                 break;
             case 9 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:58: T__32
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:58: T__32
                 {
                 mT__32(); 
 
                 }
                 break;
             case 10 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:64: T__33
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:64: T__33
                 {
                 mT__33(); 
 
                 }
                 break;
             case 11 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:70: T__34
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:70: T__34
                 {
                 mT__34(); 
 
                 }
                 break;
             case 12 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:76: T__35
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:76: T__35
                 {
                 mT__35(); 
 
                 }
                 break;
             case 13 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:82: T__36
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:82: T__36
                 {
                 mT__36(); 
 
                 }
                 break;
             case 14 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:88: T__37
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:88: T__37
                 {
                 mT__37(); 
 
                 }
                 break;
             case 15 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:94: T__38
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:94: T__38
                 {
                 mT__38(); 
 
                 }
                 break;
             case 16 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:100: T__39
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:100: T__39
                 {
                 mT__39(); 
 
                 }
                 break;
             case 17 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:106: T__40
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:106: T__40
                 {
                 mT__40(); 
 
                 }
                 break;
             case 18 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:112: T__41
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:112: T__41
                 {
                 mT__41(); 
 
                 }
                 break;
             case 19 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:118: T__42
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:118: T__42
                 {
                 mT__42(); 
 
                 }
                 break;
             case 20 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:124: T__43
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:124: T__43
                 {
                 mT__43(); 
 
                 }
                 break;
             case 21 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:130: T__44
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:130: T__44
                 {
                 mT__44(); 
 
                 }
                 break;
             case 22 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:136: T__45
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:136: T__45
                 {
                 mT__45(); 
 
                 }
                 break;
             case 23 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:142: T__46
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:142: T__46
                 {
                 mT__46(); 
 
                 }
                 break;
             case 24 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:148: T__47
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:148: T__47
                 {
                 mT__47(); 
 
                 }
                 break;
             case 25 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:154: T__48
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:154: T__48
                 {
                 mT__48(); 
 
                 }
                 break;
             case 26 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:160: T__49
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:160: T__49
                 {
                 mT__49(); 
 
                 }
                 break;
             case 27 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:166: T__50
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:166: T__50
                 {
                 mT__50(); 
 
                 }
                 break;
             case 28 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:172: T__51
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:172: T__51
                 {
                 mT__51(); 
 
                 }
                 break;
             case 29 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:178: T__52
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:178: T__52
                 {
                 mT__52(); 
 
                 }
                 break;
             case 30 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:184: T__53
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:184: T__53
                 {
                 mT__53(); 
 
                 }
                 break;
             case 31 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:190: T__54
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:190: T__54
                 {
                 mT__54(); 
 
                 }
                 break;
             case 32 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:196: T__55
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:196: T__55
                 {
                 mT__55(); 
 
                 }
                 break;
             case 33 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:202: T__56
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:202: T__56
                 {
                 mT__56(); 
 
                 }
                 break;
             case 34 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:208: T__57
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:208: T__57
                 {
                 mT__57(); 
 
                 }
                 break;
             case 35 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:214: T__58
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:214: T__58
                 {
                 mT__58(); 
 
                 }
                 break;
             case 36 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:220: T__59
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:220: T__59
                 {
                 mT__59(); 
 
                 }
                 break;
             case 37 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:226: T__60
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:226: T__60
                 {
                 mT__60(); 
 
                 }
                 break;
             case 38 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:232: T__61
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:232: T__61
                 {
                 mT__61(); 
 
                 }
                 break;
             case 39 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:238: T__62
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:238: T__62
                 {
                 mT__62(); 
 
                 }
                 break;
             case 40 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:244: T__63
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:244: T__63
                 {
                 mT__63(); 
 
                 }
                 break;
             case 41 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:250: T__64
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:250: T__64
                 {
                 mT__64(); 
 
                 }
                 break;
             case 42 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:256: T__65
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:256: T__65
                 {
                 mT__65(); 
 
                 }
                 break;
             case 43 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:262: T__66
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:262: T__66
                 {
                 mT__66(); 
 
                 }
                 break;
             case 44 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:268: T__67
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:268: T__67
                 {
                 mT__67(); 
 
                 }
                 break;
             case 45 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:274: T__68
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:274: T__68
                 {
                 mT__68(); 
 
                 }
                 break;
             case 46 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:280: T__69
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:280: T__69
                 {
                 mT__69(); 
 
                 }
                 break;
             case 47 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:286: T__70
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:286: T__70
                 {
                 mT__70(); 
 
                 }
                 break;
             case 48 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:292: T__71
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:292: T__71
                 {
                 mT__71(); 
 
                 }
                 break;
             case 49 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:298: T__72
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:298: T__72
                 {
                 mT__72(); 
 
                 }
                 break;
             case 50 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:304: T__73
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:304: T__73
                 {
                 mT__73(); 
 
                 }
                 break;
             case 51 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:310: T__74
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:310: T__74
                 {
                 mT__74(); 
 
                 }
                 break;
             case 52 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:316: T__75
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:316: T__75
                 {
                 mT__75(); 
 
                 }
                 break;
             case 53 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:322: T__76
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:322: T__76
                 {
                 mT__76(); 
 
                 }
                 break;
             case 54 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:328: T__77
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:328: T__77
                 {
                 mT__77(); 
 
                 }
                 break;
             case 55 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:334: T__78
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:334: T__78
                 {
                 mT__78(); 
 
                 }
                 break;
             case 56 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:340: T__79
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:340: T__79
                 {
                 mT__79(); 
 
                 }
                 break;
             case 57 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:346: T__80
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:346: T__80
                 {
                 mT__80(); 
 
                 }
                 break;
             case 58 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:352: T__81
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:352: T__81
                 {
                 mT__81(); 
 
                 }
                 break;
             case 59 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:358: T__82
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:358: T__82
                 {
                 mT__82(); 
 
                 }
                 break;
             case 60 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:364: T__83
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:364: T__83
                 {
                 mT__83(); 
 
                 }
                 break;
             case 61 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:370: T__84
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:370: T__84
                 {
                 mT__84(); 
 
                 }
                 break;
             case 62 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:376: T__85
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:376: T__85
                 {
                 mT__85(); 
 
                 }
                 break;
             case 63 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:382: T__86
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:382: T__86
                 {
                 mT__86(); 
 
                 }
                 break;
             case 64 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:388: T__87
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:388: T__87
                 {
                 mT__87(); 
 
                 }
                 break;
             case 65 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:394: T__88
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:394: T__88
                 {
                 mT__88(); 
 
                 }
                 break;
             case 66 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:400: T__89
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:400: T__89
                 {
                 mT__89(); 
 
                 }
                 break;
             case 67 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:406: T__90
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:406: T__90
                 {
                 mT__90(); 
 
                 }
                 break;
             case 68 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:412: T__91
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:412: T__91
                 {
                 mT__91(); 
 
                 }
                 break;
             case 69 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:418: T__92
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:418: T__92
                 {
                 mT__92(); 
 
                 }
                 break;
             case 70 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:424: T__93
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:424: T__93
                 {
                 mT__93(); 
 
                 }
                 break;
             case 71 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:430: T__94
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:430: T__94
                 {
                 mT__94(); 
 
                 }
                 break;
             case 72 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:436: T__95
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:436: T__95
                 {
                 mT__95(); 
 
                 }
                 break;
             case 73 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:442: T__96
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:442: T__96
                 {
                 mT__96(); 
 
                 }
                 break;
             case 74 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:448: T__97
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:448: T__97
                 {
                 mT__97(); 
 
                 }
                 break;
             case 75 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:454: T__98
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:454: T__98
                 {
                 mT__98(); 
 
                 }
                 break;
             case 76 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:460: T__99
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:460: T__99
                 {
                 mT__99(); 
 
                 }
                 break;
             case 77 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:466: T__100
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:466: T__100
                 {
                 mT__100(); 
 
                 }
                 break;
             case 78 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:473: T__101
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:473: T__101
                 {
                 mT__101(); 
 
                 }
                 break;
             case 79 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:480: T__102
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:480: T__102
                 {
                 mT__102(); 
 
                 }
                 break;
             case 80 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:487: T__103
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:487: T__103
                 {
                 mT__103(); 
 
                 }
                 break;
             case 81 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:494: T__104
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:494: T__104
                 {
                 mT__104(); 
 
                 }
                 break;
             case 82 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:501: T__105
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:501: T__105
                 {
                 mT__105(); 
 
                 }
                 break;
             case 83 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:508: T__106
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:508: T__106
                 {
                 mT__106(); 
 
                 }
                 break;
             case 84 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:515: T__107
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:515: T__107
                 {
                 mT__107(); 
 
                 }
                 break;
             case 85 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:522: T__108
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:522: T__108
                 {
                 mT__108(); 
 
                 }
                 break;
             case 86 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:529: T__109
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:529: T__109
                 {
                 mT__109(); 
 
                 }
                 break;
             case 87 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:536: T__110
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:536: T__110
                 {
                 mT__110(); 
 
                 }
                 break;
             case 88 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:543: T__111
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:543: T__111
                 {
                 mT__111(); 
 
                 }
                 break;
             case 89 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:550: T__112
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:550: T__112
                 {
                 mT__112(); 
 
                 }
                 break;
             case 90 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:557: T__113
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:557: T__113
                 {
                 mT__113(); 
 
                 }
                 break;
             case 91 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:564: T__114
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:564: T__114
                 {
                 mT__114(); 
 
                 }
                 break;
             case 92 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:571: T__115
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:571: T__115
                 {
                 mT__115(); 
 
                 }
                 break;
             case 93 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:578: T__116
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:578: T__116
                 {
                 mT__116(); 
 
                 }
                 break;
             case 94 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:585: T__117
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:585: T__117
                 {
                 mT__117(); 
 
                 }
                 break;
             case 95 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:592: T__118
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:592: T__118
                 {
                 mT__118(); 
 
                 }
                 break;
             case 96 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:599: T__119
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:599: T__119
                 {
                 mT__119(); 
 
                 }
                 break;
             case 97 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:606: HexLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:606: HexLiteral
                 {
                 mHexLiteral(); 
 
                 }
                 break;
             case 98 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:617: DecimalLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:617: DecimalLiteral
                 {
                 mDecimalLiteral(); 
 
                 }
                 break;
             case 99 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:632: OctalLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:632: OctalLiteral
                 {
                 mOctalLiteral(); 
 
                 }
                 break;
             case 100 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:645: FloatingPointLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:645: FloatingPointLiteral
                 {
                 mFloatingPointLiteral(); 
 
                 }
                 break;
             case 101 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:666: CharacterLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:666: CharacterLiteral
                 {
                 mCharacterLiteral(); 
 
                 }
                 break;
             case 102 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:683: StringLiteral
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:683: StringLiteral
                 {
                 mStringLiteral(); 
 
                 }
                 break;
             case 103 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:697: ENUM
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:697: ENUM
                 {
                 mENUM(); 
 
                 }
                 break;
             case 104 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:702: Identifier
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:702: Identifier
                 {
                 mIdentifier(); 
 
                 }
                 break;
             case 105 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:713: WS
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:713: WS
                 {
                 mWS(); 
 
                 }
                 break;
             case 106 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:716: COMMENT
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:716: COMMENT
                 {
                 mCOMMENT(); 
 
                 }
                 break;
             case 107 :
-                // src/main/resources/org/drools/semantics/java/parser/Java.g:1:724: LINE_COMMENT
+                // C:\\dev\\droolsjbpm\\drools\\drools-compiler\\src\\main\\resources\\org\\drools\\semantics\\java\\parser\\Java.g:1:724: LINE_COMMENT
                 {
                 mLINE_COMMENT(); 
 
@@ -4240,20 +4240,20 @@ public class JavaLexer extends Lexer {
     static final String DFA19_eofS =
         "\12\uffff";
     static final String DFA19_minS =
-        "\2\56\1\uffff\1\53\2\uffff\2\60\2\uffff";
+        "\2\56\2\uffff\1\53\1\uffff\2\60\2\uffff";
     static final String DFA19_maxS =
-        "\1\71\1\146\1\uffff\1\71\2\uffff\1\71\1\146\2\uffff";
+        "\1\71\1\146\2\uffff\1\71\1\uffff\1\71\1\146\2\uffff";
     static final String DFA19_acceptS =
-        "\2\uffff\1\2\1\uffff\1\1\1\4\2\uffff\2\3";
+        "\2\uffff\1\2\1\1\1\uffff\1\4\2\uffff\2\3";
     static final String DFA19_specialS =
         "\12\uffff}>";
     static final String[] DFA19_transitionS = {
             "\1\2\1\uffff\12\1",
-            "\1\4\1\uffff\12\1\12\uffff\1\5\1\3\1\5\35\uffff\1\5\1\3\1"+
+            "\1\3\1\uffff\12\1\12\uffff\1\5\1\4\1\5\35\uffff\1\5\1\4\1"+
             "\5",
             "",
-            "\1\6\1\uffff\1\6\2\uffff\12\7",
             "",
+            "\1\6\1\uffff\1\6\2\uffff\12\7",
             "",
             "\12\7",
             "\12\7\12\uffff\1\11\1\uffff\1\11\35\uffff\1\11\1\uffff\1\11",
@@ -4291,11 +4291,11 @@ public class JavaLexer extends Lexer {
             this.transition = DFA19_transition;
         }
         public String getDescription() {
-            return "1035:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
+            return "1069:1: FloatingPointLiteral : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* ( Exponent )? ( FloatTypeSuffix )? | '.' ( '0' .. '9' )+ ( Exponent )? ( FloatTypeSuffix )? | ( '0' .. '9' )+ Exponent ( FloatTypeSuffix )? | ( '0' .. '9' )+ ( Exponent )? FloatTypeSuffix );";
         }
     }
     static final String DFA30_eotS =
-        "\1\uffff\1\57\1\uffff\2\57\1\76\1\100\2\57\3\uffff\1\112\2\uffff"+
+        "\1\uffff\1\57\1\uffff\2\57\1\75\1\100\2\57\3\uffff\1\112\2\uffff"+
         "\1\57\2\uffff\1\57\1\117\6\57\5\uffff\4\57\1\145\1\150\1\154\1\157"+
         "\1\161\1\163\1\165\1\uffff\2\167\4\uffff\5\57\1\u0081\5\57\5\uffff"+
         "\7\57\3\uffff\3\57\2\uffff\15\57\1\u00a7\5\57\25\uffff\1\u00ad\1"+
@@ -4387,20 +4387,20 @@ public class JavaLexer extends Lexer {
     static final String DFA30_acceptS =
         "\2\uffff\1\2\6\uffff\1\12\1\13\1\14\1\uffff\1\16\1\17\1\uffff\1"+
         "\22\1\23\10\uffff\1\50\1\52\1\53\1\60\1\63\13\uffff\1\135\2\uffff"+
-        "\1\145\1\146\1\150\1\151\13\uffff\1\54\1\144\1\5\1\112\1\6\7\uffff"+
+        "\1\145\1\146\1\150\1\151\13\uffff\1\54\1\5\1\144\1\112\1\6\7\uffff"+
         "\1\114\1\121\1\15\3\uffff\1\124\1\25\23\uffff\1\110\1\133\1\127"+
         "\1\111\1\134\1\130\1\113\1\152\1\153\1\131\1\115\1\120\1\122\1\116"+
         "\1\123\1\117\1\132\1\125\1\136\1\141\1\142\11\uffff\1\64\45\uffff"+
-        "\1\70\5\uffff\1\143\7\uffff\1\44\30\uffff\1\71\5\uffff\1\66\2\uffff"+
+        "\1\70\5\uffff\1\143\7\uffff\1\44\30\uffff\1\76\5\uffff\1\66\2\uffff"+
         "\1\140\32\uffff\1\41\3\uffff\1\107\2\uffff\1\65\1\uffff\1\147\1"+
         "\21\2\uffff\1\137\1\uffff\1\56\6\uffff\1\55\1\uffff\1\42\1\uffff"+
-        "\1\45\22\uffff\1\43\1\51\1\uffff\1\7\2\uffff\1\106\5\uffff\1\75"+
-        "\4\uffff\1\32\1\46\1\57\2\uffff\1\76\2\uffff\1\67\5\uffff\1\26\2"+
-        "\uffff\1\3\3\uffff\1\4\2\uffff\1\73\6\uffff\1\24\2\uffff\1\62\1"+
-        "\uffff\1\33\1\uffff\1\47\1\uffff\1\74\1\uffff\1\100\1\101\1\1\1"+
-        "\uffff\1\30\7\uffff\1\10\5\uffff\1\72\1\40\1\61\1\102\4\uffff\1"+
-        "\37\1\uffff\1\105\1\77\2\uffff\1\36\1\uffff\1\31\1\27\1\uffff\1"+
-        "\20\4\uffff\1\35\1\11\1\126\1\uffff\1\103\2\uffff\1\104\1\34";
+        "\1\45\22\uffff\1\43\1\51\1\uffff\1\7\2\uffff\1\77\5\uffff\1\73\4"+
+        "\uffff\1\32\1\46\1\57\2\uffff\1\74\2\uffff\1\67\5\uffff\1\26\2\uffff"+
+        "\1\3\3\uffff\1\4\2\uffff\1\71\6\uffff\1\24\2\uffff\1\62\1\uffff"+
+        "\1\33\1\uffff\1\47\1\uffff\1\72\1\uffff\1\101\1\102\1\1\1\uffff"+
+        "\1\30\7\uffff\1\10\5\uffff\1\100\1\40\1\61\1\103\4\uffff\1\37\1"+
+        "\uffff\1\106\1\75\2\uffff\1\36\1\uffff\1\31\1\27\1\uffff\1\20\4"+
+        "\uffff\1\35\1\11\1\126\1\uffff\1\104\2\uffff\1\105\1\34";
     static final String DFA30_specialS =
         "\u018d\uffff}>";
     static final String[] DFA30_transitionS = {
@@ -4416,7 +4416,7 @@ public class JavaLexer extends Lexer {
             "",
             "\1\66\6\uffff\1\64\1\65",
             "\1\71\13\uffff\1\67\1\72\1\uffff\1\73\1\uffff\1\70",
-            "\1\74\1\uffff\12\75",
+            "\1\74\1\uffff\12\76",
             "\1\77",
             "\1\104\6\uffff\1\102\3\uffff\1\101\2\uffff\1\103",
             "\1\106\1\uffff\1\107\11\uffff\1\105",
@@ -4454,9 +4454,9 @@ public class JavaLexer extends Lexer {
             "\1\162",
             "\1\164",
             "",
-            "\1\75\1\uffff\10\170\2\75\12\uffff\3\75\21\uffff\1\166\13"+
-            "\uffff\3\75\21\uffff\1\166",
-            "\1\75\1\uffff\12\171\12\uffff\3\75\35\uffff\3\75",
+            "\1\76\1\uffff\10\170\2\76\12\uffff\3\76\21\uffff\1\166\13"+
+            "\uffff\3\76\21\uffff\1\166",
+            "\1\76\1\uffff\12\171\12\uffff\3\76\35\uffff\3\76",
             "",
             "",
             "",
@@ -4539,8 +4539,8 @@ public class JavaLexer extends Lexer {
             "",
             "",
             "",
-            "\1\75\1\uffff\10\170\2\75\12\uffff\3\75\35\uffff\3\75",
-            "\1\75\1\uffff\12\171\12\uffff\3\75\35\uffff\3\75",
+            "\1\76\1\uffff\10\170\2\76\12\uffff\3\76\35\uffff\3\76",
+            "\1\76\1\uffff\12\171\12\uffff\3\76\35\uffff\3\76",
             "\1\u00ae",
             "\1\u00af",
             "\1\u00b0",

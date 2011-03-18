@@ -3,7 +3,7 @@ package org.drools.rule.builder.dialect.java.parser;
 public interface JavaBlockDescr {
     
     public static enum BlockType {
-        MODIFY, UPDATE, RETRACT, ENTRY, EXIT, CHANNEL
+        MODIFY, UPDATE, RETRACT, ENTRY, EXIT, CHANNEL, TRY, CATCH, FINALLY
     }
 
     public BlockType getType();
