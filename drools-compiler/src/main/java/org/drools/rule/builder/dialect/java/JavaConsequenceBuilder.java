@@ -173,24 +173,37 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         
         // first do simple rewrites for try/catch
         for ( JavaBlockDescr block : blocks ) {
-            // adding chunk
-            consequence.append( originalCode.substring( lastAdded,
-                                                        block.getStart() - 1 ) );
+            if ( block.getType() != BlockType.TRY ) {
+                continue;
+            }
+            
+            if ( block.getType() == BlockType.TRY ) {
+                // adding chunk
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 ) );                
+                JavaTryBlockDescr tryDescr = (JavaTryBlockDescr) block;
+                if ( tryDescr.getFinal() != null ) {
+                    lastAdded = tryDescr.getFinal().getEnd();
+                } else {
+                    lastAdded = tryDescr.getCatches().get( tryDescr.getCatches().size()-1 ).getEnd();
+                }
+            }
+            
             switch ( block.getType() ) {
                 case TRY :
-                    rewriteTryDescr( lastAdded,
-                                     context,
+                    rewriteTryDescr( context,
                                      originalCode,
                                      consequence,
                                      (JavaTryBlockDescr) block,
                                       decls );
+                    break;
+                default:
             }
         }           
-        
+        consequence.append( originalCode.substring( lastAdded ) );
         originalCode = consequence.toString();
         consequence = new StringBuilder();
-        
-        //System.out.println( originalCode );
+        lastAdded = 0;
         
         // We need to do this as MVEL doesn't recognise "with"
         MacroProcessor macroProcessor = new MacroProcessor();
@@ -198,11 +211,11 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         macros.put( "modify",
                     new Macro() {
                         public String doMacro() {
-                            return "with";
+                            return "with  ";
                         }
                     } );
         macroProcessor.setMacros( macros );
-        originalCode = macroProcessor.parse( originalCode );
+        String mvelCode = macroProcessor.parse( originalCode );
         
         Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
         
@@ -211,7 +224,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                      context.getRuleDescr(),
                                                                      mvel.getInterceptors(),
-                                                                     originalCode,
+                                                                     mvelCode,
                                                                      new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals(), KnowledgeHelper.class ),
                                                                      null );
         } catch(Exception e) {
@@ -219,12 +232,16 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
         
         for ( JavaBlockDescr block : blocks ) {
+            if ( block.getType() == BlockType.TRY ) {
+                continue;
+            }
+            
             // adding chunk
             consequence.append( originalCode.substring( lastAdded,
                                                         block.getStart() - 1 ) );
+  
             lastAdded = block.getEnd();
-
-            switch ( block.getType() ) {
+            switch ( block.getType() ) {  
                 case MODIFY :
                 case UPDATE :
                 case RETRACT :
@@ -267,35 +284,36 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
     }
     
-    private void rewriteTryDescr(int lastAdded, 
-                                 RuleBuildContext context,
+    private void rewriteTryDescr(RuleBuildContext context,
                                  String originalCode,
                                  StringBuilder consequence,
                                  JavaTryBlockDescr block,
-                                 Map<String, Declaration> decls) {       
-        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getTextStart()-1);
-        consequence.append( "{" );
-        consequence.append( originalCode.substring( consequence.length(),
-                                                    block.getEnd()-1 ) );           
-        consequence.append( "}" );
-
+                                 Map<String, Declaration> decls) {      
+        
+        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getTextStart());
+        
+        String tryString = originalCode.substring( consequence.length(),
+                                                 block.getEnd()-1 );
+        addWhiteSpaces(originalCode, consequence, consequence.length(),  block.getEnd());       
+        
         for ( JavaCatchBlockDescr catchBlock : block.getCatches() ) {
-            consequence.append( "{" );            
-            consequence.append( catchBlock.getClause() );
-            consequence.append( " = null;" );            
+            
             addWhiteSpaces( originalCode, consequence,  consequence.length(),
-                                                        catchBlock.getTextStart() );            
-            consequence.append( originalCode.substring( consequence.length(),
-                                                        catchBlock.getEnd()-1 ) );
-            consequence.append( "}" );                     
+                            catchBlock.getTextStart()  );             
+            String catchString = catchBlock.getClause() + "=null;" + originalCode.substring( consequence.length(),
+                                                                                             catchBlock.getEnd()-1 );
+                                                        
+            addWhiteSpaces( originalCode, consequence,  consequence.length(),
+                            catchBlock.getEnd()  );                        
         }
         
         if ( block.getFinal() != null ) {
-            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getTextStart()-1 );               
-            consequence.append( "{" );                
-            consequence.append( originalCode.substring( consequence.length(),
-                                                        block.getFinal().getEnd()-1 ) );          
-            consequence.append( "}" );
+            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getTextStart() );
+            
+            String finallyString = originalCode.substring( consequence.length(),
+                                                           block.getFinal().getEnd()-1 );
+            
+            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getEnd() );
         }           
     }
 

@@ -27,5 +27,6 @@ rule "Hello World"
         } finally {
             list.add( $m );
         }
+        list.add( $m );
         $m.setFired(true);
 end
