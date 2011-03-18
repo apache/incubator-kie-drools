@@ -86,7 +86,7 @@ relationalOp returns [boolean negated, String opr, java.util.List<String> params
     | not_key cop=neg_operator_key { $negated = true; $opr=$cop.text;}
       ((squareArguments)=> sa=squareArguments { $params = $sa.args; } )?
     | cop=operator_key  { $negated = false; $opr=$cop.text;}
-      ((squareArguments)=> squareArguments { $params = $sa.args; } )? 
+      ((squareArguments)=> sa=squareArguments { $params = $sa.args; } )? 
     )
     ;
     
