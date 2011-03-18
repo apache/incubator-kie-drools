@@ -17,6 +17,9 @@
  */
 package org.drools.lang.descr;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This is a super class for all restrictions that are based on
  * evaluators.
@@ -27,12 +30,12 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
 
     private String            evaluator;
     private boolean           negated;
-    private String            parameterText;
+    private List<String>      parameters;
 
     /**
      * Creates a new EvaluatorBasedRestriction
      */
-    public EvaluatorBasedRestrictionDescr(){
+    public EvaluatorBasedRestrictionDescr() {
     }
 
     /**
@@ -45,10 +48,24 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
     public EvaluatorBasedRestrictionDescr(final String evaluator,
                                           final boolean isNegated,
                                           final String parameterText) {
+        this( evaluator,
+              isNegated,
+              Collections.singletonList( parameterText ) );
+    }
+
+    /**
+     * Creates a new EvaluatorBasedRestriction
+     * 
+     * @param evaluator the evaluator ID to be used in this restriction
+     * @param isNegated true if the evaluator is boolean negated
+     * @param parameterText the list of parameters texts, in case there is any. null otherwise.
+     */
+    public EvaluatorBasedRestrictionDescr(final String evaluator,
+                                          final boolean isNegated,
+                                          final List<String> parameters) {
         this.evaluator = evaluator;
         this.negated = isNegated;
-        this.parameterText = parameterText;
-
+        this.parameters = parameters;
     }
 
     /**
@@ -77,37 +94,48 @@ public class EvaluatorBasedRestrictionDescr extends RestrictionDescr {
      * @return the parameterText
      */
     public String getParameterText() {
-        return parameterText;
+        if( parameters != null ) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for( String param : parameters ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    builder.append( "," );
+                }
+                builder.append( param );
+            }
+            return builder.toString();
+        }
+        return null;
     }
     
+    public List<String> getParameters() {
+        return parameters;
+    }
+    
+    public void setParameters( List<String> parameters ) {
+        this.parameters = parameters;
+    }
+
     /**
      * Sets the evaluator ID for this restriction
      */
-    public void setEvaluator(String evaluator) {
+    public void setEvaluator( String evaluator ) {
         this.evaluator = evaluator;
     }
+
     /**
      * Sets if this evaluator is negated.
      * Example: "contains" is boolean negated if you want to check the elements that are not contained ("not contains")
      * 
      * @param negated the negated
      */
-    public void setNegated(boolean negated) {
+    public void setNegated( boolean negated ) {
         this.negated = negated;
     }
 
-    /**
-     * Set any parameter text.
-     * A parameter text is evaluator parameters like "after[1,10]". In the previous example,
-     * the parameter text will be "1,10".
-     * 
-     * @return parameterText the parameterText
-     */
-    public void setParameterText(String parameterText) {
-        this.parameterText = parameterText;
-    }
-
     public String toString() {
-        return ( this.isNegated() ? "not " : "" ) + this.getEvaluator() + ( this.getParameterText() != null ? "["+this.getParameterText()+"]" : "");
+        return (this.isNegated() ? "not " : "") + this.getEvaluator() + (this.getParameterText() != null ? "[" + this.getParameterText() + "]" : "");
     }
 }

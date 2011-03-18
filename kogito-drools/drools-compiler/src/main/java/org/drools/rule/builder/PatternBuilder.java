@@ -458,11 +458,6 @@ public class PatternBuilder
             }
 
             String operator = relDescr.getOperator().trim();
-            // extractor the operator and determine if it's negated or not
-            boolean negatedOperator = operator.startsWith( "not " );
-            if ( negatedOperator ) {
-                operator = operator.substring( 4 );
-            }
 
             Restriction restriction = null;
             // is it a literal? Does not include enums
@@ -470,8 +465,10 @@ public class PatternBuilder
                 restriction = buildLiteralRestriction( context,
                                                        extractor,
                                                        new LiteralRestrictionDescr( operator,
-                                                                                    negatedOperator,
-                                                                                    value ) );
+                                                                                    relDescr.isNegated(),
+                                                                                    relDescr.getParameters(),
+                                                                                    value,
+                                                                                    LiteralRestrictionDescr.TYPE_STRING ) ); // default type
             } else {
                 // is it an enum?
                 int dotPos = value.indexOf( '.' );
@@ -480,13 +477,15 @@ public class PatternBuilder
                                                               dotPos );
                     String enumName = value.substring( dotPos + 1 );
                     try {
-                        final Class cls = context.getDialect().getTypeResolver().resolveType( className );
+                        final Class<?> cls = context.getDialect().getTypeResolver().resolveType( className );
                         if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
                             restriction = buildLiteralRestriction( context,
                                                                    extractor,
                                                                    new LiteralRestrictionDescr( operator,
-                                                                                                negatedOperator,
-                                                                                                value ) );
+                                                                                                relDescr.isNegated(),
+                                                                                                relDescr.getParameters(),
+                                                                                                value,
+                                                                                                LiteralRestrictionDescr.TYPE_STRING ) ); // default type
                         }
                     } catch ( ClassNotFoundException e ) {
                         // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
@@ -559,8 +558,8 @@ public class PatternBuilder
                                                           d,
                                                           extractor.getValueType(),
                                                           operator,
-                                                          negatedOperator,
-                                                          null,
+                                                          relDescr.isNegated(),
+                                                          relDescr.getParametersText(),
                                                           left,
                                                           right );
                 if ( evaluator == null ) {
@@ -590,8 +589,8 @@ public class PatternBuilder
                                                 (Pattern) context.getBuildStack().peek(),
                                                 extractor,
                                                 new ReturnValueRestrictionDescr( operator,
-                                                                                 negatedOperator,
-                                                                                 null,
+                                                                                 relDescr.isNegated(),
+                                                                                 relDescr.getParametersText(),
                                                                                  value ) );
                 // fall back to original dialect
                 context.setDialect( dialect );
@@ -1128,7 +1127,7 @@ public class PatternBuilder
                                     final ValueType valueType,
                                     final String evaluatorString,
                                     final boolean isNegated,
-                                    final String parameterText,
+                                    final String parameters,
                                     final Target left,
                                     final Target right ) {
 
@@ -1144,7 +1143,7 @@ public class PatternBuilder
         final Evaluator evaluator = def.getEvaluator( valueType,
                                                       evaluatorString,
                                                       isNegated,
-                                                      parameterText,
+                                                      parameters,
                                                       left,
                                                       right );
 

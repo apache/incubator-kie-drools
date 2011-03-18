@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import java.util.List;
+
 /**
  * A descriptor to represent a relational expression
  */
@@ -25,16 +27,22 @@ public class RelationalExprDescr extends BaseDescr {
     private BaseDescr         left;
     private BaseDescr         right;
     private String            operator;
+    private boolean           negated;
+    private List<String>      parameters;
 
     public RelationalExprDescr() {
     }
 
     public RelationalExprDescr(String operator,
+                               boolean negated,
+                               List<String> parameters,
                                BaseDescr left,
                                BaseDescr right) {
         this.left = left;
         this.right = right;
         this.operator = operator;
+        this.negated = negated;
+        this.parameters = parameters;
     }
 
     public BaseDescr getLeft() {
@@ -61,8 +69,41 @@ public class RelationalExprDescr extends BaseDescr {
         this.operator = operator;
     }
 
+    public boolean isNegated() {
+        return negated;
+    }
+
+    public void setNegated( boolean negated ) {
+        this.negated = negated;
+    }
+
+    public List<String> getParameters() {
+        return parameters;
+    }
+
+    public String getParametersText() {
+        if( parameters != null ) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for( String param : parameters ) {
+                if( first ) {
+                    first = false;
+                } else {
+                    builder.append( "," );
+                }
+                builder.append( param );
+            }
+            return builder.toString();
+        }
+        return null;
+    }
+
+    public void setParameters( List<String> parameters ) {
+        this.parameters = parameters;
+    }
     @Override
     public String toString() {
-        return this.left + " " + this.operator + " " + this.right;
+        return this.left + (this.negated ? " not " : " ") + this.operator + ( this.parameters != null ? parameters.toString() + " ": " ") + this.right;
     }
+
 }

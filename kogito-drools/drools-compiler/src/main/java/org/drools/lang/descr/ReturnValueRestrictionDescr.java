@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import java.util.List;
+
 public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr {
 
     private static final long serialVersionUID = 510l;
@@ -29,14 +31,14 @@ public class ReturnValueRestrictionDescr extends EvaluatorBasedRestrictionDescr 
     public ReturnValueRestrictionDescr(final String evaluator ) {
         super( evaluator,
                false,
-               null );
+               (List<String>)null );
     }
 
     public ReturnValueRestrictionDescr(final String evaluator, 
                                        final Object content ) {
         super( evaluator,
                false,
-               null );
+               (List<String>)null );
         this.content = content;
     }
 
