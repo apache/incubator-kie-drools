@@ -36,8 +36,10 @@ import org.drools.rule.Declaration;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
 import org.drools.rule.builder.dialect.java.parser.JavaRetractBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaUpdateBlockDescr;
@@ -81,8 +83,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             return;
         }
 
-        String fixedConsequence = this.fixBlockDescr( (String) ruleDescr.getConsequence(),
-                                                      context,
+        String fixedConsequence = this.fixBlockDescr( context,
                                                       (JavaAnalysisResult) analysis,
                                                       ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName ),
                                                       decls );
@@ -150,10 +151,10 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         context.getBuildStack().pop();
     }
 
-    protected String fixBlockDescr(String expr,
-                                   final RuleBuildContext context,
+    protected String fixBlockDescr(final RuleBuildContext context,
                                    final JavaAnalysisResult analysis,
-                                   final String originalCode, Map<String, Declaration> decls) {
+                                   String originalCode, 
+                                   Map<String, Declaration> decls) {
         MVELDialect mvel = (MVELDialect) context.getDialect( "mvel" );
 
         // sorting exit points for correct order iteration
@@ -164,11 +165,32 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                  JavaBlockDescr o2) {
                                   return o1.getStart() - o2.getStart();
                               }
-                          } );
+                          } );     
 
         StringBuilder consequence = new StringBuilder();
         int lastAdded = 0;
         boolean modifyExpr = true;
+        
+        // first do simple rewrites for try/catch
+        for ( JavaBlockDescr block : blocks ) {
+            // adding chunk
+            consequence.append( originalCode.substring( lastAdded,
+                                                        block.getStart() - 1 ) );
+            switch ( block.getType() ) {
+                case TRY :
+                    rewriteTryDescr( lastAdded,
+                                     context,
+                                     originalCode,
+                                     consequence,
+                                     (JavaTryBlockDescr) block,
+                                      decls );
+            }
+        }           
+        
+        originalCode = consequence.toString();
+        consequence = new StringBuilder();
+        
+        System.out.println( originalCode );
         
         // We need to do this as MVEL doesn't recognise "with"
         MacroProcessor macroProcessor = new MacroProcessor();
@@ -180,7 +202,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                         }
                     } );
         macroProcessor.setMacros( macros );
-        expr = macroProcessor.parse( expr );
+        originalCode = macroProcessor.parse( originalCode );
         
         Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
         
@@ -189,7 +211,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                      context.getRuleDescr(),
                                                                      mvel.getInterceptors(),
-                                                                     expr,
+                                                                     originalCode,
                                                                      new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals(), KnowledgeHelper.class ),
                                                                      null );
         } catch(Exception e) {
@@ -230,6 +252,53 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         return consequence.toString();
     }
 
+    private void addWhiteSpaces(String original, StringBuilder consequence, int start, int end) {
+        for ( int i = start; i < end; i++ ) {
+            switch(original.charAt( i )) {
+                case '\n':
+                case '\r':
+                case '\t':
+                case ' ':
+                    consequence.append(original.charAt( i ));
+                    break;
+                default:
+                    consequence.append( " " );
+            }
+        }
+    }
+    
+    private void rewriteTryDescr(int lastAdded, 
+                                 RuleBuildContext context,
+                                 String originalCode,
+                                 StringBuilder consequence,
+                                 JavaTryBlockDescr block,
+                                 Map<String, Declaration> decls) {       
+        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getTextStart()-1);
+        consequence.append( "{" );
+        consequence.append( originalCode.substring( consequence.length(),
+                                                    block.getEnd()-1 ) );           
+        consequence.append( "}" );
+
+        for ( JavaCatchBlockDescr catchBlock : block.getCatches() ) {
+            consequence.append( "{" );            
+            consequence.append( catchBlock.getClause() );
+            consequence.append( " = null;" );            
+            addWhiteSpaces( originalCode, consequence,  consequence.length(),
+                                                        catchBlock.getTextStart() );            
+            consequence.append( originalCode.substring( consequence.length(),
+                                                        catchBlock.getEnd()-1 ) );
+            consequence.append( "}" );                     
+        }
+        
+        if ( block.getFinal() != null ) {
+            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getTextStart()-1 );               
+            consequence.append( "{" );                
+            consequence.append( originalCode.substring( consequence.length(),
+                                                        block.getFinal().getEnd()-1 ) );          
+            consequence.append( "}" );
+        }           
+    }
+
     @SuppressWarnings("unchecked")
     private void rewriteInterfacePoint(final RuleBuildContext context,
                                        final String originalCode,
@@ -251,6 +320,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
             return;
         }
+        
         consequence.append( ep.getId() );
         consequence.append( " )" );
 

@@ -20,8 +20,10 @@ rule "Hello World"
         }
         try {
             //System.out.println("hello world with collections " + $m.getMessage());
-        } catch  ( Exception e ) {
-
+             list.add( $m );
+              list.add( $m );
+        } catch  ( java.lang.Exception e ) {
+ list.add( $m );
         } finally {
             list.add( $m );
         }

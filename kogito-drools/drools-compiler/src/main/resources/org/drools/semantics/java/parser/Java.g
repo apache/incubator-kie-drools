@@ -667,11 +667,9 @@ statement
     | 'for' '(' forControl ')' statement
     | 'while' parExpression statement
     | 'do' statement 'while' parExpression ';'
-    | 'try' block
-      (	catches 'finally' block
-      | catches
-      | 'finally' block
-      )
+    
+    | tryStatement
+      
     | 'switch' parExpression '{' switchBlockStatementGroups '}'
     | 'synchronized' parExpression block
     | 'return' expression? ';'
@@ -684,6 +682,42 @@ statement
     | statementExpression ';'
     | Identifier ':' statement
     ;
+    
+tryStatement
+    @init {
+         JavaTryBlockDescr td = null;
+         JavaCatchBlockDescr cd = null;
+         JavaFinalBlockDescr fd = null;
+         
+    }
+    :     
+    s='try' {this.localVariableLevel++;} bs='{' blockStatement*
+    {
+        td = new JavaTryBlockDescr( );
+        td.setStart( ((CommonToken)$s).getStartIndex() );
+        td.setTextStart( ((CommonToken)$bs).getStartIndex() );        
+        this.blocks.add( td );
+
+    }    
+    c='}' {td.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--;}
+ 
+    (s='catch' '(' formalParameter ')' {this.localVariableLevel++;} bs='{' blockStatement*
+     { 
+        cd = new JavaCatchBlockDescr( $formalParameter.text );
+        cd.setClauseStart( ((CommonToken)$formalParameter.start).getStartIndex() );        
+        cd.setStart( ((CommonToken)$s).getStartIndex() );
+        cd.setTextStart( ((CommonToken)$bs).getStartIndex() );
+        td.addCatch( cd );        
+     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--;} )* 
+     
+     (s='finally' {this.localVariableLevel++;} bs='{' blockStatement*
+      {
+        fd = new JavaFinalBlockDescr( );
+        fd.setStart( ((CommonToken)$s).getStartIndex() );
+        fd.setTextStart( ((CommonToken)$bs).getStartIndex() );        
+        td.setFinally( fd );         
+      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--;} )?     
+    ;    
 
 modifyStatement
     @init {
