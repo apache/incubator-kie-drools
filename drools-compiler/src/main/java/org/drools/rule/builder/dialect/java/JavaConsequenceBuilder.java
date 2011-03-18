@@ -190,7 +190,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         originalCode = consequence.toString();
         consequence = new StringBuilder();
         
-        System.out.println( originalCode );
+        //System.out.println( originalCode );
         
         // We need to do this as MVEL doesn't recognise "with"
         MacroProcessor macroProcessor = new MacroProcessor();

@@ -86,11 +86,10 @@ public class JavaConsequenceBuilderTest {
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
-            String fixed = builder.fixBlockDescr( consequence,
-                                                  context,
+            String fixed = builder.fixBlockDescr( context,
                                                   analysis,                                                  
                                                   (String) ruleDescr.getConsequence(),
-                                                  new HashMap() );
+                                                  new HashMap<String,Declaration>() );
 
             String expected = " System.out.println(\"this is a test\");\n " + 
                               " drools.getExitPoint(\"foo\").insert( new Cheese() );\n " + 
@@ -120,11 +119,10 @@ public class JavaConsequenceBuilderTest {
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
-            String fixed = builder.fixBlockDescr( consequence,
-                                                  context,
+            String fixed = builder.fixBlockDescr( context,
                                                   analysis,
                                                   (String) ruleDescr.getConsequence(),
-                                                  new HashMap() );
+                                                  new HashMap<String,Declaration>() );
 
             String expected = " System.out.println(\"this is a test\");\n " + 
                               " drools.getEntryPoint(\"foo\").insert( new Cheese() );\n " + 
@@ -163,8 +161,7 @@ public class JavaConsequenceBuilderTest {
             d.setReadAccessor( new PatternExtractor(  new ClassObjectType( Cheese.class ) ) );
             declr.put( "$cheese", d );
             
-            String fixed = builder.fixBlockDescr( consequence,
-                                                  context,
+            String fixed = builder.fixBlockDescr( context,
                                                   analysis,
                                                   (String) ruleDescr.getConsequence(),
                                                   declr);
