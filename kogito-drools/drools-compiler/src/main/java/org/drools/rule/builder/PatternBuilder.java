@@ -86,6 +86,7 @@ import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
+import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -282,7 +283,7 @@ public class PatternBuilder
         for ( BehaviorDescr behaviorDescr : patternDescr.getBehaviors() ) {
             if ( pattern.getObjectType().isEvent() ) {
                 if ( Behavior.BehaviorType.TIME_WINDOW.matches( behaviorDescr.getSubType() ) ) {
-                    SlidingTimeWindow window = new SlidingTimeWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
+                    SlidingTimeWindow window = new SlidingTimeWindow( TimeUtils.parseTimeString( behaviorDescr.getParameters().get( 0 ) ) );
                     pattern.addBehavior( window );
                 } else if ( Behavior.BehaviorType.LENGTH_WINDOW.matches( behaviorDescr.getSubType() ) ) {
                     SlidingLengthWindow window = new SlidingLengthWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );

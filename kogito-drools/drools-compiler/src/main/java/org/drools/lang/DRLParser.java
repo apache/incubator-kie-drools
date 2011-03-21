@@ -2115,7 +2115,7 @@ public class DRLParser {
                DroolsEditorType.SYMBOL );
         if ( state.failed ) return;
 
-        if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) ) {
+        if ( helper.validateIdentifierKey( DroolsSoftKeywords.OVER ) || input.LA( 1 ) == DRLLexer.PIPE ) {
             patternBehavior( pattern );
         }
 
@@ -2215,29 +2215,30 @@ public class DRLParser {
     }
 
     /**
-     * patternBehavior := OVER 
-     *                    behaviorDef (COMMA behavior)* 
-     *                    ID COLON ID  LEFT_PAREN expression RIGHT_PAREN                    
+     * patternBehavior := ( PIPE behaviorDef )+
+     *                    | OVER behaviorDef 
      * @param pattern
      * @throws RecognitionException 
      */
     private void patternBehavior( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        match( input,
-               DRLLexer.ID,
-               DroolsSoftKeywords.OVER,
-               null,
-               DroolsEditorType.KEYWORD );
-        if ( state.failed ) return;
+        if( input.LA( 1 ) == DRLLexer.PIPE ) {
+            while ( input.LA( 1 ) == DRLLexer.PIPE ) {
+                match( input,
+                       DRLLexer.PIPE,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
 
-        behaviorDef( pattern );
-        if ( state.failed ) return;
-
-        while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                behaviorDef( pattern );
+                if ( state.failed ) return;
+            }
+        } else {
             match( input,
-                   DRLLexer.COMMA,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.OVER,
                    null,
-                   null,
-                   DroolsEditorType.SYMBOL );
+                   DroolsEditorType.KEYWORD );
             if ( state.failed ) return;
 
             behaviorDef( pattern );
