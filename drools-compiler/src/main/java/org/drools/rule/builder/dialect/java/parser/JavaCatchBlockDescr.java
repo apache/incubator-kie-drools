@@ -1,28 +1,35 @@
 package org.drools.rule.builder.dialect.java.parser;
 
-import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
+import java.util.ArrayList;
+import java.util.List;
 
-public class JavaCatchBlockDescr implements JavaBlockDescr {
-    private int start;
-    private int end;
-    private int clauseStart;    
-    private int textStart;     
-    
-    private String clause;
-    
-    public JavaCatchBlockDescr( String clause) {
+public class JavaCatchBlockDescr extends AbstractJavaContainerBlockDescr
+    implements
+    JavaBlockDescr,
+    JavaContainerBlockDescr {
+    private int                  start;
+    private int                  end;
+    private int                  clauseStart;
+    private int                  textStart;
+
+    private String               clause;
+
+    public JavaCatchBlockDescr(String clause) {
         this.clause = clause;
     }
 
     public int getStart() {
         return start;
     }
+
     public void setStart(int start) {
         this.start = start;
     }
+
     public int getEnd() {
         return end;
     }
+
     public void setEnd(int end) {
         this.end = end;
     }
@@ -34,7 +41,6 @@ public class JavaCatchBlockDescr implements JavaBlockDescr {
     public void setTextStart(int textStart) {
         this.textStart = textStart;
     }
-    
 
     public int getClauseStart() {
         return clauseStart;
@@ -59,7 +65,5 @@ public class JavaCatchBlockDescr implements JavaBlockDescr {
     public String getClause() {
         return clause;
     }
-    
-    
 
 }

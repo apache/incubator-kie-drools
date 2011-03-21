@@ -193,6 +193,7 @@ public class MVELDialect
         if ( this.pkg != null ) {
             this.addImport( this.pkg.getName() + ".*" );
         }
+        this.addImport( "java.lang.*" );
     }
 
     public void readExternal(ObjectInput in) throws IOException,

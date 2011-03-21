@@ -100,7 +100,7 @@ public class JavaExprAnalyzer {
                 result.addLocalVariable( ident.getIdentifier(), descr );
             }
         }
-        result.setBlockDescrs( parser.getBlockDescr() );
+        result.setBlockDescrs( parser.getRootBlockDescr() );
 
         return analyze( result,
                         availableIdentifiers );
