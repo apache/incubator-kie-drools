@@ -26,6 +26,7 @@ import java.util.Set;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 
 /**
@@ -37,8 +38,7 @@ public class JavaAnalysisResult implements AnalysisResult {
     private Set<String> identifiers = Collections.emptySet();
     private Map<String,JavaLocalDeclarationDescr> localVariables = Collections.emptyMap();
     private Set<String> notBoundedIdentifiers = Collections.emptySet();
-    private List<JavaBlockDescr> blocks = Collections.emptyList();
-    private boolean modifyExpr;
+    private JavaContainerBlockDescr blocks;
     
     public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
@@ -70,17 +70,11 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void setNotBoundedIdentifiers(Set<String> notBoundedIdentifiers) {
         this.notBoundedIdentifiers = notBoundedIdentifiers;
     }
-    public List<JavaBlockDescr> getBlockDescrs() {
+    public JavaContainerBlockDescr getBlockDescrs() {
         return blocks;
     }
-    public void setBlockDescrs(List<JavaBlockDescr> blocks) {
+    public void setBlockDescrs(JavaContainerBlockDescr blocks) {
         this.blocks = blocks;
-    }
-    public boolean isModifyExpr() {
-        return modifyExpr;
-    }
-    public void setModifyExpr(boolean modifyExpr) {
-        this.modifyExpr = modifyExpr;
     }
         
 }

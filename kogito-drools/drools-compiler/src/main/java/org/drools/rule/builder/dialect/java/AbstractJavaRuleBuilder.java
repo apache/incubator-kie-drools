@@ -77,11 +77,6 @@ public class AbstractJavaRuleBuilder {
         map.put( "invokerClassName",
                  context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
 
-        if ( analysis != null ) {
-            map.put( "methodExpr",
-                     analysis.isModifyExpr() );
-        }
-
         if ( text != null ) {
             map.put( "text",
                      text );

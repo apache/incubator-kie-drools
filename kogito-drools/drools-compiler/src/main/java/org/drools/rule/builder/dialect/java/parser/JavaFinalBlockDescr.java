@@ -1,28 +1,37 @@
 package org.drools.rule.builder.dialect.java.parser;
 
-import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
+import java.util.ArrayList;
+import java.util.List;
 
-public class JavaFinalBlockDescr implements JavaBlockDescr {
-    private int start;
-    private int end;
-    private int textStart;      
-    
+public class JavaFinalBlockDescr extends AbstractJavaContainerBlockDescr
+    implements
+    JavaBlockDescr,
+    JavaContainerBlockDescr {
+    private int                  start;
+    private int                  end;
+    private int                  textStart;
+
+
     public JavaFinalBlockDescr() {
     }
+
 
     public int getStart() {
         return start;
     }
+
     public void setStart(int start) {
         this.start = start;
     }
+
     public int getEnd() {
         return end;
     }
+
     public void setEnd(int end) {
         this.end = end;
-    }     
-    
+    }
+
     public int getTextStart() {
         return textStart;
     }
@@ -32,9 +41,9 @@ public class JavaFinalBlockDescr implements JavaBlockDescr {
     }
 
     public BlockType getType() {
-        return BlockType.FINALLY;
+        return BlockType.FINAL;
     }
-    
+
     public String getTargetExpression() {
         throw new UnsupportedOperationException();
     }

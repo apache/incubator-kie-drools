@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder.dialect.java;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,8 +38,11 @@ import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaFinalBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaTryBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
 import org.drools.rule.builder.dialect.java.parser.JavaRetractBlockDescr;
@@ -72,20 +76,38 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
         
-        AnalysisResult analysis = context.getDialect().analyzeBlock( context,
-                                                                     ruleDescr,
-                                                                     (String) ruleDescr.getConsequence(),
-                                                                     new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
-                                                                                          context.getPackageBuilder().getGlobals() ) );
+        BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                         context.getPackageBuilder().getGlobals() );
+        
+        String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
+        
+        JavaAnalysisResult analysis = ( JavaAnalysisResult) context.getDialect().analyzeBlock( context,
+                                                                                             ruleDescr,
+                                                                                             consequenceStr,
+                                                                                             bindings );
 
         if ( analysis == null ) {
             // not possible to get the analysis results
             return;
         }
+        
+        // This is a list of all the non container blocks, which initially are in tree form.
+        List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
+        
+        // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
+        setContainerBlockInputs(context, 
+                                descrs,
+                                analysis.getBlockDescrs(), 
+                                consequenceStr,
+                                bindings,
+                                new HashMap(),
+                                0 );
 
+        // this will fix modify, retract, insert, update, entrypoints and channels
         String fixedConsequence = this.fixBlockDescr( context,
-                                                      (JavaAnalysisResult) analysis,
-                                                      ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName ),
+                                                      consequenceStr,                                                      
+                                                      descrs,
+                                                      bindings,
                                                       decls );
 
         if ( fixedConsequence == null ) {
@@ -150,15 +172,15 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
     }
-
+    
     protected String fixBlockDescr(final RuleBuildContext context,
-                                   final JavaAnalysisResult analysis,
                                    String originalCode, 
+                                   List<JavaBlockDescr> blocks,
+                                   BoundIdentifiers bindings,
                                    Map<String, Declaration> decls) {
         MVELDialect mvel = (MVELDialect) context.getDialect( "mvel" );
 
         // sorting exit points for correct order iteration
-        List<JavaBlockDescr> blocks = analysis.getBlockDescrs();
         Collections.sort( blocks,
                           new Comparator<JavaBlockDescr>() {
                               public int compare(JavaBlockDescr o1,
@@ -168,90 +190,34 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                           } );     
 
         StringBuilder consequence = new StringBuilder();
-        int lastAdded = 0;
-        boolean modifyExpr = true;
+        int lastAdded = 0;        
         
-        // first do simple rewrites for try/catch
-        for ( JavaBlockDescr block : blocks ) {
-            if ( block.getType() != BlockType.TRY ) {
-                continue;
-            }
-            
-            if ( block.getType() == BlockType.TRY ) {
-                // adding chunk
-                consequence.append( originalCode.substring( lastAdded,
-                                                            block.getStart() - 1 ) );                
-                JavaTryBlockDescr tryDescr = (JavaTryBlockDescr) block;
-                if ( tryDescr.getFinal() != null ) {
-                    lastAdded = tryDescr.getFinal().getEnd();
-                } else {
-                    lastAdded = tryDescr.getCatches().get( tryDescr.getCatches().size()-1 ).getEnd();
-                }
-            }
-            
-            switch ( block.getType() ) {
-                case TRY :
-                    rewriteTryDescr( context,
-                                     originalCode,
-                                     consequence,
-                                     (JavaTryBlockDescr) block,
-                                      decls );
-                    break;
-                default:
-            }
-        }           
-        consequence.append( originalCode.substring( lastAdded ) );
-        originalCode = consequence.toString();
-        consequence = new StringBuilder();
-        lastAdded = 0;
-        
-        // We need to do this as MVEL doesn't recognise "with"
-        MacroProcessor macroProcessor = new MacroProcessor();
-        Map macros = new HashMap( MVELConsequenceBuilder.macros );
-        macros.put( "modify",
-                    new Macro() {
-                        public String doMacro() {
-                            return "with  ";
-                        }
-                    } );
-        macroProcessor.setMacros( macros );
-        String mvelCode = macroProcessor.parse( originalCode );
-        
-        Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
-        
-        MVELAnalysisResult mvelAnalysis = null;
-        try {
-            mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
-                                                                     context.getRuleDescr(),
-                                                                     mvel.getInterceptors(),
-                                                                     mvelCode,
-                                                                     new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals(), KnowledgeHelper.class ),
-                                                                     null );
-        } catch(Exception e) {
-            // swallow this as the error will be reported else where
-        }
-        
-        for ( JavaBlockDescr block : blocks ) {
-            if ( block.getType() == BlockType.TRY ) {
-                continue;
+        for ( JavaBlockDescr block : blocks ) {    
+            if ( block.getEnd() == 0 ) {
+                // do nothing, it was incorrectly parsed, but this error should be picked up else where
+                continue;            
             }
             
             // adding chunk
             consequence.append( originalCode.substring( lastAdded,
                                                         block.getStart() - 1 ) );
-  
+            
             lastAdded = block.getEnd();
-            switch ( block.getType() ) {  
+  
+            switch ( block.getType() ) {
+                case THROW :      
+                    consequence.append( originalCode.substring( block.getStart()-1, block.getEnd() ) );
+                    break;
                 case MODIFY :
                 case UPDATE :
                 case RETRACT :
-                    modifyExpr = rewriteDescr( context,
-                                               mvelAnalysis,
-                                               originalCode,
-                                               mvel,
-                                               consequence,
-                                               (JavaBlockDescr) block,
-                                               decls );
+                    rewriteDescr( context,
+                                  originalCode,
+                                  mvel,
+                                  consequence,
+                                 (JavaBlockDescr) block,
+                                 bindings,
+                                 decls );
                     break;
                 case ENTRY :
                 case EXIT :
@@ -261,12 +227,135 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                            consequence,
                                            (JavaInterfacePointsDescr) block );
                     break;
+                default:
             }
         }
-        analysis.setModifyExpr( modifyExpr );
         consequence.append( originalCode.substring( lastAdded ) );
 
         return consequence.toString();
+    }    
+
+    protected void setContainerBlockInputs(RuleBuildContext context,
+                                           List<JavaBlockDescr> descrs,
+                                           JavaContainerBlockDescr parentBlock,
+                                           String originalCode, 
+                                           BoundIdentifiers bindings,
+                                           Map<String, Class<?>> parentVars,
+                                           int offset) {
+        StringBuilder consequence = new StringBuilder();
+        int lastAdded = 0;
+        
+        // strip blocks, so we can analyse this block with MVEL
+        for ( JavaBlockDescr block : parentBlock.getJavaBlockDescrs() ) {      
+            if ( block.getEnd() == 0 ) {
+                // do nothing, it was incorrectly parsed, but this error should be picked up else where
+                continue;            
+            }
+            
+            if ( block.getType() == BlockType.TRY ) {
+                // adding previous chunk up to the start of this block
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 - offset ) );                
+                JavaTryBlockDescr tryDescr = (JavaTryBlockDescr) block;
+                if ( tryDescr.getFinal() != null ) {
+                    lastAdded = tryDescr.getFinal().getEnd() - offset;
+                } else {
+                    lastAdded = tryDescr.getCatches().get( tryDescr.getCatches().size()-1 ).getEnd() - offset;
+                }
+                
+                stripTryDescr( context,
+                               originalCode,
+                               consequence,
+                               (JavaTryBlockDescr) block,
+                               offset );                
+            } else if (block.getType() == BlockType.THROW) {
+                // adding previous chunk up to the start of this block
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 - offset ) ); 
+                
+                JavaThrowBlockDescr throwBlock = (JavaThrowBlockDescr) block;
+                addWhiteSpaces(originalCode, consequence,  throwBlock.getStart()-offset, throwBlock.getTextStart()-offset);                
+                consequence.append( originalCode.substring( throwBlock.getTextStart()-offset-1, throwBlock.getEnd()-1-offset ) +";");
+                lastAdded = throwBlock.getEnd()-offset;
+            }
+        }           
+        consequence.append( originalCode.substring( lastAdded ) );
+        
+        // We need to do this as MVEL doesn't recognise "modify"
+        MacroProcessor macroProcessor = new MacroProcessor();
+        Map macros = new HashMap( MVELConsequenceBuilder.macros );
+        macros.put( "modify",
+                    new Macro() {
+                        public String doMacro() {
+                            return "with  ";
+                        }
+                    } );
+        macroProcessor.setMacros( macros );
+        String mvelCode = macroProcessor.parse(  consequence.toString() );
+
+        
+        Map<String, Class<?>> inputs = (Map<String, Class<?>> )(Map)getInputs(context, mvelCode, bindings, parentVars);
+        inputs.putAll( parentVars );
+        parentBlock.setInputs( inputs );
+        
+        // now go depth, set inputs for each nested container
+        // set inputs for current container blocks to be rewritten
+        for ( JavaBlockDescr block : parentBlock.getJavaBlockDescrs() ) {
+            if ( block.getType() == BlockType.TRY ) {
+                JavaTryBlockDescr tryBlock = (JavaTryBlockDescr)block;
+                setContainerBlockInputs(context,
+                                        descrs,
+                                        tryBlock,
+                                        originalCode.substring( tryBlock.getTextStart()-offset, tryBlock.getEnd()-1-offset ), 
+                                        bindings,
+                                        inputs,
+                                        tryBlock.getTextStart() );
+                for ( JavaCatchBlockDescr catchBlock : tryBlock.getCatches() ) {
+                    setContainerBlockInputs(context,
+                                            descrs,
+                                            catchBlock,
+                                            catchBlock.getClause() + "=null;" + originalCode.substring( catchBlock.getTextStart()-offset, catchBlock.getEnd()-1-offset ), 
+                                            bindings,
+                                            inputs,
+                                            tryBlock.getTextStart());                     
+                }
+                
+                if ( tryBlock.getFinal() != null ) {
+                    JavaFinalBlockDescr finalBlock = ( JavaFinalBlockDescr ) tryBlock.getFinal();
+                    setContainerBlockInputs(context,
+                                            descrs,
+                                            finalBlock,
+                                            originalCode.substring( finalBlock.getTextStart()-offset, finalBlock.getEnd()-1-offset ), 
+                                            bindings,
+                                            inputs,
+                                            tryBlock.getTextStart());                    
+                }                  
+            } else {
+                block.setInputs(inputs); // each block to be rewritten now knows it's own variables
+                descrs.add( block );
+            }
+        }
+    }
+    
+    public Map<String, Class<?>> getInputs(final RuleBuildContext context,
+                                           String code,
+                                           BoundIdentifiers bindings,
+                                           Map<String, Class<?>> parentVars) {        
+        MVELDialect mvel = (MVELDialect) context.getDialect( "mvel" );
+        
+        MVELAnalysisResult mvelAnalysis = null;
+        try {
+            mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
+                                                                     context.getRuleDescr(),
+                                                                     null,
+                                                                     code,
+                                                                     bindings,
+                                                                     parentVars );
+        } catch(Exception e) {
+            // swallow this as the error will be reported else where
+        }        
+                
+        return (mvelAnalysis != null) ? mvelAnalysis.getMvelVariables() : Collections.EMPTY_MAP;
     }
 
     private void addWhiteSpaces(String original, StringBuilder consequence, int start, int end) {
@@ -284,38 +373,28 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
     }
     
-    private void rewriteTryDescr(RuleBuildContext context,
-                                 String originalCode,
-                                 StringBuilder consequence,
-                                 JavaTryBlockDescr block,
-                                 Map<String, Declaration> decls) {      
+    private void stripTryDescr(RuleBuildContext context,
+                               String originalCode,
+                               StringBuilder consequence,
+                               JavaTryBlockDescr block,
+                               int offset) {      
         
-        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getTextStart());
-        
-        String tryString = originalCode.substring( consequence.length(),
-                                                 block.getEnd()-1 );
-        addWhiteSpaces(originalCode, consequence, consequence.length(),  block.getEnd());       
+        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getTextStart()-offset);
+        addWhiteSpaces(originalCode, consequence, consequence.length(),  block.getEnd()-offset);       
         
         for ( JavaCatchBlockDescr catchBlock : block.getCatches() ) {
             
             addWhiteSpaces( originalCode, consequence,  consequence.length(),
-                            catchBlock.getTextStart()  );             
-            String catchString = catchBlock.getClause() + "=null;" + originalCode.substring( consequence.length(),
-                                                                                             catchBlock.getEnd()-1 );
-                                                        
+                            catchBlock.getTextStart()-offset  );                                                                     
             addWhiteSpaces( originalCode, consequence,  consequence.length(),
-                            catchBlock.getEnd()  );                        
+                            catchBlock.getEnd()-offset  );                        
         }
         
         if ( block.getFinal() != null ) {
-            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getTextStart() );
-            
-            String finallyString = originalCode.substring( consequence.length(),
-                                                           block.getFinal().getEnd()-1 );
-            
-            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getEnd() );
+            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getTextStart()-offset );            
+            addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getEnd()-offset );
         }           
-    }
+    } 
 
     @SuppressWarnings("unchecked")
     private void rewriteInterfacePoint(final RuleBuildContext context,
@@ -352,30 +431,22 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
     }
     
     private boolean rewriteDescr(final RuleBuildContext context,
-                                 MVELAnalysisResult analysis, 
                                  final String originalCode,
                                  MVELDialect mvel,
                                  StringBuilder consequence,
                                  JavaBlockDescr d, 
-                                 Map<String, Declaration> decls) {
-           if ( d.getEnd() <= 0 ) {
-               // not correctly parse
-               context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                             context.getRuleDescr(),
-                                                             originalCode,
-                                                             "Incorrect syntax for expression: " + d.getTargetExpression() + "\n" ) );
-
-               return false;
-           }
-           
-           Map<String, Class<?>> variables = context.getDeclarationResolver().getDeclarationClasses(decls);
-           
+                                 BoundIdentifiers bindings,
+                                 Map<String, Declaration> decls) {         
+        if ( d.getEnd() == 0 ) {
+            // do nothing, it was incorrectly parsed, but this error should be picked up else where
+            return false;            
+        }
            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                                        context.getRuleDescr(),
                                                                                        mvel.getInterceptors(),
                                                                                        d.getTargetExpression(),
-                                                                                       new BoundIdentifiers( variables, context.getPackageBuilder().getGlobals() ),
-                                                                                       analysis != null ?  analysis.getMvelVariables() : null );
+                                                                                       bindings,
+                                                                                       d.getInputs());
 
            if ( mvelAnalysis == null ) {
                // something bad happened, issue already logged in errors
@@ -394,9 +465,8 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                return false;
            }
                  
-           String retString = ClassUtils.canonicalName( ret );
-           // adding modify expression
-                      
+           // adding modify expression           
+           String retString = ClassUtils.canonicalName( ret );                      
            String declrString;
            if (d.getTargetExpression().charAt( 0 ) == '(' ) {
                declrString = d.getTargetExpression().substring( 1,d.getTargetExpression().length() -1 ).trim();
@@ -413,9 +483,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                consequence.append( retString );
                consequence.append( " " );
                consequence.append( obj);
-               consequence.append( " = (" );
-               consequence.append( retString );
-               consequence.append( ") " );
+               consequence.append( " = " );
                consequence.append( d.getTargetExpression() );
                consequence.append( "; " );
            }
