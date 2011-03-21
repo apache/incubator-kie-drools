@@ -32,6 +32,7 @@ public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends 
     protected BehaviorDescrBuilderImpl(P parent) {
         super( new BehaviorDescr() );
         this.parent = parent;
+        this.parent.getDescr().addBehavior( descr );
     }
 
     public BehaviorDescrBuilder<P> type( String type,
