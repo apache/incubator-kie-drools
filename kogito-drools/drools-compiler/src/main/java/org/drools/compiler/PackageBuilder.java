@@ -1014,6 +1014,9 @@ public class PackageBuilder {
                 // If the type declaration is for a different namespace, process that separately.
                 PackageDescr altDescr = new PackageDescr( namespace );
                 altDescr.addTypeDeclaration( typeDescr );
+                for( ImportDescr imp : packageDescr.getImports() ) {
+                    altDescr.addImport( imp );
+                }
                 newPackage( altDescr );
                 continue;
             }

@@ -1705,9 +1705,7 @@ public class CepEspTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
                       ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
