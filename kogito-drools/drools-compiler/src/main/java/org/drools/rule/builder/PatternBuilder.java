@@ -643,7 +643,13 @@ public class PatternBuilder
             }
 
         } else if ( d instanceof AtomicExprDescr ) {
-            sbuilder.append( ((AtomicExprDescr) d).getExpression() );
+            AtomicExprDescr atom = (AtomicExprDescr) d;
+            String expr = atom.getExpression().trim();
+            if( expr.matches( "eval\\s*\\(.*\\)\\s*" ) ) { 
+                // stripping "eval" as it is no longer necessary
+                expr = expr.substring( expr.indexOf( '(' )+1, expr.lastIndexOf( ')' ) );
+            }
+            sbuilder.append( expr );
         } else if ( d instanceof ConstraintConnectiveDescr ) {
             ConstraintConnectiveDescr cc = (ConstraintConnectiveDescr) d;
             boolean afterFirst = false;
