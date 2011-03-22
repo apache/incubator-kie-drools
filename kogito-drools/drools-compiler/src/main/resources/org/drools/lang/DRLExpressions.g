@@ -220,9 +220,30 @@ instanceOfExpression returns [BaseDescr result]
   ;
 
 inExpression returns [BaseDescr result]
+@init { ConstraintConnectiveDescr descr = null; } 
   : left=relationalExpression { if( buildDescr  ) { $result = $left.result; } }
-    ( not_key in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN
-    | in=in_key LEFT_PAREN expression (COMMA expression)* RIGHT_PAREN 
+    ( not_key in=in_key LEFT_PAREN e1=expression 
+        {   descr = ConstraintConnectiveDescr.newAnd();
+            RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, $left.result, $e1.result );
+            descr.addOrMerge( rel );
+            $result = descr;
+        }
+      (COMMA e2=expression
+        {   RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, $left.result, $e2.result );
+            descr.addOrMerge( rel );
+        }
+      )* RIGHT_PAREN
+    | in=in_key LEFT_PAREN e1=expression 
+        {   descr = ConstraintConnectiveDescr.newOr();
+            RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, $left.result, $e1.result );
+            descr.addOrMerge( rel );
+            $result = descr;
+        }
+      (COMMA e2=expression
+        {   RelationalExprDescr rel = new RelationalExprDescr( "==", false, null, $left.result, $e2.result );
+            descr.addOrMerge( rel );
+        }
+      )* RIGHT_PAREN 
     )?
   ;
 
