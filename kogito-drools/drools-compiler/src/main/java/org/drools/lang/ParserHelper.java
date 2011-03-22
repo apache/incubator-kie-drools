@@ -203,6 +203,31 @@ public class ParserHelper {
                            DroolsSoftKeywords.CLASS );
     }
 
+    public boolean validateCEKeyword( int index ) {
+        return validateLT( index,
+                           DroolsSoftKeywords.NOT ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.EXISTS ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.FORALL ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.AND ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.OR ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.COLLECT ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.FROM ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.END ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.EVAL ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.OVER ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.THEN );
+    }
+
     public boolean validateStatement( int index ) {
         boolean ret = false;
         for ( String st : statementKeywords ) {
@@ -304,13 +329,6 @@ public class ParserHelper {
                                                        ((DroolsToken) token)
                                                                .getStopIndex() ) );
         }
-    }
-
-    public boolean validateNotWithBinding() {
-        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.ID && input.LA( 3 ) == DRLLexer.COLON ) {
-            return true;
-        }
-        return false;
     }
 
     public String safeSubstring( String text,
@@ -687,9 +705,8 @@ public class ParserHelper {
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
