@@ -46,6 +46,7 @@ import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaTryBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaWhileBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr.BlockType;
 import org.drools.rule.builder.dialect.java.parser.JavaRetractBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaUpdateBlockDescr;
@@ -302,6 +303,17 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                               consequence,
                               elseDescr,
                               offset );   
+            } else if ( block.getType() == BlockType.WHILE) {
+                // adding previous chunk up to the start of this block
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 - offset ) );                
+                JavaWhileBlockDescr whileDescr = (JavaWhileBlockDescr) block;
+                lastAdded = whileDescr.getEnd() - offset;               
+                stripBlockDescr( context,
+                              originalCode,
+                              consequence,
+                              whileDescr,
+                              offset );   
             }
         }           
         consequence.append( originalCode.substring( lastAdded ) );
@@ -375,6 +387,16 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                         bindings,
                                         inputs,
                                         elseBlock.getTextStart() );            
+            } else if ( block.getType() == BlockType.WHILE) { 
+                JavaWhileBlockDescr whileBlock = (JavaWhileBlockDescr)block;
+                int adjustBlock = (originalCode.charAt(  whileBlock.getTextStart()-offset-1 ) == '{') ? 0: 1 ;                
+                setContainerBlockInputs(context,
+                                        descrs,
+                                        whileBlock,
+                                        originalCode.substring( whileBlock.getTextStart()-offset+adjustBlock, whileBlock.getEnd()-1-offset-adjustBlock ), 
+                                        bindings,
+                                        inputs,
+                                        whileBlock.getTextStart() );            
             } else {
                 block.setInputs(inputs); // each block to be rewritten now knows it's own variables
                 descrs.add( block );
