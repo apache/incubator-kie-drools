@@ -690,7 +690,7 @@ statement
     | 'assert' expression (':' expression)? ';'
     | ifStatement
     | 'for' '(' forControl ')' statement
-    | 'while' parExpression statement
+    | whileStatement//'while' parExpression statement
     | 'do' statement 'while' parExpression ';'
     
     | tryStatement
@@ -728,21 +728,19 @@ throwStatement
 ifStatement
     @init {
          JavaIfBlockDescr id = null;
-         JavaElseBlockDescr ed = null;
-/*         JavaTryBlockDescr td = null;
-         JavaCatchBlockDescr cd = null;
-         JavaFinalBlockDescr fd = null;*/
-         
+         JavaElseBlockDescr ed = null;         
     }
     :     
     //    | 'if' parExpression statement (options {k=1;}:'else' statement)?
     s='if' parExpression
     {
+        this.localVariableLevel++;
         id = new JavaIfBlockDescr();
         id.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(id, true); 
     }    
     x=statement 
     {
+        this.localVariableLevel--;
         id.setTextStart(((CommonToken)$x.start).getStartIndex() );
         id.setEnd(((CommonToken)$x.stop).getStopIndex() ); popContainerBlockDescr(); 
     }
@@ -750,33 +748,30 @@ ifStatement
     (
      y='else'  ('if' parExpression )?
     {
+        this.localVariableLevel++;
         ed = new JavaElseBlockDescr();
         ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
     }             
      z=statement
     {
+        this.localVariableLevel--;
         ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
         ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
-    })*  
-     
+    })*       
+    ;      
     
-    /*(
-     y='else' 
-    {
-        ed = new JavaElseBlockDescr();
-        ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
-    }     
-     z=statement
-    {
-        ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
-        ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
-    }          
-     )? */  
-      
-    /*
+/*    
+forStatement
+    @init {
+         JavaTryBlockDescr td = null;
+         JavaCatchBlockDescr cd = null;
+         JavaFinalBlockDescr fd = null;
+         
+    }
+    :     
     s='try' 
     {   this.localVariableLevel++;
-        td = new JavaTryBlockDescr( ); td.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(td);    
+        td = new JavaTryBlockDescr( ); td.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(td, true);    
     } bs='{' blockStatement*
     {
                 
@@ -789,25 +784,42 @@ ifStatement
      {  this.localVariableLevel++;
         cd = new JavaCatchBlockDescr( $formalParameter.text );
         cd.setClauseStart( ((CommonToken)$formalParameter.start).getStartIndex() ); 
-        cd.setStart( ((CommonToken)$s).getStartIndex() );
+        cd.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(cd, false);
      } bs='{' blockStatement*
      { 
         cd.setTextStart( ((CommonToken)$bs).getStartIndex() );
         td.addCatch( cd );        
-     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--;} )* 
+     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )* 
      
      
      
      (s='finally' 
      {  this.localVariableLevel++;
-        fd = new JavaFinalBlockDescr( ); fd.setStart( ((CommonToken)$s).getStartIndex() ); 
+        fd = new JavaFinalBlockDescr( ); fd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(fd, false);
      } bs='{' blockStatement*
       {
         fd.setTextStart( ((CommonToken)$bs).getStartIndex() );        
         td.setFinally( fd );         
-      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--;} )?     
-      */
-    ;      
+      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )?     
+    ;       
+*/
+
+whileStatement
+    @init {
+         JavaWhileBlockDescr wd = null;         
+    }
+    :         
+    // 'while' parExpression statement    
+    s='while' parExpression 
+    {   wd = new JavaWhileBlockDescr( ); wd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(wd, true);    
+    } 
+    statement
+    bs= statement
+    {                
+        wd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
+        wd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
+    }   
+    ;  
     
 tryStatement
     @init {
