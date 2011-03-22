@@ -772,6 +772,8 @@ public class PatternBuilder
                                                                      fieldBindingDescr.getExpression(),
                                                                      declr,
                                                                      true );
+        declr.setReadAccessor( extractor );
+        
     }
 
     @SuppressWarnings("unchecked")
