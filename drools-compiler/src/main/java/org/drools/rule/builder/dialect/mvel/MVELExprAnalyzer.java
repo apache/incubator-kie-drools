@@ -201,7 +201,7 @@ public class MVELExprAnalyzer {
         } else {
             result = analyze( (Set<String>) Collections.EMPTY_SET,
                               availableIdentifiers );
-            result.setMvelVariables( Collections.<String, Class<?>> emptyMap() );
+            result.setMvelVariables( new HashMap<String, Class<?>>() );
 
         }
         return result;

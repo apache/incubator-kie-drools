@@ -39,7 +39,9 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaElseBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaFinalBlockDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaIfBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
@@ -205,6 +207,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             lastAdded = block.getEnd();
   
             switch ( block.getType() ) {
+                case IF :   
                 case THROW :      
                     consequence.append( originalCode.substring( block.getStart()-1, block.getEnd() ) );
                     break;
@@ -277,6 +280,28 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                 addWhiteSpaces(originalCode, consequence,  throwBlock.getStart()-offset, throwBlock.getTextStart()-offset);                
                 consequence.append( originalCode.substring( throwBlock.getTextStart()-offset-1, throwBlock.getEnd()-1-offset ) +";");
                 lastAdded = throwBlock.getEnd()-offset;
+            } else if ( block.getType() == BlockType.IF ) {
+                // adding previous chunk up to the start of this block
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 - offset ) );                
+                JavaIfBlockDescr ifDescr = (JavaIfBlockDescr) block;
+                lastAdded = ifDescr.getEnd() - offset;               
+                stripBlockDescr( context,
+                              originalCode,
+                              consequence,
+                              ifDescr,
+                              offset );   
+            } else if ( block.getType() == BlockType.ELSE ) {
+                // adding previous chunk up to the start of this block
+                consequence.append( originalCode.substring( lastAdded,
+                                                            block.getStart() - 1 - offset ) );                
+                JavaElseBlockDescr elseDescr = (JavaElseBlockDescr) block;
+                lastAdded = elseDescr.getEnd() - offset;               
+                stripBlockDescr( context,
+                              originalCode,
+                              consequence,
+                              elseDescr,
+                              offset );   
             }
         }           
         consequence.append( originalCode.substring( lastAdded ) );
@@ -330,6 +355,26 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                             inputs,
                                             tryBlock.getTextStart());                    
                 }                  
+            } else if ( block.getType() == BlockType.IF) { 
+                JavaIfBlockDescr ifBlock = (JavaIfBlockDescr)block;
+                int adjustBlock = (originalCode.charAt(  ifBlock.getTextStart()-offset-1 ) == '{') ? 0: 1 ;                
+                setContainerBlockInputs(context,
+                                        descrs,
+                                        ifBlock,
+                                        originalCode.substring( ifBlock.getTextStart()-offset+adjustBlock, ifBlock.getEnd()-1-offset-adjustBlock ), 
+                                        bindings,
+                                        inputs,
+                                        ifBlock.getTextStart() );            
+            } else if ( block.getType() == BlockType.ELSE ) { 
+                JavaElseBlockDescr elseBlock = (JavaElseBlockDescr)block;
+                int adjustBlock = (originalCode.charAt(  elseBlock.getTextStart()-offset-1 ) == '{') ? 0: 1 ;
+                setContainerBlockInputs(context,
+                                        descrs,
+                                        elseBlock,
+                                        originalCode.substring( elseBlock.getTextStart()-offset+adjustBlock, elseBlock.getEnd()-1-offset-adjustBlock ), 
+                                        bindings,
+                                        inputs,
+                                        elseBlock.getTextStart() );            
             } else {
                 block.setInputs(inputs); // each block to be rewritten now knows it's own variables
                 descrs.add( block );
@@ -355,7 +400,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             // swallow this as the error will be reported else where
         }        
                 
-        return (mvelAnalysis != null) ? mvelAnalysis.getMvelVariables() : Collections.EMPTY_MAP;
+        return (mvelAnalysis != null) ? mvelAnalysis.getMvelVariables() : new HashMap<String, Class<?>>();
     }
 
     private void addWhiteSpaces(String original, StringBuilder consequence, int start, int end) {
@@ -395,6 +440,23 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             addWhiteSpaces(originalCode, consequence, consequence.length(), block.getFinal().getEnd()-offset );
         }           
     } 
+    
+    private void stripBlockDescr(RuleBuildContext context,
+                              String originalCode,
+                              StringBuilder consequence,
+                              JavaBlockDescr block,
+                              int offset) {      
+        
+        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getEnd()-offset);        
+    }  
+    
+    private void stripElseDescr(RuleBuildContext context,
+                              String originalCode,
+                              StringBuilder consequence,
+                              JavaElseBlockDescr block,
+                              int offset) {              
+        addWhiteSpaces(originalCode, consequence, consequence.length(), block.getEnd()-offset);        
+    }     
 
     @SuppressWarnings("unchecked")
     private void rewriteInterfacePoint(final RuleBuildContext context,
