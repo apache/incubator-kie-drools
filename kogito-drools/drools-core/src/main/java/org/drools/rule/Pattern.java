@@ -163,30 +163,31 @@ public class Pattern
             clone.setSource( (PatternSource) this.getSource().clone() );
         }
 
-        for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
-            final Object constr = it.next();
-            if ( constr instanceof Declaration ) {
-                final Declaration decl = (Declaration) constr;
+        if( this.declarations != null ) {
+            for( Declaration decl : (Iterable<Declaration>) this.declarations.values() ) {
                 clone.addDeclaration( decl.getIdentifier() ).setReadAccessor( decl.getExtractor() );
-            } else {
-                Constraint constraint = (Constraint) ((Constraint) constr).clone();
-
-                // we must update pattern references in cloned declarations
-                Declaration[] oldDecl = ((Constraint) constr).getRequiredDeclarations();
-                Declaration[] newDecl = constraint.getRequiredDeclarations();
-                for ( int i = 0; i < newDecl.length; i++ ) {
-                    if ( newDecl[i].getPattern() == this ) {
-                        newDecl[i].setPattern( clone );
-                        // we still need to call replace because there might be nested declarations to replace
-                        constraint.replaceDeclaration( oldDecl[i],
-                                                       newDecl[i] );
-                    }
-                }
-
-                clone.addConstraint( constraint );
             }
         }
 
+        for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
+            final Object constr = it.next();
+            Constraint constraint = (Constraint) ((Constraint) constr).clone();
+
+            // we must update pattern references in cloned declarations
+            Declaration[] oldDecl = ((Constraint) constr).getRequiredDeclarations();
+            Declaration[] newDecl = constraint.getRequiredDeclarations();
+            for ( int i = 0; i < newDecl.length; i++ ) {
+                if ( newDecl[i].getPattern() == this ) {
+                    newDecl[i].setPattern( clone );
+                    // we still need to call replace because there might be nested declarations to replace
+                    constraint.replaceDeclaration( oldDecl[i],
+                                                   newDecl[i] );
+                }
+            }
+
+            clone.addConstraint( constraint );
+        }
+        
         if ( behaviors != null ) {
             for ( Behavior behavior : this.behaviors ) {
                 clone.addBehavior( behavior );
