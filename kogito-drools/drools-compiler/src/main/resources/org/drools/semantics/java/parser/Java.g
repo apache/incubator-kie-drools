@@ -113,7 +113,7 @@ options {k=2; backtrack=true; memoize=true;}
             }      
             
             public void popContainerBlockDescr() {
-                blocks.remove( );
+                blocks.removeLast( );
             }          
         
         public JavaRootBlockDescr getRootBlockDescr() { return rootBlockDescr; }
@@ -727,14 +727,52 @@ throwStatement
     
 ifStatement
     @init {
+         JavaIfBlockDescr id = null;
+         JavaElseBlockDescr ed = null;
 /*         JavaTryBlockDescr td = null;
          JavaCatchBlockDescr cd = null;
          JavaFinalBlockDescr fd = null;*/
          
     }
     :     
+    //    | 'if' parExpression statement (options {k=1;}:'else' statement)?
+    s='if' parExpression
+    {
+        id = new JavaIfBlockDescr();
+        id.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(id, true); 
+    }    
+    x=statement 
+    {
+        id.setTextStart(((CommonToken)$x.start).getStartIndex() );
+        id.setEnd(((CommonToken)$x.stop).getStopIndex() ); popContainerBlockDescr(); 
+    }
     
-    s='if' parExpression statement (options {k=1;}:'else' statement)?    
+    (
+     y='else'  ('if' parExpression )?
+    {
+        ed = new JavaElseBlockDescr();
+        ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
+    }             
+     z=statement
+    {
+        ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
+        ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
+    })*  
+     
+    
+    /*(
+     y='else' 
+    {
+        ed = new JavaElseBlockDescr();
+        ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
+    }     
+     z=statement
+    {
+        ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
+        ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
+    }          
+     )? */  
+      
     /*
     s='try' 
     {   this.localVariableLevel++;

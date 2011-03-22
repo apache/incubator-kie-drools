@@ -47,7 +47,7 @@ public class JavaIfBlockDescr extends AbstractJavaContainerBlockDescr
     }
 
     public BlockType getType() {
-        return BlockType.CATCH;
+        return BlockType.IF;
     }
 
 }
