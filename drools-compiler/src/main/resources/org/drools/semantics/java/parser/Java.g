@@ -813,12 +813,11 @@ whileStatement
     s='while' parExpression 
     {   wd = new JavaWhileBlockDescr( ); wd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(wd, true);    
     } 
-    statement
     bs= statement
     {                
         wd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
         wd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
-    }   
+    }    
     ;  
     
 tryStatement
