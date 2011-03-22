@@ -148,7 +148,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                 case endsWith:
                     return this.getOperator().isNegated() ^ (((String)objectValue).endsWith( (String)value.getValue() ));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)objectValue).length() == ((Long) value.getValue()).longValue() );
+                    return this.getOperator().isNegated() ^ (((String)objectValue).length() == value.getLongValue() );
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
                 }
@@ -166,7 +166,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                 case endsWith:
                     return this.getOperator().isNegated() ^ (((String)value1).endsWith( (String) value2 ));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)value1).length() == ((Long) value2).longValue() );
+                    return this.getOperator().isNegated() ^ (((String)value1).length() == ((Number) value2).longValue() );
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
                 }
@@ -184,7 +184,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                     return this.getOperator().isNegated() ^ (((String)right).endsWith( (String)((ObjectVariableContextEntry)
                             context).left));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)right).length() ==  ((Long)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)right).length() ==  ((Number)((ObjectVariableContextEntry)
                             context).left).longValue());
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
@@ -202,7 +202,7 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
                     return this.getOperator().isNegated() ^ (((String)left).endsWith((String)((ObjectVariableContextEntry)
                             context).right));
                 case length:
-                    return this.getOperator().isNegated() ^ (((String)left).length() == ((Long)((ObjectVariableContextEntry)
+                    return this.getOperator().isNegated() ^ (((String)left).length() == ((Number)((ObjectVariableContextEntry)
                             context).right).longValue());
                 default:
                     throw new IllegalAccessError("Illegal str comparison parameter");
