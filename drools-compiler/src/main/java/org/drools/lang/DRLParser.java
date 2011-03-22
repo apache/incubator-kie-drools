@@ -725,6 +725,13 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.WHEN ) ||
+                    helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) ||
+                    helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+                failMissingTokenException();
+                return null; // in case it is backtracking
+            }
+
             String name = stringId();
             if ( state.backtracking == 0 ) query.name( name );
             if ( state.failed ) return null;
@@ -819,6 +826,13 @@ public class DRLParser {
                    null,
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.WHEN ) ||
+                 helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) ||
+                 helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+                failMissingTokenException();
+                return null; // in case it is backtracking
+            }
 
             String name = stringId();
             if ( state.backtracking == 0 ) {
@@ -1422,6 +1436,8 @@ public class DRLParser {
                 lhsOr( lhs,
                        true );
                 if ( state.failed ) return;
+//            } catch ( RecognitionException re ) {
+//                reportError( re );
             } finally {
                 helper.end( CEDescrBuilder.class,
                             lhs );
@@ -1674,9 +1690,11 @@ public class DRLParser {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
             result = lhsParen( ce,
                                allowOr );
-        } else {
+        } else if ( input.LA( 1 ) == DRLLexer.ID ) {
             result = lhsPatternBind( ce,
                                      allowOr );
+        } else {
+            failMismatchedTokenException();
         }
         if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
             match( input,
@@ -1986,7 +2004,7 @@ public class DRLParser {
         }
 
         String label = null;
-        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
+        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
             label = label();
             if ( state.failed ) return null;
         }
@@ -1999,6 +2017,11 @@ public class DRLParser {
                        null,
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return null;
+
+                if ( helper.validateCEKeyword( 1 ) ) {
+                    failMismatchedTokenException();
+                    return null; // in case it is backtracking
+                }
 
                 lhsPattern( pattern,
                             label );
@@ -2076,6 +2099,28 @@ public class DRLParser {
         }
 
         return result;
+    }
+
+    private void failMismatchedTokenException() throws DroolsMismatchedTokenException {
+        if ( state.backtracking > 0 ) {
+            state.failed = true;
+        } else {
+            DroolsMismatchedTokenException mte = new DroolsMismatchedTokenException( input.LA( 1 ),
+                                                                                     input.LT( 1 ).getText(),
+                                                                                     input );
+            input.consume();
+            throw mte;
+        }
+    }
+
+    private void failMissingTokenException() throws MissingTokenException {
+        if ( state.backtracking > 0 ) {
+            state.failed = true;
+        } else {
+            throw new MissingTokenException( DRLLexer.STRING,
+                                             input,
+                                             null );
+        }
     }
 
     /**
@@ -2221,7 +2266,7 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void patternBehavior( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        if( input.LA( 1 ) == DRLLexer.PIPE ) {
+        if ( input.LA( 1 ) == DRLLexer.PIPE ) {
             while ( input.LA( 1 ) == DRLLexer.PIPE ) {
                 match( input,
                        DRLLexer.PIPE,
@@ -2284,7 +2329,7 @@ public class DRLParser {
 
             List<String> parameters = parameters();
             if ( state.failed ) return;
-            
+
             if ( state.backtracking == 0 ) {
                 behavior.parameters( parameters );
             }

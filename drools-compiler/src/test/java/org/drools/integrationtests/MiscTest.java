@@ -1925,9 +1925,7 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( rule ) );      
         
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
+        assertFalse( builder.getErrors().toString(), builder.hasErrors() );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -1935,7 +1933,6 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.fireAllRules();
-
     }
 
     @Test
