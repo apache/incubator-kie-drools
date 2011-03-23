@@ -126,7 +126,7 @@ public class DRLParser {
         PackageDescrBuilder pkg = DescrFactory.newPackage();
 
         try {
-            helper.builderContext.push( pkg );
+            helper.pushBuilderContext( pkg );
 
             // package declaration?
             if ( input.LA( 1 ) != DRLLexer.EOF && helper.validateIdentifierKey( DroolsSoftKeywords.PACKAGE ) ) {
@@ -157,7 +157,7 @@ public class DRLParser {
             helper.reportError( e );
         } finally {
             helper.setEnd();
-            helper.builderContext.pop();
+            helper.popBuilderContext();
         }
         return pkg.getDescr();
     }
@@ -1561,10 +1561,10 @@ public class DRLParser {
                     lhsAnd( or,
                             allowOr );
                     if ( state.failed ) return null;
-                    if ( state.backtracking == 0 ) {
-                        helper.end( CEDescrBuilder.class,
-                                    or );
-                    }
+                }
+                if ( state.backtracking == 0 ) {
+                    helper.end( CEDescrBuilder.class,
+                                or );
                 }
             }
         }
@@ -1672,11 +1672,10 @@ public class DRLParser {
                     lhsUnary( and,
                               allowOr );
                     if ( state.failed ) return null;
-
-                    if ( state.backtracking == 0 ) {
-                        helper.end( CEDescrBuilder.class,
-                                    and );
-                    }
+                }
+                if ( state.backtracking == 0 ) {
+                    helper.end( CEDescrBuilder.class,
+                                and );
                 }
             }
         }
@@ -2889,7 +2888,7 @@ public class DRLParser {
                 annotation = adb.newAnnotation( id.getText() );
                 helper.setStart( annotation,
                                  at );
-                helper.builderContext.push( annotation );
+                helper.pushBuilderContext( annotation );
             }
 
             try {
@@ -2913,7 +2912,7 @@ public class DRLParser {
             } finally {
                 if ( state.backtracking == 0 ) {
                     helper.setEnd();
-                    helper.builderContext.pop();
+                    helper.popBuilderContext();
                 }
             }
 

@@ -63,7 +63,7 @@ public class ParserHelper {
     private TokenStream                               input                    = null;
     private RecognizerSharedState                     state                    = null;
 
-    public Stack<DescrBuilder< ? >>                   builderContext           = null;
+    private Stack<DescrBuilder< ? >>                   builderContext           = null;
     private String                                    leftMostExpr             = null;
 
     public ParserHelper(TokenStream input,
@@ -587,7 +587,7 @@ public class ParserHelper {
                           DescrFactory.newPackage().newImport() :
                           ((PackageDescrBuilder) builderContext.peek()).newImport();
                 }
-                builderContext.push( imp );
+                pushBuilderContext( imp );
                 pushParaphrases( DroolsParaphraseTypes.IMPORT );
                 beginSentence( DroolsSentenceType.IMPORT_STATEMENT );
                 setStart( imp );
@@ -596,7 +596,7 @@ public class ParserHelper {
                 GlobalDescrBuilder global = (builderContext.empty()) ?
                                             DescrFactory.newPackage().newGlobal() :
                                             ((PackageDescrBuilder) builderContext.peek()).newGlobal();
-                builderContext.push( global );
+                pushBuilderContext( global );
                 pushParaphrases( DroolsParaphraseTypes.GLOBAL );
                 beginSentence( DroolsSentenceType.GLOBAL );
                 setStart( global );
@@ -605,14 +605,14 @@ public class ParserHelper {
                 DeclareDescrBuilder declare = (builderContext.empty()) ?
                                               DescrFactory.newPackage().newDeclare() :
                                               ((PackageDescrBuilder) builderContext.peek()).newDeclare();
-                builderContext.push( declare );
+                pushBuilderContext( declare );
                 pushParaphrases( DroolsParaphraseTypes.TYPE_DECLARE );
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
                 setStart( declare );
                 return (T) declare;
             } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 FieldDescrBuilder field = ((DeclareDescrBuilder) builderContext.peek()).newField( param );
-                builderContext.push( field );
+                pushBuilderContext( field );
                 setStart( field );
                 return (T) field;
             } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {
@@ -627,7 +627,7 @@ public class ParserHelper {
                         function.dialect( attribute.getValue() );
                     }
                 }
-                builderContext.push( function );
+                pushBuilderContext( function );
                 pushParaphrases( DroolsParaphraseTypes.FUNCTION );
                 beginSentence( DroolsSentenceType.FUNCTION );
                 setStart( function );
@@ -636,7 +636,7 @@ public class ParserHelper {
                 RuleDescrBuilder rule = (builderContext.empty()) ?
                                         DescrFactory.newPackage().newRule() :
                                         ((PackageDescrBuilder) builderContext.peek()).newRule();
-                builderContext.push( rule );
+                pushBuilderContext( rule );
                 pushParaphrases( DroolsParaphraseTypes.RULE );
                 beginSentence( DroolsSentenceType.RULE );
                 setStart( rule );
@@ -645,51 +645,51 @@ public class ParserHelper {
                 QueryDescrBuilder query = (builderContext.empty()) ?
                                         DescrFactory.newPackage().newQuery() :
                                         ((PackageDescrBuilder) builderContext.peek()).newQuery();
-                builderContext.push( query );
+                pushBuilderContext( query );
                 pushParaphrases( DroolsParaphraseTypes.QUERY );
                 beginSentence( DroolsSentenceType.QUERY );
                 setStart( query );
                 return (T) query;
             } else if ( AttributeDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 AttributeDescrBuilder attribute = ((AttributeSupportBuilder) builderContext.peek()).attribute( param );
-                builderContext.push( attribute );
+                pushBuilderContext( attribute );
                 setStart( attribute );
                 return (T) attribute;
             } else if ( EvalDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 EvalDescrBuilder< ? > eval = ((CEDescrBuilder< ? , ? >) builderContext.peek()).eval();
-                builderContext.push( eval );
+                pushBuilderContext( eval );
                 pushParaphrases( DroolsParaphraseTypes.EVAL );
                 beginSentence( DroolsSentenceType.EVAL );
                 setStart( eval );
                 return (T) eval;
             } else if ( ForallDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 ForallDescrBuilder< ? > forall = ((CEDescrBuilder< ? , ? >) builderContext.peek()).forall();
-                builderContext.push( forall );
+                pushBuilderContext( forall );
                 setStart( forall );
                 return (T) forall;
             } else if ( CEDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                builderContext.push( builder );
+                pushBuilderContext( builder );
                 setStart( builder );
                 return (T) builder;
             } else if ( PatternDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 PatternDescrBuilder< ? > pattern = ((PatternContainerDescrBuilder< ? , ? >) builderContext.peek()).pattern();
-                builderContext.push( pattern );
+                pushBuilderContext( pattern );
                 pushParaphrases( DroolsParaphraseTypes.PATTERN );
                 setStart( pattern );
                 return (T) pattern;
             } else if ( CollectDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 CollectDescrBuilder< ? > collect = ((PatternDescrBuilder< ? >) builderContext.peek()).from().collect();
-                builderContext.push( collect );
+                pushBuilderContext( collect );
                 setStart( collect );
                 return (T) collect;
             } else if ( AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 AccumulateDescrBuilder< ? > accumulate = ((PatternDescrBuilder< ? >) builderContext.peek()).from().accumulate();
-                builderContext.push( accumulate );
+                pushBuilderContext( accumulate );
                 setStart( accumulate );
                 return (T) accumulate;
             } else if ( BehaviorDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 BehaviorDescrBuilder< ? > behavior = ((PatternDescrBuilder< ? >) builderContext.peek()).behavior();
-                builderContext.push( behavior );
+                pushBuilderContext( behavior );
                 setStart( behavior );
                 return (T) behavior;
             }
@@ -706,14 +706,15 @@ public class ParserHelper {
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || 
+                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 return (T) (builderContext.empty() ? null : builderContext.peek());
             }
-            return (T) builderContext.pop();
+            return (T) popBuilderContext();
         }
         return null;
     }
@@ -721,4 +722,17 @@ public class ParserHelper {
     public String[] getStatementKeywords() {
         return statementKeywords;
     }
+    
+    public final DescrBuilder<?> popBuilderContext() {
+        //StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        //System.out.println("-- POP  : "+stackTrace[3].getMethodName() );
+        return builderContext.pop();
+    }
+
+    public final void pushBuilderContext( DescrBuilder< ? > builder ) {
+        builderContext.push( builder );
+        //StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        //System.out.println("++ PUSH : "+stackTrace[3].getMethodName() );
+    }
+    
 }
