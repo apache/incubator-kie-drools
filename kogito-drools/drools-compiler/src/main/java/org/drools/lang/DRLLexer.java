@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-03-23 13:26:52
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-03-23 14:28:01
 
     package org.drools.lang;
 
@@ -112,7 +112,7 @@ public class DRLLexer extends Lexer {
         }
         
         public String normalizeString( String input ) {
-            if( input != null && input.length() >= 2 ) {
+            if( input != null && input.length() >= 4 ) {
                 input = input.substring( 1, input.length() - 1 ); 
                 input.replaceAll( "\'", "'" );
                 input.replaceAll( "\"", "\\\"" );

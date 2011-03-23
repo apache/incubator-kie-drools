@@ -44,7 +44,7 @@ options {
     }
     
     public String normalizeString( String input ) {
-        if( input != null && input.length() >= 2 ) {
+        if( input != null && input.length() >= 4 ) {
             input = input.substring( 1, input.length() - 1 ); 
             input.replaceAll( "\'", "'" );
             input.replaceAll( "\"", "\\\"" );
