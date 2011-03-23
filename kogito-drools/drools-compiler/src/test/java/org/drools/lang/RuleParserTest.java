@@ -784,7 +784,8 @@ public class RuleParserTest extends TestCase {
         String input = "( foo )";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "foo",
                           returnData );
@@ -794,7 +795,8 @@ public class RuleParserTest extends TestCase {
         String input = "(fnord())";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "fnord()",
                           returnData );
@@ -804,7 +806,8 @@ public class RuleParserTest extends TestCase {
         String input = "( fnord( \"cheese\" ) )";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "fnord( \"cheese\" )",
                           returnData );
@@ -814,7 +817,8 @@ public class RuleParserTest extends TestCase {
         String input = "( %*9dkj)";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "%*9dkj",
                           returnData );
