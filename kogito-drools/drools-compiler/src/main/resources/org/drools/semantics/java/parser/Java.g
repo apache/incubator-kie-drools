@@ -689,7 +689,7 @@ statement
     : block
     | 'assert' expression (':' expression)? ';'
     | ifStatement
-    | 'for' '(' forControl ')' statement
+    | forStatement //'for' '(' forControl ')' statement
     | whileStatement//'while' parExpression statement
     | 'do' statement 'while' parExpression ';'
     
@@ -759,50 +759,48 @@ ifStatement
         ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
     })*       
     ;      
-    
-/*    
+       
 forStatement
+options {k=3;}
     @init {
-         JavaTryBlockDescr td = null;
-         JavaCatchBlockDescr cd = null;
-         JavaFinalBlockDescr fd = null;
+         JavaForBlockDescr fd = null;
          
-    }
-    :     
-    s='try' 
-    {   this.localVariableLevel++;
-        td = new JavaTryBlockDescr( ); td.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(td, true);    
-    } bs='{' blockStatement*
-    {
-                
-        td.setTextStart( ((CommonToken)$bs).getStartIndex() );        
+     }
+    : 
+    x='for' y='('
+    {   fd = new JavaForBlockDescr( ); 
+        fd.setStart( ((CommonToken)$x).getStartIndex() ); pushContainerBlockDescr(fd, true);    
+        fd.setStartParen( ((CommonToken)$y).getStartIndex() );            
+    }      
+    (    
+     //forControl 
+//  options {k=3;} // be efficient for common case: for (ID ID : ID) ...
+        (variableModifier* type Identifier ':' expression
+          {
+             fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
+          })
+        |  
+        (forInit? z=';' expression? ';' forUpdate?        
+         {
+             fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
+          })
 
-    } c='}' {td.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr();    }
     
- 
-    (s='catch' '(' formalParameter ')' 
-     {  this.localVariableLevel++;
-        cd = new JavaCatchBlockDescr( $formalParameter.text );
-        cd.setClauseStart( ((CommonToken)$formalParameter.start).getStartIndex() ); 
-        cd.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(cd, false);
-     } bs='{' blockStatement*
-     { 
-        cd.setTextStart( ((CommonToken)$bs).getStartIndex() );
-        td.addCatch( cd );        
-     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )* 
-     
-     
-     
-     (s='finally' 
-     {  this.localVariableLevel++;
-        fd = new JavaFinalBlockDescr( ); fd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(fd, false);
-     } bs='{' blockStatement*
-      {
-        fd.setTextStart( ((CommonToken)$bs).getStartIndex() );        
-        td.setFinally( fd );         
-      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )?     
+      )    
+     ')' bs=statement
+    {                
+        fd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
+        fd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
+    }
+    /*       
+    x='for' 
+    y='('
+           variableModifier* type Identifier z=':' expression //foreach
+           |
+           forInit? ';' expression? ';' forUpdate?                    
+       ')'    
+    bs=statement      */
     ;       
-*/
 
 whileStatement
     @init {

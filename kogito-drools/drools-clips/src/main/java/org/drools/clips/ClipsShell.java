@@ -30,9 +30,11 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.antlr.runtime.ANTLRReaderStream;
@@ -41,7 +43,6 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.base.ClassTypeResolver;
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.builder.ResourceType;
 import org.drools.clips.functions.AssertFunction;
 import org.drools.clips.functions.BindFunction;
@@ -83,7 +84,12 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
+import org.mvel2.UnresolveablePropertyException;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.mvel2.integration.VariableResolver;
+import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.integration.impl.MapVariableResolver;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 /**
  * An interactive Clips session shell.
@@ -111,7 +117,7 @@ public class ClipsShell
     private String              moduleName;
     private static final String MAIN = "MAIN";
 
-    private DroolsMVELFactory   factory;
+    private ClipsVariableResolverFactory   factory;
 
     public ClipsShell() {
         this( RuleBaseFactory.newRuleBase() );
@@ -276,20 +282,18 @@ public class ClipsShell
         //        this.typeResolver = new ClassTypeResolver( new HashSet(),
         //                                                   ((InternalRuleBase) this.ruleBase).getConfiguration().getClassLoader() );
 
-        this.factory = (DroolsMVELFactory) new DroolsMVELFactory( null,
-                                                                  null,
-                                                                  ((InternalRuleBase) this.ruleBase).getGlobals().keySet() );
-
         this.vars = new HashMap<String, Object>();
         GlobalResolver2 globalResolver = new GlobalResolver2( this.vars,
                                                               this.session.getGlobalResolver() );
-        this.session.setGlobalResolver( globalResolver );
-
-        this.factory.setContext( null,
-                                 null,
-                                 null,
-                                 this.session,
-                                 this.vars );
+        this.session.setGlobalResolver( globalResolver );        
+        
+        
+        
+        this.factory =  new ClipsVariableResolverFactory( ruleBase,
+                                                          new HashMap<String, Object> (),
+                                                          globalResolver, 
+                                                          null );
+        
     }
 
     public StatefulSession getStatefulSession() {
@@ -568,6 +572,130 @@ public class ClipsShell
         pkg.addAttribute( new AttributeDescr( "dialect",
                                               "clips" ) );
         return pkg;
+    }
+    
+    public static class ClipsVariableResolverFactory extends MapVariableResolverFactory {
+        private GlobalResolver globals;
+        private InternalRuleBase ruleBase;
+        
+        public ClipsVariableResolverFactory(RuleBase ruleBase, Map<String, Object> variables, GlobalResolver globals, VariableResolverFactory nextFactory) {
+            super( variables, nextFactory );
+            this.ruleBase = (InternalRuleBase)ruleBase;
+            this.globals = globals;
+        }
+        
+        public VariableResolver createVariable(String name, Object value) {
+            VariableResolver vr;
+
+            try {
+                (vr = getVariableResolver(name)).setValue(value);
+                return vr;
+            }
+            catch (UnresolveablePropertyException e) {
+                addResolver(name, vr = new MapVariableResolver(variables, name)).setValue(value);
+                return vr;
+            }
+        }
+
+        public VariableResolver createVariable(String name, Object value, Class<?> type) {
+            VariableResolver vr;
+            try {
+                vr = getVariableResolver(name);
+            }
+            catch (UnresolveablePropertyException e) {
+                vr = null;
+            }
+
+            if (vr != null && vr.getType() != null) {
+                throw new RuntimeException("variable already defined within scope: " + vr.getType() + " " + name);
+            }
+            else {
+                addResolver(name, vr = new MapVariableResolver(variables, name, type)).setValue(value);
+                return vr;
+            }
+        }
+
+        public VariableResolver getVariableResolver(String name) {
+            VariableResolver vr = variableResolvers.get(name);
+            if (vr != null) {
+                return vr;
+            }
+            else if (variables.containsKey(name)) {
+                variableResolvers.put(name, vr = new MapVariableResolver(variables, name));
+                return vr;
+            } else if ( this.ruleBase.getGlobals().containsKey( name ) ) {
+                variableResolvers.put(name, vr = new GlobalsVariableResolver(name, (Class) this.ruleBase.getGlobals().get( name ), globals ) );
+                return vr;                
+            }
+            else if (nextFactory != null) {
+                return nextFactory.getVariableResolver(name);
+            }
+
+            throw new UnresolveablePropertyException("unable to resolve variable '" + name + "'");
+        }
+
+
+        public boolean isResolveable(String name) {
+            return (variableResolvers.containsKey(name))
+                    || (variables != null && variables.containsKey(name))
+                    ||  this.ruleBase.getGlobals().containsKey( name )
+                    || (nextFactory != null && nextFactory.isResolveable(name));
+        }
+
+        protected VariableResolver addResolver(String name, VariableResolver vr) {
+            variableResolvers.put(name, vr);
+            return vr;
+        }
+
+
+        public boolean isTarget(String name) {
+            return variableResolvers.containsKey(name);
+        }
+
+        public Set<String> getKnownVariables() {
+            Set<String> vars = super.getKnownVariables();
+            vars.addAll( this.ruleBase.getGlobals().keySet() );
+            return vars;
+        }   
+    }
+    
+    public static class GlobalsVariableResolver implements VariableResolver {
+        private String name;
+        private Class<?> knownType;
+        private GlobalResolver globals;
+        
+        public GlobalsVariableResolver(String name,
+                                       Class knownType,
+                                       GlobalResolver globals) {
+            this.name = name;
+            this.knownType = knownType;
+            this.globals = globals;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public Class getType() {
+            return knownType;
+        }
+
+        public void setStaticType(Class type) {
+            this.knownType = type;  
+        }
+
+        public int getFlags() {
+            return 0;
+        }
+
+        public Object getValue() {
+            return this.globals.resolveGlobal( name );
+        }
+
+        public void setValue(Object value) {
+            this.globals.setGlobal( name, value );
+        }
+        
     }
 
 }
