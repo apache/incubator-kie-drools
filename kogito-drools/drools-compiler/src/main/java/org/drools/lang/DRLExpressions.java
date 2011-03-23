@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g 2011-03-22 19:54:49
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g 2011-03-22 23:06:37
 
     package org.drools.lang;
 
@@ -695,7 +695,7 @@ public class DRLExpressions extends Parser {
             if ( (LA12_0==ID) ) {
                 int LA12_1 = input.LA(2);
 
-                if ( (((synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))))) ) {
+                if ( (((synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) ) {
                     alt12=1;
                 }
                 else if ( (true) ) {
@@ -2683,15 +2683,17 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "unaryExpression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:340:1: unaryExpression returns [BaseDescr result] : ( PLUS unaryExpression | MINUS unaryExpression | INCR primary | DECR primary | left= unaryExpressionNotPlusMinus );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:340:1: unaryExpression returns [BaseDescr result] : ( PLUS ue= unaryExpression | MINUS ue= unaryExpression | INCR primary | DECR primary | left= unaryExpressionNotPlusMinus );
     public final BaseDescr unaryExpression() throws RecognitionException {
         BaseDescr result = null;
+
+        BaseDescr ue = null;
 
         DRLExpressions.unaryExpressionNotPlusMinus_return left = null;
 
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:341:5: ( PLUS unaryExpression | MINUS unaryExpression | INCR primary | DECR primary | left= unaryExpressionNotPlusMinus )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:341:5: ( PLUS ue= unaryExpression | MINUS ue= unaryExpression | INCR primary | DECR primary | left= unaryExpressionNotPlusMinus )
             int alt39=5;
             switch ( input.LA(1) ) {
             case PLUS:
@@ -2741,34 +2743,50 @@ public class DRLExpressions extends Parser {
 
             switch (alt39) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:341:9: PLUS unaryExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:341:9: PLUS ue= unaryExpression
                     {
                     match(input,PLUS,FOLLOW_PLUS_in_unaryExpression1840); if (state.failed) return result;
-                    pushFollow(FOLLOW_unaryExpression_in_unaryExpression1842);
-                    unaryExpression();
+                    pushFollow(FOLLOW_unaryExpression_in_unaryExpression1844);
+                    ue=unaryExpression();
 
                     state._fsp--;
                     if (state.failed) return result;
+                    if ( state.backtracking==0 ) {
+                       if( buildDescr ) { 
+                                  result = ue; 
+                                  if( result instanceof AtomicExprDescr ) {
+                                      ((AtomicExprDescr)result).setExpression( "+" + ((AtomicExprDescr)result).getExpression() );
+                                  }
+                              } 
+                    }
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:342:7: MINUS unaryExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:348:7: MINUS ue= unaryExpression
                     {
-                    match(input,MINUS,FOLLOW_MINUS_in_unaryExpression1850); if (state.failed) return result;
-                    pushFollow(FOLLOW_unaryExpression_in_unaryExpression1852);
-                    unaryExpression();
+                    match(input,MINUS,FOLLOW_MINUS_in_unaryExpression1863); if (state.failed) return result;
+                    pushFollow(FOLLOW_unaryExpression_in_unaryExpression1867);
+                    ue=unaryExpression();
 
                     state._fsp--;
                     if (state.failed) return result;
+                    if ( state.backtracking==0 ) {
+                       if( buildDescr ) { 
+                                  result = ue; 
+                                  if( result instanceof AtomicExprDescr ) {
+                                      ((AtomicExprDescr)result).setExpression( "-" + ((AtomicExprDescr)result).getExpression() );
+                                  }
+                              } 
+                    }
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:343:9: INCR primary
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:355:9: INCR primary
                     {
-                    match(input,INCR,FOLLOW_INCR_in_unaryExpression1862); if (state.failed) return result;
-                    pushFollow(FOLLOW_primary_in_unaryExpression1864);
+                    match(input,INCR,FOLLOW_INCR_in_unaryExpression1888); if (state.failed) return result;
+                    pushFollow(FOLLOW_primary_in_unaryExpression1890);
                     primary();
 
                     state._fsp--;
@@ -2777,10 +2795,10 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:344:9: DECR primary
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:356:9: DECR primary
                     {
-                    match(input,DECR,FOLLOW_DECR_in_unaryExpression1874); if (state.failed) return result;
-                    pushFollow(FOLLOW_primary_in_unaryExpression1876);
+                    match(input,DECR,FOLLOW_DECR_in_unaryExpression1900); if (state.failed) return result;
+                    pushFollow(FOLLOW_primary_in_unaryExpression1902);
                     primary();
 
                     state._fsp--;
@@ -2789,15 +2807,15 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 5 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:345:9: left= unaryExpressionNotPlusMinus
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:357:9: left= unaryExpressionNotPlusMinus
                     {
-                    pushFollow(FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression1888);
+                    pushFollow(FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression1914);
                     left=unaryExpressionNotPlusMinus();
 
                     state._fsp--;
                     if (state.failed) return result;
                     if ( state.backtracking==0 ) {
-                       if( buildDescr  ) { result = (left!=null?left.result:null); } 
+                       if( buildDescr ) { result = (left!=null?left.result:null); } 
                     }
 
                     }
@@ -2820,7 +2838,7 @@ public class DRLExpressions extends Parser {
     };
 
     // $ANTLR start "unaryExpressionNotPlusMinus"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:348:1: unaryExpressionNotPlusMinus returns [BaseDescr result] : ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:360:1: unaryExpressionNotPlusMinus returns [BaseDescr result] : ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? );
     public final DRLExpressions.unaryExpressionNotPlusMinus_return unaryExpressionNotPlusMinus() throws RecognitionException {
         DRLExpressions.unaryExpressionNotPlusMinus_return retval = new DRLExpressions.unaryExpressionNotPlusMinus_return();
         retval.start = input.LT(1);
@@ -2830,15 +2848,15 @@ public class DRLExpressions extends Parser {
 
          boolean isLeft = false; 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:350:5: ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:362:5: ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? )
             int alt42=4;
             alt42 = dfa42.predict(input);
             switch (alt42) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:350:9: TILDE unaryExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:362:9: TILDE unaryExpression
                     {
-                    match(input,TILDE,FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1918); if (state.failed) return retval;
-                    pushFollow(FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1920);
+                    match(input,TILDE,FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1944); if (state.failed) return retval;
+                    pushFollow(FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1946);
                     unaryExpression();
 
                     state._fsp--;
@@ -2847,10 +2865,10 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:351:8: NEGATION unaryExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:363:8: NEGATION unaryExpression
                     {
-                    match(input,NEGATION,FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1929); if (state.failed) return retval;
-                    pushFollow(FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1931);
+                    match(input,NEGATION,FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1955); if (state.failed) return retval;
+                    pushFollow(FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1957);
                     unaryExpression();
 
                     state._fsp--;
@@ -2859,9 +2877,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:352:9: ( castExpression )=> castExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:364:9: ( castExpression )=> castExpression
                     {
-                    pushFollow(FOLLOW_castExpression_in_unaryExpressionNotPlusMinus1945);
+                    pushFollow(FOLLOW_castExpression_in_unaryExpressionNotPlusMinus1971);
                     castExpression();
 
                     state._fsp--;
@@ -2870,12 +2888,12 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:353:9: left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:365:9: left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )?
                     {
                     if ( state.backtracking==0 ) {
                        isLeft = helper.getLeftMostExpr() == null;
                     }
-                    pushFollow(FOLLOW_primary_in_unaryExpressionNotPlusMinus1967);
+                    pushFollow(FOLLOW_primary_in_unaryExpressionNotPlusMinus1993);
                     left=primary();
 
                     state._fsp--;
@@ -2883,7 +2901,7 @@ public class DRLExpressions extends Parser {
                     if ( state.backtracking==0 ) {
                        if( buildDescr  ) { retval.result = left; } 
                     }
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:355:9: ( ( selector )=> selector )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:367:9: ( ( selector )=> selector )*
                     loop40:
                     do {
                         int alt40=2;
@@ -2899,9 +2917,9 @@ public class DRLExpressions extends Parser {
 
                         switch (alt40) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:355:10: ( selector )=> selector
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:367:10: ( selector )=> selector
                     	    {
-                    	    pushFollow(FOLLOW_selector_in_unaryExpressionNotPlusMinus1984);
+                    	    pushFollow(FOLLOW_selector_in_unaryExpressionNotPlusMinus2010);
                     	    selector();
 
                     	    state._fsp--;
@@ -2918,7 +2936,7 @@ public class DRLExpressions extends Parser {
                     if ( state.backtracking==0 ) {
                        if( buildDescr  && isLeft ) { helper.setLeftMostExpr( input.toString(retval.start,input.LT(-1)) ); } 
                     }
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:356:9: ( ( INCR | DECR )=> ( INCR | DECR ) )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:368:9: ( ( INCR | DECR )=> ( INCR | DECR ) )?
                     int alt41=2;
                     int LA41_0 = input.LA(1);
 
@@ -2927,7 +2945,7 @@ public class DRLExpressions extends Parser {
                     }
                     switch (alt41) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:356:10: ( INCR | DECR )=> ( INCR | DECR )
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:368:10: ( INCR | DECR )=> ( INCR | DECR )
                             {
                             if ( (input.LA(1)>=DECR && input.LA(1)<=INCR) ) {
                                 input.consume();
@@ -2965,13 +2983,13 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "castExpression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:359:1: castExpression : ( ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression | ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:371:1: castExpression : ( ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression | ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus );
     public final void castExpression() throws RecognitionException {
         BaseDescr expr = null;
 
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:360:5: ( ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression | ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:372:5: ( ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression | ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus )
             int alt43=2;
             int LA43_0 = input.LA(1);
 
@@ -3001,16 +3019,16 @@ public class DRLExpressions extends Parser {
             }
             switch (alt43) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:360:8: ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:372:8: ( LEFT_PAREN primitiveType )=> LEFT_PAREN primitiveType RIGHT_PAREN expr= unaryExpression
                     {
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_castExpression2043); if (state.failed) return ;
-                    pushFollow(FOLLOW_primitiveType_in_castExpression2045);
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_castExpression2069); if (state.failed) return ;
+                    pushFollow(FOLLOW_primitiveType_in_castExpression2071);
                     primitiveType();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_castExpression2047); if (state.failed) return ;
-                    pushFollow(FOLLOW_unaryExpression_in_castExpression2051);
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_castExpression2073); if (state.failed) return ;
+                    pushFollow(FOLLOW_unaryExpression_in_castExpression2077);
                     expr=unaryExpression();
 
                     state._fsp--;
@@ -3019,16 +3037,16 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:361:8: ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:373:8: ( LEFT_PAREN type )=> LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
                     {
-                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_castExpression2069); if (state.failed) return ;
-                    pushFollow(FOLLOW_type_in_castExpression2071);
+                    match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_castExpression2095); if (state.failed) return ;
+                    pushFollow(FOLLOW_type_in_castExpression2097);
                     type();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_castExpression2073); if (state.failed) return ;
-                    pushFollow(FOLLOW_unaryExpressionNotPlusMinus_in_castExpression2075);
+                    match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_castExpression2099); if (state.failed) return ;
+                    pushFollow(FOLLOW_unaryExpressionNotPlusMinus_in_castExpression2101);
                     unaryExpressionNotPlusMinus();
 
                     state._fsp--;
@@ -3051,17 +3069,17 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "primitiveType"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:364:1: primitiveType : ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:376:1: primitiveType : ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key );
     public final void primitiveType() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:365:5: ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:5: ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key )
             int alt44=8;
             alt44 = dfa44.predict(input);
             switch (alt44) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:365:9: boolean_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:9: boolean_key
                     {
-                    pushFollow(FOLLOW_boolean_key_in_primitiveType2098);
+                    pushFollow(FOLLOW_boolean_key_in_primitiveType2124);
                     boolean_key();
 
                     state._fsp--;
@@ -3070,9 +3088,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:366:7: char_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:378:7: char_key
                     {
-                    pushFollow(FOLLOW_char_key_in_primitiveType2106);
+                    pushFollow(FOLLOW_char_key_in_primitiveType2132);
                     char_key();
 
                     state._fsp--;
@@ -3081,9 +3099,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:367:7: byte_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:379:7: byte_key
                     {
-                    pushFollow(FOLLOW_byte_key_in_primitiveType2114);
+                    pushFollow(FOLLOW_byte_key_in_primitiveType2140);
                     byte_key();
 
                     state._fsp--;
@@ -3092,9 +3110,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:368:7: short_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:380:7: short_key
                     {
-                    pushFollow(FOLLOW_short_key_in_primitiveType2122);
+                    pushFollow(FOLLOW_short_key_in_primitiveType2148);
                     short_key();
 
                     state._fsp--;
@@ -3103,9 +3121,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 5 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:369:7: int_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:381:7: int_key
                     {
-                    pushFollow(FOLLOW_int_key_in_primitiveType2130);
+                    pushFollow(FOLLOW_int_key_in_primitiveType2156);
                     int_key();
 
                     state._fsp--;
@@ -3114,9 +3132,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 6 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:370:7: long_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:7: long_key
                     {
-                    pushFollow(FOLLOW_long_key_in_primitiveType2138);
+                    pushFollow(FOLLOW_long_key_in_primitiveType2164);
                     long_key();
 
                     state._fsp--;
@@ -3125,9 +3143,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 7 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:371:7: float_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:383:7: float_key
                     {
-                    pushFollow(FOLLOW_float_key_in_primitiveType2146);
+                    pushFollow(FOLLOW_float_key_in_primitiveType2172);
                     float_key();
 
                     state._fsp--;
@@ -3136,9 +3154,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 8 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:372:7: double_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:384:7: double_key
                     {
-                    pushFollow(FOLLOW_double_key_in_primitiveType2154);
+                    pushFollow(FOLLOW_double_key_in_primitiveType2180);
                     double_key();
 
                     state._fsp--;
@@ -3161,7 +3179,7 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "primary"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:375:1: primary returns [BaseDescr result] : ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:387:1: primary returns [BaseDescr result] : ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? );
     public final BaseDescr primary() throws RecognitionException {
         BaseDescr result = null;
 
@@ -3171,14 +3189,14 @@ public class DRLExpressions extends Parser {
 
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:376:5: ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:388:5: ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? )
             int alt49=9;
             alt49 = dfa49.predict(input);
             switch (alt49) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:376:7: ( parExpression )=>expr= parExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:388:7: ( parExpression )=>expr= parExpression
                     {
-                    pushFollow(FOLLOW_parExpression_in_primary2182);
+                    pushFollow(FOLLOW_parExpression_in_primary2208);
                     expr=parExpression();
 
                     state._fsp--;
@@ -3190,14 +3208,14 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:9: ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:9: ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments )
                     {
-                    pushFollow(FOLLOW_nonWildcardTypeArguments_in_primary2199);
+                    pushFollow(FOLLOW_nonWildcardTypeArguments_in_primary2225);
                     nonWildcardTypeArguments();
 
                     state._fsp--;
                     if (state.failed) return result;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:63: ( explicitGenericInvocationSuffix | this_key arguments )
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:63: ( explicitGenericInvocationSuffix | this_key arguments )
                     int alt45=2;
                     int LA45_0 = input.LA(1);
 
@@ -3227,9 +3245,9 @@ public class DRLExpressions extends Parser {
                     }
                     switch (alt45) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:64: explicitGenericInvocationSuffix
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:64: explicitGenericInvocationSuffix
                             {
-                            pushFollow(FOLLOW_explicitGenericInvocationSuffix_in_primary2202);
+                            pushFollow(FOLLOW_explicitGenericInvocationSuffix_in_primary2228);
                             explicitGenericInvocationSuffix();
 
                             state._fsp--;
@@ -3238,14 +3256,14 @@ public class DRLExpressions extends Parser {
                             }
                             break;
                         case 2 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:98: this_key arguments
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:98: this_key arguments
                             {
-                            pushFollow(FOLLOW_this_key_in_primary2206);
+                            pushFollow(FOLLOW_this_key_in_primary2232);
                             this_key();
 
                             state._fsp--;
                             if (state.failed) return result;
-                            pushFollow(FOLLOW_arguments_in_primary2208);
+                            pushFollow(FOLLOW_arguments_in_primary2234);
                             arguments();
 
                             state._fsp--;
@@ -3260,9 +3278,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:378:9: ( literal )=> literal
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:9: ( literal )=> literal
                     {
-                    pushFollow(FOLLOW_literal_in_primary2224);
+                    pushFollow(FOLLOW_literal_in_primary2250);
                     literal8=literal();
 
                     state._fsp--;
@@ -3274,14 +3292,14 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:380:9: ( super_key )=> super_key superSuffix
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:392:9: ( super_key )=> super_key superSuffix
                     {
-                    pushFollow(FOLLOW_super_key_in_primary2246);
+                    pushFollow(FOLLOW_super_key_in_primary2272);
                     super_key();
 
                     state._fsp--;
                     if (state.failed) return result;
-                    pushFollow(FOLLOW_superSuffix_in_primary2248);
+                    pushFollow(FOLLOW_superSuffix_in_primary2274);
                     superSuffix();
 
                     state._fsp--;
@@ -3290,14 +3308,14 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 5 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:381:9: ( new_key )=> new_key creator
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:393:9: ( new_key )=> new_key creator
                     {
-                    pushFollow(FOLLOW_new_key_in_primary2264);
+                    pushFollow(FOLLOW_new_key_in_primary2290);
                     new_key();
 
                     state._fsp--;
                     if (state.failed) return result;
-                    pushFollow(FOLLOW_creator_in_primary2266);
+                    pushFollow(FOLLOW_creator_in_primary2292);
                     creator();
 
                     state._fsp--;
@@ -3306,14 +3324,14 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 6 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:9: ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:9: ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key
                     {
-                    pushFollow(FOLLOW_primitiveType_in_primary2282);
+                    pushFollow(FOLLOW_primitiveType_in_primary2308);
                     primitiveType();
 
                     state._fsp--;
                     if (state.failed) return result;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:41: ( LEFT_SQUARE RIGHT_SQUARE )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:41: ( LEFT_SQUARE RIGHT_SQUARE )*
                     loop46:
                     do {
                         int alt46=2;
@@ -3326,10 +3344,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt46) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:42: LEFT_SQUARE RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:42: LEFT_SQUARE RIGHT_SQUARE
                     	    {
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_primary2285); if (state.failed) return result;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_primary2287); if (state.failed) return result;
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_primary2311); if (state.failed) return result;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_primary2313); if (state.failed) return result;
 
                     	    }
                     	    break;
@@ -3339,8 +3357,8 @@ public class DRLExpressions extends Parser {
                         }
                     } while (true);
 
-                    match(input,DOT,FOLLOW_DOT_in_primary2291); if (state.failed) return result;
-                    pushFollow(FOLLOW_class_key_in_primary2293);
+                    match(input,DOT,FOLLOW_DOT_in_primary2317); if (state.failed) return result;
+                    pushFollow(FOLLOW_class_key_in_primary2319);
                     class_key();
 
                     state._fsp--;
@@ -3349,9 +3367,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 7 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:384:9: ( inlineMapExpression )=> inlineMapExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:396:9: ( inlineMapExpression )=> inlineMapExpression
                     {
-                    pushFollow(FOLLOW_inlineMapExpression_in_primary2314);
+                    pushFollow(FOLLOW_inlineMapExpression_in_primary2340);
                     inlineMapExpression();
 
                     state._fsp--;
@@ -3360,9 +3378,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 8 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:385:9: ( inlineListExpression )=> inlineListExpression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:397:9: ( inlineListExpression )=> inlineListExpression
                     {
-                    pushFollow(FOLLOW_inlineListExpression_in_primary2330);
+                    pushFollow(FOLLOW_inlineListExpression_in_primary2356);
                     inlineListExpression();
 
                     state._fsp--;
@@ -3371,10 +3389,10 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 9 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:9: ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:9: ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )?
                     {
-                    match(input,ID,FOLLOW_ID_in_primary2344); if (state.failed) return result;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:18: ( ( DOT ID )=> DOT ID )*
+                    match(input,ID,FOLLOW_ID_in_primary2370); if (state.failed) return result;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:18: ( ( DOT ID )=> DOT ID )*
                     loop47:
                     do {
                         int alt47=2;
@@ -3399,10 +3417,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt47) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:19: ( DOT ID )=> DOT ID
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:19: ( DOT ID )=> DOT ID
                     	    {
-                    	    match(input,DOT,FOLLOW_DOT_in_primary2353); if (state.failed) return result;
-                    	    match(input,ID,FOLLOW_ID_in_primary2355); if (state.failed) return result;
+                    	    match(input,DOT,FOLLOW_DOT_in_primary2379); if (state.failed) return result;
+                    	    match(input,ID,FOLLOW_ID_in_primary2381); if (state.failed) return result;
 
                     	    }
                     	    break;
@@ -3412,14 +3430,14 @@ public class DRLExpressions extends Parser {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:38: ( ( identifierSuffix )=> identifierSuffix )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:38: ( ( identifierSuffix )=> identifierSuffix )?
                     int alt48=2;
                     alt48 = dfa48.predict(input);
                     switch (alt48) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:39: ( identifierSuffix )=> identifierSuffix
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:39: ( identifierSuffix )=> identifierSuffix
                             {
-                            pushFollow(FOLLOW_identifierSuffix_in_primary2364);
+                            pushFollow(FOLLOW_identifierSuffix_in_primary2390);
                             identifierSuffix();
 
                             state._fsp--;
@@ -3448,14 +3466,14 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "inlineListExpression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:1: inlineListExpression : LEFT_SQUARE ( expressionList )? RIGHT_SQUARE ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:401:1: inlineListExpression : LEFT_SQUARE ( expressionList )? RIGHT_SQUARE ;
     public final void inlineListExpression() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:5: ( LEFT_SQUARE ( expressionList )? RIGHT_SQUARE )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:9: LEFT_SQUARE ( expressionList )? RIGHT_SQUARE
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:5: ( LEFT_SQUARE ( expressionList )? RIGHT_SQUARE )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:9: LEFT_SQUARE ( expressionList )? RIGHT_SQUARE
             {
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_inlineListExpression2386); if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:21: ( expressionList )?
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_inlineListExpression2412); if (state.failed) return ;
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:21: ( expressionList )?
             int alt50=2;
             int LA50_0 = input.LA(1);
 
@@ -3464,9 +3482,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt50) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:21: expressionList
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:21: expressionList
                     {
-                    pushFollow(FOLLOW_expressionList_in_inlineListExpression2388);
+                    pushFollow(FOLLOW_expressionList_in_inlineListExpression2414);
                     expressionList();
 
                     state._fsp--;
@@ -3477,7 +3495,7 @@ public class DRLExpressions extends Parser {
 
             }
 
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_inlineListExpression2391); if (state.failed) return ;
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_inlineListExpression2417); if (state.failed) return ;
 
             }
 
@@ -3494,19 +3512,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "inlineMapExpression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:393:1: inlineMapExpression : LEFT_SQUARE mapExpressionList RIGHT_SQUARE ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:405:1: inlineMapExpression : LEFT_SQUARE mapExpressionList RIGHT_SQUARE ;
     public final void inlineMapExpression() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:5: ( LEFT_SQUARE mapExpressionList RIGHT_SQUARE )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:7: LEFT_SQUARE mapExpressionList RIGHT_SQUARE
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:406:5: ( LEFT_SQUARE mapExpressionList RIGHT_SQUARE )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:406:7: LEFT_SQUARE mapExpressionList RIGHT_SQUARE
             {
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_inlineMapExpression2413); if (state.failed) return ;
-            pushFollow(FOLLOW_mapExpressionList_in_inlineMapExpression2415);
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_inlineMapExpression2439); if (state.failed) return ;
+            pushFollow(FOLLOW_mapExpressionList_in_inlineMapExpression2441);
             mapExpressionList();
 
             state._fsp--;
             if (state.failed) return ;
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_inlineMapExpression2417); if (state.failed) return ;
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_inlineMapExpression2443); if (state.failed) return ;
 
             }
 
@@ -3523,18 +3541,18 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "mapExpressionList"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:397:1: mapExpressionList : mapEntry ( COMMA mapEntry )* ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:409:1: mapExpressionList : mapEntry ( COMMA mapEntry )* ;
     public final void mapExpressionList() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:5: ( mapEntry ( COMMA mapEntry )* )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:7: mapEntry ( COMMA mapEntry )*
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:410:5: ( mapEntry ( COMMA mapEntry )* )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:410:7: mapEntry ( COMMA mapEntry )*
             {
-            pushFollow(FOLLOW_mapEntry_in_mapExpressionList2435);
+            pushFollow(FOLLOW_mapEntry_in_mapExpressionList2461);
             mapEntry();
 
             state._fsp--;
             if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:16: ( COMMA mapEntry )*
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:410:16: ( COMMA mapEntry )*
             loop51:
             do {
                 int alt51=2;
@@ -3547,10 +3565,10 @@ public class DRLExpressions extends Parser {
 
                 switch (alt51) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:17: COMMA mapEntry
+            	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:410:17: COMMA mapEntry
             	    {
-            	    match(input,COMMA,FOLLOW_COMMA_in_mapExpressionList2438); if (state.failed) return ;
-            	    pushFollow(FOLLOW_mapEntry_in_mapExpressionList2440);
+            	    match(input,COMMA,FOLLOW_COMMA_in_mapExpressionList2464); if (state.failed) return ;
+            	    pushFollow(FOLLOW_mapEntry_in_mapExpressionList2466);
             	    mapEntry();
 
             	    state._fsp--;
@@ -3580,19 +3598,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "mapEntry"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:401:1: mapEntry : expression COLON expression ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:413:1: mapEntry : expression COLON expression ;
     public final void mapEntry() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:5: ( expression COLON expression )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:402:7: expression COLON expression
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:414:5: ( expression COLON expression )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:414:7: expression COLON expression
             {
-            pushFollow(FOLLOW_expression_in_mapEntry2463);
+            pushFollow(FOLLOW_expression_in_mapEntry2489);
             expression();
 
             state._fsp--;
             if (state.failed) return ;
-            match(input,COLON,FOLLOW_COLON_in_mapEntry2465); if (state.failed) return ;
-            pushFollow(FOLLOW_expression_in_mapEntry2467);
+            match(input,COLON,FOLLOW_COLON_in_mapEntry2491); if (state.failed) return ;
+            pushFollow(FOLLOW_expression_in_mapEntry2493);
             expression();
 
             state._fsp--;
@@ -3613,7 +3631,7 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "parExpression"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:405:1: parExpression returns [BaseDescr result] : LEFT_PAREN expr= expression RIGHT_PAREN ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:1: parExpression returns [BaseDescr result] : LEFT_PAREN expr= expression RIGHT_PAREN ;
     public final BaseDescr parExpression() throws RecognitionException {
         BaseDescr result = null;
 
@@ -3621,16 +3639,16 @@ public class DRLExpressions extends Parser {
 
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:406:5: ( LEFT_PAREN expr= expression RIGHT_PAREN )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:406:7: LEFT_PAREN expr= expression RIGHT_PAREN
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:5: ( LEFT_PAREN expr= expression RIGHT_PAREN )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:7: LEFT_PAREN expr= expression RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_parExpression2489); if (state.failed) return result;
-            pushFollow(FOLLOW_expression_in_parExpression2493);
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_parExpression2515); if (state.failed) return result;
+            pushFollow(FOLLOW_expression_in_parExpression2519);
             expr=expression();
 
             state._fsp--;
             if (state.failed) return result;
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_parExpression2495); if (state.failed) return result;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_parExpression2521); if (state.failed) return result;
             if ( state.backtracking==0 ) {
                 if( buildDescr  ) { 
                              result = (expr!=null?expr.result:null); 
@@ -3656,10 +3674,10 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "identifierSuffix"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:416:1: identifierSuffix : ( ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key | ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+ | arguments );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:428:1: identifierSuffix : ( ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key | ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+ | arguments );
     public final void identifierSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:5: ( ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key | ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+ | arguments )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:5: ( ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key | ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+ | arguments )
             int alt54=3;
             int LA54_0 = input.LA(1);
 
@@ -3692,9 +3710,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt54) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:7: ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:7: ( LEFT_SQUARE RIGHT_SQUARE )=> ( LEFT_SQUARE RIGHT_SQUARE )+ DOT class_key
                     {
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:35: ( LEFT_SQUARE RIGHT_SQUARE )+
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:35: ( LEFT_SQUARE RIGHT_SQUARE )+
                     int cnt52=0;
                     loop52:
                     do {
@@ -3708,10 +3726,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt52) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:36: LEFT_SQUARE RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:36: LEFT_SQUARE RIGHT_SQUARE
                     	    {
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_identifierSuffix2530); if (state.failed) return ;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_identifierSuffix2532); if (state.failed) return ;
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_identifierSuffix2556); if (state.failed) return ;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_identifierSuffix2558); if (state.failed) return ;
 
                     	    }
                     	    break;
@@ -3726,8 +3744,8 @@ public class DRLExpressions extends Parser {
                         cnt52++;
                     } while (true);
 
-                    match(input,DOT,FOLLOW_DOT_in_identifierSuffix2536); if (state.failed) return ;
-                    pushFollow(FOLLOW_class_key_in_identifierSuffix2538);
+                    match(input,DOT,FOLLOW_DOT_in_identifierSuffix2562); if (state.failed) return ;
+                    pushFollow(FOLLOW_class_key_in_identifierSuffix2564);
                     class_key();
 
                     state._fsp--;
@@ -3736,9 +3754,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:430:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+
                     {
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:430:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+
                     int cnt53=0;
                     loop53:
                     do {
@@ -3746,15 +3764,15 @@ public class DRLExpressions extends Parser {
                         alt53 = dfa53.predict(input);
                         switch (alt53) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:8: ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:430:8: ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE
                     	    {
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_identifierSuffix2553); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_expression_in_identifierSuffix2555);
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_identifierSuffix2579); if (state.failed) return ;
+                    	    pushFollow(FOLLOW_expression_in_identifierSuffix2581);
                     	    expression();
 
                     	    state._fsp--;
                     	    if (state.failed) return ;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_identifierSuffix2557); if (state.failed) return ;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_identifierSuffix2583); if (state.failed) return ;
 
                     	    }
                     	    break;
@@ -3773,9 +3791,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:419:9: arguments
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:431:9: arguments
                     {
-                    pushFollow(FOLLOW_arguments_in_identifierSuffix2570);
+                    pushFollow(FOLLOW_arguments_in_identifierSuffix2596);
                     arguments();
 
                     state._fsp--;
@@ -3798,13 +3816,13 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "creator"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:427:1: creator : ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest ) ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:439:1: creator : ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest ) ;
     public final void creator() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:428:5: ( ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest ) )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:428:7: ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:440:5: ( ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest ) )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:440:7: ( nonWildcardTypeArguments )? createdName ( arrayCreatorRest | classCreatorRest )
             {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:428:7: ( nonWildcardTypeArguments )?
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:440:7: ( nonWildcardTypeArguments )?
             int alt55=2;
             int LA55_0 = input.LA(1);
 
@@ -3813,9 +3831,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt55) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:428:7: nonWildcardTypeArguments
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:440:7: nonWildcardTypeArguments
                     {
-                    pushFollow(FOLLOW_nonWildcardTypeArguments_in_creator2593);
+                    pushFollow(FOLLOW_nonWildcardTypeArguments_in_creator2619);
                     nonWildcardTypeArguments();
 
                     state._fsp--;
@@ -3826,12 +3844,12 @@ public class DRLExpressions extends Parser {
 
             }
 
-            pushFollow(FOLLOW_createdName_in_creator2596);
+            pushFollow(FOLLOW_createdName_in_creator2622);
             createdName();
 
             state._fsp--;
             if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:9: ( arrayCreatorRest | classCreatorRest )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:441:9: ( arrayCreatorRest | classCreatorRest )
             int alt56=2;
             int LA56_0 = input.LA(1);
 
@@ -3850,9 +3868,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt56) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:10: arrayCreatorRest
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:441:10: arrayCreatorRest
                     {
-                    pushFollow(FOLLOW_arrayCreatorRest_in_creator2607);
+                    pushFollow(FOLLOW_arrayCreatorRest_in_creator2633);
                     arrayCreatorRest();
 
                     state._fsp--;
@@ -3861,9 +3879,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:29: classCreatorRest
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:441:29: classCreatorRest
                     {
-                    pushFollow(FOLLOW_classCreatorRest_in_creator2611);
+                    pushFollow(FOLLOW_classCreatorRest_in_creator2637);
                     classCreatorRest();
 
                     state._fsp--;
@@ -3890,14 +3908,14 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "createdName"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:432:1: createdName : ( ID ( typeArguments )? ( DOT ID ( typeArguments )? )* | primitiveType );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:444:1: createdName : ( ID ( typeArguments )? ( DOT ID ( typeArguments )? )* | primitiveType );
     public final void createdName() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:433:5: ( ID ( typeArguments )? ( DOT ID ( typeArguments )? )* | primitiveType )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:5: ( ID ( typeArguments )? ( DOT ID ( typeArguments )? )* | primitiveType )
             int alt60=2;
             int LA60_0 = input.LA(1);
 
-            if ( (LA60_0==ID) && ((!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))))) {
+            if ( (LA60_0==ID) && ((!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))))) {
                 int LA60_1 = input.LA(2);
 
                 if ( (!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))) ) {
@@ -3923,10 +3941,10 @@ public class DRLExpressions extends Parser {
             }
             switch (alt60) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:433:7: ID ( typeArguments )? ( DOT ID ( typeArguments )? )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:7: ID ( typeArguments )? ( DOT ID ( typeArguments )? )*
                     {
-                    match(input,ID,FOLLOW_ID_in_createdName2629); if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:433:10: ( typeArguments )?
+                    match(input,ID,FOLLOW_ID_in_createdName2655); if (state.failed) return ;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:10: ( typeArguments )?
                     int alt57=2;
                     int LA57_0 = input.LA(1);
 
@@ -3935,9 +3953,9 @@ public class DRLExpressions extends Parser {
                     }
                     switch (alt57) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:433:10: typeArguments
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:10: typeArguments
                             {
-                            pushFollow(FOLLOW_typeArguments_in_createdName2631);
+                            pushFollow(FOLLOW_typeArguments_in_createdName2657);
                             typeArguments();
 
                             state._fsp--;
@@ -3948,7 +3966,7 @@ public class DRLExpressions extends Parser {
 
                     }
 
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:434:9: ( DOT ID ( typeArguments )? )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:446:9: ( DOT ID ( typeArguments )? )*
                     loop59:
                     do {
                         int alt59=2;
@@ -3961,11 +3979,11 @@ public class DRLExpressions extends Parser {
 
                         switch (alt59) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:434:11: DOT ID ( typeArguments )?
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:446:11: DOT ID ( typeArguments )?
                     	    {
-                    	    match(input,DOT,FOLLOW_DOT_in_createdName2644); if (state.failed) return ;
-                    	    match(input,ID,FOLLOW_ID_in_createdName2646); if (state.failed) return ;
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:434:18: ( typeArguments )?
+                    	    match(input,DOT,FOLLOW_DOT_in_createdName2670); if (state.failed) return ;
+                    	    match(input,ID,FOLLOW_ID_in_createdName2672); if (state.failed) return ;
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:446:18: ( typeArguments )?
                     	    int alt58=2;
                     	    int LA58_0 = input.LA(1);
 
@@ -3974,9 +3992,9 @@ public class DRLExpressions extends Parser {
                     	    }
                     	    switch (alt58) {
                     	        case 1 :
-                    	            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:434:18: typeArguments
+                    	            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:446:18: typeArguments
                     	            {
-                    	            pushFollow(FOLLOW_typeArguments_in_createdName2648);
+                    	            pushFollow(FOLLOW_typeArguments_in_createdName2674);
                     	            typeArguments();
 
                     	            state._fsp--;
@@ -4000,9 +4018,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:435:11: primitiveType
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:447:11: primitiveType
                     {
-                    pushFollow(FOLLOW_primitiveType_in_createdName2663);
+                    pushFollow(FOLLOW_primitiveType_in_createdName2689);
                     primitiveType();
 
                     state._fsp--;
@@ -4025,18 +4043,18 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "innerCreator"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:438:1: innerCreator : {...}? => ID classCreatorRest ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:450:1: innerCreator : {...}? => ID classCreatorRest ;
     public final void innerCreator() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:439:5: ({...}? => ID classCreatorRest )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:439:7: {...}? => ID classCreatorRest
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:451:5: ({...}? => ID classCreatorRest )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:451:7: {...}? => ID classCreatorRest
             {
             if ( !((!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "innerCreator", "!(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))");
             }
-            match(input,ID,FOLLOW_ID_in_innerCreator2683); if (state.failed) return ;
-            pushFollow(FOLLOW_classCreatorRest_in_innerCreator2685);
+            match(input,ID,FOLLOW_ID_in_innerCreator2709); if (state.failed) return ;
+            pushFollow(FOLLOW_classCreatorRest_in_innerCreator2711);
             classCreatorRest();
 
             state._fsp--;
@@ -4057,14 +4075,14 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "arrayCreatorRest"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:442:1: arrayCreatorRest : LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* ) ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:454:1: arrayCreatorRest : LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* ) ;
     public final void arrayCreatorRest() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:443:5: ( LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* ) )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:443:9: LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:5: ( LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* ) )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:9: LEFT_SQUARE ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* )
             {
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2704); if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:444:5: ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* )
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2730); if (state.failed) return ;
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:456:5: ( RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer | expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )* )
             int alt64=2;
             int LA64_0 = input.LA(1);
 
@@ -4083,10 +4101,10 @@ public class DRLExpressions extends Parser {
             }
             switch (alt64) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:444:9: RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:456:9: RIGHT_SQUARE ( LEFT_SQUARE RIGHT_SQUARE )* arrayInitializer
                     {
-                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2714); if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:444:22: ( LEFT_SQUARE RIGHT_SQUARE )*
+                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2740); if (state.failed) return ;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:456:22: ( LEFT_SQUARE RIGHT_SQUARE )*
                     loop61:
                     do {
                         int alt61=2;
@@ -4099,10 +4117,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt61) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:444:23: LEFT_SQUARE RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:456:23: LEFT_SQUARE RIGHT_SQUARE
                     	    {
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2717); if (state.failed) return ;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2719); if (state.failed) return ;
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2743); if (state.failed) return ;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2745); if (state.failed) return ;
 
                     	    }
                     	    break;
@@ -4112,7 +4130,7 @@ public class DRLExpressions extends Parser {
                         }
                     } while (true);
 
-                    pushFollow(FOLLOW_arrayInitializer_in_arrayCreatorRest2723);
+                    pushFollow(FOLLOW_arrayInitializer_in_arrayCreatorRest2749);
                     arrayInitializer();
 
                     state._fsp--;
@@ -4121,34 +4139,34 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:13: expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:13: expression RIGHT_SQUARE ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )* ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )*
                     {
-                    pushFollow(FOLLOW_expression_in_arrayCreatorRest2737);
+                    pushFollow(FOLLOW_expression_in_arrayCreatorRest2763);
                     expression();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2739); if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:37: ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )*
+                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2765); if (state.failed) return ;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:37: ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )*
                     loop62:
                     do {
                         int alt62=2;
                         alt62 = dfa62.predict(input);
                         switch (alt62) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:38: {...}? => LEFT_SQUARE expression RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:38: {...}? => LEFT_SQUARE expression RIGHT_SQUARE
                     	    {
                     	    if ( !((!helper.validateLT(2,"]"))) ) {
                     	        if (state.backtracking>0) {state.failed=true; return ;}
                     	        throw new FailedPredicateException(input, "arrayCreatorRest", "!helper.validateLT(2,\"]\")");
                     	    }
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2744); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_expression_in_arrayCreatorRest2746);
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2770); if (state.failed) return ;
+                    	    pushFollow(FOLLOW_expression_in_arrayCreatorRest2772);
                     	    expression();
 
                     	    state._fsp--;
                     	    if (state.failed) return ;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2748); if (state.failed) return ;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2774); if (state.failed) return ;
 
                     	    }
                     	    break;
@@ -4158,7 +4176,7 @@ public class DRLExpressions extends Parser {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:106: ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:106: ( ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE )*
                     loop63:
                     do {
                         int alt63=2;
@@ -4177,10 +4195,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt63) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:107: ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:107: ( LEFT_SQUARE RIGHT_SQUARE )=> LEFT_SQUARE RIGHT_SQUARE
                     	    {
-                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2760); if (state.failed) return ;
-                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2762); if (state.failed) return ;
+                    	    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2786); if (state.failed) return ;
+                    	    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2788); if (state.failed) return ;
 
                     	    }
                     	    break;
@@ -4212,10 +4230,10 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "variableInitializer"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:449:1: variableInitializer : ( arrayInitializer | expression );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:461:1: variableInitializer : ( arrayInitializer | expression );
     public final void variableInitializer() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:450:5: ( arrayInitializer | expression )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:462:5: ( arrayInitializer | expression )
             int alt65=2;
             int LA65_0 = input.LA(1);
 
@@ -4234,9 +4252,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt65) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:450:7: arrayInitializer
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:462:7: arrayInitializer
                     {
-                    pushFollow(FOLLOW_arrayInitializer_in_variableInitializer2791);
+                    pushFollow(FOLLOW_arrayInitializer_in_variableInitializer2817);
                     arrayInitializer();
 
                     state._fsp--;
@@ -4245,9 +4263,9 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:451:13: expression
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:463:13: expression
                     {
-                    pushFollow(FOLLOW_expression_in_variableInitializer2805);
+                    pushFollow(FOLLOW_expression_in_variableInitializer2831);
                     expression();
 
                     state._fsp--;
@@ -4270,14 +4288,14 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "arrayInitializer"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:454:1: arrayInitializer : LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:466:1: arrayInitializer : LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY ;
     public final void arrayInitializer() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:5: ( LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:7: LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:5: ( LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:7: LEFT_CURLY ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )? RIGHT_CURLY
             {
-            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_arrayInitializer2822); if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:18: ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )?
+            match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_arrayInitializer2848); if (state.failed) return ;
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:18: ( variableInitializer ( COMMA variableInitializer )* ( COMMA )? )?
             int alt68=2;
             int LA68_0 = input.LA(1);
 
@@ -4286,14 +4304,14 @@ public class DRLExpressions extends Parser {
             }
             switch (alt68) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:19: variableInitializer ( COMMA variableInitializer )* ( COMMA )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:19: variableInitializer ( COMMA variableInitializer )* ( COMMA )?
                     {
-                    pushFollow(FOLLOW_variableInitializer_in_arrayInitializer2825);
+                    pushFollow(FOLLOW_variableInitializer_in_arrayInitializer2851);
                     variableInitializer();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:39: ( COMMA variableInitializer )*
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:39: ( COMMA variableInitializer )*
                     loop66:
                     do {
                         int alt66=2;
@@ -4312,10 +4330,10 @@ public class DRLExpressions extends Parser {
 
                         switch (alt66) {
                     	case 1 :
-                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:40: COMMA variableInitializer
+                    	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:40: COMMA variableInitializer
                     	    {
-                    	    match(input,COMMA,FOLLOW_COMMA_in_arrayInitializer2828); if (state.failed) return ;
-                    	    pushFollow(FOLLOW_variableInitializer_in_arrayInitializer2830);
+                    	    match(input,COMMA,FOLLOW_COMMA_in_arrayInitializer2854); if (state.failed) return ;
+                    	    pushFollow(FOLLOW_variableInitializer_in_arrayInitializer2856);
                     	    variableInitializer();
 
                     	    state._fsp--;
@@ -4329,7 +4347,7 @@ public class DRLExpressions extends Parser {
                         }
                     } while (true);
 
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:68: ( COMMA )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:68: ( COMMA )?
                     int alt67=2;
                     int LA67_0 = input.LA(1);
 
@@ -4338,9 +4356,9 @@ public class DRLExpressions extends Parser {
                     }
                     switch (alt67) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:455:69: COMMA
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:69: COMMA
                             {
-                            match(input,COMMA,FOLLOW_COMMA_in_arrayInitializer2835); if (state.failed) return ;
+                            match(input,COMMA,FOLLOW_COMMA_in_arrayInitializer2861); if (state.failed) return ;
 
                             }
                             break;
@@ -4353,7 +4371,7 @@ public class DRLExpressions extends Parser {
 
             }
 
-            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_arrayInitializer2842); if (state.failed) return ;
+            match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_arrayInitializer2868); if (state.failed) return ;
 
             }
 
@@ -4370,13 +4388,13 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "classCreatorRest"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:458:1: classCreatorRest : arguments ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:470:1: classCreatorRest : arguments ;
     public final void classCreatorRest() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:459:5: ( arguments )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:459:7: arguments
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:471:5: ( arguments )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:471:7: arguments
             {
-            pushFollow(FOLLOW_arguments_in_classCreatorRest2859);
+            pushFollow(FOLLOW_arguments_in_classCreatorRest2885);
             arguments();
 
             state._fsp--;
@@ -4397,18 +4415,18 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "explicitGenericInvocation"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:462:1: explicitGenericInvocation : nonWildcardTypeArguments arguments ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:474:1: explicitGenericInvocation : nonWildcardTypeArguments arguments ;
     public final void explicitGenericInvocation() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:463:5: ( nonWildcardTypeArguments arguments )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:463:7: nonWildcardTypeArguments arguments
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:475:5: ( nonWildcardTypeArguments arguments )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:475:7: nonWildcardTypeArguments arguments
             {
-            pushFollow(FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation2877);
+            pushFollow(FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation2903);
             nonWildcardTypeArguments();
 
             state._fsp--;
             if (state.failed) return ;
-            pushFollow(FOLLOW_arguments_in_explicitGenericInvocation2879);
+            pushFollow(FOLLOW_arguments_in_explicitGenericInvocation2905);
             arguments();
 
             state._fsp--;
@@ -4429,19 +4447,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "nonWildcardTypeArguments"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:466:1: nonWildcardTypeArguments : LESS typeList GREATER ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:1: nonWildcardTypeArguments : LESS typeList GREATER ;
     public final void nonWildcardTypeArguments() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:5: ( LESS typeList GREATER )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:467:7: LESS typeList GREATER
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:479:5: ( LESS typeList GREATER )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:479:7: LESS typeList GREATER
             {
-            match(input,LESS,FOLLOW_LESS_in_nonWildcardTypeArguments2896); if (state.failed) return ;
-            pushFollow(FOLLOW_typeList_in_nonWildcardTypeArguments2898);
+            match(input,LESS,FOLLOW_LESS_in_nonWildcardTypeArguments2922); if (state.failed) return ;
+            pushFollow(FOLLOW_typeList_in_nonWildcardTypeArguments2924);
             typeList();
 
             state._fsp--;
             if (state.failed) return ;
-            match(input,GREATER,FOLLOW_GREATER_in_nonWildcardTypeArguments2900); if (state.failed) return ;
+            match(input,GREATER,FOLLOW_GREATER_in_nonWildcardTypeArguments2926); if (state.failed) return ;
 
             }
 
@@ -4458,10 +4476,10 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "explicitGenericInvocationSuffix"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:470:1: explicitGenericInvocationSuffix : ( super_key superSuffix | ID arguments );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:482:1: explicitGenericInvocationSuffix : ( super_key superSuffix | ID arguments );
     public final void explicitGenericInvocationSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:471:5: ( super_key superSuffix | ID arguments )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:483:5: ( super_key superSuffix | ID arguments )
             int alt69=2;
             int LA69_0 = input.LA(1);
 
@@ -4491,14 +4509,14 @@ public class DRLExpressions extends Parser {
             }
             switch (alt69) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:471:7: super_key superSuffix
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:483:7: super_key superSuffix
                     {
-                    pushFollow(FOLLOW_super_key_in_explicitGenericInvocationSuffix2917);
+                    pushFollow(FOLLOW_super_key_in_explicitGenericInvocationSuffix2943);
                     super_key();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    pushFollow(FOLLOW_superSuffix_in_explicitGenericInvocationSuffix2919);
+                    pushFollow(FOLLOW_superSuffix_in_explicitGenericInvocationSuffix2945);
                     superSuffix();
 
                     state._fsp--;
@@ -4507,10 +4525,10 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:472:10: ID arguments
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:484:10: ID arguments
                     {
-                    match(input,ID,FOLLOW_ID_in_explicitGenericInvocationSuffix2930); if (state.failed) return ;
-                    pushFollow(FOLLOW_arguments_in_explicitGenericInvocationSuffix2932);
+                    match(input,ID,FOLLOW_ID_in_explicitGenericInvocationSuffix2956); if (state.failed) return ;
+                    pushFollow(FOLLOW_arguments_in_explicitGenericInvocationSuffix2958);
                     arguments();
 
                     state._fsp--;
@@ -4533,10 +4551,10 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "selector"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:475:1: selector : ( ( DOT super_key )=> DOT super_key superSuffix | ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator | ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )? | ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:487:1: selector : ( ( DOT super_key )=> DOT super_key superSuffix | ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator | ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )? | ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE );
     public final void selector() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:476:5: ( ( DOT super_key )=> DOT super_key superSuffix | ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator | ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )? | ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:488:5: ( ( DOT super_key )=> DOT super_key superSuffix | ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator | ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )? | ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )
             int alt72=4;
             int LA72_0 = input.LA(1);
 
@@ -4572,15 +4590,15 @@ public class DRLExpressions extends Parser {
             }
             switch (alt72) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:476:9: ( DOT super_key )=> DOT super_key superSuffix
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:488:9: ( DOT super_key )=> DOT super_key superSuffix
                     {
-                    match(input,DOT,FOLLOW_DOT_in_selector2957); if (state.failed) return ;
-                    pushFollow(FOLLOW_super_key_in_selector2959);
+                    match(input,DOT,FOLLOW_DOT_in_selector2983); if (state.failed) return ;
+                    pushFollow(FOLLOW_super_key_in_selector2985);
                     super_key();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    pushFollow(FOLLOW_superSuffix_in_selector2961);
+                    pushFollow(FOLLOW_superSuffix_in_selector2987);
                     superSuffix();
 
                     state._fsp--;
@@ -4589,15 +4607,15 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:477:9: ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:9: ( DOT new_key )=> DOT new_key ( nonWildcardTypeArguments )? innerCreator
                     {
-                    match(input,DOT,FOLLOW_DOT_in_selector2977); if (state.failed) return ;
-                    pushFollow(FOLLOW_new_key_in_selector2979);
+                    match(input,DOT,FOLLOW_DOT_in_selector3003); if (state.failed) return ;
+                    pushFollow(FOLLOW_new_key_in_selector3005);
                     new_key();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:477:36: ( nonWildcardTypeArguments )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:36: ( nonWildcardTypeArguments )?
                     int alt70=2;
                     int LA70_0 = input.LA(1);
 
@@ -4606,9 +4624,9 @@ public class DRLExpressions extends Parser {
                     }
                     switch (alt70) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:477:37: nonWildcardTypeArguments
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:37: nonWildcardTypeArguments
                             {
-                            pushFollow(FOLLOW_nonWildcardTypeArguments_in_selector2982);
+                            pushFollow(FOLLOW_nonWildcardTypeArguments_in_selector3008);
                             nonWildcardTypeArguments();
 
                             state._fsp--;
@@ -4619,7 +4637,7 @@ public class DRLExpressions extends Parser {
 
                     }
 
-                    pushFollow(FOLLOW_innerCreator_in_selector2986);
+                    pushFollow(FOLLOW_innerCreator_in_selector3012);
                     innerCreator();
 
                     state._fsp--;
@@ -4628,18 +4646,18 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:9: ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:9: ( DOT ID )=> DOT ID ( ( LEFT_PAREN )=> arguments )?
                     {
-                    match(input,DOT,FOLLOW_DOT_in_selector3002); if (state.failed) return ;
-                    match(input,ID,FOLLOW_ID_in_selector3004); if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:26: ( ( LEFT_PAREN )=> arguments )?
+                    match(input,DOT,FOLLOW_DOT_in_selector3028); if (state.failed) return ;
+                    match(input,ID,FOLLOW_ID_in_selector3030); if (state.failed) return ;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:26: ( ( LEFT_PAREN )=> arguments )?
                     int alt71=2;
                     alt71 = dfa71.predict(input);
                     switch (alt71) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:27: ( LEFT_PAREN )=> arguments
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:27: ( LEFT_PAREN )=> arguments
                             {
-                            pushFollow(FOLLOW_arguments_in_selector3013);
+                            pushFollow(FOLLOW_arguments_in_selector3039);
                             arguments();
 
                             state._fsp--;
@@ -4654,15 +4672,15 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:480:9: ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:492:9: ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE
                     {
-                    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_selector3034); if (state.failed) return ;
-                    pushFollow(FOLLOW_expression_in_selector3036);
+                    match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_selector3060); if (state.failed) return ;
+                    pushFollow(FOLLOW_expression_in_selector3062);
                     expression();
 
                     state._fsp--;
                     if (state.failed) return ;
-                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_selector3038); if (state.failed) return ;
+                    match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_selector3064); if (state.failed) return ;
 
                     }
                     break;
@@ -4681,10 +4699,10 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "superSuffix"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:483:1: superSuffix : ( arguments | DOT ID ( ( LEFT_PAREN )=> arguments )? );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:495:1: superSuffix : ( arguments | DOT ID ( ( LEFT_PAREN )=> arguments )? );
     public final void superSuffix() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:484:5: ( arguments | DOT ID ( ( LEFT_PAREN )=> arguments )? )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:496:5: ( arguments | DOT ID ( ( LEFT_PAREN )=> arguments )? )
             int alt74=2;
             int LA74_0 = input.LA(1);
 
@@ -4703,9 +4721,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt74) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:484:7: arguments
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:496:7: arguments
                     {
-                    pushFollow(FOLLOW_arguments_in_superSuffix3055);
+                    pushFollow(FOLLOW_arguments_in_superSuffix3081);
                     arguments();
 
                     state._fsp--;
@@ -4714,18 +4732,18 @@ public class DRLExpressions extends Parser {
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:485:10: DOT ID ( ( LEFT_PAREN )=> arguments )?
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:497:10: DOT ID ( ( LEFT_PAREN )=> arguments )?
                     {
-                    match(input,DOT,FOLLOW_DOT_in_superSuffix3066); if (state.failed) return ;
-                    match(input,ID,FOLLOW_ID_in_superSuffix3068); if (state.failed) return ;
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:485:17: ( ( LEFT_PAREN )=> arguments )?
+                    match(input,DOT,FOLLOW_DOT_in_superSuffix3092); if (state.failed) return ;
+                    match(input,ID,FOLLOW_ID_in_superSuffix3094); if (state.failed) return ;
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:497:17: ( ( LEFT_PAREN )=> arguments )?
                     int alt73=2;
                     alt73 = dfa73.predict(input);
                     switch (alt73) {
                         case 1 :
-                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:485:18: ( LEFT_PAREN )=> arguments
+                            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:497:18: ( LEFT_PAREN )=> arguments
                             {
-                            pushFollow(FOLLOW_arguments_in_superSuffix3077);
+                            pushFollow(FOLLOW_arguments_in_superSuffix3103);
                             arguments();
 
                             state._fsp--;
@@ -4754,7 +4772,7 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "squareArguments"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:488:1: squareArguments returns [java.util.List<String> args] : LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:500:1: squareArguments returns [java.util.List<String> args] : LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE ;
     public final java.util.List<String> squareArguments() throws RecognitionException {
         java.util.List<String> args = null;
 
@@ -4762,11 +4780,11 @@ public class DRLExpressions extends Parser {
 
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:5: ( LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:7: LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:501:5: ( LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:501:7: LEFT_SQUARE (el= expressionList )? RIGHT_SQUARE
             {
-            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_squareArguments3104); if (state.failed) return args;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:19: (el= expressionList )?
+            match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_squareArguments3130); if (state.failed) return args;
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:501:19: (el= expressionList )?
             int alt75=2;
             int LA75_0 = input.LA(1);
 
@@ -4775,9 +4793,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt75) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:20: el= expressionList
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:501:20: el= expressionList
                     {
-                    pushFollow(FOLLOW_expressionList_in_squareArguments3109);
+                    pushFollow(FOLLOW_expressionList_in_squareArguments3135);
                     el=expressionList();
 
                     state._fsp--;
@@ -4791,7 +4809,7 @@ public class DRLExpressions extends Parser {
 
             }
 
-            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_squareArguments3115); if (state.failed) return args;
+            match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_squareArguments3141); if (state.failed) return args;
 
             }
 
@@ -4808,14 +4826,14 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "arguments"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:492:1: arguments : LEFT_PAREN ( expressionList )? RIGHT_PAREN ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:504:1: arguments : LEFT_PAREN ( expressionList )? RIGHT_PAREN ;
     public final void arguments() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:493:5: ( LEFT_PAREN ( expressionList )? RIGHT_PAREN )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:493:7: LEFT_PAREN ( expressionList )? RIGHT_PAREN
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:505:5: ( LEFT_PAREN ( expressionList )? RIGHT_PAREN )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:505:7: LEFT_PAREN ( expressionList )? RIGHT_PAREN
             {
-            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_arguments3132); if (state.failed) return ;
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:493:18: ( expressionList )?
+            match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_arguments3158); if (state.failed) return ;
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:505:18: ( expressionList )?
             int alt76=2;
             int LA76_0 = input.LA(1);
 
@@ -4824,9 +4842,9 @@ public class DRLExpressions extends Parser {
             }
             switch (alt76) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:493:18: expressionList
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:505:18: expressionList
                     {
-                    pushFollow(FOLLOW_expressionList_in_arguments3134);
+                    pushFollow(FOLLOW_expressionList_in_arguments3160);
                     expressionList();
 
                     state._fsp--;
@@ -4837,7 +4855,7 @@ public class DRLExpressions extends Parser {
 
             }
 
-            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_arguments3137); if (state.failed) return ;
+            match(input,RIGHT_PAREN,FOLLOW_RIGHT_PAREN_in_arguments3163); if (state.failed) return ;
 
             }
 
@@ -4854,7 +4872,7 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "expressionList"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:496:1: expressionList returns [java.util.List<String> exprs] : f= expression ( COMMA s= expression )* ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:508:1: expressionList returns [java.util.List<String> exprs] : f= expression ( COMMA s= expression )* ;
     public final java.util.List<String> expressionList() throws RecognitionException {
         java.util.List<String> exprs = null;
 
@@ -4865,10 +4883,10 @@ public class DRLExpressions extends Parser {
 
          exprs = new java.util.ArrayList<String>();
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:498:3: (f= expression ( COMMA s= expression )* )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:498:7: f= expression ( COMMA s= expression )*
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:510:3: (f= expression ( COMMA s= expression )* )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:510:7: f= expression ( COMMA s= expression )*
             {
-            pushFollow(FOLLOW_expression_in_expressionList3165);
+            pushFollow(FOLLOW_expression_in_expressionList3191);
             f=expression();
 
             state._fsp--;
@@ -4876,7 +4894,7 @@ public class DRLExpressions extends Parser {
             if ( state.backtracking==0 ) {
                exprs.add( (f!=null?input.toString(f.start,f.stop):null) ); 
             }
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:499:7: ( COMMA s= expression )*
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:511:7: ( COMMA s= expression )*
             loop77:
             do {
                 int alt77=2;
@@ -4889,10 +4907,10 @@ public class DRLExpressions extends Parser {
 
                 switch (alt77) {
             	case 1 :
-            	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:499:8: COMMA s= expression
+            	    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:511:8: COMMA s= expression
             	    {
-            	    match(input,COMMA,FOLLOW_COMMA_in_expressionList3176); if (state.failed) return exprs;
-            	    pushFollow(FOLLOW_expression_in_expressionList3180);
+            	    match(input,COMMA,FOLLOW_COMMA_in_expressionList3202); if (state.failed) return exprs;
+            	    pushFollow(FOLLOW_expression_in_expressionList3206);
             	    s=expression();
 
             	    state._fsp--;
@@ -4925,101 +4943,101 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "assignmentOperator"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:502:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN );
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:514:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN );
     public final void assignmentOperator() throws RecognitionException {
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:503:5: ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:515:5: ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN )
             int alt78=12;
             alt78 = dfa78.predict(input);
             switch (alt78) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:503:9: EQUALS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:515:9: EQUALS_ASSIGN
                     {
-                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3201); if (state.failed) return ;
+                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3227); if (state.failed) return ;
 
                     }
                     break;
                 case 2 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:504:7: PLUS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:516:7: PLUS_ASSIGN
                     {
-                    match(input,PLUS_ASSIGN,FOLLOW_PLUS_ASSIGN_in_assignmentOperator3209); if (state.failed) return ;
+                    match(input,PLUS_ASSIGN,FOLLOW_PLUS_ASSIGN_in_assignmentOperator3235); if (state.failed) return ;
 
                     }
                     break;
                 case 3 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:505:7: MINUS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:517:7: MINUS_ASSIGN
                     {
-                    match(input,MINUS_ASSIGN,FOLLOW_MINUS_ASSIGN_in_assignmentOperator3217); if (state.failed) return ;
+                    match(input,MINUS_ASSIGN,FOLLOW_MINUS_ASSIGN_in_assignmentOperator3243); if (state.failed) return ;
 
                     }
                     break;
                 case 4 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:506:7: MULT_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:518:7: MULT_ASSIGN
                     {
-                    match(input,MULT_ASSIGN,FOLLOW_MULT_ASSIGN_in_assignmentOperator3225); if (state.failed) return ;
+                    match(input,MULT_ASSIGN,FOLLOW_MULT_ASSIGN_in_assignmentOperator3251); if (state.failed) return ;
 
                     }
                     break;
                 case 5 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:507:7: DIV_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:519:7: DIV_ASSIGN
                     {
-                    match(input,DIV_ASSIGN,FOLLOW_DIV_ASSIGN_in_assignmentOperator3233); if (state.failed) return ;
+                    match(input,DIV_ASSIGN,FOLLOW_DIV_ASSIGN_in_assignmentOperator3259); if (state.failed) return ;
 
                     }
                     break;
                 case 6 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:508:7: AND_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:520:7: AND_ASSIGN
                     {
-                    match(input,AND_ASSIGN,FOLLOW_AND_ASSIGN_in_assignmentOperator3241); if (state.failed) return ;
+                    match(input,AND_ASSIGN,FOLLOW_AND_ASSIGN_in_assignmentOperator3267); if (state.failed) return ;
 
                     }
                     break;
                 case 7 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:509:7: OR_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:521:7: OR_ASSIGN
                     {
-                    match(input,OR_ASSIGN,FOLLOW_OR_ASSIGN_in_assignmentOperator3249); if (state.failed) return ;
+                    match(input,OR_ASSIGN,FOLLOW_OR_ASSIGN_in_assignmentOperator3275); if (state.failed) return ;
 
                     }
                     break;
                 case 8 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:510:7: XOR_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:522:7: XOR_ASSIGN
                     {
-                    match(input,XOR_ASSIGN,FOLLOW_XOR_ASSIGN_in_assignmentOperator3257); if (state.failed) return ;
+                    match(input,XOR_ASSIGN,FOLLOW_XOR_ASSIGN_in_assignmentOperator3283); if (state.failed) return ;
 
                     }
                     break;
                 case 9 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:511:7: MOD_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:523:7: MOD_ASSIGN
                     {
-                    match(input,MOD_ASSIGN,FOLLOW_MOD_ASSIGN_in_assignmentOperator3265); if (state.failed) return ;
+                    match(input,MOD_ASSIGN,FOLLOW_MOD_ASSIGN_in_assignmentOperator3291); if (state.failed) return ;
 
                     }
                     break;
                 case 10 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:512:7: LESS LESS EQUALS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:524:7: LESS LESS EQUALS_ASSIGN
                     {
-                    match(input,LESS,FOLLOW_LESS_in_assignmentOperator3273); if (state.failed) return ;
-                    match(input,LESS,FOLLOW_LESS_in_assignmentOperator3275); if (state.failed) return ;
-                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3277); if (state.failed) return ;
+                    match(input,LESS,FOLLOW_LESS_in_assignmentOperator3299); if (state.failed) return ;
+                    match(input,LESS,FOLLOW_LESS_in_assignmentOperator3301); if (state.failed) return ;
+                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3303); if (state.failed) return ;
 
                     }
                     break;
                 case 11 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:513:7: ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:525:7: ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN
                     {
-                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3295); if (state.failed) return ;
-                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3297); if (state.failed) return ;
-                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3299); if (state.failed) return ;
-                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3301); if (state.failed) return ;
+                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3321); if (state.failed) return ;
+                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3323); if (state.failed) return ;
+                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3325); if (state.failed) return ;
+                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3327); if (state.failed) return ;
 
                     }
                     break;
                 case 12 :
-                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:514:7: ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN
+                    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:526:7: ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN
                     {
-                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3317); if (state.failed) return ;
-                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3319); if (state.failed) return ;
-                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3321); if (state.failed) return ;
+                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3343); if (state.failed) return ;
+                    match(input,GREATER,FOLLOW_GREATER_in_assignmentOperator3345); if (state.failed) return ;
+                    match(input,EQUALS_ASSIGN,FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3347); if (state.failed) return ;
 
                     }
                     break;
@@ -5038,19 +5056,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "extends_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:520:1: extends_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:532:1: extends_key : {...}? =>id= ID ;
     public final void extends_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:521:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:521:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:533:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:533:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "extends_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_extends_key3353); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_extends_key3379); if (state.failed) return ;
 
             }
 
@@ -5067,19 +5085,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "super_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:524:1: super_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:536:1: super_key : {...}? =>id= ID ;
     public final void super_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:525:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:525:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:537:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:537:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.SUPER)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "super_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_super_key3380); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_super_key3406); if (state.failed) return ;
 
             }
 
@@ -5098,7 +5116,7 @@ public class DRLExpressions extends Parser {
     };
 
     // $ANTLR start "instanceof_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:528:1: instanceof_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:540:1: instanceof_key : {...}? =>id= ID ;
     public final DRLExpressions.instanceof_key_return instanceof_key() throws RecognitionException {
         DRLExpressions.instanceof_key_return retval = new DRLExpressions.instanceof_key_return();
         retval.start = input.LT(1);
@@ -5106,14 +5124,14 @@ public class DRLExpressions extends Parser {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:529:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:529:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:541:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:541:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "instanceof_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_instanceof_key3407); if (state.failed) return retval;
+            id=(Token)match(input,ID,FOLLOW_ID_in_instanceof_key3433); if (state.failed) return retval;
 
             }
 
@@ -5132,19 +5150,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "boolean_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:532:1: boolean_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:544:1: boolean_key : {...}? =>id= ID ;
     public final void boolean_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:533:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:533:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:545:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:545:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "boolean_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_boolean_key3435); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_boolean_key3461); if (state.failed) return ;
 
             }
 
@@ -5161,19 +5179,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "char_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:536:1: char_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:548:1: char_key : {...}? =>id= ID ;
     public final void char_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:537:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:537:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:549:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:549:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "char_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_char_key3463); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_char_key3489); if (state.failed) return ;
 
             }
 
@@ -5190,19 +5208,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "byte_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:540:1: byte_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:552:1: byte_key : {...}? =>id= ID ;
     public final void byte_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:541:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:541:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:553:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:553:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "byte_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_byte_key3491); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_byte_key3517); if (state.failed) return ;
 
             }
 
@@ -5219,19 +5237,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "short_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:544:1: short_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:556:1: short_key : {...}? =>id= ID ;
     public final void short_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:545:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:545:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:557:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:557:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "short_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_short_key3519); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_short_key3545); if (state.failed) return ;
 
             }
 
@@ -5248,19 +5266,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "int_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:548:1: int_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:560:1: int_key : {...}? =>id= ID ;
     public final void int_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:549:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:549:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:561:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:561:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "int_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.INT))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_int_key3547); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_int_key3573); if (state.failed) return ;
 
             }
 
@@ -5277,19 +5295,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "float_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:552:1: float_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:564:1: float_key : {...}? =>id= ID ;
     public final void float_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:553:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:553:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:565:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:565:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "float_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_float_key3575); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_float_key3601); if (state.failed) return ;
 
             }
 
@@ -5306,19 +5324,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "long_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:556:1: long_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:568:1: long_key : {...}? =>id= ID ;
     public final void long_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:557:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:557:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:569:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:569:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "long_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_long_key3603); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_long_key3629); if (state.failed) return ;
 
             }
 
@@ -5335,19 +5353,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "double_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:560:1: double_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:572:1: double_key : {...}? =>id= ID ;
     public final void double_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:561:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:561:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:573:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:573:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "double_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_double_key3630); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_double_key3656); if (state.failed) return ;
 
             }
 
@@ -5364,19 +5382,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "void_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:564:1: void_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:576:1: void_key : {...}? =>id= ID ;
     public final void void_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:565:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:565:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:577:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:577:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.VOID)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "void_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_void_key3658); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_void_key3684); if (state.failed) return ;
 
             }
 
@@ -5393,19 +5411,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "this_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:568:1: this_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:580:1: this_key : {...}? =>id= ID ;
     public final void this_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:569:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:569:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:581:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:581:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.THIS)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "this_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_this_key3686); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_this_key3712); if (state.failed) return ;
 
             }
 
@@ -5422,19 +5440,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "class_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:572:1: class_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:584:1: class_key : {...}? =>id= ID ;
     public final void class_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:573:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:573:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:585:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:585:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.CLASS)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "class_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_class_key3713); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_class_key3739); if (state.failed) return ;
 
             }
 
@@ -5451,19 +5469,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "new_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:576:1: new_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:588:1: new_key : {...}? =>id= ID ;
     public final void new_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:577:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:577:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:589:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:589:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.NEW)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "new_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_new_key3740); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_new_key3766); if (state.failed) return ;
 
             }
 
@@ -5480,19 +5498,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "not_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:580:1: not_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:592:1: not_key : {...}? =>id= ID ;
     public final void not_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:581:5: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:581:12: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:593:5: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:593:12: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.NOT)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "not_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_not_key3767); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_not_key3793); if (state.failed) return ;
 
             }
 
@@ -5509,19 +5527,19 @@ public class DRLExpressions extends Parser {
 
 
     // $ANTLR start "in_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:584:1: in_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:596:1: in_key : {...}? =>id= ID ;
     public final void in_key() throws RecognitionException {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:585:3: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:585:10: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:597:3: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:597:10: {...}? =>id= ID
             {
             if ( !(((helper.validateIdentifierKey(DroolsSoftKeywords.IN)))) ) {
                 if (state.backtracking>0) {state.failed=true; return ;}
                 throw new FailedPredicateException(input, "in_key", "(helper.validateIdentifierKey(DroolsSoftKeywords.IN))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_in_key3792); if (state.failed) return ;
+            id=(Token)match(input,ID,FOLLOW_ID_in_in_key3818); if (state.failed) return ;
 
             }
 
@@ -5540,7 +5558,7 @@ public class DRLExpressions extends Parser {
     };
 
     // $ANTLR start "operator_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:588:1: operator_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:600:1: operator_key : {...}? =>id= ID ;
     public final DRLExpressions.operator_key_return operator_key() throws RecognitionException {
         DRLExpressions.operator_key_return retval = new DRLExpressions.operator_key_return();
         retval.start = input.LT(1);
@@ -5548,14 +5566,14 @@ public class DRLExpressions extends Parser {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:589:3: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:589:10: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:601:3: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:601:10: {...}? =>id= ID
             {
             if ( !(((helper.isPluggableEvaluator(false)))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "operator_key", "(helper.isPluggableEvaluator(false))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_operator_key3816); if (state.failed) return retval;
+            id=(Token)match(input,ID,FOLLOW_ID_in_operator_key3842); if (state.failed) return retval;
 
             }
 
@@ -5576,7 +5594,7 @@ public class DRLExpressions extends Parser {
     };
 
     // $ANTLR start "neg_operator_key"
-    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:592:1: neg_operator_key : {...}? =>id= ID ;
+    // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:604:1: neg_operator_key : {...}? =>id= ID ;
     public final DRLExpressions.neg_operator_key_return neg_operator_key() throws RecognitionException {
         DRLExpressions.neg_operator_key_return retval = new DRLExpressions.neg_operator_key_return();
         retval.start = input.LT(1);
@@ -5584,14 +5602,14 @@ public class DRLExpressions extends Parser {
         Token id=null;
 
         try {
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:593:3: ({...}? =>id= ID )
-            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:593:10: {...}? =>id= ID
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:605:3: ({...}? =>id= ID )
+            // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:605:10: {...}? =>id= ID
             {
             if ( !(((helper.isPluggableEvaluator(true)))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "neg_operator_key", "(helper.isPluggableEvaluator(true))");
             }
-            id=(Token)match(input,ID,FOLLOW_ID_in_neg_operator_key3840); if (state.failed) return retval;
+            id=(Token)match(input,ID,FOLLOW_ID_in_neg_operator_key3866); if (state.failed) return retval;
 
             }
 
@@ -5806,10 +5824,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred14_DRLExpressions
     public final void synpred14_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:352:9: ( castExpression )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:352:10: castExpression
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:364:9: ( castExpression )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:364:10: castExpression
         {
-        pushFollow(FOLLOW_castExpression_in_synpred14_DRLExpressions1942);
+        pushFollow(FOLLOW_castExpression_in_synpred14_DRLExpressions1968);
         castExpression();
 
         state._fsp--;
@@ -5821,10 +5839,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred15_DRLExpressions
     public final void synpred15_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:355:10: ( selector )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:355:11: selector
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:367:10: ( selector )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:367:11: selector
         {
-        pushFollow(FOLLOW_selector_in_synpred15_DRLExpressions1981);
+        pushFollow(FOLLOW_selector_in_synpred15_DRLExpressions2007);
         selector();
 
         state._fsp--;
@@ -5836,7 +5854,7 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred16_DRLExpressions
     public final void synpred16_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:356:10: ( INCR | DECR )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:368:10: ( INCR | DECR )
         // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:
         {
         if ( (input.LA(1)>=DECR && input.LA(1)<=INCR) ) {
@@ -5856,11 +5874,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred17_DRLExpressions
     public final void synpred17_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:360:8: ( LEFT_PAREN primitiveType )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:360:9: LEFT_PAREN primitiveType
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:372:8: ( LEFT_PAREN primitiveType )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:372:9: LEFT_PAREN primitiveType
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred17_DRLExpressions2036); if (state.failed) return ;
-        pushFollow(FOLLOW_primitiveType_in_synpred17_DRLExpressions2038);
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred17_DRLExpressions2062); if (state.failed) return ;
+        pushFollow(FOLLOW_primitiveType_in_synpred17_DRLExpressions2064);
         primitiveType();
 
         state._fsp--;
@@ -5872,11 +5890,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred18_DRLExpressions
     public final void synpred18_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:361:8: ( LEFT_PAREN type )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:361:9: LEFT_PAREN type
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:373:8: ( LEFT_PAREN type )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:373:9: LEFT_PAREN type
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2062); if (state.failed) return ;
-        pushFollow(FOLLOW_type_in_synpred18_DRLExpressions2064);
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2088); if (state.failed) return ;
+        pushFollow(FOLLOW_type_in_synpred18_DRLExpressions2090);
         type();
 
         state._fsp--;
@@ -5888,10 +5906,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred19_DRLExpressions
     public final void synpred19_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:376:7: ( parExpression )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:376:8: parExpression
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:388:7: ( parExpression )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:388:8: parExpression
         {
-        pushFollow(FOLLOW_parExpression_in_synpred19_DRLExpressions2176);
+        pushFollow(FOLLOW_parExpression_in_synpred19_DRLExpressions2202);
         parExpression();
 
         state._fsp--;
@@ -5903,10 +5921,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred20_DRLExpressions
     public final void synpred20_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:9: ( nonWildcardTypeArguments )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:377:10: nonWildcardTypeArguments
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:9: ( nonWildcardTypeArguments )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:389:10: nonWildcardTypeArguments
         {
-        pushFollow(FOLLOW_nonWildcardTypeArguments_in_synpred20_DRLExpressions2195);
+        pushFollow(FOLLOW_nonWildcardTypeArguments_in_synpred20_DRLExpressions2221);
         nonWildcardTypeArguments();
 
         state._fsp--;
@@ -5918,10 +5936,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred21_DRLExpressions
     public final void synpred21_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:378:9: ( literal )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:378:10: literal
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:9: ( literal )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:390:10: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred21_DRLExpressions2220);
+        pushFollow(FOLLOW_literal_in_synpred21_DRLExpressions2246);
         literal();
 
         state._fsp--;
@@ -5933,10 +5951,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred22_DRLExpressions
     public final void synpred22_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:380:9: ( super_key )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:380:10: super_key
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:392:9: ( super_key )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:392:10: super_key
         {
-        pushFollow(FOLLOW_super_key_in_synpred22_DRLExpressions2242);
+        pushFollow(FOLLOW_super_key_in_synpred22_DRLExpressions2268);
         super_key();
 
         state._fsp--;
@@ -5948,10 +5966,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred23_DRLExpressions
     public final void synpred23_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:381:9: ( new_key )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:381:10: new_key
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:393:9: ( new_key )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:393:10: new_key
         {
-        pushFollow(FOLLOW_new_key_in_synpred23_DRLExpressions2260);
+        pushFollow(FOLLOW_new_key_in_synpred23_DRLExpressions2286);
         new_key();
 
         state._fsp--;
@@ -5963,10 +5981,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred24_DRLExpressions
     public final void synpred24_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:9: ( primitiveType )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:382:10: primitiveType
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:9: ( primitiveType )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:394:10: primitiveType
         {
-        pushFollow(FOLLOW_primitiveType_in_synpred24_DRLExpressions2278);
+        pushFollow(FOLLOW_primitiveType_in_synpred24_DRLExpressions2304);
         primitiveType();
 
         state._fsp--;
@@ -5978,10 +5996,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred25_DRLExpressions
     public final void synpred25_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:384:9: ( inlineMapExpression )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:384:10: inlineMapExpression
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:396:9: ( inlineMapExpression )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:396:10: inlineMapExpression
         {
-        pushFollow(FOLLOW_inlineMapExpression_in_synpred25_DRLExpressions2310);
+        pushFollow(FOLLOW_inlineMapExpression_in_synpred25_DRLExpressions2336);
         inlineMapExpression();
 
         state._fsp--;
@@ -5993,10 +6011,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred26_DRLExpressions
     public final void synpred26_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:385:9: ( inlineListExpression )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:385:10: inlineListExpression
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:397:9: ( inlineListExpression )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:397:10: inlineListExpression
         {
-        pushFollow(FOLLOW_inlineListExpression_in_synpred26_DRLExpressions2326);
+        pushFollow(FOLLOW_inlineListExpression_in_synpred26_DRLExpressions2352);
         inlineListExpression();
 
         state._fsp--;
@@ -6008,10 +6026,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred27_DRLExpressions
     public final void synpred27_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:9: ( ID )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:10: ID
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:9: ( ID )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:10: ID
         {
-        match(input,ID,FOLLOW_ID_in_synpred27_DRLExpressions2341); if (state.failed) return ;
+        match(input,ID,FOLLOW_ID_in_synpred27_DRLExpressions2367); if (state.failed) return ;
 
         }
     }
@@ -6019,11 +6037,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred28_DRLExpressions
     public final void synpred28_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:19: ( DOT ID )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:20: DOT ID
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:19: ( DOT ID )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:20: DOT ID
         {
-        match(input,DOT,FOLLOW_DOT_in_synpred28_DRLExpressions2348); if (state.failed) return ;
-        match(input,ID,FOLLOW_ID_in_synpred28_DRLExpressions2350); if (state.failed) return ;
+        match(input,DOT,FOLLOW_DOT_in_synpred28_DRLExpressions2374); if (state.failed) return ;
+        match(input,ID,FOLLOW_ID_in_synpred28_DRLExpressions2376); if (state.failed) return ;
 
         }
     }
@@ -6031,10 +6049,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred29_DRLExpressions
     public final void synpred29_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:39: ( identifierSuffix )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:386:40: identifierSuffix
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:39: ( identifierSuffix )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:398:40: identifierSuffix
         {
-        pushFollow(FOLLOW_identifierSuffix_in_synpred29_DRLExpressions2361);
+        pushFollow(FOLLOW_identifierSuffix_in_synpred29_DRLExpressions2387);
         identifierSuffix();
 
         state._fsp--;
@@ -6046,11 +6064,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred30_DRLExpressions
     public final void synpred30_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:7: ( LEFT_SQUARE RIGHT_SQUARE )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:417:8: LEFT_SQUARE RIGHT_SQUARE
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:7: ( LEFT_SQUARE RIGHT_SQUARE )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:429:8: LEFT_SQUARE RIGHT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred30_DRLExpressions2524); if (state.failed) return ;
-        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred30_DRLExpressions2526); if (state.failed) return ;
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred30_DRLExpressions2550); if (state.failed) return ;
+        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred30_DRLExpressions2552); if (state.failed) return ;
 
         }
     }
@@ -6058,10 +6076,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred31_DRLExpressions
     public final void synpred31_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:8: ( LEFT_SQUARE )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:418:9: LEFT_SQUARE
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:430:8: ( LEFT_SQUARE )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:430:9: LEFT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2548); if (state.failed) return ;
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2574); if (state.failed) return ;
 
         }
     }
@@ -6069,11 +6087,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred32_DRLExpressions
     public final void synpred32_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:107: ( LEFT_SQUARE RIGHT_SQUARE )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:445:108: LEFT_SQUARE RIGHT_SQUARE
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:107: ( LEFT_SQUARE RIGHT_SQUARE )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:457:108: LEFT_SQUARE RIGHT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred32_DRLExpressions2754); if (state.failed) return ;
-        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred32_DRLExpressions2756); if (state.failed) return ;
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred32_DRLExpressions2780); if (state.failed) return ;
+        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred32_DRLExpressions2782); if (state.failed) return ;
 
         }
     }
@@ -6081,11 +6099,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred33_DRLExpressions
     public final void synpred33_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:476:9: ( DOT super_key )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:476:10: DOT super_key
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:488:9: ( DOT super_key )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:488:10: DOT super_key
         {
-        match(input,DOT,FOLLOW_DOT_in_synpred33_DRLExpressions2952); if (state.failed) return ;
-        pushFollow(FOLLOW_super_key_in_synpred33_DRLExpressions2954);
+        match(input,DOT,FOLLOW_DOT_in_synpred33_DRLExpressions2978); if (state.failed) return ;
+        pushFollow(FOLLOW_super_key_in_synpred33_DRLExpressions2980);
         super_key();
 
         state._fsp--;
@@ -6097,11 +6115,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred34_DRLExpressions
     public final void synpred34_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:477:9: ( DOT new_key )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:477:10: DOT new_key
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:9: ( DOT new_key )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:489:10: DOT new_key
         {
-        match(input,DOT,FOLLOW_DOT_in_synpred34_DRLExpressions2972); if (state.failed) return ;
-        pushFollow(FOLLOW_new_key_in_synpred34_DRLExpressions2974);
+        match(input,DOT,FOLLOW_DOT_in_synpred34_DRLExpressions2998); if (state.failed) return ;
+        pushFollow(FOLLOW_new_key_in_synpred34_DRLExpressions3000);
         new_key();
 
         state._fsp--;
@@ -6113,11 +6131,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred35_DRLExpressions
     public final void synpred35_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:9: ( DOT ID )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:10: DOT ID
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:9: ( DOT ID )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:10: DOT ID
         {
-        match(input,DOT,FOLLOW_DOT_in_synpred35_DRLExpressions2997); if (state.failed) return ;
-        match(input,ID,FOLLOW_ID_in_synpred35_DRLExpressions2999); if (state.failed) return ;
+        match(input,DOT,FOLLOW_DOT_in_synpred35_DRLExpressions3023); if (state.failed) return ;
+        match(input,ID,FOLLOW_ID_in_synpred35_DRLExpressions3025); if (state.failed) return ;
 
         }
     }
@@ -6125,10 +6143,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred36_DRLExpressions
     public final void synpred36_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:27: ( LEFT_PAREN )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:478:28: LEFT_PAREN
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:27: ( LEFT_PAREN )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:490:28: LEFT_PAREN
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred36_DRLExpressions3008); if (state.failed) return ;
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred36_DRLExpressions3034); if (state.failed) return ;
 
         }
     }
@@ -6136,10 +6154,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred37_DRLExpressions
     public final void synpred37_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:480:9: ( LEFT_SQUARE )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:480:10: LEFT_SQUARE
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:492:9: ( LEFT_SQUARE )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:492:10: LEFT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred37_DRLExpressions3031); if (state.failed) return ;
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred37_DRLExpressions3057); if (state.failed) return ;
 
         }
     }
@@ -6147,10 +6165,10 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred38_DRLExpressions
     public final void synpred38_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:485:18: ( LEFT_PAREN )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:485:19: LEFT_PAREN
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:497:18: ( LEFT_PAREN )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:497:19: LEFT_PAREN
         {
-        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred38_DRLExpressions3072); if (state.failed) return ;
+        match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred38_DRLExpressions3098); if (state.failed) return ;
 
         }
     }
@@ -6158,12 +6176,12 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred39_DRLExpressions
     public final void synpred39_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:513:7: ( GREATER GREATER GREATER )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:513:8: GREATER GREATER GREATER
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:525:7: ( GREATER GREATER GREATER )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:525:8: GREATER GREATER GREATER
         {
-        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3287); if (state.failed) return ;
-        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3289); if (state.failed) return ;
-        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3291); if (state.failed) return ;
+        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3313); if (state.failed) return ;
+        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3315); if (state.failed) return ;
+        match(input,GREATER,FOLLOW_GREATER_in_synpred39_DRLExpressions3317); if (state.failed) return ;
 
         }
     }
@@ -6171,11 +6189,11 @@ public class DRLExpressions extends Parser {
 
     // $ANTLR start synpred40_DRLExpressions
     public final void synpred40_DRLExpressions_fragment() throws RecognitionException {   
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:514:7: ( GREATER GREATER )
-        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:514:8: GREATER GREATER
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:526:7: ( GREATER GREATER )
+        // /home/etirelli/workspace/jboss/drools-core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g:526:8: GREATER GREATER
         {
-        match(input,GREATER,FOLLOW_GREATER_in_synpred40_DRLExpressions3311); if (state.failed) return ;
-        match(input,GREATER,FOLLOW_GREATER_in_synpred40_DRLExpressions3313); if (state.failed) return ;
+        match(input,GREATER,FOLLOW_GREATER_in_synpred40_DRLExpressions3337); if (state.failed) return ;
+        match(input,GREATER,FOLLOW_GREATER_in_synpred40_DRLExpressions3339); if (state.failed) return ;
 
         }
     }
@@ -6962,7 +6980,7 @@ public class DRLExpressions extends Parser {
     static final String DFA17_acceptS =
         "\14\uffff\1\2\1\1";
     static final String DFA17_specialS =
-        "\1\uffff\1\12\1\0\1\1\1\2\1\3\1\11\1\7\1\6\1\5\1\10\1\4\2\uffff}>";
+        "\1\uffff\1\3\1\4\1\5\1\7\1\10\1\11\1\0\1\1\1\2\1\6\1\12\2\uffff}>";
     static final String[] DFA17_transitionS = {
             "\1\14\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\3\uffff\2\14\4\uffff"+
             "\1\13\1\12\1\1\1\uffff\1\14\1\uffff\1\14\1\uffff\2\14\22\uffff"+
@@ -7019,111 +7037,6 @@ public class DRLExpressions extends Parser {
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA17_2 = input.LA(1);
-
-                         
-                        int index17_2 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_2);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
-                        int LA17_3 = input.LA(1);
-
-                         
-                        int index17_3 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_3);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 2 : 
-                        int LA17_4 = input.LA(1);
-
-                         
-                        int index17_4 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_4);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 3 : 
-                        int LA17_5 = input.LA(1);
-
-                         
-                        int index17_5 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_5);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 4 : 
-                        int LA17_11 = input.LA(1);
-
-                         
-                        int index17_11 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_11);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 5 : 
-                        int LA17_9 = input.LA(1);
-
-                         
-                        int index17_9 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_9);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 6 : 
-                        int LA17_8 = input.LA(1);
-
-                         
-                        int index17_8 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
-
-                        else if ( (true) ) {s = 12;}
-
-                         
-                        input.seek(index17_8);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 7 : 
                         int LA17_7 = input.LA(1);
 
                          
@@ -7138,7 +7051,82 @@ public class DRLExpressions extends Parser {
                         input.seek(index17_7);
                         if ( s>=0 ) return s;
                         break;
-                    case 8 : 
+                    case 1 : 
+                        int LA17_8 = input.LA(1);
+
+                         
+                        int index17_8 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_8);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 2 : 
+                        int LA17_9 = input.LA(1);
+
+                         
+                        int index17_9 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_9);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 3 : 
+                        int LA17_1 = input.LA(1);
+
+                         
+                        int index17_1 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 4 : 
+                        int LA17_2 = input.LA(1);
+
+                         
+                        int index17_2 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_2);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 5 : 
+                        int LA17_3 = input.LA(1);
+
+                         
+                        int index17_3 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_3);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 6 : 
                         int LA17_10 = input.LA(1);
 
                          
@@ -7151,6 +7139,36 @@ public class DRLExpressions extends Parser {
 
                          
                         input.seek(index17_10);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 7 : 
+                        int LA17_4 = input.LA(1);
+
+                         
+                        int index17_4 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_4);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 8 : 
+                        int LA17_5 = input.LA(1);
+
+                         
+                        int index17_5 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (synpred8_DRLExpressions()) ) {s = 13;}
+
+                        else if ( (true) ) {s = 12;}
+
+                         
+                        input.seek(index17_5);
                         if ( s>=0 ) return s;
                         break;
                     case 9 : 
@@ -7169,10 +7187,10 @@ public class DRLExpressions extends Parser {
                         if ( s>=0 ) return s;
                         break;
                     case 10 : 
-                        int LA17_1 = input.LA(1);
+                        int LA17_11 = input.LA(1);
 
                          
-                        int index17_1 = input.index();
+                        int index17_11 = input.index();
                         input.rewind();
                         s = -1;
                         if ( (synpred8_DRLExpressions()) ) {s = 13;}
@@ -7180,7 +7198,7 @@ public class DRLExpressions extends Parser {
                         else if ( (true) ) {s = 12;}
 
                          
-                        input.seek(index17_1);
+                        input.seek(index17_11);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -7784,7 +7802,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA42_transition;
         }
         public String getDescription() {
-            return "348:1: unaryExpressionNotPlusMinus returns [BaseDescr result] : ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? );";
+            return "360:1: unaryExpressionNotPlusMinus returns [BaseDescr result] : ( TILDE unaryExpression | NEGATION unaryExpression | ( castExpression )=> castExpression | left= primary ( ( selector )=> selector )* ( ( INCR | DECR )=> ( INCR | DECR ) )? );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -7824,7 +7842,7 @@ public class DRLExpressions extends Parser {
     static final String DFA44_acceptS =
         "\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10";
     static final String DFA44_specialS =
-        "\1\0\1\1\10\uffff}>";
+        "\1\1\1\0\10\uffff}>";
     static final String[] DFA44_transitionS = {
             "\1\1",
             "\1\uffff",
@@ -7868,26 +7886,13 @@ public class DRLExpressions extends Parser {
             this.transition = DFA44_transition;
         }
         public String getDescription() {
-            return "364:1: primitiveType : ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key );";
+            return "376:1: primitiveType : ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
         	int _s = s;
             switch ( s ) {
                     case 0 : 
-                        int LA44_0 = input.LA(1);
-
-                         
-                        int index44_0 = input.index();
-                        input.rewind();
-                        s = -1;
-                        if ( (LA44_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))))) {s = 1;}
-
-                         
-                        input.seek(index44_0);
-                        if ( s>=0 ) return s;
-                        break;
-                    case 1 : 
                         int LA44_1 = input.LA(1);
 
                          
@@ -7912,6 +7917,19 @@ public class DRLExpressions extends Parser {
 
                          
                         input.seek(index44_1);
+                        if ( s>=0 ) return s;
+                        break;
+                    case 1 : 
+                        int LA44_0 = input.LA(1);
+
+                         
+                        int index44_0 = input.index();
+                        input.rewind();
+                        s = -1;
+                        if ( (LA44_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))))) {s = 1;}
+
+                         
+                        input.seek(index44_0);
                         if ( s>=0 ) return s;
                         break;
             }
@@ -7986,7 +8004,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA49_transition;
         }
         public String getDescription() {
-            return "375:1: primary returns [BaseDescr result] : ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? );";
+            return "387:1: primary returns [BaseDescr result] : ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=> ID ( ( DOT ID )=> DOT ID )* ( ( identifierSuffix )=> identifierSuffix )? );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8036,7 +8054,7 @@ public class DRLExpressions extends Parser {
 
                         else if ( ((synpred23_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.NEW))))) ) {s = 13;}
 
-                        else if ( (((synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))))) ) {s = 14;}
+                        else if ( (((synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))))) ) {s = 14;}
 
                         else if ( (synpred27_DRLExpressions()) ) {s = 15;}
 
@@ -8151,7 +8169,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA48_transition;
         }
         public String getDescription() {
-            return "386:38: ( ( identifierSuffix )=> identifierSuffix )?";
+            return "398:38: ( ( identifierSuffix )=> identifierSuffix )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8279,7 +8297,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA53_transition;
         }
         public String getDescription() {
-            return "()+ loopback of 418:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+";
+            return "()+ loopback of 430:7: ( ( LEFT_SQUARE )=> LEFT_SQUARE expression RIGHT_SQUARE )+";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8392,7 +8410,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA62_transition;
         }
         public String getDescription() {
-            return "()* loopback of 445:37: ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )*";
+            return "()* loopback of 457:37: ({...}? => LEFT_SQUARE expression RIGHT_SQUARE )*";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8505,7 +8523,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA71_transition;
         }
         public String getDescription() {
-            return "478:26: ( ( LEFT_PAREN )=> arguments )?";
+            return "490:26: ( ( LEFT_PAREN )=> arguments )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8618,7 +8636,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA73_transition;
         }
         public String getDescription() {
-            return "485:17: ( ( LEFT_PAREN )=> arguments )?";
+            return "497:17: ( ( LEFT_PAREN )=> arguments )?";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8708,7 +8726,7 @@ public class DRLExpressions extends Parser {
             this.transition = DFA78_transition;
         }
         public String getDescription() {
-            return "502:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN );";
+            return "514:1: assignmentOperator : ( EQUALS_ASSIGN | PLUS_ASSIGN | MINUS_ASSIGN | MULT_ASSIGN | DIV_ASSIGN | AND_ASSIGN | OR_ASSIGN | XOR_ASSIGN | MOD_ASSIGN | LESS LESS EQUALS_ASSIGN | ( GREATER GREATER GREATER )=> GREATER GREATER GREATER EQUALS_ASSIGN | ( GREATER GREATER )=> GREATER GREATER EQUALS_ASSIGN );";
         }
         public int specialStateTransition(int s, IntStream _input) throws NoViableAltException {
             TokenStream input = (TokenStream)_input;
@@ -8861,188 +8879,188 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_set_in_multiplicativeExpression1800 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
     public static final BitSet FOLLOW_unaryExpression_in_multiplicativeExpression1814 = new BitSet(new long[]{0x0600000000000002L,0x0000000000000008L});
     public static final BitSet FOLLOW_PLUS_in_unaryExpression1840 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1842 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_unaryExpression1850 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1852 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INCR_in_unaryExpression1862 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_primary_in_unaryExpression1864 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DECR_in_unaryExpression1874 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_primary_in_unaryExpression1876 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression1888 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1918 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1920 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1929 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1931 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_castExpression_in_unaryExpressionNotPlusMinus1945 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primary_in_unaryExpressionNotPlusMinus1967 = new BitSet(new long[]{0x0001080060000002L});
-    public static final BitSet FOLLOW_selector_in_unaryExpressionNotPlusMinus1984 = new BitSet(new long[]{0x0001080060000002L});
-    public static final BitSet FOLLOW_set_in_unaryExpressionNotPlusMinus2006 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2043 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_primitiveType_in_castExpression2045 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2047 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_castExpression2051 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1844 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_in_unaryExpression1863 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1867 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_INCR_in_unaryExpression1888 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_primary_in_unaryExpression1890 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DECR_in_unaryExpression1900 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_primary_in_unaryExpression1902 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression1914 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1944 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1946 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1955 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1957 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_castExpression_in_unaryExpressionNotPlusMinus1971 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primary_in_unaryExpressionNotPlusMinus1993 = new BitSet(new long[]{0x0001080060000002L});
+    public static final BitSet FOLLOW_selector_in_unaryExpressionNotPlusMinus2010 = new BitSet(new long[]{0x0001080060000002L});
+    public static final BitSet FOLLOW_set_in_unaryExpressionNotPlusMinus2032 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2069 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_type_in_castExpression2071 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_primitiveType_in_castExpression2071 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2073 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_castExpression2075 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_boolean_key_in_primitiveType2098 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_char_key_in_primitiveType2106 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_byte_key_in_primitiveType2114 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_short_key_in_primitiveType2122 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_int_key_in_primitiveType2130 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_long_key_in_primitiveType2138 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_float_key_in_primitiveType2146 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_double_key_in_primitiveType2154 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_parExpression_in_primary2182 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_primary2199 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_explicitGenericInvocationSuffix_in_primary2202 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_this_key_in_primary2206 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_arguments_in_primary2208 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_primary2224 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_super_key_in_primary2246 = new BitSet(new long[]{0x0001020000000000L});
-    public static final BitSet FOLLOW_superSuffix_in_primary2248 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_new_key_in_primary2264 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_creator_in_primary2266 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveType_in_primary2282 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_primary2285 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_primary2287 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_DOT_in_primary2291 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_class_key_in_primary2293 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inlineMapExpression_in_primary2314 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inlineListExpression_in_primary2330 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_primary2344 = new BitSet(new long[]{0x00010A0000000002L});
-    public static final BitSet FOLLOW_DOT_in_primary2353 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_primary2355 = new BitSet(new long[]{0x00010A0000000002L});
-    public static final BitSet FOLLOW_identifierSuffix_in_primary2364 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineListExpression2386 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_inlineListExpression2388 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineListExpression2391 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineMapExpression2413 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_mapExpressionList_in_inlineMapExpression2415 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineMapExpression2417 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2435 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COMMA_in_mapExpressionList2438 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2440 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_expression_in_mapEntry2463 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_COLON_in_mapEntry2465 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_mapEntry2467 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_parExpression2489 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_parExpression2493 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_parExpression2495 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2530 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2532 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_DOT_in_identifierSuffix2536 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_class_key_in_identifierSuffix2538 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2553 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_identifierSuffix2555 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2557 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_arguments_in_identifierSuffix2570 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_creator2593 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_createdName_in_creator2596 = new BitSet(new long[]{0x00000A0000000000L});
-    public static final BitSet FOLLOW_arrayCreatorRest_in_creator2607 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_classCreatorRest_in_creator2611 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_createdName2629 = new BitSet(new long[]{0x0001008000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_createdName2631 = new BitSet(new long[]{0x0001000000000002L});
-    public static final BitSet FOLLOW_DOT_in_createdName2644 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_createdName2646 = new BitSet(new long[]{0x0001008000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_createdName2648 = new BitSet(new long[]{0x0001000000000002L});
-    public static final BitSet FOLLOW_primitiveType_in_createdName2663 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_innerCreator2683 = new BitSet(new long[]{0x00000A0000000000L});
-    public static final BitSet FOLLOW_classCreatorRest_in_innerCreator2685 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2704 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2714 = new BitSet(new long[]{0x0000280000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2717 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2719 = new BitSet(new long[]{0x0000280000000000L});
-    public static final BitSet FOLLOW_arrayInitializer_in_arrayCreatorRest2723 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2737 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2739 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2744 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2746 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2748 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2760 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2762 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_arrayInitializer_in_variableInitializer2791 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_variableInitializer2805 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_arrayInitializer2822 = new BitSet(new long[]{0x18306A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer2825 = new BitSet(new long[]{0x0000C00000000000L});
-    public static final BitSet FOLLOW_COMMA_in_arrayInitializer2828 = new BitSet(new long[]{0x18302A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer2830 = new BitSet(new long[]{0x0000C00000000000L});
-    public static final BitSet FOLLOW_COMMA_in_arrayInitializer2835 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_arrayInitializer2842 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_arguments_in_classCreatorRest2859 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation2877 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_arguments_in_explicitGenericInvocation2879 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LESS_in_nonWildcardTypeArguments2896 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_typeList_in_nonWildcardTypeArguments2898 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_nonWildcardTypeArguments2900 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_super_key_in_explicitGenericInvocationSuffix2917 = new BitSet(new long[]{0x0001020000000000L});
-    public static final BitSet FOLLOW_superSuffix_in_explicitGenericInvocationSuffix2919 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_explicitGenericInvocationSuffix2930 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_arguments_in_explicitGenericInvocationSuffix2932 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector2957 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_super_key_in_selector2959 = new BitSet(new long[]{0x0001020000000000L});
-    public static final BitSet FOLLOW_superSuffix_in_selector2961 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector2977 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_new_key_in_selector2979 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_selector2982 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_innerCreator_in_selector2986 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector3002 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_selector3004 = new BitSet(new long[]{0x0000020000000002L});
-    public static final BitSet FOLLOW_arguments_in_selector3013 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_selector3034 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_selector3036 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_selector3038 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_arguments_in_superSuffix3055 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_superSuffix3066 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_superSuffix3068 = new BitSet(new long[]{0x0000020000000002L});
-    public static final BitSet FOLLOW_arguments_in_superSuffix3077 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_squareArguments3104 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_squareArguments3109 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_squareArguments3115 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_arguments3132 = new BitSet(new long[]{0x18300E80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_arguments3134 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_arguments3137 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_expressionList3165 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COMMA_in_expressionList3176 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expressionList3180 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3201 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_PLUS_ASSIGN_in_assignmentOperator3209 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_ASSIGN_in_assignmentOperator3217 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MULT_ASSIGN_in_assignmentOperator3225 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DIV_ASSIGN_in_assignmentOperator3233 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_AND_ASSIGN_in_assignmentOperator3241 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_OR_ASSIGN_in_assignmentOperator3249 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_XOR_ASSIGN_in_assignmentOperator3257 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MOD_ASSIGN_in_assignmentOperator3265 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LESS_in_assignmentOperator3273 = new BitSet(new long[]{0x0000008000000000L});
-    public static final BitSet FOLLOW_LESS_in_assignmentOperator3275 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3277 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3295 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3297 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3299 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3301 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3317 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3319 = new BitSet(new long[]{0x0000010000000000L});
-    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3321 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_extends_key3353 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_super_key3380 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_instanceof_key3407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_boolean_key3435 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_char_key3463 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_byte_key3491 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_short_key3519 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_int_key3547 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_float_key3575 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_long_key3603 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_double_key3630 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_void_key3658 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_this_key3686 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_class_key3713 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_new_key3740 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_not_key3767 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_in_key3792 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_operator_key3816 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_neg_operator_key3840 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_unaryExpression_in_castExpression2077 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2095 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_type_in_castExpression2097 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2099 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_castExpression2101 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_boolean_key_in_primitiveType2124 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_char_key_in_primitiveType2132 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_byte_key_in_primitiveType2140 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_short_key_in_primitiveType2148 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_int_key_in_primitiveType2156 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_long_key_in_primitiveType2164 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_float_key_in_primitiveType2172 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_double_key_in_primitiveType2180 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_parExpression_in_primary2208 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_primary2225 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_explicitGenericInvocationSuffix_in_primary2228 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_this_key_in_primary2232 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_arguments_in_primary2234 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_primary2250 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_super_key_in_primary2272 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_superSuffix_in_primary2274 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_new_key_in_primary2290 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_creator_in_primary2292 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primitiveType_in_primary2308 = new BitSet(new long[]{0x0001080000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_primary2311 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_primary2313 = new BitSet(new long[]{0x0001080000000000L});
+    public static final BitSet FOLLOW_DOT_in_primary2317 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_class_key_in_primary2319 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inlineMapExpression_in_primary2340 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inlineListExpression_in_primary2356 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_primary2370 = new BitSet(new long[]{0x00010A0000000002L});
+    public static final BitSet FOLLOW_DOT_in_primary2379 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_primary2381 = new BitSet(new long[]{0x00010A0000000002L});
+    public static final BitSet FOLLOW_identifierSuffix_in_primary2390 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineListExpression2412 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expressionList_in_inlineListExpression2414 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineListExpression2417 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineMapExpression2439 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_mapExpressionList_in_inlineMapExpression2441 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineMapExpression2443 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2461 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_COMMA_in_mapExpressionList2464 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2466 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_expression_in_mapEntry2489 = new BitSet(new long[]{0x0000000200000000L});
+    public static final BitSet FOLLOW_COLON_in_mapEntry2491 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_mapEntry2493 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_parExpression2515 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_parExpression2519 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_parExpression2521 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2556 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2558 = new BitSet(new long[]{0x0001080000000000L});
+    public static final BitSet FOLLOW_DOT_in_identifierSuffix2562 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_class_key_in_identifierSuffix2564 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2579 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_identifierSuffix2581 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2583 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_arguments_in_identifierSuffix2596 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_creator2619 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_createdName_in_creator2622 = new BitSet(new long[]{0x00000A0000000000L});
+    public static final BitSet FOLLOW_arrayCreatorRest_in_creator2633 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_classCreatorRest_in_creator2637 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_createdName2655 = new BitSet(new long[]{0x0001008000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_createdName2657 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_DOT_in_createdName2670 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_createdName2672 = new BitSet(new long[]{0x0001008000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_createdName2674 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_primitiveType_in_createdName2689 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_innerCreator2709 = new BitSet(new long[]{0x00000A0000000000L});
+    public static final BitSet FOLLOW_classCreatorRest_in_innerCreator2711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2730 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2740 = new BitSet(new long[]{0x0000280000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2743 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2745 = new BitSet(new long[]{0x0000280000000000L});
+    public static final BitSet FOLLOW_arrayInitializer_in_arrayCreatorRest2749 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2763 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2765 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2770 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2772 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2774 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2786 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2788 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_arrayInitializer_in_variableInitializer2817 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_variableInitializer2831 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_arrayInitializer2848 = new BitSet(new long[]{0x18306A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer2851 = new BitSet(new long[]{0x0000C00000000000L});
+    public static final BitSet FOLLOW_COMMA_in_arrayInitializer2854 = new BitSet(new long[]{0x18302A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer2856 = new BitSet(new long[]{0x0000C00000000000L});
+    public static final BitSet FOLLOW_COMMA_in_arrayInitializer2861 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_arrayInitializer2868 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_arguments_in_classCreatorRest2885 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation2903 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_arguments_in_explicitGenericInvocation2905 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LESS_in_nonWildcardTypeArguments2922 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_typeList_in_nonWildcardTypeArguments2924 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_nonWildcardTypeArguments2926 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_super_key_in_explicitGenericInvocationSuffix2943 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_superSuffix_in_explicitGenericInvocationSuffix2945 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_explicitGenericInvocationSuffix2956 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_arguments_in_explicitGenericInvocationSuffix2958 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_selector2983 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_super_key_in_selector2985 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_superSuffix_in_selector2987 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_selector3003 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_new_key_in_selector3005 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_selector3008 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_innerCreator_in_selector3012 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_selector3028 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_selector3030 = new BitSet(new long[]{0x0000020000000002L});
+    public static final BitSet FOLLOW_arguments_in_selector3039 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_selector3060 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_selector3062 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_selector3064 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_arguments_in_superSuffix3081 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_superSuffix3092 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_superSuffix3094 = new BitSet(new long[]{0x0000020000000002L});
+    public static final BitSet FOLLOW_arguments_in_superSuffix3103 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_squareArguments3130 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expressionList_in_squareArguments3135 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_squareArguments3141 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_arguments3158 = new BitSet(new long[]{0x18300E80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expressionList_in_arguments3160 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_arguments3163 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_expression_in_expressionList3191 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_COMMA_in_expressionList3202 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_expressionList3206 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3227 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_PLUS_ASSIGN_in_assignmentOperator3235 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MINUS_ASSIGN_in_assignmentOperator3243 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MULT_ASSIGN_in_assignmentOperator3251 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DIV_ASSIGN_in_assignmentOperator3259 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_AND_ASSIGN_in_assignmentOperator3267 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_OR_ASSIGN_in_assignmentOperator3275 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_XOR_ASSIGN_in_assignmentOperator3283 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_MOD_ASSIGN_in_assignmentOperator3291 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LESS_in_assignmentOperator3299 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_LESS_in_assignmentOperator3301 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3303 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3321 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3323 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3325 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3327 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3343 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3345 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3347 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_extends_key3379 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_super_key3406 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_instanceof_key3433 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_boolean_key3461 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_char_key3489 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_byte_key3517 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_short_key3545 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_int_key3573 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_float_key3601 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_long_key3629 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_double_key3656 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_void_key3684 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_this_key3712 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_class_key3739 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_new_key3766 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_not_key3793 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_in_key3818 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_operator_key3842 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_neg_operator_key3866 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_squareArguments_in_synpred1_DRLExpressions386 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_squareArguments_in_synpred2_DRLExpressions420 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_primitiveType_in_synpred3_DRLExpressions510 = new BitSet(new long[]{0x0000000000000002L});
@@ -9060,43 +9078,43 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_singleRestriction_in_synpred11_DRLExpressions1517 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_shiftOp_in_synpred12_DRLExpressions1644 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_synpred13_DRLExpressions1745 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_castExpression_in_synpred14_DRLExpressions1942 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_selector_in_synpred15_DRLExpressions1981 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_set_in_synpred16_DRLExpressions1999 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred17_DRLExpressions2036 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_primitiveType_in_synpred17_DRLExpressions2038 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2062 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_type_in_synpred18_DRLExpressions2064 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_parExpression_in_synpred19_DRLExpressions2176 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_synpred20_DRLExpressions2195 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred21_DRLExpressions2220 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_super_key_in_synpred22_DRLExpressions2242 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_new_key_in_synpred23_DRLExpressions2260 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveType_in_synpred24_DRLExpressions2278 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inlineMapExpression_in_synpred25_DRLExpressions2310 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_inlineListExpression_in_synpred26_DRLExpressions2326 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_synpred27_DRLExpressions2341 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred28_DRLExpressions2348 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_synpred28_DRLExpressions2350 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_identifierSuffix_in_synpred29_DRLExpressions2361 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred30_DRLExpressions2524 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred30_DRLExpressions2526 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2548 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred32_DRLExpressions2754 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred32_DRLExpressions2756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred33_DRLExpressions2952 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_super_key_in_synpred33_DRLExpressions2954 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred34_DRLExpressions2972 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_new_key_in_synpred34_DRLExpressions2974 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred35_DRLExpressions2997 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_synpred35_DRLExpressions2999 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred36_DRLExpressions3008 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred37_DRLExpressions3031 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred38_DRLExpressions3072 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3287 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3289 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3291 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3311 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3313 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_castExpression_in_synpred14_DRLExpressions1968 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_selector_in_synpred15_DRLExpressions2007 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_set_in_synpred16_DRLExpressions2025 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred17_DRLExpressions2062 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_primitiveType_in_synpred17_DRLExpressions2064 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2088 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_type_in_synpred18_DRLExpressions2090 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_parExpression_in_synpred19_DRLExpressions2202 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_synpred20_DRLExpressions2221 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred21_DRLExpressions2246 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_super_key_in_synpred22_DRLExpressions2268 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_new_key_in_synpred23_DRLExpressions2286 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_primitiveType_in_synpred24_DRLExpressions2304 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inlineMapExpression_in_synpred25_DRLExpressions2336 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_inlineListExpression_in_synpred26_DRLExpressions2352 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ID_in_synpred27_DRLExpressions2367 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_synpred28_DRLExpressions2374 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_synpred28_DRLExpressions2376 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_identifierSuffix_in_synpred29_DRLExpressions2387 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred30_DRLExpressions2550 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred30_DRLExpressions2552 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2574 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred32_DRLExpressions2780 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred32_DRLExpressions2782 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_synpred33_DRLExpressions2978 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_super_key_in_synpred33_DRLExpressions2980 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_synpred34_DRLExpressions2998 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_new_key_in_synpred34_DRLExpressions3000 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_DOT_in_synpred35_DRLExpressions3023 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_ID_in_synpred35_DRLExpressions3025 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred36_DRLExpressions3034 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred37_DRLExpressions3057 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred38_DRLExpressions3098 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3313 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3315 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred39_DRLExpressions3317 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3337 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3339 = new BitSet(new long[]{0x0000000000000002L});
 
 }
