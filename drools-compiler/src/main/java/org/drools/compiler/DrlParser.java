@@ -231,6 +231,7 @@ public class DrlParser {
                 return null;
             }
         } catch ( Exception e ) {
+            e.printStackTrace();
             final ParserError err = new ParserError( GENERIC_ERROR_MESSAGE + e.toString()+"\n"+ Arrays.toString( e.getStackTrace() ),
                                                      -1,
                                                      0 );
