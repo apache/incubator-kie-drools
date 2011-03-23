@@ -12,6 +12,7 @@ options {
     import org.drools.compiler.DroolsParserException;
     import org.drools.lang.ParserHelper;
     import org.drools.lang.DroolsParserExceptionFactory;
+    import org.drools.lang.Location;
     import org.drools.CheckedDroolsException;
 
     import org.drools.lang.descr.AtomicExprDescr;
@@ -72,6 +73,8 @@ literal
     ;
 
 operator returns [boolean negated, String opr, java.util.List<String> params]
+@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); } }
+@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=EQUALS        { $negated = false; $opr=$op.text; $params = null; }
     | op=NOT_EQUALS    { $negated = false; $opr=$op.text; $params = null; }
     | rop=relationalOp { $negated = $rop.negated; $opr=$rop.opr; $params = $rop.params; }
@@ -79,6 +82,8 @@ operator returns [boolean negated, String opr, java.util.List<String> params]
     ;
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
+@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); } }
+@after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; }
     | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; }
     | op=LESS            { $negated = false; $opr=$op.text; $params = null; }
@@ -201,7 +206,9 @@ andExpression returns [BaseDescr result]
     
 equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
-  ( ( op=EQUALS | op=NOT_EQUALS ) right=instanceOfExpression 
+  ( ( op=EQUALS | op=NOT_EQUALS ) 
+    { if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+    right=instanceOfExpression 
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
            }
@@ -211,7 +218,9 @@ equalityExpression returns [BaseDescr result]
 
 instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
-  (op=instanceof_key right=type
+  ( op=instanceof_key 
+    { if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+    right=type
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
            }
