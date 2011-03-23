@@ -338,11 +338,23 @@ multiplicativeExpression returns [BaseDescr result]
     ;
 
 unaryExpression returns [BaseDescr result]
-    :   PLUS unaryExpression
-    |	MINUS unaryExpression
+    :   PLUS ue=unaryExpression 
+        { if( buildDescr ) { 
+            $result = $ue.result; 
+            if( $result instanceof AtomicExprDescr ) {
+                ((AtomicExprDescr)$result).setExpression( "+" + ((AtomicExprDescr)$result).getExpression() );
+            }
+        } }
+    |	MINUS ue=unaryExpression 
+        { if( buildDescr ) { 
+            $result = $ue.result; 
+            if( $result instanceof AtomicExprDescr ) {
+                ((AtomicExprDescr)$result).setExpression( "-" + ((AtomicExprDescr)$result).getExpression() );
+            }
+        } }
     |   INCR primary
     |   DECR primary
-    |   left=unaryExpressionNotPlusMinus { if( buildDescr  ) { $result = $left.result; } }
+    |   left=unaryExpressionNotPlusMinus { if( buildDescr ) { $result = $left.result; } }
     ;
 
 unaryExpressionNotPlusMinus returns [BaseDescr result]

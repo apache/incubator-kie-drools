@@ -80,7 +80,8 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
         
         BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
-                                                         context.getPackageBuilder().getGlobals() );
+                                                         context.getPackageBuilder().getGlobals(),
+                                                         KnowledgeHelper.class );
         
         String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
         

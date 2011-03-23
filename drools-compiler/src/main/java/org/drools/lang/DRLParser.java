@@ -1453,8 +1453,6 @@ public class DRLParser {
                 lhsOr( lhs,
                        true );
                 if ( state.failed ) return;
-//            } catch ( RecognitionException re ) {
-//                reportError( re );
             } finally {
                 helper.end( CEDescrBuilder.class,
                             lhs );
