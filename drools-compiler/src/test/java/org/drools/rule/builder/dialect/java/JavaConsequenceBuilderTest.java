@@ -493,10 +493,87 @@ public class JavaConsequenceBuilderTest {
                        fixed );
         assertEqualsIgnoreSpaces( expected,
                                   fixed );
-            
-
     }     
 
+    @Test
+    public void testForBlocks() throws Exception {
+        String consequence = 
+            " System.out.println(\"this is a test\");\n " +
+            " Cheese c1 = $cheese;\n" +         
+            "int i = 0;\n" +
+            " for ( ; ; )     { \r\n" +
+            "     modify( c1 ) { setPrice( 10 ), \n" +
+            "                    setOldPrice( age ) }\n " +
+            "     Cheese c4 = $cheese;\n" +            
+//            "     while ( true )     { \n" +
+//            "         modify( c4 ) { setPrice( 10 ), setOldPrice( age ) }\n " +
+//            "     }"+          
+            " } \n " +
+//            " Cheese c3 = $cheese;\n" +            
+//            " while ( c4 ==  $cheese ) modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +             
+//            " modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " + 
+//            " System.out.println(\"we are done\");\n " +            
+//            " while (true) { System.out.println(1);}\n" +
+            " modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +
+            " System.out.println(\"we are done\");\n ";         
+        setupTest( "", new HashMap<String, Object>() );
+
+        ruleDescr.setConsequence( consequence );
+        JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
+        Map<String, Class<?>> declrCls = new HashMap<String, Class<?>>();
+        declrCls.put( "$cheese", Cheese.class );
+        
+        JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
+                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+        
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        bindings.getDeclarations().put( "$cheese", Cheese.class );
+        bindings.getDeclarations().put( "age", int.class );
+        
+        // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
+        List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
+        builder.setContainerBlockInputs(context, 
+                                        descrs,
+                                        analysis.getBlockDescrs(), 
+                                        consequence,
+                                        bindings,
+                                        new HashMap(),
+                                        0);            
+        
+        String fixed = builder.fixBlockDescr( context,
+                                              (String) ruleDescr.getConsequence(),                                                  
+                                              descrs,                                                  
+                                              bindings,
+                                              context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+
+        System.out.println( fixed );
+        
+//        String expected = 
+//                " System.out.println(\"this is a test\");\r\n" + 
+//                "  Cheese c1 = $cheese;\r\n" + 
+//                " while ( c1 == $cheese )     { \r\n" + 
+//                "     { org.drools.Cheese __obj__ = ( c1 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" + 
+//                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__ ); }\r\n" + 
+//                "      Cheese c4 = $cheese;\r\n" + 
+//                "     while ( true )     { \r\n" + 
+//                "         { org.drools.Cheese __obj__ = ( c4 ); org.drools.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__ ); }\r\n" + 
+//                "      } } \r\n" + 
+//                "  Cheese c3 = $cheese;\r\n" + 
+//                " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__ ); }\r\n" + 
+//                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__ ); }\r\n" + 
+//                "  System.out.println(\"we are done\");\r\n" + 
+//                "  while (true) { System.out.println(1);}\r\n" + 
+//                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__ ); }\r\n" + 
+//                "  System.out.println(\"we are done\");\r\n" + 
+//                " \r\n" + 
+//                "";
+//
+//        assertNotNull( context.getErrors().toString(),
+//                       fixed );
+//        assertEqualsIgnoreSpaces( expected,
+//                                  fixed );
+    }      
+    
 //    @Test
 //    public void testFixInsertCalls() {
 //        String consequence = " System.out.println(\"this is a test\");\n " + 
