@@ -27,15 +27,16 @@ import java.util.regex.Pattern;
  * [] indicates a column that represents an array (comma-delimited) of values.
  */
 public class ColumnFactory {
-    private final static Pattern PATTERN = Pattern.compile( "([a-zA-Z0-9_]*)(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?" );
+    private final static Pattern PATTERN = Pattern.compile( "((\\$)*([a-zA-Z0-9_]*))(\\[\\])?(:\\s*([a-zA-Z]*)(\\[\\])?)?" );
 
     public Column getColumn(String value) {
         Matcher m = PATTERN.matcher( value );
         if ( !m.matches() ) throw new IllegalArgumentException( "value " + value + " is not a valid column definition" );
+
         String name = m.group( 1 );
-        String type = m.group( 4 );
+        String type = m.group( 6 );
         type = type == null ? "String" : type;
-        boolean array = (m.group( 2 ) != null) || (m.group( 5 ) != null);
+        boolean array = (m.group( 4 ) != null) || (m.group( 7 ) != null);
         if ( array ) {
             return new ArrayColumn( name,
                                     createColumn( name,
