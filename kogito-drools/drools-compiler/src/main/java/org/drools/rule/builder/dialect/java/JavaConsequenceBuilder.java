@@ -412,15 +412,15 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                         whileBlock.getTextStart() );            
             } else if ( block.getType() == BlockType.FOR) { 
                 JavaForBlockDescr forBlock = (JavaForBlockDescr)block;
-                int adjustBlock = (originalCode.charAt(  forBlock.getTextStart()-offset-1 ) == '{') ? 0: 1 ;                
+                int adjustBlock = (originalCode.charAt(  forBlock.getTextStart()-offset-1 ) == '{') ? 0: 1 ;    
                 setContainerBlockInputs(context,
                                         descrs,
                                         forBlock,
-                                        originalCode.substring( forBlock.getStartParen()+1-offset,forBlock.getInitEnd()-offset) +
+                                        originalCode.substring( forBlock.getStartParen()-offset,forBlock.getInitEnd()-offset) +
                                         originalCode.substring( forBlock.getTextStart()-offset+adjustBlock, forBlock.getEnd()-1-offset-adjustBlock ), 
                                         bindings,
                                         inputs,
-                                        forBlock.getTextStart() );            
+                                        forBlock.getTextStart() - (forBlock.getInitEnd()-forBlock.getStartParen() ) );            
             } else {
                 block.setInputs(inputs); // each block to be rewritten now knows it's own variables
                 descrs.add( block );

@@ -773,9 +773,7 @@ options {k=3;}
         fd.setStartParen( ((CommonToken)$y).getStartIndex() );            
     }      
     (    
-     //forControl 
-//  options {k=3;} // be efficient for common case: for (ID ID : ID) ...
-        (variableModifier* type Identifier ':' expression
+        (variableModifier* type Identifier z=':' expression
           {
              fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
           })
@@ -792,14 +790,6 @@ options {k=3;}
         fd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
         fd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
     }
-    /*       
-    x='for' 
-    y='('
-           variableModifier* type Identifier z=':' expression //foreach
-           |
-           forInit? ';' expression? ';' forUpdate?                    
-       ')'    
-    bs=statement      */
     ;       
 
 whileStatement
