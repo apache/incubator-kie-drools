@@ -17,18 +17,22 @@ package org.drools.lang;
  */
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.debug.SessionReporter;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
@@ -51,6 +55,15 @@ import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.VariableRestrictionDescr;
+import org.drools.rule.builder.RuleBuildContext;
+import org.mvel2.compiler.AbstractParser;
+import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.optimizers.OptimizerFactory;
+import org.mvel2.templates.SimpleTemplateRegistry;
+import org.mvel2.templates.TemplateCompiler;
+import org.mvel2.templates.TemplateRegistry;
+import org.mvel2.templates.TemplateRuntime;
+import org.mvel2.templates.res.Node;
 
 /**
  * TODO: replace this class by a proper DRL dumper based on templates
@@ -58,6 +71,41 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 public class DrlDumper extends ReflectiveVisitor
     implements
     PackageDescrDumper {
+
+//    protected final TemplateRegistry REPORT_REGISTRY = new SimpleTemplateRegistry();
+//
+//    public DrlDumper(RuleBuildContext context) {
+//        this.context = context;
+//    }
+//
+//    public DrlDumper() {
+//        OptimizerFactory.setDefaultOptimizer( "reflective" );
+//
+//        REPORT_REGISTRY.addNamedTemplate( "constraints",
+//                                          TemplateCompiler.compileTemplate( SessionReporter.class.getResourceAsStream( "constraints.mvel" ),
+//                                                                            (Map<String, Class< ? extends Node>>) null ) );
+//
+//        /**
+//         * Process these templates
+//         */
+//        TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "constraints" ),
+//                                 null,
+//                                 REPORT_REGISTRY );
+//    }
+//
+//    public String dump( final ConstraintConnectiveDescr constraint ) {
+//        AbstractParser.setLanguageLevel( 5 );
+//
+//        Map<String, Object> context = new HashMap<String, Object>();
+//        context.put( "constraint",
+//                     constraint );
+//
+//        return (String) TemplateRuntime.execute( REPORT_REGISTRY.getNamedTemplate( "constraints" ),
+//                                                 null,
+//                                                 new MapVariableResolverFactory( context ),
+//                                                 REPORT_REGISTRY );
+//    }
+
 
     private StringBuilder        drlDump;
     private static final String eol          = System.getProperty( "line.separator" );

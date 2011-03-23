@@ -324,23 +324,14 @@ public class PatternBuilder
             BaseDescr d = it.next();
 
             boolean simple = false;
-            String expr = null;
+            String expr = new MVELDumper().dump( d );
             RelationalExprDescr relDescr = null;
-            if ( d instanceof AtomicExprDescr ) {
-                expr = ((AtomicExprDescr) d).getExpression();
-            } else {
-                if ( d instanceof RelationalExprDescr ) {
-                    relDescr = (RelationalExprDescr) d;
-                    if ( relDescr.getLeft() instanceof AtomicExprDescr &&
-                          relDescr.getRight() instanceof AtomicExprDescr ) {
-                        simple = true;
-                    }
+            if ( d instanceof RelationalExprDescr ) {
+                relDescr = (RelationalExprDescr) d;
+                if ( relDescr.getLeft() instanceof AtomicExprDescr &&
+                      relDescr.getRight() instanceof AtomicExprDescr ) {
+                    simple = true;
                 }
-                StringBuilder sbuilder = new StringBuilder();
-                renderConstraint( sbuilder,
-                                  d,
-                                  0 ); // root, so no priority at all    
-                expr = sbuilder.toString().trim();
             }
 
             if ( expr.startsWith( "eval" ) ) {
@@ -604,74 +595,6 @@ public class PatternBuilder
             }
             pattern.addConstraint( new VariableConstraint( extractor,
                                                            restriction ) );
-        }
-    }
-
-    private String builtInOperators = "> >= < <= == != && ||";
-
-    private void renderConstraint( StringBuilder sbuilder,
-                                   BaseDescr d,
-                                   int parentPriority ) {
-        if ( d instanceof RelationalExprDescr ) {
-            RelationalExprDescr red = (RelationalExprDescr) d;
-            if ( builtInOperators.contains( ((RelationalExprDescr) d).getOperator() ) ) {
-                renderConstraint( sbuilder,
-                                  ((RelationalExprDescr) d).getLeft(),
-                                  Integer.MAX_VALUE ); // maximum priority, so wrap any child connective in parenthesis
-                sbuilder.append( " " );
-                sbuilder.append( ((RelationalExprDescr) d).getOperator() );
-                sbuilder.append( " " );
-                renderConstraint( sbuilder,
-                                  ((RelationalExprDescr) d).getRight(),
-                                  Integer.MAX_VALUE ); // maximum priority, so wrap any child connective in parenthesis
-            } else {
-                MVELDumper dumper = new MVELDumper( null );
-                dumper.setFieldName( ((AtomicExprDescr) ((RelationalExprDescr) d).getLeft()).getExpression() );
-                String operator = red.getOperator();
-
-                // extractor the operator and determine if it's negated or not
-                boolean negated = operator.startsWith( "not " );
-                if ( negated ) {
-                    operator = red.getOperator().substring( 4 );
-                }
-
-                // as there is no && or || operator we know this is atomic
-                String s = dumper.processRestriction( operator,
-                                                      negated,
-                                                      ((AtomicExprDescr) ((RelationalExprDescr) d).getRight()).getExpression() );
-                sbuilder.append( s );
-            }
-
-        } else if ( d instanceof AtomicExprDescr ) {
-            AtomicExprDescr atom = (AtomicExprDescr) d;
-            String expr = atom.getExpression().trim();
-            if( expr.matches( "eval\\s*\\(.*\\)\\s*" ) ) { 
-                // stripping "eval" as it is no longer necessary
-                expr = expr.substring( expr.indexOf( '(' )+1, expr.lastIndexOf( ')' ) );
-            }
-            sbuilder.append( expr );
-        } else if ( d instanceof ConstraintConnectiveDescr ) {
-            ConstraintConnectiveDescr cc = (ConstraintConnectiveDescr) d;
-            boolean afterFirst = false;
-            boolean wrapParenthesis = parentPriority > cc.getConnective().getPrecedence();
-            if ( wrapParenthesis ) {
-                sbuilder.append( "( " );
-            }
-            for ( BaseDescr c : cc.getDescrs() ) {
-                if ( afterFirst ) {
-                    sbuilder.append( " " );
-                    sbuilder.append( cc.getConnective().toString() );
-                    sbuilder.append( " " );
-                } else {
-                    afterFirst = true;
-                }
-                renderConstraint( sbuilder,
-                                  c,
-                                  cc.getConnective().getPrecedence() );
-            }
-            if ( wrapParenthesis ) {
-                sbuilder.append( " )" );
-            }
         }
     }
 

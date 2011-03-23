@@ -16,201 +16,132 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-import java.util.Iterator;
-
 import org.drools.base.evaluators.Operator;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.rule.builder.RuleBuildContext;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.RelationalExprDescr;
 
 public class MVELDumper extends ReflectiveVisitor {
 
-    private StringBuilder        mvelDump;
-    private boolean             isDateField;
-    private String              template;
-    private String              fieldName;
-    private RuleBuildContext context;
-    
-    public MVELDumper(RuleBuildContext context) {
-        this.context = context;
-    }
-    
-    public MVELDumper() {
-
-    }
-    
-    
-
-    public String getFieldName() {
-        return fieldName;
+    public String dump( BaseDescr base ) {
+        return dump( new StringBuilder(),
+                     base,
+                     0 ).toString();
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public String dump( BaseDescr base,
+                        int parentPrecedence ) {
+        return dump( new StringBuilder(),
+                     base,
+                     parentPrecedence ).toString();
     }
 
-    public String dump(FieldConstraintDescr fieldConstr) {
-        return this.dump( fieldConstr, false );
-    }
-
-    public String dump(FieldConstraintDescr fieldConstr, boolean isDateField ) {
-        mvelDump = new StringBuilder();
-        this.isDateField = isDateField;
-        this.visit( fieldConstr );
-        return mvelDump.toString();
-    }
-
-    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
-        if ( !descr.getRestrictions().isEmpty() ) {
-            this.fieldName = descr.getFieldName();
-            mvelDump.append( processFieldConstraint( descr.getRestriction() ) );
-        }
-    }
-
-    public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getIdentifier() );
-    }
-
-    public void visitFieldBindingDescr(final BindingDescr descr) {
-        // do nothing
-    }
-
-    public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
-        String text = descr.getText();
-        if ( text == null || descr.getType() == LiteralRestrictionDescr.TYPE_NULL ) {
-            text = "null";
-        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_NUMBER ) {
-            try {
-                Integer.parseInt( text );
-            } catch ( final NumberFormatException e ) {
-                text = "\"" + text + "\"";
+    public StringBuilder dump( StringBuilder sbuilder,
+                               BaseDescr base,
+                               int parentPriority ) {
+        if ( base instanceof ConstraintConnectiveDescr ) {
+            ConstraintConnectiveDescr ccd = (ConstraintConnectiveDescr) base;
+            boolean first = true;
+            boolean wrapParenthesis = parentPriority > ccd.getConnective().getPrecedence();
+            if ( wrapParenthesis ) {
+                sbuilder.append( "( " );
             }
-        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
-            text = "\"" + text + "\"";
-            if( this.isDateField ) {
-                text = "org.drools.util.DateUtils.parseDate( "+text+" )";
+            for ( BaseDescr constr : ccd.getDescrs() ) {
+                if ( first ) {
+                    first = false;
+                } else {
+                    sbuilder.append( " " );
+                    sbuilder.append( ccd.getConnective().toString() );
+                    sbuilder.append( " " );
+                }
+                dump( sbuilder,
+                      constr,
+                      ccd.getConnective().getPrecedence() );
             }
-        }
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), text );
-    }
-
-    public void visitQualifiedIdentifierRestrictionDescr(final QualifiedIdentifierRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getText() );
-    }
-
-    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = "( " + this.processFieldConstraint( descr ) + " )";
-    }
-
-    public void visitPredicateDescr(final PredicateDescr descr) {
-        this.template = "eval( " + descr.getContent() + " )";
-    }
-
-    public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(),  "( "+descr.getContent().toString()+" )" );
-    }
-
-    private String processFieldConstraint(final RestrictionConnectiveDescr restriction) {
-        String descrString = "";
-        String connective = null;
-
-        if ( restriction.getConnective() == RestrictionConnectiveDescr.OR ) {
-            connective = " || ";
-        } else {
-            connective = " && ";
-        }
-        for ( final Iterator<RestrictionDescr> it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
-            final Object temp = it.next();
-            visit( temp );
-            descrString += this.template;
-            if ( it.hasNext() ) {
-                descrString += connective;
+            if ( wrapParenthesis ) {
+                sbuilder.append( " )" );
             }
+        } else if ( base instanceof AtomicExprDescr ) {
+            AtomicExprDescr atom = (AtomicExprDescr) base;
+            String expr = atom.getExpression().trim();
+            if ( expr.matches( "eval\\s*\\(.*\\)\\s*" ) ) {
+                // stripping "eval" as it is no longer necessary
+                expr = expr.substring( expr.indexOf( '(' ) + 1,
+                                       expr.lastIndexOf( ')' ) );
+            }
+            sbuilder.append( expr );
+        } else if ( base instanceof RelationalExprDescr ) {
+            RelationalExprDescr red = (RelationalExprDescr) base;
+            processRestriction( sbuilder,
+                                dump( red.getLeft(),
+                                      Integer.MAX_VALUE ), // maximum precedence, so wrap any child connective in parenthesis
+                                red.getOperator(),
+                                red.isNegated(),
+                                dump( red.getRight(),
+                                      Integer.MAX_VALUE ) );// maximum precedence, so wrap any child connective in parenthesis
         }
-        return descrString;
+        return sbuilder;
     }
 
-    public String processRestriction(String evaluator,
+    public void processRestriction( StringBuilder sbuilder,
+                                      String left,
+                                      String operator,
                                       boolean isNegated,
-                                      String value) {
-        Operator op = Operator.determineOperator( evaluator, isNegated );
-        if( op == Operator.determineOperator( "memberOf", false ) ) {
-            evaluator = "contains";
-            return evaluatorPrefix( evaluator ) + 
-                   value + " " + 
-                   evaluator( evaluator ) + " " + 
-                   this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "memberOf", true )) {
-            evaluator = "not contains";
-            return evaluatorPrefix( evaluator ) + 
-                   value + " " + 
-                   evaluator( evaluator ) + " " + 
-                   this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "excludes", false ) ) {
-            evaluator = "not contains";
-            return evaluatorPrefix( evaluator ) + 
-                   this.fieldName + " " + 
-                   evaluator( evaluator ) + " " + 
-                   value + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "matches", false )) {
-            evaluator = "~=";
-            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-            } else {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value +
-                evaluatorSufix( evaluator );
-            }
-        } else if(op == Operator.determineOperator( "matches", true )) {
-            evaluator = "not ~=";
-            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-            } else {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value + 
-                evaluatorSufix( evaluator );
-            }
+                                      String right ) {
+        Operator op = Operator.determineOperator( operator,
+                                                  isNegated );
+        if ( op == Operator.determineOperator( "memberOf",
+                                               isNegated ) ) {
+            operator = "contains";
+            sbuilder.append( evaluatorPrefix( isNegated ) )
+                    .append( right )
+                    .append( " " )
+                    .append( operator )
+                    .append( " " )
+                    .append( left )
+                    .append( evaluatorSufix( isNegated ) );
+        } else if ( op == Operator.determineOperator( "excludes",
+                                                      isNegated ) ) {
+            operator = "contains";
+            sbuilder.append( evaluatorPrefix( !isNegated ) )
+                    .append( left )
+                    .append( " " )
+                    .append( operator )
+                    .append( " " )
+                    .append( right )
+                    .append( evaluatorSufix( isNegated ) );
+        } else if ( op == Operator.determineOperator( "matches",
+                                                      isNegated ) ) {
+            operator = "~=";
+            sbuilder.append( evaluatorPrefix( isNegated ) )
+                    .append( left )
+                    .append( " " )
+                    .append( operator )
+                    .append( " " )
+                    .append( right )
+                    .append( evaluatorSufix( isNegated ) );
+        } else {
+            sbuilder.append( evaluatorPrefix( isNegated ) )
+                    .append( left )
+                    .append( " " )
+                    .append( operator )
+                    .append( " " )
+                    .append( right )
+                    .append( evaluatorSufix( isNegated ) );
         }
-        return evaluatorPrefix( evaluator ) + 
-               this.fieldName + " " + 
-               evaluator( evaluator ) + " " + 
-               value + evaluatorSufix( evaluator );
     }
 
-    private String evaluatorPrefix(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
+    private String evaluatorPrefix( final boolean isNegated ) {
+        if ( isNegated ) {
             return "!( ";
         }
         return "";
     }
 
-    private String evaluator(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
-            return evaluator.substring( 4 );
-        }
-        return evaluator;
-    }
-
-    private String evaluatorSufix(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
+    private String evaluatorSufix( final boolean isNegated ) {
+        if ( isNegated ) {
             return " )";
         }
         return "";
