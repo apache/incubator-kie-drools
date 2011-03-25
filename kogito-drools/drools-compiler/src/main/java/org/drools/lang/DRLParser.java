@@ -1052,12 +1052,14 @@ public class DRLParser {
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EFFECTIVE ) ) {
                 attribute = stringAttribute( new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
+                attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EXPIRES ) ) {
                 attribute = stringAttribute( new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
+                attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIALECT ) ) {
                 attribute = stringAttribute( new String[]{DroolsSoftKeywords.DIALECT} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.CALENDARS ) ) {
