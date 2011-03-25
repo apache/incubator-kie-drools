@@ -73,7 +73,7 @@ public class ExternalSpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "myObject.setIsValid(1, 2)" ) > 0 );
         assertTrue( drl.indexOf( "myObject.size () > 2" ) > 0 );
 
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red),\n\t\tmyObject.size () > 1" ) > 0 );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red),\n        myObject.size () > 1" ) > 0 );
     }
 
     @Test
@@ -104,10 +104,10 @@ public class ExternalSpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 12\")" ) > -1 );
 
-        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) > -1 );
-        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 9)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 9)" ) > -1 );
 
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) );
 
     }
 
@@ -126,10 +126,10 @@ public class ExternalSpreadsheetCompilerUnitTest {
         assertTrue( drl.indexOf( "myObject.getColour().equals(blue)" ) > -1 );
         assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 12\")" ) > -1 );
 
-        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) > -1 );
-        assertTrue( drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 9)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) > -1 );
+        assertTrue( drl.indexOf( "b: Bar()\n        eval(myObject.size() < 9)" ) > -1 );
 
-        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n\t\teval(myObject.size() < 3)" ) );
+        assertTrue( drl.indexOf( "Foo(myObject.getColour().equals(red), myObject.size() > 1)" ) < drl.indexOf( "b: Bar()\n        eval(myObject.size() < 3)" ) );
     }
 
 }
