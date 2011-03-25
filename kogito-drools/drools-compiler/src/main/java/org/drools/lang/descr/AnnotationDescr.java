@@ -64,6 +64,10 @@ public class AnnotationDescr extends BaseDescr {
     public String getValue( final String key ) {
         return this.values.get( key );
     }
+    
+    public Map<String, String> getValues() {
+        return values;
+    }
 
     @Override
     public int hashCode() {
@@ -84,4 +88,5 @@ public class AnnotationDescr extends BaseDescr {
         } else if ( !name.equals( other.name ) ) return false;
         return true;
     }
+
 }

@@ -12,7 +12,27 @@ import function org.drools.xml.DumperTest.testStaticMethod1;
 import function org.drools.xml.DumperTest.testStaticMethod2;
 import function org.drools.xml.DumperTest.testStaticMethod3;
 
+dialect "java"
+salience 0
+auto-focus false
+
+declare SomeType
+   @ann1( "some value" )
+   @ann2( key1="value1", key2="value2" )
+   field1 : String @key
+   field2 : int
+end
+
+function int func1( String p1, boolean p2 ) {
+   return 10;
+}
+
+function func2() {
+   String x = "abc";
+}
+
 rule "simple_rule"
+  @author(name="Some author", version="1")
   salience 10
   no-loop true
   agenda-group "agenda-group"
@@ -25,8 +45,8 @@ rule "simple_rule"
   when
     foo2 : Bar( a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == "black" || a == 40 && a3 == "pink" || a == 12 && a3 == "yellow" || a3 == "blue")
     foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )    
-    foo4 : Bar( a4 : a != 4 && != 5)
-    foo5 : Bar( b == (a4 + 1) || > a4)    
+    foo4 : Bar( a4 : a != 4 && != 5) from entry-point "abc"
+    foo5 : Bar( b == (a4 + 1) || > a4) from $foo3.bla( x, y )
     foo6 : Bar( a4 : a, b == 6)    
     foo7 : Bar( a4 : a, b4 : b)    
     $cheeseList  : ArrayList(size > 2) from collect( Cheese( type == $likes ) );    

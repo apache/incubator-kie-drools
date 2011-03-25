@@ -17,18 +17,34 @@
 package org.drools.lang.descr;
 
 public class AttributeDescr extends BaseDescr {
+    public static enum Type {
+        STRING, NUMBER, DATE, BOOLEAN, LIST, EXPRESSION
+    }
+
     private static final long serialVersionUID = 510l;
     private String            name;
     private String            value;
-    
-    public AttributeDescr(final String name ) {
-        this.name = name;
+    private Type              type;
+
+    public AttributeDescr(final String name) {
+        this(name, 
+             null, 
+             Type.EXPRESSION );
     }
 
     public AttributeDescr(final String name,
                           final String value) {
+        this( name,
+              value,
+              Type.EXPRESSION );
+    }
+
+    public AttributeDescr(final String name,
+                          final String value,
+                          final Type type ) {
         this.name = name;
         this.value = value;
+        this.type = type;
     }
 
     public String getName() {
@@ -38,8 +54,24 @@ public class AttributeDescr extends BaseDescr {
     public String getValue() {
         return this.value;
     }
-    
-    public void setValue(final String value) {
+
+    public void setValue( final String value ) {
         this.value = value;
+    }
+
+    public void setType( Type type ) {
+        this.type = type;
+    }
+
+    public Type getType() {
+        return this.type;
+    }
+    
+    public String getValueString() {
+        if( type == Type.STRING || type == Type.DATE ) {
+            // needs escaping
+            return "\""+this.value+"\"";
+        }
+        return this.value;
     }
 }

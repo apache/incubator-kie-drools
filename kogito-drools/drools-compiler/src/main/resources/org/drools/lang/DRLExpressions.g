@@ -311,7 +311,7 @@ singleRestriction[BaseDescr inp] returns [BaseDescr result]
                $result = new RelationalExprDescr( $op.opr, $op.negated, $op.params, $inp, descr );
            }
          }
-  |  LEFT_PAREN orRestriction[$inp] RIGHT_PAREN
+  |  LEFT_PAREN or=orRestriction[$inp] RIGHT_PAREN  { $result = $or.result; }
   ;  
   
     

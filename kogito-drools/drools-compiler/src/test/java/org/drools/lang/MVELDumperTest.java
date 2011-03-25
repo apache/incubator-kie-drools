@@ -85,6 +85,18 @@ public class MVELDumperTest {
                       result );
     }
 
+    @Test
+    public void testDumpComplex() throws Exception {
+        String input = "a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\"";
+        String expected = "( ( a > 60 && a < 70 || a > 50 && a < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\" )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+
     public ConstraintConnectiveDescr parse( final String constraint ) {
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( constraint );

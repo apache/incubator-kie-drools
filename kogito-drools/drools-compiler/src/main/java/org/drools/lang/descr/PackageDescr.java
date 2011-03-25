@@ -36,7 +36,6 @@ public class PackageDescr extends BaseDescr
     private List<FunctionImportDescr>  functionImports  = Collections.emptyList();
     private List<AttributeDescr>       attributes       = Collections.emptyList();
     private List<GlobalDescr>          globals          = Collections.emptyList();
-    private List<FactTemplateDescr>    factTemplates    = Collections.emptyList();
     private List<FunctionDescr>        functions        = Collections.emptyList();
     private List<RuleDescr>            rules            = Collections.emptyList();
     private List<TypeDeclarationDescr> typeDeclarations = Collections.emptyList();
@@ -65,7 +64,6 @@ public class PackageDescr extends BaseDescr
         functionImports = (List<FunctionImportDescr>) in.readObject();
         attributes = (List<AttributeDescr>) in.readObject();
         globals = (List<GlobalDescr>) in.readObject();
-        factTemplates = (List<FactTemplateDescr>) in.readObject();
         functions = (List<FunctionDescr>) in.readObject();
         rules = (List<RuleDescr>) in.readObject();
     }
@@ -78,7 +76,6 @@ public class PackageDescr extends BaseDescr
         out.writeObject( functionImports );
         out.writeObject( attributes );
         out.writeObject( globals );
-        out.writeObject( factTemplates );
         out.writeObject( functions );
         out.writeObject( rules );
     }
@@ -152,17 +149,6 @@ public class PackageDescr extends BaseDescr
             }
         }
         return null;
-    }
-
-    public void addFactTemplate(final FactTemplateDescr factTemplate) {
-        if ( this.factTemplates == Collections.EMPTY_LIST ) {
-            this.factTemplates = new ArrayList<FactTemplateDescr>( 1 );
-        }
-        this.factTemplates.add( factTemplate );
-    }
-
-    public List<FactTemplateDescr> getFactTemplates() {
-        return this.factTemplates;
     }
 
     public void addFunction(final FunctionDescr function) {

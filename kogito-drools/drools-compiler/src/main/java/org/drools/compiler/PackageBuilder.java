@@ -613,11 +613,6 @@ public class PackageBuilder {
 
         // only try to compile if there are no parse errors
         if ( !hasErrors() ) {
-            for ( final FactTemplateDescr factTempl : packageDescr.getFactTemplates() ) {
-                addFactTemplate( packageDescr,
-                                 factTempl );
-            }
-
             if ( !packageDescr.getFunctions().isEmpty() ) {
 
                 for ( final Iterator it = packageDescr.getFunctions().iterator(); it.hasNext(); ) {

@@ -39,5 +39,10 @@ public class EntryPointDescr extends PatternSourceDescr {
     public String getEntryId() {
         return this.getText();
     }
+    
+    @Override
+    public String toString() {
+        return "from entry-point \""+getEntryId()+"\"";
+    }
 
 }
