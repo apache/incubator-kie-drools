@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jbpm.process.builder.dialect.java.JavaProcessDialect;
 import org.jbpm.process.builder.dialect.mvel.MVELProcessDialect;
-import org.jbpm.process.builder.dialect.xpath.XPATHProcessDialect;
 
 public class ProcessDialectRegistry {
 	
@@ -15,7 +14,6 @@ public class ProcessDialectRegistry {
 		 dialects = new HashMap<String, ProcessDialect>();
 		 dialects.put("java", new JavaProcessDialect());
 		 dialects.put("mvel", new MVELProcessDialect());
-		 dialects.put("XPath", new XPATHProcessDialect());
 	}
 	
 	public static ProcessDialect getDialect(String dialect) {

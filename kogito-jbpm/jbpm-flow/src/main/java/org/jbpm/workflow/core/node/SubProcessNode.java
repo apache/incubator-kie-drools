@@ -60,7 +60,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
     }
 
     public void addInMapping(String parameterName, String variableName) {
-    	inMapping.add(new DataAssociation(parameterName, variableName, null, null));
+    	inMapping.add(new DataAssociation(variableName, parameterName, null, null));
     }
 
     public void setInMappings(Map<String, String> inMapping) {
@@ -78,7 +78,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
     	Map<String,String> in = new HashMap<String, String>(); 
     	for(DataAssociation a : inMapping) {
     		if(a.getSources().size() ==1 && (a.getAssignments() == null || a.getAssignments().size()==0) && a.getTransformation() == null) {
-    			in.put(a.getSources().get(0), a.getTarget());
+    			in.put(a.getTarget(), a.getSources().get(0));
     		}
     	}
     	return in;

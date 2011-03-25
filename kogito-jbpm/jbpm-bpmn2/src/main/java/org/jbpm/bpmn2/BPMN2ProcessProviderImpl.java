@@ -22,9 +22,15 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xpath.XPATHProcessDialect;
+import org.jbpm.process.builder.dialect.ProcessDialectRegistry;
 
 public class BPMN2ProcessProviderImpl implements BPMN2ProcessProvider {
 
+	static {
+        ProcessDialectRegistry.setDialect("XPath", new XPATHProcessDialect());
+	}
+	
     public void configurePackageBuilder(PackageBuilder packageBuilder) {
         PackageBuilderConfiguration conf = packageBuilder.getPackageBuilderConfiguration();
         if (conf.getSemanticModules().getSemanticModule(BPMNSemanticModule.BPMN2_URI) == null) {

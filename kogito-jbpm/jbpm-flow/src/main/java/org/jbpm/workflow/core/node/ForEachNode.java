@@ -17,7 +17,6 @@
 package org.jbpm.workflow.core.node;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.definition.process.Node;
@@ -36,32 +35,13 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ForEachNode extends CompositeContextNode {
+public class ForEachNode extends CompositeNode {
     
     private static final long serialVersionUID = 510l;
     
     private String variableName;
     private String collectionExpression;
     private boolean waitForCompletion = true;
-
-	private List<DataAssociation> inMapping = new LinkedList<DataAssociation>();
-	private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
-
-    public List<DataAssociation> getInMapping() {
-		return inMapping;
-	}
-
-	public void setInMapping(List<DataAssociation> inMapping) {
-		this.inMapping = inMapping;
-	}
-
-	public List<DataAssociation> getOutMapping() {
-		return outMapping;
-	}
-
-	public void setOutMapping(List<DataAssociation> outMapping) {
-		this.outMapping = outMapping;
-	}
 
     public ForEachNode() {
         // Split
@@ -98,47 +78,6 @@ public class ForEachNode extends CompositeContextNode {
         );
     }
     
-	public ForEachNode(Node node) {
-        // Split
-        ForEachSplitNode split = new ForEachSplitNode();
-        split.setName("ForEachSplit");
-        split.setMetaData("hidden", true);
-        super.addNode(split);
-        super.linkIncomingConnections(
-            org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
-            new CompositeNode.NodeAndType(split, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE));
-        // Composite node
-//        CompositeContextNode compositeNode = new CompositeContextNode();
-//        compositeNode.setName("ForEachComposite");
-//        compositeNode.setMetaData("hidden", true);
-//        super.addNode(compositeNode);
-//        VariableScope variableScope = new VariableScope();
-//        compositeNode.addContext(variableScope);
-//        compositeNode.setDefaultContext(variableScope);
-        ((org.jbpm.workflow.core.Node) node).setId(2);
-        super.addNode(node);
-      VariableScope variableScope = new VariableScope();
-      addContext(variableScope);
-      setDefaultContext(variableScope);
-
-        // Join
-        ForEachJoinNode join = new ForEachJoinNode();
-        join.setName("ForEachJoin");
-        join.setMetaData("hidden", true);
-        super.addNode(join);
-        super.linkOutgoingConnections(
-            new CompositeNode.NodeAndType(join, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),
-            org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
-        new ConnectionImpl(
-            super.getNode(1), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-            super.getNode(2), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE
-        );
-        new ConnectionImpl(
-        		super.getNode(2), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,
-            super.getNode(3), org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE
-        );
-    }
-
     public String getVariableName() {
         return variableName;
     }
@@ -184,12 +123,7 @@ public class ForEachNode extends CompositeContextNode {
     }
     
     public Node[] getNodes() {
-    	if(super.getNode(2) instanceof CompositeContextNode) {
-    		return getCompositeNode().getNodes();
-    	}
-    	else {
-    		return new Node[] {super.getNode(2)};
-    	}
+		return getCompositeNode().getNodes();
     }
     
     public Node[] internalGetNodes() {
@@ -235,12 +169,7 @@ public class ForEachNode extends CompositeContextNode {
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-        if(super.getNode(2) instanceof CompositeContextNode) {
-        	((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
-        }
-        else {
-        	((VariableScope) getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
-        }
+    	((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
     }
 
     public String getCollectionExpression() {

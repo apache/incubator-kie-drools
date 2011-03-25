@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.process.instance.impl;
+package org.jbpm.bpmn2.xpath;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -79,7 +79,6 @@ public class XPATHExpressionModifier {
 	 * @throws TransformerException
 	 * @throws XPathExpressionException 
 	 */
-	@SuppressWarnings("unchecked")
 	public Node insertMissingData(String xpath, Node contextNode)
 	throws DOMException, TransformerException, XPathExpressionException {
 	    if (xpath.startsWith("/") && contextNode == null) {

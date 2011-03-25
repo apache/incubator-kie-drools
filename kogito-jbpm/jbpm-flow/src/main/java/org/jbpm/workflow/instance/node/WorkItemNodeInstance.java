@@ -16,28 +16,11 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.definition.process.Node;
@@ -48,25 +31,17 @@ import org.drools.process.instance.impl.WorkItemImpl;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.NodeInstance;
+import org.drools.spi.ProcessContext;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.process.instance.impl.XPATHExpressionModifier;
+import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.mvel2.MVEL;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
@@ -77,37 +52,11 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkItemNodeInstance extends StateBasedNodeInstance implements EventListener {
     
-    private static final Logger _logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
-    
-    private static final Logger _assignmentsLogger = LoggerFactory.getLogger("org.jbpm.xpath");
-
     private static final long serialVersionUID = 510l;
     private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{(\\S+)\\}", Pattern.DOTALL);
     
     private long workItemId = -1;
     private transient WorkItem workItem;
-    
-    private static String serializeXML(org.w3c.dom.Node node) {
-        if (node == null) {
-            return null;
-        }
-        try {
-            StringWriter writer = new StringWriter();
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer serializer = tf.newTransformer();
-            serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-            serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            StreamResult streamResult = new StreamResult(writer);
-            serializer.transform(new DOMSource(node), streamResult);
-            return writer.toString();
-        } catch (TransformerConfigurationException e) {
-            _logger.error(e.getMessage(), e);
-        } catch (TransformerException e) {
-            _logger.error(e.getMessage(), e);
-        }
-        return null;
-    }
     
     protected WorkItemNode getWorkItemNode() {
         return (WorkItemNode) getNode();
@@ -177,7 +126,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
         for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext(); ) {
             DataAssociation association = iterator.next();
-            if(association.getAssignments() == null) {
+            if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                 Object parameterValue = null;
                 VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                 resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
@@ -190,33 +139,14 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         System.err.println("Could not find variable scope for variable " + association.getSources().get(0));
                         System.err.println("when trying to execute Work Item " + work.getName());
                         System.err.println("Continuing without setting parameter.");
-                        throw new RuntimeException("Could not find variable scope for variable " + association.getSources().get(0));
                     }
                 }
                 if (parameterValue != null) {
                     ((WorkItem) workItem).setParameter(association.getTarget(), parameterValue);
                 }
-            }
-            else {
-                String source = association.getSources().get(0);
-                String target = association.getTarget();
-                try {
-                    for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
-                        handleAssignment(it.next(), source, target, true);
-                    }
-                }
-                catch(XPathExpressionException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                } catch (DOMException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                } catch (TransformerException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
+            } else {
+                for(Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+                    handleAssignment(it.next());
                 }
             }
         }
@@ -257,121 +187,15 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         return workItem;
     }
 
-    private void handleAssignment(Assignment assignment, String sourceExpr, String targetExpr, boolean isInput) throws XPathExpressionException, DOMException, TransformerException, ParserConfigurationException {
-        String from = assignment.getFrom();
-        String to = assignment.getTo();
-
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xpathFrom = factory.newXPath();
-
-        XPathExpression exprFrom = xpathFrom.compile(from);
-
-        XPath xpathTo = factory.newXPath();
-
-        XPathExpression exprTo = xpathTo.compile(to);
-
-        Object target = null;
-        Object source = null;
-        
-        
-        if (isInput) {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            resolveContextInstance(VariableScope.VARIABLE_SCOPE, sourceExpr);
-            source = variableScopeInstance.getVariable(sourceExpr);
-            target = ((WorkItem) workItem).getParameter(targetExpr);
-        } else {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            resolveContextInstance(VariableScope.VARIABLE_SCOPE, targetExpr);
-            target = variableScopeInstance.getVariable(targetExpr);
-            source = ((WorkItem) workItem).getResult(sourceExpr);
-        }
-        
-        if (_assignmentsLogger.isDebugEnabled()) {
-            //let's make noise about this assignment
-            _assignmentsLogger.debug("========== ASSIGN ==========");
-            _assignmentsLogger.debug("Assignment between '" + from + "' with '"+ sourceExpr +"' and '" + to + "' with '" + targetExpr +"'");
-            _assignmentsLogger.debug("========== SOURCE ==========");
-            if (source instanceof org.w3c.dom.Node) {
-            	_assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) source));
-            } else {
-            	_assignmentsLogger.debug(String.valueOf(source));
-            }
-            _assignmentsLogger.debug("============================");
-            _assignmentsLogger.debug("========== TARGET ==========");
-            if (target instanceof org.w3c.dom.Node) {
-            	_assignmentsLogger.debug(serializeXML((org.w3c.dom.Node) target));
-            } else {
-            	_assignmentsLogger.debug(String.valueOf(target));
-            }
-            _assignmentsLogger.debug("============================");
-        }
-        
-        Object targetElem = null;
-        
-        XPATHExpressionModifier modifier = new XPATHExpressionModifier();
-        // modify the tree, returning the root node
-        target = modifier.insertMissingData(to, (org.w3c.dom.Node) target);
-
-        // now pick the leaf for this operation
-        if (target != null) {
-            org.w3c.dom.Node parent = null;
-                parent = ((org.w3c.dom.Node) target).getParentNode();
-                
-                
-            targetElem = exprTo.evaluate(parent, XPathConstants.NODE);
-            
-            if (targetElem == null) {
-                throw new RuntimeException("Nothing was selected by the to expression " + to + " on " + targetExpr);
-            }
-        }
-        NodeList nl = null;
-        if (source instanceof org.w3c.dom.Node) {
-             nl = (NodeList) exprFrom.evaluate(source, XPathConstants.NODESET);
-        } else if (source instanceof String) {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document doc = builder.newDocument();
-            //quirky: create a temporary element, use its nodelist
-            Element temp = doc.createElementNS(null, "temp");
-            temp.appendChild(doc.createTextNode((String) source));
-            nl = temp.getChildNodes();
-        } else if (source == null) {
-            // don't throw errors yet ?
-            throw new RuntimeException("Source value was null for source " + sourceExpr);
-        }
-        
-        if (nl.getLength() == 0) {
-            throw new RuntimeException("Nothing was selected by the from expression " + from + " on " + sourceExpr);
-        }
-        for (int i = 0 ; i < nl.getLength(); i++) {
-            
-            if (!(targetElem instanceof org.w3c.dom.Node)) {
-                if (nl.item(i) instanceof Attr) {
-                    targetElem = ((Attr) nl.item(i)).getValue();
-                } else if (nl.item(i) instanceof Text) {
-                    targetElem = ((Text) nl.item(i)).getWholeText();
-                } else {
-                    DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-                    Document doc = builder.newDocument();
-                    targetElem  = doc.importNode(nl.item(i), true);
-                }
-                target = targetElem;
-            } else {
-                org.w3c.dom.Node n  = ((org.w3c.dom.Node) targetElem).getOwnerDocument().importNode(nl.item(i), true);
-                if (n instanceof Attr) {
-                    ((Element) targetElem).setAttributeNode((Attr) n);
-                } else {
-                    ((org.w3c.dom.Node) targetElem).appendChild(n);
-                }
-            }
-        }
-        
-        if (isInput) {
-            ((WorkItem) workItem).setParameter(targetExpr, target);
-        } else {
-            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-            resolveContextInstance(VariableScope.VARIABLE_SCOPE, targetExpr);
-            variableScopeInstance.setVariable(targetExpr, target);
-        }
+    private void handleAssignment(Assignment assignment) {
+    	AssignmentAction action = (AssignmentAction) assignment.getMetaData("Action");
+		try {
+		    ProcessContext context = new ProcessContext(getProcessInstance().getKnowledgeRuntime());
+		    context.setNodeInstance(this);
+	        action.execute(getWorkItem(), context);		    
+		} catch (Exception e) {
+		    throw new RuntimeException("unable to execute Assignment", e);
+		}
     }
 
     public void triggerCompleted(WorkItem workItem) {
@@ -380,7 +204,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (workItemNode != null) {
             for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext(); ) {
                 DataAssociation association = iterator.next();
-                if(association.getAssignments() == null) {
+                if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                     resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
                     if (variableScopeInstance != null) {
@@ -389,26 +213,21 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                             try {
                                 value = MVEL.eval(association.getSources().get(0), new WorkItemResolverFactory(workItem));
                             } catch (Throwable t) {
-                                _logger.error(t.getMessage(), t);
+                                // do nothing
                             }
                         }
                         variableScopeInstance.setVariable(association.getTarget(), value);
                     } else {
-                        if (_logger.isDebugEnabled()) {
-                            _logger.debug("Could not find variable scope for variable " + association.getTarget());
-                            _logger.debug("when trying to complete Work Item " + workItem.getName());
-                            _logger.debug("Continuing without setting variable.");
-                        }
+                        System.out.println("Could not find variable scope for variable " + association.getTarget());
+                        System.out.println("when trying to complete Work Item " + workItem.getName());
+                        System.out.println("Continuing without setting variable.");
                     }
                 } else {
-                    String source = association.getSources().get(0);
-                    String target = association.getTarget();
                     try {
                         for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
-                            handleAssignment(it.next(), source, target, false);
+                            handleAssignment(it.next());
                         }
                     } catch (Exception e) {
-                        _logger.error(e.getMessage(), e);
                         throw new RuntimeException(e);
                     }
                 }                

@@ -16,16 +16,10 @@
 
 package org.jbpm.bpmn2.xml;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -36,6 +30,7 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
@@ -120,7 +115,7 @@ public class TaskHandler extends AbstractNodeHandler {
     			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
     			String from = ssubNode.getTextContent();
     			String to = ssubNode.getNextSibling().getTextContent();
-    			assignments.add(new Assignment(null, from, to));
+    			assignments.add(new Assignment("XPath", from, to));
 
         		subNode = subNode.getNextSibling();
     		}
@@ -170,7 +165,7 @@ public class TaskHandler extends AbstractNodeHandler {
 			org.w3c.dom.Node ssubNode = subNode.getFirstChild();
 			String from = ssubNode.getTextContent();
 			String to = ssubNode.getNextSibling().getTextContent();
-			assignments.add(new Assignment(null, from, to));
+			assignments.add(new Assignment("XPath", from, to));
 
     		subNode = subNode.getNextSibling();
 		}
@@ -190,49 +185,52 @@ public class TaskHandler extends AbstractNodeHandler {
 		// determine type of event definition, so the correct type of node
 		// can be generated
     	handleNode(node, element, uri, localName, parser);
-		boolean found = false;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
 			if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
 				// create new timerNode
-				long id = node.getId();
-				ForEachNode forEachNode = new ForEachNode(node);
-				forEachNode.setId(id);
-				forEachNode.setName(node.getName());
-//				forEachNode.addNode(node);
-				forEachNode.setMetaData("UniqueId", ((WorkItemNode) node).getMetaData("UniqueId"));
-//				forEachNode.setMetaData(ProcessHandler.CONNECTIONS, ((WorkItemNode) node).getMetaData(ProcessHandler.CONNECTIONS));
-				forEachNode.setInMapping(((WorkItemNode) node).getInAssociations());
-				forEachNode.setOutMapping(((WorkItemNode) node).getOutAssociations());
+				ForEachNode forEachNode = new ForEachNode();
+				forEachNode.setId(node.getId());
+				forEachNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
+				node.setMetaData("UniqueId", null);
+				node.setMetaData("hidden", true);
+				forEachNode.addNode(node);
+				forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
+				forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);
 				node = forEachNode;
 				handleForEachNode(node, element, uri, localName, parser);
-				found = true;
 				break;
 			}
 			xmlNode = xmlNode.getNextSibling();
 		}
-		
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		nodeContainer.addNode(node);
 		return node;
 	}
 
+    protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, ForEachNode forEachNode) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        String inputVariable = subNode.getTextContent();
+        if (inputVariable != null && inputVariable.trim().length() > 0) {
+        	forEachNode.setCollectionExpression(inputVariable);
+        }
+    }
+    
 	protected void handleForEachNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
     	ForEachNode forEachNode = (ForEachNode) node;
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
-            if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
+            if ("dataInputAssociation".equals(nodeName)) {
+                readDataInputAssociation(xmlNode, forEachNode);
+            } else if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
             	readMultiInstanceLoopCharacteristics(xmlNode, forEachNode, parser);
             }
             xmlNode = xmlNode.getNextSibling();
         }
-//        List<SequenceFlow> connections = (List<SequenceFlow>)
-//        forEachNode.getMetaData(ProcessHandler.CONNECTIONS);
-//        ProcessHandler.linkConnections(forEachNode, connections);
-//        ProcessHandler.linkBoundaryEvents(forEachNode);
     }
 
 	protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
@@ -257,12 +255,6 @@ public class TaskHandler extends AbstractNodeHandler {
 		        }
                 if (variableName != null && variableName.trim().length() > 0) {
                 	forEachNode.setVariable(variableName, dataType);
-                }
-            }
-            else if("loopDataInput".equals(nodeName)) {
-                String inputVariable = subNode.getFirstChild().getTextContent();
-                if (inputVariable != null && inputVariable.trim().length() > 0) {
-                	forEachNode.setCollectionExpression(dataInputs.get(inputVariable));
                 }
             }
             subNode = subNode.getNextSibling();

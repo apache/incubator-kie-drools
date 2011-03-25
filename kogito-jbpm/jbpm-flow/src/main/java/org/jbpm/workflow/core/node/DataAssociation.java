@@ -22,6 +22,8 @@ import java.util.List;
 
 public class DataAssociation implements Serializable {
 
+	private static final long serialVersionUID = 5L;
+	
 	private List<String> sources;
 	private String target;
 	private List<Assignment> assignments;
@@ -38,6 +40,7 @@ public class DataAssociation implements Serializable {
 		this.transformation = transformation;
 	}
 
+	@SuppressWarnings("serial")
 	public DataAssociation(final String source, String target,
 			List<Assignment> assignments, Transformation transformation) {
 		this(new LinkedList<String>(){{add(source);}}, target, assignments, transformation);

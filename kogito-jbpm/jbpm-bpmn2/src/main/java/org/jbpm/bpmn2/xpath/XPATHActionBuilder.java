@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.process.builder.dialect.xpath;
+package org.jbpm.bpmn2.xpath;
 
 import java.util.HashMap;
 import java.util.Map;

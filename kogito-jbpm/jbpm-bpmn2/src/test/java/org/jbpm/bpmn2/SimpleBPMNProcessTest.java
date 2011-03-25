@@ -639,6 +639,19 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+	public void testMultiInstanceLoopCharacteristicsTask() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceLoopCharacteristicsTask.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<String> myList = new ArrayList<String>();
+		myList.add("First Item");
+		myList.add("Second Item");
+		params.put("list", myList);
+		ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsTask", params);
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
     public void testEscalationBoundaryEvent() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

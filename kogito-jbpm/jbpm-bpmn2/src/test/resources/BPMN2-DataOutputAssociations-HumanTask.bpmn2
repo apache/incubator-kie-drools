@@ -20,6 +20,7 @@
     <userTask id='_BF09B923-BE11-4447-BECB-609BD86C59EF' name=''>
       <ioSpecification>
         <dataOutput id='_BF09B923-BE11-4447-BECB-609BD86C59EF_PreviousOwner' name='output'/>
+        <inputSet/>
         <outputSet>
           <dataOutputRefs>_BF09B923-BE11-4447-BECB-609BD86C59EF_PreviousOwner</dataOutputRefs>
         </outputSet>
@@ -34,7 +35,7 @@
       </dataOutputAssociation>
     </userTask>
     <sequenceFlow id='_E6BD9F03-8580-4AD8-A5CC-6D1F416E514C' sourceRef='_81070F07-C929-4C93-8B08-18FF6D319F6A' targetRef='_BF09B923-BE11-4447-BECB-609BD86C59EF'>
-      <conditionExpression language='http://www.w3.org/1999/XPath'>true()</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language='http://www.w3.org/1999/XPath'>true()</conditionExpression>
     </sequenceFlow>
     <scriptTask id='_7CA18647-714B-44D5-8DEB-544709C4221A' name=''>
       <ioSpecification>
@@ -44,7 +45,7 @@
       <script>System.out.println("Task 2");</script>
     </scriptTask>
     <sequenceFlow id='_ED6FD301-F8C0-4241-A8FF-A1F7756652B7' sourceRef='_81070F07-C929-4C93-8B08-18FF6D319F6A' targetRef='_7CA18647-714B-44D5-8DEB-544709C4221A'>
-      <conditionExpression language='http://www.w3.org/1999/XPath'>count($instanceMetadata/user) = 2</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language='http://www.w3.org/1999/XPath'>count($instanceMetadata/user) = 2</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id='_2BF3E89A-B28F-40E3-9A9B-A982206BF500' sourceRef='_7CA18647-714B-44D5-8DEB-544709C4221A' targetRef='_FB90F2CD-5CA2-4F85-88C0-022B03130BAE'/>
     <endEvent id='_C1D067D7-3596-45F7-9B75-69F60C3442F1' name=''/>

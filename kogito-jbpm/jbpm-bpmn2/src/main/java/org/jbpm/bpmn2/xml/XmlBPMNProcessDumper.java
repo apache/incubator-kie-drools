@@ -34,7 +34,6 @@ import org.drools.xml.SemanticModule;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
-import org.jbpm.bpmn2.xpath.XPathDialect;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.swimlane.Swimlane;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
@@ -646,7 +645,7 @@ public class XmlBPMNProcessDumper {
                     if ("code".equals(constraint.getType())) {
                         if (JavaDialect.ID.equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + JAVA_LANGUAGE + "\" ");
-                        } else if (XPathDialect.ID.equals(constraint.getDialect())) {
+                        } else if ("XPath".equals(constraint.getDialect())) {
                             xmlDump.append("language=\"" + XPATH_LANGUAGE + "\" ");
                         }
                     } else {
