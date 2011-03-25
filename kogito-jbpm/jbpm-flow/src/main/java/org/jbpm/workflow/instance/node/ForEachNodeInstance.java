@@ -38,7 +38,7 @@ import org.mvel2.MVEL;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class ForEachNodeInstance extends CompositeContextNodeInstance {
+public class ForEachNodeInstance extends CompositeNodeInstance {
 
     private static final long serialVersionUID = 510l;
     

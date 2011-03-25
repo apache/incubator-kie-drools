@@ -22,8 +22,6 @@ import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.builder.dialect.ProcessDialect;
-import org.jbpm.process.builder.dialect.xpath.XPATHActionBuilder;
-import org.jbpm.process.builder.dialect.xpath.XPATHReturnValueEvaluatorBuilder;
 
 public class XPATHProcessDialect implements ProcessDialect {
 

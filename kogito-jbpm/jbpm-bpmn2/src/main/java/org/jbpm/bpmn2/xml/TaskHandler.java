@@ -16,7 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,11 +23,6 @@ import java.util.Map;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.process.core.Work;
 import org.drools.process.core.datatype.DataType;
@@ -192,7 +186,6 @@ public class TaskHandler extends AbstractNodeHandler {
 		// determine type of event definition, so the correct type of node
 		// can be generated
     	handleNode(node, element, uri, localName, parser);
-		boolean found = false;
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
