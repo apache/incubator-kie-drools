@@ -121,6 +121,30 @@ public abstract class TaskServiceBaseTest extends BaseTest {
         assertTrue( CollectionUtils.equals( expected.get( "darth" ),
                                             actual ) );
     }
+    
+    public void testPotentialOwnerQueries() {
+        Map<String, Object>  vars = new HashMap();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        
+        //Reader reader;
+        Reader reader = new InputStreamReader( getClass().getResourceAsStream( "../QueryData_TasksPotentialOwner.mvel" ) );
+        List<Task> tasks = (List<Task>) eval( reader,
+                                              vars );
+        for ( Task task : tasks ) {
+            BlockingAddTaskResponseHandler responseHandler = new BlockingAddTaskResponseHandler();
+            client.addTask( task, null, responseHandler );
+        }
+
+        // Test UK I18N  
+        BlockingAllOpenTasksForUseResponseHandler responseHandler = new BlockingAllOpenTasksForUseResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(),
+                              "en-UK",
+                              responseHandler );
+        List<TaskSummary> actual = responseHandler.getResults();
+        assertEquals( 2,
+                      actual.size() );
+    }
 
     public void testPeopleAssignmentQueries() {
         Map vars = new HashMap();
