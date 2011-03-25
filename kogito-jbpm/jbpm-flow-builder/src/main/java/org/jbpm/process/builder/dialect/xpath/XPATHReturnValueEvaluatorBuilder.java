@@ -38,7 +38,6 @@ public class XPATHReturnValueEvaluatorBuilder implements ReturnValueEvaluatorBui
 
         try {
             XPATHReturnValueEvaluator expr = new XPATHReturnValueEvaluator( text, null );
-
             constraintNode.setEvaluator( expr );
             
         } catch ( final Exception e ) {
