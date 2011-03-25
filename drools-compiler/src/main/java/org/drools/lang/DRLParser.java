@@ -1105,6 +1105,7 @@ public class DRLParser {
                 String value = input.toString( first,
                                                input.LT( -1 ).getTokenIndex() );
                 attribute.value( value );
+                attribute.type( AttributeDescr.Type.EXPRESSION );
             }
         } finally {
             if ( attribute != null ) {
@@ -1143,6 +1144,7 @@ public class DRLParser {
                 String value = input.toString( first,
                                                input.LT( -1 ).getTokenIndex() );
                 attribute.value( value );
+                attribute.type( AttributeDescr.Type.EXPRESSION );
             }
         } finally {
             if ( attribute != null ) {
@@ -1198,6 +1200,7 @@ public class DRLParser {
             }
             if ( state.backtracking == 0 ) {
                 attribute.value( value );
+                attribute.type( AttributeDescr.Type.BOOLEAN );
             }
         } finally {
             if ( attribute != null ) {
@@ -1249,6 +1252,7 @@ public class DRLParser {
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
                 attribute.value( StringUtils.unescapeJava( safeStripStringDelimiters( value.getText() ) ) );
+                attribute.type( AttributeDescr.Type.STRING );
             }
         } finally {
             if ( attribute != null ) {
@@ -1321,6 +1325,7 @@ public class DRLParser {
             builder.append( " ]" );
             if ( state.backtracking == 0 ) {
                 attribute.value( builder.toString() );
+                attribute.type( AttributeDescr.Type.LIST );
             }
         } finally {
             if ( attribute != null ) {
@@ -1369,8 +1374,11 @@ public class DRLParser {
                                       DRLLexer.RIGHT_PAREN,
                                       -1 );
                 if ( state.failed ) return null;
-                if ( state.backtracking == 0 ) attribute.value( safeStripDelimiters( value,
-                                                                                     new String[]{"(", ")"} ) );
+                if ( state.backtracking == 0 ) {
+                    attribute.value( safeStripDelimiters( value,
+                                                          new String[]{"(", ")"} ) );
+                    attribute.type( AttributeDescr.Type.EXPRESSION );
+                }
             } else {
                 String value = "";
                 if ( input.LA( 1 ) == DRLLexer.PLUS ) {
@@ -1397,7 +1405,10 @@ public class DRLParser {
                                    DroolsEditorType.NUMERIC_CONST );
                 if ( state.failed ) return null;
                 value += nbr.getText();
-                if ( state.backtracking == 0 ) attribute.value( value );
+                if ( state.backtracking == 0 ) { 
+                    attribute.value( value );
+                    attribute.type( AttributeDescr.Type.NUMBER );
+                }
             }
         } finally {
             if ( attribute != null ) {

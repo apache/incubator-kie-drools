@@ -26,5 +26,7 @@ public interface AttributeDescrBuilder
     DescrBuilder<AttributeDescr> {
 
     public AttributeDescrBuilder value( String value );
+    
+    public AttributeDescrBuilder type( AttributeDescr.Type type );
 
 }

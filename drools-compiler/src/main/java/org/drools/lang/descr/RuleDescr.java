@@ -214,7 +214,16 @@ public class RuleDescr extends AnnotatedBaseDescr
         return parentName;
     }
 
+    public boolean isRule() {
+        return true;
+    }
+    
+    public boolean isQuery() {
+        return false;
+    }
+    
     public String toString() {
         return "[Rule name='" + this.name + "']";
     }
+    
 }

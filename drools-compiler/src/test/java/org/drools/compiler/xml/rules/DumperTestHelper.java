@@ -2,6 +2,7 @@ package org.drools.compiler.xml.rules;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.PackageBuilderConfiguration;
@@ -39,12 +40,12 @@ public class DumperTestHelper {
         DrlParser parser = new DrlParser();
         final PackageDescr pkgOriginal = parser.parse( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final DrlDumper dumper = new DrlDumper();
-        String result = dumper.dump( pkgOriginal );
+        String result1 = dumper.dump( pkgOriginal );
+        final PackageDescr pkgDerivated = parser.parse( new StringReader( result1 ) );
+        String result2 = dumper.dump( pkgDerivated );
 
-        parser = new DrlParser();
-        String buffer = readFile( filename );
-        assertEqualsIgnoreWhitespace( buffer.toString(),
-                                      result );
+        assertEqualsIgnoreWhitespace( result1,
+                                      result2 );
     }
 
     private static void assertEqualsIgnoreWhitespace(final String expected,

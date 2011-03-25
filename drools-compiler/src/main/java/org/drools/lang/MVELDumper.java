@@ -17,10 +17,12 @@ package org.drools.lang;
  */
 
 import org.drools.base.evaluators.Operator;
+import org.drools.compiler.DrlExprParser;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.RelationalExprDescr;
 
 public class MVELDumper extends ReflectiveVisitor {
@@ -81,6 +83,18 @@ public class MVELDumper extends ReflectiveVisitor {
                                 red.isNegated(),
                                 dump( red.getRight(),
                                       Integer.MAX_VALUE ) );// maximum precedence, so wrap any child connective in parenthesis
+        } else if ( base instanceof ExprConstraintDescr ) {
+            DrlExprParser expr = new DrlExprParser();
+            ConstraintConnectiveDescr result = expr.parse( ((ExprConstraintDescr) base).getExpression() );
+            if( result.getDescrs().size() == 1 ) {
+                dump( sbuilder,
+                      result.getDescrs().get( 0 ),
+                      0 );
+            } else {
+                dump( sbuilder,
+                      result,
+                      0 );
+            }
         }
         return sbuilder;
     }

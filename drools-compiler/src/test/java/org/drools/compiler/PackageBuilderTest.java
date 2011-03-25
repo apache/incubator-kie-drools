@@ -312,56 +312,6 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     @Test
-    public void testFactTemplate() {
-        final PackageBuilder builder = new PackageBuilder();
-
-        final PackageDescr packageDescr = new PackageDescr( "p1" );
-        final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
-        packageDescr.addRule( ruleDescr );
-
-        final AndDescr lhs = new AndDescr();
-        ruleDescr.setLhs( lhs );
-
-        final FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
-        cheese.addFieldTemplate( new FieldTemplateDescr( "name",
-                                                         "String" ) );
-        cheese.addFieldTemplate( new FieldTemplateDescr( "price",
-                                                         "Integer" ) );
-
-        packageDescr.addFactTemplate( cheese );
-
-        final PatternDescr pattern = new PatternDescr( "Cheese",
-                                                       "stilton" );
-        lhs.addDescr( pattern );
-
-        pattern.addConstraint( new ExprConstraintDescr("name == stilton") );
-
-        ruleDescr.setConsequence( "String result = stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" );" );
-
-        builder.addPackage( packageDescr );
-
-        //        assertFalse( Arrays.toString( builder.getErrors() ),
-        //                     builder.hasErrors() );
-
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final Package pkg = builder.getPackage();
-        try {
-            ruleBase.addPackage( pkg );
-        } catch ( final Exception e ) {
-            e.printStackTrace();
-        }
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
-        stilton.setFieldValue( "name",
-                               "stilton" );
-        stilton.setFieldValue( "price",
-                               new Integer( 200 ) );
-        workingMemory.insert( stilton );
-        workingMemory.fireAllRules();
-
-    }
-
-    @Test
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
