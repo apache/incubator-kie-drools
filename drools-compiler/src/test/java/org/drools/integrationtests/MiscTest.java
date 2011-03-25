@@ -6323,6 +6323,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
     public void testAlphaEvalWithOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AlphaEvalWithOrCE.drl" ) ) );
@@ -7210,6 +7211,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";

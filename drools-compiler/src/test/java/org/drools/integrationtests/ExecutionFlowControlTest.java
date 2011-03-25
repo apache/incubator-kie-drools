@@ -53,7 +53,7 @@ public class ExecutionFlowControlTest {
                                             null );
     }
 
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
+    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
@@ -164,7 +164,7 @@ public class ExecutionFlowControlTest {
                              list.size() );
 
     }
-    
+
     @Test
     public void testNoLoopWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -189,7 +189,8 @@ public class ExecutionFlowControlTest {
         assertEquals( "Should not loop  and thus size should be 1",
                              1,
                              list.size() );
-        assertEquals( 50, brie.getPrice() );
+        assertEquals( 50,
+                      brie.getPrice() );
 
     }
 
@@ -240,7 +241,7 @@ public class ExecutionFlowControlTest {
         assertEquals( 1,
                       group2.size() );
     }
-    
+
     @Test
     public void testLockOnActiveForMain() {
         String str = "";
@@ -254,31 +255,35 @@ public class ExecutionFlowControlTest {
         str += "    list.add( $str ); \n";
         str += "end \n";
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
         assertFalse( kbuilder.hasErrors() );
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "list",
+                            list );
         ksession.insert( "hello1" );
         ksession.insert( "hello2" );
         ksession.insert( "hello3" );
-        
+
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );
-        
+        assertEquals( 3,
+                      list.size() );
+
         ksession.insert( "hello4" );
         ksession.insert( "hello5" );
         ksession.insert( "hello6" );
-        
+
         ksession.fireAllRules();
-        assertEquals( 6, list.size() );
+        assertEquals( 6,
+                      list.size() );
     }
-    
+
     @Test
     public void testLockOnActiveForMainWithHalt() {
         String str = "";
@@ -290,33 +295,40 @@ public class ExecutionFlowControlTest {
         str += "    $str : String() \n";
         str += "then \n";
         str += "    list.add( $str ); \n";
-        str += "    if ( list.size() == 2 ) drools.halt();\n";
+        str += "    if ( list.size() == 2 ) {\n" +
+        	   "        drools.halt();\n" +
+        	   "    }";
         str += "end \n";
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
-        assertFalse( kbuilder.hasErrors() );
-        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "list",
+                            list );
         ksession.insert( "hello1" );
         ksession.insert( "hello2" );
         ksession.insert( "hello3" );
-        
+
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        
+        assertEquals( 2,
+                      list.size() );
+
         // because we have halted, the next 3 will be ignored, but it will still fire the remaing 3rd activation from previous asserts
         ksession.insert( "hello4" );
         ksession.insert( "hello5" );
         ksession.insert( "hello6" );
-        
+
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertEquals( 3,
+                      list.size() );
     }
 
     @Test
@@ -532,9 +544,9 @@ public class ExecutionFlowControlTest {
     //        System.out.println("----------");
     //    }
 
-    private void assertEqualsMatrix(final int size,
-                                    Cell[][] cells,
-                                    int[][] expected) {
+    private void assertEqualsMatrix( final int size,
+                                     Cell[][] cells,
+                                     int[][] expected ) {
         for ( int row = 0; row < size; row++ ) {
             for ( int col = 0; col < size; col++ ) {
                 assertEquals( "Wrong value at " + row + "," + col + ": ",
@@ -547,10 +559,12 @@ public class ExecutionFlowControlTest {
     @Test
     public void testAgendaGroups() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "test_AgendaGroups.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
 
         assertFalse( kbuilder.hasErrors() );
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -585,14 +599,14 @@ public class ExecutionFlowControlTest {
         assertEquals( "MAIN",
                       list.get( 6 ) );
 
-        session.getAgenda().getAgendaGroup( "group2" ).setFocus( );
+        session.getAgenda().getAgendaGroup( "group2" ).setFocus();
         session.fireAllRules();
 
         assertEquals( 8,
                       list.size() );
         assertEquals( "group2",
                       list.get( 7 ) );
-        
+
         // clear main only the auto focus related ones should fire
         list.clear();
         session.insert( new Cheese( "cheddar" ) );
@@ -607,7 +621,6 @@ public class ExecutionFlowControlTest {
         assertEquals( "group3",
                       list.get( 2 ) );
 
-        
     }
 
     @Test
@@ -671,12 +684,12 @@ public class ExecutionFlowControlTest {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_Insert_Retract_Noloop.drl" ) );
         RuleBase ruleBase = loadRuleBase( reader );
-    
+
         ruleBase = SerializationHelper.serializeObject( ruleBase );
         final WorkingMemory wm = ruleBase.newStatefulSession();
         wm.insert( new Cheese( "stilton",
                                15 ) );
-    
+
         wm.fireAllRules();
     }
 
@@ -705,13 +718,13 @@ public class ExecutionFlowControlTest {
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
         final AgendaEventListener l = new DefaultAgendaEventListener() {
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
+            public void activationCreated( ActivationCreatedEvent event,
+                                           WorkingMemory workingMemory ) {
                 created.add( event );
             }
 
-            public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
+            public void activationCancelled( ActivationCancelledEvent event,
+                                             WorkingMemory workingMemory ) {
                 cancelled.add( event );
             }
 
@@ -793,7 +806,7 @@ public class ExecutionFlowControlTest {
         ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        
+
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
@@ -802,7 +815,8 @@ public class ExecutionFlowControlTest {
         workingMemory.fireAllRules();
         assertEquals( 0,
                       list.size() );
-        assertEquals( 2, workingMemory.getAgenda().getRuleFlowGroup( "Group1" ).size() );
+        assertEquals( 2,
+                      workingMemory.getAgenda().getRuleFlowGroup( "Group1" ).size() );
 
         workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
         workingMemory.fireAllRules();
@@ -825,7 +839,7 @@ public class ExecutionFlowControlTest {
         final List list = new ArrayList();
         workingMemory.setGlobal( "list",
                                  list );
-        
+
         workingMemory.insert( "Test" );
         workingMemory.fireAllRules();
         assertEquals( 0,
@@ -833,16 +847,16 @@ public class ExecutionFlowControlTest {
 
         workingMemory.getAgenda().activateRuleFlowGroup( "Group1" );
         workingMemory.fireAllRules();
-        
+
         assertEquals( 1,
                       list.size() );
-        
+
         workingMemory.halt();
     }
 
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                      DroolsParserException,
-                                                      Exception {
+    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
+                                                        DroolsParserException,
+                                                        Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
