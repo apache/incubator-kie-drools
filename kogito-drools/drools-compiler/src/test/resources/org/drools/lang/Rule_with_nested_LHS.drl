@@ -1,0 +1,11 @@
+package org.drools;
+
+rule test
+    when
+        A()
+        ( B() and C() ) or
+        ( D() and E() ) or
+        ( F() and G() )
+    then
+
+end

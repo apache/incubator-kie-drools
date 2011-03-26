@@ -36,8 +36,10 @@ import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
@@ -3190,223 +3192,202 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    //
-    //    public void testEntryPoint() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") from entry-point StreamA";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        assertNotNull( pattern.getSource() );
-    //        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
-    //        assertEquals( "StreamA",
-    //                      entry.getEntryId() );
-    //    }
-    //
-    //    public void testEntryPoint2() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") from entry-point \"StreamA\"";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        assertNotNull( pattern.getSource() );
-    //        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
-    //        assertEquals( "StreamA",
-    //                      entry.getEntryId() );
-    //    }
-    //
-    //    public void testSlidingWindow() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") over window:length(10)";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        List<BehaviorDescr> behaviors = pattern.getBehaviors();
-    //        assertNotNull( behaviors );
-    //        assertEquals( 1,
-    //                      behaviors.size() );
-    //        SlidingWindowDescr descr = (SlidingWindowDescr) behaviors.get( 0 );
-    //        assertEquals( "length",
-    //                      descr.getText() );
-    //        assertEquals( "length",
-    //                      descr.getType() );
-    //        assertEquals( "10",
-    //                      descr.getParameters() );
-    //    }
-    //
-    //    public void testNesting() throws Exception {
-    //        parseResource( "compilationUnit",
-    //                       "compilationUnit",
-    //                       "not_pluggable_operator.drl" );
-    //
-    //        assertNotNull( walker );
-    //    }
-    //
-    //    public void testNoEOLOnCommentInTheLastLine() throws Exception {
-    //        final String fileName = "no_eol_on_comment.drl";
-    //
-    //        // forcing ANTLR to use an input stream as a source
-    //        final URL url = getClass().getResource( fileName );
-    //        final Resource resource = ResourceFactory.newUrlResource( url );
-    //
-    //        final DrlParser parser = new DrlParser();
-    //        final PackageDescr pkg = parser.parse( resource.getInputStream() );
-    //
-    //        assertFalse( parser.hasErrors() );
-    //        assertNotNull( pkg );
-    //    }
-    //
-    //    public void testRuleOldSyntax1() throws Exception {
-    //        final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        assertEquals( 1,
-    //                      ((NotDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().size() );
-    //        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
-    //        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 1,
-    //                      patternDescr.getDescrs().size() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "operator",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestrictionDescr = (QualifiedIdentifierRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      qualifiedIdentifierRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Operator.EQUAL",
-    //                      qualifiedIdentifierRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testRuleOldSyntax2() throws Exception {
-    //        final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 1,
-    //                      patternDescr.getDescrs().size() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "operator",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestrictionDescr = (QualifiedIdentifierRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      qualifiedIdentifierRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Operator.EQUAL",
-    //                      qualifiedIdentifierRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testAndRestrictionConnective() throws Exception {
-    //        final String source = "rule \"Test\" when ( $r :Person( $n : name == 'Bob' && $a : age == 20) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 4,
-    //                      patternDescr.getDescrs().size() );
-    //        FieldBindingDescr nameBind = (FieldBindingDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "$n",
-    //                      nameBind.getIdentifier() );
-    //        assertEquals( "name",
-    //                      nameBind.getFieldName() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 1 );
-    //        assertEquals( "name",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        LiteralRestrictionDescr literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      literalRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Bob",
-    //                      literalRestrictionDescr.getText() );
-    //
-    //        FieldBindingDescr ageBind = (FieldBindingDescr) patternDescr.getDescrs().get( 2 );
-    //        assertEquals( "$a",
-    //                      ageBind.getIdentifier() );
-    //        assertEquals( "age",
-    //                      ageBind.getFieldName() );
-    //        fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 3 );
-    //        assertEquals( "age",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      literalRestrictionDescr.getEvaluator() );
-    //        assertEquals( "20",
-    //                      literalRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testTypeWithMetaData() throws Exception {
-    //
-    //        parseResource( "compilationUnit",
-    //                       "compilationUnit",
-    //                       "type_with_meta.drl" );
-    //
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //
-    //        final List<TypeDeclarationDescr> declarations = pack.getTypeDeclarations();
-    //
-    //        assertEquals( 3,
-    //                      declarations.size() );
-    //    }
+    public void testRuleWithLHSNesting() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "Rule_with_nested_LHS.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        assertEquals( "test",
+                      rule.getName() );
+
+        AndDescr lhs = rule.getLhs();
+        assertNotNull( lhs );
+        assertEquals( 2,
+                      lhs.getDescrs().size() );
+
+        PatternDescr a = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "A",
+                      a.getObjectType() );
+
+        OrDescr or = (OrDescr) lhs.getDescrs().get( 1 );
+        assertEquals( 3,
+                      or.getDescrs().size() );
+
+        AndDescr and1 = (AndDescr) or.getDescrs().get( 0 );
+        assertEquals( 2,
+                      and1.getDescrs().size() );
+        PatternDescr b = (PatternDescr) and1.getDescrs().get( 0 );
+        PatternDescr c = (PatternDescr) and1.getDescrs().get( 1 );
+        assertEquals( "B",
+                      b.getObjectType() );
+        assertEquals( "C",
+                      c.getObjectType() );
+
+        AndDescr and2 = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals( 2,
+                      and2.getDescrs().size() );
+        PatternDescr d = (PatternDescr) and2.getDescrs().get( 0 );
+        PatternDescr e = (PatternDescr) and2.getDescrs().get( 1 );
+        assertEquals( "D",
+                      d.getObjectType() );
+        assertEquals( "E",
+                      e.getObjectType() );
+
+        AndDescr and3 = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals( 2,
+                      and3.getDescrs().size() );
+        PatternDescr f = (PatternDescr) and3.getDescrs().get( 0 );
+        PatternDescr g = (PatternDescr) and3.getDescrs().get( 1 );
+        assertEquals( "F",
+                      f.getObjectType() );
+        assertEquals( "G",
+                      g.getObjectType() );
+
+    }
+
+    public void testEntryPoint() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point StreamA then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                     text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA",
+                      entry.getEntryId() );
+    }
+
+    public void testEntryPoint2() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point \"StreamA\" then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                     text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA",
+                      entry.getEntryId() );
+    }
+
+    public void testSlidingWindow() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        List<BehaviorDescr> behaviors = pattern.getBehaviors();
+        assertNotNull( behaviors );
+        assertEquals( 1,
+                      behaviors.size() );
+        BehaviorDescr descr = behaviors.get( 0 );
+        assertEquals( "window",
+                      descr.getType() );
+        assertEquals( "length",
+                      descr.getSubType() );
+        assertEquals( "10",
+                      descr.getParameters().get( 0 ) );
+    }
+
+    public void testRuleOldSyntax1() throws Exception {
+        final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        assertEquals( 1,
+                      ((NotDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().size() );
+        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
+        assertEquals( "$r",
+                      patternDescr.getIdentifier() );
+        assertEquals( 1,
+                      patternDescr.getDescrs().size() );
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertEquals( "operator == Operator.EQUAL",
+                      fieldConstraintDescr.getExpression() );
+    }
+
+    public void testRuleOldSyntax2() throws Exception {
+        final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "$r",
+                      patternDescr.getIdentifier() );
+        assertEquals( 1,
+                      patternDescr.getDescrs().size() );
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertEquals( "operator == Operator.EQUAL",
+                      fieldConstraintDescr.getExpression() );
+    }
+
+    public void testTypeWithMetaData() throws Exception {
+
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "type_with_meta.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
+
+        assertEquals( 3,
+                      declarations.size() );
+    }
 
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
