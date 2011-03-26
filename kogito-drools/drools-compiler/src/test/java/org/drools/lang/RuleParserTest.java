@@ -3236,7 +3236,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "E",
                       e.getObjectType() );
 
-        AndDescr and3 = (AndDescr) or.getDescrs().get( 1 );
+        AndDescr and3 = (AndDescr) or.getDescrs().get( 2 );
         assertEquals( 2,
                       and3.getDescrs().size() );
         PatternDescr f = (PatternDescr) and3.getDescrs().get( 0 );
@@ -3245,7 +3245,6 @@ public class RuleParserTest extends TestCase {
                       f.getObjectType() );
         assertEquals( "G",
                       g.getObjectType() );
-
     }
 
     public void testEntryPoint() throws Exception {
