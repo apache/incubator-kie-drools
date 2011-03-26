@@ -43,6 +43,7 @@ import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LhsClpParserTest {
@@ -60,6 +61,7 @@ public class LhsClpParserTest {
     }
     
     @Test
+    @Ignore
     public void testPatternsRule() throws Exception {
         // the first pattern bellowshould generate a descriptor tree like that:
         //            Pattern[person]
