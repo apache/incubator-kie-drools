@@ -19,6 +19,7 @@ import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.CEDescrBuilderImpl;
 import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
@@ -844,7 +845,7 @@ public class DRLParser {
                 rule.name( name );
                 helper.setParaphrasesValue( DroolsParaphraseTypes.RULE,
                                             "\"" + name + "\"" );
-                if( input.LA( 1 ) != DRLLexer.EOF ) { 
+                if ( input.LA( 1 ) != DRLLexer.EOF ) {
                     helper.emit( Location.LOCATION_RULE_HEADER );
                 }
             }
@@ -863,7 +864,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            if ( state.backtracking == 0  && input.LA( 1 ) != DRLLexer.EOF ) {
+            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_RULE_HEADER );
             }
 
@@ -999,7 +1000,7 @@ public class DRLParser {
     public AttributeDescr attribute() {
         AttributeDescr attribute = null;
         try {
-            if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) { 
+            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_RULE_HEADER_KEYWORD );
             }
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.SALIENCE ) ) {
@@ -1407,7 +1408,7 @@ public class DRLParser {
                                    DroolsEditorType.NUMERIC_CONST );
                 if ( state.failed ) return null;
                 value += nbr.getText();
-                if ( state.backtracking == 0 ) { 
+                if ( state.backtracking == 0 ) {
                     attribute.value( value );
                     attribute.type( AttributeDescr.Type.NUMBER );
                 }
@@ -1454,22 +1455,30 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void lhsStatement( CEDescrBuilder< ? , AndDescr> lhs ) throws RecognitionException {
-        while ( !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
-                !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
-            try {
+        helper.start( CEDescrBuilder.class,
+                      null,
+                      lhs );
+        try {
+            while ( !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
+                    !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                     helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
                 }
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              lhs );
-                lhsOr( lhs,
-                       true );
+                BaseDescr lhsOr = lhsOr( lhs,
+                                         true );
+                if ( lhs.getDescr() != null && lhs.getDescr() instanceof ConditionalElementDescr ) {
+                    ConditionalElementDescr root = (ConditionalElementDescr) lhs.getDescr();
+                    BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
+                    root.getDescrs().clear();
+                    for ( int i = 0; i < descrs.length; i++ ) {
+                        root.addOrMerge( descrs[i] );
+                    }
+                }
                 if ( state.failed ) return;
-            } finally {
-                helper.end( CEDescrBuilder.class,
-                            lhs );
             }
+        } finally {
+            helper.end( CEDescrBuilder.class,
+                        lhs );
         }
     }
 
@@ -1531,26 +1540,23 @@ public class DRLParser {
             }
         } else {
             // infix OR
-            Token first = input.LT( 1 );
 
-            result = lhsAnd( ce,
-                             allowOr );
+            // create an OR anyway, as if it is not an OR we remove it later
+            CEDescrBuilder< ? , OrDescr> or = null;
+            if ( state.backtracking == 0 ) {
+                or = ce.or();
+                result = or.getDescr();
+                helper.start( CEDescrBuilder.class,
+                              null,
+                              or );
+            }
+
+            lhsAnd( or,
+                    allowOr );
             if ( state.failed ) return null;
 
-            if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ) {
-                CEDescrBuilder< ? , OrDescr> or = null;
-                if ( state.backtracking == 0 ) {
-                    ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( result );
-                    or = ce.or();
-                    or.getDescr().addOrMerge( result );
-                    result = or.getDescr();
-                    helper.start( CEDescrBuilder.class,
-                                  null,
-                                  or );
-                    // adjust start to the real start
-                    helper.setStart( or,
-                                     first );
-                }
+            if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ||
+                    input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
                 while ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ||
                         input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
                     if ( input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
@@ -1575,10 +1581,19 @@ public class DRLParser {
                             allowOr );
                     if ( state.failed ) return null;
                 }
+            } else if ( allowOr ) {
                 if ( state.backtracking == 0 ) {
-                    helper.end( CEDescrBuilder.class,
-                                or );
+                    // if no OR present, then remove it and add children to parent
+                    ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( or.getDescr() );
+                    for ( BaseDescr base : or.getDescr().getDescrs() ) {
+                        ((ConditionalElementDescr) ce.getDescr()).addDescr( base );
+                    }
+                    result = ce.getDescr();
                 }
+            }
+            if ( state.backtracking == 0 ) {
+                helper.end( CEDescrBuilder.class,
+                            or );
             }
         }
         return result;
@@ -1642,26 +1657,23 @@ public class DRLParser {
             }
         } else {
             // infix AND
-            Token first = input.LT( 1 );
 
-            result = lhsUnary( ce,
-                               allowOr );
+            // create an AND anyway, since if it is not an AND we remove it later
+            CEDescrBuilder< ? , AndDescr> and = null;
+            if ( state.backtracking == 0 ) {
+                and = ce.and();
+                result = and.getDescr();
+                helper.start( CEDescrBuilder.class,
+                              null,
+                              and );
+            }
+
+            lhsUnary( and,
+                      allowOr );
             if ( state.failed ) return null;
 
-            if ( helper.validateIdentifierKey( DroolsSoftKeywords.AND ) ) {
-                CEDescrBuilder< ? , AndDescr> and = null;
-                if ( state.backtracking == 0 ) {
-                    ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( result );
-                    and = ce.and();
-                    and.getDescr().addOrMerge( result );
-                    result = and.getDescr();
-                    helper.start( CEDescrBuilder.class,
-                                  null,
-                                  and );
-                    // adjust start to the real start token
-                    helper.setStart( and,
-                                     first );
-                }
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.AND ) ||
+                    input.LA( 1 ) == DRLLexer.DOUBLE_AMPER ) {
                 while ( helper.validateIdentifierKey( DroolsSoftKeywords.AND ) ||
                         input.LA( 1 ) == DRLLexer.DOUBLE_AMPER ) {
                     if ( input.LA( 1 ) == DRLLexer.DOUBLE_AMPER ) {
@@ -1686,10 +1698,19 @@ public class DRLParser {
                               allowOr );
                     if ( state.failed ) return null;
                 }
+            } else {
                 if ( state.backtracking == 0 ) {
-                    helper.end( CEDescrBuilder.class,
-                                and );
+                    // if no AND present, then remove it and add children to parent
+                    ((ConditionalElementDescr) ce.getDescr()).getDescrs().remove( and.getDescr() );
+                    for ( BaseDescr base : and.getDescr().getDescrs() ) {
+                        ((ConditionalElementDescr) ce.getDescr()).addDescr( base );
+                    }
+                    result = ce.getDescr();
                 }
+            }
+            if ( state.backtracking == 0 ) {
+                helper.end( CEDescrBuilder.class,
+                            and );
             }
         }
         return result;
@@ -1992,7 +2013,7 @@ public class DRLParser {
                    null,
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return null;
-            
+
         } finally {
             helper.end( EvalDescrBuilder.class,
                         null );
@@ -2278,7 +2299,7 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void constraint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+        if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
         String bind = null;
@@ -2318,7 +2339,7 @@ public class DRLParser {
                               expr );
             }
         }
-        if( state.backtracking == 0 ) {
+        if ( state.backtracking == 0 ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
         }
     }
@@ -2419,7 +2440,7 @@ public class DRLParser {
                null,
                DroolsEditorType.KEYWORD );
         if ( state.failed ) return;
-        
+
         if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
             helper.emit( Location.LOCATION_LHS_FROM );
         }
@@ -2461,7 +2482,7 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             pattern.from().expression( expr );
-            if( input.LA( 1 ) != DRLLexer.EOF ) {
+            if ( input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
         }
@@ -2515,7 +2536,7 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             pattern.from().entryPoint( ep );
-            if( input.LA( 1 ) != DRLLexer.EOF ) {
+            if ( input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
         }
@@ -2538,7 +2559,7 @@ public class DRLParser {
                    null,
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return;
-            if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_FROM_COLLECT );
             }
 
@@ -2562,7 +2583,7 @@ public class DRLParser {
         } finally {
             helper.end( CollectDescrBuilder.class,
                         null );
-            if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
         }
@@ -2607,6 +2628,15 @@ public class DRLParser {
                 lhsAnd( source,
                         false );
                 if ( state.failed ) return;
+
+                if ( source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr ) {
+                    ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                    BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
+                    root.getDescrs().clear();
+                    for ( int i = 0; i < descrs.length; i++ ) {
+                        root.addOrMerge( descrs[i] );
+                    }
+                }
             } finally {
                 helper.end( CEDescrBuilder.class,
                             source );
@@ -2661,7 +2691,7 @@ public class DRLParser {
 
                 String action = chunk( DRLLexer.LEFT_PAREN,
                                        DRLLexer.RIGHT_PAREN,
-                                       Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE  );
+                                       Location.LOCATION_LHS_FROM_ACCUMULATE_ACTION_INSIDE );
                 if ( state.failed ) return;
                 if ( state.backtracking == 0 ) accumulate.action( action );
 
@@ -2713,7 +2743,7 @@ public class DRLParser {
                 if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                     helper.emit( Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT );
                 }
-                
+
                 String result = chunk( DRLLexer.LEFT_PAREN,
                                        DRLLexer.RIGHT_PAREN,
                                        Location.LOCATION_LHS_FROM_ACCUMULATE_RESULT_INSIDE );
@@ -3360,7 +3390,7 @@ public class DRLParser {
      * @return the matched chunk without the delimiters
      */
     public String chunk( final int leftDelimiter,
-                         final int rightDelimiter, 
+                         final int rightDelimiter,
                          final int location ) {
         String chunk = "";
         int first = -1, last = first;

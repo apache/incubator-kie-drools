@@ -42,12 +42,12 @@ public class CEDescrBuilderImpl<P extends DescrBuilder<?>, T extends BaseDescr> 
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, AndDescr> and() {
         AndDescr andDescr = null;
-        if( descr instanceof AndDescr ) {
-            andDescr = (AndDescr) descr;
-        } else {
+//        if( descr instanceof AndDescr ) {
+//            andDescr = (AndDescr) descr;
+//        } else {
             andDescr = new AndDescr();
             ((ConditionalElementDescr) descr).addDescr( andDescr );
-        }
+//        }
         CEDescrBuilder<CEDescrBuilder<P, T>, AndDescr> and = new CEDescrBuilderImpl<CEDescrBuilder<P, T>, AndDescr>( this, andDescr );
         return and;
     }
@@ -57,12 +57,12 @@ public class CEDescrBuilderImpl<P extends DescrBuilder<?>, T extends BaseDescr> 
      */
     public CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or() {
         OrDescr orDescr = null;
-        if( descr instanceof OrDescr ) {
-            orDescr = (OrDescr) descr;
-        } else {
+//        if( descr instanceof OrDescr ) {
+//            orDescr = (OrDescr) descr;
+//        } else {
             orDescr = new OrDescr();
             ((ConditionalElementDescr) descr).addDescr( orDescr );
-        }
+//        }
         CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or = new CEDescrBuilderImpl<CEDescrBuilder<P, T>, OrDescr>( this, orDescr );
         return or;
     }
