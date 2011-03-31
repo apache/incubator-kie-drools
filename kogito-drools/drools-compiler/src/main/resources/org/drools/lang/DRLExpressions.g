@@ -73,7 +73,7 @@ literal
     ;
 
 operator returns [boolean negated, String opr, java.util.List<String> params]
-@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); } }
+@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true );} }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=EQUALS        { $negated = false; $opr=$op.text; $params = null; }
     | op=NOT_EQUALS    { $negated = false; $opr=$op.text; $params = null; }
@@ -82,7 +82,7 @@ operator returns [boolean negated, String opr, java.util.List<String> params]
     ;
 
 relationalOp returns [boolean negated, String opr, java.util.List<String> params]
-@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); } }
+@init{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR ); helper.setHasOperator( true ); } }
 @after{ if( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF) { helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); } }
   : ( op=LESS_EQUALS     { $negated = false; $opr=$op.text; $params = null; }
     | op=GREATER_EQUALS  { $negated = false; $opr=$op.text; $params = null; }
@@ -207,7 +207,8 @@ andExpression returns [BaseDescr result]
 equalityExpression returns [BaseDescr result]
   : left=instanceOfExpression { if( buildDescr  ) { $result = $left.result; } }
   ( ( op=EQUALS | op=NOT_EQUALS ) 
-    { if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+    {  helper.setHasOperator( true );
+       if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=instanceOfExpression 
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, $right.result );
@@ -219,7 +220,8 @@ equalityExpression returns [BaseDescr result]
 instanceOfExpression returns [BaseDescr result]
   : left=inExpression { if( buildDescr  ) { $result = $left.result; } }
   ( op=instanceof_key 
-    { if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
+    {  helper.setHasOperator( true );
+       if( input.LA( 1 ) != DRLLexer.EOF ) helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT ); }
     right=type
          { if( buildDescr  ) {
                $result = new RelationalExprDescr( $op.text, false, null, $left.result, new AtomicExprDescr($right.text) );
@@ -364,7 +366,14 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
         left=primary { if( buildDescr  ) { $result = $left.result; } }
-        ((selector)=>selector)* { if( buildDescr  && isLeft ) { helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); } }
+        ((selector)=>selector)* 
+        {     if( isLeft ) { 
+                  if( buildDescr ) {
+                      helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); 
+                  }
+                  
+              } 
+        }
         ((INCR|DECR)=> (INCR|DECR))? 
     ;
     
@@ -395,7 +404,9 @@ primary returns [BaseDescr result]
     //|   void_key DOT class_key
     |   (inlineMapExpression)=> inlineMapExpression 
     |   (inlineListExpression)=> inlineListExpression
-    |   (ID)=>ID ((DOT ID)=>DOT ID)* ((identifierSuffix)=>identifierSuffix)? 
+    |   (ID)=>i1=ID { helper.emit($i1, DroolsEditorType.IDENTIFIER); }
+        ((DOT ID)=>DOT i2=ID { helper.emit($DOT, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); }
+        )* ((identifierSuffix)=>identifierSuffix)? 
     ;
 
 inlineListExpression
@@ -426,8 +437,12 @@ parExpression returns [BaseDescr result]
     ;
 
 identifierSuffix
-    :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE RIGHT_SQUARE)+ DOT class_key
-    |	((LEFT_SQUARE) => LEFT_SQUARE expression RIGHT_SQUARE)+ // can also be matched by selector, but do here
+    :	(LEFT_SQUARE RIGHT_SQUARE)=>(LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
+                                     RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); } )+ 
+                                     DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } class_key 
+    |	((LEFT_SQUARE) => LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); } 
+                          expression 
+                          RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); } )+ // can also be matched by selector, but do here
     |   arguments 
 //    |   DOT class_key
 //    |   DOT explicitGenericInvocation
@@ -485,24 +500,30 @@ explicitGenericInvocationSuffix
     ;
 
 selector
-    :   (DOT super_key)=>DOT super_key superSuffix
-    |   (DOT new_key)=>DOT new_key (nonWildcardTypeArguments)? innerCreator
-    |   (DOT ID)=>DOT ID ((LEFT_PAREN) => arguments)?
+    :   (DOT super_key)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } super_key superSuffix
+    |   (DOT new_key)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } new_key (nonWildcardTypeArguments)? innerCreator
+    |   (DOT ID)=>DOT { helper.emit($DOT, DroolsEditorType.SYMBOL); } 
+                  ID { helper.emit($ID, DroolsEditorType.IDENTIFIER); }
+                  ((LEFT_PAREN) => arguments)?
     //|   DOT this_key
-    |   (LEFT_SQUARE)=>LEFT_SQUARE expression RIGHT_SQUARE
+    |   (LEFT_SQUARE)=>LEFT_SQUARE { helper.emit($LEFT_SQUARE, DroolsEditorType.SYMBOL); }
+                       expression 
+                       RIGHT_SQUARE { helper.emit($RIGHT_SQUARE, DroolsEditorType.SYMBOL); }
     ;
 
 superSuffix
     :	arguments
     |   	DOT ID ((LEFT_PAREN) => arguments)?
-        ;
+    ;
 
 squareArguments returns [java.util.List<String> args]
     : LEFT_SQUARE (el=expressionList { $args = $el.exprs; })? RIGHT_SQUARE
     ;
 
 arguments
-    :	LEFT_PAREN expressionList? RIGHT_PAREN
+    :	LEFT_PAREN { helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+        expressionList? 
+        RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
     ;
 
 expressionList returns [java.util.List<String> exprs]
@@ -530,79 +551,77 @@ assignmentOperator
 //                      KEYWORDS
 // --------------------------------------------------------
 extends_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 super_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SUPER))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 instanceof_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 char_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 byte_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 short_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 int_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 float_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 long_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.LONG))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 double_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 void_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.VOID))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 this_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.THIS))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 class_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.CLASS))}?=> id=ID  { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 new_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NEW))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 not_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.NOT))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 in_key
-  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID 
+  :      {(helper.validateIdentifierKey(DroolsSoftKeywords.IN))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
   ;
 
 operator_key
-  :      {(helper.isPluggableEvaluator(false))}?=> id=ID 
+  :      {(helper.isPluggableEvaluator(false))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
   ;
 
 neg_operator_key
-  :      {(helper.isPluggableEvaluator(true))}?=> id=ID 
+  :      {(helper.isPluggableEvaluator(true))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
   ;
-
-
