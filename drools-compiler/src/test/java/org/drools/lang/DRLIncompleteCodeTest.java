@@ -25,6 +25,7 @@ public class DRLIncompleteCodeTest {
     }
     
     @Test
+    @Ignore
     public void testIncompleteCode1() throws DroolsParserException,
             RecognitionException {
         String input = "package a.b.c import a.b.c.* rule MyRule when Class ( property memberOf collexction ";
@@ -43,6 +44,7 @@ public class DRLIncompleteCodeTest {
     }
 
     @Test
+    @Ignore
     public void testIncompleteCode2() throws DroolsParserException,
             RecognitionException {
         String input = "rule MyRule when Class ( property memberOf collection ";
