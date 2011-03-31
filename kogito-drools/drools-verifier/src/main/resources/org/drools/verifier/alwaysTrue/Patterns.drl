@@ -131,7 +131,7 @@ rule "Pattern that is always true"
 
         $r :VerifierRule( path == $p.rulePath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         result.add( new VerifierMessage(

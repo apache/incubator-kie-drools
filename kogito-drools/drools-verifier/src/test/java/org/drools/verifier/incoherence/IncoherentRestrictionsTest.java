@@ -27,9 +27,7 @@ import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.verifier.DefaultVerifierConfiguration;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
@@ -43,7 +41,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class IncoherentRestrictionsTest extends TestBase {
+public class IncoherentRestrictionsTest extends TestBaseOld {
 
     @Test
     public void testApprovedTrueAndNotTrue() {

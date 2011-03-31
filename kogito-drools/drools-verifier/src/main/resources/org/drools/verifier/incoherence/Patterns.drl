@@ -94,7 +94,7 @@ rule "Incoherent Patterns in rule possibility"
             path == $rp.rulePath
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -164,7 +164,7 @@ rule "Incoherent Patterns in rule possibility, variables"
             path == $rp.rulePath
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -232,7 +232,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with le
             path == $rp.rulePath
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -300,7 +300,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with gr
             path == $rp.rulePath
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -369,7 +369,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             path == $rp.rulePath
         )
 then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -439,7 +439,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             path == $rp.rulePath
         )
 then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -507,7 +507,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             path == $rp.rulePath
         )
 then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();
@@ -577,7 +577,7 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             path == $rp.rulePath
         )
 then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         Collection list = new ArrayList();

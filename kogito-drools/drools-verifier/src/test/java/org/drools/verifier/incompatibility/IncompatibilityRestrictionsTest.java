@@ -25,9 +25,7 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.Operator;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -93,11 +91,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More incompatibilities than was expected." );
@@ -155,11 +153,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More incompatibilities than was expected." );
@@ -217,11 +215,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More incompatibilities than was expected." );
@@ -294,11 +292,11 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.RESTRICTION,
                                                                sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More incompatibilities than was expected." );

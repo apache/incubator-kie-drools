@@ -95,7 +95,7 @@ rule "Rule that is always true"
             )
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $r.getPath(), $r.getName());
 
         result.add( new VerifierMessage(

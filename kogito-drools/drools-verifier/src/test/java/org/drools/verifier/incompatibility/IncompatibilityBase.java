@@ -22,17 +22,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.drools.verifier.TestBaseOld;
+
 import static org.junit.Assert.*;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Incompatibility;
 
-public class IncompatibilityBase extends TestBase {
+public class IncompatibilityBase extends TestBaseOld {
 
     public void testDummy() {
         // this is needed as eclipse will try to run this and produce a failure

@@ -35,7 +35,7 @@ rule "Find patterns"
         $p :Pattern( )
     then
         result.add( new VerifierMessage(
-                            new HashMap<String,String>(),
+                            new HashMap(),
                             Severity.NOTE,
                             MessageType.NOT_SPECIFIED,
                             $p,

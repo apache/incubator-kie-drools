@@ -24,22 +24,14 @@ import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
-import org.drools.runtime.ClassObjectFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.SubPattern;
@@ -51,12 +43,11 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Incompatibility;
 import org.drools.verifier.report.components.MessageType;
-import org.drools.verifier.report.components.Overlap;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class AlwaysFalseTest extends TestBase {
+public class AlwaysFalseTest extends TestBaseOld {
 
     @Test
     public void testPatterns() throws Exception {
