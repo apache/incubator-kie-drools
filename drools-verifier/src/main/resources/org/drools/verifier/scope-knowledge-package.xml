@@ -34,9 +34,9 @@
       source='classpath:org/drools/verifier/optimisation/PatternOrder.drl'
       type='DRL' />
     <!-- Range checks -->
-    <resource source='classpath:org/drools/verifier/rangeChecks/Clean.drl'
+    <!--resource source='classpath:org/drools/verifier/rangeChecks/Clean.drl'
       type='DRL' />
-    <!--resource source='classpath:org/drools/verifier/rangeChecks/Dates.drl'
+    <resource source='classpath:org/drools/verifier/rangeChecks/Dates.drl'
       type='DRL' />
     <resource source='classpath:org/drools/verifier/rangeChecks/Doubles.drl'
       type='DRL' />
@@ -50,14 +50,14 @@
     <resource source='classpath:org/drools/verifier/redundancy/Warnings.drl'
       type='DRL' /-->
     <!-- Subsumption -->
-    <!--resource source='classpath:org/drools/verifier/subsumption/Consequences.drl'
+    <resource source='classpath:org/drools/verifier/subsumption/Consequences.drl'
       type='DRL' />
     <resource source='classpath:org/drools/verifier/subsumption/Restrictions.drl'
       type='DRL' />
     <resource source='classpath:org/drools/verifier/subsumption/SubPatterns.drl'
       type='DRL' />
     <resource source='classpath:org/drools/verifier/subsumption/SubRules.drl'
-      type='DRL' /-->
+      type='DRL' />
   </add>
 
 
