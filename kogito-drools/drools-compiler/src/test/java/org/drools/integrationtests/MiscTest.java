@@ -7484,6 +7484,42 @@ public class MiscTest {
         assertNotNull(session);
     }
 
+    @Test
+    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
+    public void testAccessingMapValues() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import org.drools.Pet;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "  when\n";
+        rule += "    $pet: Pet()\n";
+        rule += "    Pet( \n";
+        rule += "      ownerName == $pet.attributes[\"key\"] \n";
+        rule += "    )\n";
+        rule += "  then\n";
+        rule += "    System.out.println(\"hi pet\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(new StringReader(rule));
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        StatefulSession session = ruleBase.newStatefulSession();
+        assertNotNull(session);
+
+        Pet pet1 = new Pet("Toni");
+        pet1.getAttributes().put("key", "value");
+        Pet pet2 = new Pet("Toni");
+
+        session.insert(pet1);
+        session.insert(pet2);
+
+        session.fireAllRules();
+    }
+
 
     @Test
     public void testClassLoaderHits() throws Exception {
