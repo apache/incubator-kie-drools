@@ -104,7 +104,7 @@ rule "Missing restriction in LiteralRestrictions"
         )
     then
         result.add( new VerifierMessage(
-                                new HashMap<String, String>(),
+                                new HashMap(),
                                 Severity.WARNING,
                                 MessageType.MISSING_EQUALITY,
                                 $r,
@@ -236,7 +236,7 @@ rule "Missing restriction in VariableRestrictions"
         )
     then
         result.add( new VerifierMessage(
-                                new HashMap<String, String>(),
+                                new HashMap(),
                                 Severity.WARNING,
                                 MessageType.MISSING_EQUALITY,
                                 $r,

@@ -23,13 +23,11 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PatternSolverDRLTest extends TestBase {
+public class PatternSolverDRLTest extends TestBaseOld {
 
     @Test
     public void testOrInsidePattern() throws Exception {

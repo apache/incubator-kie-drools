@@ -37,7 +37,7 @@ rule "Single"
         $a :VerifierRule()
     then
         result.add(new VerifierMessage(
-                        new HashMap<String,String>(),
+                        new HashMap(),
                         Severity.NOTE,
                         MessageType.EQUIVALANCE,
                         $a,
@@ -51,7 +51,7 @@ rule "single or dtable"
         $a :VerifierRule()
     then
         result.add(new VerifierMessage(
-                        new HashMap<String,String>(),
+                        new HashMap(),
                         Severity.NOTE,
                         MessageType.EQUIVALANCE,
                         $a,
@@ -64,7 +64,7 @@ rule "no verifying scope set"
         $a :VerifierRule()
     then
         result.add(new VerifierMessage(
-                        new HashMap<String,String>(),
+                        new HashMap(),
                         Severity.NOTE,
                         MessageType.EQUIVALANCE,
                         $a,

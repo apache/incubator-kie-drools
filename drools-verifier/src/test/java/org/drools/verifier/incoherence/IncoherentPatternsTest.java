@@ -23,9 +23,7 @@ import java.util.Set;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.components.VerifierRule;
@@ -35,7 +33,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class IncoherentPatternsTest extends TestBase {
+public class IncoherentPatternsTest extends TestBaseOld {
 
     @Test
     public void testIncoherentPatternsInSubRule() throws Exception {

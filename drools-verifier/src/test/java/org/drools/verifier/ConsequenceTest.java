@@ -30,13 +30,11 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ConsequenceTest extends TestBase {
+public class ConsequenceTest extends TestBaseOld {
 
     @Test
     public void testMissingConsequence() throws Exception {

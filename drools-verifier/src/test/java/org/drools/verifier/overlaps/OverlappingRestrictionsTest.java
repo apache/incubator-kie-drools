@@ -21,9 +21,7 @@ import java.util.Collection;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.ClassObjectFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -33,7 +31,7 @@ import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.builder.VerifierImpl;
 import org.drools.verifier.report.components.Overlap;
 
-public class OverlappingRestrictionsTest extends TestBase {
+public class OverlappingRestrictionsTest extends TestBaseOld {
 
     // TODO: Add this feature
     @Test @Ignore

@@ -20,13 +20,10 @@ import java.util.Collection;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.Verifier;
-import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.data.VerifierReport;
@@ -34,7 +31,7 @@ import org.drools.verifier.report.components.MessageType;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class WarningsTest extends TestBase {
+public class WarningsTest extends TestBaseOld {
 
     @Test
     public void testRedundantRules() throws Exception {

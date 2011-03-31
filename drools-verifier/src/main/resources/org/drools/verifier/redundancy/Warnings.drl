@@ -124,7 +124,7 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
                   )
             )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
         impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
@@ -191,7 +191,7 @@ rule "Find redundant rules" extends "Find redundant LHS"
                   )
             )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
         impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
@@ -242,7 +242,7 @@ rule "Find subsumptant rule possibilities from different rules"
         )
 
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $left.getPath(), $left.getName());
         impactedRules.put( $right.getPath(), $right.getName());
 

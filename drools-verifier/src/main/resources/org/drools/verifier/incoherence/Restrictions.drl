@@ -74,7 +74,7 @@ rule "Incoherent LiteralRestrictions in pattern possibility"
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -123,7 +123,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -172,7 +172,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -221,7 +221,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -270,7 +270,7 @@ rule "Incoherent LiteralRestrictions with ranges in pattern possibility, impossi
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -321,7 +321,7 @@ rule "Incoherent VariableRestrictions in pattern possibility"
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();
@@ -370,7 +370,7 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
 
         $p :Pattern( path == $pp.patternPath )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $p.getRulePath(), $p.getRuleName());
 
         Collection list = new ArrayList();

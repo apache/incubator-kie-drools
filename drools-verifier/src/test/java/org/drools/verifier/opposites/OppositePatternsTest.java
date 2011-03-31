@@ -24,9 +24,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -37,12 +35,6 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Opposites;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class OppositePatternsTest extends OppositesBase {
 
@@ -133,11 +125,11 @@ public class OppositePatternsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.SUB_PATTERN,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                pp1,
-                                                pp2 ) ^ TestBase.causeMapContains( map,
-                                                                                   pp2,
-                                                                                   pp1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                pp1,
+                pp2) ^ TestBaseOld.causeMapContains(map,
+                pp2,
+                pp1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );

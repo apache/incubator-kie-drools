@@ -125,16 +125,17 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 
         # gap ( x < 50 ) or ( x > 50 ) or ( x <= 70 )
         $gap :Gap(
-            restriction.fieldPath == $lower.fieldPath,
-            restriction.patternIsNot == $lower.patternIsNot,
-            restriction.value > $lower.value,
+#            restriction.fieldPath == $lower.fieldPath,
+#            restriction.patternIsNot == $lower.patternIsNot,
+#            restriction.value > $lower.value,
             restriction.value < $higher.value
         )
     then
-        retract( $gap );
-        result.remove( $gap );
+#        retract( $gap );
+#        result.remove( $gap );
 end
 
+/*
 #
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
@@ -399,5 +400,5 @@ rule "Remove useless date gaps greater or greater and equal"
         retract( $gap );
         result.remove( $gap );
 end
-
+*/
 

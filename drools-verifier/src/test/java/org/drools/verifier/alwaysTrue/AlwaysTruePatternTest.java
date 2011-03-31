@@ -23,9 +23,7 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -44,7 +42,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class AlwaysTruePatternTest extends TestBase {
+public class AlwaysTruePatternTest extends TestBaseOld {
 
     @Test @Ignore
     public void testPatternPossibilities() throws Exception {

@@ -28,13 +28,11 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RangeCheckDatesTest extends TestBase {
+public class RangeCheckDatesTest extends TestBaseOld {
 
     @Test
     public void testFake() {

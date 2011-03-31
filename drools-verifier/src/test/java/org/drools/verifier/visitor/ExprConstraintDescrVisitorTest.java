@@ -1,38 +1,17 @@
 package org.drools.verifier.visitor;
 
 import org.drools.base.evaluators.Operator;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.verifier.TestBase;
 import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierComponent;
-import org.drools.verifier.data.VerifierData;
-import org.drools.verifier.data.VerifierReportFactory;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.jar.JarInputStream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
-public class ExprConstraintDescrVisitorTest {
-
-    private VerifierData verifierData;
-    private PackageDescrVisitor packageDescrVisitor;
-
-    @Before
-    public void setUp() throws Exception {
-        verifierData = VerifierReportFactory.newVerifierData();
-        packageDescrVisitor = new PackageDescrVisitor(verifierData,
-                Collections.<JarInputStream>emptyList());
-    }
+public class ExprConstraintDescrVisitorTest extends TestBase {
 
     @Test
     public void testVisitPerson() throws Exception {
@@ -133,10 +112,5 @@ public class ExprConstraintDescrVisitorTest {
         }
 
         fail("Could not find Field");
-    }
-
-    private PackageDescr getPackageDescr(InputStream resourceAsStream) throws DroolsParserException {
-        Reader drlReader = new InputStreamReader(resourceAsStream);
-        return new DrlParser().parse(drlReader);
     }
 }

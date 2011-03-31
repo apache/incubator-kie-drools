@@ -22,9 +22,7 @@ import java.util.Iterator;
 
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.components.LiteralRestriction;
@@ -36,7 +34,7 @@ import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
 
-public class MissingEqualityTest extends TestBase {
+public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
