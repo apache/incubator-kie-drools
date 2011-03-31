@@ -63,8 +63,11 @@ public class ParserHelper {
     private TokenStream                               input                    = null;
     private RecognizerSharedState                     state                    = null;
 
-    private Stack<DescrBuilder< ? >>                   builderContext           = null;
+    private Stack<DescrBuilder< ? >>                  builderContext           = null;
     private String                                    leftMostExpr             = null;
+
+    // helper attribute
+    private boolean                                   hasOperator              = false;
 
     public ParserHelper(TokenStream input,
                         RecognizerSharedState state) {
@@ -92,6 +95,14 @@ public class ParserHelper {
 
     public void disableEditorInterface() {
         isEditorInterfaceEnabled = false;
+    }
+    
+    public void setHasOperator( boolean hasOperator ) {
+        this.hasOperator = hasOperator; 
+    }
+    
+    public boolean getHasOperator() {
+        return hasOperator;
     }
 
     public void beginSentence( DroolsSentenceType sentenceType ) {
@@ -706,8 +717,7 @@ public class ParserHelper {
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd();
@@ -722,8 +732,8 @@ public class ParserHelper {
     public String[] getStatementKeywords() {
         return statementKeywords;
     }
-    
-    public final DescrBuilder<?> popBuilderContext() {
+
+    public final DescrBuilder< ? > popBuilderContext() {
         //StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         //System.out.println("-- POP  : "+stackTrace[3].getMethodName() );
         return builderContext.pop();
@@ -734,5 +744,5 @@ public class ParserHelper {
         //StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         //System.out.println("++ PUSH : "+stackTrace[3].getMethodName() );
     }
-    
+
 }

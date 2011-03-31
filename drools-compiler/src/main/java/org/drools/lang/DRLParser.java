@@ -1458,10 +1458,14 @@ public class DRLParser {
         helper.start( CEDescrBuilder.class,
                       null,
                       lhs );
+        if ( state.backtracking == 0 ) {
+            helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+        }
         try {
-            while ( !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
+            while ( input.LA( 1 ) != DRLLexer.EOF && 
+                    !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
                     !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
-                if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+                if ( state.backtracking == 0 ) {
                     helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
                 }
                 BaseDescr lhsOr = lhsOr( lhs,
@@ -1870,7 +1874,7 @@ public class DRLParser {
                DroolsEditorType.KEYWORD );
         if ( state.failed ) return null;
 
-        if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+        if ( state.backtracking == 0 ) {
             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
         }
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
@@ -1902,7 +1906,7 @@ public class DRLParser {
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return null;
             }
-        } else {
+        } else if(input.LA( 1 ) != DRLLexer.EOF ) {
             lhsPatternBind( not,
                             true );
             if ( state.failed ) return null;
@@ -2299,7 +2303,7 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void constraint( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+        if ( state.backtracking == 0 && !state.errorRecovery ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
         String bind = null;
@@ -2323,7 +2327,28 @@ public class DRLParser {
         }
 
         int first = input.index();
-        exprParser.conditionalOrExpression();
+        exprParser.getHelper().setHasOperator( false ); // resetting
+//        boolean error = false;
+//        try {
+            exprParser.conditionalOrExpression();
+//        } catch ( RecognitionException re ) {
+//            error = true;
+//            throw re; 
+//        } finally {
+            if ( state.backtracking == 0 ) {
+                if ( input.LA( 1 ) != DRLLexer.EOF || input.get( input.index() - 1 ).getType() == DRLLexer.WS ) {
+//                    if ( exprParser.getHelper().getHasOperator() ) {
+//                        if ( error ) {
+//                            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+//                        } else {
+                            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
+//                        }
+//                    } else {
+//                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
+//                    }
+                }
+//            }
+        }
         if ( state.failed ) return;
 
         if ( state.backtracking == 0 && input.index() > first ) {
@@ -2338,9 +2363,6 @@ public class DRLParser {
                 pattern.bind( bind,
                               expr );
             }
-        }
-        if ( state.backtracking == 0 ) {
-            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
         }
     }
 
@@ -3407,7 +3429,7 @@ public class DRLParser {
             int nests = 0;
             first = input.index();
 
-            while ( input.LA( 1 ) != rightDelimiter || nests > 0 ) {
+            while ( input.LA( 1 ) != DRLLexer.EOF && input.LA( 1 ) != rightDelimiter || nests > 0 ) {
                 if ( input.LA( 1 ) == rightDelimiter ) {
                     nests--;
                 } else if ( input.LA( 1 ) == leftDelimiter ) {
