@@ -33,39 +33,39 @@ public class TypeDeclarationDescrVisitor {
     }
 
     public void visit(List<TypeDeclarationDescr> typeDeclarationDescrs) {
-        for ( TypeDeclarationDescr typeDeclaration : typeDeclarationDescrs ) {
-            Import objectImport = data.getImportByName( typeDeclaration.getTypeName() );
+        for (TypeDeclarationDescr typeDeclaration : typeDeclarationDescrs) {
+            Import objectImport = data.getImportByName(typeDeclaration.getTypeName());
             String objectTypeName;
-            if ( objectImport == null ) {
+            if (objectImport == null) {
                 objectTypeName = typeDeclaration.getTypeName();
             } else {
                 objectTypeName = objectImport.getName();
             }
 
-            ObjectType objectType = this.data.getObjectTypeByFullName( objectTypeName );
+            ObjectType objectType = this.data.getObjectTypeByFullName(objectTypeName);
 
-            if ( objectType == null ) {
+            if (objectType == null) {
                 objectType = new ObjectType();
-                objectType.setName( typeDeclaration.getTypeName() );
-                objectType.setFullName( typeDeclaration.getTypeName() );
-                data.add( objectType );
+                objectType.setName(typeDeclaration.getTypeName());
+                objectType.setFullName(typeDeclaration.getTypeName());
+                data.add(objectType);
             }
 
-            for ( String fieldName : typeDeclaration.getFields().keySet() ) {
+            for (String fieldName : typeDeclaration.getFields().keySet()) {
 
-                Field field = data.getFieldByObjectTypeAndFieldName( objectType.getFullName(),
-                                                                     fieldName );
-                if ( field == null ) {
-                    field = ObjectTypeFactory.createField( fieldName,
-                                                           objectType );
-                    field.setFieldType( typeDeclaration.getFields().get( fieldName ).getPattern().getObjectType() );
-                    data.add( field );
+                Field field = data.getFieldByObjectTypeAndFieldName(objectType.getFullName(),
+                        fieldName);
+                if (field == null) {
+                    field = ObjectTypeFactory.createField(fieldName,
+                            objectType);
+                    field.setFieldType(typeDeclaration.getFields().get(fieldName).getPattern().getObjectType());
+                    data.add(field);
                 }
             }
             // TODO: bellow needs to be fixed
-//            for ( String metadata : typeDeclaration.getMetaAttributes().keySet() ) {
-//                objectType.getMetadata().put( metadata,
-//                                              typeDeclaration.getMetaAttribute( metadata ) );
+//            for (String metadata : typeDeclaration.getMetaAttributes().keySet()) {
+//                objectType.getMetadata().put(metadata,
+//                        typeDeclaration.getMetaAttribute(metadata));
 //            }
         }
     }

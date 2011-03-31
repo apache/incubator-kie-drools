@@ -41,12 +41,12 @@ rule "No action - possibly commented out"
         )
     then
         Map<String,String> impactedRules = new HashMap<String,String>();
-        impactedRules.put( $r.getPath(), $r.getName());
+#        impactedRules.put( $r.getPath(), $r.getName());
 
-        result.add( new VerifierMessage(
-                                impactedRules,
-                                Severity.WARNING,
-                                MessageType.MISSING_COMPONENT,
-                                null,
-                                $r + " has no RHS." ) );
+#        result.add( new VerifierMessage(
+#                                impactedRules,
+#                                Severity.WARNING,
+#                                MessageType.MISSING_COMPONENT,
+#                                null,
+#                                $r + " has no RHS." ) );
 end

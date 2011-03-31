@@ -26,7 +26,6 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.PatternOperatorDescr;

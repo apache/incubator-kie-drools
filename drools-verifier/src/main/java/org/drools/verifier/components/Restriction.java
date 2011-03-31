@@ -20,42 +20,41 @@ import org.drools.base.evaluators.Operator;
 import org.drools.verifier.report.components.Cause;
 
 public abstract class Restriction extends PatternComponent
-    implements
-    Cause {
+        implements
+        Cause {
 
     public static class RestrictionType {
-        public static final RestrictionType LITERAL                  = new RestrictionType( "LITERAL" );
-        public static final RestrictionType VARIABLE                 = new RestrictionType( "VARIABLE" );
-        public static final RestrictionType QUALIFIED_IDENTIFIER     = new RestrictionType( "QUALIFIED_IDENTIFIER" );
-        public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType( "RETURN_VALUE_RESTRICTION" );
-        public static final RestrictionType ENUM                     = new RestrictionType( "ENUM" );
+        public static final RestrictionType LITERAL = new RestrictionType("LITERAL");
+        public static final RestrictionType VARIABLE = new RestrictionType("VARIABLE");
+        public static final RestrictionType QUALIFIED_IDENTIFIER = new RestrictionType("QUALIFIED_IDENTIFIER");
+        public static final RestrictionType RETURN_VALUE_RESTRICTION = new RestrictionType("RETURN_VALUE_RESTRICTION");
+        public static final RestrictionType ENUM = new RestrictionType("ENUM");
 
-        protected final String              type;
+        protected final String type;
 
         private RestrictionType(String t) {
             type = t;
         }
     }
 
-    private boolean    patternIsNot;
-    private String     constraintPath;
+    private boolean patternIsNot;
 
     // Id of the field that this restriction is related to.
-    private String     fieldPath;
+    private String fieldPath;
 
     protected Operator operator;
 
     public abstract RestrictionType getRestrictionType();
 
     public Restriction(Pattern pattern) {
-        super( pattern );
+        super(pattern);
     }
 
     @Override
     public String getPath() {
-        return String.format( "%s/restriction[%s]",
-                              getParentPath(),
-                              getOrderNumber() );
+        return String.format("%s/restriction[%s]",
+                getParentPath(),
+                getOrderNumber());
     }
 
     @Override
@@ -69,14 +68,6 @@ public abstract class Restriction extends PatternComponent
 
     public void setOperator(Operator operator) {
         this.operator = operator;
-    }
-
-    public String getConstraintPath() {
-        return constraintPath;
-    }
-
-    public void setConstraintPath(String constraintPath) {
-        this.constraintPath = constraintPath;
     }
 
     public String getFieldPath() {

@@ -18,13 +18,10 @@ package org.drools.verifier.data;
 
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.EnumField;
 import org.drools.verifier.components.EnumRestriction;
 import org.drools.verifier.components.Field;
@@ -102,7 +99,6 @@ public class VerifierDataMapsTest {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
         saveVerifierComponentAndGet( pattern );
 
-        saveVerifierComponentAndGet( new Constraint( pattern ) );
         saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
         saveVerifierComponentAndGet( new ObjectType() );
         saveVerifierComponentAndGet( new RuleOperatorDescr( rule,
