@@ -382,7 +382,7 @@ ksession.setGlobal("list", list);           </programlisting>
         of the filter interface which are used to allow or deny the firing of
         an activation. What you filter on is entirely up to the
         implementation. Drools 4.0 used to supply some out of the box filters,
-        which have not be exposed in drools 5.0 drools-api, but they are
+        which have not be exposed in drools 5.0 knowledge-api, but they are
         simple to implement and the Drools 4.0 code base can be referred
         to.</para>
 
@@ -478,7 +478,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <para>Drools 4.0 supported custom conflict resolution strategies; while
       this capability still exists in Drools it has not yet been exposed to
-      the end user via drools-api in Drools 5.0.</para>
+      the end user via knowledge-api in Drools 5.0.</para>
     </section>
 
     <section>
