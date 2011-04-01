@@ -31,11 +31,11 @@
     the bare minimum, as they will be deploying rules in binary form - this is also possible. The core runtime engine
     can be quite compact, and only require a few 100 kilobytes across 2 jar files.</para>
 
-    <para>The following is a description of the important libraries that make up JBoss Rules</para>
+    <para>The following is a description of the important libraries that make up JBoss Drools</para>
 
     <itemizedlist>
       <listitem>
-        <para>drools-api.jar - this provides the interfaces and factories. Drools-api also helps clearly show what is
+        <para>knowledge-api.jar - this provides the interfaces and factories. It also helps clearly show what is
         intended as a user api and what is just an engine api.</para>
       </listitem>
 
@@ -82,7 +82,7 @@
     <para>The "runtime" requirements mentioned here are if you are deploying rules as their binary form (either as
     KnowledgePackage objects, or KnowledgeBase objects etc). This is an optional feature that allows you to keep your
     runtime very light. You may use drools-compiler to produce rule packages "out of process", and then deploy them to a
-    runtime system. This runtime system only requires drools-core.jar and drools-api for execution. This is an optional
+    runtime system. This runtime system only requires drools-core.jar and knowledge-api for execution. This is an optional
     deployment pattern, and many people do not need to "trim" their application this much, but it is an ideal option for
     certain environments.</para>
   </section>

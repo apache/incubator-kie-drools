@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
-  <artifactId>drools-api</artifactId><!-- TODO rename to knowledge-api -->
+  <artifactId>knowledge-api</artifactId><!-- TODO rename to knowledge-api -->
 
   <name>Drools :: API</name>
 
