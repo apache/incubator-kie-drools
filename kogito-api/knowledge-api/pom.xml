@@ -9,7 +9,6 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>knowledge-api</artifactId>
 
   <name>Knowledge API</name>
