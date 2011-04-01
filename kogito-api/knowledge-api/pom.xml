@@ -10,9 +10,10 @@
   </parent>
 
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
-  <artifactId>knowledge-api</artifactId><!-- TODO rename to knowledge-api -->
+  <artifactId>knowledge-api</artifactId>
 
-  <name>Drools :: API</name>
+  <name>Knowledge API</name>
+  <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
 
   <dependencies>
     <dependency>
