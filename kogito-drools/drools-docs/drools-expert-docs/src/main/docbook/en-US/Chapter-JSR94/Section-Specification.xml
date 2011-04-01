@@ -40,7 +40,7 @@
           implementation of the Java Rule Engine API will be called the
           <methodname>modifyObject()</methodname> and
           <methodname>retractObject()</methodname> methods of the encapsulated
-          Drools API.</para>
+          Knowledge (Drools and jBPM) API.</para>
         </listitem>
 
         <listitem>
