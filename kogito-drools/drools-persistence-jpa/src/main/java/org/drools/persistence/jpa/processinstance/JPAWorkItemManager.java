@@ -133,7 +133,9 @@ public class JPAWorkItemManager implements WorkItemManager {
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
             workItemInfo = this.workItems.get(id);
-            context.merge(workItemInfo);
+            if (workItemInfo != null) {
+                workItemInfo = context.merge(workItemInfo);
+            }
         }
         
         if (workItemInfo == null) {
