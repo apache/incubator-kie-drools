@@ -27,6 +27,7 @@ import jxl.Cell;
 import jxl.Range;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 
 import org.drools.decisiontable.parser.DecisionTableParser;
@@ -34,7 +35,7 @@ import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 
 /**
- * Parse an excel spreadsheet, pusing cell info into the SheetListener interface.
+ * Parse an excel spreadsheet, pushing cell info into the SheetListener interface.
  */
 public class ExcelParser
     implements
@@ -45,7 +46,7 @@ public class ExcelParser
     private boolean                         _useFirstSheet;
 
     /**
-     * Define a map of sheet name to listner handlers.
+     * Define a map of sheet name to listener handlers.
      * 
      * @param sheetListeners
      *            map of String to SheetListener
@@ -70,7 +71,8 @@ public class ExcelParser
 
     public void parseFile(InputStream inStream) {
         try {
-            Workbook workbook = Workbook.getWorkbook( inStream );
+            WorkbookSettings ws = new WorkbookSettings();
+            Workbook workbook = Workbook.getWorkbook( inStream, ws);
 
             if ( _useFirstSheet ) {
                 Sheet sheet = workbook.getSheet( 0 );
@@ -85,7 +87,7 @@ public class ExcelParser
                 }
             }
         } catch ( BiffException e ) {
-            throw new DecisionTableParseException( "An error occured opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
+            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
                                                    e );
 
         } catch ( IOException e ) {
