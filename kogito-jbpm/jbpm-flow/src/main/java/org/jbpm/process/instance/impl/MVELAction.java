@@ -26,14 +26,11 @@ import java.util.List;
 import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
-import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.impl.InternalKnowledgeBase;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.rule.Package;
 import org.drools.runtime.process.ProcessContext;
 import org.mvel2.MVEL;
-import org.mvel2.compiler.CompiledExpression;
-import org.mvel2.debug.DebugTools;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class MVELAction
@@ -107,12 +104,11 @@ public class MVELAction
                             context.getKnowledgeRuntime(),
                             null );
         
-        Package pkg = ((InternalKnowledgeBase) context.getKnowledgeRuntime()
-    		.getKnowledgeBase()).getRuleBase().getPackage( "MAIN" );
-        if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( id );
+        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
+        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );
-        }        
+        }
         
         MVEL.executeExpression( this.expr,
                                 null,

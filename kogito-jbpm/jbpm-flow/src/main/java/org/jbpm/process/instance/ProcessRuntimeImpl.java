@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.common.AbstractWorkingMemory;
@@ -16,7 +17,7 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
-import org.drools.impl.KnowledgeBaseImpl;
+import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.EventListener;
 import org.drools.runtime.process.ProcessInstance;
@@ -98,7 +99,13 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	}
 	
 	private ClassLoader getRootClassLoader() {
-	    return ((InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKnowledgeBase()).getRuleBase()).getRootClassLoader();
+		RuleBase ruleBase = ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase();
+		if (ruleBase != null) {
+			return ((InternalRuleBase) ((InternalKnowledgeBase) kruntime.getKnowledgeBase()).getRuleBase()).getRootClassLoader();
+		}
+		CompositeClassLoader result = new CompositeClassLoader();
+		result.addClassLoader(this.getClass().getClassLoader());
+		return result;
 	}
 	
     public ProcessInstance startProcess(final String processId) {

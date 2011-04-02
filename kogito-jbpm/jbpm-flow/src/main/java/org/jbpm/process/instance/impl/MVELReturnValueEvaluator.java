@@ -27,6 +27,8 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -107,10 +109,9 @@ public class MVELReturnValueEvaluator
                             null );
         
         // do we have any functions for this namespace?
-        Package pkg = ((InternalKnowledgeBase) context.getKnowledgeRuntime()
-        		.getKnowledgeBase()).getRuleBase().getPackage( "MAIN" );
-        if ( pkg != null ) {
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
+        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
+        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
