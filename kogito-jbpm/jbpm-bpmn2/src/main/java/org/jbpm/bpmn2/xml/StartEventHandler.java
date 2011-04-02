@@ -108,10 +108,18 @@ public class StartEventHandler extends AbstractNodeHandler {
                     String subNodeName = subNode.getNodeName();
                     if ("timeCycle".equals(subNodeName)) {
                         String period = subNode.getTextContent();
+                        String language = ((Element) subNode).getAttribute("language");
+                        if (language == null || language.trim().length() == 0) {
+                        	language = "int";
+                        }
                         if (period != null && period.trim().length() > 0) {
 	                        ConstraintTrigger trigger = new ConstraintTrigger();
 	                        trigger.setConstraint("");
-	                        trigger.setHeader("timer (int:" + period + " " + period + ")");
+	                        if ("int".equals(language)) {
+	                        	trigger.setHeader("timer (int:" + period + " " + period + ")");
+	                        } else {
+	                        	trigger.setHeader("timer (" + language + ":" + period + ")");
+	                        }
 	                        startNode.addTrigger(trigger);
 	                        break;
                         }
@@ -152,10 +160,19 @@ public class StartEventHandler extends AbstractNodeHandler {
 	                xmlDump.append("      </conditionalEventDefinition>" + EOL);
 		    	} else {
 		    		String header = constraintTrigger.getHeader();
-		    		int lenght = (header.length() - 13)/2;
-		    		String period = header.substring(11, 11 + lenght);
+		    		header = header.substring(7, header.length() - 1);
+		    		int index = header.indexOf(":");
+		    		String language = header.substring(0, index);
+		    		header = header.substring(index + 1);
+		    		String cycle = null;
+		    		if ("int".equals(language)) {
+		    			int lenght = (header.length() - 1)/2;
+			    		cycle = header.substring(0, lenght);
+		    		} else {
+		    			cycle = header;
+		    		}
 			        xmlDump.append("      <timerEventDefinition>" + EOL);
-	                xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + period + "</timeCycle>" + EOL);
+	                xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\" language=\"" + language + "\">" + cycle + "</timeCycle>" + EOL);
 	                xmlDump.append("      </timerEventDefinition>" + EOL);
 		    	}
 		    } else if (trigger instanceof EventTrigger) {
