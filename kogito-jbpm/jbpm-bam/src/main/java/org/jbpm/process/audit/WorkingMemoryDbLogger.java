@@ -49,11 +49,11 @@ public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
                 break;
             case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED:
             	RuleFlowNodeLogEvent nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeEnterLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId());
+            	addNodeEnterLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
                 break;
             case LogEvent.BEFORE_RULEFLOW_NODE_EXITED:
             	nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId());
+            	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
                 break;
             default:
                 // ignore all other events
@@ -82,16 +82,16 @@ public class WorkingMemoryDbLogger extends WorkingMemoryLogger {
         session.getTransaction().commit();
     }
     
-    private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId) {
-        NodeInstanceLog log = new NodeInstanceLog(NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId);
+    private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
+        NodeInstanceLog log = new NodeInstanceLog(NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.save(log);
         session.getTransaction().commit();
     }
     
-    private void addNodeExitLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId) {
-        NodeInstanceLog log = new NodeInstanceLog(NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId);
+    private void addNodeExitLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
+        NodeInstanceLog log = new NodeInstanceLog(NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.save(log);

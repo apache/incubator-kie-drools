@@ -73,11 +73,11 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
                 break;
             case LogEvent.BEFORE_RULEFLOW_NODE_TRIGGERED:
             	RuleFlowNodeLogEvent nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeEnterLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId());
+            	addNodeEnterLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
                 break;
             case LogEvent.BEFORE_RULEFLOW_NODE_EXITED:
             	nodeEvent = (RuleFlowNodeLogEvent) logEvent;
-            	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId());
+            	addNodeExitLog(nodeEvent.getProcessInstanceId(), nodeEvent.getProcessId(), nodeEvent.getNodeInstanceId(), nodeEvent.getNodeId(), nodeEvent.getNodeName());
                 break;
             case LogEvent.AFTER_VARIABLE_INSTANCE_CHANGED:
             	RuleFlowVariableLogEvent variableEvent = (RuleFlowVariableLogEvent) logEvent;
@@ -105,16 +105,16 @@ public class JPAWorkingMemoryDbLogger extends WorkingMemoryLogger {
         }
     }
 
-    private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId) {
+    private void addNodeEnterLog(long processInstanceId, String processId, String nodeInstanceId, String nodeId, String nodeName) {
         NodeInstanceLog log = new NodeInstanceLog(
-    		NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId);
+    		NodeInstanceLog.TYPE_ENTER, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
         getEntityManager().persist(log);
     }
 
     private void addNodeExitLog(long processInstanceId,
-            String processId, String nodeInstanceId, String nodeId) {
+            String processId, String nodeInstanceId, String nodeId, String nodeName) {
         NodeInstanceLog log = new NodeInstanceLog(
-            NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId);
+            NodeInstanceLog.TYPE_EXIT, processInstanceId, processId, nodeInstanceId, nodeId, nodeName);
         getEntityManager().persist(log);
     }
 

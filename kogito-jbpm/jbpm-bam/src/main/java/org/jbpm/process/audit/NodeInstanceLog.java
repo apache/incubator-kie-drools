@@ -43,6 +43,7 @@ public class NodeInstanceLog implements Serializable {
     private String processId;
     private String nodeInstanceId;
     private String nodeId;
+    private String nodeName;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
@@ -51,12 +52,13 @@ public class NodeInstanceLog implements Serializable {
     }
     
 	public NodeInstanceLog(int type, long processInstanceId, String processId,
-			               String nodeInstanceId, String nodeId) {
+			               String nodeInstanceId, String nodeId, String nodeName) {
 		this.type = type;
         this.processInstanceId = processInstanceId;
         this.processId = processId;
 		this.nodeInstanceId = nodeInstanceId;
 		this.nodeId = nodeId;
+		this.nodeName = nodeName;
         this.date = new Date();
     }
 	
@@ -107,6 +109,14 @@ public class NodeInstanceLog implements Serializable {
 	void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
 	}
+	
+	public String getNodeName() {
+		return nodeName;
+	}
+	
+	void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
 
 	public Date getDate() {
         return date;
@@ -118,7 +128,7 @@ public class NodeInstanceLog implements Serializable {
 
     public String toString() {
         return (type == 0 ? "Triggered " : "Left ") + "Node Instance '" + 
-        	processId + "#" + nodeId + "' [" + processInstanceId + "#" + nodeInstanceId + "]";
+        	processId + "#" + nodeId + "' (" + nodeName + ") [" + processInstanceId + "#" + nodeInstanceId + "]";
     }
     
 }
