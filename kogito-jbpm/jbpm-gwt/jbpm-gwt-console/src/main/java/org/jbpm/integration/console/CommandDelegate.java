@@ -32,6 +32,7 @@ import javax.persistence.Persistence;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -40,6 +41,7 @@ import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.impl.ProcessMarshallerFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -51,9 +53,9 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.ProcessRuntimeFactory;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
-import org.jbpm.process.audit.ProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.process.audit.WorkingMemoryDbLogger;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
@@ -64,6 +66,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 public class CommandDelegate {
 	
 	private static StatefulKnowledgeSession ksession;
+	private static JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
 	
 	public CommandDelegate() {
 		getSession();
@@ -73,9 +76,15 @@ public class CommandDelegate {
 		try {
 			KnowledgeBase kbase = null;
 			try {
-				KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
+				ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+				sconf.setProperty( "drools.resource.scanner.interval", "10" );
+				ResourceFactory.getResourceChangeScannerService().configure( sconf );
+				ResourceFactory.getResourceChangeScannerService().start();
+				ResourceFactory.getResourceChangeNotifierService().start();
+				KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+				aconf.setProperty("drools.agent.newInstance", "false");
+				KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
 				kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
-				kagent.monitorResourceChangeEvents(false);
 				kbase = kagent.getKnowledgeBase();
 				for (Process process: kbase.getProcesses()) {
 					System.out.println("Loading process from Guvnor: " + process.getId());
@@ -121,7 +130,7 @@ public class CommandDelegate {
 			}
 			StatefulKnowledgeSession ksession = null;
 			EntityManagerFactory emf = Persistence.createEntityManagerFactory(
-					"org.drools.persistence.jpa");
+					"org.jbpm.persistence.jpa");
 	        Environment env = KnowledgeBaseFactory.newEnvironment();
 	        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			Properties properties = new Properties();
@@ -157,7 +166,7 @@ public class CommandDelegate {
                     throw e;
 				}
 			}
-			new WorkingMemoryDbLogger(ksession);
+			new JPAWorkingMemoryDbLogger(ksession);
 			CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
 			properties = new Properties();
 			try {
@@ -222,16 +231,16 @@ public class CommandDelegate {
 	}
 	
 	public ProcessInstanceLog getProcessInstanceLog(String processInstanceId) {
-		return ProcessInstanceDbLog.findProcessInstance(new Long(processInstanceId));
+		return log.findProcessInstance(new Long(processInstanceId));
 	}
 
 	public List<ProcessInstanceLog> getProcessInstanceLogsByProcessId(String processId) {
-		return ProcessInstanceDbLog.findProcessInstances(processId);
+		return log.findProcessInstances(processId);
 	}
 	
 	public ProcessInstanceLog startProcess(String processId, Map<String, Object> parameters) {
 		long processInstanceId = ksession.startProcess(processId, parameters).getId();
-		return ProcessInstanceDbLog.findProcessInstance(processInstanceId);
+		return log.findProcessInstance(processInstanceId);
 	}
 	
 	public void abortProcessInstance(String processInstanceId) {
@@ -287,8 +296,4 @@ public class CommandDelegate {
 			.signalEvent("signal", signal);
 	}
 	
-	public static void main(String[] args) {
-		new CommandDelegate();
-	}
-
 }

@@ -17,12 +17,15 @@
   </properties>
  </persistence-unit-->
 
-    <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
+    <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:jdbc/testDS1</jta-data-source>        
         <class>org.drools.persistence.session.SessionInfo</class>
         <class>org.drools.persistence.processinstance.ProcessInstanceInfo</class>
         <class>org.drools.persistence.processinstance.WorkItemInfo</class>
+        <class>org.jbpm.process.audit.ProcessInstanceLog</class>
+        <class>org.jbpm.process.audit.NodeInstanceLog</class>
+        <class>org.jbpm.process.audit.VariableInstanceLog</class>
 
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
