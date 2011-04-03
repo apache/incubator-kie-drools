@@ -114,6 +114,7 @@ public class TspStartingSolutionInitializer extends AbstractStartingSolutionInit
                 workingMemory.update(bestAfterCityAssignmentFactHandle, bestAfterCityAssignment);
                 workingMemory.update(bestBeforeCityAssignmentFactHandle, bestBeforeCityAssignment);
             }
+            assignedCityAssignmentList.add(cityAssignment);
             if (cityAssignment.getCity() == startCity) {
                 travelingSalesmanTour.setStartCityAssignment(cityAssignment);
             }
