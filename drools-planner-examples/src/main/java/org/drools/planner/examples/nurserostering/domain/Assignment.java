@@ -95,7 +95,7 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
         return new HashCodeBuilder()
                 .append(id)
                 .append(shift)
-                .append(shift)
+                .append(employee)
                 .toHashCode();
     }
 
