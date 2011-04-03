@@ -106,7 +106,6 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                 assignmentId++;
             }
         }
-        Collections.sort(assignmentList);
         return assignmentList;
     }
 

@@ -101,7 +101,6 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
             cloudAssignmentList.add(cloudAssignment);
             cloudAssignmentId++;
         }
-        Collections.sort(cloudAssignmentList);
         return cloudAssignmentList;
     }
 
