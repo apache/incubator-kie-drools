@@ -71,7 +71,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                     bestEmployee = employee;
                 }
             }
-            if (bestEmployee == null || bestEmployee == null) {
+            if (bestEmployee == null) {
                 throw new IllegalStateException("The bestEmployee (" + bestEmployee + ") cannot be null.");
             }
             assignment.setEmployee(bestEmployee);
