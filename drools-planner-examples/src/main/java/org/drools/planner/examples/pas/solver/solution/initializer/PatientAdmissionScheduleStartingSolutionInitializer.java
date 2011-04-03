@@ -92,11 +92,10 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                         continue;
                     }
                 }
+                bedDesignation.setBed(bed);
                 if (bedDesignationHandle == null) {
-                    bedDesignation.setBed(bed);
                     bedDesignationHandle = workingMemory.insert(bedDesignation);
                 } else {
-                    bedDesignation.setBed(bed);
                     workingMemory.update(bedDesignationHandle, bedDesignation);
                 }
                 Score score = abstractSolverScope.calculateScoreFromWorkingMemory();

@@ -61,11 +61,10 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
             for (Period period : periodList) {
+                lecture.setPeriod(period);
                 if (lectureHandle == null) {
-                    lecture.setPeriod(period);
                     lectureHandle = workingMemory.insert(lecture);
                 } else {
-                    lecture.setPeriod(period);
                     workingMemory.update(lectureHandle, lecture);
                 }
                 Score score = abstractSolverScope.calculateScoreFromWorkingMemory();

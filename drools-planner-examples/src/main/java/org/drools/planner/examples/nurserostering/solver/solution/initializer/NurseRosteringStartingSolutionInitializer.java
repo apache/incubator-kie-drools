@@ -58,11 +58,10 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             Employee bestEmployee = null;
             for (Employee employee : employeeList) {
+                assignment.setEmployee(employee);
                 if (assignmentHandle == null) {
-                    assignment.setEmployee(employee);
                     assignmentHandle = workingMemory.insert(assignment);
                 } else {
-                    assignment.setEmployee(employee);
                     workingMemory.update(assignmentHandle, assignment);
                 }
                 Score score = abstractSolverScope.calculateScoreFromWorkingMemory();

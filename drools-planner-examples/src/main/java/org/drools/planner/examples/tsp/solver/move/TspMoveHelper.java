@@ -22,7 +22,7 @@ import org.drools.runtime.rule.FactHandle;
 
 public class TspMoveHelper {
 
-    public static void moveCityAssignment(WorkingMemory workingMemory,
+    public static void moveCityAssignmentAfterCityAssignment(WorkingMemory workingMemory,
             CityAssignment cityAssignment, CityAssignment toNextCityAssignment) {
         FactHandle cityAssignmentFactHandle = workingMemory.getFactHandle(cityAssignment);
         FactHandle toNextCityAssignmentFactHandle = workingMemory.getFactHandle(toNextCityAssignment);

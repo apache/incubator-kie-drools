@@ -80,14 +80,13 @@ public class ExaminationStartingSolutionInitializer extends AbstractStartingSolu
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
             for (Period period : periodList) {
                 for (ExamToHandle examToHandle : examToHandleList) {
+                    examToHandle.getExam().setPeriod(period);
                     if (examToHandle.getExamHandle() == null) {
-                        examToHandle.getExam().setPeriod(period);
                         examToHandle.setExamHandle(workingMemory.insert(examToHandle.getExam()));
                         if (examToHandle.getExam().isCoincidenceLeader()) {
                             leaderHandle = examToHandle.getExamHandle();
                         }
                     } else {
-                        examToHandle.getExam().setPeriod(period);
                         workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
                     }
                 }

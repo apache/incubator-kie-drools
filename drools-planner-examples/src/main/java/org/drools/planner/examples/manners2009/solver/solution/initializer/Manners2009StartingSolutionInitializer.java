@@ -60,11 +60,10 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
             // this will probably be faster because perfectMatch will be true sooner
             for (Seat seat : undesignatedSeatList) {
                 if (seatDesignation.getGuest().getGender() == seat.getRequiredGender()) {
+                    seatDesignation.setSeat(seat);
                     if (seatDesignationHandle == null) {
-                        seatDesignation.setSeat(seat);
                         seatDesignationHandle = workingMemory.insert(seatDesignation);
                     } else {
-                        seatDesignation.setSeat(seat);
                         workingMemory.update(seatDesignationHandle, seatDesignation);
                     }
                     Score score = abstractSolverScope.calculateScoreFromWorkingMemory();

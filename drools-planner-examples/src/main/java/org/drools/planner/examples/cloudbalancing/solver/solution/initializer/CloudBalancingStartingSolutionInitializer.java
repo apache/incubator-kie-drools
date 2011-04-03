@@ -57,11 +57,10 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             CloudComputer bestCloudComputer = null;
             for (CloudComputer cloudComputer : cloudComputerList) {
+                cloudAssignment.setCloudComputer(cloudComputer);
                 if (cloudAssignmentHandle == null) {
-                    cloudAssignment.setCloudComputer(cloudComputer);
                     cloudAssignmentHandle = workingMemory.insert(cloudAssignment);
                 } else {
-                    cloudAssignment.setCloudComputer(cloudComputer);
                     workingMemory.update(cloudAssignmentHandle, cloudAssignment);
                 }
                 Score score = abstractSolverScope.calculateScoreFromWorkingMemory();

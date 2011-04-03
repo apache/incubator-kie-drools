@@ -26,7 +26,6 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
-import org.drools.runtime.rule.FactHandle;
 
 public class SubTourChangeMove implements Move, TabuPropertyEnabled {
 
@@ -52,8 +51,8 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
 
     public void doMove(WorkingMemory workingMemory) {
         CityAssignment toBeforeCityAssignment = toAfterCityAssignment.getNextCityAssignment();
-        TspMoveHelper.moveCityAssignment(workingMemory, toAfterCityAssignment, startCityAssignment);
-        TspMoveHelper.moveCityAssignment(workingMemory, endCityAssignment, toBeforeCityAssignment);
+        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, toAfterCityAssignment, startCityAssignment);
+        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, endCityAssignment, toBeforeCityAssignment);
     }
 
     public Collection<? extends Object> getTabuProperties() {
