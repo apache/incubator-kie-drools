@@ -1,0 +1,55 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.examples.tsp.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.tsp.domain.City;
+import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+
+global SimpleScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "distance"
+    when
+        $leftCityAssignment : CityAssignment($distanceToNextCityAssignment : distanceToNextCityAssignment)
+    then
+        insertLogical(new DoubleConstraintOccurrence("distance", ConstraintType.NEGATIVE_SOFT,
+                $distanceToNextCityAssignment,
+                $leftCityAssignment));
+end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+rule "softConstraintsBroken"
+    when
+        $hardTotal : Number() from accumulate(
+            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreCalculator.setScore(- $hardTotal.intValue()); // TODO fixme should be double
+end

@@ -104,4 +104,8 @@ public class CityAssignment extends AbstractPersistable implements Comparable<Ci
         return city.toString();
     }
 
+    public double getDistanceToNextCityAssignment() {
+        return city.getDistance(nextCityAssignment.getCity());
+    }
+
 }

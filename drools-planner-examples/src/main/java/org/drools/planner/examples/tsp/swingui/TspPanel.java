@@ -65,8 +65,8 @@ public class TspPanel extends SolutionPanel {
                 JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
                 JButton button = new JButton(new CityAssignmentAction(cityAssignment));
                 cityAssignmentPanel.add(button);
-                JLabel distanceLabel = new JLabel("Distance to next: " + cityAssignment.getCity().getDistance(
-                        cityAssignment.getNextCityAssignment().getCity()));
+                JLabel distanceLabel = new JLabel("Distance to next: "
+                        + cityAssignment.getDistanceToNextCityAssignment());
                 cityAssignmentPanel.add(distanceLabel);
                 add(cityAssignmentPanel);
             }
