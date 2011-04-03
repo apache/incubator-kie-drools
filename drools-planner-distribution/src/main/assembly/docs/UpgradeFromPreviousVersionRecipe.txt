@@ -582,3 +582,38 @@ After in *.java if you use a HardAndSoftScore:
         ...
     }
 
+[RECOMMENDED] If you've followed the examples (which is normally a good thing),
+check if your solutionEquals() and solutionHashCode() methods respects the hashcode/equals contract,
+because some of the examples did not.
+Before in *.java:
+    public boolean solutionEquals(Object o) {
+        ...
+            return new EqualsBuilder()
+                    .append(id, other.id)
+                    .append(guest, other.guest)
+                    .append(seat, other.seat)
+                    .isEquals();
+        ...
+    }
+    public int solutionHashCode() {
+        return new HashCodeBuilder()
+                .append(seat)
+                .toHashCode();
+    }
+After in *.java:
+    public boolean solutionEquals(Object o) {
+        ...
+            return new EqualsBuilder()
+                    .append(id, other.id)
+                    .append(guest, other.guest)
+                    .append(seat, other.seat)
+                    .isEquals();
+        ...
+    }
+    public int solutionHashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(guest)
+                .append(seat)
+                .toHashCode();
+    }
