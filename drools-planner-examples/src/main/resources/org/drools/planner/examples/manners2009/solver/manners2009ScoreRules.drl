@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nqueens.solver;
+package org.drools.planner.examples.manners2009.solver;
     dialect "java"
 
 import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
