@@ -19,31 +19,12 @@ package org.drools.planner.examples.tsp.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.domain.Department;
-import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
-import org.drools.planner.examples.pas.domain.Equipment;
-import org.drools.planner.examples.pas.domain.Gender;
-import org.drools.planner.examples.pas.domain.GenderLimitation;
-import org.drools.planner.examples.pas.domain.Night;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
-import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
-import org.drools.planner.examples.pas.domain.Room;
-import org.drools.planner.examples.pas.domain.RoomEquipment;
-import org.drools.planner.examples.pas.domain.RoomSpecialism;
-import org.drools.planner.examples.pas.domain.Specialism;
 import org.drools.planner.examples.tsp.domain.City;
-import org.drools.planner.examples.tsp.domain.TravelingSalesmanSchedule;
+import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -56,32 +37,32 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
-        return new TravelingSalesmanScheduleInputBuilder();
+        return new TravelingSalesmanTourInputBuilder();
     }
 
-    public class TravelingSalesmanScheduleInputBuilder extends TxtInputBuilder {
+    public class TravelingSalesmanTourInputBuilder extends TxtInputBuilder {
 
-        private TravelingSalesmanSchedule travelingSalesmanSchedule;
+        private TravelingSalesmanTour travelingSalesmanTour;
 
         private int cityListSize;
 
         public Solution readSolution() throws IOException {
-            travelingSalesmanSchedule = new TravelingSalesmanSchedule();
-            travelingSalesmanSchedule.setId(0L);
+            travelingSalesmanTour = new TravelingSalesmanTour();
+            travelingSalesmanTour.setId(0L);
             readHeaders();
             readCityList();
             readConstantLine("EOF");
-            logger.info("TravelingSalesmanSchedule with {} cities.",
-                    travelingSalesmanSchedule.getCityList().size());
-            BigInteger possibleSolutionSize = factorial(travelingSalesmanSchedule.getCityList().size() - 1);
+            logger.info("TravelingSalesmanTour with {} cities.",
+                    travelingSalesmanTour.getCityList().size());
+            BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
             String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-            logger.info("TravelingSalesmanSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+            logger.info("TravelingSalesmanTour with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
                     flooredPossibleSolutionSize, possibleSolutionSize);
-            return travelingSalesmanSchedule;
+            return travelingSalesmanTour;
         }
 
         private void readHeaders() throws IOException {
-            travelingSalesmanSchedule.setName(readStringValue("NAME :"));
+            travelingSalesmanTour.setName(readStringValue("NAME :"));
             readUntilConstantLine("TYPE : TSP");
             cityListSize = readIntegerValue("DIMENSION :");
             readConstantLine("EDGE_WEIGHT_TYPE : EUC_2D");
@@ -99,8 +80,8 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                 city.setY(Double.parseDouble(lineTokens[2]));
                 cityList.add(city);
             }
-            travelingSalesmanSchedule.setCityList(cityList);
-            travelingSalesmanSchedule.setStartCity(cityList.get(0));
+            travelingSalesmanTour.setCityList(cityList);
+            travelingSalesmanTour.setStartCity(cityList.get(0));
         }
 
         private BigInteger factorial(int base) {

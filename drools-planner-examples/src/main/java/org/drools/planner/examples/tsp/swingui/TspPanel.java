@@ -29,10 +29,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.solver.move.BedChangeMove;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
-import org.drools.planner.examples.tsp.domain.TravelingSalesmanSchedule;
+import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 /**
  * TODO this code is highly unoptimized
@@ -48,22 +46,22 @@ public class TspPanel extends SolutionPanel {
         setLayout(gridLayout);
     }
 
-    private TravelingSalesmanSchedule getTravelingSalesmanSchedule() {
-        return (TravelingSalesmanSchedule) solutionBusiness.getSolution();
+    private TravelingSalesmanTour getTravelingSalesmanTour() {
+        return (TravelingSalesmanTour) solutionBusiness.getSolution();
     }
 
     public void resetPanel() {
         removeAll();
-        TravelingSalesmanSchedule travelingSalesmanSchedule = getTravelingSalesmanSchedule();
-        JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanSchedule.getName());
+        TravelingSalesmanTour travelingSalesmanTour = getTravelingSalesmanTour();
+        JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
         headerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        if (travelingSalesmanSchedule.isInitialized()) {
-            for (CityAssignment cityAssignment : travelingSalesmanSchedule.getCityAssignmentList()) {
+        if (travelingSalesmanTour.isInitialized()) {
+            for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
                 JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
                 JButton button = new JButton(new CityAssignmentAction(cityAssignment));
                 cityAssignmentPanel.add(button);
@@ -86,7 +84,7 @@ public class TspPanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<CityAssignment> nextCityAssignmentList = getTravelingSalesmanSchedule().getCityAssignmentList();
+            List<CityAssignment> nextCityAssignmentList = getTravelingSalesmanTour().getCityAssignmentList();
             JComboBox nextCityAssignmentListField = new JComboBox(nextCityAssignmentList.toArray());
             nextCityAssignmentListField.setSelectedItem(cityAssignment.getNextCityAssignment());
             listFieldsPanel.add(nextCityAssignmentListField);

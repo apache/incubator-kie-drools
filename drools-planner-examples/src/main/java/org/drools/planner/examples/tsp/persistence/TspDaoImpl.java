@@ -17,13 +17,12 @@
 package org.drools.planner.examples.tsp.persistence;
 
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.tsp.domain.TravelingSalesmanSchedule;
+import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspDaoImpl extends XstreamSolutionDaoImpl {
 
     public TspDaoImpl() {
-        super("tsp", TravelingSalesmanSchedule.class);
+        super("tsp", TravelingSalesmanTour.class);
     }
 
 }

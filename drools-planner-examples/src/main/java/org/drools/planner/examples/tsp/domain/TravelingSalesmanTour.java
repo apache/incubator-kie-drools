@@ -18,16 +18,17 @@ package org.drools.planner.examples.tsp.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-public class TravelingSalesmanSchedule extends AbstractPersistable implements Solution<SimpleScore> {
+@XStreamAlias("TravelingSalesmanTour")
+public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleScore> {
 
     private String name;
     private List<City> cityList;
@@ -104,8 +105,8 @@ public class TravelingSalesmanSchedule extends AbstractPersistable implements So
     /**
      * Clone will only deep copy the {@link #cityAssignmentList}.
      */
-    public TravelingSalesmanSchedule cloneSolution() {
-        TravelingSalesmanSchedule clone = new TravelingSalesmanSchedule();
+    public TravelingSalesmanTour cloneSolution() {
+        TravelingSalesmanTour clone = new TravelingSalesmanTour();
         clone.id = id;
         clone.name = name;
         clone.cityList = cityList;
@@ -127,10 +128,10 @@ public class TravelingSalesmanSchedule extends AbstractPersistable implements So
         if (this == o) {
             return true;
         }
-        if (id == null || !(o instanceof TravelingSalesmanSchedule)) {
+        if (id == null || !(o instanceof TravelingSalesmanTour)) {
             return false;
         } else {
-            TravelingSalesmanSchedule other = (TravelingSalesmanSchedule) o;
+            TravelingSalesmanTour other = (TravelingSalesmanTour) o;
             if (cityAssignmentList.size() != other.cityAssignmentList.size()) {
                 return false;
             }

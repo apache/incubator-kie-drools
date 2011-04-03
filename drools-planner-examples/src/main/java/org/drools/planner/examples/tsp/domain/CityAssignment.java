@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.tsp.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -26,6 +27,7 @@ import org.drools.planner.examples.manners2009.domain.JobType;
 import org.drools.planner.examples.manners2009.domain.Seat;
 import org.drools.planner.examples.manners2009.domain.Table;
 
+@XStreamAlias("CityAssignment")
 public class CityAssignment extends AbstractPersistable implements Comparable<CityAssignment> {
 
     private City city;
