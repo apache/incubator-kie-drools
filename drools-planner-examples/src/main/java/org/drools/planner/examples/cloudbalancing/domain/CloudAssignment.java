@@ -110,7 +110,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         return new HashCodeBuilder()
                 .append(id)
                 .append(cloudProcess)
-                .append(cloudProcess)
+                .append(cloudComputer)
                 .toHashCode();
     }
 
