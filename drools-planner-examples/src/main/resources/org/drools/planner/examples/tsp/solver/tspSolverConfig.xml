@@ -17,7 +17,7 @@
         <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+        <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+        <!--<minimalAcceptedSelection>5000</minimalAcceptedSelection>-->
     </forager>
 </localSearchSolver>
