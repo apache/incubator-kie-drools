@@ -28,12 +28,19 @@ import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
 
+    private static final String INPUT_FILE_SUFFIX = ".tsp";
+
     public static void main(String[] args) {
         new TspSolutionImporter().convertAll();
     }
 
     public TspSolutionImporter() {
         super(new TspDaoImpl());
+    }
+
+    @Override
+    protected String getInputFileSuffix() {
+        return INPUT_FILE_SUFFIX;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
@@ -87,7 +94,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
         private BigInteger factorial(int base) {
             BigInteger value = BigInteger.ONE;
             for (int i = 1; i <= base; i++) {
-                value.multiply(BigInteger.valueOf(base));
+                value = value.multiply(BigInteger.valueOf(base));
             }
             return value;
         }
