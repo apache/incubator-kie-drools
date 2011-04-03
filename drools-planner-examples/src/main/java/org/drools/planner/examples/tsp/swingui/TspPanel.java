@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -84,15 +85,15 @@ public class TspPanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<CityAssignment> nextCityAssignmentList = getTravelingSalesmanTour().getCityAssignmentList();
-            JComboBox nextCityAssignmentListField = new JComboBox(nextCityAssignmentList.toArray());
-            nextCityAssignmentListField.setSelectedItem(cityAssignment.getNextCityAssignment());
-            listFieldsPanel.add(nextCityAssignmentListField);
+            List<CityAssignment> afterCityAssignmentList = getTravelingSalesmanTour().getCityAssignmentList();
+            JComboBox afterCityAssignmentListField = new JComboBox(afterCityAssignmentList.toArray());
+            afterCityAssignmentListField.setSelectedItem(cityAssignment.getNextCityAssignment());
+            listFieldsPanel.add(afterCityAssignmentListField);
             int result = JOptionPane.showConfirmDialog(TspPanel.this.getRootPane(), listFieldsPanel,
-                    "Select next city", JOptionPane.OK_CANCEL_OPTION);
+                    "Select to move after city", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                CityAssignment toNextCityAssignement = (CityAssignment) nextCityAssignmentListField.getSelectedItem();
-                solutionBusiness.doMove(new NextCityAssignmentChangeMove(cityAssignment, toNextCityAssignement));
+                CityAssignment toAfterCityAssignment = (CityAssignment) afterCityAssignmentListField.getSelectedItem();
+                solutionBusiness.doMove(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
                 workflowFrame.updateScreen();
             }
         }

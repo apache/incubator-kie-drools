@@ -10,7 +10,7 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
     </termination>
     <selector>
-        <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.CityAssignmentSwitchMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.SubTourChangeMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
         <completeSolutionTabuSize>1000</completeSolutionTabuSize>
