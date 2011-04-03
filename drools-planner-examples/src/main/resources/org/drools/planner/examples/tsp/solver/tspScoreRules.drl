@@ -46,10 +46,10 @@ end
 
 rule "softConstraintsBroken"
     when
-        $hardTotal : Number() from accumulate(
-            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+        $softTotal : Number() from accumulate(
+            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setScore(- $hardTotal.intValue()); // TODO fixme should be double
+        scoreCalculator.setScore(- $softTotal.intValue()); // TODO fixme should be double
 end
