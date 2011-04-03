@@ -70,7 +70,7 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
                     bestCloudComputer = cloudComputer;
                 }
             }
-            if (bestCloudComputer == null || bestCloudComputer == null) {
+            if (bestCloudComputer == null) {
                 throw new IllegalStateException("The bestCloudComputer (" + bestCloudComputer + ") cannot be null.");
             }
             cloudAssignment.setCloudComputer(bestCloudComputer);
