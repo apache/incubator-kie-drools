@@ -455,7 +455,7 @@ Before in *BenchmarkConfig.xml:
 From 5.1.0 to 5.2.0.M1
 ----------------------
 
-The example DRL's no longer use the optional character ';' at the end of lines in the LHS.
+[RECOMMENDED] The example DRL's no longer use the optional character ';' at the end of lines in the LHS.
 If you copied that practice from the examples, it's recommended to remove them from your DRL's too.
 
 
@@ -526,15 +526,15 @@ After in *Score.java:
 [MINOR] SelectorConfig, AcceptorConfig and ForagerConfig's build method now have a ScoreDefinition argument.
 If you use any custom implementation for any of them, you need to adjust your method signature.
 Before in *SelectorConfig.java:
-    public Selector buildSelector(ScoreDefinition scoreDefinition) {
+    public Selector buildSelector() {
 After in *SelectorConfig.java:
     public Selector buildSelector(ScoreDefinition scoreDefinition) {
 Before in *AcceptorConfig.java:
-    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
+    public Acceptor buildAcceptor() {
 After in *AcceptorConfig.java:
     public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
 Before in *ForagerConfig.java:
-    public Forager buildForager(ScoreDefinition scoreDefinition) {
+    public Forager buildForager() {
 After in *ForagerConfig.java:
     public Forager buildForager(ScoreDefinition scoreDefinition) {
 
