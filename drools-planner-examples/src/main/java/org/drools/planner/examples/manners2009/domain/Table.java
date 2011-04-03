@@ -18,9 +18,11 @@ package org.drools.planner.examples.manners2009.domain;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@XStreamAlias("Table")
 public class Table extends AbstractPersistable implements Comparable<Table> {
 
     private int tableIndex;

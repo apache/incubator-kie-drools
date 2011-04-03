@@ -16,9 +16,11 @@
 
 package org.drools.planner.examples.manners2009.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@XStreamAlias("Job")
 public class Job extends AbstractPersistable implements Comparable<Job> {
 
     private JobType jobType;
