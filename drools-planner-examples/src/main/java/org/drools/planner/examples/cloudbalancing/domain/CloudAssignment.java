@@ -24,7 +24,7 @@ import org.drools.planner.core.annotations.PlanningValueProperty;
 import org.drools.planner.core.annotations.PlanningVariableClass;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@PlanningVariableClass
+@PlanningVariableClass // NOTE: DO NOT USE THIS YET
 @XStreamAlias("CloudAssignment")
 public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {
 
@@ -45,7 +45,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         return cloudComputer;
     }
 
-    @PlanningValueProperty // TODO move to getter
+    @PlanningValueProperty // TODO move to getter NOTE: DO NOT USE THIS YET
     public void setCloudComputer(CloudComputer cloudComputer) {
         this.cloudComputer = cloudComputer;
     }
