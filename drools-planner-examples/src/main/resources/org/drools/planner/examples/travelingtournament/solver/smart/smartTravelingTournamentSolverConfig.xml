@@ -26,5 +26,6 @@
     </acceptor>
     <forager>
         <pickEarlyType>NEVER</pickEarlyType>
+        <!-- Real world problems require to use of <minimalAcceptedSelection> -->
     </forager>
 </localSearchSolver>
