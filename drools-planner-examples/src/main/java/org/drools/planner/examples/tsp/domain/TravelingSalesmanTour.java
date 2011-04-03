@@ -18,8 +18,10 @@ package org.drools.planner.examples.tsp.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -112,12 +114,22 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         clone.cityList = cityList;
         clone.startCity = startCity;
         List<CityAssignment> clonedCityAssignmentList = new ArrayList<CityAssignment>(cityAssignmentList.size());
+        Map<Long, CityAssignment> idToClonedCityAssignmentMap = new HashMap<Long, CityAssignment>(
+                cityAssignmentList.size());
         for (CityAssignment cityAssignment : cityAssignmentList) {
             CityAssignment clonedCityAssignment = cityAssignment.clone();
             clonedCityAssignmentList.add(clonedCityAssignment);
+            idToClonedCityAssignmentMap.put(clonedCityAssignment.getId(), clonedCityAssignment);
             if (cityAssignment == startCityAssignment) {
                 clone.startCityAssignment = clonedCityAssignment;
             }
+        }
+        // Fix: Previous and next should point to the new clones instead of the old instances
+        for (CityAssignment clonedCityAssignment : clonedCityAssignmentList) {
+            clonedCityAssignment.setPreviousCityAssignment(idToClonedCityAssignmentMap.get(
+                    clonedCityAssignment.getPreviousCityAssignment().getId()));
+            clonedCityAssignment.setNextCityAssignment(idToClonedCityAssignmentMap.get(
+                    clonedCityAssignment.getNextCityAssignment().getId()));
         }
         clone.cityAssignmentList = clonedCityAssignmentList;
         clone.score = score;
