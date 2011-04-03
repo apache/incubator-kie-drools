@@ -506,36 +506,6 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
 //            }
 //        }
 
-        // ************************************************************************
-        // Helper methods
-        // ************************************************************************
-
-        private String[] splitBySpace(String line) {
-            String[] lineTokens = line.split("\\ ");
-            return lineTokens;
-        }
-
-        private String[] splitBySpace(String line, int numberOfTokens) {
-            String[] lineTokens = line.split("\\ ");
-            if (lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " + numberOfTokens + " tokens seperated by a space ( ).");
-            }
-            return lineTokens;
-        }
-
-        private String[] splitByPipeline(String line, int numberOfTokens) {
-            String[] lineTokens = line.split("\\|");
-            if (lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " + numberOfTokens + " tokens seperated by a pipeline (|).");
-            }
-            for (int i = 0; i < lineTokens.length; i++) {
-                lineTokens[i] = lineTokens[i].trim();
-            }
-            return lineTokens;
-        }
-
     }
 
 }

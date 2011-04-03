@@ -79,6 +79,15 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         }
 
+        public void readUntilConstantLine(String constantValue) throws IOException {
+            String line = bufferedReader.readLine();
+            String value = line.trim();
+            while (!value.equals(constantValue)) {
+                line = bufferedReader.readLine();
+                value = line.trim();
+            }
+        }
+
         public int readIntegerValue() throws IOException {
             return readIntegerValue("");
         }
@@ -89,6 +98,29 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public int readIntegerValue(String prefix, String suffix) throws IOException {
             String line = bufferedReader.readLine();
+            String value = removePrefixSuffixFromLine(line, prefix, suffix);
+            try {
+                return Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
+                        + value + ").", e);
+            }
+        }
+
+        public String readStringValue() throws IOException {
+            return readStringValue("");
+        }
+
+        public String readStringValue(String prefix) throws IOException {
+            return readStringValue(prefix, "");
+        }
+
+        public String readStringValue(String prefix, String suffix) throws IOException {
+            String line = bufferedReader.readLine();
+            return removePrefixSuffixFromLine(line, prefix, suffix);
+        }
+
+        public String removePrefixSuffixFromLine(String line, String prefix, String suffix) {
             String value = line.trim();
             if (!value.startsWith(prefix)) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to start with prefix ("
@@ -101,12 +133,33 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
             value = value.substring(0, value.length() - suffix.length());
             value = value.trim();
-            try {
-                return Integer.parseInt(value);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain an integer value ("
-                        + value + ").", e);
+            return value;
+        }
+
+        public String[] splitBySpace(String line) {
+            String[] lineTokens = line.split("\\ ");
+            return lineTokens;
+        }
+
+        public String[] splitBySpace(String line, int numberOfTokens) {
+            String[] lineTokens = line.split("\\ ");
+            if (lineTokens.length != numberOfTokens) {
+                throw new IllegalArgumentException("Read line (" + line
+                        + ") is expected to contain " + numberOfTokens + " tokens separated by a space ( ).");
             }
+            return lineTokens;
+        }
+
+        public String[] splitByPipeline(String line, int numberOfTokens) {
+            String[] lineTokens = line.split("\\|");
+            if (lineTokens.length != numberOfTokens) {
+                throw new IllegalArgumentException("Read line (" + line
+                        + ") is expected to contain " + numberOfTokens + " tokens separated by a pipeline (|).");
+            }
+            for (int i = 0; i < lineTokens.length; i++) {
+                lineTokens[i] = lineTokens[i].trim();
+            }
+            return lineTokens;
         }
 
     }
