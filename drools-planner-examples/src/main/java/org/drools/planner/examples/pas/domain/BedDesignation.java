@@ -87,6 +87,8 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
      */
     public int solutionHashCode() {
         return new HashCodeBuilder()
+                .append(id)
+                .append(admissionPart)
                 .append(bed)
                 .toHashCode();
     }
