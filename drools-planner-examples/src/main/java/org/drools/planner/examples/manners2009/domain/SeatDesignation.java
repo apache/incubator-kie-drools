@@ -85,6 +85,8 @@ public class SeatDesignation extends AbstractPersistable implements Comparable<S
      */
     public int solutionHashCode() {
         return new HashCodeBuilder()
+                .append(id)
+                .append(guest)
                 .append(seat)
                 .toHashCode();
     }
