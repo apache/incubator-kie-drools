@@ -38,24 +38,24 @@ public class OrHandler extends BaseAbstractHandler
     implements
     Handler {
     public OrHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( AndDescr.class );
-            this.validParents.add( PatternDescr.class );
-            this.validParents.add( AccumulateDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( AndDescr.class );
-            this.validPeers.add( OrDescr.class );
-            this.validPeers.add( NotDescr.class );
-            this.validPeers.add( ExistsDescr.class );
-            this.validPeers.add( EvalDescr.class );
-            this.validPeers.add( PatternDescr.class );
-            this.validPeers.add( ForallDescr.class );
-
-            this.allowNesting = true;
-        }
+//        if ( (this.validParents == null) && (this.validPeers == null) ) {
+//            this.validParents = new HashSet();
+//            this.validParents.add( AndDescr.class );
+//            this.validParents.add( PatternDescr.class );
+//            this.validParents.add( AccumulateDescr.class );
+//
+//            this.validPeers = new HashSet();
+//            this.validPeers.add( null );
+//            this.validPeers.add( AndDescr.class );
+//            this.validPeers.add( OrDescr.class );
+//            this.validPeers.add( NotDescr.class );
+//            this.validPeers.add( ExistsDescr.class );
+//            this.validPeers.add( EvalDescr.class );
+//            this.validPeers.add( PatternDescr.class );
+//            this.validPeers.add( ForallDescr.class );
+//
+//            this.allowNesting = true;
+//        }
     }
 
     public Object start(final String uri,

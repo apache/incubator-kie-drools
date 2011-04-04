@@ -36,22 +36,6 @@ public class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {
     public QualifiedIdentifierRestrictionHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( RestrictionConnectiveDescr.class );
-
-            this.validPeers = new HashSet();
-
-            this.validPeers.add( null );
-            this.validPeers.add( LiteralRestrictionDescr.class );
-            this.validPeers.add( ReturnValueRestrictionDescr.class );
-            this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,

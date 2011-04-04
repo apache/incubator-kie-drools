@@ -26,9 +26,12 @@ public class DumperTestHelper {
         final PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
 
         final XmlDumper dumper = new XmlDumper();
-        final String result = dumper.dump( pkgOriginal );
+        final String result = dumper.dump( pkgOriginal );        
         
         String buffer = readFile( filename );
+        
+        System.out.println(buffer);
+        System.out.println(result);
         
         assertEqualsIgnoreWhitespace( buffer,
                                       result );
@@ -48,8 +51,8 @@ public class DumperTestHelper {
                                       result2 );
     }
 
-    private static void assertEqualsIgnoreWhitespace(final String expected,
-                                              final String actual) {
+    public static void assertEqualsIgnoreWhitespace(final String expected,
+                                                    final String actual) {
         final String cleanExpected = expected.replaceAll( "\\s+",
                                                           "" );
         final String cleanActual = actual.replaceAll( "\\s+",

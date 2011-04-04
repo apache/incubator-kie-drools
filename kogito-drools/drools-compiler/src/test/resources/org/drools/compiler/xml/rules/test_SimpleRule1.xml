@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package name="com.sample" xmlns="http://drools.org/drools-5.0"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+   xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+
+   <import name="java.util.List" />
+   <import name="org.drools.Person" />
+
+   <global identifier="list" type="List" />
+
+   <rule name="simple_rule1">
+      <lhs>
+         <pattern identifier="p" object-type="Person">
+            <field-constraint field-name="name">
+               <literal-restriction evaluator="=="
+                  value="darth" />
+            </field-constraint>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+   <rule name="simple_rule2">
+      <lhs>
+         <pattern identifier="p" object-type="Person">
+            <field-constraint field-name="age">
+               <or-restriction-connective>
+                  <literal-restriction evaluator="=="
+                     value="35" />
+                  <literal-restriction evaluator="=="
+                     value="-3.5" />
+               </or-restriction-connective>
+            </field-constraint>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+   <rule name="simple_rule3">
+      <lhs>
+         <pattern identifier="p" object-type="Person">
+            <field-constraint field-name="age">
+               <or-restriction-connective>
+                  <literal-restriction evaluator="=="
+                     value="35" />
+                  <and-restriction-connective>
+                     <literal-restriction evaluator="!="
+                        value="7.0" />
+                     <literal-restriction evaluator="!="
+                        value="-70" />
+                  </and-restriction-connective>
+               </or-restriction-connective>
+            </field-constraint>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+
+   <rule name="simple_rule3">
+      <lhs>
+         <pattern identifier="$s" object-type="String" />
+
+         <pattern identifier="p" object-type="Person">
+            <field-constraint field-name="name">
+               <variable-restriction evaluator="=="
+                  identifier="$s" />
+            </field-constraint>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+   <rule name="simple_rule4">
+      <lhs>
+         <pattern identifier="$s" object-type="String" />
+
+         <pattern identifier="p" object-type="Person">
+            <or-constraint-connective>
+               <field-constraint field-name="name">
+                  <variable-restriction evaluator="=="
+                     identifier="$s" />
+               </field-constraint>
+
+               <field-constraint field-name="age">
+                  <or-restriction-connective>
+                     <literal-restriction evaluator="=="
+                        value="35" />
+                     <and-restriction-connective>
+                        <literal-restriction
+                           evaluator="!=" value="7.0" />
+                        <literal-restriction
+                           evaluator="!=" value="-70" />
+                     </and-restriction-connective>
+                  </or-restriction-connective>
+               </field-constraint>
+            </or-constraint-connective>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+   <rule name="simple_rule5">
+      <lhs>
+         <pattern identifier="$s" object-type="String" />
+
+         <pattern identifier="p" object-type="Person">
+            <or-constraint-connective>
+               <field-constraint field-name="name">
+                  <variable-restriction evaluator="=="
+                     identifier="$s" />
+               </field-constraint>
+
+               <and-constraint-connective>
+                  <field-constraint field-name="age">
+                     <literal-restriction evaluator="!="
+                        value="34" />
+                  </field-constraint>
+                  <field-constraint field-name="age">
+                     <literal-restriction evaluator="!="
+                        value="37" />
+                  </field-constraint>
+                  <field-constraint field-name="name">
+                     <literal-restriction evaluator="!="
+                        value="yoda" />
+                  </field-constraint>
+               </and-constraint-connective>
+            </or-constraint-connective>
+         </pattern>
+      </lhs>
+      <rhs>
+         list.add( p );
+      </rhs>
+   </rule>
+
+</package>

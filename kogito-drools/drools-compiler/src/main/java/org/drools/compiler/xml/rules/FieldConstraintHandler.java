@@ -21,6 +21,9 @@ import java.util.HashSet;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.ConnectiveDescr;
+import org.drools.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -41,23 +44,23 @@ public class FieldConstraintHandler extends BaseAbstractHandler
     implements
     Handler {
     public FieldConstraintHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( PatternDescr.class );
-            this.validParents.add( AndDescr.class );
-            this.validParents.add( OrDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( FieldConstraintDescr.class );
-            this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( BindingDescr.class );
-
-            this.validPeers.add( AndDescr.class );
-            this.validPeers.add( OrDescr.class );
-
-            this.allowNesting = false;
-        }
+//        if ( (this.validParents == null) && (this.validPeers == null) ) {
+//            this.validParents = new HashSet();
+//            this.validParents.add( PatternDescr.class );
+//            this.validParents.add( AndDescr.class );
+//            this.validParents.add( OrDescr.class );
+//
+//            this.validPeers = new HashSet();
+//            this.validPeers.add( null );
+//            this.validPeers.add( FieldConstraintDescr.class );
+//            this.validPeers.add( PredicateDescr.class );
+//            this.validPeers.add( BindingDescr.class );
+//
+//            this.validPeers.add( AndDescr.class );
+//            this.validPeers.add( OrDescr.class );
+//
+//            this.allowNesting = false;
+//        }
     }
 
     public Object start(final String uri,
@@ -67,13 +70,14 @@ public class FieldConstraintHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
 
-        final String fieldName = attrs.getValue( "field-name" );
+        final String fieldName = attrs.getValue( "field-name" );        
+        emptyAttributeCheck( localName, "field-name", fieldName, parser );                        
+        final ConnectiveDescr connective = new ConnectiveDescr(RestrictionConnectiveType.AND);
+        connective.setParen( false );
         
-        emptyAttributeCheck( localName, "field-name", fieldName, parser );
-
-        final FieldConstraintDescr fieldConstraint = new FieldConstraintDescr( fieldName );
-
-        return fieldConstraint;
+        connective.setPrefix( fieldName );
+        
+        return connective;
     }
 
     public Object end(final String uri,
@@ -81,20 +85,24 @@ public class FieldConstraintHandler extends BaseAbstractHandler
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parser.getCurrent();
+        final ConnectiveDescr c = (ConnectiveDescr) parser.getCurrent();
         
-        final Object parent = parser.getParent( );
-
-        if ( parent instanceof PatternDescr ) {
-            final PatternDescr patternDescr = (PatternDescr) parent;
-            patternDescr.addConstraint( fieldConstraintDescr );
-        } else if ( parent instanceof ConditionalElementDescr ) {
-            final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
-            final FieldConstraintDescr field = (FieldConstraintDescr) parser.getCurrent();
-            ceDescr.addOrMerge( field );
+        Object p = parser.getParent( );
+        if ( p instanceof PatternDescr ) {
+            StringBuilder sb = new StringBuilder();
+            c.buildExpression( sb );
+                  
+            ExprConstraintDescr expr = new ExprConstraintDescr( );
+            expr.setExpression( sb.toString() );
+              
+            final PatternDescr patternDescr = (PatternDescr) parser.getParent( );  
+            patternDescr.addConstraint( expr );        
+            
+        } else if ( p instanceof ConnectiveDescr ) {
+            ((ConnectiveDescr) p).add( c );
         }
 
-        return fieldConstraintDescr;
+        return c;
     }
 
     public Class generateNodeFor() {
