@@ -18,6 +18,7 @@ package org.drools.compiler.xml.rules;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.ConnectiveDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
@@ -38,19 +39,6 @@ public class VariableRestrictionsHandler extends BaseAbstractHandler
     implements
     Handler {
     public VariableRestrictionsHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( RestrictionConnectiveDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( LiteralRestrictionDescr.class );
-            this.validPeers.add( ReturnValueRestrictionDescr.class );
-            this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,
@@ -66,30 +54,19 @@ public class VariableRestrictionsHandler extends BaseAbstractHandler
         emptyAttributeCheck( localName, "evaluator", evaluator, parser );
         emptyAttributeCheck( localName, identifier, "identifier", parser );
 
-        final VariableRestrictionDescr variableDescr = new VariableRestrictionDescr( evaluator,
-                                                                                     identifier );
-
-        return variableDescr;
+        return evaluator.trim() + " "  + identifier.trim();        
     }
 
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
+        
+        ConnectiveDescr c = (ConnectiveDescr) parser.getParent();
+        String s = (String) parser.getCurrent();
 
-        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) parser.getCurrent();
-
-        final Object parent = parser.getParent();
-
-        if ( parent instanceof FieldConstraintDescr ) {
-            final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
-            fieldConstraintDescr.addRestriction( variableDescr );
-        } else if ( parent instanceof RestrictionConnectiveDescr ) {
-            final RestrictionConnectiveDescr restrictionConDescr = (RestrictionConnectiveDescr) parent;
-            restrictionConDescr.addRestriction( variableDescr );
-        }
-
-        return variableDescr;
+        c.add( s );
+        return null;
     }
 
     public Class generateNodeFor() {

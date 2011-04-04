@@ -21,6 +21,7 @@ import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -449,6 +450,89 @@ public class XmlPackageReaderTest {
         final String consequence = (String) ruleDescr.getConsequence();
         assertNotNull( consequence );
     }
+    
+    @Test
+    public void testParseSimpleRule() throws Exception {
+        final XmlPackageReader xmlPackageReader = getXmReader();
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_SimpleRule1.xml" ) ) );
+        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
+        assertNotNull( packageDescr );
+        assertEquals( "com.sample",
+                      packageDescr.getName() );
+
+        final List imports = packageDescr.getImports();
+        assertEquals( 2,
+                      imports.size() );
+        assertEquals( "java.util.List",
+                      ((ImportDescr) imports.get( 0 )).getTarget() );
+        assertEquals( "org.drools.Person",
+                      ((ImportDescr) imports.get( 1 )).getTarget() );
+
+        RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
+        assertEquals( "simple_rule1",
+                      ruleDescr.getName() );
+        AndDescr lhs = ruleDescr.getLhs();
+        PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        ExprConstraintDescr expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "name == \"darth\"", expr.getExpression() );
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 1 );
+        assertEquals( "simple_rule2",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "age == 35 || == -3.5", expr.getExpression() );    
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 2 );
+        assertEquals( "simple_rule3",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "age == 35 || (!= 7.0 && != -70)", expr.getExpression() );      
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 3 );
+        assertEquals( "simple_rule3",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "name == $s", expr.getExpression() );               
+
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 4 );
+        assertEquals( "simple_rule4",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "(name == $s) || (age == 35 || (!= 7.0 && != -70))", expr.getExpression() );     
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 5 );
+        assertEquals( "simple_rule5",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "(name == $s) || ((age != 34) && (age != 37) && (name != \"yoda\"))", expr.getExpression() );           
+
+    }    
 
     @Test
     @Ignore

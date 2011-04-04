@@ -6281,7 +6281,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testAlphaEvalWithOrCE() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("test_AlphaEvalWithOrCE.drl")));

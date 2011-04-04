@@ -53,6 +53,12 @@ public class RulesSemanticModule extends DefaultSemanticModule
 
         addHandler( "or-restriction-connective",
                     new RestrictionConnectiveHandler() );
+        
+
+        addHandler( "and-constraint-connective",
+                    new RestrictionConnectiveHandler() );
+        addHandler( "or-constraint-connective",
+                    new RestrictionConnectiveHandler() );        
 
         addHandler( "and-conditional-element",
                     new AndHandler() );
@@ -60,10 +66,6 @@ public class RulesSemanticModule extends DefaultSemanticModule
         addHandler( "or-conditional-element",
                     new OrHandler() );
 
-        addHandler( "and-constraint-connective",
-                    new AndHandler() );
-        addHandler( "or-constraint-connective",
-                    new OrHandler() );
 
         addHandler( "not",
                     new NotHandler() );

@@ -31,6 +31,7 @@ import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -120,10 +121,11 @@ public class XmlDumper extends ReflectiveVisitor
         this.patternContext = false;
     }
 
-    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
-        if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
-        }
+    public void visitExprConstraintDescr(final ExprConstraintDescr descr) {        
+        this.template = "<exp>" + XmlDumper.eol + descr.getExpression() + XmlDumper.eol + "</expr>";        
+//        if ( !descr.getRestrictions().isEmpty() ) {
+//            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
+//        }
     }
 
     public void visitCollectDescr(final CollectDescr descr) {
@@ -275,27 +277,27 @@ public class XmlDumper extends ReflectiveVisitor
         return ruleList + XmlDumper.eol;
     }
 
-    private String processFieldConstraint(final List list) {
-        String descrString = "";
-        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
-            final Object temp = it.next();
-            visit( temp );
-            descrString += this.template;
-        }
-        return descrString;
-    }
-
-    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = new String();
-        final List restrictions = descr.getRestrictions();
-        final String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
-
-        if ( restrictions != Collections.EMPTY_LIST ) {
-            this.template = "<" + xmlTag + ">";
-            this.template += processDescrList( restrictions );
-            this.template += "</" + xmlTag + ">";
-        }
-    }
+//    private String processFieldConstraint(final List list) {
+//        String descrString = "";
+//        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+//            final Object temp = it.next();
+//            visit( temp );
+//            descrString += this.template;
+//        }
+//        return descrString;
+//    }
+//
+//    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
+//        this.template = new String();
+//        final List restrictions = descr.getRestrictions();
+//        final String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
+//
+//        if ( restrictions != Collections.EMPTY_LIST ) {
+//            this.template = "<" + xmlTag + ">";
+//            this.template += processDescrList( restrictions );
+//            this.template += "</" + xmlTag + ">";
+//        }
+//    }
 
     private String processDescrList(final List descr) {
         String descrString = "";

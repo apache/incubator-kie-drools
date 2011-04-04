@@ -65,7 +65,7 @@ public class ExpressionHandler extends BaseAbstractHandler
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText() + ";";
+        final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
         
         emptyContentCheck( localName, expression, parser );
 

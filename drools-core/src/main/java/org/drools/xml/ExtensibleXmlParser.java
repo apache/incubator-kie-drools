@@ -384,10 +384,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                            attrs,
                                            this );
 
-        if ( node == null ) {
-            this.parents.add( Null.instance );
-        } else {
-            this.parents.add( node );
+        if ( node != null ) {
+            this.parents.add( node );            
         }
     }
 
@@ -434,6 +432,10 @@ public class ExtensibleXmlParser extends DefaultHandler {
         final Set validParents = handler.getValidParents();
         final Set validPeers = handler.getValidPeers();
         boolean allowNesting = handler.allowNesting();
+        
+        if ( validParents == null || validPeers == null ) {
+            return;
+        }
 
         // get parent
         Object parent;
