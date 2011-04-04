@@ -44,7 +44,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.jbpm.JbpmTestCase;
+import org.jbpm.JbpmJUnitTestCase;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
@@ -61,7 +61,7 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.w3c.dom.Document;
 
-public class SimpleBPMNProcessTest extends JbpmTestCase {
+public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 
     public SimpleBPMNProcessTest() {
     	super(true);

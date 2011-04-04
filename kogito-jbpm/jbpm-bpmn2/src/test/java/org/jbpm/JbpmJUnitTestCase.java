@@ -3,6 +3,7 @@ package org.jbpm;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -11,6 +12,9 @@ import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.audit.WorkingMemoryInMemoryLogger;
+import org.drools.audit.event.LogEvent;
+import org.drools.audit.event.RuleFlowNodeLogEvent;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -29,11 +33,14 @@ import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
+import org.jbpm.process.audit.NodeInstanceLog;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public abstract class JbpmTestCase extends TestCase {
+public abstract class JbpmJUnitTestCase extends TestCase {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
@@ -42,12 +49,16 @@ public abstract class JbpmTestCase extends TestCase {
 	private EntityManagerFactory emf;
 	private static Server h2Server;
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+	public StatefulKnowledgeSession ksession;
 	
-	public JbpmTestCase() {
+	private WorkingMemoryInMemoryLogger logger;
+	private JPAProcessInstanceDbLog log;
+
+	public JbpmJUnitTestCase() {
 		this(true);
 	}
 	
-	public JbpmTestCase(boolean persistence) {
+	public JbpmJUnitTestCase(boolean persistence) {
 		this.persistence = persistence;
 		if (persistence) {
 			startH2Database();
@@ -99,10 +110,18 @@ public abstract class JbpmTestCase extends TestCase {
     	}
     }
     
-	protected KnowledgeBase createKnowledgeBase(String... process) throws Exception {
+	protected KnowledgeBase createKnowledgeBase(String... process) {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 		for (String p: process) {
 			kbuilder.add(ResourceFactory.newClassPathResource(p), ResourceType.BPMN2);
+		}
+		return kbuilder.newKnowledgeBase();
+	}
+	
+	protected KnowledgeBase createKnowledgeBase(Map<String, ResourceType> resources) throws Exception {
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+		for (Map.Entry<String, ResourceType> entry: resources.entrySet()) {
+			kbuilder.add(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
 		}
 		return kbuilder.newKnowledgeBase();
 	}
@@ -135,12 +154,24 @@ public abstract class JbpmTestCase extends TestCase {
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 		    env.set(EnvironmentName.TRANSACTION_MANAGER,
 		        TransactionManagerServices.getTransactionManager());
-			return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+		    new JPAWorkingMemoryDbLogger(result);
+		    if (log == null) {
+		    	log = new JPAProcessInstanceDbLog();
+		    }
+		    return result;
 		} else {
-			return kbase.newStatefulKnowledgeSession();
+			StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession();
+			logger = new WorkingMemoryInMemoryLogger(result);
+			return result;
 		}
 	}
 	
+	protected StatefulKnowledgeSession createKnowledgeSession(String... process) {
+		KnowledgeBase kbase = createKnowledgeBase(process);
+		return createKnowledgeSession(kbase);
+	}
+		
 	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
 		if (persistence) {
 			int id = ksession.getId();
@@ -156,10 +187,16 @@ public abstract class JbpmTestCase extends TestCase {
 				env = ksession.getEnvironment();
 			}
 			KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
-			return JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+			StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
+			new JPAWorkingMemoryDbLogger(result);
+			return result;
 		} else {
 			return ksession;
 		}
+	}
+    
+	public Object getVariableValue(String name, ProcessInstance processInstance) {
+		return ((WorkflowProcessInstance) processInstance).getVariable(name);
 	}
     
 	public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
@@ -201,6 +238,51 @@ public abstract class JbpmTestCase extends TestCase {
 			if (nodeInstance instanceof NodeInstanceContainer) {
 				assertNodeActive((NodeInstanceContainer) nodeInstance, names);
 			}
+		}
+	}
+	
+	public void assertNodeTriggered(long processInstanceId, String... nodeNames) {
+		List<String> names = new ArrayList<String>();
+		for (String nodeName: nodeNames) {
+			names.add(nodeName);
+		}
+		if (persistence) {
+			List<NodeInstanceLog> logs = log.findNodeInstances(processInstanceId);
+			if (logs != null) {
+				for (NodeInstanceLog l: logs) {
+					String nodeName = l.getNodeName();
+					if (l.getType() == NodeInstanceLog.TYPE_ENTER && names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
+				}
+			}
+		} else {
+			for (LogEvent event: logger.getLogEvents()) {
+				if (event instanceof RuleFlowNodeLogEvent) {
+					String nodeName = ((RuleFlowNodeLogEvent) event).getNodeName();
+					if (names.contains(nodeName)) {
+						names.remove(nodeName);
+					}
+				}
+			}
+		}
+		if (!names.isEmpty()) {
+			String s = names.get(0);
+			for (int i = 1; i < names.size(); i++) {
+				s += ", " + names.get(i);
+			}
+			fail("Node(s) not executed: " + s);
+		}
+	}
+	
+	protected void clearHistory() {
+		if (persistence) {
+			if (log == null) {
+				log = new JPAProcessInstanceDbLog();
+			}
+			log.clear();
+		} else {
+			logger.clear();
 		}
 	}
 	

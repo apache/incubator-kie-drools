@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+
+import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -34,16 +35,13 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessStartedEvent;
-import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
-import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -56,12 +54,8 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 
-public class StandaloneBPMNProcessTest extends JbpmTestCase {
+public class StandaloneBPMNProcessTest extends TestCase {
 	
-	public StandaloneBPMNProcessTest() {
-		super(false);
-	}
-    
     public void testMinimalProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -176,6 +170,10 @@ public class StandaloneBPMNProcessTest extends JbpmTestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+
+	private StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean b) {
+		return ksession;
+	}
 
 	public void testExclusiveSplit() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplit.bpmn2");
@@ -838,4 +836,51 @@ public class StandaloneBPMNProcessTest extends JbpmTestCase {
 		return kbase;
 	}
 
+	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
+		return kbase.newStatefulKnowledgeSession();
+	}
+	
+	public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
+		assertNull(ksession.getProcessInstance(processInstanceId));
+	}
+	
+	public void assertProcessInstanceAborted(long processInstanceId, StatefulKnowledgeSession ksession) {
+		assertNull(ksession.getProcessInstance(processInstanceId));
+	}
+	
+	public void assertProcessInstanceActive(long processInstanceId, StatefulKnowledgeSession ksession) {
+		assertNotNull(ksession.getProcessInstance(processInstanceId));
+	}
+	
+	public static class TestWorkItemHandler implements WorkItemHandler {
+		
+	    private List<WorkItem> workItems = new ArrayList<WorkItem>();
+	    
+        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+            workItems.add(workItem);
+        }
+        
+        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        }
+        
+        public WorkItem getWorkItem() {
+        	if (workItems.size() == 0) {
+        		return null;
+        	}
+        	if (workItems.size() == 1) {
+        		WorkItem result = workItems.get(0);
+        		this.workItems.clear();
+        		return result;
+        	} else {
+        		throw new IllegalArgumentException("More than one work item active");
+        	}
+        }
+        
+        public List<WorkItem> getWorkItems() {
+        	List<WorkItem> result = new ArrayList<WorkItem>(workItems);
+        	workItems.clear();
+        	return result;
+        }
+        
+	}
 }

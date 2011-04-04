@@ -28,9 +28,9 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
-import org.jbpm.JbpmTestCase;
+import org.jbpm.JbpmJUnitTestCase;
 
-public class BPMN2Test extends JbpmTestCase {
+public class BPMN2Test extends JbpmJUnitTestCase {
 	
 	public void testResourceType() {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

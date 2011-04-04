@@ -12,6 +12,9 @@
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.drools.persistence.info.WorkItemInfo</class>
+        <class>org.jbpm.process.audit.ProcessInstanceLog</class>
+        <class>org.jbpm.process.audit.NodeInstanceLog</class>
+        <class>org.jbpm.process.audit.VariableInstanceLog</class>
 	    <properties>
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>	        
 	        <property name="hibernate.max_fetch_depth" value="3"/>
