@@ -1,0 +1,18 @@
+package com.sample 
+
+import import java.util.List
+import org.drools.Cheese
+import org.drools.Cheesery
+
+global Cheesery cheesery
+global List list
+
+rule "simple_rule"
+    salience 10
+    no-loop true
+    agenda-group agenda-group
+    activation-group activation-group
+when
+    cheese : Cheese( type == 1 ) from collect( Person( hair == "pink" )  ) 
+then
+ list.add( $cheese ); end
