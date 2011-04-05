@@ -135,7 +135,7 @@ public abstract class BaseKnowledgeAgentTest {
         
         if (!resourceCompilationFailedEvents.isEmpty()){
             //A compilation error occured
-            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0) );
+            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0).getKnowledgeBuilder().getErrors() );
         }
         
     }

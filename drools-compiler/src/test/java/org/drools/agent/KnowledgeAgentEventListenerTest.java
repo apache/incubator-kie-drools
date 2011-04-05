@@ -1,14 +1,9 @@
 package org.drools.agent;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -16,7 +11,6 @@ import static org.junit.Assert.*;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
-import org.drools.core.util.FileManager;
 import org.drools.event.knowledgeagent.AfterChangeSetAppliedEvent;
 import org.drools.event.knowledgeagent.AfterChangeSetProcessedEvent;
 import org.drools.event.knowledgeagent.AfterResourceProcessedEvent;
@@ -26,13 +20,8 @@ import org.drools.event.knowledgeagent.BeforeResourceProcessedEvent;
 import org.drools.event.knowledgeagent.KnowledgeAgentEventListener;
 import org.drools.event.knowledgeagent.KnowledgeBaseUpdatedEvent;
 import org.drools.event.knowledgeagent.ResourceCompilationFailedEvent;
-import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ResourceChangeNotifierImpl;
-import org.drools.io.impl.ResourceChangeScannerImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.handler.ResourceHandler;
 
 public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
@@ -47,7 +36,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
     private int              beforeResourceProcessed;
     private int              afterResourceProcessed;
 
-    @Test @Ignore
+    @Test
     public void testEventListenerWithIncrementalChangeSet() throws Exception {
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
@@ -98,7 +87,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34 ) );
         ksession.fireAllRules();
 
         assertEquals( 1,
@@ -196,7 +185,14 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         fileManager.write( "rules.drl",
                            createCommonDSLRRule( "Rule1" ) );
-        scan( kagent );
+        try{
+            scan( kagent );
+            fail("An exception was expected");
+        } catch (Exception e){
+            //We have 2 listeners: one defined in this.createKAgent() and another
+            //that is dinamically set in scan() method. The later will throw
+            //this exception
+        }
         assertEquals( 2,
                       this.beforeChangeSetApplied );
         assertEquals( 2,
@@ -217,7 +213,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    @Test @Ignore
+    @Test
     public void testEventListenerWithoutIncrementalChangeSet() throws Exception {
         fileManager.write( "myExpander.dsl",
                            this.createCommonDSL( null ) );
@@ -268,7 +264,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34  ) );
         ksession.fireAllRules();
         ksession.dispose();
         assertEquals( 1,
@@ -287,7 +283,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34  ) );
         ksession.fireAllRules();
         ksession.dispose();
         assertEquals( 1,
@@ -314,7 +310,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34  ) );
         ksession.fireAllRules();
         ksession.dispose();
         assertEquals( 1,
@@ -346,7 +342,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34  ) );
         ksession.fireAllRules();
         ksession.dispose();
         assertEquals( 2,
@@ -379,7 +375,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
         ksession.setGlobal( "list",
                             list );
-        ksession.insert( new Person( "John" ) );
+        ksession.insert( new Person( "John", 34  ) );
         ksession.fireAllRules();
         ksession.dispose();
         assertEquals( 1,
@@ -393,7 +389,17 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
 
         fileManager.write( "rules.drl",
                            createCommonDSLRRule( "Rule1" ) );
-        scan( kagent );
+        
+        try{
+            scan( kagent );
+            fail("An exception was expected");
+        } catch (Exception e){
+            //We have 2 listeners: one defined in this.createKAgent() and another
+            //that is dinamically set in scan() method. The later will throw
+            //this exception
+        }
+        
+        
         assertEquals( 2,
                       this.beforeChangeSetApplied );
         assertEquals( 2,
@@ -414,6 +420,7 @@ public class KnowledgeAgentEventListenerTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Override
     public KnowledgeAgent createKAgent(KnowledgeBase kbase,
                                        boolean newInstance) {
         KnowledgeAgent kagent = super.createKAgent( kbase,
