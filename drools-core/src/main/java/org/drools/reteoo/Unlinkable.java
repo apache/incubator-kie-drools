@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 package org.drools.reteoo;
 
 /**
- * A marker interface to specify unlinkable node memories.
- * 
- * @author lgomes
+ * A marker interface to specify unlinkable node memories. 
  */
 public interface Unlinkable {
 
