@@ -114,6 +114,7 @@ import org.drools.spi.GlobalResolver;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.optimizers.OptimizerFactory;
 
@@ -7424,6 +7425,48 @@ public class MiscTest {
 
     @Test @Ignore("Temporarly ignored to get a blue build while edson might be fixing it") // TODO etirelli unignore for release 5.2.0
     public void testMemberOfNotWorkingWithOr() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import java.util.ArrayList;\n";
+        rule += "import org.drools.Person;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $list: ArrayList()                                   \n";
+        rule += "    ArrayList()                                          \n";
+        rule += "            from collect(                                \n";
+        rule += "                  Person(                                \n";
+        rule += "                      (                                  \n";
+        rule += "                          pet memberOf $list             \n";
+        rule += "                      ) || (                             \n";
+        rule += "                          pet == null                    \n";
+        rule += "                      )                                  \n";
+        rule += "                  )                                      \n";
+        rule += "            )\n";
+        rule += "then\n";
+        rule += "  System.out.println(\"hello person\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(new StringReader(rule));
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage(pkg);
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        Person toni = new Person("Toni", 12);
+        toni.setPet(new Pet("Mittens"));
+
+        session.insert(new ArrayList());
+        session.insert(toni);
+
+        session.fireAllRules();
+    }
+
+    @Test
+//    @Ignore("Added this test 05-APR-2011. Used to work in 5.2.0.M1 -Toni-")
+    public void testUnNamed() throws Exception {
 
         String rule = "";
         rule += "package org.drools;\n";
