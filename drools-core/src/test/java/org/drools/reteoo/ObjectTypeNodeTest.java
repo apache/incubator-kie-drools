@@ -341,7 +341,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                       sink2.getAsserted().size() );
 
         objectTypeNode.updateSink( sink2,
-                                   null,
+                                   new PropagationContextImpl(),
                                    workingMemory );
 
         assertEquals( 2,

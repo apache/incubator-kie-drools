@@ -60,6 +60,7 @@ public class SingleTestCase
                 }
                 for( NodeTestDef test : tcase.getTests() ) {
                     if( test.getName().equals( testName ) ) {
+                        result.setFileName(file.getName());
                         result.setName( tcase.getName() );
                         result.setImports( tcase.getImports() );
                         result.setSetup( tcase.getSetup() );
