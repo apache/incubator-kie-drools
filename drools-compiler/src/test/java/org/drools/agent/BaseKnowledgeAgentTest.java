@@ -380,6 +380,14 @@ public abstract class BaseKnowledgeAgentTest {
         return createVersionedRule( null, new String[] { ruleName }, null, lhs, null );
     }
     
+    public String createLhsRule(String packageName, String ruleName, String lhs) {
+        return createVersionedRule( packageName, new String[] { ruleName }, null, lhs, null );
+    }
+    
+    public String createLhsRule(String packageName, String[] ruleNames, String lhs) {
+        return createVersionedRule( packageName, ruleNames, null, lhs, null );
+    }
+    
     public String createVersionedRule(String ruleName, String version) {
         return createVersionedRule( null, new String[] { ruleName }, null, null, version );
     }
