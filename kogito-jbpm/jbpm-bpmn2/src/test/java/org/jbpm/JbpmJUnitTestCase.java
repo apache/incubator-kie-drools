@@ -195,8 +195,8 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		}
 	}
     
-	public Object getVariableValue(String name, ProcessInstance processInstance) {
-		return ((WorkflowProcessInstance) processInstance).getVariable(name);
+	public Object getVariableValue(String name, long processInstanceId, StatefulKnowledgeSession ksession) {
+		return ((WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId)).getVariable(name);
 	}
     
 	public void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
