@@ -111,9 +111,9 @@ public class PatternBuilder
     }
 
     /**
-     * Build a pattern for the given descriptor in the current 
+     * Build a pattern for the given descriptor in the current
      * context and using the given utils object
-     * 
+     *
      * @param context
      * @param utils
      * @param patternDescr
@@ -697,7 +697,7 @@ public class PatternBuilder
                                                                      declr,
                                                                      true );
         declr.setReadAccessor( extractor );
-        
+
     }
 
     @SuppressWarnings("unchecked")
@@ -826,7 +826,7 @@ public class PatternBuilder
     /**
      * Creates a declaration object for the field identified by the given identifier
      * on the give pattern object
-     * 
+     *
      * @param context
      * @param identifier
      * @param pattern
