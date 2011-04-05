@@ -17,7 +17,7 @@ rule "my rule"
 when
     Foo(  )  
     bar : Bar(  )  
-    Foo( field1 : var1, field1 == "value1" && == (1==1) && == var1, eval(1==1) )  
+    Foo( var1 : field1, field1 == "value1" && == (1==1) && == var1, eval(1==1) )  
     not( 
     Bar(  )   ) 
     exists( 
