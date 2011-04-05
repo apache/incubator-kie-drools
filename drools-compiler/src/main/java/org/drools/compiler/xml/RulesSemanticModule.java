@@ -28,10 +28,10 @@ import org.drools.compiler.xml.rules.VariableRestrictionsHandler;
 import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.SemanticModule;
 
-public class BaseRulesSemanticModule extends DefaultSemanticModule
+public class RulesSemanticModule extends DefaultSemanticModule
     implements
     SemanticModule {
-    public BaseRulesSemanticModule(String url) {
+    public RulesSemanticModule(String url) {
         super( url );
 
         addHandler( "package",
