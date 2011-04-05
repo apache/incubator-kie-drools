@@ -1,0 +1,70 @@
+TestCase "RightUnlinkingModify"
+
+Setup
+	Config:
+		drools.lrUnlinkingEnabled, true;
+	ObjectTypeNode:
+	    otnLeft1, org.drools.Person;
+	LeftInputAdapterNode:
+	    lian0, otnLeft1;
+	ObjectTypeNode:
+	    otnRight1, org.drools.Person;
+	ObjectTypeNode:
+	    otnRight2, org.drools.Person;
+	ObjectTypeNode:
+	    otnRight3, org.drools.Person;
+	Binding:
+	     p1, 0, org.drools.Person, age;
+	JoinNode:
+	    join1, lian0, otnRight1;
+	    age, !=, p1;
+	JoinNode:
+	    join2, join1, otnRight2;
+	    age, !=, p1;
+	JoinNode:
+	    join3, join1, otnRight3;
+	    age, !=, p1;
+	Facts:
+	    new org.drools.Person('darth', 35), new org.drools.Person('bobba', 36),
+	    new org.drools.Person('yoda', 37), new org.drools.Person('luke', 38),
+	    new org.drools.Person('dave', 33), new org.drools.Person('bob', 32),
+	    new org.drools.Person('dave', 31), new org.drools.Person('bob', 30);
+	    
+
+Test "RightUnlinkingModify"	    
+
+	assert:
+		otnRight1, [h0];	
+		otnRight2, [h1]; 	
+	join1:
+		rightMemory, [];
+	join2:
+		rightMemory, [];
+	
+	assert:
+		otnLeft1, [h2];
+	join1:
+		leftMemory, [[h2]];
+		rightMemory, [h0];
+	join2:
+		leftMemory, [[h2,h0]];
+		rightMemory, [h1]; 					
+
+	With:
+	    h2, age = 35;
+	modify:
+	    otnLeft1, [h2];
+
+	// With the modify, [h2,h0] don't match anymore 		
+	join1:
+		leftMemory, [[h2]];
+		rightMemory, [h0];
+	join2:
+		leftMemory, [];		// left tuple is retracted
+		rightMemory, [h1]; 	// right side is not unlinked
+		
+	assert:
+		otnRight2, [h3];	
+	join2:
+		rightMemory, [h1,h3]; 
+

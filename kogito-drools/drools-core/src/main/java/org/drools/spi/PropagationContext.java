@@ -18,10 +18,12 @@ package org.drools.spi;
 
 import java.io.Externalizable;
 
+import org.drools.FactHandle;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.FactHandle;
 
 public interface PropagationContext
     extends
@@ -58,6 +60,21 @@ public interface PropagationContext
     public void releaseResources();
 
     public EntryPoint getEntryPoint();
+    
+    /** When L&R unlinking is active, we need to keep 
+     * track of the OTN that triggered this propagation. */
+    public void setCurrentPropagatingOTN(ObjectTypeNode otn);
+
+    public boolean isPropagating(ObjectTypeNode otn);
+
+    public boolean shouldPropagateAll();
+
+    public void setShouldPropagateAll(Object node);
+
+    /** Keeps a list of nodes to which a propagation attempt fail 
+     *  because the node was unlinked. */
+    public ObjectHashSet getPropagationAttemptsMemory();
+
     
 
 }

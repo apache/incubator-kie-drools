@@ -131,7 +131,7 @@ Test "Exists node assert/retract test"
         otnRight1, [h5];
     exists1:
         leftMemory, [];            //h0 and h1 are blocked, by h5, so removed
-        rightMemory, [h5, h6];
+        rightMemory, [h5];
     join2:
         leftMemory, [[h0], [h1]];
     assert:

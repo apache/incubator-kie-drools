@@ -43,11 +43,12 @@ public class NodeSuiteTest
         for ( File file : base.listFiles( new FilenameFilter() {
             public boolean accept(File arg0,
                                   String arg1) {
-                return arg1.endsWith( ".nodeTestCase" );
+                return arg1.endsWith( NodeTestCase.SUFFIX );
             }
         } ) ) {
             InputStream is = new FileInputStream( file );
             NodeTestCase tcase = ReteDslTestEngine.compile( is );
+            tcase.setFileName(file.getName());
             if ( tcase.hasErrors() ) {
                 throw new IllegalArgumentException( "Error parsing and loading testcase: " + file.getAbsolutePath() + "\n" + tcase.getErrors().toString() );
             }

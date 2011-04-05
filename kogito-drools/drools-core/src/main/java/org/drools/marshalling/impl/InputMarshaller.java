@@ -439,6 +439,7 @@ public class InputMarshaller {
                 }
             }
             memory.getRightTupleMemory().add( rightTuple );
+            memory.linkLeft();
         }
     }
 
@@ -469,7 +470,7 @@ public class InputMarshaller {
         switch ( sink.getType() ) {
             case NodeTypeEnums.JoinNode : {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                memory.getLeftTupleMemory().add( parentLeftTuple );
+                addToLeftMemory( parentLeftTuple, memory );
 
                 while ( stream.readShort() == PersisterEnums.RIGHT_TUPLE ) {
                     LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
@@ -503,7 +504,7 @@ public class InputMarshaller {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 int type = stream.readShort();
                 if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {
-                    memory.getLeftTupleMemory().add( parentLeftTuple );
+                    addToLeftMemory( parentLeftTuple, memory );
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
@@ -529,7 +530,7 @@ public class InputMarshaller {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 int type = stream.readShort();
                 if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {
-                    memory.getLeftTupleMemory().add( parentLeftTuple );
+                    addToLeftMemory( parentLeftTuple, memory );
                 } else {
                     int factHandleId = stream.readInt();
                     RightTupleKey key = new RightTupleKey( factHandleId,
@@ -660,6 +661,12 @@ public class InputMarshaller {
                 break;
             }
         }
+    }
+    
+    private static void addToLeftMemory(LeftTuple parentLeftTuple,
+            BetaMemory memory) {
+        memory.getLeftTupleMemory().add( parentLeftTuple );
+        memory.linkRight();
     }
 
     public static void readActivations(MarshallerReaderContext context) throws IOException {
