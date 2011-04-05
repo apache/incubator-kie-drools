@@ -33,17 +33,6 @@ public class FieldBindingHandler extends BaseAbstractHandler
     implements
     Handler {
     public FieldBindingHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( PatternDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( FieldConstraintDescr.class );
-            this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( BindingDescr.class );
-            this.allowNesting = false;
-        }
     }
 
     public Object start( final String uri,
@@ -65,8 +54,8 @@ public class FieldBindingHandler extends BaseAbstractHandler
                              fieldName,
                              parser );
 
-        final BindingDescr fieldBindingDescr = new BindingDescr( fieldName,
-                                                                 identifier );
+        final BindingDescr fieldBindingDescr = new BindingDescr( identifier,
+                                                                 fieldName);
 
         return fieldBindingDescr;
     }

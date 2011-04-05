@@ -44,23 +44,6 @@ public class FieldConstraintHandler extends BaseAbstractHandler
     implements
     Handler {
     public FieldConstraintHandler() {
-//        if ( (this.validParents == null) && (this.validPeers == null) ) {
-//            this.validParents = new HashSet();
-//            this.validParents.add( PatternDescr.class );
-//            this.validParents.add( AndDescr.class );
-//            this.validParents.add( OrDescr.class );
-//
-//            this.validPeers = new HashSet();
-//            this.validPeers.add( null );
-//            this.validPeers.add( FieldConstraintDescr.class );
-//            this.validPeers.add( PredicateDescr.class );
-//            this.validPeers.add( BindingDescr.class );
-//
-//            this.validPeers.add( AndDescr.class );
-//            this.validPeers.add( OrDescr.class );
-//
-//            this.allowNesting = false;
-//        }
     }
 
     public Object start(final String uri,
@@ -70,13 +53,16 @@ public class FieldConstraintHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
 
-        final String fieldName = attrs.getValue( "field-name" );        
-        emptyAttributeCheck( localName, "field-name", fieldName, parser );                        
-        final ConnectiveDescr connective = new ConnectiveDescr(RestrictionConnectiveType.AND);
+        final String fieldName = attrs.getValue( "field-name" );
+        emptyAttributeCheck( localName,
+                             "field-name",
+                             fieldName,
+                             parser );
+        final ConnectiveDescr connective = new ConnectiveDescr( RestrictionConnectiveType.AND );
         connective.setParen( false );
-        
+
         connective.setPrefix( fieldName );
-        
+
         return connective;
     }
 
@@ -86,18 +72,18 @@ public class FieldConstraintHandler extends BaseAbstractHandler
         final Element element = parser.endElementBuilder();
 
         final ConnectiveDescr c = (ConnectiveDescr) parser.getCurrent();
-        
-        Object p = parser.getParent( );
+
+        Object p = parser.getParent();
         if ( p instanceof PatternDescr ) {
             StringBuilder sb = new StringBuilder();
             c.buildExpression( sb );
-                  
-            ExprConstraintDescr expr = new ExprConstraintDescr( );
+
+            ExprConstraintDescr expr = new ExprConstraintDescr();
             expr.setExpression( sb.toString() );
-              
-            final PatternDescr patternDescr = (PatternDescr) parser.getParent( );  
-            patternDescr.addConstraint( expr );        
-            
+
+            final PatternDescr patternDescr = (PatternDescr) parser.getParent();
+            patternDescr.addConstraint( expr );
+
         } else if ( p instanceof ConnectiveDescr ) {
             ((ConnectiveDescr) p).add( c );
         }
@@ -106,6 +92,6 @@ public class FieldConstraintHandler extends BaseAbstractHandler
     }
 
     public Class generateNodeFor() {
-        return FieldConstraintDescr.class;
+        return ExprConstraintHandler.class;
     }
 }

@@ -48,10 +48,7 @@ public class PredicateHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-//        final PredicateDescr predicateDescr = new PredicateDescr();
-//
-//        return predicateDescr;
-        return null;
+        return ""; // need to return something, otherwise it'll pop the parent
     }
 
     public Object end(final String uri,

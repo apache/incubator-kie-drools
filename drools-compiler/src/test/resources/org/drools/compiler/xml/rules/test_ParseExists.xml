@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package name="com.sample" xmlns="http://drools.org/drools-5.0"
+<package name="com.sample" xmlns="http://drools.org/drools-5.2"
   xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-  xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+  xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
 
   <rule name="simple_rule">
     <lhs>
       <exists>
         <pattern object-type="Person">
-          <field-constraint field-name="likes">
-            <variable-restriction evaluator="==" identifier="type"/>
-          </field-constraint>
+<expr>
+likes == type
+</expr>
         </pattern>
       </exists>
 
             <not>
                 <exists>
                     <pattern object-type="Cheese">
-                        <field-constraint field-name="likes">
-                            <variable-restriction evaluator="==" identifier="type"/>
-                        </field-constraint>
+<expr>
+likes == type
+</expr>
                     </pattern>
                 </exists>
             </not>

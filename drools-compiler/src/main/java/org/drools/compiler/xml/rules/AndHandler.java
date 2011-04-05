@@ -46,26 +46,6 @@ public class AndHandler extends BaseAbstractHandler
     implements
     Handler {
     public AndHandler() {
-//        if ( (this.validParents == null) && (this.validPeers == null) ) {
-//            this.validParents = new HashSet();
-//            this.validParents.add( QueryDescr.class );
-//            this.validParents.add( RuleDescr.class );
-//            this.validParents.add( OrDescr.class );
-//            this.validParents.add( LiteralRestrictionHandler.class );
-//            this.validParents.add( AccumulateDescr.class );
-//
-//            this.validPeers = new HashSet();
-//            this.validPeers.add( null );
-//            this.validPeers.add( AndDescr.class );
-//            this.validPeers.add( OrDescr.class );
-//            this.validPeers.add( NotDescr.class );
-//            this.validPeers.add( ExistsDescr.class );
-//            this.validPeers.add( EvalDescr.class );
-//            this.validPeers.add( PatternDescr.class );
-//            this.validPeers.add( ForallDescr.class );
-//
-//            this.allowNesting = true;
-//        }
     }
 
     public Object start(final String uri,
@@ -88,15 +68,17 @@ public class AndHandler extends BaseAbstractHandler
 
         final Object parent = parser.getParent();
 
-        if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
-            final RuleDescr ruleDescr = (RuleDescr) parent;
-            ruleDescr.setLhs( andDescr );
-        } else if ( parent instanceof MultiPatternDestinationDescr ) {
-            final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
-            mpDescr.setInput( andDescr );
-        } else if ( parent instanceof ConditionalElementDescr ) {
-            final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
-            ceDescr.addDescr( andDescr );
+        if ( !andDescr.getDescrs().isEmpty() ) {
+            if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
+                final RuleDescr ruleDescr = (RuleDescr) parent;
+                ruleDescr.setLhs( andDescr );
+            } else if ( parent instanceof MultiPatternDestinationDescr ) {
+                final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
+                mpDescr.setInput( andDescr );
+            } else if ( parent instanceof ConditionalElementDescr ) {
+                final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
+                ceDescr.addDescr( andDescr );
+            }
         }
 
         return andDescr;
