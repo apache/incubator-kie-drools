@@ -959,12 +959,13 @@ public class KnowledgeAgentImpl
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        KnowledgeBuilder kbuilder = this.createKBuilder();
+        //KnowledgeBuilder kbuilder = this.createKBuilder();
         List<Package> packages = new ArrayList<Package>();
 
         for ( Resource resource : changeSetState.addedResources ) {
-            KnowledgePackageImp createdPackage = this.createPackageFromResource( resource,
-                                                                                 kbuilder );
+            KnowledgePackageImp createdPackage = this.createPackageFromResource( resource);
+            //KnowledgePackageImp createdPackage = this.createPackageFromResource( resource,
+            //                                                                     kbuilder );
             changeSetState.createdPackages.put( resource,
                                                 createdPackage );
         }
