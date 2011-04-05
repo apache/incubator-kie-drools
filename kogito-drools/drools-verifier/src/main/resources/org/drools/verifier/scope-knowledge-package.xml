@@ -46,9 +46,9 @@
     <!--resource source='classpath:org/drools/verifier/redundancy/Redundancy.drl'
       type='DRL' />
     <resource source='classpath:org/drools/verifier/redundancy/Notes.drl'
-      type='DRL' />
-    <resource source='classpath:org/drools/verifier/redundancy/Warnings.drl'
       type='DRL' /-->
+    <resource source='classpath:org/drools/verifier/redundancy/Warnings.drl'
+      type='DRL' />
     <!-- Subsumption -->
     <resource source='classpath:org/drools/verifier/subsumption/Consequences.drl'
       type='DRL' />
