@@ -7467,6 +7467,8 @@ public class MiscTest {
     @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testAccessFieldsFromSubClass() throws Exception {
 
+        // Exception in ClassFieldAccessorStore line: 116
+
         String rule = "";
         rule += "package org.drools;\n";
         rule += "import org.drools.Person;\n";
@@ -7523,6 +7525,7 @@ public class MiscTest {
     }
 
     @Test
+//    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testAccessingMapValues() throws Exception {
 
         String rule = "";
@@ -7556,7 +7559,6 @@ public class MiscTest {
 
         session.fireAllRules();
     }
-
 
     @Test
     public void testClassLoaderHits() throws Exception {
