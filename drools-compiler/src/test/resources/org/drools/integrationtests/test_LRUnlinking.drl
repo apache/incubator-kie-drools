@@ -1,0 +1,19 @@
+package org.drools;
+
+global java.util.List results;
+
+rule "Test LR unlinking with multiple joins on the same object type"
+	when
+	 $p1 : Person ($name : name != null)
+	 $p2 : Person ($likes : likes != null)
+	 $p3 : Person ($age : age != null)
+	 $p4 : Person ($hair : hair != null)
+	 $p5 : Person ($happy : happy != null)
+	 $p6 : Person (name != $name,
+	               likes == $likes, 
+	               age == $age, 
+	               hair == $hair, 
+	               happy == $happy)
+	then
+		results.add( $p6 );
+end
