@@ -39,7 +39,7 @@ import org.drools.builder.conf.KnowledgeBuilderOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
-import org.drools.compiler.xml.RulesSemanticModule;
+import org.drools.compiler.xml.BaseRulesSemanticModule;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
@@ -53,6 +53,7 @@ import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
+import org.drools.xml.WrapperSemanticModule;
 
 /**
  * This class configures the package compiler.
@@ -344,8 +345,11 @@ public class PackageBuilderConfiguration
 
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
+        
+        BaseRulesSemanticModule ruleModule = new BaseRulesSemanticModule("http://ddefault");
 
-        this.semanticModules.addSemanticModule( new RulesSemanticModule() );
+        this.semanticModules.addSemanticModule( new WrapperSemanticModule("http://drools.org/drools-5.0",ruleModule) );
+        this.semanticModules.addSemanticModule( new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule) );
         this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
 
         // split on each space

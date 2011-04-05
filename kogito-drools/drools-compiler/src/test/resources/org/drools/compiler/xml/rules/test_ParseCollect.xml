@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<package name="com.sample" xmlns="http://drools.org/drools-5.0"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-  xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+<package name="com.sample" xmlns="http://drools.org/drools-5.2"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+   xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
 
-  <import name="import java.util.List"/>
-  <import name="org.drools.Cheese"/>
-  <import name="org.drools.Cheesery"/>
+   <import name="import java.util.List" />
+   <import name="org.drools.Cheese" />
+   <import name="org.drools.Cheesery" />
 
-  <global identifier="cheesery" type="Cheesery"/>
-  <global identifier="list" type="List"/>
+   <global identifier="cheesery" type="Cheesery" />
+   <global identifier="list" type="List" />
 
-  <rule name="simple_rule">
-    <rule-attribute name="salience" value="10"/>
-    <rule-attribute name="no-loop" value="true"/>
-    <rule-attribute name="agenda-group" value="agenda-group"/>
-    <rule-attribute name="activation-group" value="activation-group"/>
+   <rule name="simple_rule">
+      <rule-attribute name="salience" value="10" />
+      <rule-attribute name="no-loop" value="true" />
+      <rule-attribute name="agenda-group" value="agenda-group" />
+      <rule-attribute name="activation-group" value="activation-group" />
 
-    <lhs>
-            <pattern identifier="cheese" object-type="Cheese" >
-        <field-constraint field-name="type">
-                    <literal-restriction evaluator="==" value="1"/>
-                </field-constraint>
-                <from>
-                    <collect>
-                        <pattern object-type="Person">
-                            <field-constraint field-name="hair">
-                                <literal-restriction evaluator="==" value="pink" />
-                            </field-constraint>
-                        </pattern>
-                    </collect>
-                </from>
-            </pattern>
-    </lhs>
-    <rhs> list.add( $cheese ); </rhs>
-  </rule>
+      <lhs>
+         <pattern identifier="cheese" object-type="Cheese">
+            <expr>
+               type == 1
+            </expr>
+
+
+            <from>
+               <collect>
+                  <pattern object-type="Person">
+                     <expr>
+                        hair == &quot;pink&quot;
+                     </expr>
+
+
+                  </pattern>
+               </collect>
+            </from>
+         </pattern>
+
+
+      </lhs>
+      <rhs> list.add( $cheese ); </rhs>
+   </rule>
 
 </package>

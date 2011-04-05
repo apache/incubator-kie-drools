@@ -1,122 +1,161 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<package name="pt.inescporto.cec.rules"
-    xmlns="http://drools.org/drools-5.0"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
-    <import name="pt.inescporto.cec.entities.SetupInUse"/>
-    <import name="pt.inescporto.cec.entities.SetupUse"/>
-    <import name="pt.inescporto.cec.entities.ArtigoProducao"/>
-    <import name="pt.inescporto.cec.entities.Parameter"/>
-    <import name="pt.inescporto.cec.entities.BestParms"/>
-    <import name="pt.inescporto.cec.entities.AccaoInspeccaoOperacao"/>
-    <import name="pt.inescporto.cec.entities.MelhorEmNaoConformidades"/>
-    <import name="pt.inescporto.cec.entities.OtherInspectionMethod"/>
-    <import name="pt.inescporto.cec.entities.AccaoInspeccao"/>
-    <rule name="ruleBestProductionOrderCreator">
-        <lhs>
-            <pattern object-type="AccaoInspeccao">
-                <field-binding field-name="recursoID" identifier="resource"/>
-                <field-constraint field-name="artigoID">
-                    <literal-restriction evaluator="==" value="3"/>
-                </field-constraint>
-                <field-binding field-name="operacaoID" identifier="operation"/>
-                <field-binding field-name="ordemProducaoID" identifier="ProductionOrder"/>
-                <field-binding field-name="recursoID" identifier="resourceID"/>
-                <field-binding field-name="accaoInspeccaoID" identifier="InspectionAction"/>
-            </pattern>
-            <pattern object-type="AccaoInspeccaoOperacao">
-                <field-binding field-name="inspAccaoOperacaoID" identifier="inspectionActionOperation"/>
-                <field-constraint field-name="inspectionActionID">
-                    <variable-restriction evaluator="==" identifier="InspectionAction"/>
-                </field-constraint>
-            </pattern>
-            <pattern object-type="OtherInspectionMethod">
-                <field-binding field-name="numeroNaoConformidades" identifier="NCNumber"/>
-                <field-constraint field-name="inspAccaoOperacaoID">
-                    <variable-restriction evaluator="==" identifier="inspectionActionOperation"/>
-                </field-constraint>
-            </pattern>
-            <not>
-                <pattern object-type="MelhorEmNaoConformidades">
-                    <field-constraint field-name="operacaoID">
-                        <variable-restriction evaluator="==" identifier="operation"/>
-                    </field-constraint>
-                    <field-constraint field-name="recursoID">
-                        <variable-restriction evaluator="==" identifier="resource"/>
-                    </field-constraint>
-                </pattern>
-            </not>
-        </lhs>
-        <rhs>insert(new MelhorEmNaoConformidades(ProductionOrder,NCNumber,operation,resource));</rhs>
-    </rule>
-    <rule name="Best Checker">
-        <lhs>
-            <pattern object-type="AccaoInspeccao">
-                <field-constraint field-name="artigoID">
-                    <literal-restriction evaluator="==" value="3"/>
-                </field-constraint>
-                <field-binding field-name="recursoID" identifier="resource"/>
-                <field-binding field-name="operacaoID" identifier="operation"/>
-                <field-binding field-name="ordemProducaoID" identifier="ProductionOrder"/>
-                <field-binding field-name="recursoID" identifier="resourceID"/>
-                <field-binding field-name="accaoInspeccaoID" identifier="InspectionAction"/>
-            </pattern>
-            <pattern object-type="AccaoInspeccaoOperacao">
-                <field-binding field-name="inspAccaoOperacaoID" identifier="inspectionActionOperation"/>
-                <field-constraint field-name="inspectionActionID">
-                    <variable-restriction evaluator="==" identifier="InspectionAction"/>
-                </field-constraint>
-            </pattern>
-            <pattern object-type="OtherInspectionMethod">
-                <field-binding field-name="numeroNaoConformidades" identifier="NCNumber"/>
-                <field-constraint field-name="inspAccaoOperacaoID">
-                    <variable-restriction evaluator="==" identifier="inspectionActionOperation"/>
-                </field-constraint>
-            </pattern>
-            <pattern identifier="TheBest" object-type="MelhorEmNaoConformidades">
-                <field-constraint field-name="operacaoID">
-                    <variable-restriction evaluator="==" identifier="operation"/>
-                </field-constraint>
-                <field-constraint field-name="recursoID">
-                    <variable-restriction evaluator="==" identifier="resource"/>
-                </field-constraint>
-                <field-constraint field-name="numeroDefeitos">
-                    <variable-restriction evaluator="&gt;" identifier="NCNumber"/>
-                </field-constraint>
-            </pattern>
-        </lhs>
-        <rhs>TheBest.setNumeroDefeitos(NCNumber);
+<?xml version="1.0" encoding="UTF-8"?> 
+ <package name="pt.inescporto.cec.rules"  
+    xmlns="http://drools.org/drools-5.2" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+    xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd"> 
+<import name="pt.inescporto.cec.entities.SetupInUse" /> 
+<import name="pt.inescporto.cec.entities.SetupUse" /> 
+<import name="pt.inescporto.cec.entities.ArtigoProducao" /> 
+<import name="pt.inescporto.cec.entities.Parameter" /> 
+<import name="pt.inescporto.cec.entities.BestParms" /> 
+<import name="pt.inescporto.cec.entities.AccaoInspeccaoOperacao" /> 
+<import name="pt.inescporto.cec.entities.MelhorEmNaoConformidades" /> 
+<import name="pt.inescporto.cec.entities.OtherInspectionMethod" /> 
+<import name="pt.inescporto.cec.entities.AccaoInspeccao" /> 
+
+
+
+
+<rule name="ruleBestProductionOrderCreator">
+
+<lhs><pattern object-type="AccaoInspeccao" >
+<expr>
+artigoID == 3
+</expr>
+
+
+<field-binding field-name="recursoID" identifier="resource" />
+<field-binding field-name="operacaoID" identifier="operation" />
+<field-binding field-name="ordemProducaoID" identifier="ProductionOrder" />
+<field-binding field-name="recursoID" identifier="resourceID" />
+<field-binding field-name="accaoInspeccaoID" identifier="InspectionAction" />
+</pattern>
+
+<pattern object-type="AccaoInspeccaoOperacao" >
+<expr>
+inspectionActionID == InspectionAction
+</expr>
+
+
+<field-binding field-name="inspAccaoOperacaoID" identifier="inspectionActionOperation" />
+</pattern>
+
+<pattern object-type="OtherInspectionMethod" >
+<expr>
+inspAccaoOperacaoID == inspectionActionOperation
+</expr>
+
+
+<field-binding field-name="numeroNaoConformidades" identifier="NCNumber" />
+</pattern>
+
+<not><pattern object-type="MelhorEmNaoConformidades" >
+<expr>
+operacaoID == operation
+</expr>
+<expr>
+recursoID == resource
+</expr>
+
+
+</pattern>
+
+
+</not>
+
+</lhs><rhs>insert(new MelhorEmNaoConformidades(ProductionOrder,NCNumber,operation,resource));</rhs>
+</rule><rule name="Best Checker">
+
+<lhs><pattern object-type="AccaoInspeccao" >
+<expr>
+artigoID == 3
+</expr>
+
+
+<field-binding field-name="recursoID" identifier="resource" />
+<field-binding field-name="operacaoID" identifier="operation" />
+<field-binding field-name="ordemProducaoID" identifier="ProductionOrder" />
+<field-binding field-name="recursoID" identifier="resourceID" />
+<field-binding field-name="accaoInspeccaoID" identifier="InspectionAction" />
+</pattern>
+
+<pattern object-type="AccaoInspeccaoOperacao" >
+<expr>
+inspectionActionID == InspectionAction
+</expr>
+
+
+<field-binding field-name="inspAccaoOperacaoID" identifier="inspectionActionOperation" />
+</pattern>
+
+<pattern object-type="OtherInspectionMethod" >
+<expr>
+inspAccaoOperacaoID == inspectionActionOperation
+</expr>
+
+
+<field-binding field-name="numeroNaoConformidades" identifier="NCNumber" />
+</pattern>
+
+<pattern identifier="TheBest" object-type="MelhorEmNaoConformidades" >
+<expr>
+operacaoID == operation
+</expr>
+<expr>
+recursoID == resource
+</expr>
+<expr>
+numeroDefeitos &gt; NCNumber
+</expr>
+
+
+</pattern>
+
+
+</lhs><rhs>TheBest.setNumeroDefeitos(NCNumber);
 TheBest.setOrdemProducaoID(ProductionOrder);
 update(TheBest);
 </rhs>
-    </rule>
-    <rule name="ruleBestParametersCreator">
-        <rule-attribute name="salience" value="-100"/>
-        <lhs>
-            <pattern object-type="MelhorEmNaoConformidades">
-                <field-binding field-name="ordemProducaoID" identifier="$poID"/>
-                <field-binding field-name="numeroDefeitos" identifier="$NC"/>
-            </pattern>
-            <pattern object-type="SetupInUse">
-                <field-binding field-name="setupUseID" identifier="$setup"/>
-                <field-constraint field-name="productionOrderID">
-                    <variable-restriction evaluator="==" identifier="$poID"/>
-                </field-constraint>
-            </pattern>
-            <pattern identifier="$p" object-type="Parameter">
-                <field-binding field-name="parameterID" identifier="$parID"/>
-                <field-constraint field-name="setupUseID">
-                    <variable-restriction evaluator="==" identifier="$setup"/>
-                </field-constraint>
-            </pattern>
-            <not>
-                <pattern object-type="BestParms">
-                    <field-constraint field-name="parameterID">
-                        <variable-restriction evaluator="==" identifier="$parID"/>
-                    </field-constraint>
-                </pattern>
-            </not>
-        </lhs>
-        <rhs>BestParms newBest=new BestParms();
+</rule><rule name="ruleBestParametersCreator">
+<rule-attribute name="salience" value="-100" />
+
+<lhs><pattern object-type="MelhorEmNaoConformidades" >
+
+
+<field-binding field-name="ordemProducaoID" identifier="$poID" />
+<field-binding field-name="numeroDefeitos" identifier="$NC" />
+</pattern>
+
+<pattern object-type="SetupInUse" >
+<expr>
+productionOrderID == $poID
+</expr>
+
+
+<field-binding field-name="setupUseID" identifier="$setup" />
+</pattern>
+
+<pattern identifier="$p" object-type="Parameter" >
+<expr>
+setupUseID == $setup
+</expr>
+
+
+<field-binding field-name="parameterID" identifier="$parID" />
+</pattern>
+
+<not><pattern object-type="BestParms" >
+<expr>
+parameterID == $parID
+</expr>
+
+
+</pattern>
+
+
+</not>
+
+</lhs><rhs>BestParms newBest=new BestParms();
 newBest.setParameterID($parID);
 newBest.setNominalValue(new Float($p.getNominalValue()));
 newBest.setMaxLimit(new Float($p.getMaxLimit()));
@@ -126,36 +165,47 @@ newBest.setMinLimitAlarm(new Float($p.getMinLimitAlarm()));
 newBest.setNonConformities(new Float($NC));
 insert(newBest);
 </rhs>
-    </rule>
-    <rule name="ruleBestParametersChecker">
-        <rule-attribute name="salience" value="-100"/>
-        <lhs>
-            <pattern object-type="MelhorEmNaoConformidades">
-                <field-binding field-name="ordemProducaoID" identifier="$poID"/>
-                <field-binding field-name="numeroDefeitos" identifier="$NC"/>
-            </pattern>
-            <pattern object-type="SetupInUse">
-                <field-binding field-name="setupUseID" identifier="$setup"/>
-                <field-constraint field-name="productionOrderID">
-                    <variable-restriction evaluator="==" identifier="$poID"/>
-                </field-constraint>
-            </pattern>
-            <pattern identifier="$p" object-type="Parameter">
-                <field-binding field-name="parameterID" identifier="$parID"/>
-                <field-constraint field-name="setupUseID">
-                    <variable-restriction evaluator="==" identifier="$setup"/>
-                </field-constraint>
-            </pattern>
-            <pattern identifier="$newBest" object-type="Parameter">
-                <field-constraint field-name="parameterID">
-                    <variable-restriction evaluator="==" identifier="$parID"/>
-                </field-constraint>
-                <field-constraint field-name="nonConformities">
-                    <variable-restriction evaluator="&gt;" identifier="$NC"/>
-                </field-constraint>
-            </pattern>
-        </lhs>
-        <rhs>$newBest.setNominalValue(new Float(p.getNominalValue()));
+</rule><rule name="ruleBestParametersChecker">
+<rule-attribute name="salience" value="-100" />
+
+<lhs><pattern object-type="MelhorEmNaoConformidades" >
+
+
+<field-binding field-name="ordemProducaoID" identifier="$poID" />
+<field-binding field-name="numeroDefeitos" identifier="$NC" />
+</pattern>
+
+<pattern object-type="SetupInUse" >
+<expr>
+productionOrderID == $poID
+</expr>
+
+
+<field-binding field-name="setupUseID" identifier="$setup" />
+</pattern>
+
+<pattern identifier="$p" object-type="Parameter" >
+<expr>
+setupUseID == $setup
+</expr>
+
+
+<field-binding field-name="parameterID" identifier="$parID" />
+</pattern>
+
+<pattern identifier="$newBest" object-type="Parameter" >
+<expr>
+parameterID == $parID
+</expr>
+<expr>
+nonConformities &gt; $NC
+</expr>
+
+
+</pattern>
+
+
+</lhs><rhs>$newBest.setNominalValue(new Float(p.getNominalValue()));
 $newBest.setMaxLimit(new Float(p.getMaxLimit()));
 $newBest.setMinLimit(new Float(p.getMinLimit()));
 $newBest.setMaxLimitAlarm(new Float(p.getMaxLimitAlarm()));
@@ -163,13 +213,16 @@ $newBest.setMinLimitAlarm(new Float(p.getMinLimitAlarm()));
 $newBest.setNonConformities(new Float($NC));
 update($newBest);
 </rhs>
-    </rule>
-    <rule name="print">
-        <rule-attribute name="salience" value="-110"/>
-        <lhs>
-            <pattern identifier="bp" object-type="BestParms"> </pattern>
-        </lhs>
-        <rhs>System.out.println("Parameter: "+bp.getParameterID()+" Value: "+bp.getNominalValue()+" NC: "+bp.getNonConformities());
+</rule><rule name="print">
+<rule-attribute name="salience" value="-110" />
+
+<lhs><pattern identifier="bp" object-type="BestParms" >
+
+
+</pattern>
+
+
+</lhs><rhs>System.out.println("Parameter: "+bp.getParameterID()+" Value: "+bp.getNominalValue()+" NC: "+bp.getNonConformities());
 </rhs>
-    </rule>
+</rule>
 </package>

@@ -17,7 +17,6 @@ public class DumperTest {
     }
 
     @Test
-    @Ignore
     public void testRoundTripCollectXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseCollect.xml" );
     }
@@ -85,7 +84,6 @@ public class DumperTest {
     }
 
     @Test
-    @Ignore
     public void testRoundTripPComplexXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseComplex.xml" );
     }

@@ -48,16 +48,18 @@ public class LiteralRestrictionHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
 
-        final String evaluator = attrs.getValue( "evaluator" );
+        String evaluator = attrs.getValue( "evaluator" );
         emptyAttributeCheck( localName, "evaluator", evaluator, parser );
-
+        
         String text = attrs.getValue( "value" );
-
-        // find out if it's a valid integer or decimal, if not wrap in quotes
-        try {
-            new BigDecimal( text );
-        } catch ( NumberFormatException e ) {
-            text = "\"" + text.trim() + "\"";
+        
+        if ( !text.trim().equals( "null" )) {
+            // find out if it's a valid integer or decimal, if not wrap in quotes
+            try {
+                new BigDecimal( text );
+            } catch ( NumberFormatException e ) {
+                text = "\"" + text.trim() + "\"";
+            }
         }
         
         return evaluator.trim() + " " + text.trim();

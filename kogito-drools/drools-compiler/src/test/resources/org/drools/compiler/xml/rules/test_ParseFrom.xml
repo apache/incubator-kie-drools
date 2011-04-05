@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="com.sample"
-         xmlns="http://drools.org/drools-5.0"
+         xmlns="http://drools.org/drools-5.2"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-         xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
+         xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
 
   <import name="import java.util.List"/>
   <import name="org.drools.Cheese" />

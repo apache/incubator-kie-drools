@@ -34,16 +34,6 @@ public class ExpressionHandler extends BaseAbstractHandler
     Handler {
 
     public ExpressionHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FromHandler.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( BaseDescr.class );
-
-            this.allowNesting = true;
-        }
     }
 
     public Class generateNodeFor() {

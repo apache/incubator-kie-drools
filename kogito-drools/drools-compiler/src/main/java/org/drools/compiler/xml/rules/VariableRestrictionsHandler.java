@@ -48,12 +48,12 @@ public class VariableRestrictionsHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
 
-        final String evaluator = attrs.getValue( "evaluator" );
-        final String identifier = attrs.getValue( "identifier" );
+        String evaluator = attrs.getValue( "evaluator" );
+        String identifier = attrs.getValue( "identifier" );
         
         emptyAttributeCheck( localName, "evaluator", evaluator, parser );
         emptyAttributeCheck( localName, identifier, "identifier", parser );
-
+        
         return evaluator.trim() + " "  + identifier.trim();        
     }
 
