@@ -91,9 +91,12 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         objectMemory               = true; // hard coded to true
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
-    
+
+    /** @see LRUnlinkingOption */
+    protected boolean         lrUnlinkingEnabled         = false;
     
     private boolean indexedUnificationJoin;
+
 
     // ------------------------------------------------------------
     // Constructors
@@ -144,6 +147,7 @@ public abstract class BetaNode extends LeftTupleSource
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
+        lrUnlinkingEnabled = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
     }
@@ -168,6 +172,7 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
+        out.writeBoolean( lrUnlinkingEnabled );
 
         super.writeExternal( out );
     }
@@ -279,10 +284,23 @@ public abstract class BetaNode extends LeftTupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null,
-                                                                                      null );
-            this.rightInput.updateSink( this,
-                                        propagationContext,
-                                        workingMemory );
+                                                                                      null);
+
+            /* FIXME: This should be generalized at BetaNode level and the 
+             * instanceof should be removed!
+             * 
+             * When L&R Unlinking is enabled, we only need to update the side
+             * that is initially linked. If there are tuples to be propagated,
+             * they will trigger the update (thus, population) of the other side.
+             * */
+            if (!lrUnlinkingEnabled || 
+                    (lrUnlinkingEnabled && !(this instanceof JoinNode) )) {
+
+                this.rightInput.updateSink( this,
+                                            propagationContext,
+                                            workingMemory );
+            }
+
             this.leftInput.updateSink( this,
                                        propagationContext,
                                        workingMemory );
@@ -554,4 +572,39 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    protected boolean leftUnlinked(final PropagationContext context, 
+            final InternalWorkingMemory workingMemory, final BetaMemory memory) {
+        
+        // If left input is unlinked, don't do anything.
+       if(memory.isLeftUnlinked()) {
+            return true;
+        }
+        
+        if (memory.isRightUnlinked()) {
+            memory.linkRight();
+            context.setShouldPropagateAll( this );    
+            // updates the right input memory before going on.
+            this.rightInput.updateSink(this, context, workingMemory);
+        }
+        
+        return false;
+    }
+    
+    protected boolean rightUnlinked(final PropagationContext context,
+            final InternalWorkingMemory workingMemory, final BetaMemory memory) {
+        
+        if (memory.isRightUnlinked()) {
+            return true;
+        }
+        
+        if (memory.isLeftUnlinked()) {
+            
+            memory.linkLeft();
+            context.setShouldPropagateAll( this );    
+            // updates the left input memory before going on.
+            this.leftInput.updateSink(this, context, workingMemory);
+        }
+        
+        return false;
+    }   
 }

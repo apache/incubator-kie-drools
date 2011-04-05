@@ -26,7 +26,7 @@ import org.drools.rule.ContextEntry;
 
 public class BetaMemory
     implements
-    Externalizable {
+    Externalizable, Unlinkable {
 
     private static final long serialVersionUID = 510l;
 
@@ -36,6 +36,10 @@ public class BetaMemory
     private ContextEntry[]    context;
     private Object            behaviorContext;
     private boolean           open;
+    
+    /* Let's start with only right unlinked. */
+    private boolean           isLeftUnlinked = false;
+    private boolean           isRightUnlinked = true;
 
     public BetaMemory() {
     }
@@ -56,6 +60,8 @@ public class BetaMemory
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
         open = ( boolean ) in.readBoolean();
+        isLeftUnlinked = in.readBoolean();
+        isRightUnlinked = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -65,6 +71,8 @@ public class BetaMemory
         out.writeObject( context );
         out.writeObject( behaviorContext );
         out.writeBoolean(  open  );
+        out.writeBoolean( isLeftUnlinked );
+        out.writeBoolean( isRightUnlinked );
     }
 
     public RightTupleMemory getRightTupleMemory() {
@@ -105,5 +113,27 @@ public class BetaMemory
         this.open = open;
     }
     
-    
+    public boolean isLeftUnlinked() {
+        return this.isLeftUnlinked;
+    }
+
+    public boolean isRightUnlinked() {
+        return this.isRightUnlinked;
+    }
+
+    public void linkLeft() {
+        this.isLeftUnlinked = false;
+    }
+
+    public void linkRight() {
+        this.isRightUnlinked = false;
+    }
+
+    public void unlinkLeft() {
+        this.isLeftUnlinked = true;
+    }
+
+    public void unlinkRight() {
+        this.isRightUnlinked = true;
+    }    
 }

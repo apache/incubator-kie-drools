@@ -93,6 +93,9 @@ public class ObjectTypeNode extends ObjectSource
 
     private CompiledNetwork     compiledNetwork;
 
+    /** @see LRUnlinkingOption */
+    private boolean lrUnlinkingEnabled = false;
+    
     public ObjectTypeNode() {
 
     }
@@ -114,6 +117,7 @@ public class ObjectTypeNode extends ObjectSource
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
+        this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
     }
 
@@ -131,6 +135,7 @@ public class ObjectTypeNode extends ObjectSource
         skipOnModify = in.readBoolean();
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
+        lrUnlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -139,6 +144,7 @@ public class ObjectTypeNode extends ObjectSource
         out.writeBoolean( skipOnModify );
         out.writeBoolean( objectMemoryEnabled );
         out.writeLong( expirationOffset );
+        out.writeBoolean( lrUnlinkingEnabled );
     }
 
     /**
@@ -182,6 +188,8 @@ public class ObjectTypeNode extends ObjectSource
                                           context,
                                           workingMemory );
         } else {
+            
+            context.setCurrentPropagatingOTN( this );
             this.sink.propagateAssertObject( factHandle,
                                              context,
                                              workingMemory );
@@ -265,15 +273,64 @@ public class ObjectTypeNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
+        if (lrUnlinkingEnabled) {
+            // Update sink taking into account L&R unlinking peculiarities
+            updateLRUnlinking(sink, context, workingMemory);
+            
+        } else {
+            // Regular updateSink
+            final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
+            Iterator it = memory.iterator();
+    
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                sink.assertObject( (InternalFactHandle) entry.getValue(),
+                        context,
+                        workingMemory );
+            }
+        }
+
+    }
+    
+    /**
+     *  When L&R Unlinking is enabled, updateSink() is used to populate 
+     *  a node's memory, but it has to take into account if it's propagating.
+     */
+    private void updateLRUnlinking(final ObjectSink sink,
+            final PropagationContext context,
+            final InternalWorkingMemory workingMemory) {
+        
         final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-        Iterator it = memory.iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(),
-                               context,
-                               workingMemory );
+        
+         Iterator it = memory.iterator();
+            
+        
+        InternalFactHandle ctxHandle = (InternalFactHandle)context.getFactHandle(); 
+        
+        if (!context.isPropagating( this ) || 
+                (context.isPropagating( this ) && context.shouldPropagateAll())){
+            
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                // Assert everything
+                sink.assertObject( (InternalFactHandle) entry.getValue(),
+                        context,
+                        workingMemory );
+            }
+            
+        } else {
+            
+            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                InternalFactHandle handle = (InternalFactHandle) entry.getValue();
+                // Exclude the current fact propagation
+                if (handle.getId() != ctxHandle.getId()) {
+                    sink.assertObject( handle,
+                            context,
+                            workingMemory );
+                }
+            }
         }
     }
 
+    
     /**
      * Rete needs to know that this ObjectTypeNode has been added
      */
