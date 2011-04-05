@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 
 public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
+    @Test
     public void testDifferentDateExpires() throws Exception {
 
         final String attribute1 = "date-expires \"4-jan-2010\"";
@@ -46,6 +47,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentDateEffective() throws Exception {
 
         final String attribute1 = "date-effective \"4-jan-2010\"";
@@ -72,7 +74,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
-
+    @Test
     public void testDifferentDialect() throws Exception {
 
         final String attribute1 = "dialect \"java\"";
@@ -95,6 +97,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentRuleFlowGroup() throws Exception {
 
         final String attribute1 = "ruleflow-group \"g1\"";
@@ -117,6 +120,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentAutoFocus() throws Exception {
 
         final String attribute1 = "auto-focus false";
@@ -139,6 +143,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentAgendaGroup() throws Exception {
 
         final String attribute1 = "agenda-group \"g1\"";
@@ -161,6 +166,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentLockOnActive() throws Exception {
 
         final String attribute1 = "lock-on-active false";
@@ -183,6 +189,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentNoLoop() throws Exception {
 
         final String attribute1 = "no-loop false";
@@ -205,6 +212,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentActivationGroup() throws Exception {
 
         final String attribute1 = "activation-group \"1\"";
@@ -227,7 +235,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
     
-
+    @Test
     public void testDifferentSalience() throws Exception {
 
         final String attribute1 = "salience 1";
@@ -250,6 +258,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
 
     }
 
+    @Test
     public void testDifferentLHS() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createDefaultRule( "rule1" ) );
@@ -300,7 +309,7 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
     
-    
+    @Test
     public void testDifferentConsequences() throws Exception {
 
         File f1 = fileManager.write( "rule1.drl",
