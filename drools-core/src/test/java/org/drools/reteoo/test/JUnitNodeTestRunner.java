@@ -46,7 +46,8 @@ public class JUnitNodeTestRunner extends Runner {
         this.descr = Description.createSuiteDescription( "Node test case suite" );
 
         for ( NodeTestCase tcase : testCases ) {
-            Description tcaseDescr = Description.createSuiteDescription( tcase.getName() );
+            Description tcaseDescr = Description.createSuiteDescription( tcase.getFileName() != null ? 
+                                                                         tcase.getFileName() : tcase.getName() );
             tcase.setDescription( tcaseDescr );
             this.descr.addChild( tcaseDescr );
             for ( NodeTestDef ntest : tcase.getTests() ) {

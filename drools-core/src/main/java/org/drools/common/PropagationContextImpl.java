@@ -21,7 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
+import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -49,6 +51,13 @@ public class PropagationContextImpl
     private EntryPoint         entryPoint;
     
     private int                originOffset;
+    
+    private ObjectHashSet      propagationAttempts;
+
+    private ObjectTypeNode     currentPropagatingOTN;
+    
+    private boolean            shouldPropagateAll;
+
 
     public PropagationContextImpl() {
 
@@ -68,6 +77,7 @@ public class PropagationContextImpl
         this.dormantActivations = 0;
         this.entryPoint = EntryPoint.DEFAULT;
         this.originOffset = -1;
+        this.shouldPropagateAll = true;
     }
 
     public PropagationContextImpl(final long number,
@@ -99,6 +109,9 @@ public class PropagationContextImpl
         this.leftTuple = (LeftTuple) in.readObject();
         this.entryPoint = (EntryPoint) in.readObject();
         this.originOffset = in.readInt();
+        this.propagationAttempts = (ObjectHashSet) in.readObject();
+        this.currentPropagatingOTN = (ObjectTypeNode) in.readObject();
+        this.shouldPropagateAll = in.readBoolean();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -110,6 +123,9 @@ public class PropagationContextImpl
         out.writeObject( this.leftTuple );
         out.writeObject( this.entryPoint );
         out.writeInt( this.originOffset );
+        out.writeObject( this.propagationAttempts );
+        out.writeObject( this.currentPropagatingOTN );
+        out.writeObject( this.shouldPropagateAll );        
     }
 
     public long getPropagationNumber() {
@@ -188,6 +204,35 @@ public class PropagationContextImpl
     public void setOriginOffset(int originOffset) {
         this.originOffset = originOffset;
     }
+    
+    public ObjectHashSet getPropagationAttemptsMemory() {
+        
+        if (this.propagationAttempts == null) {
+            this.propagationAttempts = new ObjectHashSet();
+        }
+        
+        return this.propagationAttempts;
+    }
+    
+    public boolean isPropagating(ObjectTypeNode otn) {
+        return this.currentPropagatingOTN != null
+               && this.currentPropagatingOTN.equals( otn );
+    }
+    
+    public void setCurrentPropagatingOTN(ObjectTypeNode otn) {
+        this.currentPropagatingOTN = otn;
+    }
+
+    public void setShouldPropagateAll(Object node) {
+        this.shouldPropagateAll = getPropagationAttemptsMemory().contains( node );
+    }
+
+    public boolean shouldPropagateAll() {
+        return this.shouldPropagateAll;
+    }
+    
+    
+
 
     @Override
     public String toString() {
