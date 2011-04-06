@@ -45,6 +45,7 @@
   <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
   <xi:include href="Chapter-Designer/Chapter-Designer.xml" />
   <xi:include href="Chapter-FlexibleProcesses/Chapter-FlexibleProcesses.xml" />
+  <xi:include href="Chapter-Integration/Chapter-Integration.xml" />
 
   <index/>
 
