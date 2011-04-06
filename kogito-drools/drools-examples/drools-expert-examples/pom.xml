@@ -32,6 +32,63 @@
     </repository>
   </repositories>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/rules</directory>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <!-- Needed for runExamples.sh and runExamples.bat -->
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>../../binaries/</classpathPrefix>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalBuildcommands>
+            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
+          </additionalBuildcommands>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <executable>java</executable>
+          <!-- only waltz12 is configured at the moment -->
+          <!-- TODO waltz50, manners64 and manners128 -->
+          <arguments>
+            <argument>-Xms1024M</argument>
+            <argument>-Xmx1024M</argument>
+            <argument>-cp</argument>
+            <classpath/>
+            <argument>org.drools.benchmark.waltz.WaltzBenchmark</argument>
+            <argument>waltz12.dat</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -71,59 +128,4 @@
       <artifactId>forms</artifactId>
     </dependency>
   </dependencies>
-
-  <properties>
-    <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
-  </properties>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/rules</directory>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <additionalBuildcommands>
-            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
-          </additionalBuildcommands>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>${project.mainClass}</mainClass>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <configuration>
-          <executable>java</executable>
-          <!-- only waltz12 is configured at the moment -->
-          <!-- TODO waltz50, manners64 and manners128 -->
-          <arguments>
-            <argument>-Xms1024M</argument>
-            <argument>-Xmx1024M</argument>
-            <argument>-cp</argument>
-            <classpath/>
-            <argument>${project.mainClass}</argument>
-            <argument>waltz12.dat</argument>
-          </arguments>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

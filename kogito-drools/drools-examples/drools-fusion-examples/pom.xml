@@ -32,6 +32,45 @@
     </repository>
   </repositories>
 
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>src/main/rules</directory>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <!-- Needed for runExamples.sh and runExamples.bat -->
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>../../binaries/</classpathPrefix>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalBuildcommands>
+            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
+          </additionalBuildcommands>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -57,42 +96,4 @@
       <artifactId>forms</artifactId>
     </dependency>
   </dependencies>
-
-  <properties>
-    <project.mainClass>org.drools.benchmark.waltz.WaltzBenchmark</project.mainClass>
-  </properties>
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/rules</directory>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <configuration>
-          <additionalBuildcommands>
-            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
-          </additionalBuildcommands>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>${project.mainClass}</mainClass>
-              <addClasspath>true</addClasspath>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-
-    </plugins>
-  </build>
 </project>
