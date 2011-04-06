@@ -11,6 +11,26 @@
   <artifactId>drools-expert-examples</artifactId>
 
   <name>Drools Expert examples</name>
+  <description>Run DroolsExamplesApp to try the Drools rule engine examples.</description>
+
+  <repositories>
+    <!-- TODO remove this once maven central replicates the jboss repository -->
+    <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencies>
     <!-- Internal dependencies -->
