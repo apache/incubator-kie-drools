@@ -32,6 +32,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
@@ -855,8 +856,24 @@ public class PatternBuilder
 
         InternalReadAccessor extractor = null;
         if ( expr.indexOf( '.' ) >= 0 || expr.indexOf( '[' ) >= 0 || expr.indexOf( '(' ) >= 0 ) {
-            throw new RuntimeException( "This shouldn't execute at the moment, it's stub code ready for mvel expr" );
-            //new MVELClassFieldR
+            ObjectType objectType = pattern.getObjectType();
+            Class<?> classType;
+            if (objectType instanceof ClassObjectType) {
+                ClassObjectType classObjectType = (ClassObjectType) objectType;
+                classType = classObjectType.getClassType();
+            } else if (objectType instanceof FactTemplateObjectType) {
+                FactTemplateObjectType factTemplateObjectType = (FactTemplateObjectType) objectType;
+                String className = factTemplateObjectType.getFactTemplate().getName();
+                try {
+                    classType = context.getDialect().getTypeResolver().resolveType(className);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException("Can't figure out: " + expr + ", class name: " + className);
+                }
+            } else {
+                throw new RuntimeException("Can't figure out: " + expr);
+            }
+            extractor = new MVELClassFieldReader(classType,
+                    expr, null);
         } else {
             extractor = getFieldReadAccessor( context,
                                               implicitBinding,
