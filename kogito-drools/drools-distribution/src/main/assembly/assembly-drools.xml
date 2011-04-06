@@ -43,24 +43,27 @@
     </fileSet>
     <!-- Examples -->
     <fileSet>
-      <directory>../drools-planner-examples/data</directory>
-      <outputDirectory>examples/data</outputDirectory>
-      <includes>
-        <include>**/input/*.*</include>
-        <include>**/unsolved/*.xml</include>
-        <include>**/solved/*.xml</include>
-        <include>**/output/*.*</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>../drools-planner-examples</directory>
-      <outputDirectory>examples/sources</outputDirectory>
+      <directory>../drools-examples/drools-expert-examples</directory>
+      <outputDirectory>examples/sources/drools-expert-examples</outputDirectory>
       <excludes>
-        <exclude>data/**</exclude>
         <exclude>target/**</exclude>
         <exclude>local/**</exclude>
         <exclude>.*/**</exclude>
-        <exclude>nbproject</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>.*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>../drools-examples/drools-fusion-examples</directory>
+      <outputDirectory>examples/sources/drools-fusion-examples</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
         <exclude>*.ipr</exclude>
         <exclude>.*.iws</exclude>
         <exclude>*.iml</exclude>
@@ -69,39 +72,62 @@
     </fileSet>
     <!-- Reference manual -->
     <fileSet>
-      <directory>../drools-planner-docs/target/docbook/publish/en-US</directory>
-      <outputDirectory>reference_manual</outputDirectory>
+      <directory>../drools-docs/drools-expert-docs/target/docbook/publish/en-US</directory>
+      <outputDirectory>reference_manual/drools-expert-docs</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../drools-docs/drools-fusion-docs/target/docbook/publish/en-US</directory>
+      <outputDirectory>reference_manual/drools-fusion-docs</outputDirectory>
     </fileSet>
   </fileSets>
 
   <dependencySets>
     <dependencySet>
       <excludes>
-        <exclude>org.drools.planner:drools-planner-examples</exclude>
-        <exclude>org.drools.planner:drools-planner-docs</exclude>
-        <exclude>*:javadoc</exclude>
-        <exclude>*:sources</exclude>
+        <exclude>org.drools:drools-expert-examples</exclude>
+        <exclude>org.drools:drools-fusion-examples</exclude>
+        <exclude>org.drools:drools-expert-docs</exclude>
+        <exclude>org.drools:drools-fusion-docs</exclude>
+        <exclude>*:*:jar:javadoc</exclude>
+        <exclude>*:*:jar:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-examples</include>
+        <include>org.drools:drools-expert-examples</include>
+        <include>org.drools:drools-fusion-examples</include>
       </includes>
       <outputDirectory>examples/binaries</outputDirectory>
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-core:*:javadoc</include>
+        <include>org.drools:knowledge-api:jar:javadoc</include>
       </includes>
-      <outputDirectory>javadoc</outputDirectory>
+      <outputDirectory>javadoc/public</outputDirectory>
       <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
+    <!-- TODO internal api javadocs: note that they must be added as dependencies in the pom too -->
+    <!--<dependencySet>-->
+      <!--<includes>-->
+        <!--<include>org.drools:*:jar:javadoc</include>-->
+      <!--</includes>-->
+      <!--<excludes>-->
+        <!--<exclude>org.drools:knowledge-api:jar:javadoc</exclude>-->
+      <!--</excludes>-->
+      <!--<outputDirectory>javadoc/internal</outputDirectory>-->
+      <!--<unpack>true</unpack>-->
+      <!--<useStrictFiltering>true</useStrictFiltering>-->
+    <!--</dependencySet>-->
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-core:*:sources</include>
+        <include>org.drools:*:jar:sources</include>
       </includes>
+      <excludes>
+        <exclude>org.drools:drools-expert-examples:jar:sources</exclude>
+        <exclude>org.drools:drools-fusion-examples:jar:sources</exclude>
+      </excludes>
       <outputDirectory>sources</outputDirectory>
       <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
