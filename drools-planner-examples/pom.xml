@@ -65,7 +65,7 @@
               <argument>-server</argument>
               <argument>-classpath</argument>
               <classpath/>
-              <argument>org.drools.planner.examples.app.ExamplesApp</argument>
+              <argument>org.drools.planner.examples.app.DroolsPlannerExamplesApp</argument>
             </arguments>
           </configuration>
         </plugin>

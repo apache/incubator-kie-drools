@@ -18,16 +18,12 @@ package org.drools.planner.examples.app;
 
 import java.awt.Container;
 import java.awt.GridLayout;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
@@ -40,15 +36,15 @@ import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.manners2009.app.Manners2009App;
 import org.drools.planner.examples.tsp.app.TspApp;
 
-public class ExamplesApp extends JFrame {
+public class DroolsPlannerExamplesApp extends JFrame {
 
     public static void main(String[] args) {
-        ExamplesApp examplesApp = new ExamplesApp();
-        examplesApp.pack();
-        examplesApp.setVisible(true);
+        DroolsPlannerExamplesApp droolsPlannerExamplesApp = new DroolsPlannerExamplesApp();
+        droolsPlannerExamplesApp.pack();
+        droolsPlannerExamplesApp.setVisible(true);
     }
 
-    public ExamplesApp() {
+    public DroolsPlannerExamplesApp() {
         super("Drools Planner examples");
         setContentPane(createContentPane());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

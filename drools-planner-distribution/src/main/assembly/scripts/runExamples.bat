@@ -1,5 +1,5 @@
 set mainJar=binaries\drools-planner-examples-${project.version}.jar
-set mainClass=org.drools.planner.examples.app.ExamplesApp
+set mainClass=org.drools.planner.examples.app.DroolsPlannerExamplesApp
 
 echo "Usage: runExamples.bat"
 echo "For example: runExamples.bat"
