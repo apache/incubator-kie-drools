@@ -60,7 +60,7 @@
         <exclude>target/**</exclude>
         <exclude>local/**</exclude>
         <exclude>.*/**</exclude>
-        <exclude>nbproject</exclude>
+        <exclude>nbproject/**</exclude>
         <exclude>*.ipr</exclude>
         <exclude>.*.iws</exclude>
         <exclude>*.iml</exclude>
