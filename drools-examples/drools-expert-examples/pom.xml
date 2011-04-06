@@ -123,9 +123,5 @@
       <groupId>foxtrot</groupId>
       <artifactId>foxtrot</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>forms</artifactId>
-    </dependency>
   </dependencies>
 </project>

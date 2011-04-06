@@ -17,6 +17,7 @@
 package org.drools.examples.conway.ui;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -24,9 +25,12 @@ import java.awt.event.WindowEvent;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.border.Border;
@@ -37,11 +41,6 @@ import org.drools.examples.conway.CellGrid;
 import org.drools.examples.conway.CellGridImpl;
 import org.drools.examples.conway.ConwayApplicationProperties;
 import org.drools.examples.conway.patterns.ConwayPattern;
-
-import com.jgoodies.forms.builder.PanelBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 
 import foxtrot.Job;
 import foxtrot.Worker;
@@ -196,41 +195,47 @@ public class ConwayGUI extends JPanel {
     }
 
     private JPanel createControlPanel() {
-        final FormLayout layout = new FormLayout( "pref, 3dlu, pref, 3dlu:grow",
-                                                  "pref, 15dlu, pref, 15dlu, pref, 3dlu:grow, pref" );
-        final PanelBuilder builder = new PanelBuilder( layout );
-        final CellConstraints cc = new CellConstraints();
+        JPanel controlPanel = new JPanel(new BorderLayout());
+        JPanel formPanel = new JPanel();
+        GroupLayout formLayout = new GroupLayout(formPanel);
+        formPanel.setLayout(formLayout);
+        formLayout.setAutoCreateGaps(true);
+        formLayout.setAutoCreateContainerGaps(true);
+
 
         final String title = ConwayApplicationProperties.getProperty( "app.title" );
-        builder.addLabel( title,
-                          cc.xywh( 1,
-                                   1,
-                                   layout.getColumnCount(),
-                                   1 ) );
+        JLabel titleLabel = new JLabel(title);
 
-        final String info = ConwayApplicationProperties.getProperty( "app.description" );
-        builder.addLabel( info,
-                          cc.xywh( 1,
-                                   3,
-                                   layout.getColumnCount(),
-                                   1 ) );
+        final String description = ConwayApplicationProperties.getProperty( "app.description" );
+        JLabel descriptionLabel = new JLabel(description);
 
-        final String patternLabel = ConwayApplicationProperties.getProperty( "pattern.label" );
-        builder.addLabel( patternLabel,
-                          cc.xy( 1,
-                                 5 ) );
+        String patternLabelText = ConwayApplicationProperties.getProperty( "pattern.label" );
+        JLabel patternLabel = new JLabel(patternLabelText);
 
-        builder.add( this.patternSelector,
-                     cc.xy( 3,
-                            5 ) );
-        final JPanel buttonPanel = ButtonBarFactory.buildLeftAlignedBar( this.nextGenerationButton,
-                                                                         this.startStopButton,
-                                                                         this.clearButton );
-        builder.add( buttonPanel,
-                     cc.xywh( 1,
-                              7,
-                              layout.getColumnCount(),
-                              1 ) );
+        formLayout.setHorizontalGroup(
+                formLayout.createParallelGroup()
+                        .addComponent(titleLabel)
+                        .addComponent(descriptionLabel)
+                        .addGroup(formLayout.createSequentialGroup()
+                                .addComponent(patternLabel)
+                                .addComponent(patternSelector))
+        );
+        formLayout.setVerticalGroup(
+                formLayout.createSequentialGroup()
+                        .addComponent(titleLabel)
+                        .addComponent(descriptionLabel)
+                        .addGroup(formLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(patternLabel)
+                                .addComponent(patternSelector))
+        );
+
+        controlPanel.add(formPanel, BorderLayout.NORTH);
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 5, 5));
+        buttonPanel.add(this.nextGenerationButton);
+        buttonPanel.add(this.startStopButton);
+        buttonPanel.add(this.clearButton);
+        controlPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         final Border etchedBorder = BorderFactory.createEtchedBorder( EtchedBorder.LOWERED );
         final Border outerBlankBorder = BorderFactory.createEmptyBorder( 5,
@@ -244,8 +249,8 @@ public class ConwayGUI extends JPanel {
         final Border border = BorderFactory.createCompoundBorder( BorderFactory.createCompoundBorder( outerBlankBorder,
                                                                                                       etchedBorder ),
                                                                   innerBlankBorder );
-        builder.setBorder( border );
-        return builder.getPanel();
+        controlPanel.setBorder( border );
+        return controlPanel;
     }
 
     public static void main(final String[] args) {
