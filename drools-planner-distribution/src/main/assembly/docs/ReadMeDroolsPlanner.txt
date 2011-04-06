@@ -1,39 +1,26 @@
 Welcome to Drools Planner
 =========================
 
-Introduction
-------------
-
-Drools Planner is in a beta state: backward incompatible changes may occur in the next version,
-but the upgrade recipe makes it easy to upgrade your code to every new version.
-
 Run the examples
 ----------------
 
-To run the examples, run either of these:
-Linux, Cygwin: ./runExamples.sh
-Windows: runExamples.bat
+It's easy to run the examples:
+On Linux, Mac or Cygwin:
+  examples/runExamples.sh
+On Windows:
+  examples\runExamples.bat
 
-Using Drools Planner with maven 2
----------------------------------
+Read the reference manual
+-------------------------
 
-If you're using maven 2 to handle your dependencies,
-the jars and poms should be available in the jboss maven repository:
-  http://repository.jboss.org/maven2/
-You 'll want to add a dependency to drools-planner-core in your project:
-<dependency>
-  <groupId>org.drools.planner</groupId>
-  <artifactId>drools-planner-core</artifactId>
-  <version>${project.version}</version>
-</dependency>
+To see the reference_manual, just open:
+  reference_manual/html_single/index.html
+It contains information how to use it on your project (with Maven, ANT, ...).
 
-Using Drools Planner otherwise
-------------------------------
+Known problems
+--------------
 
-The drools-planner jars are located in the lib directory.
-To use drools-planner, you need all the jars except the drools-planner-examples jar.
-
-Reference manual
-----------------
-
-Take a look at the online reference manual!
+Drools Planner is not backward compatible with previous versions
+and future versions might not be backward compatible either,
+but the upgrade recipe (UpgradeFromPreviousVersionRecipe.txt) makes it easy
+to upgrade your code to every new version as they are released.
