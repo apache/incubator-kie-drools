@@ -32,6 +32,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -41,9 +42,6 @@ import org.drools.examples.conway.CellGrid;
 import org.drools.examples.conway.CellGridImpl;
 import org.drools.examples.conway.ConwayApplicationProperties;
 import org.drools.examples.conway.patterns.ConwayPattern;
-
-import foxtrot.Job;
-import foxtrot.Worker;
 
 public class ConwayGUI extends JPanel {
 
@@ -91,37 +89,22 @@ public class ConwayGUI extends JPanel {
              createControlPanel() );
         this.nextGenerationButton.addActionListener( new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                Worker.post( new Job() {
-                    public Object run() {
-                        grid.nextGeneration();
-                        return null;
-                    }
-                } );
+                grid.nextGeneration();
                 canvas.repaint();
             }
         } );
         this.clearButton.addActionListener( new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
-                Worker.post( new Job() {
-                    public Object run() {
-                        grid.killAll();
-                        return null;
-                    }
-                } );
+                grid.killAll();
                 canvas.repaint();
             }
         } );
 
         final ActionListener timerAction = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                Worker.post( new Job() {
-                    public Object run() {
-                        if ( !grid.nextGeneration() ) {
-                            stopTimer();
-                        }
-                        return null;
-                    }
-                } );
+                if ( !grid.nextGeneration() ) {
+                    stopTimer();
+                }
                 canvas.repaint();
             }
         };

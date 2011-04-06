@@ -117,11 +117,5 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>foxtrot</groupId>
-      <artifactId>foxtrot</artifactId>
-    </dependency>
   </dependencies>
 </project>
