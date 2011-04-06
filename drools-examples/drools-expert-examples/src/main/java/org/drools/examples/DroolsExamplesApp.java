@@ -30,9 +30,9 @@ import org.drools.examples.conway.ui.ConwayGUI;
 public class DroolsExamplesApp extends JFrame {
 
     public static void main(String[] args) {
-        DroolsExamplesApp examplesApp = new DroolsExamplesApp();
-        examplesApp.pack();
-        examplesApp.setVisible(true);
+        DroolsExamplesApp droolsExamplesApp = new DroolsExamplesApp();
+        droolsExamplesApp.pack();
+        droolsExamplesApp.setVisible(true);
     }
 
     public DroolsExamplesApp() {
