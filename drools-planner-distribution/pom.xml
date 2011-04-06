@@ -14,8 +14,7 @@
 
   <name>Drools Planner distribution</name>
   <description>
-    Drools Planner optimizes automated planning by combining metaheuristic search algorithms with rule
-    engine powered score calculation. This is the drools-planner-distribution module which builds the download zip.
+    DBuilds the download zip of Drools Planner.
   </description>
 
   <build>
@@ -42,7 +41,7 @@
   </build>
 
   <dependencies>
-    <!-- Internal dependencies -->
+    <!-- Binaries and sources -->
     <dependency>
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-core</artifactId>
@@ -51,11 +50,21 @@
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-core</artifactId>
       <version>${project.version}</version>
-      <classifier>javadoc</classifier>
+      <classifier>sources</classifier>
     </dependency>
+
+    <!-- Examples -->
     <dependency>
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-examples</artifactId>
+    </dependency>
+
+    <!-- Javadocs and documentation -->
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>javadoc</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools.planner</groupId>

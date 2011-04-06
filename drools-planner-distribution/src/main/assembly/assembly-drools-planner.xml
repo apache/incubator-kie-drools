@@ -8,7 +8,7 @@
     <format>zip</format>
   </formats>
 
-  <includeBaseDirectory>false</includeBaseDirectory>
+  <includeBaseDirectory>true</includeBaseDirectory>
 
   <fileSets>
     <fileSet>
@@ -52,6 +52,21 @@
         <include>**/output/*.*</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>../drools-planner-examples</directory>
+      <outputDirectory>examples/sources</outputDirectory>
+      <excludes>
+        <exclude>data/**</exclude>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>.*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
     <!-- Reference manual -->
     <fileSet>
       <directory>../drools-planner-docs/target/docbook/publish/en-US</directory>
@@ -65,6 +80,7 @@
         <exclude>org.drools.planner:drools-planner-examples</exclude>
         <exclude>org.drools.planner:drools-planner-docs</exclude>
         <exclude>*:javadoc</exclude>
+        <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
     </dependencySet>
@@ -79,6 +95,14 @@
         <include>org.drools.planner:drools-planner-core:*:javadoc</include>
       </includes>
       <outputDirectory>javadoc</outputDirectory>
+      <unpack>true</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.drools.planner:drools-planner-core:*:sources</include>
+      </includes>
+      <outputDirectory>sources</outputDirectory>
       <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
