@@ -7425,7 +7425,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Added this test 05-APR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testMemberOfNotWorkingWithOr() throws Exception {
 
         String rule = "";
