@@ -38,6 +38,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 /**
  * A builder for "from" conditional element
@@ -92,7 +93,9 @@ public class MVELFromBuilder
                                                                        declarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELDataProvider dataProvider = new MVELDataProvider( unit,
                                                                   context.getDialect().getId() );

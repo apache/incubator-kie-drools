@@ -46,6 +46,7 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.KnowledgeHelper;
 
 /**
  * A builder for the java dialect accumulate version
@@ -118,7 +119,9 @@ public class MVELAccumulateBuilder
                                                                            getUsedDeclarations( decls, analysis ),
                                                                            getUsedDeclarations( sourceOuterDeclr, analysis ),
                                                                            null,
-                                                                           context );
+                                                                           context,
+                                                                           "drools",
+                                                                           KnowledgeHelper.class );
 
                 accumulator = new MVELAccumulatorFunctionExecutor( unit,
                                                                    function );
@@ -136,7 +139,9 @@ public class MVELAccumulateBuilder
                                                                                                          null,
                                                                                                          accumDescr.getActionCode(),
                                                                                                          boundIds,
-                                                                                                         initCodeAnalysis.getMvelVariables() );
+                                                                                                         initCodeAnalysis.getMvelVariables(),
+                                                                                                         "drools",
+                                                                                                         KnowledgeHelper.class );
                 
                 final MVELAnalysisResult resultCodeAnalysis = (MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                                               accumDescr,
@@ -151,7 +156,9 @@ public class MVELAccumulateBuilder
                                                                 null,
                                                                 accumDescr.getActionCode(),
                                                                 boundIds,
-                                                                initCodeAnalysis.getMvelVariables() );
+                                                                initCodeAnalysis.getMvelVariables(),
+                                                                "drools",
+                                                                KnowledgeHelper.class );
                 }
 
                 
@@ -160,14 +167,18 @@ public class MVELAccumulateBuilder
                                                                                getUsedDeclarations( decls, initCodeAnalysis ),
                                                                                getUsedDeclarations( sourceOuterDeclr, initCodeAnalysis ),
                                                                                initCodeAnalysis.getMvelVariables(),
-                                                                               context );
+                                                                               context,
+                                                                               "drools",
+                                                                               KnowledgeHelper.class );
 
                 MVELCompilationUnit actionUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getActionCode(),
                                                                                  actionCodeAnalysis,
                                                                                  getUsedDeclarations( decls, actionCodeAnalysis ),
                                                                                  getUsedDeclarations( sourceOuterDeclr, actionCodeAnalysis ),
                                                                                  initCodeAnalysis.getMvelVariables(),
-                                                                                 context );
+                                                                                 context,
+                                                                                 "drools",
+                                                                                 KnowledgeHelper.class );
 
                 MVELCompilationUnit reverseUnit = null;
                 if ( accumDescr.getReverseCode() != null ) {
@@ -176,7 +187,9 @@ public class MVELAccumulateBuilder
                                                                   getUsedDeclarations( decls, reverseCodeAnalysis ),
                                                                   getUsedDeclarations( sourceOuterDeclr, reverseCodeAnalysis ),
                                                                   initCodeAnalysis.getMvelVariables(),
-                                                                  context );
+                                                                  context,
+                                                                  "drools",
+                                                                  KnowledgeHelper.class );
                 }
 
                 MVELCompilationUnit resultUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getResultCode(),
@@ -184,7 +197,9 @@ public class MVELAccumulateBuilder
                                                                                  getUsedDeclarations( decls, resultCodeAnalysis ),
                                                                                  getUsedDeclarations( sourceOuterDeclr, resultCodeAnalysis ),
                                                                                  initCodeAnalysis.getMvelVariables(),
-                                                                                 context );
+                                                                                 context,
+                                                                                 "drools",
+                                                                                 KnowledgeHelper.class );
 
                 if ( reverseUnit != null ) {
                     Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );

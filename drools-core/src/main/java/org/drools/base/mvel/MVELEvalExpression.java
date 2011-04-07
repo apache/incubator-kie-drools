@@ -79,7 +79,7 @@ public class MVELEvalExpression
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

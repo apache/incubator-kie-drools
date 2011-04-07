@@ -35,6 +35,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELEvalBuilder
     implements
@@ -88,7 +89,9 @@ public class MVELEvalBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class);
             final EvalCondition eval = new EvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,

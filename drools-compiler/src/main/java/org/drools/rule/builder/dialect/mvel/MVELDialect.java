@@ -465,7 +465,9 @@ public class MVELDialect
             result = analyzer.analyzeExpression( context,
                                                  (String) content,
                                                  availableIdentifiers,
-                                                 localTypes );
+                                                 localTypes,
+                                                 "drools",
+                                                 KnowledgeHelper.class );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
@@ -484,7 +486,9 @@ public class MVELDialect
                              null,
                              text,
                              availableIdentifiers,
-                             null );
+                             null,
+                             "drools",
+                             KnowledgeHelper.class);
     }
 
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
@@ -492,13 +496,17 @@ public class MVELDialect
                                                final Map interceptors,
                                                final String text,
                                                final BoundIdentifiers availableIdentifiers,
-                                               final Map<String, Class<?>> localTypes) {
+                                               final Map<String, Class<?>> localTypes,
+                                               String contextIndeifier,
+                                               Class kcontextClass) {
 
         AnalysisResult result = null;
         result = analyzer.analyzeExpression( context,
                                              text,
                                              availableIdentifiers,
-                                             localTypes );
+                                             localTypes,
+                                             contextIndeifier,
+                                             kcontextClass);
         return result;
     }
 
@@ -507,7 +515,9 @@ public class MVELDialect
                                                       Declaration[] previousDeclarations,
                                                       Declaration[] localDeclarations,
                                                       final Map<String, Class<?>> otherInputVariables,
-                                                      final PackageBuildContext context) {
+                                                      final PackageBuildContext context,
+                                                      String contextIndeifier,
+                                                      Class kcontextClass) {
         String[] pkgImports  = this.packageImports.toArray( new String[this.packageImports.size()] );
 
         //String[] imports = new String[this.imports.size()];
@@ -536,12 +546,12 @@ public class MVELDialect
             resolvedInputs.put( "this",
                                  (cls != null) ? cls : Object.class ); // the only time cls is null is in accumumulate's acc/reverse
         }
-        ids.add(  "drools" );
-        resolvedInputs.put( "drools", 
-                            KnowledgeHelper.class );
+        ids.add(  contextIndeifier );
+        resolvedInputs.put( contextIndeifier, 
+                            kcontextClass );
         ids.add(  "kcontext" );
         resolvedInputs.put( "kcontext", 
-                            KnowledgeHelper.class );
+                            kcontextClass );
         ids.add(  "rule" );
         resolvedInputs.put( "rule", 
                             Rule.class );

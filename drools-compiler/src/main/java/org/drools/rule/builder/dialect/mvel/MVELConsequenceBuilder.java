@@ -101,7 +101,9 @@ public class MVELConsequenceBuilder
                                                             new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
                                                                                  context.getPackageBuilder().getGlobals(),
                                                                                  KnowledgeHelper.class),
-                                                            null );
+                                                            null,
+                                                            "drools",
+                                                            KnowledgeHelper.class );
             
             if ( analysis == null ) {
                 // something bad happened, issue already logged in errors
@@ -127,7 +129,9 @@ public class MVELConsequenceBuilder
                                                                        declarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId() );
