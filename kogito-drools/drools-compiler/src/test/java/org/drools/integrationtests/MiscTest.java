@@ -2537,15 +2537,12 @@ public class MiscTest {
         builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("errors_in_rule.drl")));
         final Package pkg = builder.getPackage();
 
-        final DroolsError err = builder.getErrors().getErrors()[0];
-        final DescrBuildError ruleErr = (DescrBuildError) err;
+        DroolsError[] errors = builder.getErrors().getErrors();
+        assertEquals(4, errors.length);
+
+        final DescrBuildError ruleErr = (DescrBuildError) errors[0];
         assertNotNull(ruleErr.getDescr());
         assertTrue(ruleErr.getLine() != -1);
-
-        final DroolsError errs[] = builder.getErrors().getErrors();
-
-        assertEquals(4,
-                builder.getErrors().getErrors().length);
 
         // check that its getting it from the ruleDescr
         assertEquals(ruleErr.getLine(),
@@ -2556,7 +2553,7 @@ public class MiscTest {
 
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
-        final DescrBuildError rhs = (DescrBuildError) builder.getErrors().getErrors()[3];
+        final DescrBuildError rhs = (DescrBuildError) errors[3];
         assertTrue(rhs.getLine() > 7); // not being too specific - may need to
         // change this when we rework the error
         // reporting
