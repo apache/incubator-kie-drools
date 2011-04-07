@@ -58,11 +58,11 @@ public class MVELDumper extends ReflectiveVisitor {
                     sbuilder.append( ccd.getConnective().toString() );
                     sbuilder.append( " " );
                 }
-                sbuilder.append( "(" );
+                //sbuilder.append( "(" );
                 dump( sbuilder,
                       constr,
                       ccd.getConnective().getPrecedence() );
-                sbuilder.append( ")" );
+                //sbuilder.append( ")" );
             }
             if ( wrapParenthesis ) {
                 sbuilder.append( " )" );
