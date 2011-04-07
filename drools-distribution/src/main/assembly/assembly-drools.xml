@@ -11,7 +11,7 @@
   <includeBaseDirectory>true</includeBaseDirectory>
 
   <fileSets>
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <includes>
         <include>../LICENSE-ASL-2.0.txt</include>
       </includes>
@@ -42,7 +42,7 @@
       <outputDirectory/>
     </fileSet>
     <!-- Examples -->
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../drools-examples/drools-expert-examples</directory>
       <outputDirectory>examples/sources/drools-expert-examples</outputDirectory>
       <excludes>
@@ -56,7 +56,7 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../drools-examples/drools-fusion-examples</directory>
       <outputDirectory>examples/sources/drools-fusion-examples</outputDirectory>
       <excludes>
@@ -71,11 +71,11 @@
       </excludes>
     </fileSet>
     <!-- Reference manual -->
-    <fileSet>
+    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
       <directory>../drools-docs/drools-expert-docs/target/docbook/publish/en-US</directory>
       <outputDirectory>reference_manual/drools-expert-docs</outputDirectory>
     </fileSet>
-    <fileSet>
+    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
       <directory>../drools-docs/drools-fusion-docs/target/docbook/publish/en-US</directory>
       <outputDirectory>reference_manual/drools-fusion-docs</outputDirectory>
     </fileSet>
