@@ -17,7 +17,7 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -47,8 +47,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
@@ -2538,26 +2536,29 @@ public class MiscTest {
         final Package pkg = builder.getPackage();
 
         DroolsError[] errors = builder.getErrors().getErrors();
-        assertEquals(4, errors.length);
+        assertEquals(3, errors.length);
 
-        final DescrBuildError ruleErr = (DescrBuildError) errors[0];
-        assertNotNull(ruleErr.getDescr());
-        assertTrue(ruleErr.getLine() != -1);
+        final DescrBuildError stiltonError = (DescrBuildError) errors[0];
+        assertTrue(stiltonError.getMessage().contains("Stilton"));
+        assertNotNull(stiltonError.getDescr());
+        assertTrue(stiltonError.getLine() != -1);
 
         // check that its getting it from the ruleDescr
-        assertEquals(ruleErr.getLine(),
-                ruleErr.getDescr().getLine());
+        assertEquals(stiltonError.getLine(),
+                stiltonError.getDescr().getLine());
         // check the absolute error line number (there are more).
         assertEquals(11,
-                ruleErr.getLine());
+                stiltonError.getLine());
 
+        final DescrBuildError poisonError = (DescrBuildError) errors[1];
+        assertTrue(poisonError.getMessage().contains("Poison"));
+        assertEquals(13, poisonError.getLine());
+
+        assertTrue(errors[2].getMessage().contains("add"));
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
-        final DescrBuildError rhs = (DescrBuildError) errors[3];
-        assertTrue(rhs.getLine() > 7); // not being too specific - may need to
-        // change this when we rework the error
-        // reporting
-
+        final DescrBuildError rhsError = (DescrBuildError) errors[2];
+        assertEquals(16, rhsError.getLine());
     }
 
     @Test
