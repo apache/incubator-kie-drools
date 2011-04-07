@@ -11,7 +11,7 @@
   <includeBaseDirectory>true</includeBaseDirectory>
 
   <fileSets>
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <includes>
         <include>../LICENSE-ASL-2.0.txt</include>
       </includes>
@@ -42,7 +42,7 @@
       <outputDirectory/>
     </fileSet>
     <!-- Examples -->
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../drools-planner-examples/data</directory>
       <outputDirectory>examples/data</outputDirectory>
       <includes>
@@ -52,7 +52,7 @@
         <include>**/output/*.*</include>
       </includes>
     </fileSet>
-    <fileSet>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../drools-planner-examples</directory>
       <outputDirectory>examples/sources</outputDirectory>
       <excludes>
@@ -68,7 +68,7 @@
       </excludes>
     </fileSet>
     <!-- Reference manual -->
-    <fileSet>
+    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
       <directory>../drools-planner-docs/target/docbook/publish/en-US</directory>
       <outputDirectory>reference_manual</outputDirectory>
     </fileSet>
