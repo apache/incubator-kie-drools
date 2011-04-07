@@ -251,6 +251,11 @@ public class StatefulSessionTest {
     private StatefulSession getExceptionSession() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            throw new RuntimeException( builder.getErrors().toString() );
+        }
+        
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();

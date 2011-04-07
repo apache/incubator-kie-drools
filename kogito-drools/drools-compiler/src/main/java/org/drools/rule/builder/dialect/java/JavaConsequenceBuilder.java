@@ -97,21 +97,24 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
         
         // This is a list of all the non container blocks, which initially are in tree form.
-        List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
+        List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
+        buildBlockDescrs( blocks, analysis.getBlockDescrs() );     
         
-        // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
-        setContainerBlockInputs(context, 
-                                descrs,
-                                analysis.getBlockDescrs(), 
-                                consequenceStr,
-                                bindings,
-                                new HashMap(),
-                                0 );
+        // @TODO <!--(mdp) commented this out until MVEL supports generics.
+//        // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
+//        setContainerBlockInputs(context, 
+//                                descrs,
+//                                analysis.getBlockDescrs(), 
+//                                consequenceStr,
+//                                bindings,
+//                                new HashMap(),
+//                                0 );
+        // @TODO (mdp) commented this out until MVEL supports generics.-->
 
         // this will fix modify, retract, insert, update, entrypoints and channels
         String fixedConsequence = this.fixBlockDescr( context,
                                                       consequenceStr,                                                      
-                                                      descrs,
+                                                      blocks,
                                                       bindings,
                                                       decls );
 
@@ -210,10 +213,6 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             lastAdded = block.getEnd();
   
             switch ( block.getType() ) {
-                case IF :   
-                case THROW :      
-                    consequence.append( originalCode.substring( block.getStart()-1, block.getEnd() ) );
-                    break;
                 case MODIFY :
                 case UPDATE :
                 case RETRACT :
@@ -234,13 +233,37 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                            (JavaInterfacePointsDescr) block );
                     break;
                 default:
+                    consequence.append( originalCode.substring( block.getStart() - 1,
+                                                                lastAdded ) );                    
             }
         }
         consequence.append( originalCode.substring( lastAdded ) );
 
         return consequence.toString();
     }    
+    
+    public void buildBlockDescrs(List<JavaBlockDescr> descrs,
+                                 JavaContainerBlockDescr parentBlock) {
+        for ( JavaBlockDescr block : parentBlock.getJavaBlockDescrs() ) {  
+            if( block instanceof JavaContainerBlockDescr ) {
+                buildBlockDescrs( descrs, (JavaContainerBlockDescr) block );
+            } else {
+                descrs.add( block );
+            }
+        }
+    }
 
+    /**
+     * This code is not currently used, it's commented out in method caller. This is because we couldn't
+     * get this to work and will have to wait until MVEL supports genercs (mdp).
+     * @param context
+     * @param descrs
+     * @param parentBlock
+     * @param originalCode
+     * @param bindings
+     * @param parentVars
+     * @param offset
+     */
     protected void setContainerBlockInputs(RuleBuildContext context,
                                            List<JavaBlockDescr> descrs,
                                            JavaContainerBlockDescr parentBlock,
@@ -441,7 +464,9 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                                      null,
                                                                      code,
                                                                      bindings,
-                                                                     parentVars );
+                                                                     parentVars,
+                                                                     "drools",
+                                                                     KnowledgeHelper.class );
         } catch(Exception e) {
             // swallow this as the error will be reported else where
         }        
@@ -549,13 +574,18 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
             // do nothing, it was incorrectly parsed, but this error should be picked up else where
             return false;            
         }
+        
+        boolean typeSafety = context.isTypesafe();
+        context.setTypesafe( false ); // we have to analyse in dynamic mode for now, as we cannot safely determine all input vars
            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                                        context.getRuleDescr(),
                                                                                        mvel.getInterceptors(),
                                                                                        d.getTargetExpression(),
                                                                                        bindings,
-                                                                                       d.getInputs());
-
+                                                                                       d.getInputs(),
+                                                                                       "drools",
+                                                                                       KnowledgeHelper.class);
+           context.setTypesafe( typeSafety );
            if ( mvelAnalysis == null ) {
                // something bad happened, issue already logged in errors
                return false;

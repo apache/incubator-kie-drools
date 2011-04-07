@@ -34,6 +34,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELReturnValueBuilder
     implements
@@ -59,7 +60,9 @@ public class MVELReturnValueBuilder
                                                                       previousDeclarations, 
                                                                       localDeclarations, 
                                                                       null, 
-                                                                      context);
+                                                                      context,
+                                                                      "drools",
+                                                                      KnowledgeHelper.class);
     
             MVELReturnValueExpression expr = new MVELReturnValueExpression( unit,
                                                                             context.getDialect().getId() );

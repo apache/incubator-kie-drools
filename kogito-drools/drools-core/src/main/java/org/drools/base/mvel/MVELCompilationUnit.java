@@ -41,6 +41,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.runtime.Globals;
+import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
@@ -306,12 +308,13 @@ public class MVELCompilationUnit
                         languageLevel );
     }
     
-    public DroolsMVELIndexedFactory getFactory(final KnowledgeHelper knowledgeHelper,
+    public DroolsMVELIndexedFactory getFactory(final Object knowledgeHelper,
                                               final Rule rule,
                                               final Object rightObject,
                                               final LeftTuple tuples,
                                               final Object[] otherVars,
-                                              final InternalWorkingMemory workingMemory) {
+                                              final InternalWorkingMemory workingMemory,
+                                              final GlobalResolver globals) {
         int varLength = inputIdentifiers.length;
         
         Object[] vals = new Object[varLength];
@@ -326,7 +329,7 @@ public class MVELCompilationUnit
         
         if ( globalIdentifiers != null ) {
             for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {
-              vals[i++] = workingMemory.getGlobal( this.globalIdentifiers[j] );
+              vals[i++] = globals.resolveGlobal( this.globalIdentifiers[j] );
             }
         }
         
@@ -342,7 +345,8 @@ public class MVELCompilationUnit
                 // Consequences with 'or's will have different declaration offsets, so use the one's from the RTN's subrule.
                 Declaration[] prevDecl = this.previousDeclarations;
                 if ( knowledgeHelper != null ) {
-                    prevDecl = ((AgendaItem)knowledgeHelper.getActivation()).getRuleTerminalNode().getDeclarations();
+                    // we know this is a rule
+                    prevDecl = ((AgendaItem)((KnowledgeHelper)knowledgeHelper).getActivation()).getRuleTerminalNode().getDeclarations();
                 }
                 InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
                 
@@ -376,16 +380,18 @@ public class MVELCompilationUnit
             }
         }
         int otherVarsLength = i - otherVarsPos;
-        
-        if ( knowledgeHelper != null ) {
-            knowledgeHelper.setIdentityMap( identityMap );
-        }
+
         
         VariableResolverFactory locals = new CachingMapVariableResolverFactory(new HashMap<String, Object>());
         DroolsMVELIndexedFactory factory =  new DroolsMVELIndexedFactory(inputIdentifiers, vals, locals);
         factory.setOtherVarsPos( otherVarsPos );
         factory.setOtherVarsLength( otherVarsLength );
-        factory.setKnowledgeHelper( knowledgeHelper );
+        
+        if ( knowledgeHelper != null && knowledgeHelper instanceof KnowledgeHelper ) {
+            KnowledgeHelper kh = ( KnowledgeHelper ) knowledgeHelper;
+            kh.setIdentityMap( identityMap );
+            factory.setKnowledgeHelper( kh );
+        }        
         return factory;
     }
     
@@ -424,11 +430,11 @@ public class MVELCompilationUnit
         }        
 
         public KnowledgeHelper getKnowledgeHelper() {
-            return knowledgeHelper;
+            return this.knowledgeHelper ;
         }
 
-        public void setKnowledgeHelper(KnowledgeHelper knowledgeHelper) {
-            this.knowledgeHelper = knowledgeHelper;
+        public void setKnowledgeHelper(KnowledgeHelper kh) {
+            this.knowledgeHelper = kh;
         }
 
         public int getOtherVarsPos() {

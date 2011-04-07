@@ -380,12 +380,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
                   handler );
 
         Object node = handler.start( uri,
-                                           localName,
-                                           attrs,
-                                           this );
-        if ( node == null ) {
-            node = "";
-        }
+                                     localName,
+                                     attrs,
+                                     this );
         
         this.parents.add( node );    
     }
@@ -592,9 +589,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     public Object removeParent() {
         Object parent = this.parents.removeLast();
-        while ( parent == null && !this.parents.isEmpty() ) {
-            parent = this.parents.removeLast();
-        }
         return parent;
     }
 

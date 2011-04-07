@@ -13,6 +13,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELSalienceBuilder
     implements
@@ -48,7 +49,9 @@ public class MVELSalienceBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELSalienceExpression expr = new MVELSalienceExpression( unit,
                                                                       dialect.getId() );

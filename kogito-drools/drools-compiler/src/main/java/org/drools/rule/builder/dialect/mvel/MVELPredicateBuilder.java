@@ -33,6 +33,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELPredicateBuilder
     implements
@@ -55,7 +56,9 @@ public class MVELPredicateBuilder
                 declIds.put( "this", ((ClassObjectType)p.getObjectType()).getClassType() );
             }
             
-            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context);
+            MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) predicateDescr.getContent(), analysis,  previousDeclarations, localDeclarations, null, context,
+                                                                      "drools",
+                                                                      KnowledgeHelper.class);
 
             MVELPredicateExpression expr = new MVELPredicateExpression( unit,
                                                                         context.getDialect().getId());

@@ -70,7 +70,9 @@ public class MVELExprAnalyzer {
     public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
                                                 final BoundIdentifiers availableIdentifiers,
-                                                final Map<String, Class<?>> localTypes) {
+                                                final Map<String, Class<?>> localTypes,
+                                                String contextIndeifier,
+                                                Class kcontextClass) {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
@@ -157,12 +159,12 @@ public class MVELExprAnalyzer {
                     }
                     
                     if ( cls == null ) {
-                        if ( str.equals( "drools" ) ) {
-                            parserContext2.addInput( "drools",
-                                                     KnowledgeHelper.class );
+                        if ( str.equals( contextIndeifier ) ) {
+                            parserContext2.addInput( contextIndeifier,
+                                                     kcontextClass );
                         } else if ( str.equals( "kcontext" ) ) {
                             parserContext2.addInput( "kcontext",
-                                                     RuleContext.class );
+                                                     kcontextClass );
                         }
                         if ( str.equals( "rule" ) ) {
                             parserContext2.addInput( "rule",
@@ -184,7 +186,7 @@ public class MVELExprAnalyzer {
                                                                   null,
                                                                   "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
                     return null;
-                }   
+            }   
                 
                 requiredInputs = new HashSet();
                 requiredInputs.addAll( parserContext2.getInputs().keySet() );

@@ -120,7 +120,7 @@ public class MVELAccumulator
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
         Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
-        DroolsMVELIndexedFactory factory = initUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory );
+        DroolsMVELIndexedFactory factory = initUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -152,7 +152,7 @@ public class MVELAccumulator
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
-        DroolsMVELIndexedFactory factory = actionUnit.getFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory );       
+        DroolsMVELIndexedFactory factory = actionUnit.getFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );       
 
         if ( reverse != null ) {
             // SNAPSHOT variable values
@@ -209,7 +209,7 @@ public class MVELAccumulator
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
-        VariableResolverFactory factory = resultUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = resultUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
 
         final Object result = MVEL.executeExpression( this.result,
                                                       null,
