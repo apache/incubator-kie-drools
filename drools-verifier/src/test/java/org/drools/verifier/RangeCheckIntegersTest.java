@@ -36,7 +36,6 @@ import static org.junit.Assert.*;
 public class RangeCheckIntegersTest extends TestBaseOld {
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testSmallerOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Integers.drl"));
@@ -77,7 +76,6 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testGreaterOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Integers.drl"));
@@ -118,7 +116,6 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testEqualAndGreaterThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Integers.drl"));
@@ -159,7 +156,6 @@ public class RangeCheckIntegersTest extends TestBaseOld {
     }
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testEqualAndSmallerThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Integers.drl"));

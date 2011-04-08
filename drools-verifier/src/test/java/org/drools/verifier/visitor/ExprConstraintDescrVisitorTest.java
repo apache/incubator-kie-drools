@@ -28,6 +28,10 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
         assertEquals(3, allRestrictions.size());
         assertEquals(3, allFields.size());
 
+        for (Field field : allFields) {
+            assertNotNull(field.getFieldType());
+        }
+
         assertContainsField("name");
         assertContainsField("lastName");
         assertContainsField("age");

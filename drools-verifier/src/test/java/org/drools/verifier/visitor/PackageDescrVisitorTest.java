@@ -55,7 +55,7 @@ public class PackageDescrVisitorTest {
 
 
     @Test
-    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
+//    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testVisit() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
