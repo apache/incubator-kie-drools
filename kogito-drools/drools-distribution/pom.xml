@@ -34,7 +34,7 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly-drools.xml</descriptor>
           </descriptors>
-          <appendAssemblyId>false</appendAssemblyId> 
+          <appendAssemblyId>false</appendAssemblyId>
         </configuration>
       </plugin>
     </plugins>
@@ -132,7 +132,7 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    
+
     <!-- Examples -->
     <dependency>
       <groupId>org.drools</groupId>
