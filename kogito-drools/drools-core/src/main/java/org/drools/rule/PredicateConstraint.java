@@ -58,11 +58,13 @@ public class PredicateConstraint extends MutableTypeConstraint
     private Declaration[]              localDeclarations;
 
     private String[]                   requiredGlobals;
+    
+    private String[]                   requiredOperators;
 
     private List<PredicateConstraint>  cloned             = Collections.<PredicateConstraint> emptyList();
 
     private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
-    private static final String[]      EMPTY_GLOBALS      = new String[0];
+    private static final String[]      EMPTY_STRINGS      = new String[0];
 
     public PredicateConstraint() {
         this( null );
@@ -70,6 +72,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
     public PredicateConstraint(final PredicateExpression evaluator) {
         this( evaluator,
+              null,
               null,
               null,
               null );
@@ -80,13 +83,15 @@ public class PredicateConstraint extends MutableTypeConstraint
         this( null,
               previousDeclarations,
               localDeclarations,
+              null,
               null );
     }
 
     public PredicateConstraint(final PredicateExpression expression,
                                final Declaration[] previousDeclarations,
                                final Declaration[] localDeclarations,
-                               final String[] requiredGlobals) {
+                               final String[] requiredGlobals,
+                               final String[] requiredOperators ) {
 
         this.expression = expression;
 
@@ -103,9 +108,15 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         if ( requiredGlobals == null ) {
-            this.requiredGlobals = PredicateConstraint.EMPTY_GLOBALS;
+            this.requiredGlobals = PredicateConstraint.EMPTY_STRINGS;
         } else {
             this.requiredGlobals = requiredGlobals;
+        }
+
+        if ( requiredOperators == null ) {
+            this.requiredOperators = PredicateConstraint.EMPTY_STRINGS;
+        } else {
+            this.requiredOperators = requiredOperators;
         }
 
         this.requiredDeclarations = new Declaration[this.previousDeclarations.length + this.localDeclarations.length];
@@ -121,6 +132,7 @@ public class PredicateConstraint extends MutableTypeConstraint
                           this.localDeclarations.length );
     }
 
+    @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
@@ -129,6 +141,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         this.previousDeclarations = (Declaration[]) in.readObject();
         this.localDeclarations = (Declaration[]) in.readObject();
         this.requiredGlobals = (String[]) in.readObject();
+        this.requiredOperators = (String[]) in.readObject();
         this.cloned = (List<PredicateConstraint>) in.readObject();
     }
 
@@ -143,6 +156,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         out.writeObject( this.previousDeclarations );
         out.writeObject( this.localDeclarations );
         out.writeObject( this.requiredGlobals );
+        out.writeObject( this.requiredOperators );
         out.writeObject( this.cloned );
     }
 
@@ -227,6 +241,10 @@ public class PredicateConstraint extends MutableTypeConstraint
             return false;
         }
 
+        if ( this.requiredOperators.length != other.requiredOperators.length ) {
+            return false;
+        }
+
         for ( int i = 0, length = this.previousDeclarations.length; i < length; i++ ) {
             if ( this.previousDeclarations[i].getPattern().getOffset() != other.previousDeclarations[i].getPattern().getOffset() ) {
                 return false;
@@ -249,6 +267,11 @@ public class PredicateConstraint extends MutableTypeConstraint
 
         if ( !Arrays.equals( this.requiredGlobals,
                              other.requiredGlobals ) ) {
+            return false;
+        }
+
+        if ( !Arrays.equals( this.requiredOperators,
+                             other.requiredOperators ) ) {
             return false;
         }
 
@@ -330,7 +353,8 @@ public class PredicateConstraint extends MutableTypeConstraint
         PredicateConstraint clone = new PredicateConstraint( this.expression,
                                                              previous,
                                                              local,
-                                                             this.requiredGlobals );
+                                                             this.requiredGlobals,
+                                                             this.requiredOperators );
 
         if ( this.cloned == Collections.EMPTY_LIST ) {
             this.cloned = new ArrayList<PredicateConstraint>( 1 );
@@ -406,7 +430,6 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public Evaluator getEvaluator() {
-        // TODO Auto-generated method stub
         return null;
     }
 

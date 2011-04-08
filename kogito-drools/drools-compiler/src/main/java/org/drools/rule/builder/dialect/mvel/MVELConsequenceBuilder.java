@@ -100,6 +100,7 @@ public class MVELConsequenceBuilder
                                                             text,
                                                             new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
                                                                                  context.getPackageBuilder().getGlobals(),
+                                                                                 null,
                                                                                  KnowledgeHelper.class),
                                                             null,
                                                             "drools",

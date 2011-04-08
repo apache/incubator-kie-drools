@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.base.EvaluatorWrapper;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -53,6 +54,7 @@ import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OperatorDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RelationalExprDescr;
@@ -325,7 +327,10 @@ public class PatternBuilder
             BaseDescr d = it.next();
 
             boolean simple = false;
-            String expr = new MVELDumper().dump( d );
+            MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
+            String expr = new MVELDumper().dump( d,
+                                                 mvelCtx );
+            Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
             RelationalExprDescr relDescr = null;
             if ( d instanceof RelationalExprDescr ) {
                 relDescr = (RelationalExprDescr) d;
@@ -347,7 +352,8 @@ public class PatternBuilder
                 buildEval( context,
                            pattern,
                            pdescr,
-                           null );
+                           null,
+                           aliases );
                 continue;
             }
 
@@ -360,7 +366,8 @@ public class PatternBuilder
                 buildEval( context,
                            pattern,
                            pdescr,
-                           null );
+                           null,
+                           aliases );
 
                 // fall back to original dialect
                 context.setDialect( dialect );
@@ -396,7 +403,8 @@ public class PatternBuilder
                         buildEval( context,
                                    pattern,
                                    pdescr,
-                                   null );
+                                   null,
+                                   aliases );
 
                         // fall back to original dialect
                         context.setDialect( dialect );
@@ -427,7 +435,8 @@ public class PatternBuilder
                     buildEval( context,
                                pattern,
                                pdescr,
-                               null );
+                               null,
+                               aliases );
 
                     // fall back to original dialect
                     context.setDialect( dialect );
@@ -470,7 +479,7 @@ public class PatternBuilder
                                                               dotPos );
                     String enumName = value.substring( dotPos + 1 );
                     try {
-                        final Class<?> cls = context.getDialect().getTypeResolver().resolveType( className );
+                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( className );
                         if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
                             restriction = buildLiteralRestriction( context,
                                                                    extractor,
@@ -584,7 +593,8 @@ public class PatternBuilder
                                                 new ReturnValueRestrictionDescr( operator,
                                                                                  relDescr.isNegated(),
                                                                                  relDescr.getParametersText(),
-                                                                                 value ) );
+                                                                                 value ),
+                                                aliases );
                 // fall back to original dialect
                 context.setDialect( dialect );
 
@@ -704,12 +714,58 @@ public class PatternBuilder
     private void buildEval( final RuleBuildContext context,
                             final Pattern pattern,
                             final PredicateDescr predicateDescr,
-                            final AbstractCompositeConstraint container ) {
+                            final AbstractCompositeConstraint container,
+                            final Map<String, OperatorDescr> aliases ) {
 
         Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr,
                                                                    context );
         Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
-        Class thisClass = null;
+        Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
+
+        for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
+            OperatorDescr op = entry.getValue();
+            String leftStr = op.getLeftString();
+            String rightStr = op.getRightString();
+
+            Declaration leftDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                    leftStr );
+            if ( leftDecl == null && "this".equals( leftStr ) ) {
+                leftDecl = this.createDeclarationObject( context,
+                                                         "this",
+                                                         pattern );
+
+            }
+            Declaration rightDecl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                                                                                           rightStr );
+            if ( rightDecl == null && "this".equals( rightStr ) ) {
+                rightDecl = this.createDeclarationObject( context,
+                                                          "this",
+                                                          pattern );
+
+            }
+
+            Target left = leftDecl != null && leftDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
+            Target right = rightDecl != null && rightDecl.isPatternDeclaration() ? Target.HANDLE : Target.FACT;
+
+            op.setLeftIsHandle( left == Target.HANDLE );
+            op.setRightIsHandle( right == Target.HANDLE );
+
+            Evaluator evaluator = getEvaluator( context,
+                                                predicateDescr,
+                                                ValueType.OBJECT_TYPE,
+                                                op.getOperator(),
+                                                false, // the rewrite takes care of negation
+                                                op.getParametersText(),
+                                                left,
+                                                right );
+            EvaluatorWrapper wrapper = new EvaluatorWrapper( evaluator,
+                                                             left == Target.HANDLE ? leftDecl : null,
+                                                             right == Target.HANDLE ? rightDecl : null );
+            operators.put( entry.getKey(),
+                           wrapper );
+        }
+
+        Class< ? > thisClass = null;
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
         }
@@ -719,6 +775,7 @@ public class PatternBuilder
                                                                                 predicateDescr.getContent(),
                                                                                 new BoundIdentifiers( declarations,
                                                                                                       globals,
+                                                                                                      operators,
                                                                                                       thisClass ) );
 
         if ( analysis == null ) {
@@ -750,6 +807,7 @@ public class PatternBuilder
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
         final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
         final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
+        final String[] requiredOperators = usedIdentifiers.getOperators().keySet().toArray( new String[usedIdentifiers.getOperators().size()] );
 
         Arrays.sort( previousDeclarations,
                      SortDeclarations.instance );
@@ -759,7 +817,8 @@ public class PatternBuilder
         final PredicateConstraint predicateConstraint = new PredicateConstraint( null,
                                                                                  previousDeclarations,
                                                                                  localDeclarations,
-                                                                                 requiredGlobals );
+                                                                                 requiredGlobals,
+                                                                                 requiredOperators );
 
         if ( container == null ) {
             pattern.addConstraint( predicateConstraint );
@@ -947,7 +1006,8 @@ public class PatternBuilder
     private ReturnValueRestriction buildRestriction( final RuleBuildContext context,
                                                      final Pattern pattern,
                                                      final InternalReadAccessor extractor,
-                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr ) {
+                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr,
+                                                     final Map<String, OperatorDescr> aliases ) {
         Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr,
                                                                    context );
         Class< ? > thisClass = null;
@@ -961,6 +1021,7 @@ public class PatternBuilder
                                                                           returnValueRestrictionDescr.getContent(),
                                                                           new BoundIdentifiers( declarations,
                                                                                                 globals,
+                                                                                                null,
                                                                                                 thisClass ) );
         if ( analysis == null ) {
             // something bad happened

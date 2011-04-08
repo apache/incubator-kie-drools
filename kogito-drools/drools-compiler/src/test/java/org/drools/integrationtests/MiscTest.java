@@ -4242,6 +4242,19 @@ public class MiscTest {
     }
 
     @Test
+    public void testConnectorsAndOperators() throws Exception {
+        final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ConstraintConnectorsAndOperators.drl" ) );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new StockTick( 1, "RHT", 10, 1000 ));
+        ksession.insert(new StockTick( 2, "IBM", 10, 1100 ));
+        final int fired = ksession.fireAllRules();
+
+        assertEquals(1,
+                     fired );
+    }
+
+    @Test
     public void testConstraintConnectorOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("test_ConstraintConnectorOr.drl")),
@@ -7568,7 +7581,6 @@ public class MiscTest {
     }
 
     @Test
-//    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testAccessingMapValues() throws Exception {
 
         String rule = "";

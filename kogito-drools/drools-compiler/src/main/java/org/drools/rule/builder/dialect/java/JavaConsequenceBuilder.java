@@ -82,6 +82,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         
         BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
                                                          context.getPackageBuilder().getGlobals(),
+                                                         null,
                                                          KnowledgeHelper.class );
         
         String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
