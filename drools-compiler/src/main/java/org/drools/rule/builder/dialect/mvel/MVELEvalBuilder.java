@@ -17,7 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;

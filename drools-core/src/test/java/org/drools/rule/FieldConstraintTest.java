@@ -245,7 +245,8 @@ public class FieldConstraintTest {
         final PredicateConstraint constraint1 = new PredicateConstraint( evaluator,
                                                                          new Declaration[]{price1Declaration},
                                                                          new Declaration[]{price2Declaration},
-                                                                         new String[]{} );
+                                                                         new String[]{},
+                                                                         new String[]{});
 
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );

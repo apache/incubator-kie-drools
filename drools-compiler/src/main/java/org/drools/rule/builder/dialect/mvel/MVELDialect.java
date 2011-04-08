@@ -18,8 +18,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ModifyInterceptor;
 import org.drools.base.TypeResolver;
+import org.drools.base.ValueType;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.commons.jci.readers.MemoryResourceReader;
@@ -75,6 +77,7 @@ import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.DeclarationScopeResolver;
+import org.drools.spi.Evaluator;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -556,14 +559,24 @@ public class MVELDialect
         resolvedInputs.put( "rule", 
                             Rule.class );
         
-        List<String> strList = new ArrayList();
-        int i = 0;
+        List<String> strList = new ArrayList<String>();
         for( Entry<String, Class<?>> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {
             strList.add(  e.getKey() );
             ids.add(  e.getKey() );            
             resolvedInputs.put( e.getKey(), e.getValue() );
         }
         String[] globalIdentifiers = strList.toArray( new String[strList.size()] );
+        
+        strList.clear();
+        for( String op : analysis.getBoundIdentifiers().getOperators().keySet() ) {
+            strList.add( op );
+            ids.add( op );            
+            resolvedInputs.put( op, EvaluatorWrapper.class );
+        }
+        EvaluatorWrapper[] operators = new EvaluatorWrapper[strList.size()];
+        for( int i = 0; i < operators.length; i++ ) {
+            operators[i] = analysis.getBoundIdentifiers().getOperators().get( strList.get( i ) );
+        }
         
         if ( previousDeclarations != null ) {
             for (Declaration decl : previousDeclarations ) {
@@ -590,7 +603,7 @@ public class MVELDialect
         //String[] otherIdentifiers = otherInputVariables == null ? new String[]{} : new String[otherInputVariables.size()];
         strList = new ArrayList<String>();
         if ( otherInputVariables != null ) {
-            i = 0;
+            int i = 0;
             for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
                 if ( !analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) || "rule".equals( entry.getKey() ) ) {
@@ -608,7 +621,7 @@ public class MVELDialect
         
         String[] inputIdentifiers = new String[resolvedInputs.size()];
         String[] inputTypes = new String[resolvedInputs.size()];
-        i = 0;
+        int i = 0;
         for ( String id : ids ) {
             inputIdentifiers[i] = id;
             inputTypes[i++] = resolvedInputs.get( id ).getName();
@@ -631,6 +644,7 @@ public class MVELDialect
                                                                        importMethods.toArray( new String[importMethods.size()] ),
                                                                        importFields.toArray( new String[importFields.size()] ),
                                                                        globalIdentifiers,
+                                                                       operators,
                                                                        previousDeclarations,
                                                                        localDeclarations,
                                                                        otherIdentifiers,

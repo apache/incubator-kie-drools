@@ -1,0 +1,17 @@
+package org.drools
+
+import org.drools.StockTick
+
+declare StockTick
+    @role( event )
+    @timestamp( dateTimestamp )
+end
+
+rule "operator"
+    when
+        $t1 : StockTick( company == "RHT" )
+        $t2 : StockTick( company == "IBM", this after $t1 || before $t1 )
+    then
+        // do something
+end    
+

@@ -109,7 +109,7 @@ public class MVELReturnValueBuilderTest {
         AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                           returnValueDescr,
                                                                           returnValueDescr.getContent(),
-                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), Cheese.class ) );
+                                                                          new BoundIdentifiers( declarationResolver.getDeclarationClasses( (Rule) null ), new HashMap(), null, Cheese.class ) );
         context.getBuildStack().push( patternB );
         builder.build( context,
                        analysis.getBoundIdentifiers(),
