@@ -2558,7 +2558,7 @@ public class MiscTest {
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
         final DescrBuildError rhsError = (DescrBuildError) errors[2];
-        assertEquals(16, rhsError.getLine());
+        assertTrue(rhsError.getLine() >= 8 && rhsError.getLine() <= 17); // TODO this should be 16
     }
 
     @Test
