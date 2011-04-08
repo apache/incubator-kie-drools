@@ -18,40 +18,10 @@ package org.drools.verifier.components;
 
 public class PatternVariable extends RuleComponent implements Variable {
 
-
-    // TODO: Should be pattern path, type and name -Rikkola-
-
-    private String objectTypePath;
-    private String objectTypeType;
-    private String objectTypeName;
+    private String name;
 
     public PatternVariable(VerifierRule rule) {
         super(rule);
-    }
-
-    public String getObjectTypeName() {
-        return objectTypeName;
-    }
-
-    public void setObjectTypeName(String objectTypeName) {
-        this.objectTypeName = objectTypeName;
-    }
-
-    private String name;
-
-    public String getObjectTypePath() {
-        return objectTypePath;
-    }
-
-    public void setObjectTypePath(String path) {
-        this.objectTypePath = path;
-    }
-
-    public void setObjectTypeType(String type) {
-        // VerifierComponentType.OBJECT_TYPE dominates VerifierComponentType.FIELD.
-        if (this.objectTypeType == null || !VerifierComponentType.OBJECT_TYPE.getType().equals(this.objectTypeType)) {
-            this.objectTypeType = type;
-        }
     }
 
     public String getName() {
@@ -62,16 +32,12 @@ public class PatternVariable extends RuleComponent implements Variable {
         this.name = name;
     }
 
-    public String getObjectTypeType() {
-        return objectTypeType;
-    }
-
     @Override
     public String toString() {
         return "Variable name: " + name;
     }
 
     public VerifierComponentType getVerifierComponentType() {
-        return VerifierComponentType.VARIABLE;
+        return VerifierComponentType.PATTERN_LEVEL_VARIABLE;
     }
 }

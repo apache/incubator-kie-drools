@@ -16,32 +16,13 @@
 
 package org.drools.verifier.visitor;
 
-import java.util.List;
-
 import org.drools.base.evaluators.Operator;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.verifier.components.EnumField;
-import org.drools.verifier.components.EnumRestriction;
-import org.drools.verifier.components.Field;
-import org.drools.verifier.components.Import;
-import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.OperatorDescrType;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.QualifiedIdentifierRestriction;
-import org.drools.verifier.components.ReturnValueRestriction;
-import org.drools.verifier.components.Variable;
-import org.drools.verifier.components.VariableRestriction;
-import org.drools.verifier.components.VerifierComponentType;
+import org.drools.lang.descr.*;
+import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
+
+import java.util.List;
 
 public class FieldConstraintDescrVisitor {
 
@@ -161,10 +142,10 @@ public class FieldConstraintDescrVisitor {
                 text.indexOf("."));
         String fieldName = text.substring(text.indexOf("."));
 
-        Variable variable = data.getVariableByRuleAndVariableName(pattern.getRuleName(),
+        Variable patternVariable = data.getVariableByRuleAndVariableName(pattern.getRuleName(),
                 base);
 
-        if (variable != null) {
+        if (patternVariable != null) {
 
             QualifiedIdentifierRestriction restriction = new QualifiedIdentifierRestriction(pattern);
 
@@ -172,7 +153,7 @@ public class FieldConstraintDescrVisitor {
             restriction.setFieldPath(field.getPath());
             restriction.setOperator(Operator.determineOperator(descr.getEvaluator(),
                     descr.isNegated()));
-            restriction.setVariablePath(variable.getPath());
+            restriction.setVariablePath(patternVariable.getPath());
             restriction.setVariableName(base);
             restriction.setVariablePath(fieldName);
             restriction.setOrderNumber(orderNumber);
@@ -181,8 +162,6 @@ public class FieldConstraintDescrVisitor {
 
             // Set field value, if it is not set.
             field.setFieldType(Field.VARIABLE);
-
-            variable.setObjectTypeType(VerifierComponentType.FIELD.getType());
 
             data.add(restriction);
             solvers.addPatternComponent(restriction);
@@ -248,7 +227,7 @@ public class FieldConstraintDescrVisitor {
      */
     private void visit(VariableRestrictionDescr descr) {
 
-        Variable variable = data.getVariableByRuleAndVariableName(pattern.getRuleName(),
+        PatternVariable patternVariable = (PatternVariable) data.getVariableByRuleAndVariableName(pattern.getRuleName(),
                 descr.getIdentifier());
         VariableRestriction restriction = new VariableRestriction(pattern);
 
@@ -256,7 +235,7 @@ public class FieldConstraintDescrVisitor {
         restriction.setFieldPath(field.getPath());
         restriction.setOperator(Operator.determineOperator(descr.getEvaluator(),
                 descr.isNegated()));
-        restriction.setVariable(variable);
+        restriction.setVariable(patternVariable);
         restriction.setOrderNumber(orderNumber);
         restriction.setParentPath(pattern.getPath());
         restriction.setParentType(pattern.getVerifierComponentType());

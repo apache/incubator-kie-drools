@@ -15,13 +15,13 @@
  */
 
 package org.drools.verifier.visitor;
-        
+
 rule "Test 1"
     when
-            Person(
-                age > 0  && < 100
-            )
+            Person( var:age )
+            Person( age == var )
     then
         System.out.println( "Test" );
 end
+
 
