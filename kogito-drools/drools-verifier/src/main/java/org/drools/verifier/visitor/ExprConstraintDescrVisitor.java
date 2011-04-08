@@ -4,7 +4,6 @@ import org.drools.base.evaluators.Operator;
 import org.drools.compiler.DrlExprParser;
 import org.drools.lang.descr.*;
 import org.drools.verifier.components.*;
-import org.drools.verifier.components.Restriction;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
 
@@ -55,13 +54,14 @@ public class ExprConstraintDescrVisitor {
     }
 
     private void createRestriction(int currentOrderNumber, String value, Operator operator) {
-        Restriction restriction = LiteralRestriction.createRestriction(pattern, value);
+        LiteralRestriction restriction = LiteralRestriction.createRestriction(pattern, value);
         restriction.setFieldPath(field.getPath());
         restriction.setPatternIsNot(pattern.isPatternNot());
         restriction.setParentPath(pattern.getPath());
         restriction.setParentType(pattern.getVerifierComponentType());
         restriction.setOrderNumber(currentOrderNumber);
         restriction.setOperator(operator);
+        field.setFieldType(restriction.getValueType());
         data.add(restriction);
         solvers.addPatternComponent(restriction);
     }
