@@ -175,20 +175,20 @@ rule "Find redundant rules" extends "Find redundant LHS"
             items contains $rightConsequence
         )
 
-        $causes : ArrayList()
-            from collect(
-                  Subsumption(
-                      (
-                          left memberOf $rightSubRules
+#        $causes : ArrayList()
+#            from collect(
+#                  Subsumption(
+#                      (
+#                          left memberOf $rightSubRules
 #                          &&
 #                          right memberOf $leftSubRules
-                      ) || (
-                          right memberOf $rightSubRules
+#                      ) || (
+#                          right memberOf $rightSubRules
 #                          &&
 #                          left memberOf $leftSubRules
-                      )
-                  )
-            )
+#                      )
+#                  )
+#            )
     then
 #        Map impactedRules = new HashMap();
 #        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
@@ -257,5 +257,4 @@ rule "Find subsumptant rule possibilities from different rules"
                         "Rules are subsumptant.",
                         causes ) );
 end
-
 */
