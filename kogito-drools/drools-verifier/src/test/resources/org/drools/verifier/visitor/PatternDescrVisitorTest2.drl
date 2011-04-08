@@ -18,7 +18,7 @@ package org.drools.verifier.visitor;
         
 rule "Test"
     when
-            Person( var:age )
+            var :Person( )
     then
         System.out.println( "Test" );
 end

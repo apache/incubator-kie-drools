@@ -132,8 +132,8 @@ rule "Incoherent Patterns in rule possibility, variables"
             rulePath == $r1.rulePath,
             patternIsNot == false,
             fieldPath == $r1.fieldPath,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             operator == $r1.operator
         )
 
@@ -407,8 +407,8 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             rulePath == $r1.rulePath,
             patternIsNot == false,
             fieldPath == $r1.fieldPath,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             # It is also a problem if the value is NOT_EQUAL, but there is already a rule for that.
             ( operator != Operator.EQUAL && != Operator.NOT_EQUAL )
         )
@@ -546,8 +546,8 @@ rule "Incoherent Patterns in rule possibility, ranges when not conflicts with eq
             rulePath == $r1.rulePath,
             patternIsNot == false,
             fieldPath == $r1.fieldPath,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             operator == Operator.EQUAL
         )
 

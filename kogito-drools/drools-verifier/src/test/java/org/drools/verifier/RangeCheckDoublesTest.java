@@ -28,6 +28,7 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -35,6 +36,7 @@ import static org.junit.Assert.*;
 public class RangeCheckDoublesTest extends TestBaseOld {
 
     @Test
+    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testSmallerOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Doubles.drl"));
@@ -75,6 +77,7 @@ public class RangeCheckDoublesTest extends TestBaseOld {
     }
 
     @Test
+    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testGreaterOrEqual() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Doubles.drl"));
@@ -115,6 +118,7 @@ public class RangeCheckDoublesTest extends TestBaseOld {
     }
 
     @Test
+    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testEqualAndGreaterThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Doubles.drl"));
@@ -156,6 +160,7 @@ public class RangeCheckDoublesTest extends TestBaseOld {
     }
 
     @Test
+    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testEqualAndSmallerThan() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass()
                 .getResourceAsStream("rangeChecks/Doubles.drl"));

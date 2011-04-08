@@ -48,15 +48,35 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
         packageDescrVisitor.visitPackageDescr(packageDescr);
 
         Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
-        Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
 
         assertEquals(2, allRestrictions.size());
-        assertEquals(1, allFields.size());
+        assertContainsFields(1);
+
 
         assertContainsField("age");
 
         assertContainsNumberRestriction(Operator.GREATER, 0);
         assertContainsNumberRestriction(Operator.LESS, 100);
+    }
+
+    @Test
+    public void testVisitVariableRestriction() throws Exception {
+
+        PackageDescr packageDescr = getPackageDescr(getClass().getResourceAsStream("ExprConstraintDescr3.drl"));
+
+        assertNotNull(packageDescr);
+
+        packageDescrVisitor.visitPackageDescr(packageDescr);
+
+        Collection<StringRestriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
+
+        assertEquals(1, allRestrictions.size());
+        assertContainsFields(1);
+
+        assertContainsField("age");
+        assertContainsVariable("Test 1", "var");
+
+        assertContainsVariableRestriction(Operator.EQUAL, "var");
     }
 
     private void assertContainsEval(String eval) {
@@ -70,6 +90,21 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
         }
 
         fail(String.format("Could not find Eval : %s ", eval));
+    }
+
+    private void assertContainsVariableRestriction(Operator operator, String variableName) {
+        Collection<Restriction> allRestrictions = verifierData.getAll(VerifierComponentType.RESTRICTION);
+
+        for (Restriction restriction : allRestrictions) {
+            if (restriction instanceof VariableRestriction) {
+                VariableRestriction variableRestriction = (VariableRestriction) restriction;
+                if (variableName.equals(variableRestriction.getVariable().getName()) && operator.equals(variableRestriction.getOperator())) {
+                    return;
+                }
+            }
+        }
+
+        fail(String.format("Could not find VariableRestriction: Operator : %s Variable name: %s", operator, variableName));
     }
 
     private void assertContainsStringRestriction(Operator operator, String value) {
@@ -102,15 +137,4 @@ public class ExprConstraintDescrVisitorTest extends TestBase {
         fail(String.format("Could not find NumberRestriction: Operator : %s Value: %s", operator, value));
     }
 
-    private void assertContainsField(String name) {
-        Collection<Field> allFields = verifierData.getAll(VerifierComponentType.FIELD);
-
-        for (Field field : allFields) {
-            if (name.equals(field.getName())) {
-                return;
-            }
-        }
-
-        fail("Could not find Field");
-    }
 }

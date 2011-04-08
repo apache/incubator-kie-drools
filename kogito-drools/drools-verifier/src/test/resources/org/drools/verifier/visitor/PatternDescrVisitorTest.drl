@@ -16,10 +16,9 @@
 
 package org.drools.verifier.visitor;
         
-rule "Test 1"
+rule "Test"
     when
             Person( var:age )
-            Person( age == var )
     then
         System.out.println( "Test" );
 end

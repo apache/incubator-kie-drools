@@ -26,15 +26,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.verifier.components.Field;
-import org.drools.verifier.components.Import;
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.RulePackage;
-import org.drools.verifier.components.Variable;
-import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.EntryPoint;
-import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.*;
 
 class VerifierDataKnowledgeSession
     implements
