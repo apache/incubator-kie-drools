@@ -1,0 +1,10 @@
+<PMML version="4.0" xsi:schemaLocation="http://www.dmg.org/PMML-4_0 http://www.dmg.org/v4-0/pmml-4-0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_0">
+  <Header copyright="opensource" description="test">
+    <Application name="handmade" version="1.0"/>
+    <Annotation>notes here</Annotation>
+    <Timestamp>now</Timestamp>
+  </Header>
+  <DataDictionary>
+    <DataField dataType="string" name="foo" optype="categorical"></DataField>
+  </DataDictionary>
+</PMML>

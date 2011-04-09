@@ -1,0 +1,116 @@
+<PMML version="4.0" xsi:schemaLocation="http://www.dmg.org/PMML-4_0 http://www.dmg.org/v4-0/pmml-4-0.xsd" xmlns="http://www.dmg.org/PMML-4_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Header copyright="Copyright (c) Integral Solutions Ltd., 1994 - 2005. All rights reserved.">
+    <Application name="Clementine" version="10.0"/>
+    <Annotation>Exported with PMML extensions for use with SPSS SmartScore</Annotation>
+  </Header>
+  <DataDictionary numberOfFields="6">
+    <DataField dataType="double" name="petal length" optype="continuous"></DataField>
+    <DataField dataType="double" name="petal width" optype="continuous"></DataField>
+    <DataField dataType="double" name="sepal length" optype="continuous"></DataField>
+    <DataField dataType="double" name="sepal width" optype="continuous"></DataField>
+    <DataField dataType="string" name="NSPECIES" optype="categorical">
+      <Value property="valid" value="Iris_setosa"/>
+      <Value property="valid" value="Iris_versicolor"/>
+      <Value property="valid" value="Iris_virginica"/>
+    </DataField>
+    <DataField dataType="double" name="NCSPECIES" optype="continuous"></DataField>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="Neural Net" functionName="classification" modelName="IRIS_MLP">
+    <MiningSchema>
+      <MiningField highValue="6.9" lowValue="1.0" missingValueReplacement="3.95" missingValueTreatment="asMedian" name="petal length" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="2.5" lowValue="0.1" missingValueReplacement="1.3" missingValueTreatment="asMedian" name="petal width" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="7.9" lowValue="4.3" missingValueReplacement="6.1" missingValueTreatment="asMedian" name="sepal length" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="4.4" lowValue="2.0" missingValueReplacement="3.2" missingValueTreatment="asMedian" name="sepal width" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="NSPECIES" usageType="predicted"/>
+      <MiningField name="NCSPECIES" usageType="supplementary"/>
+    </MiningSchema>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="petal length">
+            <LinearNorm norm="0" orig="1"/>
+            <LinearNorm norm="1" orig="6.9"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="petal width">
+            <LinearNorm norm="0" orig="0.1"/>
+            <LinearNorm norm="1" orig="2.5"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="sepal length">
+            <LinearNorm norm="0" orig="4.3"/>
+            <LinearNorm norm="1" orig="7.9"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormContinuous field="sepal width">
+            <LinearNorm norm="0" orig="2"/>
+            <LinearNorm norm="1" orig="4.4"/>
+          </NormContinuous>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="2.03473228253" id="4">
+        <Con from="0" weight="-4.0256456408"/>
+        <Con from="1" weight="-3.83730095974"/>
+        <Con from="2" weight="0.0624800821416"/>
+        <Con from="3" weight="2.40206472093"/>
+      </Neuron>
+      <Neuron bias="1.6526137028" id="5">
+        <Con from="0" weight="-5.01759484187"/>
+        <Con from="1" weight="-5.23173402014"/>
+        <Con from="2" weight="-1.80228751097"/>
+        <Con from="3" weight="2.98662625446"/>
+      </Neuron>
+      <Neuron bias="-11.6218815784" id="6">
+        <Con from="0" weight="11.3795015654"/>
+        <Con from="1" weight="9.67298427591"/>
+        <Con from="2" weight="-2.10906925011"/>
+        <Con from="3" weight="-3.58414535245"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer normalizationMethod="simplemax">
+      <Neuron bias="-4.54626929708" id="7">
+        <Con from="4" weight="4.36547390082"/>
+        <Con from="5" weight="4.69477556292"/>
+        <Con from="6" weight="-4.37727158969"/>
+      </Neuron>
+      <Neuron bias="4.85147554911" id="8">
+        <Con from="4" weight="-2.51631420956"/>
+        <Con from="5" weight="-6.71322276698"/>
+        <Con from="6" weight="-9.34181840082"/>
+      </Neuron>
+      <Neuron bias="-2.95716683639" id="9">
+        <Con from="4" weight="-6.98136941982"/>
+        <Con from="5" weight="-4.64823127158"/>
+        <Con from="6" weight="7.63041165053"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="7">
+        <DerivedField dataType="string" optype="categorical">
+          <NormDiscrete field="NSPECIES" value="Iris_setosa"/>
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="8">
+        <DerivedField dataType="string" optype="categorical">
+          <NormDiscrete field="NSPECIES" value="Iris_versicolor"/>
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="9">
+        <DerivedField dataType="string" optype="categorical">
+          <NormDiscrete field="NSPECIES" value="Iris_virginica"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

@@ -1,0 +1,16 @@
+<PMML version="4.0" xsi:schemaLocation="http://www.dmg.org/PMML-4_0 http://www.dmg.org/v4-0/pmml-4-0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_0">
+  <Header copyright="DMG.org"/>
+  <DataDictionary>
+    <DataField dataType="integer" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField dataType="integer" name="Konst" optype="categorical">
+      <Constant dataType="integer">8</Constant>
+    </DerivedField>
+    <DerivedField dataType="integer" name="AliasAge" optype="continuous">
+      <FieldRef field="Age"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>

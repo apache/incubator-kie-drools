@@ -1,0 +1,569 @@
+import org.drools.pmml_4_0.descr.*;
+import org.drools.pmml_4_0.*;
+import java.util.Map;
+import java.util.LinkedHashMap;
+
+
+
+
+//**********************************************************************************************************
+//
+//  VISIT RULES
+//
+//**********************************************************************************************************
+
+
+
+rule "visitPMML"
+salience -1
+when
+    $pmml : PMML(
+        $header : header,
+        $dataDic : dataDictionary,
+        $tranDic : transformationDictionary
+    )
+then
+   insert($header);
+   insert($dataDic);
+   insert($tranDic);
+end
+
+
+rule "main_cleanup"
+salience -9999
+when
+    $p: PMML( )
+then
+   retract($p);
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDataDictionary"
+//after visitHeader
+salience -10
+when
+    $dataDic : DataDictionary( $flds : dataFields )
+    $fld : DataField() from $flds
+then
+//System.err.println("INSERT FIELD " + $fld);
+   insert($fld);
+end
+
+rule "visitDataDictionary_cleanup"
+//after visitHeader
+salience -11
+when
+    $dataDic : DataDictionary( )
+then
+    retract($dataDic);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitTransformationDictionary"
+// after visitDataDictionary
+salience -20
+when
+    TransformationDictionary( $flds : derivedFields )
+    $fld : DerivedField( ) from $flds
+then
+   //System.err.println("INSERT DERIVED FIELD " + $fld);
+   insert($fld);
+end
+
+rule "visitTransformationDictionary_cleanup"
+// after visitDataDictionary
+salience -21
+when
+    $tranDic : TransformationDictionary( )
+then
+   retract($tranDic);
+end
+
+
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+rule "visitDerivedField_NormContinuous"
+salience -1
+when
+    $fld : DerivedField( $nc : normContinuous != null )
+then
+    insertLogical($nc);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Constant"
+salience -1
+when
+    $fld : DerivedField( $c : constant != null )
+then
+    insertLogical($c);
+end
+
+ //------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Reference"
+salience -1
+when
+    $fld : DerivedField( $f : fieldRef != null )
+then
+    insertLogical($f);
+end
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_NormDiscrete"
+salience -1
+when
+    $fld : DerivedField( $nd : normDiscrete != null )
+then
+    insertLogical($nd);
+end
+
+ //------------------------------------------------------------------------------------------------------------//
+
+rule "visitDerivedField_Discretize"
+salience -1
+when
+    $fld : DerivedField( $dx : discretize != null )
+then
+    insertLogical($dx);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_MapValues"
+salience -1
+when
+    $fld : DerivedField( $map : mapValues != null )
+then
+    insertLogical($map);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_Aggregate"
+salience -1
+when
+    $fld : DerivedField( $agg : aggregate != null )
+then
+    insertLogical($agg);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDerivedField_Apply"
+salience -1
+when
+    $fld : DerivedField( $app : apply != null )
+then
+    insertLogical($app);
+end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+rule "visitDefFunctTransform"
+salience -1
+when
+    TransformationDictionary( $funs : defineFunctions )
+    $fun : DefineFunction() from $funs
+then
+    insert($fun);
+end
+
+
+
+
+rule "visitDefineFunction_Apply"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $apply : apply != null, apply.function != "identity" )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($apply);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_NormCont"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $nc : normContinuous != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($nc);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+
+rule "visitDefineFunction_Aggregate"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $agg : aggregate != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($agg);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_Mapvalue"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $map : mapValues != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($map);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_Discretize"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $dx : discretize != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($dx);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_NormDiscrete"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $nd : normDiscrete != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($nd);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_FldRef"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $ref : fieldRef != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($ref);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+rule "visitDefineFunction_Const"
+salience 15
+no-loop
+when
+   $def : DefineFunction( $k : constant != null )
+then
+   Apply idApply = new Apply();
+        idApply.setFunction("identity");
+        idApply.getConstantsAndFieldRevesAndNormContinuouses().add($k);
+   $def.setNormContinuous(null);
+   $def.setApply(idApply);
+   update($def);
+end
+
+
+
+
+
+
+rule "visitApply"
+salience 0
+when
+    Apply( $args : constantsAndFieldRevesAndNormContinuouses, $fun : function )
+    $arg : Object() from $args
+then
+   insertLogical($arg);
+end
+
+
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+
+rule "visitModels"
+salience -50
+when
+   PMML( $modelList : associationModelsAndClusteringModelsAndGeneralRegressionModels )
+   $model : Object() from $modelList
+then
+   insert($model);
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+ rule "MiningSchema"
+ salience -7
+ when
+     $m : MiningSchema( $fields : miningFields)
+     $o : Object() from $fields
+ then
+     insertLogical($o);
+ end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+
+
+rule "Targets"
+when
+    Targets( $tgts : targets )
+    $t : Target() from $tgts
+then
+    insertLogical($t);
+end
+
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+declare OutputParentModel
+    field : OutputField     @key
+    modelType : String
+end
+
+rule "Outputs_Neural"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"NeuralNetwork"));
+end
+
+rule "Outputs_Association"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    AssociationModel( $info : extensionsAndMiningSchemasAndOutputs contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"Association"));
+end
+
+rule "Outputs_Clustering"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    ClusteringModel( $info : extensionsAndClustersAndComparisonMeasures contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"Clustering"));
+end
+
+rule "Outputs_Regression"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    RegressionModel( $info : extensionsAndRegressionTablesAndMiningSchemas contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"Regression"));
+end
+
+
+rule "Outputs_GenRegression"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    GeneralRegressionModel( $info : extensionsAndParamMatrixesAndPPMatrixes contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"GeneralRegression"));
+end
+
+
+rule "Outputs_NaiveBayes"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    NaiveBayesModel( $info : extensionsAndBayesOutputsAndBayesInputs contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"NaiveBayes"));
+end
+
+rule "Outputs_RuleSet"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    RuleSetModel( $info : extensionsAndRuleSetsAndMiningSchemas contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"RuleSet"));
+end
+
+rule "Outputs_SVM"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    SupportVectorMachineModel( $info : extensionsAndSupportVectorMachinesAndVectorDictionaries contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"SVM"));
+end
+
+rule "Outputs_Tree"
+when
+    $out : Output( $outs : outputFields )
+    $of : OutputField() from $outs
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas contains $out )
+then
+    insertLogical($of);
+    insertLogical(new OutputParentModel($of,"Tree"));
+end
+
+
+
+
+
+
+
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+rule "visitNeuralNetwork"
+salience -10
+when
+    $net : NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs, $name : modelName)
+    $o : Object() from $info
+then
+    insertLogical($o);
+end
+
+
+
+
+rule "Neural_InputFields"
+salience -8
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralInputs( $nis : neuralInputs )
+    $ni : NeuralInput( $fld : derivedField, $id : id) from $nis
+then
+    insertLogical($ni);
+end
+
+
+
+rule "Neural_Layers"
+salience -9
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralLayer( $ns : neurons, activationFunction != null, threshold != null )
+    $n : Neuron( ) from $ns
+then
+    insertLogical($n);
+end
+
+
+
+rule "Neural_Outputs"
+salience -9
+when
+    //NeuralNetwork( $info : extensionsAndNeuralLayersAndNeuralInputs , $nn : modelName)
+    NeuralOutputs( $outs : neuralOutputs )
+    $out : NeuralOutput() from $outs
+then
+    insertLogical($out);
+end
+
+
+
+ //------------------------------------------------------------------------------------------------------------//
+
+
+
+
+   /*
+    protected DATATYPE dataType;
+    protected String targetField;
+    protected String value;
+
+
+    protected RESULTFEATURE feature;
+
+        PREDICTED_VALUE("predictedValue"),
+        PREDICTED_DISPLAY_VALUE("predictedDisplayValue"),
+        PROBABILITY("probability"),
+        RESIDUAL("residual"),
+        STANDARD_ERROR("standardError"),
+        CLUSTER_ID("clusterId"),
+        CLUSTER_AFFINITY("clusterAffinity"),
+        ENTITY_ID("entityId"),
+        ENTITY_AFFINITY("entityAffinity"),
+        WARNING("warning"),
+        RULE_VALUE("ruleValue");
+
+    protected RULEFEATURE ruleFeature;
+
+    protected String algorithm;
+    protected BigInteger rank;
+    protected String rankBasis;
+    protected String rankOrder;
+    protected String isMultiValued;
+    */
+
+
+
+
+
+
