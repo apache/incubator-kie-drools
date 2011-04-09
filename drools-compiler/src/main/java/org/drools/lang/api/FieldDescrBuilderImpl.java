@@ -1,7 +1,10 @@
 package org.drools.lang.api;
 
+import org.drools.compiler.TypeDeclarationError;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.rule.TypeDeclaration;
 
 public class FieldDescrBuilderImpl extends BaseDescrBuilderImpl<TypeFieldDescr>
     implements
@@ -34,6 +37,15 @@ public class FieldDescrBuilderImpl extends BaseDescrBuilderImpl<TypeFieldDescr>
 
     public FieldDescrBuilder initialValue( String value ) {
         descr.setInitExpr( value );
+        return this;
+    }
+
+
+    public FieldDescrBuilder processAnnotations() {
+        if ( descr.getAnnotations().containsKey( TypeDeclaration.ATTR_FIELD_POSITION ) ) {
+             int pos = Integer.valueOf(descr.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getValue());
+             descr.setIndex(pos);
+        }
         return this;
     }
 

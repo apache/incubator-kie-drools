@@ -406,7 +406,7 @@ public class DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * declare := DECLARE type annotation* field* END SEMICOLON?
+     * declare := DECLARE type (EXTENDS type)? annotation* field* END SEMICOLON?
      * 
      * @return
      * @throws RecognitionException
@@ -430,6 +430,22 @@ public class DRLParser {
             String type = type();
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) declare.type( type );
+
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.EXTENDS,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if (! state.failed ) {
+                    String superType = type();
+                    declare.superType(superType);
+                    System.err.println("Found extension " + type);
+                }
+
+            }
+
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
@@ -523,6 +539,7 @@ public class DRLParser {
                 annotation( field );
                 if ( state.failed ) return;
             }
+            field.processAnnotations();
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -1081,7 +1098,6 @@ public class DRLParser {
 
     /**
      * salience := SALIENCE conditionalExpression
-     * @param attribute
      * @throws RecognitionException
      */
     private AttributeDescr salience() throws RecognitionException {
@@ -1121,7 +1137,6 @@ public class DRLParser {
 
     /**
      * enabled := ENABLED conditionalExpression
-     * @param attribute
      * @throws RecognitionException
      */
     private AttributeDescr enabled() throws RecognitionException {
@@ -1160,7 +1175,7 @@ public class DRLParser {
 
     /**
      * booleanAttribute := attributeKey (BOOLEAN)?
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr booleanAttribute( String[] key ) throws RecognitionException {
@@ -1216,7 +1231,7 @@ public class DRLParser {
 
     /**
      * stringAttribute := attributeKey STRING
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr stringAttribute( String[] key ) throws RecognitionException {
@@ -1268,7 +1283,7 @@ public class DRLParser {
 
     /**
      * stringListAttribute := attributeKey STRING (COMMA STRING)*
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr stringListAttribute( String[] key ) throws RecognitionException {
@@ -1341,7 +1356,7 @@ public class DRLParser {
 
     /**
      * intOrChunkAttribute := attributeKey (DECIMAL | parenChunk)
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr intOrChunkAttribute( String[] key ) throws RecognitionException {
@@ -1490,7 +1505,8 @@ public class DRLParser {
      * lhsOr := LEFT_PAREN OR lhsAnd+ RIGHT_PAREN
      *        | lhsAnd (OR lhsAnd)*
      *        
-     * @param lhs
+     * @param ce
+     * @param allowOr
      * @throws RecognitionException 
      */
     private BaseDescr lhsOr( final CEDescrBuilder< ? , ? > ce,

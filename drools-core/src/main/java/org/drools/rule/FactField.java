@@ -33,4 +33,6 @@ public interface FactField
 
     public FieldAccessor getFieldAccessor();
 
+    public int getIndex();
+
 }
