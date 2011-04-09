@@ -3195,6 +3195,9 @@ public class DRLParser {
                                               -1 ).trim();
                         if ( state.failed ) return;
                         if ( state.backtracking == 0 ) {
+                            if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+                                value = StringUtils.unescapeJava( value );
+                            }
                             annotation.value( value );
                         }
                     }
@@ -3296,6 +3299,9 @@ public class DRLParser {
             if ( state.failed ) return;
 
             String value = elementValue();
+            if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+                value = StringUtils.unescapeJava( value );
+            }
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {

@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -49,6 +48,7 @@ import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
@@ -63,6 +63,8 @@ import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Position;
 import org.drools.factmodel.AnnotationDefinition;
+import org.drools.definition.type.*;
+import org.drools.definition.type.FactField;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -90,6 +92,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.descr.*;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
@@ -98,9 +101,8 @@ import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.*;
 import org.drools.rule.Package;
-import org.drools.rule.Rule;
-import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
@@ -112,6 +114,11 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
+
+import java.beans.IntrospectionException;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -207,12 +214,12 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     * 
+     *
      * PackageBuilderConfiguration is not thread safe and it also contains
      * state. Once it is created and used in one or more PackageBuilders it
      * should be considered immutable. Do not modify its properties while it is
      * being used by a PackageBuilder.
-     * 
+     *
      * @param configuration
      */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
@@ -333,7 +340,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -382,7 +389,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -424,7 +431,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     * 
+     *
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -643,7 +650,6 @@ public class PackageBuilder {
                 } else {
                     throw new RuntimeException( "Unknown resource type: " + type );
                 }
-
             } else {
                 ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
                 if ( builder != null ) {
@@ -1465,8 +1471,6 @@ public class PackageBuilder {
 
         PackageRegistry pkgRegistry = null;
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
-
-
             if ( isEmpty( typeDescr.getNamespace() ) ) {
                 for ( ImportDescr id : packageDescr.getImports() ) {
                     String imp = id.getTarget();
@@ -1546,7 +1550,7 @@ public class PackageBuilder {
 
         // sort declarations : superclasses must be generated first
         Collection<TypeDeclarationDescr> sortedTypeDescriptors = sortByHierarchy( packageDescr.getTypeDeclarations() );
-
+        
         for ( TypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
             if ( !typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
@@ -1616,7 +1620,6 @@ public class PackageBuilder {
                 type.setFormat( TypeDeclaration.Format.POJO );
                 Class clazz;
                 try {
-
                     // the type declaration is generated in any case (to be used by subclasses, if any)
                     // the actual class will be generated only if needed
                     generateDeclaredBean( typeDescr,
@@ -1625,7 +1628,6 @@ public class PackageBuilder {
 
                     clazz = pkgRegistry.getTypeResolver().resolveType( className );
                     type.setTypeClass( clazz );
-
                     if ( type.getTypeClassDef() != null ) {
                         try {
                             buildFieldAccessors( type,
@@ -1692,10 +1694,9 @@ public class PackageBuilder {
         }
     }
 
+
     /**
-     * Checks whether a declaration is novel, or is a retagging of an external
-     * one
-     * 
+     * Checks whether a declaration is novel, or is a retagging of an external one
      * @param typeDescr
      * @return
      */
@@ -1716,7 +1717,7 @@ public class PackageBuilder {
             } else {
                 return false;
             }
-        } catch ( ClassNotFoundException cnfe ) {
+        } catch (ClassNotFoundException cnfe) {
             return true;
         }
     }
@@ -1741,9 +1742,9 @@ public class PackageBuilder {
             return null;
         }
     }
-
+    
     /**
-     * 
+     *
      * @param pkgRegistry
      * @throws SecurityException
      * @throws IllegalArgumentException
@@ -1781,8 +1782,8 @@ public class PackageBuilder {
      * everything is using.
      */
     private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
-                                       TypeDeclaration type,
-                                       PackageRegistry pkgRegistry) {
+                                      TypeDeclaration type,
+                                      PackageRegistry pkgRegistry) {
 
         // extracts type, supertype and interfaces
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
@@ -1798,22 +1799,6 @@ public class PackageBuilder {
         ClassDefinition def = new ClassDefinition( fullName,
                                                    fullSuperType,
                                                    interfaces);
-
-            for ( String annotationName : typeDescr.getAnnotationNames() ) {
-                Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());
-                if ( annotation != null ) {
-                    try {
-                        AnnotationDefinition annotationDefinition = AnnotationDefinition.build(
-                                                                    annotation,
-                                                                    typeDescr.getAnnotations().get(annotationName).getValueMap(),
-                                                                    pkgRegistry.getTypeResolver());
-                        def.addAnnotation(annotationDefinition);
-                    } catch (NoSuchMethodException nsme) {
-                        this.results.add( new TypeDeclarationError( "Annotated type " + fullName +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
-                                                            typeDescr.getLine() ) );
-                    }
-                }
-            }
 
         for ( String annotationName : typeDescr.getAnnotationNames() ) {
             Class annotation = resolveAnnotation( annotationName,
@@ -1855,7 +1840,6 @@ public class PackageBuilder {
 
                 dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
                                d );
-
             } catch ( Exception e ) {
                 this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
                                                             typeDescr.getLine() ) );
@@ -1927,9 +1911,11 @@ public class PackageBuilder {
             }
 
         }
-
+        
         return queue;
     }
+
+
 
     private void addFunction(final FunctionDescr functionDescr) {
         functionDescr.setResource( this.resource );
@@ -2062,7 +2048,7 @@ public class PackageBuilder {
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     * 
+     *
      * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
@@ -2153,7 +2139,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     * 
+     *
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -2177,7 +2163,7 @@ public class PackageBuilder {
         }
 
         /**
-         * 
+         *
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
@@ -2318,17 +2304,14 @@ public class PackageBuilder {
     }
 
     /**
-     * Utility method to sort declared beans. Linearizes the hierarchy,
-     * i.e.generates a sequence of declaration such that, if Sub is subclass of
-     * Sup, then the index of Sub will be > than the index of Sup in the
-     * resulting collection. This ensures that superclasses are processed before
-     * their subclasses
-     * 
+     * Utility method to sort declared beans. Linearizes the hierarchy, i.e.generates a sequence of
+     * declaration such that, if Sub is subclass of Sup, then the index of Sub will be > than the index
+     * of Sup in the resulting collection.
+     * This ensures that superclasses are processed before their subclasses
      * @param typeDeclarations
      * @return
      */
     public static Collection<TypeDeclarationDescr> sortByHierarchy(List<TypeDeclarationDescr> typeDeclarations) {
-
         Node<TypeDeclarationDescr> root = new Node<TypeDeclarationDescr>( null );
         Map<String, Node<TypeDeclarationDescr>> map = new HashMap<String, Node<TypeDeclarationDescr>>();
         for ( TypeDeclarationDescr tdescr : typeDeclarations ) {
@@ -2442,3 +2425,4 @@ public class PackageBuilder {
     }
 
 }
+

@@ -398,7 +398,6 @@ public class TypeDeclaration
         this.typesafe = typesafe;
     }
 
-
     public boolean isNovel() {
         return novel;
     }
@@ -406,5 +405,4 @@ public class TypeDeclaration
     public void setNovel(boolean novel) {
         this.novel = novel;
     }
-
 }

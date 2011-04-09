@@ -267,7 +267,7 @@ public class ClassFieldInspector {
                             final Integer index,
                             final String fieldName) {
         this.fieldNames.put( fieldName,
-                index );
+                		     index );
     }
     
     //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
