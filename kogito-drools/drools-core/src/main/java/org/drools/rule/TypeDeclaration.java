@@ -47,6 +47,7 @@ public class TypeDeclaration
     public static final String ATTR_DURATION            = "duration";
     public static final String ATTR_TIMESTAMP           = "timestamp";
     public static final String ATTR_EXPIRE              = "expires";
+    public static final String ATTR_KEY                 = "key";
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
 
@@ -94,6 +95,7 @@ public class TypeDeclaration
     private Resource             resource;
     private boolean              dynamic;
     private boolean              typesafe =  true;
+    private boolean              novel;
 
     private transient ObjectType objectType;
     private long                 expirationOffset = -1;
@@ -381,7 +383,13 @@ public class TypeDeclaration
     public void setTypesafe(boolean typesafe) {
         this.typesafe = typesafe;
     }
-    
-    
 
+
+    public boolean isNovel() {
+        return novel;
+    }
+
+    public void setNovel(boolean novel) {
+        this.novel = novel;
+    }
 }
