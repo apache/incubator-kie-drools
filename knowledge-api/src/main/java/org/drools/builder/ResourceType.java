@@ -105,6 +105,18 @@ public class ResourceType implements Serializable {
                                                                              "XSD",
                                                                              "xsd" );
 
+
+
+
+    /** PMML */
+    public static final ResourceType PMML       = addResourceTypeToRegistry( "PMML",
+                                                                             "Predictive Model Markup Language",
+                                                                             "pmml" );
+
+
+
+
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get( resourceType );
         if ( resource == null ) {
