@@ -226,8 +226,8 @@ rule "Opposite VariableRestrictions"
         $r2 :VariableRestriction(
             fieldPath == $r1.fieldPath,
             path != $r1.path,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             # Operator needs to be reverse to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
         )

@@ -1,7 +1,5 @@
 package org.drools.rule.builder;
 
-import java.util.List;
-
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.lang.descr.PredicateDescr;

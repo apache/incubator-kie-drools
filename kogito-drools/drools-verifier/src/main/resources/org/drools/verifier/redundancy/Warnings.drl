@@ -140,7 +140,6 @@ rule "Find equivalent Rules" extends "Find redundant LHS"
                         equivalence ) );
 end
 
-
 #
 # Dependencies:
 #
@@ -176,37 +175,38 @@ rule "Find redundant rules" extends "Find redundant LHS"
             items contains $rightConsequence
         )
 
-        $causes : ArrayList()
-            from collect(
-                  Subsumption(
-                      (
-                          left memberOf $rightSubRules
-                          &&
-                          right memberOf $leftSubRules
-                      ) || (
-                          right memberOf $rightSubRules
-                          &&
-                          left memberOf $leftSubRules
-                      )
-                  )
-            )
+#        $causes : ArrayList()
+#            from collect(
+#                  Subsumption(
+#                      (
+#                          left memberOf $rightSubRules
+#                          &&
+#                          right memberOf $leftSubRules
+#                      ) || (
+#                          right memberOf $rightSubRules
+#                          &&
+#                          left memberOf $leftSubRules
+#                      )
+#                  )
+#            )
     then
-        Map impactedRules = new HashMap();
-        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
-        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
+#        Map impactedRules = new HashMap();
+#        impactedRules.put( $leftConsequence.getRulePath(), $leftConsequence.getRuleName());
+#        impactedRules.put( $rightConsequence.getRulePath(), $rightConsequence.getRuleName());
 
-        Redundancy redundancy = new Redundancy( $left, $right, $causes );
-        insert( redundancy );
+#        Redundancy redundancy = new Redundancy( $left, $right, $causes );
+#        insert( redundancy );
 
-        result.add(new VerifierMessage(
-                        impactedRules,
-                        Severity.WARNING,
-                        MessageType.REDUNDANCY,
-                        null,
-                        "Rules " + $right.getName() + " and " + $left.getName() + " are redundant.",
-                        redundancy ) );
+#        result.add(new VerifierMessage(
+#                        impactedRules,
+#                        Severity.WARNING,
+#                        MessageType.REDUNDANCY,
+#                        null,
+#                        "Rules " + $right.getName() + " and " + $left.getName() + " are redundant.",
+#                        redundancy ) );
 end
 
+/*
 
 #
 # Dependencies:
@@ -257,4 +257,4 @@ rule "Find subsumptant rule possibilities from different rules"
                         "Rules are subsumptant.",
                         causes ) );
 end
-
+*/

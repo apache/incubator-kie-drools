@@ -307,8 +307,8 @@ rule "Incoherent VariableRestrictions in pattern possibility"
             patternPath == $r1.patternPath,
             fieldPath == $r1.fieldPath,
             path != $r1.path,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             # Operator needs to be reversed to what the other one has.
             eval( operator == MissingRange.getReversedOperator( $r1.getOperator() ))
         )
@@ -357,8 +357,8 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
             patternPath == $r1.patternPath,
             fieldPath == $r1.fieldPath,
             operator == Operator.GREATER,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             path != $r1.path
         )
 

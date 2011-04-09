@@ -16,30 +16,23 @@
 
 package org.drools.rule.builder.dialect.mvel;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
+import org.drools.base.EvaluatorWrapper;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.rule.builder.PackageBuildContext;
-import org.drools.runtime.rule.RuleContext;
-import org.drools.spi.KnowledgeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.compiler.ExpressionCompiler;
-import org.mvel2.util.ParseTools;
 import org.mvel2.util.PropertyTools;
 
 /**
@@ -67,6 +60,7 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
+    @SuppressWarnings("unchecked")
     public MVELAnalysisResult analyzeExpression(final PackageBuildContext context,
                                                 final String expr,
                                                 final BoundIdentifiers availableIdentifiers,
@@ -101,7 +95,7 @@ public class MVELExprAnalyzer {
             parserContext1.setStrictTypeEnforcement( false );
             parserContext1.setStrongTyping( false );
             parserContext1.setInterceptors( dialect.getInterceptors() );
-            Class returnType  = null;
+            Class<?> returnType  = null;
             
             try {
                 returnType =  MVEL.analyze( expr,
@@ -114,7 +108,7 @@ public class MVELExprAnalyzer {
                 return null;
             }            
 
-            Set<String> requiredInputs = new HashSet(); 
+            Set<String> requiredInputs = new HashSet<String>(); 
             requiredInputs.addAll( parserContext1.getInputs().keySet() );
             HashMap<String, Class<?>> variables = (HashMap<String, Class<?>>) ((Map)parserContext1.getVariables());
 
@@ -142,7 +136,7 @@ public class MVELExprAnalyzer {
                 }
                 
                 for ( String str : requiredInputs ) {                    
-                    Class cls = availableIdentifiers.getDeclarations().get( str );
+                    Class<?> cls = availableIdentifiers.getDeclarations().get( str );
                     if ( cls != null ) {
                         parserContext2.addInput( str,
                                                  cls );
@@ -151,6 +145,15 @@ public class MVELExprAnalyzer {
                     
                     if ( cls == null ) {
                         cls = availableIdentifiers.getGlobals().get( str );
+                        if ( cls != null ) {
+                            parserContext2.addInput( str,
+                                                     cls );
+                            continue;
+                        }
+                    }
+                    
+                    if ( cls == null ) {
+                        cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null ;
                         if ( cls != null ) {
                             parserContext2.addInput( str,
                                                      cls );
@@ -188,7 +191,7 @@ public class MVELExprAnalyzer {
                     return null;
             }   
                 
-                requiredInputs = new HashSet();
+                requiredInputs = new HashSet<String>();
                 requiredInputs.addAll( parserContext2.getInputs().keySet() );
                 requiredInputs.addAll(  variables.keySet() );
                 variables = (HashMap<String, Class<?>>) ((Map)parserContext2.getVariables());
@@ -222,7 +225,6 @@ public class MVELExprAnalyzer {
      * @throws RecognitionException
      *             If an error occurs in the parser.
      */
-    @SuppressWarnings("unchecked")
     private MVELAnalysisResult analyze(final Set<String> identifiers,
                                        final BoundIdentifiers availableIdentifiers) {
 
@@ -233,6 +235,7 @@ public class MVELExprAnalyzer {
         notBound.remove( "this" );
         Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
         Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
+        Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
 
         for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclarations().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
@@ -249,9 +252,17 @@ public class MVELExprAnalyzer {
                 notBound.remove( entry.getKey() );
             }
         }
+        
+        for ( Map.Entry<String, EvaluatorWrapper> op : availableIdentifiers.getOperators().entrySet() ) {
+            if ( identifiers.contains( op.getKey() ) ) {
+                usedOperators.put( op.getKey(), op.getValue() );
+                notBound.remove( op );
+            }
+        }
 
         result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
                                                           usedGlobals,
+                                                          usedOperators,
                                                           availableIdentifiers.getThisClass() ) );
         result.setNotBoundedIdentifiers( notBound );
 

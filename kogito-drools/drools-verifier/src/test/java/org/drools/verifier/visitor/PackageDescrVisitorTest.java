@@ -36,6 +36,7 @@ import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.data.VerifierReportFactory;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -54,6 +55,7 @@ public class PackageDescrVisitorTest {
 
 
     @Test
+//    @Ignore("08-APR-2011 temporally ignoring -Rikkola-")
     public void testVisit() throws Exception {
 
         PackageDescr packageDescr = getPackageDescr(Verifier.class.getResourceAsStream("Misc3.drl"));
@@ -78,7 +80,7 @@ public class PackageDescrVisitorTest {
         }
 
         assertNotNull(all);
-        assertEquals(52,
+        assertEquals(45,
                 all.size());
 
     }
