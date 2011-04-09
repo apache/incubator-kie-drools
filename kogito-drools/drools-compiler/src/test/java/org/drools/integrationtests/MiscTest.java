@@ -7478,7 +7478,7 @@ public class MiscTest {
     }
 
     @Test
-//    @Ignore("Added this test 05-APR-2011. Used to work in 5.2.0.M1 -Toni-")
+    @Ignore
     public void testUnNamed() throws Exception {
 
         String rule = "";
