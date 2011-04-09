@@ -7478,7 +7478,7 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
+    @Ignore // this is an MVEL bug on operator precedence, waiting for MVEL fix
     public void testUnNamed() throws Exception {
 
         String rule = "";
@@ -7520,7 +7520,7 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
+    @Ignore // this isn't possible, we can only narrow with type safety, not widen.
     public void testAccessFieldsFromSubClass() throws Exception {
 
         // Exception in ClassFieldAccessorStore line: 116
@@ -7541,6 +7541,9 @@ public class MiscTest {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new StringReader(rule));
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final org.drools.rule.Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();

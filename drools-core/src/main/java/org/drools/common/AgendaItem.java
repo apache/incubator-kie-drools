@@ -224,7 +224,7 @@ public class AgendaItem
     }
 
     public String toString() {
-        return "[Activation rule=" + this.rtn.getRule().getName() + ", tuple=" + this.tuple + "]";
+        return "[Activation rule=" + this.rtn.getRule().getName() + ", salience="+ this.salience + ", tuple=" + this.tuple + "]";
     }
 
     /*
