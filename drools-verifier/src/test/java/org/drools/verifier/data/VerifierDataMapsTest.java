@@ -40,7 +40,7 @@ import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.PatternVariable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
@@ -111,7 +111,7 @@ public class VerifierDataMapsTest {
         saveVerifierComponentAndGet( new SubRule( rule,
                                                   0 ) );
         saveVerifierComponentAndGet( new TextConsequence( rule ) );
-        saveVerifierComponentAndGet( new Variable( rule ) );
+        saveVerifierComponentAndGet( new PatternVariable( rule ) );
         saveVerifierComponentAndGet( new VerifierAccessorDescr( rule ) );
         saveVerifierComponentAndGet( new VerifierAccumulateDescr( pattern ) );
         saveVerifierComponentAndGet( new VerifierCollectDescr( pattern ) );

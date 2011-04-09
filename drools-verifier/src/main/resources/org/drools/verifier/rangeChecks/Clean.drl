@@ -82,6 +82,7 @@ rule "Merge gaps"
         insert( mnp );
 end
 
+/*
 #
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
@@ -135,7 +136,7 @@ rule "Remove useless integer gaps lesser or lesser and equal"
 #        result.remove( $gap );
 end
 
-/*
+
 #
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.
 #
@@ -347,6 +348,7 @@ rule "Remove useless date gaps lesser or lesser and equal"
         retract( $gap );
         result.remove( $gap );
 end
+
 
 #
 # Removes existing gaps from working memory. Cleans out the data for actual reporting.

@@ -68,7 +68,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
                                                     descr.getConsequence() );
 
         // TODO: NEEDS TO BE FIXED
-        //rule.getMetadata().putAll( descr.get );
+//        rule.getMetadata().putAll( descr.get );
         rule.setConsequencePath( consequence.getPath() );
         rule.setConsequenceType( consequence.getConsequenceType() );
         rule.setLineNumber( descr.getLine() );

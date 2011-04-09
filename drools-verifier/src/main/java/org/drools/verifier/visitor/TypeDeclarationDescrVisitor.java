@@ -17,7 +17,9 @@
 package org.drools.verifier.visitor;
 
 import java.util.List;
+import java.util.Map;
 
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
@@ -62,12 +64,16 @@ public class TypeDeclarationDescrVisitor {
                     data.add(field);
                 }
             }
-            // TODO: bellow needs to be fixed
-//            for (String metadata : typeDeclaration.getMetaAttributes().keySet()) {
-//                objectType.getMetadata().put(metadata,
-//                        typeDeclaration.getMetaAttribute(metadata));
-//            }
+
+            for (String metadata : typeDeclaration.getAnnotations().keySet()) {
+                Map<String, String> values = typeDeclaration.getAnnotation(metadata).getValues();
+                for (String value : values.keySet()) {
+                    objectType.getMetadata().put(metadata,
+                            value);
+                }
+            }
         }
     }
+
 
 }

@@ -16,22 +16,8 @@
 
 package org.drools.verifier.visitor;
 
-import org.drools.compiler.DrlExprParser;
 import org.drools.lang.descr.*;
-import org.drools.verifier.components.EntryPoint;
-import org.drools.verifier.components.Import;
-import org.drools.verifier.components.ObjectType;
-import org.drools.verifier.components.OperatorDescrType;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.PatternEval;
-import org.drools.verifier.components.PatternOperatorDescr;
-import org.drools.verifier.components.Variable;
-import org.drools.verifier.components.VerifierAccumulateDescr;
-import org.drools.verifier.components.VerifierCollectDescr;
-import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.VerifierFromDescr;
-import org.drools.verifier.components.VerifierRule;
-import org.drools.verifier.components.WorkingMemory;
+import org.drools.verifier.components.*;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
 import org.drools.verifier.solver.Solvers;
@@ -64,7 +50,6 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         visitPatternDescr(descr,
                 null,
                 orderNumber);
-
     }
 
     private Pattern visitPatternDescr(PatternDescr descr,
@@ -98,14 +83,13 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         pattern.setOrderNumber(orderNumber);
 
         if (descr.getIdentifier() != null) {
-            Variable variable = new Variable(rule);
-            variable.setName(descr.getIdentifier());
+            PatternVariable patternVariable = new PatternVariable(rule);
+            patternVariable.setName(descr.getIdentifier());
 
-            variable.setObjectTypeType(VerifierComponentType.OBJECT_TYPE.getType());
-            variable.setObjectTypePath(objectType.getPath());
-            variable.setObjectTypeType(descr.getObjectType());
+            patternVariable.setParentPath(pattern.getPath());
+            patternVariable.setParentType(pattern.getVerifierComponentType());
 
-            data.add(variable);
+            data.add(patternVariable);
         }
 
         // visit source.
@@ -119,6 +103,8 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             pattern.setSourcePath(workingMemory.getPath());
             pattern.setSourceType(workingMemory.getVerifierComponentType());
         }
+
+        visit(descr.getBindings());
 
         solvers.startPatternSolver(pattern);
 
@@ -164,7 +150,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
     }
 
     private void visit(ExprConstraintDescr descr) {
-        ExprConstraintDescrVisitor exprConstraintDescrVisitor = new ExprConstraintDescrVisitor(pattern, data, orderNumber);
+        ExprConstraintDescrVisitor exprConstraintDescrVisitor = new ExprConstraintDescrVisitor(pattern, data, orderNumber, solvers);
         exprConstraintDescrVisitor.visit(descr);
     }
 
@@ -196,16 +182,18 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
      * @param descr
      */
     private void visitBindingDescr(BindingDescr descr) {
+        Field field = new Field();
+        field.setName(descr.getExpression());
+        field.setObjectTypeName(objectType.getName());
+        field.setObjectTypePath(objectType.getPath());
+        data.add(field);
 
-        Variable variable = new Variable(rule);
-        variable.setName(descr.getVariable());
-        variable.setOrderNumber(orderNumber.next());
-        variable.setParentPath(rule.getPath());
-        variable.setParentType(rule.getVerifierComponentType());
+        FieldVariable fieldVariable = new FieldVariable(pattern);
+        fieldVariable.setParentPath(field.getPath());
+        fieldVariable.setName(descr.getVariable());
+        fieldVariable.setOrderNumber(orderNumber.next());
 
-        variable.setObjectTypeType(VerifierComponentType.FIELD.getType());
-
-        data.add(variable);
+        data.add(fieldVariable);
     }
 
     private void visitFieldConstraintDescr(FieldConstraintDescr descr) throws UnknownDescriptionException {

@@ -16,33 +16,28 @@
 
 package org.drools.verifier.components;
 
-import org.drools.verifier.report.components.Cause;
+public class PatternVariable extends RuleComponent implements Variable {
 
-public class VariableRestriction extends Restriction
-        implements
-        Cause {
+    private String name;
 
-    protected Variable variable;
-
-    public VariableRestriction(Pattern pattern) {
-        super(pattern);
+    public PatternVariable(VerifierRule rule) {
+        super(rule);
     }
 
-    public Variable getVariable() {
-        return variable;
+    public String getName() {
+        return name;
     }
 
-    public void setVariable(Variable patternVariable) {
-        this.variable = patternVariable;
-    }
-
-    public RestrictionType getRestrictionType() {
-        return Restriction.RestrictionType.VARIABLE;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return "VariableRestriction from rule '" + getRuleName() + "' variable '" + variable + "'";
+        return "Variable name: " + name;
     }
 
+    public VerifierComponentType getVerifierComponentType() {
+        return VerifierComponentType.PATTERN_LEVEL_VARIABLE;
+    }
 }

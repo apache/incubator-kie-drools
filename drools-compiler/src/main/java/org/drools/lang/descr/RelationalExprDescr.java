@@ -26,9 +26,7 @@ public class RelationalExprDescr extends BaseDescr {
 
     private BaseDescr         left;
     private BaseDescr         right;
-    private String            operator;
-    private boolean           negated;
-    private List<String>      parameters;
+    private OperatorDescr     operator;
 
     public RelationalExprDescr() {
     }
@@ -40,9 +38,9 @@ public class RelationalExprDescr extends BaseDescr {
                                BaseDescr right) {
         this.left = left;
         this.right = right;
-        this.operator = operator;
-        this.negated = negated;
-        this.parameters = parameters;
+        this.operator = new OperatorDescr( operator,
+                                           negated,
+                                           parameters );
     }
 
     public BaseDescr getLeft() {
@@ -62,31 +60,37 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public String getOperator() {
-        return operator;
+        return operator != null ? operator.getOperator() : null;
     }
 
     public void setOperator( String operator ) {
-        this.operator = operator;
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setOperator( operator );
     }
 
     public boolean isNegated() {
-        return negated;
+        return operator != null ? operator.isNegated() : false;
     }
 
     public void setNegated( boolean negated ) {
-        this.negated = negated;
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setNegated( negated );
     }
 
     public List<String> getParameters() {
-        return parameters;
+        return operator != null ? operator.getParameters() : null;
     }
 
     public String getParametersText() {
-        if( parameters != null ) {
+        if ( operator != null && operator.getParameters() != null ) {
             StringBuilder builder = new StringBuilder();
             boolean first = true;
-            for( String param : parameters ) {
-                if( first ) {
+            for ( String param : operator.getParameters() ) {
+                if ( first ) {
                     first = false;
                 } else {
                     builder.append( "," );
@@ -99,11 +103,23 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public void setParameters( List<String> parameters ) {
-        this.parameters = parameters;
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setParameters( parameters );
     }
+    
+    public OperatorDescr getOperatorDescr() {
+        return this.operator;
+    }
+    
+    public void setOperatorDescr( OperatorDescr operator ) {
+        this.operator = operator;
+    }
+
     @Override
     public String toString() {
-        return this.left + (this.negated ? " not " : " ") + this.operator + ( this.parameters != null ? parameters.toString() + " ": " ") + this.right;
+        return this.left + (isNegated() ? " not " : " ") + this.operator + (getParameters() != null ? getParameters().toString() + " " : " ") + this.right;
     }
 
 }
