@@ -37,12 +37,15 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ModifyInterceptor;
 import org.drools.common.AgendaItem;
+import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.rule.Rule;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.runtime.Globals;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.DataConversion;
@@ -337,7 +340,12 @@ public class MVELCompilationUnit
             }
         }
 
-        InternalFactHandle[] handles = ((LeftTuple) tuples).toFactHandles();
+        InternalFactHandle[] handles;
+        if( tuples != null ) {
+            handles = ((LeftTuple) tuples).toFactHandles();
+        } else {
+            handles = new InternalFactHandle[0];
+        }
         if ( operators != null ) {
             for ( int j = 0, length = operators.length; j < length; j++ ) {
                 // TODO: need to have one operator per working memory
@@ -584,7 +592,7 @@ public class MVELCompilationUnit
 
     private static InternalFactHandle getFactHandle( Declaration declaration,
                                                      InternalFactHandle[] handles ) {
-        return handles[declaration.getPattern().getOffset()];
+        return handles.length >= declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
     }
 
     public static Serializable compile( final String text,

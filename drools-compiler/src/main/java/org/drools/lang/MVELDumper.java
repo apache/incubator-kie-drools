@@ -159,7 +159,7 @@ public class MVELDumper extends ReflectiveVisitor {
                     .append( right )
                     .append( evaluatorSufix( operator.isNegated() ) );
         } else if ( Arrays.binarySearch( standard,
-                                         op.getOperatorString() ) > 0 ) {
+                                         op.getOperatorString() ) >= 0 ) {
             sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
                     .append( left )
                     .append( " " )
