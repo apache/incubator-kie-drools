@@ -58,10 +58,15 @@ public interface FactField
     /**
      * Returns the value of this field in the given fact.
      * 
-     * @param the fact from which the field will be read.
+     * @param bean the fact from which the field will be read.
      * 
      * @return the value of the field on the given fact.
      */
     public Object get(Object bean);
+
+
+
+
+    public int getIndex();
 
 }
