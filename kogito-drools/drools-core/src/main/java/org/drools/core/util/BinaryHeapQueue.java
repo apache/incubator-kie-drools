@@ -185,7 +185,7 @@ public class BinaryHeapQueue
                 compareToParent = compare( this.elements[index],
                                            this.elements[index / 2] );
             }
-            if ( index > 1 && compareToParent < 0 ) {
+            if ( index > 1 && compareToParent > 0 ) {
                 percolateUpMaxHeap( index );
             } else {
                 percolateDownMaxHeap( index );
