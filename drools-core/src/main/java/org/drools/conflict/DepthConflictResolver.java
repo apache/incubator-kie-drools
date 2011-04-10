@@ -59,10 +59,6 @@ public class DepthConflictResolver
         } else if ( s1 < s2 ) {
             return -1;
         }
-        
-//        else {
-//            return 0;
-//        }
 
         // we know that no two activations will have the same number
         return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
