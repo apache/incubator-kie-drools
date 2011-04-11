@@ -14,7 +14,7 @@
 
   <name>Drools Planner distribution</name>
   <description>
-    DBuilds the download zip of Drools Planner.
+    Builds the download zip of Drools Planner.
   </description>
 
   <build>
