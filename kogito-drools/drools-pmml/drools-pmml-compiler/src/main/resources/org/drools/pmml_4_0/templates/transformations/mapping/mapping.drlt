@@ -1,0 +1,31 @@
+
+@comment{
+      Maps a tuple onto a value
+      The tuple is mapped onto a sequence of patterns, matching fields with the given value
+       /**
+       * @param name        - derived field name
+       * @param index       - an index to distinguish generated rules
+       * @param patterns    - a type/value map
+       */
+   }
+
+
+
+@declare{'mappingRule'}
+rule "mapping_@{name}_@{index}"
+when
+   @code{ keys = patterns.keySet() }
+   @foreach{ patt : keys }  @{patt}( value == @{ patterns.get(patt) }
+                                            @if{ context != null } , context == @{format("string",context)} @end{} )
+   @end{}
+then
+    @{name} x = new @{name}();
+    x.setValue(@{target});
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext(@{context});
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'mappingRule'}

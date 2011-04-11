@@ -440,7 +440,6 @@ public class DRLParser {
                 if (! state.failed ) {
                     String superType = type();
                     declare.superType(superType);
-                    System.err.println("Found extension " + type);
                 }
 
             }

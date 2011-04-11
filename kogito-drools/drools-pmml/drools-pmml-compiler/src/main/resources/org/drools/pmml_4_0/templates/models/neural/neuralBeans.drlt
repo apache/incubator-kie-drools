@@ -1,0 +1,39 @@
+
+
+
+@comment{
+
+}
+
+@declare{'neuralBeans'}
+
+declare Stym
+    @@role(event)
+    @@expires(1s)
+    context : String
+    index : int = -1
+    value : double
+    normalized : boolean = false
+end
+
+declare Synapse
+    context : String
+    source : int = -1
+    target : int = -1
+    weight : double
+end
+
+
+declare Charge
+    @@role(event)
+    @@expires(1s)
+    context : String
+    index : int = -1
+    source : int
+    value : double
+end
+
+@end{}
+
+
+@includeNamed{'neuralBeans'}

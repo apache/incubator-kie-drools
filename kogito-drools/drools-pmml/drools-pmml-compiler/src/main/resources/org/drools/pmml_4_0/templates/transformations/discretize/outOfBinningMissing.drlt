@@ -1,0 +1,31 @@
+
+
+    @comment{
+       Sets to missing the derived field, if the original value does not fall within one of the given intervals
+       /**
+       * @param name        - derived field name
+       * @param origField   - the field to alias
+       * @param bins        - the DiscretizeBin collection (pmml)
+       * @param target      - the value associated to the bin
+       */
+   }
+
+
+
+@declare{'outOfBinningMissingRule'}
+rule "noBinMissing_@{name}"
+when
+    $in : @{origField}( valid == true, missing == false,
+          @foreach{ bin : bins } (value @if{bin.interval.closure.startsWith("closed")}<@else{}<=@end{} @{bin.interval.leftMargin} || value @if{bin.interval.closure.endsWith("Closed")}>@else{}>=@end{} @{bin.interval.rightMargin}) @end{' && '}
+          @if{ context != null } , context == @{format("string",context)} @end{} )
+then
+    @{name} x = new @{name}();
+    x.setValue(null);
+    x.setMissing(true);
+    x.setValid(true);
+    x.setContext(@{context});
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'outOfBinningMissingRule'}

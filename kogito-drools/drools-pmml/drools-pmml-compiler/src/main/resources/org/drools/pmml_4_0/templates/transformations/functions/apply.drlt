@@ -1,0 +1,33 @@
+
+
+
+@comment{
+   Applies a function to one or more datafields.
+   The datafields values are first assigned to variables, then the latter are used to compute the function
+    /**
+    * @param name           - derived field name
+    * @param exprFieldList  - datafields involved as operands, as a name/variable map
+    * @param dataType       - type of the result datafields
+    * @param funExpr        - actual expression
+    */
+}
+
+@declare{'applyRule'}
+rule "fun_@{name}"
+when
+    @code{ keys = exprFieldList.keySet() }
+    @foreach{ field : keys }
+        @{field}( valid == true, missing == false, @{exprFieldList.get(field)} : value
+                  @if{ context != null } , context == @{format("string",context)} @end{} )
+    @end{}
+then
+    @{name} x = new @{name}();
+    x.setValue((@{dataType}) @{funExpr});
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext(@{context});
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'applyRule'}

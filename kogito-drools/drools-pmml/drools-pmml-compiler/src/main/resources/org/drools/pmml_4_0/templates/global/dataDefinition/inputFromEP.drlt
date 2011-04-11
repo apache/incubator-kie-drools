@@ -1,0 +1,46 @@
+
+
+
+@comment{
+    Rule that converts a raw data from an entry-point
+    into a "managed" datafield event bean.
+
+    /**
+    * @param name        - common name of the class
+    * @param type        - type (int, string, double, ...)
+    * @param continuous  - flag for cont. datatypes
+    * @param ordinal     - flag for ordinal datatypes
+    * @param cyclic      - flag for cyclic datatypes
+    * @param categorical - flag for categorical datatypes
+    * @notRestricted     - true if there is no restriction on the field
+    *                      A restriction is the exclusion of some values from the domain
+    */
+}
+@declare{'inputFromEPRule'}
+rule "Input_@{name}"
+when
+    $in : @{box(type)}() from entry-point "in_@{name}"
+then
+    @{name} input = new @{name}();
+        input.setValue($in);
+        input.setMissing(false);
+        input.setValid(@{notRestricted});
+        input.setContext(null);
+    System.err.println("Rule " + drools.getRule().getName() + " for input " + $in + " : will insert  " + input.toString());
+    retract($in);
+    insert(input);
+end
+@end{}
+
+
+
+
+
+@comment{
+*******************************************************************************************************
+        1.2.1) Generation rules
+*******************************************************************************************************
+}
+
+
+@includeNamed{'inputFromEPRule'}

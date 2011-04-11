@@ -1,0 +1,32 @@
+ @comment{
+    Sets outliers as missing
+    /**
+    * @param name        - mining field name
+    * @param model       - name of the model using the field
+    * @param low         - lower value
+    * @param upp         - upper value
+    */
+}
+
+
+
+@declare{'miningFieldOutlierAsMissingRule'}
+rule "miningFieldOutlierAsMissing_@{model}_@{name}"
+salience 999
+when
+ $x : @{name}( $m : missing == false, $v : valid == true,
+               context == @{format("string",model)}
+               @if{ low != null } , value < @{low} @end{}
+               @if{ low != null && upp != null } || @else{} , @end{}
+               @if{ upp != null } value > @{upp} @end{}
+                )
+then
+    $x.setValue(null);
+    $x.setMissing(true);
+    $x.setValid(false);
+  update($x);
+end
+@end{}
+
+
+@includeNamed{'miningFieldOutlierAsMissingRule'}

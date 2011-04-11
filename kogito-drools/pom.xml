@@ -52,6 +52,8 @@
     <module>drools-templates</module>
     <module>drools-decisiontables</module>
     <module>drools-examples</module>
+    <module>drools-pmml</module>
+    <module>drools-informer</module>
   </modules>
 
   <profiles>

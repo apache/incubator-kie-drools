@@ -1,0 +1,28 @@
+@comment{
+    Characteristic function: sets a derived field to 0 if the original is not equal to a given value
+    /**
+    * @param name        - derived field name
+    * @param origField   - the field to check
+    * @param target      - the value to compare
+    */
+}
+
+
+
+@declare{'indicatorFieldNoRule'}
+rule "indicatorFieldNo_@{name}"
+when
+ $src : @{origField}( missing == false, valid == true, value != @{target}, $ctx : context
+                      @if{ context != null } , context == @{format("string",context)} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue(0.0);
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext($ctx);
+  insertLogical(x);
+end
+@end{}
+
+
+@includeNamed{'indicatorFieldNoRule'}

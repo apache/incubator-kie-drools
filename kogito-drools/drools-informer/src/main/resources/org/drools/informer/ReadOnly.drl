@@ -1,0 +1,52 @@
+
+package org.drools.informer
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+/*
+* A question/group is marked as readonly if it is contained in any group that is readonly.  This means that if you put a question
+* in two groups both of which are active, but only one of which is readonly then the question will appear as readonly in both.
+*/
+rule "propagate readonly from group to questions or subgroups"
+no-loop
+salience 1
+when
+	item : Item();
+	groups : ArrayList() from collect (Group(items contains item.id, active == true));
+	eval(item instanceof Question || item instanceof Group);
+then
+	boolean groupReadOnly = false;
+	for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
+		Group group = (Group)iterator.next();
+		List groupStyles = getStyles(group);
+		if (groupStyles.contains("readonly") || groupStyles.contains("readonly-inherited")) {
+			groupReadOnly = true;
+			break;
+		}
+	}
+	List itemStyles = getStyles(item);
+	boolean itemReadOnlyInherited = itemStyles.contains("readonly-inherited");
+	if (itemReadOnlyInherited != groupReadOnly) {
+		if (groupReadOnly) {
+			itemStyles.add("readonly-inherited");
+			item.setPresentationStyles(itemStyles.toArray());
+		} else {
+			itemStyles.remove("readonly-inherited");
+			item.setPresentationStyles(itemStyles.toArray());
+		}
+		update(item);
+	}
+end
+
+function List getStyles(Item item) {
+	List list = new ArrayList();
+	String[] styles = item.getPresentationStyles();
+	if (styles != null) {
+		list.addAll(Arrays.asList(styles));
+	}
+	return list;
+}

@@ -1,0 +1,133 @@
+
+package org.drools.informer
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+rule "retract all prior validation errors when a new answer is given"
+salience 4 # before: "copy new answers into the corresponding questions"
+when
+	Answer(questionId : questionId);
+	invalidAnswer : InvalidAnswer( questionId == questionId )
+then
+	retract(invalidAnswer);
+end
+
+rule "copy new answers into the corresponding questions"
+salience 3 # before: "discard invalid multiple choice answers"
+when
+	answer : Answer(questionId : questionId);
+	question : Question(id == questionId)
+then
+	retract(answer);
+	String basicAnswerType = question.getBasicAnswerType();
+	String answerValue = answer.getValue();
+	// Convert blank string and "null" string to real null
+	// TODO should we really be handling "null" - see TOHU-3
+	if (answerValue != null && (answerValue.equals("") || answerValue.equals("null"))) {
+		answerValue = null;
+	}
+	try {
+		if (answerValue == null) {
+			question.setAnswer(null);
+		} else if (basicAnswerType.equals(Question.TYPE_TEXT)) {
+			question.setTextAnswer(answerValue);
+		} else if (basicAnswerType.equals(Question.TYPE_NUMBER)) {
+			question.setNumberAnswer(new Long(answerValue));
+		} else if (basicAnswerType.equals(Question.TYPE_DECIMAL)) {
+			question.setDecimalAnswer(new BigDecimal(answerValue));
+		} else if (basicAnswerType.equals(Question.TYPE_BOOLEAN)) {
+			question.setBooleanAnswer(new Boolean(answerValue));
+		} else if (basicAnswerType.equals(Question.TYPE_DATE)) {
+			question.setDateAnswer(answerValue);
+		} else if (basicAnswerType.equals(Question.TYPE_LIST)) {
+			question.setListAnswer(answerValue);
+		}
+		update(question);
+	} catch (NumberFormatException e) {
+		// Note: this shouldn't occur since the client is expected to perform basic data type validation before sending the Answer 
+		InvalidAnswer invalidAnswer = new InvalidAnswer();
+		invalidAnswer.setQuestionId(questionId);
+		invalidAnswer.setType("invalidDataType");
+		invalidAnswer.setReason("This is not a valid number");
+		insert(invalidAnswer);
+	} catch (ParseException e) {
+		// Note: this shouldn't occur since the client is expected to perform basic data type validation before sending the Answer 
+		InvalidAnswer invalidAnswer = new InvalidAnswer();
+		invalidAnswer.setQuestionId(questionId);
+		invalidAnswer.setType("invalidDataType");
+		invalidAnswer.setReason("This is not a valid date");
+		insert(invalidAnswer);
+	}
+end
+
+rule "discard invalid multiple choice answers"
+salience 2 # before: "copy question answers to the underlying domain model"
+when
+	question : MultipleChoiceQuestion(answered == true, answer : answer, possibleAnswers : possibleAnswers);
+then
+	if (possibleAnswers != null) {
+		String[] allAnswers = question.split(String.valueOf(answer), ",");
+		if (allAnswers.length == 0) {
+			return;
+		}
+		for (int ans_idx = 0; ans_idx < allAnswers.length; ans_idx++) {
+			String oneAnswer = allAnswers[ans_idx];
+			for (int i = 0; i < possibleAnswers.length; i++) {
+				if (possibleAnswers[i].getValue() == null) {
+					if (oneAnswer == null) {
+						return;
+					}
+				} else {
+					if (oneAnswer != null && oneAnswer.toString().equals(possibleAnswers[i].getValue())) {
+						return;
+					}
+				}
+			}
+		} 
+	}
+	question.setAnswer(null);
+	update(question);
+end
+
+rule "retract orphan answers"
+salience -1 # after: any rules that create questions
+when
+	answer : Answer(questionId : questionId);
+	not(exists(Question(id == questionId)));
+then
+	// The client may try to send an Answer for a Question that has just been removed.
+	// We need to retract this so it doesn't stay around until the next time the same Question is created.  
+	retract(answer);
+end
+	
+rule "required questions answered"
+salience -1 # after: any rules that create questions
+when
+	question : Question(required == true, answered == false);
+then
+	InvalidAnswer invalidAnswer = new InvalidAnswer(question.getId(), "You must answer this question");
+	invalidAnswer.setType("nonDisplayed");
+	insertLogical(invalidAnswer);
+end
+
+rule "has invalid answers"
+salience -2 # after: any rules that create invalid answers
+when
+	questionnaire : Questionnaire(invalidAnswers == false);
+	exists(InvalidAnswer());
+then
+	questionnaire.setInvalidAnswers(true);
+	update(questionnaire);
+end
+
+rule "doesn't have invalid answers"
+salience -2 # after: any rules that create invalid answers
+when
+	questionnaire : Questionnaire(invalidAnswers == true);
+	not(exists(InvalidAnswer()));
+then
+	questionnaire.setInvalidAnswers(false);
+	update(questionnaire);
+end

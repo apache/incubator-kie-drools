@@ -1,0 +1,20 @@
+
+
+
+
+@comment{
+        Propagates stymuli along synapses
+}
+
+@declare{'outputQuery'}
+
+
+
+query "@{field}" (String ctx)
+    @{field}( context == ctx , result : value )
+end
+
+@end{}
+
+
+@includeNamed{'outputQuery'}

@@ -1,0 +1,20 @@
+
+
+
+@comment{
+    Defines a local function
+    /**
+    * @param name        - function name
+    * @param dataType    - return type
+    * @param params      - dataType / name structures
+    * @param funExpr     - function definition
+    */
+}
+
+@declare{'customFunction'}
+function @{dataType} @{name}( @foreach{ param : params} @{mapDatatype(param.dataType)} @{exprFieldList.get(param.name)}  @end{','}) {
+    return @{funExpr};
+}
+@end{}
+
+@includeNamed{'customFunction'}

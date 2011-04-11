@@ -1,0 +1,30 @@
+
+@comment{
+    Linearly interpolates in between two points, mapping an internal value
+    /**
+    * @param name        - derived field name
+    * @param index       - index of the linear tract (for linear piece-wise functions)
+    * @param origField   - name of the original field to be mapped
+    * @param xmin, xmax, ymin, ymax
+    */
+}
+
+
+@declare{'linearTractNormalizationRule'}
+rule "linear_@{name}_@{index}"
+when
+  $src : @{origField}( missing == false, valid == true, $val: value, $ctx : context,
+            value > @{xmin} && value <= @{xmax}
+            @if{ context != null } , context == @{format("string",context)} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue((@{type}) (@{ymin} + ($val - @{xmin})*@{(ymax-ymin)/(xmax-xmin)}));
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext($ctx);
+    //x.setContinous();
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'linearTractNormalizationRule'}

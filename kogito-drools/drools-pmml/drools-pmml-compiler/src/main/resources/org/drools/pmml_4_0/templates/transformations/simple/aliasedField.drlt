@@ -1,0 +1,25 @@
+@comment{
+    Clones an existing field, with a different name
+    /**
+    * @param name        - derived field name
+    * @param origField   - the field to alias
+    */
+}
+
+@declare{'aliasedFieldRule'}
+rule "aliasedField_@{origField}_to_@{name}"
+when
+ $src : @{origField}( $m : missing, $v : valid, $val : value, $ctx : context
+                        @if{ context != null } , context == @{format("string",context)} @end{} )
+then
+  System.out.println("Cloning " + $src );
+  @{name} x = new @{name}();
+    x.setValue($val);
+    x.setMissing($m);
+    x.setValid($v);
+    x.setContext($ctx);
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'aliasedFieldRule'}
