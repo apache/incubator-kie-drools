@@ -3449,6 +3449,61 @@ public class RuleParserTest extends TestCase {
                       declarations.size() );
     }
 
+    public void testPositionalConstraintsOnly() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+    }
+
+    public void testPositionalsAndNamedConstraints() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 3,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        assertEquals( "location == \"atlanta\"",
+                      fcd.getExpression() );
+        assertEquals( 2,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.NAMED,
+                      fcd.getType() );
+
+    }
+
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
         return execParser( parserRuleName,
