@@ -1,0 +1,12 @@
+
+package org.drools.informer
+
+query "activeObjects"
+	object : TohuObject(active == true);
+end
+
+query "answeredQuestions"
+	question : Question(answered == true);
+end
+
+

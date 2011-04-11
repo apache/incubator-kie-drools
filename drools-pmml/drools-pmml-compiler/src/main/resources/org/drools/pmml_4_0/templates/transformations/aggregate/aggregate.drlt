@@ -1,0 +1,37 @@
+
+@comment{
+    Computes aggregation functions on a set of fields
+    /**
+    * @param name        - derived field name
+    * @param groupBy     - optional parameter, causes the aggregation to be performed
+    *                        conditionally on some constraint involving this datafield
+    * @param dataType    - type of the derived field
+    * @param afield      - type of the datafields to aggregate
+    * @param constr      - groupby constraint
+    * @param aggrFunc    - aggregation function (sum, avg, ...)
+    */
+}
+
+
+@declare{'aggregateRule'}
+rule "aggr_@{name}"
+when
+    @if{groupBy != null} @{groupBy}( valid == true, missing == false, $gval : value ) @end{}
+    $agg : @{box(dataType)}() from accumulate (
+        @{afield}( valid == true, missing == false,
+            @if{ context != null } context == @{context}, @end{}
+            $v : value @if{groupBy != null && constr != null} @{constr} $gval @end{} ),
+        @{aggrFunc}( $v )
+    )
+then
+    @{name} x = new @{name}();
+    x.setValue($agg);
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext(@{context});
+  insertLogical(x);
+end
+@end{}
+
+
+@includeNamed{'aggregateRule'}

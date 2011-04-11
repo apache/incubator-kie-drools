@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<PMML version="4.0" xmlns="http://www.dmg.org/PMML-4_0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_0 http://www.dmg.org/v4-0-1/pmml-4-0.xsd">
+  <Header copyright="DMG.org"/>
+  <DataDictionary>
+    <DataField name="Age" optype="continuous" dataType="integer">
+      <Value value="-1" property="missing"/>
+    </DataField>
+    <DataField name="Limit" optype="continuous" dataType="integer"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField name="Summa" optype="continuous" dataType="double">
+      <Aggregate field="Age" function="sum" groupField="Limit" sqlWhere=">"/>
+    </DerivedField>
+    <DerivedField name="Coll" optype="continuous" dataType="collection">
+      <Aggregate field="Age" function="multiset" groupField="Limit" sqlWhere=">"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>
+

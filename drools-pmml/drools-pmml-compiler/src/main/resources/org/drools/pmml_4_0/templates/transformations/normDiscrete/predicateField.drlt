@@ -1,0 +1,30 @@
+@comment{
+    Predicate Characteristic function: maps a degree value onto a field
+    /**
+    * @param name        - field whose membership/probability of <<holds>> is to be evaluated
+    * @param origField   - the field whose value is actually the target's degree
+    * @param target      - the value to set
+    * @param context     - the model context
+    */
+}
+
+
+
+@declare{'predicateFieldRule'}
+rule "predicate_@{origField}"
+when
+ $src : @{origField}( missing == false, valid == true, $val : value , $ctx : context
+                      @if{ context != null } , context == @{format("string",context)} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue(@{target});
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext($ctx);
+    System.err.println("TODO PredicateFieldRule.drlt >> Chance " + x + " / degree = " + $val);
+  insertLogical(x);
+end
+@end{}
+
+
+@includeNamed{'predicateFieldRule'}

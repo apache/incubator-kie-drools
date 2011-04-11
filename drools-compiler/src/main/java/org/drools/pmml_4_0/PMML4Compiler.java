@@ -19,22 +19,11 @@ package org.drools.pmml_4_0;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.agent.impl.KnowledgeAgentImpl;
 import org.drools.builder.*;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.EventFactHandle;
 import org.drools.conf.EventProcessingOption;
-import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ChangeSetImpl;
-import org.drools.io.internal.InternalResource;
 import org.drools.pmml_4_0.descr.PMML;
-import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.rule.FactHandle;
-import org.drools.runtime.rule.QueryResults;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
@@ -43,7 +32,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class PMML4Compiler {
@@ -295,7 +287,7 @@ public class PMML4Compiler {
 	 * @param source		the name of the PMML resource storing the predictive model
 	 * @return				the Java Descriptor of the PMML resource
 	 */
-	protected PMML loadModel(String model, InputStream source) {
+	protected PMML  loadModel(String model, InputStream source) {
 		try {
 			JAXBContext jc = JAXBContext.newInstance(model);
 			Unmarshaller unmarshaller = jc.createUnmarshaller();

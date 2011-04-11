@@ -1,0 +1,27 @@
+
+@comment{
+        Inits all the incoming synapses of a neuron
+}
+
+@declare{'neuralBuildSynapsesRule'}
+
+rule "BuildSynapses_@{model}_Neuron@{index}"
+when
+then
+    Synapse syn;
+    @foreach{ con : links }
+           syn = new Synapse();
+           syn.setSource(@{con.from});
+           syn.setTarget(@{index});
+           syn.setContext(@{format("string",model)});
+           syn.setWeight(@{con.weight});
+        insert(syn);
+    @end{}
+end
+
+
+
+@end{}
+
+
+@includeNamed{'neuralBuildSynapsesRule'}

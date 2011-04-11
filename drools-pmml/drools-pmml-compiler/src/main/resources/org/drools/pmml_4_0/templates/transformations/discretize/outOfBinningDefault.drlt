@@ -1,0 +1,32 @@
+
+
+    @comment{
+       Assigns a default value to the derived field if the original value does not fall within one of the given intervals
+       /**
+       * @param name        - derived field name
+       * @param origField   - the field to alias
+       * @param bins        - the DiscretizeBin collection (pmml)
+       * @param target      - the value associated to the bin
+       */
+   }
+
+
+
+@declare{'outOfBinningDefaultRule'}
+rule "noBinDefault_@{name}"
+when
+    $in : @{origField}( valid == true, missing == false,
+          @foreach{ bin : bins } (value @if{bin.interval.closure.startsWith("closed")}<@else{}<=@end{} @{bin.interval.leftMargin} || value @if{bin.interval.closure.endsWith("Closed")}>@else{}>=@end{} @{bin.interval.rightMargin}) @end{' && '}
+          @if{ context != null } , context == @{format("string",context)} @end{}
+          )
+then
+    @{name} x = new @{name}();
+    x.setValue(@{target});
+    x.setMissing(false);
+    x.setValid(true);
+    x.setContext(@{context});
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'outOfBinningDefaultRule'}

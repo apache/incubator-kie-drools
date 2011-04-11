@@ -1,0 +1,28 @@
+
+
+
+
+@comment{
+
+}
+
+@declare{'neuralOutputFieldRule'}
+
+ @code{ String ctx = format("string",model); }
+
+rule "NeuralOutput_@{model}_@{index}"
+when
+    Stym( context == @{ctx} , index == @{index}, $val : value, $normal : normalized )
+then
+    @{name} x = new @{name}();
+        x.setContext(@{ctx});
+        x.setValid($normal);
+        x.setMissing(false);
+        x.setValue($val);
+    insertLogical(x);
+end
+
+@end{}
+
+
+@includeNamed{'neuralOutputFieldRule'}

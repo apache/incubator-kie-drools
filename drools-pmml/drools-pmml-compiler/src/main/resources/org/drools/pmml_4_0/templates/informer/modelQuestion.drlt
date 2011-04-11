@@ -1,0 +1,26 @@
+
+@comment{
+   Creates a question to fill a specific input field of a predictive model
+
+   /**
+    * @param model        - model's identifier name, assigned to the questionnaire
+    */
+}
+
+@declare{'modelQuestionRule'}
+rule "Model_Question_@{model}_@{name}"
+dialect "mvel"
+no-loop
+salience 99
+when
+then
+    Question quest = new Question(@{format("string",model)}+"_"+@{format("string",name)});
+        quest.setAnswerType("@{mapDatatypeToQuestion(dataType)}");
+        quest.setPreLabel("Please insert " + @{format("string",name)});
+    insertLogical(quest);
+end
+@end{}
+
+
+
+@includeNamed{'modelQuestionRule'}

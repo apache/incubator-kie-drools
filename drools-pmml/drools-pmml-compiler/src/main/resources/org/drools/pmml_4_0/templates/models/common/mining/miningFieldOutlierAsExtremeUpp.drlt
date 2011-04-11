@@ -1,0 +1,28 @@
+ @comment{
+    Sets outliers as extremes
+    /**
+    * @param name        - mining field name
+    * @param model       - name of the model using the field
+    * @param upp         - upper value
+    */
+}
+
+
+
+@declare{'miningFieldOutlierAsExtremeUppRule'}
+rule "miningFieldOutlierAsExtremeUpp_@{model}_@{name}"
+salience 999
+when
+ $x : @{name}( $m : missing == false, $v : valid == true,
+               context == @{format("string",model)},
+               value > @{upp} )
+then
+    $x.setValue(@{upp});
+    $x.setMissing(false);
+    $x.setValid(true);
+  update($x);
+end
+@end{}
+
+
+@includeNamed{'miningFieldOutlierAsExtremeUppRule'}

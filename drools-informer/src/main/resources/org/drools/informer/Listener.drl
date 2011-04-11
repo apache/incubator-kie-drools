@@ -1,0 +1,17 @@
+package org.drools.informer.listener
+
+import org.drools.informer.listener.DebugAgendaEventListener;
+import org.drools.informer.listener.ListenerManager;
+
+
+rule "add Rule listener"
+no-loop
+when
+	not(ListenerManager()); 
+then
+	DebugAgendaEventListener listener = new DebugAgendaEventListener();
+	drools.getKnowledgeRuntime().addEventListener(listener);
+	ListenerManager manager = new ListenerManager();
+	manager.setListenersRegistered(true);
+	insert(manager);
+end

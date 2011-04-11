@@ -1,0 +1,27 @@
+ @comment{
+    Deals with a missing mining field, setting a value in place of the missing one
+    /**
+    * @param name        - mining field name
+    * @param model       - name of the model using the field
+    * @param replacement - value to be set in place of a missing one
+    */
+}
+
+
+
+@declare{'miningFieldMissingRule'}
+rule "miningFieldMissing_@{model}_@{name}"
+salience 999
+when
+ $x : @{name}( $m : missing == true,
+               context == @{format("string",model)} )
+then
+    $x.setValue(@{replacement});
+    $x.setMissing(false);
+    $x.setValid(true);
+  update($x);
+end
+@end{}
+
+
+@includeNamed{'miningFieldMissingRule'}

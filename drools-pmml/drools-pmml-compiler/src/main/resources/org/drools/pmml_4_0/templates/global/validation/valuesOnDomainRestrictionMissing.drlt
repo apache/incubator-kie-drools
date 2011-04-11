@@ -1,0 +1,26 @@
+
+@comment{
+    The rule checks for specific values determined as missing
+     /**
+      * @param name        - common name of the datafield class
+      */
+}
+@declare{'valuesOnDomainRestrictionMissingRule'}
+rule "Missing_Values_@{name}"
+dialect "mvel"
+no-loop
+salience 100
+when
+    $in : @{name}( $val : value,
+          @if{ context != null } context == @{context}, @end{}
+          @foreach{ v : vals } value == @{v} @end{' || '}
+          )
+then
+    $in.missing=true;
+    update($in);
+end
+@end{}
+
+
+
+@includeNamed{'valuesOnDomainRestrictionMissingRule'}

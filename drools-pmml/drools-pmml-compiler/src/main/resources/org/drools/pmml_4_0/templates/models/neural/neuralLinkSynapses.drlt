@@ -1,0 +1,24 @@
+
+@comment{
+        Propagates stymuli along synapses
+}
+
+@declare{'neuralLinkSynapsesRule'}
+
+rule "LinkSynapses"
+when
+    Stym( $ctx : context, $index : index, $val : value )
+    Synapse( context == $ctx, source == $index, $target : target, $w : weight )
+then
+    Charge c = new Charge();
+        c.setContext($ctx);
+        c.setSource($index);
+        c.setIndex($target);
+        c.setValue($val*$w);
+    insertLogical(c);
+end
+
+@end{}
+
+
+@includeNamed{'neuralLinkSynapsesRule'}

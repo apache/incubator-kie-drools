@@ -1,0 +1,21 @@
+@comment{
+    Clones an existing field, with a different name
+    /**
+    * @param name        - derived field name
+    * @param origField   - the field to alias
+    */
+}
+
+@declare{'addOutputFeatureRule'}
+rule "addFeature_@{origField}_to_@{name}_@{feature}"
+
+when
+ $src : @{origField}(   @if{ context != null } , context == @{format("string",context)} @end{}
+                        $srcVal : value )
+        $x : @{name}( @if{ value != null } , value == @{format(type,value)} @end{} )
+then
+    $x.setDisplayValue($srcVal);
+end
+@end{}
+
+@includeNamed{'addOutputFeatureRule'}

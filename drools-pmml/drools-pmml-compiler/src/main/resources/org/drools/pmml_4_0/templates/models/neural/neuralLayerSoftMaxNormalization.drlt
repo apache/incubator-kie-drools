@@ -1,0 +1,45 @@
+
+
+
+
+@comment{
+        Normalizes a neural layer using the max function
+}
+
+@declare{'neuralLayerSoftMaxNormalizationRule'}
+
+@code{ String ctx = format("string",model); }
+
+rule "LayerNormalization_@{model}_@{j}"
+salience 100
+when
+    $list : java.util.List( size == @{neurons.size} )
+        from collect ( Stym( context == @{ctx},
+                            index in ( @foreach{ neur : neurons } @{neur.id} @end{','} ),
+                            normalized == false )
+                     )
+    Number( $den : doubleValue ) from accumulate (
+            Stym( context == @{ctx},
+                    index in ( @foreach{ neur : neurons } @{neur.id} @end{','} ),
+                    normalized == false, $in : value
+                ),
+            init( double d = 0 ),
+            action( d += Math.exp($in); )
+            result( d )
+        )
+then
+    //System.out.println(">>>>>>>>>>>>>>  SOFTMAX LAYER SUM " + $den );
+    for (int j = 0; j < $list.size(); j++) {
+        Stym s = (Stym) $list.get(j);
+        s.setNormalized(true);
+        s.setValue(Math.exp(s.getValue()) / $den);
+        update(s);
+    }
+end
+
+@end{}
+
+
+@includeNamed{'neuralLayerSoftMaxNormalizationRule'}
+
+
