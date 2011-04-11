@@ -17,8 +17,3 @@ To see the reference_manual, just open:
   reference_manual/drools-expert-docs/html_single/index.html
   reference_manual/drools-fusion-docs/html_single/index.html
 It contains information how to use it on your project (with Maven, ANT, ...).
-
-Known problems
---------------
-
-None
