@@ -3,8 +3,11 @@ package org.jbpm.process.builder.dialect.mvel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
@@ -70,20 +73,28 @@ public class MVELActionBuilder
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
+            boolean typeSafe = context.isTypesafe();
+            
             Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
-            variables.put("kcontext", ProcessContext.class);
-            variables.put("context", ProcessContext.class);
-            Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                    actionDescr,
-                                                                    dialect.getInterceptors(),
-                                                                    text,
-                                                                    new Map[]{variables, context.getPackageBuilder().getGlobals()},
-                                                                    null );                       
-
-
-            List<String> variableNames = analysis.getNotBoundedIdentifiers();
+            
+            context.setTypesafe( false ); // we can't know all the types ahead of time with processes, but we don't need return types, so it's ok
+            BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
+            AnalysisResult analysis = dialect.analyzeBlock( context,
+                                                            actionDescr,
+                                                            dialect.getInterceptors(),
+                                                            text,
+                                                            boundIdentifiers,
+                                                            null,
+                                                            "context",
+                                                            org.drools.runtime.process.ProcessContext.class );                       
+            context.setTypesafe( typeSafe );
+            
+            Set<String> variableNames = analysis.getNotBoundedIdentifiers();
             if (contextResolver != null) {
 	            for (String variableName: variableNames) {
+	                if ( variableName.equals( "kcontext" ) || variableName.equals( "context" ) ) {
+	                    continue;
+	                }
 	            	VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);
 	            	if (variableScope == null) {
 	            		context.getErrors().add(
@@ -94,8 +105,7 @@ public class MVELActionBuilder
 	                            "Could not find variable '" + variableName + "' for action '" + actionDescr.getText() + "'" ) );            		
 	            	} else {
 	            		variables.put(variableName,
-            				context.getDialect().getTypeResolver().resolveType(
-        						variableScope.findVariable(variableName).getType().getStringType()));
+	            		              context.getDialect().getTypeResolver().resolveType(variableScope.findVariable(variableName).getType().getStringType()));
 	            	}
 	            }
             }
@@ -105,9 +115,10 @@ public class MVELActionBuilder
                                                                        null,
                                                                        null,
                                                                        variables,
-                                                                       context );              
+                                                                       context,
+                                                                       "context",
+                                                                       org.drools.runtime.process.ProcessContext.class);              
             MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
-            expr.setVariableNames(variableNames);
             
             
             action.setMetaData("Action",  expr );

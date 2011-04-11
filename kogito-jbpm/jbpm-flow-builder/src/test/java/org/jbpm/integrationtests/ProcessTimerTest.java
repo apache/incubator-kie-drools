@@ -32,7 +32,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +
@@ -133,7 +133,7 @@ public class ProcessTimerTest extends JbpmTestCase {
 			"<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
 			"         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
 			"         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
-			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.drools\" version=\"1\" >\n" +
+			"         type=\"RuleFlow\" name=\"flow\" id=\"org.drools.timer\" package-name=\"org.jbpm\" version=\"1\" >\n" +
 			"\n" +
 			"  <header>\n" +
 			"    <imports>\n" +

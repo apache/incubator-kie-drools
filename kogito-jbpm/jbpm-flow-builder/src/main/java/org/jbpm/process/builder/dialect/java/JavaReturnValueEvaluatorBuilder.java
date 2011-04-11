@@ -17,9 +17,13 @@
 package org.jbpm.process.builder.dialect.java;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.rule.builder.PackageBuildContext;
@@ -48,26 +52,32 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
         final String className = "returnValueEvaluator" + context.getNextId();
 
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
-
-        Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                descr,
-                                                                descr.getText(),
-                                                                new Map[]{Collections.EMPTY_MAP, context.getPackageBuilder().getGlobals()} );
+        
+        Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+        BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
+        AnalysisResult analysis = dialect.analyzeBlock( context,
+                                                        descr,
+                                                        descr.getText(),
+                                                        boundIdentifiers);
 
         if ( analysis == null ) {
             // not possible to get the analysis results
             return;
         }
 
-        final List[] usedIdentifiers = analysis.getBoundIdentifiers();
+        if ( analysis == null ) {
+            // not possible to get the analysis results
+            return;
+        }
 
+        Set<String> identifiers = analysis.getBoundIdentifiers().getGlobals().keySet();
 
         final Map map = createVariableContext( className,
                                                descr.getText(),
                                                (ProcessBuildContext) context,
-                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
+                                               (String[]) identifiers.toArray( new String[identifiers.size()] ),
                                                analysis.getNotBoundedIdentifiers(),
-                                               contextResolver );
+                                               contextResolver);
         map.put( "text",
                  descr.getText() );
 

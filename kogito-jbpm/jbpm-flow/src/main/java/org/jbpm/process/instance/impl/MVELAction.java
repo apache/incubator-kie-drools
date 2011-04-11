@@ -23,13 +23,15 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
+import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.runtime.process.ProcessContext;
+import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
@@ -44,41 +46,28 @@ public class MVELAction
     private String id;        
 
     private Serializable      expr;
-    private DroolsMVELFactory prototype;
-    private List<String> variableNames;
 
     public MVELAction() {
     }
 
     public MVELAction(final MVELCompilationUnit unit,
-                              final String id) {
+                      final String id) {
         this.unit = unit;
         this.id = id;
-    }
-    
-    public void setVariableNames(List<String> variableNames) {
-    	this.variableNames = variableNames;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         id = in.readUTF();
         unit = ( MVELCompilationUnit ) in.readObject();
-        variableNames = (List<String>) in.readObject();
-//        expr    = (Serializable)in.readObject();
-//        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
-        out.writeObject(variableNames);
-//        out.writeObject(expr);
-//        out.writeObject(prototype);
     }
     
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory( );
     } 
 
     public String getDialect() {
@@ -86,30 +75,22 @@ public class MVELAction
     }
     
     public void execute(ProcessContext context) throws Exception {
-    	
-        // must clone to avoid concurrency problems
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-        
-        factory.addResolver("context", new SimpleValueResolver(context));
-        factory.addResolver("kcontext", new SimpleValueResolver(context));
-        if (variableNames != null) {
-        	for (String variableName: variableNames) {
-        		factory.addResolver(
-    				variableName, new SimpleValueResolver(context.getVariable(variableName)));
-        	}
+        int length = unit.getOtherIdentifiers().length;
+        Object[] vars = new Object[ length ];
+        if (unit.getOtherIdentifiers() != null) {
+            for (int i = 0; i < length; i++ ) {
+                vars[i] = context.getVariable( unit.getOtherIdentifiers()[i] );
+            }
         }
+
+        DroolsMVELIndexedFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
         
-        factory.setContext( null,
-                            null,
-                            context.getKnowledgeRuntime(),
-                            null );
-        
-        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
-        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
-            factory.setNextFactory( data.getFunctionFactory() );
-        }
-        
+//        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
+//        if ( pkg != null && pkg instanceof KnowledgePackageImp) {
+//            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) ((KnowledgePackageImp) pkg).pkg.getDialectRuntimeRegistry().getDialectData( id );
+//            factory.setNextFactory( data.getFunctionFactory() );
+//        }
+//        
         MVEL.executeExpression( this.expr,
                                 null,
                                 factory );

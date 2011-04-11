@@ -23,16 +23,17 @@ import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.runtime.process.ProcessContext;
+import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.debug.DebugTools;
@@ -49,8 +50,6 @@ public class MVELReturnValueEvaluator
     private String              id;
 
     private Serializable        expr;
-    private DroolsMVELFactory   prototype;
-    private List<String>        variableNames;
 
     public MVELReturnValueEvaluator() {
     }
@@ -61,30 +60,19 @@ public class MVELReturnValueEvaluator
         this.id = id;
     }
 
-    public void setVariableNames(List<String> variableNames) {
-    	this.variableNames = variableNames;
-    }
-
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         id = in.readUTF();
         unit = (MVELCompilationUnit) in.readObject();
-        variableNames = (List<String>) in.readObject();
-        //        expr    = (Serializable)in.readObject();
-        //        prototype   = (DroolsMVELFactory)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
-        out.writeObject(variableNames);
-        //        out.writeObject(expr);
-        //        out.writeObject(prototype);
     }
 
     public void compile(ClassLoader classLoader) {
         expr = unit.getCompiledExpression( classLoader );
-        prototype = unit.getFactory();
     }
 
     public String getDialect() {
@@ -92,21 +80,15 @@ public class MVELReturnValueEvaluator
     }
 
     public Object evaluate(ProcessContext context) throws Exception {
-        DroolsMVELFactory factory = (DroolsMVELFactory) this.prototype.clone();
-        
-        factory.addResolver("context", new SimpleValueResolver(context));
-        factory.addResolver("kcontext", new SimpleValueResolver(context));
-        if (variableNames != null) {
-        	for (String variableName: variableNames) {
-        		factory.addResolver(
-    				variableName, new SimpleValueResolver(context.getVariable(variableName)));
-        	}
+        int length = unit.getOtherIdentifiers().length;
+        Object[] vars = new Object[ length ];
+        if (unit.getOtherIdentifiers() != null) {
+            for (int i = 0; i < length; i++ ) {
+                vars[i] = context.getVariable( unit.getOtherIdentifiers()[i] );
+            }
         }
-        
-        factory.setContext( null,
-                            null,
-                            context.getKnowledgeRuntime(),
-                            null );
+
+        DroolsMVELIndexedFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
         
         // do we have any functions for this namespace?
         KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
