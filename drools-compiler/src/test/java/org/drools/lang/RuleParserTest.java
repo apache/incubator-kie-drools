@@ -2005,6 +2005,67 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    public void testAttributes2() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "rule_attributes2.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        List<RuleDescr> rules = pkg.getRules();
+        assertEquals( 3,
+                      rules.size() );
+
+        RuleDescr rule = rules.get( 0 );
+        assertEquals( "rule1",
+                      rule.getName() );
+        Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(42)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "agenda-group" );
+        assertEquals( "agenda-group",
+                      at.getName() );
+        assertEquals( "my_group",
+                      at.getValue() );
+
+        rule = rules.get( 1 );
+        assertEquals( "rule2",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(Integer.MIN_VALUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "no-loop" );
+        assertEquals( "no-loop",
+                      at.getName() );
+
+        rule = rules.get( 2 );
+        assertEquals( "rule3",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "enabled" );
+        assertEquals( "enabled",
+                      at.getName() );
+        assertEquals( "(Boolean.TRUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "activation-group" );
+        assertEquals( "activation-group",
+                      at.getName() );
+        assertEquals( "my_activation_group",
+                      at.getValue() );
+
+    }
+
     public void testEnabledExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_enabled_expression.drl" );

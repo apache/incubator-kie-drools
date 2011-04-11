@@ -1099,16 +1099,37 @@ public class DRLParser {
                                           null );
             }
 
+            boolean hasParen = input.LA( 1 ) == DRLLexer.LEFT_PAREN;
             int first = input.index();
-            exprParser.conditionalExpression();
+            if ( hasParen ) {
+                match( input,
+                       DRLLexer.LEFT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+
+            String value = conditionalExpression();
             if ( state.failed ) return null;
-            if ( state.backtracking == 0 && input.index() > first ) {
-                // expression consumed something
-                String value = input.toString( first,
-                                               input.LT( -1 ).getTokenIndex() );
+
+            if ( hasParen ) {
+                match( input,
+                       DRLLexer.RIGHT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+            if ( state.backtracking == 0 ) {
+                if ( hasParen ) {
+                    value = input.toString( first,
+                                            input.LT( -1 ).getTokenIndex() );
+                }
                 attribute.value( value );
                 attribute.type( AttributeDescr.Type.EXPRESSION );
             }
+
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
@@ -1138,16 +1159,38 @@ public class DRLParser {
                                           DroolsSoftKeywords.ENABLED,
                                           null );
             }
+
+            boolean hasParen = input.LA( 1 ) == DRLLexer.LEFT_PAREN;
             int first = input.index();
-            exprParser.conditionalExpression();
+            if ( hasParen ) {
+                match( input,
+                       DRLLexer.LEFT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+
+            String value = conditionalExpression();
             if ( state.failed ) return null;
-            if ( state.backtracking == 0 && input.index() > first ) {
-                // expression consumed something
-                String value = input.toString( first,
-                                               input.LT( -1 ).getTokenIndex() );
+
+            if ( hasParen ) {
+                match( input,
+                       DRLLexer.RIGHT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            }
+            if ( state.backtracking == 0 ) {
+                if ( hasParen ) {
+                    value = input.toString( first,
+                                            input.LT( -1 ).getTokenIndex() );
+                }
                 attribute.value( value );
                 attribute.type( AttributeDescr.Type.EXPRESSION );
             }
+
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
@@ -1461,7 +1504,7 @@ public class DRLParser {
             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
         }
         try {
-            while ( input.LA( 1 ) != DRLLexer.EOF && 
+            while ( input.LA( 1 ) != DRLLexer.EOF &&
                     !helper.validateIdentifierKey( DroolsSoftKeywords.THEN ) &&
                     !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 if ( state.backtracking == 0 ) {
@@ -1905,7 +1948,7 @@ public class DRLParser {
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return null;
             }
-        } else if(input.LA( 1 ) != DRLLexer.EOF ) {
+        } else if ( input.LA( 1 ) != DRLLexer.EOF ) {
             lhsPatternBind( not,
                             true );
             if ( state.failed ) return null;
@@ -2327,26 +2370,26 @@ public class DRLParser {
 
         int first = input.index();
         exprParser.getHelper().setHasOperator( false ); // resetting
-//        boolean error = false;
-//        try {
-            exprParser.conditionalOrExpression();
-//        } catch ( RecognitionException re ) {
-//            error = true;
-//            throw re; 
-//        } finally {
-            if ( state.backtracking == 0 ) {
-                if ( input.LA( 1 ) != DRLLexer.EOF || input.get( input.index() - 1 ).getType() == DRLLexer.WS ) {
-//                    if ( exprParser.getHelper().getHasOperator() ) {
-//                        if ( error ) {
-//                            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
-//                        } else {
-                            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
-//                        }
-//                    } else {
-//                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
-//                    }
-                }
-//            }
+        //        boolean error = false;
+        //        try {
+        exprParser.conditionalOrExpression();
+        //        } catch ( RecognitionException re ) {
+        //            error = true;
+        //            throw re; 
+        //        } finally {
+        if ( state.backtracking == 0 ) {
+            if ( input.LA( 1 ) != DRLLexer.EOF || input.get( input.index() - 1 ).getType() == DRLLexer.WS ) {
+                //                    if ( exprParser.getHelper().getHasOperator() ) {
+                //                        if ( error ) {
+                //                            helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_ARGUMENT );
+                //                        } else {
+                helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_END );
+                //                        }
+                //                    } else {
+                //                        helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_OPERATOR );
+                //                    }
+            }
+            //            }
         }
         if ( state.failed ) return;
 
