@@ -3,11 +3,13 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -133,6 +135,51 @@ public class ExecutionFlowControlTest {
         assertEquals( "Rule 2 should have been fired second",
                              "Rule 2",
                              list.get( 1 ) );
+    }
+    
+    @Test
+    @Ignore
+    public void testSalienceMinInteger() throws Exception {
+        final PackageBuilder builder = new PackageBuilder();
+        String text = 
+                "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "rule a\n" + 
+                "when\n" + 
+                "then\n" + 
+                "    list.add( \"a\" );\n" + 
+                "end\n" +      
+                "\n" + 
+                "rule b\n" + 
+        		"   salience ( Integer.MIN_VALUE )\n" + 
+        		"when\n" + 
+        		"then\n" + 
+        		"    list.add( \"b\" );\n" + 
+        		"end\n" + 
+        		"\n" + 
+        		"rule c\n" + 
+        		"when\n" + 
+        		"then\n" + 
+        		"    list.add( \"c\" );\n" + 
+        		"end\n";
+        
+        builder.addPackageFromDrl( new StringReader(text) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        final Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+
+        final List list = new ArrayList();
+        workingMemory.setGlobal( "list",
+                                 list );
+        workingMemory.fireAllRules();
+        
+        assertEquals( "b", list.get(2));
     }
 
     @Test
