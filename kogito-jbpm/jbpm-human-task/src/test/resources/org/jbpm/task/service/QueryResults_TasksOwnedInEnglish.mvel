@@ -14,7 +14,7 @@ format = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
                               format.parse( "15/02/2008" ), format.parse( "20/02/2008" ), null ),
              new TaskSummary( 1, '-1', 'This is my task name Jun', 'This is my task subject Jun', 'This is my task description Jun',
                               Status.Created, 15, false, users[ 'steve' ], users[ 'steve' ], 
-                              format.parse( "15/06/2008" ), format.parse( "20/06/2008" ), null ) ]                      
+                              format.parse( "15/06/2008" ), format.parse( "20/06/2008" ), null ) ],                      
   'darth' : [ new TaskSummary( 1, '-1', 'This is my task name Apr', 'This is my task subject Apr', 'This is my task description Apr',
                                Status.Created, 20, false, users[ 'darth' ], users[ 'bobba' ], 
                                format.parse( "15/04/2008" ), format.parse( "20/04/2008" ), null ) ]                                                                                                                                              
