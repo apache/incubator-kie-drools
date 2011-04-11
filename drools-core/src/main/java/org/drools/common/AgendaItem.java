@@ -223,8 +223,8 @@ public class AgendaItem
         this.activated = activated;
     }
 
-    public String toString() {
-        return "[Activation rule=" + this.rtn.getRule().getName() + ", salience="+ this.salience + ", tuple=" + this.tuple + "]";
+    public String toString() {                
+        return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience="+ this.salience + ", tuple=" + this.tuple + "]";
     }
 
     /*
