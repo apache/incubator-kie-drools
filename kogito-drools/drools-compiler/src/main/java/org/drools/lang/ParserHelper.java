@@ -1,5 +1,7 @@
 package org.drools.lang;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -743,6 +745,24 @@ public class ParserHelper {
         builderContext.push( builder );
         //StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         //System.out.println("++ PUSH : "+stackTrace[3].getMethodName() );
+    }
+
+    public boolean validateKeyword( int i ) {
+        String token = input.LT( i ).getText();
+        if( token != null ) {
+            for( Field field : DroolsSoftKeywords.class.getFields() ) {
+                if( Modifier.isStatic( field.getModifiers() ) && Modifier.isPublic( field.getModifiers() ) ) {
+                    try {
+                        if( token.equals( field.get( null ) ) ) {
+                            return true;
+                        }
+                    } catch ( Exception e ) {
+                        //nothing to do
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

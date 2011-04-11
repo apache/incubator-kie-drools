@@ -138,7 +138,6 @@ public class ExecutionFlowControlTest {
     }
     
     @Test
-    @Ignore
     public void testSalienceMinInteger() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         String text = 
