@@ -65,6 +65,7 @@ public class CompositeSelector extends AbstractSelector {
 
     public Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope) {
         List<Iterator<Move>> moveIteratorList = new ArrayList<Iterator<Move>>(selectorList.size());
+        // TODO unoptimized code: use Selector.moveList(localSearchStepScope) instead
         for (Selector selector : selectorList) {
             Iterator<Move> moveIterator = selector.moveIterator(localSearchStepScope);
             if (moveIterator.hasNext()) {
