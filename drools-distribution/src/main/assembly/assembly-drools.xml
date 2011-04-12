@@ -95,8 +95,8 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools:drools-expert-examples</include>
-        <include>org.drools:drools-fusion-examples</include>
+        <include>org.drools:drools-expert-examples:jar</include>
+        <include>org.drools:drools-fusion-examples:jar</include>
       </includes>
       <outputDirectory>examples/binaries</outputDirectory>
     </dependencySet>
@@ -129,7 +129,7 @@
         <exclude>org.drools:drools-fusion-examples:jar:sources</exclude>
       </excludes>
       <outputDirectory>sources</outputDirectory>
-      <unpack>true</unpack>
+      <unpack>false</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
   </dependencySets>
