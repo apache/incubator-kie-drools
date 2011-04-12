@@ -131,4 +131,58 @@ public class NodeInstanceLog implements Serializable {
         	processId + "#" + nodeId + "' (" + nodeName + ") [" + processInstanceId + "#" + nodeInstanceId + "]";
     }
     
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + (int) id;
+		result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+		result = prime * result
+				+ ((nodeInstanceId == null) ? 0 : nodeInstanceId.hashCode());
+		result = prime * result
+				+ ((processId == null) ? 0 : processId.hashCode());
+		result = prime * result	+ (int) processInstanceId;
+		result = prime * result + type;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NodeInstanceLog other = (NodeInstanceLog) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (id != other.id)
+			return false;
+		if (nodeId == null) {
+			if (other.nodeId != null)
+				return false;
+		} else if (!nodeId.equals(other.nodeId))
+			return false;
+		if (nodeInstanceId == null) {
+			if (other.nodeInstanceId != null)
+				return false;
+		} else if (!nodeInstanceId.equals(other.nodeInstanceId))
+			return false;
+		if (processId == null) {
+			if (other.processId != null)
+				return false;
+		} else if (!processId.equals(other.processId))
+			return false;
+		if (processInstanceId != other.processInstanceId)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+  	
 }
