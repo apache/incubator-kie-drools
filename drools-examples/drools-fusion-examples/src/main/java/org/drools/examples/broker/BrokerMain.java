@@ -34,7 +34,7 @@ import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
 /**
  * This is the main class for the broker example.
  */
-public class Main {
+public class BrokerMain {
 
     /**
      * @param args
@@ -52,7 +52,7 @@ public class Main {
         
         TimerService clock = new JDKTimerService(1);
         StockTickPersister source = new StockTickPersister();
-        source.openForRead( new InputStreamReader( Main.class.getResourceAsStream( "/stocktickstream.dat" ) ), 
+        source.openForRead( new InputStreamReader( BrokerMain.class.getResourceAsStream( "/stocktickstream.dat" ) ),
                             System.currentTimeMillis() );
         
         EventFeeder feeder = new EventFeeder(clock, source, broker );
