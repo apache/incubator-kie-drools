@@ -28,6 +28,7 @@ import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 
@@ -365,6 +366,102 @@ public class TaskServerHandler {
                     String uuid = (String) cmd.getArguments().get(0);
                     clients.put(uuid, session);
                     break;
+                }
+                case QueryGenericRequest: {
+                	String qlString = (String) cmd.getArguments().get(0);
+                	Integer size = (Integer) cmd.getArguments().get(1);
+                	Integer offset = (Integer) cmd.getArguments().get(2);
+                	List<?> results = taskSession.query(qlString, size, offset);
+                	List args = new ArrayList(1);
+                	args.add(results);
+                	Command resultsCmnd = new Command(cmd.getId(),
+                            CommandName.QueryGenericResponse,
+                            args);
+                    session.write(resultsCmnd);
+                    break;
+                }
+                case NominateTaskRequest:  {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	List<OrganizationalEntity> potentialOwners = (List<OrganizationalEntity>) cmd.getArguments().get(2);
+                	
+                	taskSession.nominateTask(taskId, userId, potentialOwners);
+                	
+                	List args = Collections.emptyList();
+                	
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
+                }
+                case SetOutputRequest: {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	ContentData outputContentData = (ContentData) cmd.getArguments().get(2);
+                	
+                	taskSession.setOutput(taskId, userId, outputContentData);
+                	
+                	List args = Collections.emptyList();
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
+                }
+                case DeleteOutputRequest: {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	
+                	taskSession.deleteOutput(taskId, userId);
+                	
+                	List args = Collections.emptyList();
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
+                }
+                case SetFaultRequest: {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	FaultData data = (FaultData) cmd.getArguments().get(2);
+                	
+                	taskSession.setFault(taskId, userId, data);
+                	
+                	List args = Collections.emptyList();
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
+                }
+                case DeleteFaultRequest: {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	
+                	taskSession.deleteFault(taskId, userId);
+                	
+                	List args = Collections.emptyList();
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
+                }
+                case SetPriorityRequest: {
+                	response = CommandName.OperationResponse;
+                	long taskId = (Long) cmd.getArguments().get(0);
+                	String userId = (String) cmd.getArguments().get(1);
+                	int priority = (Integer) cmd.getArguments().get(2);
+                	
+                	taskSession.setPriority(taskId, userId, priority);
+                	
+                	List args = Collections.emptyList();
+                	Command resultsCmnd = new Command(cmd.getId(), CommandName.OperationResponse, args);
+                	session.write(resultsCmnd);
+                	
+                	break;
                 }
                 default: {
                     systemEventListener.debug("Unknown command recieved on server");

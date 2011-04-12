@@ -20,5 +20,6 @@ public enum Allowed {
     Owner,
     Initiator,
     PotentialOwner,
-    BusinessAdministrator
+    BusinessAdministrator,
+    Anyone
 }
