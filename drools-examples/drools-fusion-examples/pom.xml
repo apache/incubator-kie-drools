@@ -85,15 +85,5 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
-
-    <!-- External dependencies -->
-    <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>looks</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.jgoodies</groupId>
-      <artifactId>forms</artifactId>
-    </dependency>
   </dependencies>
 </project>

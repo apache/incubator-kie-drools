@@ -29,8 +29,6 @@ import org.drools.examples.broker.ui.BrokerWindow;
 import org.drools.time.TimerService;
 import org.drools.time.impl.JDKTimerService;
 
-import com.jgoodies.looks.plastic.Plastic3DLookAndFeel;
-
 /**
  * This is the main class for the broker example.
  */
@@ -42,7 +40,6 @@ public class BrokerMain {
      */
     public static void main(String[] args) throws Exception {
         // set up and show main window
-        UIManager.setLookAndFeel( new Plastic3DLookAndFeel() );
         Locale.setDefault( Locale.US );
         CompanyRegistry registry = new CompanyRegistry();
         BrokerWindow window = new BrokerWindow( registry.getCompanies() );
