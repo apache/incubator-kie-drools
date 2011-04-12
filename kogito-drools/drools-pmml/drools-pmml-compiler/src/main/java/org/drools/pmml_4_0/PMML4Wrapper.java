@@ -144,21 +144,30 @@ public class PMML4Wrapper {
 
 
     public String format(DataField fld, Value val) {
+        if (val == null)
+            return "null";
         String s = fld.getDataType().value();
         return format(s, val);
     }
 
     public String format(String type, Value val) {
+        if (val == null)
+            return "null";
         return format(type,val.getValue());
     }
 
     public String format(DataField fld, String val) {
+        if (val == null)
+            return "null";
         String s = fld.getDataType().value();
         return format(s, val);
     }
 
 
     public String format(DATATYPE type, String val) {
+        if (val == null)
+            return "null";
+
         return format(type != null ? type.value() : null, val);
     }
 
@@ -166,6 +175,8 @@ public class PMML4Wrapper {
     public String format(String type, String val) {
         if (type == null)
             return val;
+        if (val == null)
+            return "null";
 		if (Integer.class.getName().equals(type)
             || "Integer".equalsIgnoreCase(type) || "int".equalsIgnoreCase(type) )
 			return val;

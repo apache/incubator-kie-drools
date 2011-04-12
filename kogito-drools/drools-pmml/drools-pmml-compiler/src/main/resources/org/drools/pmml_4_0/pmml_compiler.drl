@@ -137,6 +137,8 @@ then
         //map.put("continuous","continuous".equalsIgnoreCase($fld.optype.value));
         //map.put("ordinal","ordinal".equalsIgnoreCase($fld.optype.value));
     applyTemplate("ioTypeDeclare.drlt", utils, registry, map, theory);
+//    applyTemplate("updateIOField.drlt", utils, registry, map, theory);
+
 end
 
 
@@ -297,6 +299,7 @@ then
 //        map.put("continuous","continuous".equalsIgnoreCase(opt));
 //        map.put("ordinal","ordinal".equalsIgnoreCase(opt));
     applyTemplate("ioTypeDeclare.drlt", utils, registry, map, theory);
+//    applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 end
 
 
@@ -1392,6 +1395,7 @@ end
 
          map.put("type",utils.mapDatatype($tf.dataType));
      applyTemplate("ioTypeDeclare.drlt", utils, registry, map, theory);
+     applyTemplate("updateIOField.drlt", utils, registry, map, theory);
  end
 
  rule "Output_Expose"
@@ -1491,9 +1495,32 @@ then
 
     HashMap map = new HashMap();
         map.put("name",utils.compactUpperCase(name));
-        map.put("model",utils.context);
+        map.put("context",utils.context);
         map.put("index",$id);
     applyTemplate("neuralWireInput.drlt", utils, registry, map, theory);
+end
+
+
+rule "Neural_DerivedInputFieldOverride"
+dialect "mvel"
+when
+    NeuralInput( derivedField != null, $fld : derivedField.name != null)
+then
+    HashMap map = new HashMap();
+        map.put("name",utils.compactUpperCase($fld));
+        map.put("context",utils.context);
+    applyTemplate("updateIOField.drlt", utils, registry, map, theory);
+end
+
+rule "Neural_RefInputFieldOverride"
+dialect "mvel"
+when
+    NeuralInput( derivedField != null, $fld :derivedField.fieldRef != null)
+then
+    HashMap map = new HashMap();
+        map.put("name",utils.compactUpperCase($fld.field));
+        map.put("context",utils.context);
+    applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 end
 
 
@@ -1621,7 +1648,7 @@ then
     applyTemplate("neuralOutputField.drlt", utils, registry, map, theory);
 
     map = new HashMap();
-        map.put("model",utils.context);
+        map.put("context",utils.context);
         map.put("fullName",name);
         map.put("name",name);
         map.put("super",null);
@@ -1632,6 +1659,7 @@ then
         map.put("ordinal",false);
         map.put("modelType",null);
     applyTemplate("ioTypeDeclare.drlt", utils, registry, map, theory);
+    applyTemplate("updateIOField.drlt", utils, registry, map, theory);
 end
 
 /*

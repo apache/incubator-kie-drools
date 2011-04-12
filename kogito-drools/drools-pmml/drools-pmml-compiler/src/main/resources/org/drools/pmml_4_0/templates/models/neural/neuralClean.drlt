@@ -21,7 +21,7 @@ then
     @foreach{ field : fields }
     @code{ n = compactUpperCase(field.name); }
     @if{ field.usageType == null || field.usageType.value == "active" }
-        retract(@{n});
+       // retract(@{n});
     @end{}
     @end{}
 end

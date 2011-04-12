@@ -8,5 +8,6 @@
     <resource type="DRL" source="classpath:org/drools/informer/Queries.drl" />
     <resource type="DRL" source="classpath:org/drools/informer/Question.drl" />
     <resource type="DRL" source="classpath:org/drools/informer/ReadOnly.drl" />
+    <resource type="DRL" source="classpath:org/drools/informer/DomainModel.drl" />
   </add>
 </change-set>

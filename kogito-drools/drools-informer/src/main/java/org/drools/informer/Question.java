@@ -378,7 +378,7 @@ public class Question extends Item {
 	 * 
 	 * Occurrences of the delimiter d within the text are expected to be escaped as \d
 	 * 
-	 * @param string
+	 * @param text
 	 * @param delimiter
 	 * @return
 	 */

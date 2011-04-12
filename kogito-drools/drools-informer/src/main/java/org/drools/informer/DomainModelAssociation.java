@@ -39,6 +39,7 @@ public class DomainModelAssociation {
 	 */
 	private Object lastAnswer;
 
+
 	public DomainModelAssociation() {
 	}
 
@@ -80,37 +81,25 @@ public class DomainModelAssociation {
 		this.lastAnswer = lastAnswer;
 	}
 
-	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((questionId == null) ? 0 : questionId.hashCode());
-		return result;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	/**
-	 * @see Object#equals(Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		final DomainModelAssociation other = (DomainModelAssociation) obj;
-		if (questionId == null) {
-			if (other.questionId != null)
-				return false;
-		} else if (!questionId.equals(other.questionId))
-			return false;
-		return true;
-	}
+        DomainModelAssociation that = (DomainModelAssociation) o;
 
+        if (object != null ? !object.equals(that.object) : that.object != null) return false;
+        if (questionId != null ? !questionId.equals(that.questionId) : that.questionId != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = questionId != null ? questionId.hashCode() : 0;
+        result = 31 * result + (object != null ? object.hashCode() : 0);
+        return result;
+    }
 
     @Override
     public String toString() {

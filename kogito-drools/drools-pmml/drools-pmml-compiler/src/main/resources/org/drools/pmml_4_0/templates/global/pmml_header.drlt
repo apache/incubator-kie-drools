@@ -24,3 +24,7 @@ import org.drools.informer.MultipleChoiceQuestion;
 import org.drools.informer.MultipleChoiceQuestion.PossibleAnswer;
 import org.drools.informer.Note;
 import org.drools.informer.DomainModelAssociation;
+import org.drools.informer.Answer;
+import org.drools.informer.domain.DomainModelSupport;
+
+import org.apache.commons.beanutils.BeanUtils;

@@ -83,9 +83,25 @@ public abstract class DroolsAbstractPMMLTest {
 
 
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
 		    kbuilder.add(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/changeset.xml"), ResourceType.CHANGE_SET);
 //            kbuilder.add(ResourceFactory.newClassPathResource("Active.drl", Questionnaire.class),ResourceType.DRL);
+
+
+        if (! verbose) {
             kbuilder.add(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/"+pmmlSource),ResourceType.PMML);
+        } else {
+            PMML4Compiler compiler = new PMML4Compiler();
+            try {
+                String src = compiler.compile(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/" + pmmlSource).getInputStream());
+                System.out.println(src);
+                kbuilder.add(ResourceFactory.newByteArrayResource(src.getBytes()),ResourceType.DRL);
+            } catch (IOException e) {
+                fail(e.getMessage());
+            }
+        }
+
+
 		KnowledgeBuilderErrors errors = kbuilder.getErrors();
 		if (errors.size() > 0) {
 			for (KnowledgeBuilderError error: errors) {
