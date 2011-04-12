@@ -272,7 +272,12 @@ public class CommandDelegate {
 			throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
 		}
 	}
-	
+	/**
+	 * This method the variables provided in the map to the instance.
+	 * NOTE: the map will be added not replaced
+	 * @param processInstanceId
+	 * @param variables
+	 */
 	public void setProcessInstanceVariables(String processInstanceId, Map<String, Object> variables) {
 		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
 		if (processInstance != null) {

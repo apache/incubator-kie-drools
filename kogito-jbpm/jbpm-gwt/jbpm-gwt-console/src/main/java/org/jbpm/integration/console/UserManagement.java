@@ -24,6 +24,7 @@ public class UserManagement implements org.jboss.bpm.console.server.integration.
 	public List<String> getActorsForGroup(String groupName) {
 		// TODO: fixme
 		List<String> result = new ArrayList<String>();
+		
 		result.add("admin");
 		return result;
 	}
