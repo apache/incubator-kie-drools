@@ -123,7 +123,7 @@ typeArgument
 // the following dymmy rule is to force the AT symbol to be
 // included in the follow set of the expression on the DFAs
 dummy
-    :	expression ( AT | SEMICOLON | EOF | ID ) ;
+    :	expression ( AT | SEMICOLON | EOF | ID | RIGHT_PAREN ) ;
     
 dummy2
     :  relationalExpression EOF;

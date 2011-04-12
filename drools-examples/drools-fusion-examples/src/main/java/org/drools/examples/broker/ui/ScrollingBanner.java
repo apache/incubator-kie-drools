@@ -18,16 +18,16 @@ package org.drools.examples.broker.ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import org.drools.examples.broker.model.StockTick;
-
-import com.jgoodies.looks.FontSets;
 
 /**
  * A simple component to show the incoming stock ticks
@@ -46,10 +46,11 @@ public class ScrollingBanner extends JComponent
 
     public ScrollingBanner() {
         super();
-        this.ticks = new ConcurrentLinkedQueue<StockTick>();
-        this.setBackground( Color.black );
-        this.setForeground( Color.GREEN );
-        this.setFont( FontSets.getLogicalFontSet().getTitleFont() );
+        ticks = new ConcurrentLinkedQueue<StockTick>();
+        setBackground(Color.BLACK);
+        setForeground(Color.GREEN);
+        setFont(new JTextField().getFont().deriveFont(Font.BOLD));
+        setPreferredSize(new Dimension(500, 20));
     }
 
     public void run() {

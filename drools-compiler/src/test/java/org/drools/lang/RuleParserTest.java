@@ -2005,6 +2005,67 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    public void testAttributes2() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "rule_attributes2.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        List<RuleDescr> rules = pkg.getRules();
+        assertEquals( 3,
+                      rules.size() );
+
+        RuleDescr rule = rules.get( 0 );
+        assertEquals( "rule1",
+                      rule.getName() );
+        Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(42)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "agenda-group" );
+        assertEquals( "agenda-group",
+                      at.getName() );
+        assertEquals( "my_group",
+                      at.getValue() );
+
+        rule = rules.get( 1 );
+        assertEquals( "rule2",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(Integer.MIN_VALUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "no-loop" );
+        assertEquals( "no-loop",
+                      at.getName() );
+
+        rule = rules.get( 2 );
+        assertEquals( "rule3",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "enabled" );
+        assertEquals( "enabled",
+                      at.getName() );
+        assertEquals( "(Boolean.TRUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "activation-group" );
+        assertEquals( "activation-group",
+                      at.getName() );
+        assertEquals( "my_activation_group",
+                      at.getValue() );
+
+    }
+
     public void testEnabledExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_enabled_expression.drl" );
@@ -3386,6 +3447,61 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( 3,
                       declarations.size() );
+    }
+
+    public void testPositionalConstraintsOnly() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+    }
+
+    public void testPositionalsAndNamedConstraints() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 3,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        assertEquals( "location == \"atlanta\"",
+                      fcd.getExpression() );
+        assertEquals( 2,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.NAMED,
+                      fcd.getType() );
+
     }
 
     private Object parse( final String parserRuleName,
