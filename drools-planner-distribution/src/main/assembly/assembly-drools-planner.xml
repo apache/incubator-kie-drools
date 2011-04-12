@@ -86,7 +86,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-examples</include>
+        <include>org.drools.planner:drools-planner-examples:jar</include>
       </includes>
       <outputDirectory>examples/binaries</outputDirectory>
     </dependencySet>
@@ -100,10 +100,13 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools.planner:drools-planner-core:*:sources</include>
+        <include>org.drools.planner:*:jar:sources</include>
       </includes>
+      <excludes>
+        <exclude>org.drools.planner:drools-planner-examples:jar:sources</exclude>
+      </excludes>
       <outputDirectory>sources</outputDirectory>
-      <unpack>true</unpack>
+      <unpack>false</unpack>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
   </dependencySets>

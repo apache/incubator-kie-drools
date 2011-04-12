@@ -58,6 +58,12 @@
       <groupId>org.drools.planner</groupId>
       <artifactId>drools-planner-examples</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools.planner</groupId>
+      <artifactId>drools-planner-examples</artifactId>
+      <version>${project.version}</version>
+      <classifier>sources</classifier>
+    </dependency>
 
     <!-- Javadocs and documentation -->
     <dependency>
