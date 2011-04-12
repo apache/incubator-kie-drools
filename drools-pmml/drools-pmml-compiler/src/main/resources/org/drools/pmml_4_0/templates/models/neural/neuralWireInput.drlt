@@ -13,7 +13,7 @@
 rule "NeuralWireInput_@{name}"
 when
  $x : @{name}( $v : valid == true, $m : missing == false,
-               $model : context == @{format("string",model)},
+               $model : context == @{format("string",context)},
                $val : value)
 then
     Stym x = new Stym();

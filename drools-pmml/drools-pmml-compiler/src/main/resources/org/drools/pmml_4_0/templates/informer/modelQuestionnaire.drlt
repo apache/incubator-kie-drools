@@ -17,7 +17,7 @@ then
     Questionnaire questionnaire = new Questionnaire(@{format("string",model)});
 	questionnaire.setLabel(@{format("string",model)} + " form");
 
-	questionnaire.setItems({  @foreach{fld : fields} @{format("string",fld.name)} @end{","}  });
+	questionnaire.setItems({  @foreach{fld : fields} @{format("string",model)}+"_"+@{format("string",compactUpperCase(fld.name))} @end{","}  });
 
 	insertLogical(questionnaire);
 end

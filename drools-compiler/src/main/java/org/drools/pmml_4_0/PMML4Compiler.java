@@ -60,6 +60,7 @@ public class PMML4Compiler {
 
             "global/dataDefinition/rootDataField.drlt",
             "global/dataDefinition/ioTypeDeclare.drlt",
+            "global/dataDefinition/updateIOField.drlt",
             "global/dataDefinition/inputFromEP.drlt",
 
             "global/manipulation/confirm.drlt",
@@ -131,9 +132,9 @@ public class PMML4Compiler {
             "informer/modelQuestionnaire.drlt",
             "informer/modelQuestion.drlt",
             "informer/modelMultiQuestion.drlt",
-            "informer/modelQuestionBinding.drlt"
-
-
+            "informer/modelQuestionBinding.drlt",
+            "informer/modelQuestionRebinding.drlt" ,
+            "informer/modelCreateByBinding.drlt"
 
     };
 

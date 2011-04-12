@@ -50,6 +50,8 @@ then
         map.put("dataType",$type);
     applyTemplate("modelQuestion.drlt", utils, registry, map, theory);
     applyTemplate("modelQuestionBinding.drlt", utils, registry, map, theory);
+    applyTemplate("modelQuestionRebinding.drlt", utils, registry, map, theory);
+    applyTemplate("modelCreateByBinding.drlt", utils, registry, map, theory);
 end
 
 
@@ -77,4 +79,6 @@ then
         map.put("missing",new java.util.ArrayList());
     applyTemplate("modelMultiQuestion.drlt", utils, registry, map, theory);
     applyTemplate("modelQuestionBinding.drlt", utils, registry, map, theory);
+    applyTemplate("modelQuestionRebinding.drlt", utils, registry, map, theory);
+    applyTemplate("modelCreateByBinding.drlt", utils, registry, map, theory);
 end

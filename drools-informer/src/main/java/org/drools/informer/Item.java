@@ -48,7 +48,7 @@ public abstract class Item extends TohuObject {
 	}
 
 	/**
-	 * @see org.tohu.TohuObject#getId()
+	 * @see TohuObject#getId()
 	 */
 	public String getId() {
 		return id;

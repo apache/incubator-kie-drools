@@ -3,9 +3,12 @@ package org.drools.pmml_4_0.predictive.models;
 
 import junit.framework.Assert;
 import org.drools.ClassObjectFilter;
+import org.drools.definition.type.FactType;
 import org.drools.pmml_4_0.DroolsAbstractPMMLTest;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestNeuralNetwork extends DroolsAbstractPMMLTest {
 
@@ -223,6 +226,49 @@ public class TestNeuralNetwork extends DroolsAbstractPMMLTest {
      }
 
 
+
+
+
+
+
+     @Test
+    public void testOverride() throws Exception {
+        setKSession(getModelSession(source3,VERBOSE));
+        setKbase(getKSession().getKnowledgeBase());
+
+        getKSession().fireAllRules();
+
+        getKSession().getWorkingMemoryEntryPoint("in_PetalLength").insert(2.2);
+            getKSession().fireAllRules();
+
+        getKSession().getWorkingMemoryEntryPoint("in_PetalNumber").insert(5);
+            getKSession().fireAllRules();
+
+        System.err.println(reportWMObjects(getKSession()));
+
+        FactType out1 = getKbase().getFactType("org.drools.pmml_4_0.test","Out1");
+        FactType out2 = getKbase().getFactType("org.drools.pmml_4_0.test","Out2");
+        FactType nump = getKbase().getFactType("org.drools.pmml_4_0.test","PetalNumber");
+
+        assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out1.getFactClass())).size());
+        assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out2.getFactClass())).size());
+        assertEquals(2,getKSession().getObjects(new ClassObjectFilter(nump.getFactClass())).size());
+
+
+
+        getKSession().getWorkingMemoryEntryPoint("in_PetalLength").insert(2.5);
+        getKSession().getWorkingMemoryEntryPoint("in_PetalNumber").insert(6);
+            getKSession().fireAllRules();
+
+
+        System.err.println(reportWMObjects(getKSession()));
+
+        assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out1.getFactClass())).size());
+        assertEquals(1,getKSession().getObjects(new ClassObjectFilter(out2.getFactClass())).size());
+        assertEquals(3,getKSession().getObjects(new ClassObjectFilter(nump.getFactClass())).size());
+
+
+    }
 
 
 

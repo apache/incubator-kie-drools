@@ -7,23 +7,21 @@
     */
 }
 
-@declare{'modelQuestionBindingRule'}
-rule "Model_Question_Binding_@{model}_@{name}"
+@declare{'modelQuestionRebindingRule'}
+rule "Model_Question_ReBinding_@{model}_@{name}"
 dialect "mvel"
 no-loop
 salience 99
 when
     $quest: Question( $id : id == "@{model+"_"+name}" )
     $bean : @{name}( context == @{format("string",context)} )
+    $assoc : DomainModelAssociation( questionId == $id, object != $bean )
 then
-    DomainModelAssociation assoc = new DomainModelAssociation();
-        assoc.setQuestionId($id);
-        assoc.setObject($bean);
-        assoc.setProperty("value");
-    insertLogical(assoc);
+        $assoc.setObject($bean);
+    update($assoc);
 end
 @end{}
 
 
 
-@includeNamed{'modelQuestionBindingRule'}
+@includeNamed{'modelQuestionRebindingRule'}

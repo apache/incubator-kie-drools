@@ -9,7 +9,7 @@
 
 declare Stym
     @@role(event)
-    @@expires(1s)
+    //@@expires(1s)
     context : String
     index : int = -1
     value : double
@@ -26,7 +26,7 @@ end
 
 declare Charge
     @@role(event)
-    @@expires(1s)
+    //@@expires(1s)
     context : String
     index : int = -1
     source : int

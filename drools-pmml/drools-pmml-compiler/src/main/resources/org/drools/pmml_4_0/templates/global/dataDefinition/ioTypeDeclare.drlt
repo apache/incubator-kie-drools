@@ -30,7 +30,7 @@
      residual : Double
      standardError : Double
      probability  : double = -1.0
-     entityId  : int = (-1)
+     entityId  : int = -1
    @elseif{ "Association".equals(modelType) }
      probability : double = -1.0
      entityId  : int = -1

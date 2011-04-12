@@ -37,8 +37,9 @@ rule "copy question answers to the underlying domain model"
 no-loop
 when
 	question : Question(questionId : id, answerType != null, answer : answer);
-	association : DomainModelAssociation(questionId == questionId, object : object, property : property, lastAnswer != answer);
+	association : DomainModelAssociation(questionId == questionId, object : object, property : property);
 then
+    System.out.println("-------------------------------------------------------------------------------------------- update question -> assoc");
 	Class propertyClass = PropertyUtils.getPropertyType(object, property); 
 	Object propertyValue = DomainModelSupport.answerToObject(question.getBasicAnswerType(), answer, propertyClass);
 	Object oldPropertyValue = PropertyUtils.getProperty(object, property);
