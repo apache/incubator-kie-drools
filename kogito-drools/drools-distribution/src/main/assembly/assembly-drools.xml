@@ -92,13 +92,18 @@
         <exclude>*:*:jar:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
         <include>org.drools:drools-expert-examples:jar</include>
         <include>org.drools:drools-fusion-examples:jar</include>
       </includes>
+      <excludes>
+        <exclude>*:sources</exclude>
+      </excludes>
       <outputDirectory>examples/binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
