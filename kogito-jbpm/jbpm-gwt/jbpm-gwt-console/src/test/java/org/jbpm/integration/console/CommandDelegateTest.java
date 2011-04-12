@@ -40,22 +40,15 @@ public class CommandDelegateTest extends JbpmTestCase{
 	
 	@Test
 	public void testStartInstance(){
-		ProcessInstanceLog instance =   delegate.startProcess("Minimal", null);
-		assertEquals(1, instance.getProcessInstanceId());
+		ProcessInstanceLog instance = delegate.startProcess("Minimal", null);
+		assertEquals("Minimal", instance.getProcessId());
 	}
+	
 	@Test
 	public void testGetProcessInstanceLog() {
-		ProcessInstanceLog instance =   delegate.startProcess("Minimal", null);
-		assertEquals(instance.getId(), delegate.getProcessInstanceLog("2").getId());
+		ProcessInstanceLog instance = delegate.startProcess("Minimal", null);
+		assertEquals(instance.getId(), delegate.getProcessInstanceLog(instance.getId() + "").getId());
 	}
-	
-	@Test
-	public void testGetProcessInstanceLogsByProcessId(){
-		
-		assertEquals(1,delegate.getProcessInstanceLogsByProcessId("Minimal").get(0).getId());
-	}
-	
-	
 	
 	
 	@Test(expected=IllegalArgumentException.class)
@@ -67,27 +60,25 @@ public class CommandDelegateTest extends JbpmTestCase{
 		
 		delegate.abortProcessInstance("3");
 		delegate.getProcessInstanceVariables("3");
-		
-
-		
 	}
+
 	@Test
 	public void testGetProcessInstanceVariables(){
 		HashMap<String,Object> variables = new HashMap<String, Object>();
 		variables.put("key", "value");
 		
-		delegate.startProcess("UserTask", variables);
+		ProcessInstanceLog instance = delegate.startProcess("UserTask", variables);
 		
-		assertEquals(variables, delegate.getProcessInstanceVariables("4"));
+		assertEquals(variables, delegate.getProcessInstanceVariables(instance.getProcessInstanceId() + ""));
 	}
 	
 	@Test
 	public void testSetProcessInstanceVariables(){
+		ProcessInstanceLog instance = delegate.startProcess("UserTask", null);
 		HashMap<String,Object> newVariables = new HashMap<String, Object>();
 		newVariables.put("key", "value2");
-		
-		delegate.setProcessInstanceVariables("4", newVariables);
-		assertEquals(newVariables, delegate.getProcessInstanceVariables("4"));
+		delegate.setProcessInstanceVariables(instance.getId() + "", newVariables);
+		assertEquals(newVariables, delegate.getProcessInstanceVariables(instance.getId() + ""));
 	}
 	
 	@Test

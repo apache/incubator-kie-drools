@@ -7,6 +7,7 @@ import org.jboss.bpm.console.client.model.ProcessDefinitionRef;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef;
 import org.jbpm.integration.JbpmTestCase;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TransformTest extends JbpmTestCase {
@@ -34,12 +35,12 @@ public class TransformTest extends JbpmTestCase {
 		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testTaskSummaryTransform(){
 		fail("Unimplemented");
 	}
 	 
-	@Test
+	@Test @Ignore
 	public void testTaskTransform(){
 		fail("Unimplemented");
 	}
