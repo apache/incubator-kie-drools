@@ -22,6 +22,13 @@ package org.drools.lang.descr;
 public class ExprConstraintDescr extends BaseDescr {
 
     private static final long serialVersionUID = 520l;
+    
+    public static enum Type {
+        NAMED, POSITIONAL;
+    }
+    
+    private Type type = Type.NAMED;
+    private int position = -1;
 
     public ExprConstraintDescr() {
         super();
@@ -40,8 +47,38 @@ public class ExprConstraintDescr extends BaseDescr {
         return getText();
     }
 
+    /**
+     * @return the type
+     */
+    public Type getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType( Type type ) {
+        this.type = type;
+    }
+
+    /**
+     * @return the position
+     */
+    public int getPosition() {
+        return position;
+    }
+
+    /**
+     * @param position the position to set
+     */
+    public void setPosition( int position ) {
+        this.position = position;
+    }
+    
     @Override
     public String toString() {
         return getText();
     }
+
+    
 }

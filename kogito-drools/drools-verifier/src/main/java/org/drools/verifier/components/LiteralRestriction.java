@@ -40,7 +40,7 @@ public abstract class LiteralRestriction extends Restriction
     public static LiteralRestriction createRestriction(Pattern pattern,
                                                        String value) {
 
-        if ( value == null ) {
+        if ( "null".equals(value) || value == null ) {
             return new StringRestriction( pattern );
         }
 
