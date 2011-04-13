@@ -19,7 +19,6 @@ package org.drools.examples.broker;
 import java.io.InputStreamReader;
 import java.util.Locale;
 
-import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.drools.examples.broker.events.EventFeeder;
@@ -49,7 +48,7 @@ public class BrokerMain {
         
         TimerService clock = new JDKTimerService(1);
         StockTickPersister source = new StockTickPersister();
-        source.openForRead( new InputStreamReader( BrokerMain.class.getResourceAsStream( "/stocktickstream.dat" ) ),
+        source.openForRead( new InputStreamReader( BrokerMain.class.getResourceAsStream("/org/drools/examples/broker/data/stocktickstream.dat") ),
                             System.currentTimeMillis() );
         
         EventFeeder feeder = new EventFeeder(clock, source, broker );
