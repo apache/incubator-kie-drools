@@ -144,16 +144,6 @@
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-fusion-examples</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-fusion-examples</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
 
     <!-- Javadocs and documentation -->
     <dependency>
