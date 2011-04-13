@@ -67,17 +67,17 @@
 
             <entry>org.drools</entry>
 
-            <entry>drools-drl-examples</entry>
+            <entry>drools-examples</entry>
           </row>
 
           <row>
             <entry>org.drools</entry>
 
-            <entry>drools-examples-fusion</entry>
+            <entry>drools-examples-fusion / drools-examples-drl (jBPM using parts)</entry>
 
             <entry>org.drools</entry>
 
-            <entry>drools-fusion-examples</entry>
+            <entry>droolsjbpm-integration-examples</entry>
           </row>
 
           <row>
