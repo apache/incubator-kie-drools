@@ -1027,13 +1027,13 @@ public class PackageBuilder {
 
             // is it a regular fact or an event?
             AnnotationDescr annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Role.ID );
-            String role = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String role = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( role != null ) {
                 type.setRole( TypeDeclaration.Role.parseRole( role ) );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TYPESAFE );
-            String typesafe = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String typesafe = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( typesafe != null ) {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
             }
@@ -1064,7 +1064,7 @@ public class PackageBuilder {
 
             // is it a POJO or a template?
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
-            String templateName = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String templateName = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( templateName != null ) {
                 type.setFormat( TypeDeclaration.Format.TEMPLATE );
                 FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
@@ -1077,7 +1077,7 @@ public class PackageBuilder {
                 }
             } else {
                 annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
-                String className = (annotationDescr != null) ? annotationDescr.getValue() : null;
+                String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
 
                 if ( StringUtils.isEmpty( className ) ) {
                     className = type.getTypeName();
@@ -1112,7 +1112,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
-            String timestamp = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String timestamp = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1123,7 +1123,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
-            String duration = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String duration = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
@@ -1134,7 +1134,7 @@ public class PackageBuilder {
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
-            String expiration = (annotationDescr != null) ? annotationDescr.getValue() : null;
+            String expiration = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
             if ( expiration != null ) {
                 if ( timeParser == null ) {
                     timeParser = new TimeIntervalParser();
