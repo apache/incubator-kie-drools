@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -46,12 +47,14 @@ public abstract class AbstractSolverConfig {
     protected EnvironmentMode environmentMode = null;
     protected Long randomSeed = null;
 
+    @XStreamOmitField
+    protected RuleBase ruleBase = null;
     @XStreamImplicit(itemFieldName = "scoreDrl")
     protected List<String> scoreDrlList = null;
     @XStreamAlias("scoreDefinition")
     protected ScoreDefinitionConfig scoreDefinitionConfig = new ScoreDefinitionConfig();
 
-    protected StartingSolutionInitializer startingSolutionInitializer = null;
+    protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO must be @XStreamOmitField too?
     protected Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
 
     public EnvironmentMode getEnvironmentMode() {
@@ -68,6 +71,14 @@ public abstract class AbstractSolverConfig {
 
     public void setRandomSeed(Long randomSeed) {
         this.randomSeed = randomSeed;
+    }
+
+    public RuleBase getRuleBase() {
+        return ruleBase;
+    }
+
+    public void setRuleBase(RuleBase ruleBase) {
+        this.ruleBase = ruleBase;
     }
 
     public List<String> getScoreDrlList() {
@@ -127,30 +138,38 @@ public abstract class AbstractSolverConfig {
     }
 
     private RuleBase buildRuleBase() {
-        PackageBuilder packageBuilder = new PackageBuilder();
-        for (String scoreDrl : scoreDrlList) {
-            InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
-            if (scoreDrlIn == null) {
-                throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.");
+        if (ruleBase != null) {
+            if (scoreDrlList != null && !scoreDrlList.isEmpty()) {
+                throw new IllegalArgumentException("If ruleBase is not null, the scoreDrlList (" + scoreDrlList
+                        + ") must be empty.");
             }
-            try {
-                packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "utf-8"));
-            } catch (DroolsParserException e) {
-                throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
-            } finally {
-                IOUtils.closeQuietly(scoreDrlIn);
+            return ruleBase;
+        } else {
+            PackageBuilder packageBuilder = new PackageBuilder();
+            for (String scoreDrl : scoreDrlList) {
+                InputStream scoreDrlIn = getClass().getResourceAsStream(scoreDrl);
+                if (scoreDrlIn == null) {
+                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.");
+                }
+                try {
+                    packageBuilder.addPackageFromDrl(new InputStreamReader(scoreDrlIn, "utf-8"));
+                } catch (DroolsParserException e) {
+                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
+                } catch (IOException e) {
+                    throw new IllegalArgumentException("scoreDrl (" + scoreDrl + ") could not be loaded.", e);
+                } finally {
+                    IOUtils.closeQuietly(scoreDrlIn);
+                }
             }
+            RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
+            if (packageBuilder.hasErrors()) {
+                throw new IllegalStateException("There are errors in the scoreDrl's:"
+                        + packageBuilder.getErrors().toString());
+            }
+            ruleBase.addPackage(packageBuilder.getPackage());
+            return ruleBase;
         }
-        RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
-        if (packageBuilder.hasErrors()) {
-            throw new IllegalStateException("There are errors in the scoreDrl's:"
-                    + packageBuilder.getErrors().toString());
-        }
-        ruleBase.addPackage(packageBuilder.getPackage());
-        return ruleBase;
     }
 
     public StartingSolutionInitializer buildStartingSolutionInitializer() {
