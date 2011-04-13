@@ -29,7 +29,7 @@ import org.drools.examples.broker.model.StockTick;
  * A class to generate stock tick events
  */
 public class EventGenerator {
-    private static final String DATA_FILE = "src/main/resources/stocktickstream.dat";
+    private static final String DATA_FILE = "src/main/resources/org/drools/examples/broker/data/stocktickstream.dat";
     
     // creating 3 random objects to avoid interference among them on the distribution of values
     private static Random steps = new Random( System.currentTimeMillis() );
