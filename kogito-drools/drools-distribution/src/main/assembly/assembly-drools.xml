@@ -70,15 +70,6 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <!-- Reference manual -->
-    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
-      <directory>../drools-docs/drools-expert-docs/target/docbook/publish/en-US</directory>
-      <outputDirectory>reference_manual/drools-expert-docs</outputDirectory>
-    </fileSet>
-    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
-      <directory>../drools-docs/drools-fusion-docs/target/docbook/publish/en-US</directory>
-      <outputDirectory>reference_manual/drools-fusion-docs</outputDirectory>
-    </fileSet>
   </fileSets>
 
   <dependencySets>
@@ -125,6 +116,46 @@
       <!--<unpack>true</unpack>-->
       <!--<useStrictFiltering>true</useStrictFiltering>-->
     <!--</dependencySet>-->
+    <!-- Reference manual -->
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-introduction-docs:jdocbook</include>
+      </includes>
+      <outputDirectory>reference_manual/drools-introduction-docs</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/**</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-expert-docs:jdocbook</include>
+      </includes>
+      <outputDirectory>reference_manual/drools-expert-docs</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/**</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-fusion-docs:jdocbook</include>
+      </includes>
+      <outputDirectory>reference_manual/drools-fusion-docs</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/**</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
     <dependencySet>
       <includes>
         <include>org.drools:*:jar:sources</include>

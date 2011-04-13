@@ -164,6 +164,11 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-introduction-docs</artifactId>
+      <type>jdocbook</type>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-expert-docs</artifactId>
       <type>jdocbook</type>
     </dependency>
