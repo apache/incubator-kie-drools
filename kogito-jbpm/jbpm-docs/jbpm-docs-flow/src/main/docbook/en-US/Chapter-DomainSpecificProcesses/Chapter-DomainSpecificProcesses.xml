@@ -80,12 +80,15 @@ work item could thus be defined using a work definition with four parameters and
   <section>
     <title>Creating the work definition</title>
 
-<para>All wprk definitions must be specified in one or more configuration files in the project
-classpath, where all the properties are specified as name-value pairs.  Parameters and results are
+<para>All work definitions must be specified in one or more configuration files in the project
+classpath, where all the properties are specified as name-value pairs. Parameters and results are
 maps where each parameter name is also mapped to the expected data type. Note that this
 configuration file also includes some additional user interface information, like the icon
-and the display name of the work item. (We use MVEL for reading in the configuration file,
-which allows us to do more advanced configuration files).  Our MyWorkDefinitions.conf file
+and the display name of the work item.</para>
+
+<para> In our example we will use MVEL for reading in the configuration file,
+which allows us to do more advanced configuration files. This file must be placed in the project
+classpath in a directory called META-INF. Our MyWorkDefinitions.conf file
 looks like this:</para>
 
 <programlisting>
@@ -107,6 +110,20 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 ]
 </programlisting>
 
+<para>The project directory structure could then look something like this:</para>
+
+<programlisting>
+project/src/main/resources/META-INF/MyWorkDefinitions.conf
+</programlisting>
+
+<para>You might now want to create your own icons to go along with your new work definition.
+To add these you will need .gif images with a pixel size of 16x16. Place them in a directory
+outside of the META-INF directory, for example as follows:</para>
+
+<programlisting>
+project/src/main/resources/icons/notification.gif
+</programlisting>
+
   </section>
 
   <section>
@@ -119,6 +136,15 @@ the META-INF directory of your project and add the following line:</para>
 
 <programlisting>
   drools.workDefinitions = MyWorkDefinitions.conf
+</programlisting>
+
+<para>This will replace the default domain specific node types EMAIL and LOG with the newly 
+defined NOTIFICATION node in the process editor. Should you wish to just add a newly created
+node definition to the existing palette nodes, adjust the drools.workDefinitions property
+as follows including the default set configuration file:</para>
+
+<programlisting>
+  drools.workDefinitions = MyWorkDefinitions.conf WorkDefinitions.conf
 </programlisting>
 
   </section>
@@ -161,6 +187,47 @@ these three properties:</para>
     results) by setting "wait for completion" to false.</para>
   </listitem>
 </orderedlist>
+
+<para>Here is an example that creates a domain specific node to execute Java, asking for
+the class and method parameters. It includes a custom java.gif icon and consists of the 
+following files and resulting screenshot:</para>
+
+<programlisting>
+import org.drools.process.core.datatype.impl.type.StringDataType;
+[
+  // the Java Node work item located in:
+  // project/src/main/resources/META-INF/JavaNodeDefinition.conf
+  [
+    "name" : "JavaNode",
+    "parameters" : [
+      "class" : new StringDataType(),
+      "method" : new StringDataType(),
+    ],
+    "displayName" : "Java Node",
+    "icon" : "icons/java.gif"
+  ]
+
+]
+</programlisting>
+
+
+<programlisting>
+// located in: project/src/main/resources/META-INF/drools.rulebase.conf
+//
+  drools.workDefinitions = JavaNodeDefinition.conf WorkDefinitions.conf
+
+// icon for java.gif located in:
+// project/src/main/resources/icons/java.gif
+</programlisting>
+
+<mediaobject>
+  <imageobject>
+    <imagedata align="center" format="BMP" role="" 
+
+               fileref="images/Chapter-DomainSpecificProcesses/JavaNode.png"/>
+  </imageobject>
+</mediaobject>
+
 
   </section>
 
