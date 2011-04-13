@@ -56,27 +56,12 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../drools-examples/drools-fusion-examples</directory>
-      <outputDirectory>examples/sources/drools-fusion-examples</outputDirectory>
-      <excludes>
-        <exclude>target/**</exclude>
-        <exclude>local/**</exclude>
-        <exclude>.*/**</exclude>
-        <exclude>nbproject/**</exclude>
-        <exclude>*.ipr</exclude>
-        <exclude>.*.iws</exclude>
-        <exclude>*.iml</exclude>
-        <exclude>.git/**</exclude>
-      </excludes>
-    </fileSet>
   </fileSets>
 
   <dependencySets>
     <dependencySet>
       <excludes>
         <exclude>org.drools:drools-expert-examples</exclude>
-        <exclude>org.drools:drools-fusion-examples</exclude>
         <exclude>org.drools:drools-expert-docs</exclude>
         <exclude>org.drools:drools-fusion-docs</exclude>
         <exclude>*:*:jar:javadoc</exclude>
@@ -88,7 +73,6 @@
     <dependencySet>
       <includes>
         <include>org.drools:drools-expert-examples:jar</include>
-        <include>org.drools:drools-fusion-examples:jar</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
@@ -162,7 +146,6 @@
       </includes>
       <excludes>
         <exclude>org.drools:drools-expert-examples:jar:sources</exclude>
-        <exclude>org.drools:drools-fusion-examples:jar:sources</exclude>
       </excludes>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
