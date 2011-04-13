@@ -15,6 +15,8 @@
  */
 package org.drools.examples.sudoku;
 
+import javax.swing.SwingUtilities;
+
 import org.drools.KnowledgeBase;
 import org.drools.event.rule.ObjectInsertedEvent;
 import org.drools.event.rule.ObjectRetractedEvent;
@@ -180,12 +182,16 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
 
         public void objectUpdated( ObjectUpdatedEvent ev ) {
             if( ev.getObject() instanceof Cell ) {
-                Cell cell = (Cell) ev.getObject();
+                final Cell cell = (Cell) ev.getObject();
                 if( cell.getValue() != null ){
-                    fireCellUpdatedEvent( new SudokuGridEvent( this,
-                            cell.getRowNo(),
-                            cell.getColNo(),
-                            cell.getValue() ) );
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            fireCellUpdatedEvent(new SudokuGridEvent(this,
+                                    cell.getRowNo(),
+                                    cell.getColNo(),
+                                    cell.getValue()));
+                        }
+                    });
                 }
             }
         }
