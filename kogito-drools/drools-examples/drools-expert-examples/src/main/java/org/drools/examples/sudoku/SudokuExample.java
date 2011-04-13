@@ -43,7 +43,7 @@ import org.drools.examples.sudoku.swing.SudokuGridView;
  * 
  * @version $Revision: 1.1 $
  */
-public class SudokuMain
+public class SudokuExample
 implements ActionListener
 {
     private JFrame mainFrame;
@@ -61,12 +61,12 @@ implements ActionListener
     private JButton stepButton  = new JButton("Step");
     private JFileChooser fileChooser;
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         @SuppressWarnings("unused")
-        SudokuMain sudokuMain = new SudokuMain();
+        SudokuExample sudokuExample = new SudokuExample();
     }
 
-    public SudokuMain() throws Exception{
+    public SudokuExample() {
         mainFrame = new JFrame("Drools Sudoku Example");
         for (String sampleName : SudokuGridSamples.getInstance().getSampleNames()){
             JMenuItem menuItem = new JMenuItem(sampleName);
