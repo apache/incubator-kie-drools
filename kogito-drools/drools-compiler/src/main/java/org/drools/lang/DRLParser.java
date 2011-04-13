@@ -289,11 +289,13 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            if ( helper.validateIdentifierKey( DroolsSoftKeywords.FUNCTION ) ) {
+            String kwd;
+            if ( helper.validateIdentifierKey( kwd = DroolsSoftKeywords.FUNCTION ) ||
+                 helper.validateIdentifierKey( kwd = DroolsSoftKeywords.STATIC ) ){
                 // function
                 match( input,
                        DRLLexer.ID,
-                       DroolsSoftKeywords.FUNCTION,
+                       kwd,
                        null,
                        DroolsEditorType.KEYWORD );
                 if ( state.failed ) return null;
@@ -425,8 +427,8 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            // type
-            String type = type();
+            // type may be qualified when adding metadata
+            String type = qualifiedIdentifier();           
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) declare.type( type );
 
@@ -436,7 +438,9 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            while ( input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+            boolean qualified = type.indexOf( '.' ) >= 0;
+            while ( ! qualified &&
+                    input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
                 field( declare );
                 if ( state.failed ) return null;
@@ -493,7 +497,7 @@ public class DRLParser {
             if ( state.failed ) return;
 
             // type
-            String type = type();
+            String type = qualifiedIdentifier();
             if ( state.failed ) return;
             if ( state.backtracking == 0 ) field.type( type );
 
@@ -1790,7 +1794,7 @@ public class DRLParser {
             result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
             result = lhsForall( ce );
-        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
+//        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
             // TODO: handle this
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
@@ -2257,7 +2261,8 @@ public class DRLParser {
      */
     private void lhsPattern( PatternDescrBuilder< ? > pattern,
                              String label ) throws RecognitionException {
-        String type = type();
+//        String type = unadornedType();
+        String type = this.qualifiedIdentifier();
         if ( state.failed ) return;
 
         if ( state.backtracking == 0 ) {
@@ -3240,12 +3245,14 @@ public class DRLParser {
     /* ------------------------------------------------------------------------------------------------
      *                         UTILITY RULES
      * ------------------------------------------------------------------------------------------------ */
-
+    
     /**
      * Matches a type name
      * 
      * type := ID typeArguments? ( DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
      * 
+     * @param doQualify set to true if qualification is acceptable
+     * @param doGenPar  set to true if generic arguments and brackets are acceptable
      * @return
      * @throws RecognitionException
      */
