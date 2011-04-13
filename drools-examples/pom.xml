@@ -16,7 +16,6 @@
 
   <modules>
     <module>drools-expert-examples</module>
-    <module>drools-fusion-examples</module>
   </modules>
 
 </project>
