@@ -22,6 +22,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.examples.sudoku.SudokuMain;
 import org.drools.io.ResourceFactory;
 
 public class DroolsUtil {
@@ -31,7 +32,7 @@ public class DroolsUtil {
 
         // This parses and compiles a DRL file.
         kBuilder.add( ResourceFactory.newClassPathResource( drlFileName,
-                org.drools.examples.sudoku.Main.class ),
+                SudokuMain.class ),
                       ResourceType.DRL );
         if( kBuilder.hasErrors() ){
             for( KnowledgeBuilderError err: kBuilder.getErrors() ){
