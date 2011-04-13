@@ -26,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drools.examples.conway.ui.ConwayGUI;
+import org.drools.examples.pacman.PacmanExample;
+import org.drools.examples.sudoku.SudokuExample;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -47,6 +49,16 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("ConwayGUI") {
             public void actionPerformed(ActionEvent e) {
                 ConwayGUI.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("SudokuExample") {
+            public void actionPerformed(ActionEvent e) {
+                SudokuExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("PacmanExample") {
+            public void actionPerformed(ActionEvent e) {
+                PacmanExample.main(new String[0]);
             }
         }));
         return contentPane;
