@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.numberguess;
 
 import java.util.Random;
 
@@ -32,11 +32,11 @@ public class NumberGuessExample {
 
     public static final void main(String[] args) throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.drl",
-                                                                    ShoppingExample.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/numberguess/NumberGuess.drl",
+                NumberGuessExample.class ),
                               ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "NumberGuess.rf",
-                                                                    ShoppingExample.class ),
+        kbuilder.add( ResourceFactory.newClassPathResource( "/org/drools/examples/numberguess/NumberGuess.rf",
+                NumberGuessExample.class  ),
                               ResourceType.DRF );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

@@ -2,14 +2,14 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="Number Guess" id="Number Guess" package-name="org.drools.examples" >
+         type="RuleFlow" name="Number Guess" id="Number Guess" package-name="org.drools.examples.numberguess" >
 
   <header>
     <imports>
-      <import name="org.drools.examples.NumberGuessExample.Game" />
-      <import name="org.drools.examples.NumberGuessExample.GameRules" />
-      <import name="org.drools.examples.NumberGuessExample.Guess" />
-      <import name="org.drools.examples.NumberGuessExample.RandomNumber" />
+      <import name="org.drools.examples.numberguess.NumberGuessExample.Game" />
+      <import name="org.drools.examples.numberguess.NumberGuessExample.GameRules" />
+      <import name="org.drools.examples.numberguess.NumberGuessExample.Guess" />
+      <import name="org.drools.examples.numberguess.NumberGuessExample.RandomNumber" />
     </imports>
   </header>
 
