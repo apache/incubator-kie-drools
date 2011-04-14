@@ -79,7 +79,7 @@ public class WaltzDbBenchmark {
     }
 
     private static List<Line> loadLines(String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
+        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
         Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
         String line = reader.readLine();
         List<Line> result = new ArrayList<Line>();
@@ -97,7 +97,7 @@ public class WaltzDbBenchmark {
     }
 
     private static List<Label> loadLabels(String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
+        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
         Pattern pat = Pattern.compile( ".*make label \\^type ([0-9a-z]*) \\^name ([0-9a-zA-Z]*) \\^id ([0-9]*) \\^n1 ([B+-]*) \\^n2 ([B+-]*)( \\^n3 ([B+-]*))?.*" );
         String line = reader.readLine();
         List<Label> result = new ArrayList<Label>();

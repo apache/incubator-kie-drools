@@ -80,7 +80,7 @@ public abstract class WaltzBenchmark {
 
     private static void loadLines(WorkingMemory wm,
                                   String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( filename ) ) );
+        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
         Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
         String line = reader.readLine();
         while ( line != null ) {

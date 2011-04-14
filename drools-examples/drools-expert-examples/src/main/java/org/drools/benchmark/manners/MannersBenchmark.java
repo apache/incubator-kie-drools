@@ -78,7 +78,7 @@ public class MannersBenchmark {
                 filename = "manners128.dat";
             }
     
-            InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
+            InputStream is = MannersBenchmark.class.getResourceAsStream( "data/" + filename );
             List list = getInputObjects( is );
             for ( Iterator it = list.iterator(); it.hasNext(); ) {
                 Object object = it.next();
