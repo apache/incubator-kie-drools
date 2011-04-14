@@ -166,6 +166,10 @@ public class KnowledgeAgentImpl
         return this.newInstance;
     }
 
+    public boolean isUseKBaseClassLoaderForCompiling() {
+        return useKBaseClassLoaderForCompiling;
+    }
+
     public void applyChangeSet(Resource resource) {
         applyChangeSet( getChangeSet( resource ) );
     }
@@ -1296,7 +1300,7 @@ public class KnowledgeAgentImpl
         KnowledgeBuilder kbuilder = null;
         if ( this.builderConfiguration != null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
-        } else if ( this.useKBaseClassLoaderForCompiling ) {
+        } else if ( this.isUseKBaseClassLoaderForCompiling() ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
                                                                                                                               ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader() ) );
         } else {
@@ -1309,7 +1313,7 @@ public class KnowledgeAgentImpl
                               ResourceType.DSL );
             }
         }
-
+        
         return kbuilder;
     }
 
