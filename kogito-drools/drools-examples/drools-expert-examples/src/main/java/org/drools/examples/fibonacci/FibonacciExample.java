@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.fibonacci;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -37,6 +37,10 @@ public class FibonacciExample {
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException("Compilation error.\n" + kbuilder.getErrors().toString());
+        }
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 

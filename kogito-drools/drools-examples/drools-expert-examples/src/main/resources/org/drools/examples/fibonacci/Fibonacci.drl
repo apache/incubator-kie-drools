@@ -16,7 +16,7 @@
 
 package org.drools.examples
 
-import org.drools.examples.FibonacciExample.Fibonacci;
+import org.drools.examples.fibonacci.FibonacciExample.Fibonacci;
 
 dialect "mvel"
 
