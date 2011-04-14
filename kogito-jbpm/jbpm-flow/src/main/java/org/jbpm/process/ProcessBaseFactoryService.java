@@ -22,7 +22,6 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactoryService;
 import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.runtime.Environment;
@@ -47,21 +46,20 @@ public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
     }        
     
     public KnowledgeBase newKnowledgeBase() {       
-        return new ProcessBaseImpl( RuleBaseFactory.newRuleBase() );      
+        return new ProcessBaseImpl();      
     }   
     
     public KnowledgeBase newKnowledgeBase( String kbaseId ) {       
-        return new ProcessBaseImpl( RuleBaseFactory.newRuleBase(kbaseId) );      
+        return new ProcessBaseImpl();      
     }   
     
     public KnowledgeBase newKnowledgeBase(KnowledgeBaseConfiguration conf) {
-        return new ProcessBaseImpl( RuleBaseFactory.newRuleBase( ( RuleBaseConfiguration ) conf ) );
+        return new ProcessBaseImpl();
     }
 
     public KnowledgeBase newKnowledgeBase(String kbaseId, 
                                           KnowledgeBaseConfiguration conf) {
-        return new ProcessBaseImpl( RuleBaseFactory.newRuleBase( kbaseId, 
-                                                                   ( RuleBaseConfiguration ) conf ) );
+        return new ProcessBaseImpl();
     }
 
 	public Environment newEnvironment() {

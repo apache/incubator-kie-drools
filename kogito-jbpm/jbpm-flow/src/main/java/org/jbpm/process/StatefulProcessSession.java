@@ -8,6 +8,7 @@ import java.util.Queue;
 import org.drools.KnowledgeBase;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
+import org.drools.base.MapGlobalResolver;
 import org.drools.command.Command;
 import org.drools.common.EndOperationListener;
 import org.drools.common.InternalKnowledgeRuntime;
@@ -49,6 +50,7 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	private TimerService timerService;
 	protected Queue<WorkingMemoryAction> actionQueue;
 	private int id;
+	private MapGlobalResolver globals = new MapGlobalResolver();
 	
 	public StatefulProcessSession(KnowledgeBase kbase, KnowledgeSessionConfiguration sessionConfiguration, Environment environment) {
 		this.kbase = kbase;
@@ -212,11 +214,11 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 
 	public Object getGlobal(String identifier) {
-		throw new UnsupportedOperationException();
+		return globals.get(identifier);
 	}
 
 	public Globals getGlobals() {
-		throw new UnsupportedOperationException();
+		return globals;
 	}
 
 	public <T extends SessionClock> T getSessionClock() {

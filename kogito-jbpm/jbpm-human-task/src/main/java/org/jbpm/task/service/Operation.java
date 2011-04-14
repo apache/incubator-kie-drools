@@ -27,5 +27,8 @@ public enum Operation {
     Delegate,
     Forward,
     Complete,
-    Fail
+    Fail,
+    Register,
+    Remove,
+    Activate
 }

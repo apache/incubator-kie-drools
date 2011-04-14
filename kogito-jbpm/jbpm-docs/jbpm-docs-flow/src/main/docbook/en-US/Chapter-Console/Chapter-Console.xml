@@ -23,6 +23,12 @@
     This will download, install and configure all the necessary components to get the console running,
     including an in-memory database, a human task service, etc.  Check out the chapter on the
     installer for more information.</para>
+    
+    <para>The console is a separate sub-project that is shared across different projects, like for
+    example jBPM and RiftSaw.  The source code of the version that jBPM5 is currently using can be found
+    on SVN <ulink url="http://anonsvn.jboss.org/repos/soag/bpm-console/tags/bpm-console-2.1/">here</ulink>.
+    The latest version of the console has been moved to Git and can be found 
+    <ulink url="https://github.com/bpmc">here</ulink>.</para>
 
   </section>
 

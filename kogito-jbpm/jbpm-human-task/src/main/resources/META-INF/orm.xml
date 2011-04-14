@@ -9,9 +9,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -21,27 +21,28 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy    
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity businessAdministrator
 where
     businessAdministrator.id = :userId and
     businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -55,9 +56,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -67,27 +68,28 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity excludedOwners
 where
     excludedOwners.id = :userId and
     excludedOwners in elements ( t.peopleAssignments.excludedOwners  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -101,9 +103,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
+     name.text,
      subject.text,
-     descriptions.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -116,16 +118,18 @@ from
     Task t
     left join t.taskData.createdBy
     left join t.taskData.actualOwner
-    left join t.subjects as subject,
-    I18NText names,
-    I18NText descriptions,
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity potentialOwners
 where
     potentialOwners.id = :userId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
     subject.language = :language
@@ -133,13 +137,9 @@ where
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
-
-
-
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') and
 
@@ -153,9 +153,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -165,28 +165,29 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy 
+    left join t.taskData.actualOwner
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity potentialOwners
 where
     ( potentialOwners.id = :userId or potentialOwners.id in (:groupIds) ) and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners )  and
 
-    names.language = :language and
-    names in elements( t.names) and
-
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -203,9 +204,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -215,27 +216,29 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy 
+    left join t.taskData.actualOwner
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity potentialOwners
 where
     potentialOwners.id = :groupId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -252,9 +255,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -264,28 +267,30 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy left join t.taskData.actualOwner,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy 
+    left join t.taskData.actualOwner
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity potentialOwners
 where
     t.taskData.parentId = :parentId and
     potentialOwners.id = :userId and
     potentialOwners in elements ( t.peopleAssignments.potentialOwners  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -302,9 +307,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -314,25 +319,25 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions
-
+    Task t
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name
 where
     t.taskData.parentId = :parentId and
-    names.language = :language and
-    names in elements( t.names) and
+    
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -350,9 +355,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -362,27 +367,28 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity recipients
 where
     recipients.id = :userId and
     recipients in elements ( t.peopleAssignments.recipients  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -396,9 +402,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -408,27 +414,28 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity taskInitiator
 where
     taskInitiator.id = :userId and
     taskInitiator = t.peopleAssignments.taskInitiator and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -442,9 +449,9 @@ select
      new org.jbpm.task.query.TaskSummary(
      t.id,
      t.taskData.processInstanceId,
-     names.text,
-     subjects.text,
-     descriptions.text,
+     name.text,
+     subject.text,
+     description.text,
      t.taskData.status,
      t.priority,
      t.taskData.skipable,
@@ -454,27 +461,28 @@ select
      t.taskData.activationTime,
      t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions,
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name,
     OrganizationalEntity taskStakeholder
 where
     taskStakeholder.id = :userId and
     taskStakeholder in elements ( t.peopleAssignments.taskStakeholders  )  and
 
-    names.language = :language and
-    names in elements( t.names) and
+    (
+    name.language = :language
+    or t.names.size = 0
+    ) and
 
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 
@@ -488,9 +496,9 @@ select
     new org.jbpm.task.query.TaskSummary(
     t.id,
     t.taskData.processInstanceId,
-    names.text,
-    subjects.text,
-    descriptions.text,
+    name.text,
+    subject.text,
+    description.text,
     t.taskData.status,
     t.priority,
     t.taskData.skipable,
@@ -500,24 +508,26 @@ select
     t.taskData.activationTime,
     t.taskData.expirationTime)
 from
-    Task t left join t.taskData.createdBy,
-    I18NText names,
-    I18NText subjects,
-    I18NText descriptions
+    Task t 
+    left join t.taskData.createdBy
+    left join t.subjects as subject
+    left join t.descriptions as description
+    left join t.names as name
 where
     t.taskData.actualOwner.id = :userId and
-    names in elements( t.names) and
-    names.language = :language and
-              
+
     (
-    subjects.language = :language and
-    subjects in elements( t.subjects)
+    name.language = :language
+    or t.names.size = 0
+    ) and
+
+    (
+    subject.language = :language
     or t.subjects.size = 0
     ) and
 
     (
-    descriptions.language = :language and
-    descriptions in elements( t.descriptions)
+    description.language = :language
     or t.descriptions.size = 0
     ) and
 

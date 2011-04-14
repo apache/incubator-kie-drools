@@ -17,12 +17,17 @@
 package org.jbpm.process.builder.dialect.java;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.Dialect;
 import org.drools.lang.descr.ActionDescr;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.rule.builder.dialect.java.JavaAnalysisResult;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
@@ -45,24 +50,25 @@ public class JavaActionBuilder extends AbstractJavaProcessBuilder
         final String className = "action" + context.getNextId();               
 
         JavaDialect dialect = (JavaDialect) context.getDialect( "java" );
-
-        Dialect.AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                                actionDescr,
-                                                                actionDescr.getText(),
-                                                                new Map[]{Collections.EMPTY_MAP, context.getPackageBuilder().getGlobals()} );
+        
+        Map<String, Class<?>> variables = new HashMap<String,Class<?>>();
+        BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
+        AnalysisResult analysis = dialect.analyzeBlock( context,
+                                                        actionDescr,
+                                                        actionDescr.getText(),
+                                                        boundIdentifiers);
 
         if ( analysis == null ) {
             // not possible to get the analysis results
             return;
         }
 
-        final List<String>[] usedIdentifiers = analysis.getBoundIdentifiers();
-
+        Set<String> identifiers = analysis.getBoundIdentifiers().getGlobals().keySet();
 
         final Map map = createVariableContext( className,
                                                actionDescr.getText(),
                                                (ProcessBuildContext) context,
-                                               (String[]) usedIdentifiers[1].toArray( new String[usedIdentifiers[1].size()] ),
+                                               (String[]) identifiers.toArray( new String[identifiers.size()] ),
                                                analysis.getNotBoundedIdentifiers(),
                                                contextResolver);
         map.put( "text",

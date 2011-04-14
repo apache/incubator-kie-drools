@@ -43,6 +43,7 @@ public class NodeInstanceLog implements Serializable {
     private String processId;
     private String nodeInstanceId;
     private String nodeId;
+    private String nodeName;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "log_date")
     private Date date;
@@ -51,12 +52,13 @@ public class NodeInstanceLog implements Serializable {
     }
     
 	public NodeInstanceLog(int type, long processInstanceId, String processId,
-			               String nodeInstanceId, String nodeId) {
+			               String nodeInstanceId, String nodeId, String nodeName) {
 		this.type = type;
         this.processInstanceId = processInstanceId;
         this.processId = processId;
 		this.nodeInstanceId = nodeInstanceId;
 		this.nodeId = nodeId;
+		this.nodeName = nodeName;
         this.date = new Date();
     }
 	
@@ -107,6 +109,14 @@ public class NodeInstanceLog implements Serializable {
 	void setNodeId(String nodeId) {
 		this.nodeId = nodeId;
 	}
+	
+	public String getNodeName() {
+		return nodeName;
+	}
+	
+	void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
 
 	public Date getDate() {
         return date;
@@ -118,7 +128,61 @@ public class NodeInstanceLog implements Serializable {
 
     public String toString() {
         return (type == 0 ? "Triggered " : "Left ") + "Node Instance '" + 
-        	processId + "#" + nodeId + "' [" + processInstanceId + "#" + nodeInstanceId + "]";
+        	processId + "#" + nodeId + "' (" + nodeName + ") [" + processInstanceId + "#" + nodeInstanceId + "]";
     }
     
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + (int) id;
+		result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
+		result = prime * result
+				+ ((nodeInstanceId == null) ? 0 : nodeInstanceId.hashCode());
+		result = prime * result
+				+ ((processId == null) ? 0 : processId.hashCode());
+		result = prime * result	+ (int) processInstanceId;
+		result = prime * result + type;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NodeInstanceLog other = (NodeInstanceLog) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (id != other.id)
+			return false;
+		if (nodeId == null) {
+			if (other.nodeId != null)
+				return false;
+		} else if (!nodeId.equals(other.nodeId))
+			return false;
+		if (nodeInstanceId == null) {
+			if (other.nodeInstanceId != null)
+				return false;
+		} else if (!nodeInstanceId.equals(other.nodeInstanceId))
+			return false;
+		if (processId == null) {
+			if (other.processId != null)
+				return false;
+		} else if (!processId.equals(other.processId))
+			return false;
+		if (processInstanceId != other.processInstanceId)
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+  	
 }

@@ -1,0 +1,45 @@
+format = new java.text.SimpleDateFormat( "dd/MM/yyyy" );
+
+tasks = [
+	(with ( new Task() ) { 
+	    priority = 20,
+	    taskData = (with ( new TaskData() ) {
+	        createdOn = format.parse( "15/01/2008" ),	        
+	        activationTime = format.parse( "20/01/2008" ),
+	        status = Status.Created,
+	    }),
+	    peopleAssignments = (with ( new PeopleAssignments() ) {        
+	        taskInitiator = users['darth' ],
+	        potentialOwners = [users['bobba' ], users['jabba' ]],
+	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]]
+	    }),	    
+        names = [ new I18NText( "en-UK", "This is my task name Jan" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Jan" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Feb" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Feb" ) ]
+	}),
+	(with ( new Task() ) { 
+	    priority = 150,
+	    peopleAssignments = (with ( new PeopleAssignments() ) {     
+	        excludedOwners = [users['liz' ], users['dalai' ], users['christoper' ]],
+	        potentialOwners = [users['bobba' ], users['jabba' ]], 
+	        taskStakeholders = [users['liz' ], users['stuart' ], users['jane' ]],
+	        businessAdministrators = [users['peter' ], users['steve' ]],
+	        recipients = [users['sly' ], users['bobba' ], users['liz' ]]
+	    }),	 	    
+	    taskData = (with ( new TaskData() ) {
+	        createdBy = users[ 'tony' ],
+	        createdOn = format.parse( "15/02/2008" ),
+	        activationTime = format.parse( "20/02/2008" ),
+	        status = Status.Created,
+	    }),
+        names = [ new I18NText( "en-UK", "This is my task name Feb" ),
+                  new I18NText( "en-DK", "Dies ist mein task Name Feb" )],
+        subjects = [ new I18NText( "en-UK", "This is my task subject Feb" ),
+                     new I18NText( "en-DK", "Das ist mein task Thema Feb" ) ],
+        descriptions = [ new I18NText( "en-UK", "This is my task description Feb" ),
+                         new I18NText( "en-DK", "Das ist mein task Beschreibung Feb" ) ]          
+	})
+]
+
+return tasks;

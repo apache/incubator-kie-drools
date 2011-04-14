@@ -1,41 +1,26 @@
 Manifest-Version: 1.0
-Export-Package: org.jbpm.bpmn2;version="5.2.0.SNAPSHOT";uses:="org.drools.bpmn2.legacy.beta1,org.drools.bpmn2.xml",
- org.jbpm.bpmn2.core;version="5.2.0.SNAPSHOT",
- org.jbpm.bpmn2.handler;version="5.2.0.SNAPSHOT",
- org.jbpm.bpmn2.legacy.beta1;version="5.2.0.SNAPSHOT";
-  uses:="org.w3c.dom,
-   org.drools.bpmn2.core,
-   org.xml.sax,
-   org.drools.bpmn2.legacy.beta1.di",
- org.jbpm.bpmn2.legacy.beta1.di;version="5.2.0.SNAPSHOT";
-  uses:="org.xml.sax,
-   org.drools.bpmn2.legacy.beta1,
-   org.w3c.dom,
-   org.drools.bpmn2.core",
- org.jbpm.bpmn2.xml;version="5.2.0.SNAPSHOT";
-  uses:="org.w3c.dom,
-   org.drools.bpmn2.core,
-   org.xml.sax,
-   org.drools.bpmn2.xml.di",
- org.jbpm.bpmn2.xml.di;version="5.2.0.SNAPSHOT";uses:="org.w3c.dom,org.xml.sax,org.drools.bpmn2.core",
- org.jbpm.bpmn2.xpath;version="5.2.0.SNAPSHOT",
- org.jbpm.osgi.bpmn2;version="5.2.0.SNAPSHOT";uses:="org.drools.bpmn2,org.osgi.framework"
+Export-Package: org.jbpm.bpmn2.xml;uses:="org.jbpm.bpmn2.core,org.w3c.
+ dom,org.xml.sax,org.jbpm.bpmn2.xml.di";version="5.1.0.SNAPSHOT",org.j
+ bpm.bpmn2;uses:="org.jbpm.bpmn2.xml";version="5.1.0.SNAPSHOT",org.jbp
+ m.bpmn2.core;version="5.1.0.SNAPSHOT",org.jbpm.bpmn2.xpath;version="5
+ .1.0.SNAPSHOT",org.jbpm.bpmn2.handler;version="5.1.0.SNAPSHOT",org.jb
+ pm.osgi.bpmn2;uses:="org.jbpm.bpmn2,org.osgi.framework";version="5.1.
+ 0.SNAPSHOT",org.jbpm.bpmn2.xml.di;uses:="org.w3c.dom,org.xml.sax,org.
+ jbpm.bpmn2.core";version="5.1.0.SNAPSHOT"
 Tool: Bnd-0.0.357
-Bundle-Name: Drools :: Process :: BPMN2
-Created-By: 1.6.0_06 (Sun Microsystems Inc.)
-Require-Bundle: org.drools.flow.compiler;bundle-version="5.2.0.SNAPSHO
- T", org.drools.persistence-jpa;optional="true";bundle-version="5.2.0.
- SNAPSHOT"
+Bundle-Name: jBPM :: BPMN2
+Created-By: 1.6.0_22 (Sun Microsystems Inc.)
+Require-Bundle: org.jbpm.flow.builder;bundle-version="5.1.0.SNAPSHOT"
 Bundle-Vendor: JBoss Inc.
 DynamicImport-Package: *
-Bundle-Version: 5.2.0.SNAPSHOT
-Bnd-LastModified: 1283907835131
+Bundle-Version: 5.1.0.SNAPSHOT
+Bnd-LastModified: 1301712886443
 Bundle-Activator: org.jbpm.osgi.bpmn2.Activator
 Bundle-ManifestVersion: 2
-Bundle-Description: A rule production system
+Bundle-Description: jBPM: a Business Process Management (BPM) Suite
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.osgi.framework;version="1.5",org.w3c.dom,org.xml.s
  ax
-Bundle-SymbolicName: org.drools.bpmn2;singleton:=true
+Bundle-SymbolicName: org.jbpm.bpmn2;singleton:=true
 Bundle-DocURL: http://www.jboss.org/
 

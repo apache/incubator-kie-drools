@@ -112,7 +112,7 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 		connect();
 		BlockingGetTaskResponseHandler responseHandler = new BlockingGetTaskResponseHandler();
 		client.getTask(taskId, responseHandler);
-        Task task = responseHandler.getTask();
+		Task task = responseHandler.getTask();
         return Transform.task(task);
 	}
 

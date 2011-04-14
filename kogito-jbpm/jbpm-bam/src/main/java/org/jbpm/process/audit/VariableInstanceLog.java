@@ -118,4 +118,63 @@ public class VariableInstanceLog implements Serializable {
         	processId + "#" + variableId + "' to '" + value + "' [" + processInstanceId + "#" + variableInstanceId + "]";
     }
     
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + (int) id;
+		result = prime * result
+				+ ((processId == null) ? 0 : processId.hashCode());
+		result = prime * result + (int) processInstanceId;
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		result = prime * result
+				+ ((variableId == null) ? 0 : variableId.hashCode());
+		result = prime
+				* result
+				+ ((variableInstanceId == null) ? 0 : variableInstanceId
+						.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VariableInstanceLog other = (VariableInstanceLog) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (id != other.id)
+			return false;
+		if (processId == null) {
+			if (other.processId != null)
+				return false;
+		} else if (!processId.equals(other.processId))
+			return false;
+		if (processInstanceId != other.processInstanceId)
+			return false;
+		if (value == null) {
+			if (other.value != null)
+				return false;
+		} else if (!value.equals(other.value))
+			return false;
+		if (variableId == null) {
+			if (other.variableId != null)
+				return false;
+		} else if (!variableId.equals(other.variableId))
+			return false;
+		if (variableInstanceId == null) {
+			if (other.variableInstanceId != null)
+				return false;
+		} else if (!variableInstanceId.equals(other.variableInstanceId))
+			return false;
+		return true;
+	}
 }

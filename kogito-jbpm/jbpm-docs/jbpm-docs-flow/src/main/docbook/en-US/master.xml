@@ -39,11 +39,13 @@
   <xi:include href="Chapter-HumanTasks/Chapter-HumanTasks.xml" />
   <xi:include href="Chapter-DomainSpecificProcesses/Chapter-DomainSpecificProcesses.xml" />
   <xi:include href="Chapter-Persistence/Chapter-Persistence.xml" />
+  <xi:include href="Chapter-Testing/Chapter-Testing.xml" />
   <xi:include href="Chapter-Console/Chapter-Console.xml" />
   <xi:include href="Chapter-BAM/Chapter-BAM.xml" />
   <xi:include href="Chapter-Guvnor/Chapter-Guvnor.xml" />
   <xi:include href="Chapter-Designer/Chapter-Designer.xml" />
   <xi:include href="Chapter-FlexibleProcesses/Chapter-FlexibleProcesses.xml" />
+  <xi:include href="Chapter-Integration/Chapter-Integration.xml" />
 
   <index/>
 

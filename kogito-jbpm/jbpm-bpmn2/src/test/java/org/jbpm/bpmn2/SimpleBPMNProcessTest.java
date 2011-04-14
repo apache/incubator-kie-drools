@@ -17,21 +17,16 @@
 package org.jbpm.bpmn2;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.drools.KnowledgeBase;
@@ -46,6 +41,7 @@ import org.drools.definition.process.Process;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.process.ProcessVariableChangedEvent;
+import org.drools.impl.KnowledgeBaseFactoryServiceImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
@@ -58,9 +54,7 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
-import org.jbpm.JbpmTestCase;
+import org.jbpm.JbpmJUnitTestCase;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
@@ -78,46 +72,11 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class SimpleBPMNProcessTest extends JbpmTestCase {
+public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 
-	private PoolingDataSource ds1;
-	private EntityManagerFactory emf;
-	private static Server h2Server;
-    
-    static {
-    	try {
-			DeleteDbFiles.execute("", "JPADroolsFlow", true);
-			h2Server = Server.createTcpServer(new String[0]);
-			h2Server.start();
-		} catch (SQLException e) {
-			throw new RuntimeException("can't start h2 server db",e);
-		}
-    }
-    
-    protected void setUp() {
-    	ds1 = new PoolingDataSource();
-        ds1.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-    	ds1.setUniqueName("jdbc/testDS1");
-    	ds1.setMaxPoolSize(5);
-    	ds1.setAllowLocalTransactions(true);
-    	ds1.getDriverProperties().setProperty("driverClassName", "org.h2.Driver");
-    	ds1.getDriverProperties().setProperty("url", "jdbc:h2:tcp://localhost/JPADroolsFlow");
-    	ds1.getDriverProperties().setProperty("user", "sa");
-    	ds1.getDriverProperties().setProperty("password", "");
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
-    }
-
-    protected void tearDown() {
-    	emf.close();
-        ds1.close();
-    }
-    
     public void testMinimalProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -153,6 +112,13 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 
+    public void testImport() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-Import.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ProcessInstance processInstance = ksession.startProcess("Import");
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+
     public void testRuleTask() throws Exception {
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
@@ -184,7 +150,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		ksession.setGlobal("list", list);
 		ProcessInstance processInstance = ksession.startProcess("RuleTask");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		restoreSession(ksession);
+		restoreSession(ksession, true);
 		ksession.fireAllRules();
 		assertTrue(list.size() == 1);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -272,7 +238,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("john", workItem.getParameter("ActorId"));
@@ -287,7 +253,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ProcessInstance processInstance = ksession.startProcess("UserTask");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
@@ -295,7 +261,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         Map<String, Object> results = new HashMap<String, Object>();
         results.put("ActorId", "mary");
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), results);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
@@ -420,7 +386,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
@@ -428,7 +394,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// No
 		processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("No", "NoValue", processInstance.getId());
@@ -444,7 +410,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
@@ -452,7 +418,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// No
 		processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new DoNothingWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("No", "NoValue", processInstance.getId());
@@ -468,12 +434,12 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new DoNothingWorkItemHandler());
         // No
@@ -488,24 +454,24 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		Thread.sleep(800);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.fireAllRules();
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Timer
 		processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
 		Thread.sleep(800);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.fireAllRules();
@@ -522,7 +488,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
@@ -530,7 +496,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Condition
 		processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.insert(jack);
@@ -545,12 +511,12 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Message-YesMessage", "YesValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
 		// No
@@ -569,7 +535,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		// Yes
 		ProcessInstance processInstance = ksession.startProcess("com.sample.test");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
 		receiveTaskHandler.setKnowledgeRuntime(ksession);
@@ -577,7 +543,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         receiveTaskHandler.messageReceived("YesMessage", "YesValue");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
         receiveTaskHandler.messageReceived("NoMessage", "NoValue");
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
 		ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
 		receiveTaskHandler.setKnowledgeRuntime(ksession);
@@ -683,7 +649,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         Thread.sleep(1000);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         System.out.println("Firing timer");
         ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -696,7 +662,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         Thread.sleep(1000);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         System.out.println("Firing timer");
         ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -735,14 +701,14 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNull(workItem);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
         System.out.println("Signaling Hello2");
         ksession.signalEvent("Hello2", null, processInstance.getId());
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
     }
@@ -779,12 +745,12 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNull(workItem);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.fireAllRules();
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -795,7 +761,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("AdHocProcess");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         System.out.println("Triggering node");
         ksession.signalEvent("Task1", null, processInstance.getId());
@@ -813,7 +779,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
 		ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-		ksession = restoreSession(ksession);
+		ksession = restoreSession(ksession, true);
         // now signal process instance
 		ksession.signalEvent("MyMessage", "SomeValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -825,7 +791,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         // now signal process instance
         ksession.signalEvent("Message-HelloMessage", "SomeValue", processInstance.getId());
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -839,7 +805,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         // now wait for 1 second for timer to trigger
         Thread.sleep(1000);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -850,7 +816,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         // now activate condition
         Person person = new Person();
         person.setName("Jack");
@@ -924,7 +890,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance)
             ksession.startProcess("ReceiveTask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        ksession = restoreSession(ksession);
+        ksession = restoreSession(ksession, true);
         receiveTaskHandler.messageReceived("HelloMessage", "Hello john!");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
@@ -958,6 +924,23 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
 	        Thread.sleep(500);
         }
         assertEquals(5, list.size());
+    }
+    
+    public void testTimerStartCron() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerStartCron.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		final List<Long> list = new ArrayList<Long>();
+		ksession.addEventListener(new DefaultProcessEventListener() {
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				list.add(event.getProcessInstance().getId());
+			}
+		});
+		Thread.sleep(500);
+        for (int i = 0; i < 5; i++) {
+	        ksession.fireAllRules();
+	        Thread.sleep(1000);
+        }
+        assertEquals(6, list.size());
     }
     
     public void testSignalStart() throws Exception {
@@ -1297,6 +1280,7 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
     }
 	
 	private KnowledgeBase createKnowledgeBase(String process) throws Exception {
+		KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
 		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 		((PackageBuilderConfiguration) conf).initSemanticModules();
 		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNSemanticModule());
@@ -1347,57 +1331,4 @@ public class SimpleBPMNProcessTest extends JbpmTestCase {
         return kbase;
     }
 	
-	private StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-//	    Environment env = KnowledgeBaseFactory.newEnvironment();
-//		Properties properties = new Properties();
-//		properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
-//		properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
-//		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-//		return kbase.newStatefulKnowledgeSession(config, env);
-	    Environment env = KnowledgeBaseFactory.newEnvironment();
-	    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-	    env.set(EnvironmentName.TRANSACTION_MANAGER,
-	        TransactionManagerServices.getTransactionManager());
-		Properties properties = new Properties();
-		properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
-		properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
-		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
-		return JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
-	}
-	
-	private StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession) {
-//		return ksession;
-		int id = ksession.getId();
-		KnowledgeBase kbase = ksession.getKnowledgeBase();
-		Environment env = ksession.getEnvironment();
-		KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
-		return JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
-	}
-	
-	private void assertProcessInstanceCompleted(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	private void assertProcessInstanceAborted(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	private void assertProcessInstanceActive(long processInstanceId, StatefulKnowledgeSession ksession) {
-		assertNotNull(ksession.getProcessInstance(processInstanceId));
-	}
-	
-	private static class TestWorkItemHandler implements WorkItemHandler {
-	    private WorkItem workItem;
-        public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-            this.workItem = workItem;
-        }
-        public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        }
-        public WorkItem getWorkItem() {
-            WorkItem result = this.workItem;
-            this.workItem = null;
-            return result;
-        }
-        
-	}
 }

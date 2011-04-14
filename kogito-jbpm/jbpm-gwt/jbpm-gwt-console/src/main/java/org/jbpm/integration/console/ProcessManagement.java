@@ -49,8 +49,11 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 		return Transform.processDefinition(process);
 	}
 
+	/**
+	 * method unsupported
+	 */
 	public List<ProcessDefinitionRef> removeProcessDefinition(String definitionId) {
-		delegate.removeProcess(definitionId);
+		delegate.removeProcess(definitionId); 
 	    return getProcessDefinitions();
 	}
 
@@ -60,7 +63,7 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 	}
 
 	public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
-		// TODO: query for active process instances only
+		// querys for active process instances only
 		List<ProcessInstanceLog> processInstances = delegate.getProcessInstanceLogsByProcessId(definitionId);
 		List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
 		for (ProcessInstanceLog processInstance: processInstances) {
@@ -72,7 +75,8 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 	}
 
 	public ProcessInstanceRef newInstance(String definitionId) {
-		return newInstance(definitionId, null);
+		ProcessInstanceLog processInstance = delegate.startProcess(definitionId, null);
+		return Transform.processInstance(processInstance);
 	}
 	
 	public ProcessInstanceRef newInstance(String definitionId, Map<String, Object> processVars) {
@@ -96,6 +100,7 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 		delegate.setProcessInstanceVariables(instanceId, data);
 	}
 
+	
 	public void signalExecution(String executionId, String signal) {
 		delegate.signalExecution(executionId, signal);
 	}
@@ -104,6 +109,7 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 		delegate.abortProcessInstance(instanceId);
 	}
 
+	//result means nothing
 	public void endInstance(String instanceId, RESULT result) {
 		delegate.abortProcessInstance(instanceId);
 	}

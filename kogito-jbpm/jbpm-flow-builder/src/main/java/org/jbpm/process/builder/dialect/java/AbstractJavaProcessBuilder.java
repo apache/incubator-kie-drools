@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.mvel2.ParserContext;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
@@ -22,8 +24,8 @@ public class AbstractJavaProcessBuilder {
     protected static final TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
 
     static {
-        RULE_REGISTRY.addNamedTemplate("rules", TemplateCompiler.compileTemplate(AbstractJavaProcessBuilder.class.getResourceAsStream("javaRule.mvel"), null));
-        INVOKER_REGISTRY.addNamedTemplate("invokers", TemplateCompiler.compileTemplate(AbstractJavaProcessBuilder.class.getResourceAsStream("javaInvokers.mvel"), null));
+        RULE_REGISTRY.addNamedTemplate("rules", TemplateCompiler.compileTemplate(AbstractJavaProcessBuilder.class.getResourceAsStream("javaRule.mvel")));
+        INVOKER_REGISTRY.addNamedTemplate("invokers", TemplateCompiler.compileTemplate(AbstractJavaProcessBuilder.class.getResourceAsStream("javaInvokers.mvel")));
 
         /**
          * Process these templates
@@ -86,7 +88,7 @@ public class AbstractJavaProcessBuilder {
             final String text,
             final ProcessBuildContext context,
             final String[] globals,
-            final List<String> unboundIdentifiers,
+            final Set<String> unboundIdentifiers,
             final ContextResolver contextResolver) {
     	Map map = createVariableContext(className, text, context, globals);
     	List<String> variables = new ArrayList<String>();

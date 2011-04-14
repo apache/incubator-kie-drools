@@ -1,6 +1,11 @@
 target/
-*~
-.settings/
-.project
-.classpath
+bin/
+local/
 MANIFEST.MF
+*~
+.*
+!.gitignore
+*.ipr
+*.iws
+*.iml
+*.tlog

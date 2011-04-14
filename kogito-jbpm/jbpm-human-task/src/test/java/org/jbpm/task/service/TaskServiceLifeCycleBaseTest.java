@@ -18,6 +18,7 @@ package org.jbpm.task.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,17 +27,15 @@ import java.util.Map;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
+import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.FaultData;
-import org.jbpm.task.service.PermissionDeniedException;
-import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
+import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
 public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
 
@@ -1456,5 +1455,328 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         Content content = getContentResponseHandler.getContent();
         assertEquals("content", new String(content.getContent()));
     }
+    
+    public void testRegisterRemove() throws Exception {
+    	Map <String, Object> vars = new HashMap<String, Object>();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba'], users['darth'] ], }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();             
+        
+        BlockingTaskOperationResponseHandler opResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.register(taskId, users.get("bobba").getId(), opResponseHandler);
+        opResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        Thread.sleep(500);
+        
+        BlockingGetTaskResponseHandler responseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, responseHandler);
+        Task task1 = responseHandler.getTask();
+        List<OrganizationalEntity> myRecipientTasks = task1.getPeopleAssignments().getRecipients();
+        
+        assertNotNull(myRecipientTasks);
+        assertEquals(1, myRecipientTasks.size());
+        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+        
+        BlockingTaskOperationResponseHandler removeHandler = new BlockingTaskOperationResponseHandler();
+        client.remove(taskId, users.get("bobba").getId(), removeHandler);
+        removeHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        Thread.sleep(500);
+        
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task2 = getTaskResponseHandler.getTask();
+        assertFalse(task2.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+    }
+    
+    public void testRemoveNotInRecipientList() {
+    	Map <String, Object> vars = new HashMap<String, Object>();     
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ] ],";
+        str += "recipients = [users['bobba'] ] }),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();             
+        
+        // Do nominate and fail due to Ready status
+        BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsRecipient(users.get("jabba").getId(), "en-UK", responseHandler);
+        List<TaskSummary> myRecipientTasks = responseHandler.getResults();
+        
+        assertNotNull(myRecipientTasks);
+        assertEquals(0, myRecipientTasks.size());
+        
+        responseHandler = new BlockingTaskSummaryResponseHandler();
+        client.getTasksAssignedAsPotentialOwner(users.get("jabba").getId(), "en-UK", responseHandler);
+        List<TaskSummary> myPotentialTasks = responseHandler.getResults();
+        
+        assertNotNull(myPotentialTasks);
+        assertEquals(0, myPotentialTasks.size());
+        
+        BlockingTaskOperationResponseHandler removeHandler = new BlockingTaskOperationResponseHandler();
+       	try {
+       		client.remove(taskId, users.get("jabba").getId(), removeHandler);
+       		removeHandler.waitTillDone(DEFAULT_WAIT_TIME);
+       		fail("Shouldn't be successful");
+        } catch (RuntimeException e) { //expected
+        }
+        
+        //shouldn't affect the assignments
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
+    }
+    
+    /**
+     * Nominate an organization entity to process the task. If it is nominated to one person
+     * then the new state of the task is Reserved. If it is nominated to several people then 
+     * the new state of the task is Ready. This can only be performed when the task is in the 
+     * state Created.
+     */
+    public void testNominateOnOtherThanCreated() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'] ] ,";
+        str += " potentialOwners = [ users['darth'], users['bobba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        BlockingTaskOperationResponseHandler startResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get("bobba").getId(), startResponseHandler);
+        startResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
+       	try {
+       		List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
+       		potentialOwners.add(users.get("bobba"));
+       		client.nominate(taskId, users.get("darth").getId(), potentialOwners, nominateHandler);
+       		nominateHandler.waitTillDone(DEFAULT_WAIT_TIME);
+       		fail("Shouldn't be successful");
+        } catch (RuntimeException e) { //expected
+        	assertNotNull(nominateHandler.getError());
+        	assertNotNull(nominateHandler.getError().getMessage());
+        	assertTrue(nominateHandler.getError().getMessage().contains("Created"));
+        }
+        
+        //shouldn't affect the assignments
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(users.get("darth")));
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(users.get("bobba")));
+    }
+    
+    public void testNominateWithIncorrectUser() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['bobba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
+       	try {
+       		List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
+       		potentialOwners.add(users.get("jabba"));
+       		client.nominate(taskId, users.get("darth").getId(), potentialOwners, nominateHandler);
+       		nominateHandler.waitTillDone(DEFAULT_WAIT_TIME);
+       		fail("Shouldn't be successful");
+        } catch (RuntimeException e) { //expected
+        	assertNotNull(nominateHandler.getError());
+        	assertNotNull(nominateHandler.getError().getMessage());
+        	assertTrue(nominateHandler.getError().getMessage().contains(users.get("darth").getId()));
+        }
+        
+        //shouldn't affect the assignments
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(users.get("bobba")));
+        assertEquals(task1.getTaskData().getStatus(), Status.Created);
+    }
+    
+    public void testNominateToUser() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'], users['bobba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
+        List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
+        potentialOwners.add(users.get("jabba"));
+   		client.nominate(taskId, users.get("darth").getId(), potentialOwners, nominateHandler);
+   		nominateHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        //shouldn't affect the assignments
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertEquals(task1.getTaskData().getActualOwner(), users.get("jabba"));
+        assertEquals(task1.getTaskData().getStatus(), Status.Reserved);
+    }
+    
+    public void testNominateToGroup() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ users['darth'], users['bobba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+        
+        BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
+        List<OrganizationalEntity> potentialGroups = new ArrayList<OrganizationalEntity>();
+        potentialGroups.add(groups.get("knightsTempler"));
+   		client.nominate(taskId, users.get("darth").getId(), potentialGroups, nominateHandler);
+   		nominateHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
+        //shouldn't affect the assignments
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        client.getTask( taskId, getTaskResponseHandler );
+        Task task1 = getTaskResponseHandler.getTask();
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(groups.get("knightsTempler")));
+        assertEquals(task1.getTaskData().getStatus(), Status.Ready);
+    }
+    
+    public void testActivate() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { ";
+        str += "businessAdministrators = [ users['darth'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.activate(taskId, users.get("darth").getId(), activateResponseHandler);
+        activateResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+
+        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+        client.getTask(taskId, getTaskResponseHandler);
+        Task task1 = getTaskResponseHandler.getTask();
+        
+        assertEquals(task1.getTaskData().getStatus(), Status.Ready);
+        assertFalse(task1.equals(task));
+    }
+    
+    public void testActivateWithIncorrectUser() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ users['darth'], users['bobba'] ], ";
+        str += "businessAdministrators = [ users['jabba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        try {
+        	client.activate(taskId, users.get("darth").getId(), activateResponseHandler);
+        	activateResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        	fail("Shouldn't have succeded");
+    	} catch (RuntimeException e) {
+        	assertNotNull(activateResponseHandler.getError());
+        	assertNotNull(activateResponseHandler.getError().getMessage());
+        	assertTrue(activateResponseHandler.getError().getMessage().toLowerCase().contains("status"));
+        }
+
+    }
+    
+    public void testActivateFromIncorrectStatus() {
+    	Map <String, Object> vars = new HashMap<String, Object>();
+        vars.put( "users", users );
+        vars.put( "groups", groups );        
+        vars.put( "now", new Date() );
+        
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { status = Status.Ready } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [ users['darth'], users['bobba'] ], ";
+        str += "businessAdministrators = [ users['jabba'] ] } ),";                        
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null, addTaskResponseHandler );
+        
+        long taskId = addTaskResponseHandler.getTaskId();
+
+        BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
+        try {
+        	client.activate(taskId, users.get("darth").getId(), activateResponseHandler);
+        	activateResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        	fail("Shouldn't have succeded");
+    	} catch (RuntimeException e) {
+        	assertNotNull(activateResponseHandler.getError());
+        	assertNotNull(activateResponseHandler.getError().getMessage());
+        	assertTrue(activateResponseHandler.getError().getMessage().contains(users.get("darth").getId()));
+        }
+    }
 }

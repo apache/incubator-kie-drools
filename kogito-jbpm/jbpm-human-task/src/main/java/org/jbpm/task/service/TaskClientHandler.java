@@ -206,6 +206,18 @@ public class TaskClientHandler {
                 }
                 break;
             }
+            case QueryGenericResponse: {
+            	QueryGenericResponseHandler responseHandler = (QueryGenericResponseHandler) responseHandlers.get(cmd.getId());
+            	if (responseHandler != null) {
+            		if (!cmd.getArguments().isEmpty() && cmd.getArguments().get(0) instanceof RuntimeException) {
+            			responseHandler.setError((RuntimeException) cmd.getArguments().get(0));
+            		} else {
+            			List<?> results = (List<?>) cmd.getArguments().get(0);
+            			responseHandler.execute(results);
+            		}
+            	}
+            	break;
+            }
         }
     }
 
@@ -270,5 +282,9 @@ public class TaskClientHandler {
         public void execute(List<TaskSummary> results);
     }
     
-    
+    public static interface QueryGenericResponseHandler
+    		extends
+    		ResponseHandler {
+    	public void execute(List<?> results);
+    }
 }
