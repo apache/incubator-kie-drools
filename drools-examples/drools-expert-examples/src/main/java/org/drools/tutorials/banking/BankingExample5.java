@@ -16,8 +16,8 @@
 
 package org.drools.tutorials.banking;
 
-public class Example5 {
-    public static void main(String[] args) throws Exception {
+public class BankingExample5 {
+    public static void main(String[] args) {
         Object[] cashflows = {
             new TypedCashflow(new SimpleDate("01/01/2007"),    
                               TypedCashflow.CREDIT, 300.00),
