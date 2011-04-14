@@ -7,7 +7,7 @@
     <title>Golfing Example</title>
 
     <screen><emphasis role="bold">Name:</emphasis> Golfing
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.GolfingExample
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.golfing.GolfingExample
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> golf.drl
 <emphasis role="bold">Objective:</emphasis> Configuration example that finds the solution from a large number of available cross products

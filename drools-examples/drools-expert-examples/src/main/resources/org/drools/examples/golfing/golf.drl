@@ -18,7 +18,7 @@ package org.drools.examples;
 
 dialect "mvel"
 
-import org.drools.examples.GolfingExample.Golfer;
+import org.drools.examples.golfing.GolfingExample.Golfer;
 
 rule "find solution"
     when
