@@ -16,7 +16,7 @@
 
 package org.drools.examples
  
-import org.drools.examples.State;
+import org.drools.examples.state.State;
 
 rule "D to E"
     when

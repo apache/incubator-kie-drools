@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.state;
 
 import java.io.InputStreamReader;
 
@@ -23,10 +23,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
 
-public class StateExampleUsingAgendGroup {
+public class StateExampleUsingSalience {
 
     /**
      * @param args
@@ -34,19 +32,12 @@ public class StateExampleUsingAgendGroup {
     public static void main(final String[] args) throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingAgendGroup.class.getResourceAsStream( "StateExampleUsingAgendGroup.drl" ) ) );
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingSalience.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
 
         final StatefulSession session = ruleBase.newStatefulSession();
-
-        session.addEventListener( new DefaultAgendaEventListener() {
-            public void afterActivationFired(final AfterActivationFiredEvent arg0) {
-                super.afterActivationFired( arg0,
-                                            session );
-            }
-        } );
 
         final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
         logger.setFileName( "log/state" );
@@ -70,9 +61,10 @@ public class StateExampleUsingAgendGroup {
                         dynamic );
 
         session.fireAllRules();
-        session.dispose();
 
         logger.writeToDisk();
+        
+        session.dispose(); // Stateful rule session must always be disposed when finished        
     }
 
 }
