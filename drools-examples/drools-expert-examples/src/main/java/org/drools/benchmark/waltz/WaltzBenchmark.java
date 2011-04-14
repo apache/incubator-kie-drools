@@ -38,7 +38,7 @@ import org.drools.runtime.rule.WorkingMemory;
  */
 public abstract class WaltzBenchmark {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "waltz.drl",
                                                                     WaltzBenchmark.class ),
@@ -79,20 +79,24 @@ public abstract class WaltzBenchmark {
     }
 
     private static void loadLines(WorkingMemory wm,
-                                  String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
-        Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
-        String line = reader.readLine();
-        while ( line != null ) {
-            Matcher m = pat.matcher( line );
-            if ( m.matches() ) {
-                Line l = new Line( Integer.parseInt( m.group( 1 ) ),
-                                   Integer.parseInt( m.group( 2 ) ) );
-                wm.insert( l );
+                                  String filename) {
+        try {
+            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
+            String line = reader.readLine();
+            while ( line != null ) {
+                Matcher m = pat.matcher( line );
+                if ( m.matches() ) {
+                    Line l = new Line( Integer.parseInt( m.group( 1 ) ),
+                                       Integer.parseInt( m.group( 2 ) ) );
+                    wm.insert( l );
+                }
+                line = reader.readLine();
             }
-            line = reader.readLine();
+            reader.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read file with filename (" + filename + ").", e);
         }
-        reader.close();
     }
 
 }
